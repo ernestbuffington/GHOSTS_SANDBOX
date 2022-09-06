@@ -30,13 +30,13 @@ class acp_jabber
 	function main($id, $mode)
 	{
 		global $db, $user, $template, $phpbb_log, $request;
-		global $config, $phpbb_root_path, $phpEx;
+		global $config, $phpbb3_root_path, $phpEx;
 
 		$user->add_lang('acp/board');
 
 		if (!class_exists('jabber'))
 		{
-			include($phpbb_root_path . 'includes/functions_jabber.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_jabber.' . $phpEx);
 		}
 
 		$submit = (isset($_POST['submit'])) ? true : false;

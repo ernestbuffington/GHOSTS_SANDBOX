@@ -32,11 +32,11 @@ class acp_inactive
 	function main($id, $mode)
 	{
 		global $config, $db, $user, $auth, $template, $phpbb_container, $phpbb_log, $request;
-		global $phpbb_root_path, $phpbb_admin_path, $phpEx;
+		global $phpbb3_root_path, $phpbb_admin_path, $phpEx;
 
 		if (!function_exists('user_active_flip'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		$user->add_lang('memberlist');
@@ -116,7 +116,7 @@ class acp_inactive
 						{
 							if (!class_exists('messenger'))
 							{
-								include($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+								include($phpbb3_root_path . 'includes/functions_messenger.' . $phpEx);
 							}
 
 							$messenger = new messenger(false);
@@ -209,7 +209,7 @@ class acp_inactive
 						// Send the messages
 						if (!class_exists('messenger'))
 						{
-							include($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+							include($phpbb3_root_path . 'includes/functions_messenger.' . $phpEx);
 						}
 
 						$messenger = new messenger();
@@ -291,7 +291,7 @@ class acp_inactive
 				'USER_EMAIL'		=> $row['user_email'],
 
 				'U_USER_ADMIN'	=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=users&amp;mode=overview&amp;u={$row['user_id']}"),
-				'U_SEARCH_USER'	=> ($auth->acl_get('u_search')) ? append_sid("{$phpbb_root_path}search.$phpEx", "author_id={$row['user_id']}&amp;sr=posts") : '',
+				'U_SEARCH_USER'	=> ($auth->acl_get('u_search')) ? append_sid("{$phpbb3_root_path}search.$phpEx", "author_id={$row['user_id']}&amp;sr=posts") : '',
 			));
 		}
 

@@ -27,7 +27,7 @@ class acp_main
 	function main($id, $mode)
 	{
 		global $config, $db, $cache, $user, $auth, $template, $request, $phpbb_log;
-		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $phpbb_container, $phpbb_dispatcher, $phpbb_filesystem;
+		global $phpbb3_root_path, $phpbb_admin_path, $phpEx, $phpbb_container, $phpbb_dispatcher, $phpbb_filesystem;
 
 		// Show restore permissions notice
 		if ($user->data['user_perm_from'] && $auth->acl_get('a_switchperm'))
@@ -46,9 +46,9 @@ class acp_main
 
 			$template->assign_vars(array(
 				'S_RESTORE_PERMISSIONS'		=> true,
-				'U_RESTORE_PERMISSIONS'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=restore_perm'),
+				'U_RESTORE_PERMISSIONS'		=> append_sid("{$phpbb3_root_path}ucp.$phpEx", 'mode=restore_perm'),
 				'PERM_FROM'					=> $perm_from,
-				'L_PERMISSIONS_TRANSFERRED_EXPLAIN'	=> sprintf($user->lang['PERMISSIONS_TRANSFERRED_EXPLAIN'], $perm_from, append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=restore_perm')),
+				'L_PERMISSIONS_TRANSFERRED_EXPLAIN'	=> sprintf($user->lang['PERMISSIONS_TRANSFERRED_EXPLAIN'], $perm_from, append_sid("{$phpbb3_root_path}ucp.$phpEx", 'mode=restore_perm')),
 			));
 
 			return;
@@ -61,7 +61,7 @@ class acp_main
 			if ($action === 'admlogout')
 			{
 				$user->unset_admin();
-				redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+				redirect(append_sid("{$phpbb3_root_path}index.$phpEx"));
 			}
 
 			if (!confirm_box(true))
@@ -177,7 +177,7 @@ class acp_main
 
 						if (!function_exists('update_last_username'))
 						{
-							include($phpbb_root_path . "includes/functions_user.$phpEx");
+							include($phpbb3_root_path . "includes/functions_user.$phpEx");
 						}
 						update_last_username();
 
@@ -505,13 +505,13 @@ class acp_main
 
 		$avatar_dir_size = 0;
 
-		if ($avatar_dir = @opendir($phpbb_root_path . $config['avatar_path']))
+		if ($avatar_dir = @opendir($phpbb3_root_path . $config['avatar_path']))
 		{
 			while (($file = readdir($avatar_dir)) !== false)
 			{
 				if ($file[0] != '.' && $file != 'CVS' && strpos($file, 'index.') === false)
 				{
-					$avatar_dir_size += filesize($phpbb_root_path . $config['avatar_path'] . '/' . $file);
+					$avatar_dir_size += filesize($phpbb3_root_path . $config['avatar_path'] . '/' . $file);
 				}
 			}
 			closedir($avatar_dir);
@@ -633,7 +633,7 @@ class acp_main
 					'USER_COLOR'		=> get_username_string('colour', $row['user_id'], $row['username'], $row['user_colour']),
 
 					'U_USER_ADMIN'	=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=users&amp;mode=overview&amp;u={$row['user_id']}"),
-					'U_SEARCH_USER'	=> ($auth->acl_get('u_search')) ? append_sid("{$phpbb_root_path}search.$phpEx", "author_id={$row['user_id']}&amp;sr=posts") : '',
+					'U_SEARCH_USER'	=> ($auth->acl_get('u_search')) ? append_sid("{$phpbb3_root_path}search.$phpEx", "author_id={$row['user_id']}&amp;sr=posts") : '',
 				));
 			}
 
@@ -650,7 +650,7 @@ class acp_main
 		}
 
 		// Warn if install is still present
-		if (!defined('IN_INSTALL') && !$phpbb_container->getParameter('allow_install_dir') && file_exists($phpbb_root_path . 'install') && !is_file($phpbb_root_path . 'install'))
+		if (!defined('IN_INSTALL') && !$phpbb_container->getParameter('allow_install_dir') && file_exists($phpbb3_root_path . 'install') && !is_file($phpbb3_root_path . 'install'))
 		{
 			$template->assign_var('S_REMOVE_INSTALL', true);
 		}
@@ -660,7 +660,7 @@ class acp_main
 		{
 			$error = false;
 			$search_type = $config['search_type'];
-			$search = new $search_type($error, $phpbb_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher);
+			$search = new $search_type($error, $phpbb3_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher);
 
 			if (!$search->index_created())
 			{
@@ -674,7 +674,7 @@ class acp_main
 		if (!defined('PHPBB_DISABLE_CONFIG_CHECK'))
 		{
 			// World-Writable? (000x)
-			$template->assign_var('S_WRITABLE_CONFIG', (bool) (@fileperms($phpbb_root_path . 'config.' . $phpEx) & 0x0002));
+			$template->assign_var('S_WRITABLE_CONFIG', (bool) (@fileperms($phpbb3_root_path . 'config.' . $phpEx) & 0x0002));
 		}
 
 		$this->php_ini			= $phpbb_container->get('php_ini');

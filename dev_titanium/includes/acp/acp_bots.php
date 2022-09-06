@@ -26,7 +26,7 @@ class acp_bots
 	function main($id, $mode)
 	{
 		global $config, $db, $user, $template, $cache, $request, $phpbb_log;
-		global $phpbb_root_path, $phpEx;
+		global $phpbb3_root_path, $phpEx;
 
 		$action = $request->variable('action', '');
 		$submit = (isset($_POST['submit'])) ? true : false;
@@ -144,7 +144,7 @@ class acp_bots
 
 				if (!function_exists('user_update_name'))
 				{
-					include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+					include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 				}
 
 				$bot_row = array(

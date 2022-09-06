@@ -26,7 +26,7 @@ class acp_groups
 	function main($id, $mode)
 	{
 		global $config, $db, $user, $auth, $template, $cache;
-		global $phpbb_root_path, $phpbb_admin_path, $phpEx;
+		global $phpbb3_root_path, $phpbb_admin_path, $phpEx;
 		global $request, $phpbb_container, $phpbb_dispatcher;
 
 		/** @var \phpbb\language\language $language Language object */
@@ -47,7 +47,7 @@ class acp_groups
 
 		if (!function_exists('group_user_attributes'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		// Check and set some common vars
@@ -320,7 +320,7 @@ class acp_groups
 
 				if (!function_exists('display_forums'))
 				{
-					include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+					include($phpbb3_root_path . 'includes/functions_display.' . $phpEx);
 				}
 
 				if ($action == 'edit' && !$group_id)
@@ -892,7 +892,7 @@ class acp_groups
 
 					'U_ACTION'			=> $this->u_action . "&amp;g=$group_id",
 					'U_BACK'			=> $this->u_action,
-					'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=list&amp;field=usernames'),
+					'U_FIND_USERNAME'	=> append_sid("{$phpbb3_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=list&amp;field=usernames'),
 					'U_DEFAULT_ALL'		=> "{$this->u_action}&amp;action=set_default_on_all&amp;g=$group_id",
 				));
 

@@ -32,11 +32,11 @@ class acp_language
 	function main($id, $mode)
 	{
 		global $config, $db, $user, $template, $phpbb_log, $phpbb_container;
-		global $phpbb_root_path, $phpEx, $request, $phpbb_dispatcher;
+		global $phpbb3_root_path, $phpEx, $request, $phpbb_dispatcher;
 
 		if (!function_exists('validate_language_iso_name'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		// Check and set some common vars
@@ -142,7 +142,7 @@ class acp_language
 						$iterator = new \RecursiveIteratorIterator(
 							new \phpbb\recursive_dot_prefix_filter_iterator(
 								new \RecursiveDirectoryIterator(
-									$phpbb_root_path . 'language/' . $config['default_lang'] . '/',
+									$phpbb3_root_path . 'language/' . $config['default_lang'] . '/',
 									\FilesystemIterator::SKIP_DOTS
 								)
 							),
@@ -160,7 +160,7 @@ class acp_language
 						$relative_path = $iterator->getInnerIterator()->getSubPathname();
 						$relative_path = str_replace(DIRECTORY_SEPARATOR, '/', $relative_path);
 
-						if (file_exists($phpbb_root_path . 'language/' . $lang_iso . '/' . $relative_path))
+						if (file_exists($phpbb3_root_path . 'language/' . $lang_iso . '/' . $relative_path))
 						{
 							if (substr($relative_path, 0 - strlen($phpEx)) === $phpEx)
 							{
@@ -265,12 +265,12 @@ class acp_language
 				$lang_iso = $request->variable('iso', '');
 				$lang_iso = basename($lang_iso);
 
-				if (!$lang_iso || !file_exists("{$phpbb_root_path}language/$lang_iso/iso.txt"))
+				if (!$lang_iso || !file_exists("{$phpbb3_root_path}language/$lang_iso/iso.txt"))
 				{
 					trigger_error($user->lang['LANGUAGE_PACK_NOT_EXIST'] . adm_back_link($this->u_action), E_USER_WARNING);
 				}
 
-				$file = file("{$phpbb_root_path}language/$lang_iso/iso.txt");
+				$file = file("{$phpbb3_root_path}language/$lang_iso/iso.txt");
 
 				$lang_pack = array(
 					'iso'		=> $lang_iso,
@@ -436,10 +436,10 @@ class acp_language
 	*/
 	function compare_language_files($source_lang, $dest_lang, $file)
 	{
-		global $phpbb_root_path;
+		global $phpbb3_root_path;
 
-		$source_file = $phpbb_root_path . 'language/' . $source_lang . '/' . $file;
-		$dest_file = $phpbb_root_path . 'language/' . $dest_lang . '/' . $file;
+		$source_file = $phpbb3_root_path . 'language/' . $source_lang . '/' . $file;
+		$dest_file = $phpbb3_root_path . 'language/' . $dest_lang . '/' . $file;
 
 		if (!file_exists($dest_file))
 		{

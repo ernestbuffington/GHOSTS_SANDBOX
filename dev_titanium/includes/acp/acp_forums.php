@@ -27,7 +27,7 @@ class acp_forums
 	function main($id, $mode)
 	{
 		global $db, $user, $auth, $template, $cache, $request, $phpbb_dispatcher;
-		global $phpbb_admin_path, $phpbb_root_path, $phpEx, $phpbb_log;
+		global $phpbb_admin_path, $phpbb3_root_path, $phpEx, $phpbb_log;
 
 		$user->add_lang('acp/forums');
 		$this->tpl_name = 'acp_forums';
@@ -639,7 +639,7 @@ class acp_forums
 					'FORUM_NAME'				=> $forum_data['forum_name'],
 					'FORUM_DATA_LINK'			=> $forum_data['forum_link'],
 					'FORUM_IMAGE'				=> $forum_data['forum_image'],
-					'FORUM_IMAGE_SRC'			=> ($forum_data['forum_image']) ? $phpbb_root_path . $forum_data['forum_image'] : '',
+					'FORUM_IMAGE_SRC'			=> ($forum_data['forum_image']) ? $phpbb3_root_path . $forum_data['forum_image'] : '',
 					'FORUM_POST'				=> FORUM_POST,
 					'FORUM_LINK'				=> FORUM_LINK,
 					'FORUM_CAT'					=> FORUM_CAT,
@@ -891,8 +891,8 @@ class acp_forums
 
 				$template->assign_block_vars('forums', array(
 					'FOLDER_IMAGE'		=> $folder_image,
-					'FORUM_IMAGE'		=> ($row['forum_image']) ? '<img src="' . $phpbb_root_path . $row['forum_image'] . '" alt="" />' : '',
-					'FORUM_IMAGE_SRC'	=> ($row['forum_image']) ? $phpbb_root_path . $row['forum_image'] : '',
+					'FORUM_IMAGE'		=> ($row['forum_image']) ? '<img src="' . $phpbb3_root_path . $row['forum_image'] . '" alt="" />' : '',
+					'FORUM_IMAGE_SRC'	=> ($row['forum_image']) ? $phpbb3_root_path . $row['forum_image'] : '',
 					'FORUM_NAME'		=> $row['forum_name'],
 					'FORUM_DESCRIPTION'	=> generate_text_for_display($row['forum_desc'], $row['forum_desc_uid'], $row['forum_desc_bitfield'], $row['forum_desc_options']),
 					'FORUM_TOPICS'		=> $row['forum_topics_approved'],
@@ -965,7 +965,7 @@ class acp_forums
 	*/
 	function update_forum_data(&$forum_data_ary)
 	{
-		global $db, $user, $cache, $phpbb_root_path, $phpbb_container, $phpbb_dispatcher, $phpbb_log, $request;
+		global $db, $user, $cache, $phpbb3_root_path, $phpbb_container, $phpbb_dispatcher, $phpbb_log, $request;
 
 		$errors = array();
 
@@ -1035,7 +1035,7 @@ class acp_forums
 			array('lang' => 'FORUM_TOPICS_PAGE', 'value' => $forum_data_ary['forum_topics_per_page'], 'column_type' => 'USINT:0'),
 		);
 
-		if (!empty($forum_data_ary['forum_image']) && !file_exists($phpbb_root_path . $forum_data_ary['forum_image']))
+		if (!empty($forum_data_ary['forum_image']) && !file_exists($phpbb3_root_path . $forum_data_ary['forum_image']))
 		{
 			$errors[] = $user->lang['FORUM_IMAGE_NO_EXIST'];
 		}
@@ -1858,9 +1858,9 @@ class acp_forums
 	*/
 	function delete_forum_content($forum_id)
 	{
-		global $db, $config, $phpbb_root_path, $phpEx, $phpbb_container, $phpbb_dispatcher;
+		global $db, $config, $phpbb3_root_path, $phpEx, $phpbb_container, $phpbb_dispatcher;
 
-		include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+		include_once($phpbb3_root_path . 'includes/functions_posting.' . $phpEx);
 
 		$db->sql_transaction('begin');
 

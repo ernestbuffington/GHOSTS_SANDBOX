@@ -27,17 +27,17 @@ class acp_permission_roles
 	function main($id, $mode)
 	{
 		global $db, $user, $template, $phpbb_container;
-		global $phpbb_root_path, $phpEx;
+		global $phpbb3_root_path, $phpEx;
 		global $request, $phpbb_log;
 
 		if (!function_exists('user_get_id_name'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		if (!class_exists('auth_admin'))
 		{
-			include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);
+			include($phpbb3_root_path . 'includes/acp/auth.' . $phpEx);
 		}
 
 		$this->auth_admin = new auth_admin();

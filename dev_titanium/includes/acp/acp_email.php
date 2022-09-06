@@ -26,7 +26,7 @@ class acp_email
 	function main($id, $mode)
 	{
 		global $config, $db, $user, $template, $phpbb_log, $request;
-		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $phpbb_dispatcher;
+		global $phpbb3_root_path, $phpbb_admin_path, $phpEx, $phpbb_dispatcher;
 
 		$user->add_lang('acp/email');
 		$this->tpl_name = 'acp_email';
@@ -191,12 +191,12 @@ class acp_email
 				// Send the messages
 				if (!class_exists('messenger'))
 				{
-					include($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+					include($phpbb3_root_path . 'includes/functions_messenger.' . $phpEx);
 				}
 
 				if (!function_exists('get_group_name'))
 				{
-					include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+					include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 				}
 				$messenger = new messenger($use_queue);
 
@@ -327,7 +327,7 @@ class acp_email
 			'U_ACTION'				=> $this->u_action,
 			'S_GROUP_OPTIONS'		=> $select_list,
 			'USERNAMES'				=> implode("\n", $usernames),
-			'U_FIND_USERNAME'		=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=acp_email&amp;field=usernames'),
+			'U_FIND_USERNAME'		=> append_sid("{$phpbb3_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=acp_email&amp;field=usernames'),
 			'SUBJECT'				=> $subject,
 			'MESSAGE'				=> $message,
 			'S_PRIORITY_OPTIONS'	=> $s_priority_options,

@@ -29,7 +29,7 @@ class acp_contact
 	public function main($id, $mode)
 	{
 		global $user, $request, $template;
-		global $config, $phpbb_root_path, $phpEx, $phpbb_container;
+		global $config, $phpbb3_root_path, $phpEx, $phpbb_container;
 
 		$user->add_lang(array('acp/board', 'posting'));
 
@@ -41,11 +41,11 @@ class acp_contact
 
 		if (!function_exists('display_custom_bbcodes'))
 		{
-			include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_display.' . $phpEx);
 		}
 		if (!class_exists('parse_message'))
 		{
-			include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+			include($phpbb3_root_path . 'includes/message_parser.' . $phpEx);
 		}
 
 		/* @var $config_text \phpbb\config\db_text */

@@ -25,11 +25,11 @@ class acp_help_phpbb
 
 	function main($id, $mode)
 	{
-		global $config, $request, $template, $user, $phpbb_dispatcher, $phpbb_admin_path, $phpbb_root_path, $phpEx;
+		global $config, $request, $template, $user, $phpbb_dispatcher, $phpbb_admin_path, $phpbb3_root_path, $phpEx;
 
 		if (!class_exists('phpbb_questionnaire_data_collector'))
 		{
-			include($phpbb_root_path . 'includes/questionnaire/questionnaire.' . $phpEx);
+			include($phpbb3_root_path . 'includes/questionnaire/questionnaire.' . $phpEx);
 		}
 
 		$collect_url = "https://www.phpbb.com/statistics/send";

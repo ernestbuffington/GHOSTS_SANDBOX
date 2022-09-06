@@ -28,7 +28,7 @@ class acp_database
 	function main($id, $mode)
 	{
 		global $cache, $db, $user, $template, $table_prefix, $request;
-		global $phpbb_root_path, $phpbb_container, $phpbb_log;
+		global $phpbb3_root_path, $phpbb_container, $phpbb_log;
 
 		$this->db_tools = $phpbb_container->get('dbal.tools');
 
@@ -172,7 +172,7 @@ class acp_database
 						$delete = $request->variable('delete', '');
 						$file = $request->variable('file', '');
 
-						$backup_info = $this->get_backup_file($phpbb_root_path . 'store/', $file);
+						$backup_info = $this->get_backup_file($phpbb3_root_path . 'store/', $file);
 
 						if (empty($backup_info) || !is_readable($backup_info['file_name']))
 						{
@@ -309,7 +309,7 @@ class acp_database
 						}
 
 					default:
-						$backup_files = $this->get_file_list($phpbb_root_path . 'store/');
+						$backup_files = $this->get_file_list($phpbb3_root_path . 'store/');
 
 						if (!empty($backup_files))
 						{
