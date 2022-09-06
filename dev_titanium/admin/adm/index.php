@@ -18,6 +18,7 @@ define('ADMIN_START', true);
 define('NEED_SID', true);
 
 // Include files
+#$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './../'; CHANGED FOR PHP_NUKE TITANIUM 9/6/2022
 $phpbb3_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './../../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 require($phpbb3_root_path . 'common.' . $phpEx);
