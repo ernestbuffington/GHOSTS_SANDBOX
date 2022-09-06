@@ -31,7 +31,7 @@ class acp_board
 	function main($id, $mode)
 	{
 		global $user, $template, $request, $language;
-		global $config, $phpbb_root_path, $phpEx;
+		global $config, $phpbb3_root_path, $phpEx;
 		global $cache, $phpbb_container, $phpbb_dispatcher, $phpbb_log;
 
 		/** @var \phpbb\language\language $language Language object */
@@ -521,8 +521,8 @@ class acp_board
 			else if (!$submit)
 			{
 				$filesystem = $phpbb_container->get('filesystem');
-				$avatar_path_exists = $filesystem->exists($phpbb_root_path . $cfg_array['avatar_path']);
-				$avatar_path_writable = $filesystem->is_writable($phpbb_root_path . $cfg_array['avatar_path']);
+				$avatar_path_exists = $filesystem->exists($phpbb3_root_path . $cfg_array['avatar_path']);
+				$avatar_path_writable = $filesystem->is_writable($phpbb3_root_path . $cfg_array['avatar_path']);
 
 				// Not existing or writable path will be caught on submit by validate_config_vars().
 				// Display the warning if the directory was changed on the server afterwards

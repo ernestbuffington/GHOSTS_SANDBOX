@@ -25,13 +25,13 @@ class acp_prune
 
 	function main($id, $mode)
 	{
-		global $user, $phpEx, $phpbb_root_path;
+		global $user, $phpEx, $phpbb3_root_path;
 
 		$user->add_lang('acp/prune');
 
 		if (!function_exists('user_active_flip'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		switch ($mode)
@@ -257,7 +257,7 @@ class acp_prune
 	function prune_users($id, $mode)
 	{
 		global $db, $user, $auth, $template, $phpbb_log, $request;
-		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $phpbb_container;
+		global $phpbb3_root_path, $phpbb_admin_path, $phpEx, $phpbb_container;
 
 		/** @var \phpbb\group\helper $group_helper */
 		$group_helper = $phpbb_container->get('group_helper');
@@ -388,7 +388,7 @@ class acp_prune
 			'S_ACTIVE_OPTIONS'	=> $s_find_active_time,
 			'S_GROUP_LIST'		=> $s_group_list,
 			'S_COUNT_OPTIONS'	=> $s_find_count,
-			'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=acp_prune&amp;field=users'),
+			'U_FIND_USERNAME'	=> append_sid("{$phpbb3_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=acp_prune&amp;field=users'),
 		));
 	}
 

@@ -23,7 +23,7 @@ class language_file_loader
 	/**
 	 * @var string	Path to phpBB's root
 	 */
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/**
 	 * @var string	Extension of PHP files
@@ -38,12 +38,12 @@ class language_file_loader
 	/**
 	 * Constructor
 	 *
-	 * @param string	$phpbb_root_path	Path to phpBB's root
+	 * @param string	$phpbb3_root_path	Path to phpBB's root
 	 * @param string	$php_ext			Extension of PHP files
 	 */
-	public function __construct($phpbb_root_path, $php_ext)
+	public function __construct($phpbb3_root_path, $php_ext)
 	{
-		$this->phpbb_root_path	= $phpbb_root_path;
+		$this->phpbb_root_path	= $phpbb3_root_path;
 		$this->php_ext			= $php_ext;
 
 		$this->extension_manager = null;

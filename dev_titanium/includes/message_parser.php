@@ -22,11 +22,11 @@ if (!defined('IN_PHPBB'))
 if (!class_exists('bbcode'))
 {
 	// The following lines are for extensions which include message_parser.php
-	// while $phpbb_root_path and $phpEx are out of the script scope
+	// while $phpbb3_root_path and $phpEx are out of the script scope
 	// which may lead to the 'Undefined variable' and 'failed to open stream' errors
-	if (!isset($phpbb_root_path))
+	if (!isset($phpbb3_root_path))
 	{
-		global $phpbb_root_path;
+		global $phpbb3_root_path;
 	}
 
 	if (!isset($phpEx))
@@ -34,7 +34,7 @@ if (!class_exists('bbcode'))
 		global $phpEx;
 	}
 
-	include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+	include($phpbb3_root_path . 'includes/bbcode.' . $phpEx);
 }
 
 /**
@@ -1531,7 +1531,7 @@ class parse_message extends bbcode_firstpass
 	*/
 	function parse_attachments($form_name, $mode, $forum_id, $submit, $preview, $refresh, $is_message = false)
 	{
-		global $config, $auth, $user, $phpbb_root_path, $phpEx, $db, $request;
+		global $config, $auth, $user, $phpbb3_root_path, $phpEx, $db, $request;
 		global $phpbb_container, $phpbb_dispatcher;
 
 		$error = array();
@@ -1657,7 +1657,7 @@ class parse_message extends bbcode_firstpass
 			// Perform actions on temporary attachments
 			if ($delete_file)
 			{
-				include_once($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+				include_once($phpbb3_root_path . 'includes/functions_admin.' . $phpEx);
 
 				$index = array_keys($request->variable('delete_file', array(0 => 0)));
 				$index = (!empty($index)) ? $index[0] : false;
@@ -1776,7 +1776,7 @@ class parse_message extends bbcode_firstpass
 
 						if (isset($this->plupload) && $this->plupload->is_active())
 						{
-							$download_url = append_sid("{$phpbb_root_path}download/file.{$phpEx}", 'mode=view&amp;id=' . $new_entry['attach_id']);
+							$download_url = append_sid("{$phpbb3_root_path}download/file.{$phpEx}", 'mode=view&amp;id=' . $new_entry['attach_id']);
 
 							// Send the client the attachment data to maintain state
 							$json_response->send(array('data' => $this->attachment_data, 'download_url' => $download_url));

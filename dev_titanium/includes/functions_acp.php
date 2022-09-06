@@ -25,7 +25,7 @@ if (!defined('IN_PHPBB'))
 function adm_page_header($page_title)
 {
 	global $config, $user, $template;
-	global $phpbb_root_path, $phpbb_admin_path, $phpEx, $SID, $_SID;
+	global $phpbb3_root_path, $phpbb_admin_path, $phpEx, $SID, $_SID;
 	global $phpbb_dispatcher, $phpbb_container;
 
 	if (defined('HEADER_INC'))
@@ -73,23 +73,23 @@ function adm_page_header($page_title)
 		'SID'					=> $SID,
 		'_SID'					=> $_SID,
 		'SESSION_ID'			=> $user->session_id,
-		'ROOT_PATH'				=> $phpbb_root_path,
+		'ROOT_PATH'				=> $phpbb3_root_path,
 		'ADMIN_ROOT_PATH'		=> $phpbb_admin_path,
 
-		'U_LOGOUT'				=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=logout'),
+		'U_LOGOUT'				=> append_sid("{$phpbb3_root_path}ucp.$phpEx", 'mode=logout'),
 		'U_ADM_LOGOUT'			=> append_sid("{$phpbb_admin_path}index.$phpEx", 'action=admlogout'),
 		'U_ADM_INDEX'			=> append_sid("{$phpbb_admin_path}index.$phpEx"),
-		'U_INDEX'				=> append_sid("{$phpbb_root_path}index.$phpEx"),
+		'U_INDEX'				=> append_sid("{$phpbb3_root_path}index.$phpEx"),
 
-		'T_IMAGES_PATH'			=> "{$phpbb_root_path}images/",
-		'T_SMILIES_PATH'		=> "{$phpbb_root_path}{$config['smilies_path']}/",
-		'T_AVATAR_PATH'			=> "{$phpbb_root_path}{$config['avatar_path']}/",
-		'T_AVATAR_GALLERY_PATH'	=> "{$phpbb_root_path}{$config['avatar_gallery_path']}/",
-		'T_ICONS_PATH'			=> "{$phpbb_root_path}{$config['icons_path']}/",
-		'T_RANKS_PATH'			=> "{$phpbb_root_path}{$config['ranks_path']}/",
-		'T_UPLOAD_PATH'			=> "{$phpbb_root_path}{$config['upload_path']}/",
+		'T_IMAGES_PATH'			=> "{$phpbb3_root_path}images/",
+		'T_SMILIES_PATH'		=> "{$phpbb3_root_path}{$config['smilies_path']}/",
+		'T_AVATAR_PATH'			=> "{$phpbb3_root_path}{$config['avatar_path']}/",
+		'T_AVATAR_GALLERY_PATH'	=> "{$phpbb3_root_path}{$config['avatar_gallery_path']}/",
+		'T_ICONS_PATH'			=> "{$phpbb3_root_path}{$config['icons_path']}/",
+		'T_RANKS_PATH'			=> "{$phpbb3_root_path}{$config['ranks_path']}/",
+		'T_UPLOAD_PATH'			=> "{$phpbb3_root_path}{$config['upload_path']}/",
 
-		'T_FONT_AWESOME_LINK'	=> !empty($config['allow_cdn']) && !empty($config['load_font_awesome_url']) ? $config['load_font_awesome_url'] : "{$phpbb_root_path}assets/css/font-awesome.min.css?assets_version=" . $config['assets_version'],
+		'T_FONT_AWESOME_LINK'	=> !empty($config['allow_cdn']) && !empty($config['load_font_awesome_url']) ? $config['load_font_awesome_url'] : "{$phpbb3_root_path}assets/css/font-awesome.min.css?assets_version=" . $config['assets_version'],
 
 		'T_ASSETS_VERSION'		=> $config['assets_version'],
 
@@ -148,7 +148,7 @@ function adm_page_header($page_title)
 function adm_page_footer($copyright_html = true)
 {
 	global $db, $config, $template, $user, $auth;
-	global $phpbb_root_path;
+	global $phpbb3_root_path;
 	global $request, $phpbb_dispatcher;
 
 	// A listener can set this variable to `true` when it overrides this function
@@ -178,7 +178,7 @@ function adm_page_footer($copyright_html = true)
 		'TRANSLATION_INFO'	=> (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['TRANSLATION_INFO'] : '',
 		'S_COPYRIGHT_HTML'	=> $copyright_html,
 		'CREDIT_LINE'		=> $user->lang('POWERED_BY', '<a href="https://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Limited'),
-		'T_JQUERY_LINK'		=> !empty($config['allow_cdn']) && !empty($config['load_jquery_url']) ? $config['load_jquery_url'] : "{$phpbb_root_path}assets/javascript/jquery-3.6.0.min.js",
+		'T_JQUERY_LINK'		=> !empty($config['allow_cdn']) && !empty($config['load_jquery_url']) ? $config['load_jquery_url'] : "{$phpbb3_root_path}assets/javascript/jquery-3.6.0.min.js",
 		'S_ALLOW_CDN'		=> !empty($config['allow_cdn']),
 		'VERSION'			=> $config['version'])
 	);
@@ -411,7 +411,7 @@ function build_cfg_template($tpl_type, $key, &$new_ary, $config_key, $vars)
 */
 function validate_config_vars($config_vars, &$cfg_array, &$error)
 {
-	global $phpbb_root_path, $user, $phpbb_dispatcher, $phpbb_filesystem, $language;
+	global $phpbb3_root_path, $user, $phpbb_dispatcher, $phpbb_filesystem, $language;
 
 	$type	= 0;
 	$min	= 1;
@@ -550,13 +550,13 @@ function validate_config_vars($config_vars, &$cfg_array, &$error)
 
 				$cfg_array[$config_name] = basename($cfg_array[$config_name]);
 
-				if (!file_exists($phpbb_root_path . 'language/' . $cfg_array[$config_name] . '/'))
+				if (!file_exists($phpbb3_root_path . 'language/' . $cfg_array[$config_name] . '/'))
 				{
 					$error[] = $user->lang['WRONG_DATA_LANG'];
 				}
 			break;
 
-			// Relative path (appended $phpbb_root_path)
+			// Relative path (appended $phpbb3_root_path)
 			case 'rpath':
 			case 'rwpath':
 				if (!$cfg_array[$config_name])
@@ -598,7 +598,7 @@ function validate_config_vars($config_vars, &$cfg_array, &$error)
 					break;
 				}
 
-				$path = $phpbb_root_path . $cfg_array[$config_name];
+				$path = $phpbb3_root_path . $cfg_array[$config_name];
 
 				if (!file_exists($path))
 				{

@@ -26,17 +26,17 @@ class mcp_ban
 	function main($id, $mode)
 	{
 		global $db, $user, $auth, $template, $request, $phpbb_dispatcher;
-		global $phpbb_root_path, $phpEx;
+		global $phpbb3_root_path, $phpEx;
 
 		if (!function_exists('user_ban'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		// Include the admin banning interface...
 		if (!class_exists('acp_ban'))
 		{
-			include($phpbb_root_path . 'includes/acp/acp_ban.' . $phpEx);
+			include($phpbb3_root_path . 'includes/acp/acp_ban.' . $phpEx);
 		}
 
 		$bansubmit		= $request->is_set_post('bansubmit');
@@ -224,7 +224,7 @@ class mcp_ban
 			'S_USERNAME_BAN'	=> ($mode == 'user') ? true : false,
 
 			'U_ACTION'			=> $this->u_action,
-			'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=mcp_ban&amp;field=ban'),
+			'U_FIND_USERNAME'	=> append_sid("{$phpbb3_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=mcp_ban&amp;field=ban'),
 		));
 
 		if ($mode === 'email' && !$auth->acl_get('a_user'))

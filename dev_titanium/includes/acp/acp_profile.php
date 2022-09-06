@@ -34,17 +34,17 @@ class acp_profile
 	function main($id, $mode)
 	{
 		global $config, $db, $user, $template;
-		global $phpbb_root_path, $phpEx;
+		global $phpbb3_root_path, $phpEx;
 		global $request, $phpbb_container, $phpbb_log, $phpbb_dispatcher;
 
 		if (!function_exists('generate_smilies'))
 		{
-			include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_posting.' . $phpEx);
 		}
 
 		if (!function_exists('user_get_id_name'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		$user->add_lang(array('ucp', 'acp/profile'));

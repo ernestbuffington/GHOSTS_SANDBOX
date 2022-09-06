@@ -18,12 +18,12 @@ define('ADMIN_START', true);
 define('NEED_SID', true);
 
 // Include files
-$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './../';
+$phpbb3_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-require($phpbb_root_path . 'common.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_acp.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_module.' . $phpEx);
+require($phpbb3_root_path . 'common.' . $phpEx);
+require($phpbb3_root_path . 'includes/functions_acp.' . $phpEx);
+require($phpbb3_root_path . 'includes/functions_admin.' . $phpEx);
+require($phpbb3_root_path . 'includes/functions_module.' . $phpEx);
 
 // Start session management
 $user->session_begin();
@@ -61,7 +61,7 @@ $template->set_custom_style(array(
 	),
 ), $phpbb_admin_path . 'style');
 
-$template->assign_var('T_ASSETS_PATH', $phpbb_root_path . 'assets');
+$template->assign_var('T_ASSETS_PATH', $phpbb3_root_path . 'assets');
 $template->assign_var('T_TEMPLATE_PATH', $phpbb_admin_path . 'style');
 
 // Instantiate new module

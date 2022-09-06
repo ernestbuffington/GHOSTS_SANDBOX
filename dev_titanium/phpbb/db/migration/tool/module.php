@@ -33,7 +33,7 @@ class module implements \phpbb\db\migration\tool\tool_interface
 	protected $module_manager;
 
 	/** @var string */
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/** @var string */
 	protected $php_ext;
@@ -51,17 +51,17 @@ class module implements \phpbb\db\migration\tool\tool_interface
 	* @param \phpbb\cache\service $cache
 	* @param \phpbb\user $user
 	* @param \phpbb\module\module_manager	$module_manager
-	* @param string $phpbb_root_path
+	* @param string $phpbb3_root_path
 	* @param string $php_ext
 	* @param string $modules_table
 	*/
-	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\cache\service $cache, \phpbb\user $user, \phpbb\module\module_manager $module_manager, $phpbb_root_path, $php_ext, $modules_table)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\cache\service $cache, \phpbb\user $user, \phpbb\module\module_manager $module_manager, $phpbb3_root_path, $php_ext, $modules_table)
 	{
 		$this->db = $db;
 		$this->cache = $cache;
 		$this->user = $user;
 		$this->module_manager = $module_manager;
-		$this->phpbb_root_path = $phpbb_root_path;
+		$this->phpbb_root_path = $phpbb3_root_path;
 		$this->php_ext = $php_ext;
 		$this->modules_table = $modules_table;
 	}

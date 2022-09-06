@@ -92,7 +92,7 @@ class fulltext_postgres extends \phpbb\search\base
 	 * Creates a new \phpbb\search\fulltext_postgres, which is used as a search backend
 	 *
 	 * @param string|bool $error Any error that occurs is passed on through this reference variable otherwise false
-	 * @param string $phpbb_root_path Relative path to phpBB root
+	 * @param string $phpbb3_root_path Relative path to phpBB root
 	 * @param string $phpEx PHP file extension
 	 * @param \phpbb\auth\auth $auth Auth object
 	 * @param \phpbb\config\config $config Config object
@@ -100,7 +100,7 @@ class fulltext_postgres extends \phpbb\search\base
 	 * @param \phpbb\user $user User object
 	 * @param \phpbb\event\dispatcher_interface	$phpbb_dispatcher	Event dispatcher object
 	 */
-	public function __construct(&$error, $phpbb_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher)
+	public function __construct(&$error, $phpbb3_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher)
 	{
 		$this->config = $config;
 		$this->db = $db;
@@ -114,7 +114,7 @@ class fulltext_postgres extends \phpbb\search\base
 		 */
 		if (!function_exists('utf8_strlen'))
 		{
-			include($phpbb_root_path . 'includes/utf/utf_tools.' . $phpEx);
+			include($phpbb3_root_path . 'includes/utf/utf_tools.' . $phpEx);
 		}
 
 		$error = false;

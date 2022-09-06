@@ -40,14 +40,14 @@ class md_exporter
 	protected $events;
 
 	/**
-	* @param string $phpbb_root_path
+	* @param string $phpbb3_root_path
 	* @param mixed $extension	String 'vendor/ext' to filter, null for phpBB core
 	* @param string $min_version
 	* @param string $max_version
 	*/
-	public function __construct($phpbb_root_path, $extension = null, $min_version = null, $max_version = null)
+	public function __construct($phpbb3_root_path, $extension = null, $min_version = null, $max_version = null)
 	{
-		$this->root_path = $phpbb_root_path;
+		$this->root_path = $phpbb3_root_path;
 		$this->path = $this->root_path;
 		if ($extension)
 		{

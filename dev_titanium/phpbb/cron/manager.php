@@ -52,7 +52,7 @@ class manager
 	/**
 	 * @var string
 	 */
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/**
 	 * @var string
@@ -69,15 +69,15 @@ class manager
 	*
 	* @param ContainerInterface $phpbb_container Container
 	* @param helper $routing_helper Routing helper
-	* @param string $phpbb_root_path Relative path to phpBB root
+	* @param string $phpbb3_root_path Relative path to phpBB root
 	* @param string $php_ext PHP file extension
 	* @param \phpbb\template\template $template
 	*/
-	public function __construct(ContainerInterface $phpbb_container, helper $routing_helper, $phpbb_root_path, $php_ext, $template)
+	public function __construct(ContainerInterface $phpbb_container, helper $routing_helper, $phpbb3_root_path, $php_ext, $template)
 	{
 		$this->phpbb_container = $phpbb_container;
 		$this->routing_helper = $routing_helper;
-		$this->phpbb_root_path = $phpbb_root_path;
+		$this->phpbb_root_path = $phpbb3_root_path;
 		$this->php_ext = $php_ext;
 		$this->template = $template;
 	}

@@ -20,13 +20,13 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-require($phpbb_root_path . 'includes/startup.' . $phpEx);
-require($phpbb_root_path . 'phpbb/class_loader.' . $phpEx);
+require($phpbb3_root_path . 'includes/startup.' . $phpEx);
+require($phpbb3_root_path . 'phpbb/class_loader.' . $phpEx);
 
-$phpbb_class_loader = new \phpbb\class_loader('phpbb\\', "{$phpbb_root_path}phpbb/", $phpEx);
+$phpbb_class_loader = new \phpbb\class_loader('phpbb\\', "{$phpbb3_root_path}phpbb/", $phpEx);
 $phpbb_class_loader->register();
 
-$phpbb_config_php_file = new \phpbb\config_php_file($phpbb_root_path, $phpEx);
+$phpbb_config_php_file = new \phpbb\config_php_file($phpbb3_root_path, $phpEx);
 extract($phpbb_config_php_file->get_all());
 
 if (!defined('PHPBB_ENVIRONMENT'))
@@ -37,7 +37,7 @@ if (!defined('PHPBB_ENVIRONMENT'))
 if (!defined('PHPBB_INSTALLED'))
 {
 	// Redirect the user to the installer
-	require($phpbb_root_path . 'includes/functions.' . $phpEx);
+	require($phpbb3_root_path . 'includes/functions.' . $phpEx);
 
 	// We have to generate a full HTTP/1.1 header here since we can't guarantee to have any of the information
 	// available as used by the redirect function
@@ -57,14 +57,14 @@ if (!defined('PHPBB_INSTALLED'))
 		$script_name = (!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : getenv('REQUEST_URI');
 	}
 
-	// $phpbb_root_path accounts for redirects from e.g. /adm
-	$script_path = trim(dirname($script_name)) . '/' . $phpbb_root_path . 'install/app.' . $phpEx;
+	// $phpbb3_root_path accounts for redirects from e.g. /adm
+	$script_path = trim(dirname($script_name)) . '/' . $phpbb3_root_path . 'install/app.' . $phpEx;
 	// Replace any number of consecutive backslashes and/or slashes with a single slash
 	// (could happen on some proxy setups and/or Windows servers)
 	$script_path = preg_replace('#[\\\\/]{2,}#', '/', $script_path);
 
 	// Eliminate . and .. from the path
-	require($phpbb_root_path . 'phpbb/filesystem.' . $phpEx);
+	require($phpbb3_root_path . 'phpbb/filesystem.' . $phpEx);
 	$phpbb_filesystem = new phpbb\filesystem\filesystem();
 	$script_path = $phpbb_filesystem->clean_path($script_path);
 
@@ -86,15 +86,15 @@ if (!defined('PHPBB_INSTALLED'))
 
 // In case $phpbb_adm_relative_path is not set (in case of an update), use the default.
 $phpbb_adm_relative_path = (isset($phpbb_adm_relative_path)) ? $phpbb_adm_relative_path : 'adm/';
-$phpbb_admin_path = (defined('PHPBB_ADMIN_PATH')) ? PHPBB_ADMIN_PATH : $phpbb_root_path . $phpbb_adm_relative_path;
+$phpbb_admin_path = (defined('PHPBB_ADMIN_PATH')) ? PHPBB_ADMIN_PATH : $phpbb3_root_path . $phpbb_adm_relative_path;
 
 // Include files
-require($phpbb_root_path . 'includes/functions.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_content.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_compatibility.' . $phpEx);
+require($phpbb3_root_path . 'includes/functions.' . $phpEx);
+require($phpbb3_root_path . 'includes/functions_content.' . $phpEx);
+include($phpbb3_root_path . 'includes/functions_compatibility.' . $phpEx);
 
-require($phpbb_root_path . 'includes/constants.' . $phpEx);
-require($phpbb_root_path . 'includes/utf/utf_tools.' . $phpEx);
+require($phpbb3_root_path . 'includes/constants.' . $phpEx);
+require($phpbb3_root_path . 'includes/utf/utf_tools.' . $phpEx);
 
 // Registered before building the container so the development environment stay capable of intercepting
 // the container builder exceptions.
@@ -107,13 +107,13 @@ else
 	set_error_handler(defined('PHPBB_MSG_HANDLER') ? PHPBB_MSG_HANDLER : 'msg_handler');
 }
 
-$phpbb_class_loader_ext = new \phpbb\class_loader('\\', "{$phpbb_root_path}ext/", $phpEx);
+$phpbb_class_loader_ext = new \phpbb\class_loader('\\', "{$phpbb3_root_path}ext/", $phpEx);
 $phpbb_class_loader_ext->register();
 
 // Set up container
 try
 {
-	$phpbb_container_builder = new \phpbb\di\container_builder($phpbb_root_path, $phpEx);
+	$phpbb_container_builder = new \phpbb\di\container_builder($phpbb3_root_path, $phpEx);
 	$phpbb_container = $phpbb_container_builder->with_config($phpbb_config_php_file)->get_container();
 }
 catch (InvalidArgumentException $e)
@@ -141,12 +141,12 @@ $phpbb_class_loader_ext->set_cache($phpbb_container->get('cache.driver'));
 
 $phpbb_container->get('dbal.conn')->set_debug_sql_explain($phpbb_container->getParameter('debug.sql_explain'));
 $phpbb_container->get('dbal.conn')->set_debug_load_time($phpbb_container->getParameter('debug.load_time'));
-require($phpbb_root_path . 'includes/compatibility_globals.' . $phpEx);
+require($phpbb3_root_path . 'includes/compatibility_globals.' . $phpEx);
 
 register_compatibility_globals();
 
 // Add own hook handler
-require($phpbb_root_path . 'includes/hooks/index.' . $phpEx);
+require($phpbb3_root_path . 'includes/hooks/index.' . $phpEx);
 $phpbb_hook = new phpbb_hook(array('exit_handler', 'phpbb_user_session_handler', 'append_sid', array('template', 'display')));
 
 /* @var $phpbb_hook_finder \phpbb\hook\finder */
@@ -154,7 +154,7 @@ $phpbb_hook_finder = $phpbb_container->get('hook_finder');
 
 foreach ($phpbb_hook_finder->find() as $hook)
 {
-	@include($phpbb_root_path . 'includes/hooks/' . $hook . '.' . $phpEx);
+	@include($phpbb3_root_path . 'includes/hooks/' . $hook . '.' . $phpEx);
 }
 
 /**

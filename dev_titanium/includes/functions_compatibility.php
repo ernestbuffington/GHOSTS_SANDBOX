@@ -105,12 +105,12 @@ function phpbb_clean_path($path)
 	}
 	else if (!$phpbb_path_helper)
 	{
-		global $phpbb_root_path, $phpEx;
+		global $phpbb3_root_path, $phpEx;
 
 		// The container is not yet loaded, use a new instance
 		if (!class_exists('\phpbb\path_helper'))
 		{
-			require($phpbb_root_path . 'phpbb/path_helper.' . $phpEx);
+			require($phpbb3_root_path . 'phpbb/path_helper.' . $phpEx);
 		}
 
 		$request = new phpbb\request\request();
@@ -120,7 +120,7 @@ function phpbb_clean_path($path)
 			),
 			new phpbb\filesystem\filesystem(),
 			$request,
-			$phpbb_root_path,
+			$phpbb3_root_path,
 			$phpEx
 		);
 	}
@@ -188,10 +188,10 @@ function update_foes($group_id = false, $user_id = false)
 */
 function get_user_rank($user_rank, $user_posts, &$rank_title, &$rank_img, &$rank_img_src)
 {
-	global $phpbb_root_path, $phpEx;
+	global $phpbb3_root_path, $phpEx;
 	if (!function_exists('phpbb_get_user_rank'))
 	{
-		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+		include($phpbb3_root_path . 'includes/functions_display.' . $phpEx);
 	}
 
 	$rank_data = phpbb_get_user_rank(array('user_rank' => $user_rank), $user_posts);
@@ -678,14 +678,14 @@ function phpbb_email_hash($email)
 /**
  * Load the autoloaders added by the extensions.
  *
- * @param string $phpbb_root_path Path to the phpbb root directory.
+ * @param string $phpbb3_root_path Path to the phpbb root directory.
  */
-function phpbb_load_extensions_autoloaders($phpbb_root_path)
+function phpbb_load_extensions_autoloaders($phpbb3_root_path)
 {
 	$iterator = new \RecursiveIteratorIterator(
 		new \phpbb\recursive_dot_prefix_filter_iterator(
 			new \RecursiveDirectoryIterator(
-				$phpbb_root_path . 'ext/',
+				$phpbb3_root_path . 'ext/',
 				\FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS
 			)
 		),

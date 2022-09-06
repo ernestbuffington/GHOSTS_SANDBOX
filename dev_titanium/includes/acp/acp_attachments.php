@@ -52,7 +52,7 @@ class acp_attachments
 	function main($id, $mode)
 	{
 		global $db, $user, $auth, $template, $cache, $phpbb_container, $phpbb_filesystem, $phpbb_dispatcher;
-		global $config, $phpbb_admin_path, $phpbb_root_path, $phpEx, $phpbb_log, $request;
+		global $config, $phpbb_admin_path, $phpbb3_root_path, $phpEx, $phpbb_log, $request;
 
 		$this->id = $id;
 		$this->db = $db;
@@ -120,7 +120,7 @@ class acp_attachments
 
 				if (!function_exists('get_supported_image_types'))
 				{
-					include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+					include($phpbb3_root_path . 'includes/functions_posting.' . $phpEx);
 				}
 
 				$allowed_pm_groups = [];
@@ -735,7 +735,7 @@ class acp_attachments
 						$filename_list = '';
 						$no_image_select = false;
 
-						$imglist = filelist($phpbb_root_path . $img_path);
+						$imglist = filelist($phpbb3_root_path . $img_path);
 
 						if (!empty($imglist['']))
 						{
@@ -787,7 +787,7 @@ class acp_attachments
 							'GROUP_NAME'			=> $ext_group_row['group_name'],
 							'ALLOW_GROUP'			=> $ext_group_row['allow_group'],
 							'ALLOW_IN_PM'			=> $ext_group_row['allow_in_pm'],
-							'UPLOAD_ICON_SRC'		=> $phpbb_root_path . $img_path . '/' . $ext_group_row['upload_icon'],
+							'UPLOAD_ICON_SRC'		=> $phpbb3_root_path . $img_path . '/' . $ext_group_row['upload_icon'],
 							'EXTGROUP_FILESIZE'		=> $ext_group_row['max_filesize'],
 							'ASSIGNED_EXTENSIONS'	=> $assigned_extensions,
 
@@ -1107,7 +1107,7 @@ class acp_attachments
 						'PHYSICAL_FILENAME'	=> utf8_basename($row['physical_filename']),
 						'ATTACH_ID'			=> $row['attach_id'],
 						'POST_ID'			=> (!empty($post_ids[$row['attach_id']])) ? $post_ids[$row['attach_id']] : '',
-						'U_FILE'			=> append_sid($phpbb_root_path . 'download/file.' . $phpEx, 'mode=view&amp;id=' . $row['attach_id']),
+						'U_FILE'			=> append_sid($phpbb3_root_path . 'download/file.' . $phpEx, 'mode=view&amp;id=' . $row['attach_id']),
 					]);
 				}
 				$db->sql_freeresult($result);
@@ -1294,8 +1294,8 @@ class acp_attachments
 
 						'S_IN_MESSAGE'		=> (bool) $row['in_message'],
 
-						'U_VIEW_TOPIC'		=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "p={$row['post_msg_id']}") . "#p{$row['post_msg_id']}",
-						'U_FILE'			=> append_sid($phpbb_root_path . 'download/file.' . $phpEx, 'mode=view&amp;id=' . $row['attach_id']))
+						'U_VIEW_TOPIC'		=> append_sid("{$phpbb3_root_path}viewtopic.$phpEx", "p={$row['post_msg_id']}") . "#p{$row['post_msg_id']}",
+						'U_FILE'			=> append_sid($phpbb3_root_path . 'download/file.' . $phpEx, 'mode=view&amp;id=' . $row['attach_id']))
 					);
 				}
 
@@ -1502,18 +1502,18 @@ class acp_attachments
 	*/
 	function test_upload(&$error, $upload_dir, $create_directory = false)
 	{
-		global $user, $phpbb_root_path;
+		global $user, $phpbb3_root_path;
 
 		// Does the target directory exist, is it a directory and writable.
 		if ($create_directory)
 		{
-			if (!file_exists($phpbb_root_path . $upload_dir))
+			if (!file_exists($phpbb3_root_path . $upload_dir))
 			{
-				@mkdir($phpbb_root_path . $upload_dir, 0777);
+				@mkdir($phpbb3_root_path . $upload_dir, 0777);
 
 				try
 				{
-					$this->filesystem->phpbb_chmod($phpbb_root_path . $upload_dir, \phpbb\filesystem\filesystem_interface::CHMOD_READ | \phpbb\filesystem\filesystem_interface::CHMOD_WRITE);
+					$this->filesystem->phpbb_chmod($phpbb3_root_path . $upload_dir, \phpbb\filesystem\filesystem_interface::CHMOD_READ | \phpbb\filesystem\filesystem_interface::CHMOD_WRITE);
 				}
 				catch (\phpbb\filesystem\exception\filesystem_exception $e)
 				{
@@ -1522,19 +1522,19 @@ class acp_attachments
 			}
 		}
 
-		if (!file_exists($phpbb_root_path . $upload_dir))
+		if (!file_exists($phpbb3_root_path . $upload_dir))
 		{
 			$error[] = sprintf($user->lang['NO_UPLOAD_DIR'], $upload_dir);
 			return;
 		}
 
-		if (!is_dir($phpbb_root_path . $upload_dir))
+		if (!is_dir($phpbb3_root_path . $upload_dir))
 		{
 			$error[] = sprintf($user->lang['UPLOAD_NOT_DIR'], $upload_dir);
 			return;
 		}
 
-		if (!$this->filesystem->is_writable($phpbb_root_path . $upload_dir))
+		if (!$this->filesystem->is_writable($phpbb3_root_path . $upload_dir))
 		{
 			$error[] = sprintf($user->lang['NO_WRITE_UPLOAD'], $upload_dir);
 			return;

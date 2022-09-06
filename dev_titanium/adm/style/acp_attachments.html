@@ -41,7 +41,7 @@
 	<!-- BEGIN options -->
 		<!-- IF options.S_LEGEND -->
 			<!-- IF not options.S_FIRST_ROW -->
-				</fieldset>
+				
 			<!-- ENDIF -->
 			<fieldset>
 				<legend>{options.LEGEND}</legend>
@@ -109,7 +109,7 @@
 		<p>{L_NO_IPS_DEFINED}</p>
 	<!-- ENDIF -->
 	{S_FORM_TOKEN}
-	</fieldset>
+	
 	</form>
 
 <!-- ELSEIF S_EXTENSION_GROUPS -->
@@ -180,18 +180,18 @@
 		</dl>
 		<dl>
 			<dt><label for="allowed">{L_ALLOWED}{L_COLON}</label></dt>
-			<dd><input type="checkbox" class="radio" id="allowed" name="allow_group" value="1"<!-- IF ALLOW_GROUP --> checked="checked"<!-- ENDIF --> /></dd>
+			<dd><input type="checkbox" class="radio" id="allowed" name="allow_group" value="1" /><!-- IF ALLOW_GROUP --> checked="checked"<!-- ENDIF --> /></dd>
 		</dl>
 		<dl>
 			<dt><label for="allow_in_pm">{L_ALLOW_IN_PM}{L_COLON}</label></dt>
-			<dd><input type="checkbox" class="radio" id="allow_in_pm" name="allow_in_pm" value="1"<!-- IF ALLOW_IN_PM --> checked="checked"<!-- ENDIF --> /></dd>
+			<dd><input type="checkbox" class="radio" id="allow_in_pm" name="allow_in_pm" value="1" /><!-- IF ALLOW_IN_PM --> checked="checked"<!-- ENDIF --> /></dd>
 		</dl>
 		<dl>
 			<dt><label for="upload_icon">{L_UPLOAD_ICON}{L_COLON}</label></dt>
 			<dd><select name="upload_icon" id="upload_icon" onchange="update_image(this.options[selectedIndex].value);">
-					<option value="no_image"<!-- IF S_NO_IMAGE --> selected="selected"<!-- ENDIF -->>{L_NO_IMAGE}</option>{S_FILENAME_LIST}
+					<option value="no_image"><!-- IF S_NO_IMAGE --> selected="selected"<!-- ENDIF -->>{L_NO_IMAGE}</option>{S_FILENAME_LIST}
 			</select></dd>
-			<dd>&nbsp;<img <!-- IF S_NO_IMAGE -->src="{ROOT_PATH}images/spacer.gif"<!-- ELSE -->src="{UPLOAD_ICON_SRC}"<!-- ENDIF --> id="image_upload_icon" alt="" title="" />&nbsp;</dd>
+			<dd>&nbsp;<img /><!-- IF S_NO_IMAGE -->src="{ROOT_PATH}images/spacer.gif"<!-- ELSE -->src="{UPLOAD_ICON_SRC}"<!-- ENDIF --> id="image_upload_icon" alt="" title="" />&nbsp;</dd>
 		</dl>
 		<dl>
 			<dt><label for="extgroup_filesize">{L_MAX_EXTGROUP_FILESIZE}{L_COLON}</label></dt>
@@ -204,8 +204,8 @@
 		</dl>
 		<dl>
 			<dt><label for="allowed_forums">{L_ALLOWED_FORUMS}{L_COLON}</label><br /><span>{L_ALLOWED_FORUMS_EXPLAIN}</span></dt>
-			<dd><label><input type="radio" id="allowed_forums" class="radio" name="forum_select" value="0"<!-- IF not S_FORUM_IDS --> checked="checked"<!-- ENDIF --> /> {L_ALLOW_ALL_FORUMS}</label></dd>
-			<dd><label><input type="radio" class="radio" name="forum_select" value="1"<!-- IF S_FORUM_IDS --> checked="checked"<!-- ENDIF --> /> {L_ALLOW_SELECTED_FORUMS}</label></dd>
+			<dd><label><input type="radio" id="allowed_forums" class="radio" name="forum_select" value="0" /><!-- IF not S_FORUM_IDS --> checked="checked"<!-- ENDIF --> /> {L_ALLOW_ALL_FORUMS}</label></dd>
+			<dd><label><input type="radio" class="radio" name="forum_select" value="1" /><!-- IF S_FORUM_IDS --> checked="checked"<!-- ENDIF --> /> {L_ALLOW_SELECTED_FORUMS}</label></dd>
 			<dd><select name="allowed_forums[]" multiple="multiple" size="8">{S_FORUM_ID_OPTIONS}</select></dd>
 		</dl>
 
@@ -435,27 +435,27 @@
 		<th style="width: 10%;" class="centered-text">{L_MARK}</th>
 	</tr>
 	</thead>
-	<tbody>
+	<tbody></tbody>
 	{% for attachments in attachments %}
 		<tr>
 			<td>
 				{{ lang('EXTENSION_GROUP') ~ lang('COLON') }} <strong>{{ attachments.EXT_GROUP_NAME }}</strong>
 				{% if attachments.S_IN_MESSAGE %}
-					<br>{{ attachments.L_DOWNLOAD_COUNT }}
-					<br>{{ lang('IN') }} {{ lang('PRIVATE_MESSAGE') }}
+					<br />{{ attachments.L_DOWNLOAD_COUNT }}
+					<br />{{ lang('IN') }} {{ lang('PRIVATE_MESSAGE') }}
 				{% else %}
-					<br><a href="{{ attachments.U_FILE }}"><strong>{{ attachments.REAL_FILENAME }}</strong></a>
-					{% if attachments.COMMENT %}<br>{{ attachments.COMMENT }}{% endif %}
-					<br>{{ attachments.L_DOWNLOAD_COUNT }}
-					<br>{{ lang('TOPIC') ~ lang('COLON') }} <a href="{{ attachments.U_VIEW_TOPIC }}">{{ attachments.TOPIC_TITLE }}</a>
+					<br /><a href="{{ attachments.U_FILE }}"><strong>{{ attachments.REAL_FILENAME }}</strong></a>
+					{% if attachments.COMMENT %}<br />{{ attachments.COMMENT }}{% endif %}
+					<br />{{ attachments.L_DOWNLOAD_COUNT }}
+					<br />{{ lang('TOPIC') ~ lang('COLON') }} <a href="{{ attachments.U_VIEW_TOPIC }}">{{ attachments.TOPIC_TITLE }}</a>
 				{% endif %}
 			</td>
-			<td>{{ attachments.FILETIME }}<br>{{ lang('POST_BY_AUTHOR') }} {{ attachments.ATTACHMENT_POSTER }}</td>
+			<td>{{ attachments.FILETIME }}<br />{{ lang('POST_BY_AUTHOR') }} {{ attachments.ATTACHMENT_POSTER }}</td>
 			<td class="centered-text">{{ attachments.FILESIZE }}</td>
 			<td class="centered-text"><input type="checkbox" class="radio" name="delete[{{ attachments.ATTACH_ID }}]" /></td>
 		</tr>
 	{% endfor %}
-	</tbody>
+	
 	</table>
 <!-- ELSE -->
 	<div class="errorbox">

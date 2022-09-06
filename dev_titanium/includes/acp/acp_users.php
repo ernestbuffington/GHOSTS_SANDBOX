@@ -32,7 +32,7 @@ class acp_users
 	function main($id, $mode)
 	{
 		global $config, $db, $user, $auth, $template;
-		global $phpbb_root_path, $phpbb_admin_path, $phpEx;
+		global $phpbb3_root_path, $phpbb_admin_path, $phpEx;
 		global $phpbb_dispatcher, $request;
 		global $phpbb_container, $phpbb_log;
 
@@ -59,7 +59,7 @@ class acp_users
 		{
 			if (!function_exists('user_get_id_name'))
 			{
-				include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+				include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 			}
 
 			$this->page_title = 'WHOIS';
@@ -87,7 +87,7 @@ class acp_users
 				'ANONYMOUS_USER_ID'	=> ANONYMOUS,
 
 				'S_SELECT_USER'		=> true,
-				'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=select_user&amp;field=username&amp;select_single=true'),
+				'U_FIND_USERNAME'	=> append_sid("{$phpbb3_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=select_user&amp;field=username&amp;select_single=true'),
 			));
 
 			return;
@@ -175,7 +175,7 @@ class acp_users
 
 				if (!function_exists('user_get_id_name'))
 				{
-					include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+					include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 				}
 
 				$user->add_lang('acp/ban');
@@ -360,7 +360,7 @@ class acp_users
 							{
 								if (!class_exists('messenger'))
 								{
-									include($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+									include($phpbb3_root_path . 'includes/functions_messenger.' . $phpEx);
 								}
 
 								$server_url = generate_board_url();
@@ -454,7 +454,7 @@ class acp_users
 
 									if (!class_exists('messenger'))
 									{
-										include($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+										include($phpbb3_root_path . 'includes/functions_messenger.' . $phpEx);
 									}
 
 									$messenger = new messenger(false);
@@ -596,7 +596,7 @@ class acp_users
 								{
 									if (!function_exists('delete_pm'))
 									{
-										include($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
+										include($phpbb3_root_path . 'includes/functions_privmsgs.' . $phpEx);
 									}
 
 									do
@@ -1142,10 +1142,10 @@ class acp_users
 
 					'U_SHOW_IP'		=> $this->u_action . "&amp;u=$user_id&amp;ip=" . (($ip == 'ip') ? 'hostname' : 'ip'),
 					'U_WHOIS'		=> $this->u_action . "&amp;action=whois&amp;user_ip={$user_row['user_ip']}",
-					'U_MCP_QUEUE'	=> ($auth->acl_getf_global('m_approve')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue', true, $user->session_id) : '',
-					'U_SEARCH_USER'	=> ($config['load_search'] && $auth->acl_get('u_search')) ? append_sid("{$phpbb_root_path}search.$phpEx", "author_id={$user_row['user_id']}&amp;sr=posts") : '',
+					'U_MCP_QUEUE'	=> ($auth->acl_getf_global('m_approve')) ? append_sid("{$phpbb3_root_path}mcp.$phpEx", 'i=queue', true, $user->session_id) : '',
+					'U_SEARCH_USER'	=> ($config['load_search'] && $auth->acl_get('u_search')) ? append_sid("{$phpbb3_root_path}search.$phpEx", "author_id={$user_row['user_id']}&amp;sr=posts") : '',
 
-					'U_SWITCH_PERMISSIONS'	=> ($auth->acl_get('a_switchperm') && $user->data['user_id'] != $user_row['user_id']) ? append_sid("{$phpbb_root_path}ucp.$phpEx", "mode=switch_perm&amp;u={$user_row['user_id']}&amp;hash=" . generate_link_hash('switchperm')) : '',
+					'U_SWITCH_PERMISSIONS'	=> ($auth->acl_get('a_switchperm') && $user->data['user_id'] != $user_row['user_id']) ? append_sid("{$phpbb3_root_path}ucp.$phpEx", "mode=switch_perm&amp;u={$user_row['user_id']}&amp;hash=" . generate_link_hash('switchperm')) : '',
 
 					'POSTS_IN_QUEUE'	=> $user_row['posts_in_queue'],
 					'USER'				=> $user_row['username'],
@@ -1415,7 +1415,7 @@ class acp_users
 
 				if (!function_exists('user_get_id_name'))
 				{
-					include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+					include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 				}
 
 				/* @var $cp \phpbb\profilefields\manager */
@@ -1579,7 +1579,7 @@ class acp_users
 
 				if (!function_exists('user_get_id_name'))
 				{
-					include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+					include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 				}
 
 				$data = array(
@@ -2029,7 +2029,7 @@ class acp_users
 
 				if (!function_exists('display_custom_bbcodes'))
 				{
-					include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+					include($phpbb3_root_path . 'includes/functions_display.' . $phpEx);
 				}
 
 				$enable_bbcode	= ($config['allow_sig_bbcode']) ? $this->optionget($user_row, 'sig_bbcode') : false;
@@ -2273,11 +2273,11 @@ class acp_users
 				{
 					if ($row['in_message'])
 					{
-						$view_topic = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=pm&amp;p={$row['post_msg_id']}");
+						$view_topic = append_sid("{$phpbb3_root_path}ucp.$phpEx", "i=pm&amp;p={$row['post_msg_id']}");
 					}
 					else
 					{
-						$view_topic = append_sid("{$phpbb_root_path}viewtopic.$phpEx", "p={$row['post_msg_id']}") . '#p' . $row['post_msg_id'];
+						$view_topic = append_sid("{$phpbb3_root_path}viewtopic.$phpEx", "p={$row['post_msg_id']}") . '#p' . $row['post_msg_id'];
 					}
 
 					$template->assign_block_vars('attach', array(
@@ -2295,7 +2295,7 @@ class acp_users
 
 						'S_IN_MESSAGE'		=> $row['in_message'],
 
-						'U_DOWNLOAD'		=> append_sid("{$phpbb_root_path}download/file.$phpEx", 'mode=view&amp;id=' . $row['attach_id']),
+						'U_DOWNLOAD'		=> append_sid("{$phpbb3_root_path}download/file.$phpEx", 'mode=view&amp;id=' . $row['attach_id']),
 						'U_VIEW_TOPIC'		=> $view_topic)
 					);
 				}
@@ -2316,7 +2316,7 @@ class acp_users
 
 				if (!function_exists('group_user_attributes'))
 				{
-					include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+					include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 				}
 
 				$user->add_lang(array('groups', 'acp/groups'));
@@ -2540,7 +2540,7 @@ class acp_users
 
 				if (!class_exists('auth_admin'))
 				{
-					include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);
+					include($phpbb3_root_path . 'includes/acp/auth.' . $phpEx);
 				}
 
 				$auth_admin = new auth_admin();

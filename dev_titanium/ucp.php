@@ -15,11 +15,11 @@
 * @ignore
 */
 define('IN_PHPBB', true);
-$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
+$phpbb3_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-require($phpbb_root_path . 'common.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_user.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_module.' . $phpEx);
+require($phpbb3_root_path . 'common.' . $phpEx);
+require($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
+require($phpbb3_root_path . 'includes/functions_module.' . $phpEx);
 
 // Basic parameter data
 $id 	= $request->variable('i', '');
@@ -54,7 +54,7 @@ switch ($mode)
 		$module->load('ucp', 'activate');
 		$module->display($user->lang['UCP_ACTIVATE']);
 
-		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		redirect(append_sid("{$phpbb3_root_path}index.$phpEx"));
 	break;
 
 	case 'resend_act':
@@ -72,7 +72,7 @@ switch ($mode)
 	case 'register':
 		if ($user->data['is_registered'] || isset($_REQUEST['not_agreed']))
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("{$phpbb3_root_path}index.$phpEx"));
 		}
 
 		$module->load('ucp', 'register');
@@ -86,7 +86,7 @@ switch ($mode)
 	case 'login':
 		if ($user->data['is_registered'])
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("{$phpbb3_root_path}index.$phpEx"));
 		}
 
 		login_box($request->variable('redirect', "index.$phpEx"));
@@ -95,7 +95,7 @@ switch ($mode)
 	case 'login_link':
 		if ($user->data['is_registered'])
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("{$phpbb3_root_path}index.$phpEx"));
 		}
 
 		$module->load('ucp', 'login_link');
@@ -109,13 +109,13 @@ switch ($mode)
 		}
 		else if ($user->data['user_id'] != ANONYMOUS)
 		{
-			meta_refresh(3, append_sid("{$phpbb_root_path}index.$phpEx"));
+			meta_refresh(3, append_sid("{$phpbb3_root_path}index.$phpEx"));
 
-			$message = $user->lang['LOGOUT_FAILED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a> ');
+			$message = $user->lang['LOGOUT_FAILED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb3_root_path}index.$phpEx") . '">', '</a> ');
 			trigger_error($message);
 		}
 
-		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		redirect(append_sid("{$phpbb3_root_path}index.$phpEx"));
 	break;
 
 	case 'terms':
@@ -128,7 +128,7 @@ switch ($mode)
 		{
 			if ($user->data['is_registered'])
 			{
-				redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+				redirect(append_sid("{$phpbb3_root_path}index.$phpEx"));
 			}
 
 			login_box();
@@ -145,7 +145,7 @@ switch ($mode)
 			'S_AGREEMENT'			=> true,
 			'AGREEMENT_TITLE'		=> $user->lang[$title],
 			'AGREEMENT_TEXT'		=> sprintf($user->lang[$message], $config['sitename'], generate_board_url()),
-			'U_BACK'				=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=login'),
+			'U_BACK'				=> append_sid("{$phpbb3_root_path}ucp.$phpEx", 'mode=login'),
 			'L_BACK'				=> $user->lang['BACK_TO_PREV'],
 		));
 
@@ -204,9 +204,9 @@ switch ($mode)
 			$user->session_kill();
 			$user->session_begin();
 
-			meta_refresh(3, append_sid("{$phpbb_root_path}index.$phpEx"));
+			meta_refresh(3, append_sid("{$phpbb3_root_path}index.$phpEx"));
 
-			$message = $user->lang['COOKIES_DELETED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
+			$message = $user->lang['COOKIES_DELETED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb3_root_path}index.$phpEx") . '">', '</a>');
 			trigger_error($message);
 		}
 		else
@@ -214,7 +214,7 @@ switch ($mode)
 			confirm_box(false, 'DELETE_COOKIES', '');
 		}
 
-		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		redirect(append_sid("{$phpbb3_root_path}index.$phpEx"));
 
 	break;
 
@@ -231,20 +231,20 @@ switch ($mode)
 
 		if (!$auth->acl_get('a_switchperm') || !$user_row || $user_id == $user->data['user_id'] || !check_link_hash($request->variable('hash', ''), 'switchperm'))
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("{$phpbb3_root_path}index.$phpEx"));
 		}
 
-		include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);
+		include($phpbb3_root_path . 'includes/acp/auth.' . $phpEx);
 
 		$auth_admin = new auth_admin();
 		if (!$auth_admin->ghost_permissions($user_id, $user->data['user_id']))
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("{$phpbb3_root_path}index.$phpEx"));
 		}
 
 		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_TRANSFER_PERMISSIONS', false, array($user_row['username']));
 
-		$message = sprintf($user->lang['PERMISSIONS_TRANSFERRED'], $user_row['username']) . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
+		$message = sprintf($user->lang['PERMISSIONS_TRANSFERRED'], $user_row['username']) . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb3_root_path}index.$phpEx") . '">', '</a>');
 
 		/**
 		* Event to run code after permissions are switched
@@ -266,7 +266,7 @@ switch ($mode)
 
 		if (!$user->data['user_perm_from'] || !$auth->acl_get('a_switchperm'))
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("{$phpbb3_root_path}index.$phpEx"));
 		}
 
 		$auth->acl_cache($user->data);
@@ -280,7 +280,7 @@ switch ($mode)
 
 		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_RESTORE_PERMISSIONS', false, array($username));
 
-		$message = $user->lang['PERMISSIONS_RESTORED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
+		$message = $user->lang['PERMISSIONS_RESTORED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb3_root_path}index.$phpEx") . '">', '</a>');
 
 		/**
 		* Event to run code after permissions are restored
@@ -313,12 +313,12 @@ if (!$user->data['is_registered'])
 {
 	if ($user->data['is_bot'])
 	{
-		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		redirect(append_sid("{$phpbb3_root_path}index.$phpEx"));
 	}
 
 	if ($id == 'pm' && $mode == 'view' && isset($_GET['p']))
 	{
-		$redirect_url = append_sid("{$phpbb_root_path}ucp.$phpEx?i=pm&p=" . $request->variable('p', 0));
+		$redirect_url = append_sid("{$phpbb3_root_path}ucp.$phpEx?i=pm&p=" . $request->variable('p', 0));
 		login_box($redirect_url, $user->lang['LOGIN_EXPLAIN_UCP']);
 	}
 
@@ -430,7 +430,7 @@ extract($phpbb_dispatcher->trigger_event('core.ucp_display_module_before', compa
 
 $template->assign_block_vars('navlinks', array(
 	'BREADCRUMB_NAME'	=> $user->lang('UCP'),
-	'U_BREADCRUMB'		=> append_sid("{$phpbb_root_path}ucp.$phpEx"),
+	'U_BREADCRUMB'		=> append_sid("{$phpbb3_root_path}ucp.$phpEx"),
 ));
 
 // Select the active module
@@ -440,7 +440,7 @@ $module->set_active($id, $mode);
 $module->load_active();
 
 // Assign data to the template engine for the list of modules
-$module->assign_tpl_vars(append_sid("{$phpbb_root_path}ucp.$phpEx"));
+$module->assign_tpl_vars(append_sid("{$phpbb3_root_path}ucp.$phpEx"));
 
 // Generate the page, do not display/query online list
 $module->display($module->get_page_title());

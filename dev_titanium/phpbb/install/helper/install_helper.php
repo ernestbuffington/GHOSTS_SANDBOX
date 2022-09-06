@@ -26,17 +26,17 @@ class install_helper
 	/**
 	 * @var string
 	 */
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/**
 	 * Constructor
 	 *
-	 * @param string	$phpbb_root_path	path to phpBB's root
+	 * @param string	$phpbb3_root_path	path to phpBB's root
 	 * @param string	$php_ext			Extension of PHP files
 	 */
-	public function __construct($phpbb_root_path, $php_ext)
+	public function __construct($phpbb3_root_path, $php_ext)
 	{
-		$this->phpbb_root_path	= $phpbb_root_path;
+		$this->phpbb_root_path	= $phpbb3_root_path;
 		$this->php_ext			= $php_ext;
 	}
 

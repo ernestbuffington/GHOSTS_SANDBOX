@@ -25,18 +25,18 @@ class timeout_check
 	/**
 	 * @var string
 	 */
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/**
 	 * Constructor
 	 *
 	 * @param helper	$helper
-	 * @param string	$phpbb_root_path
+	 * @param string	$phpbb3_root_path
 	 */
-	public function __construct(helper $helper, $phpbb_root_path)
+	public function __construct(helper $helper, $phpbb3_root_path)
 	{
 		$this->helper = $helper;
-		$this->phpbb_root_path = $phpbb_root_path;
+		$this->phpbb_root_path = $phpbb3_root_path;
 	}
 
 	/**

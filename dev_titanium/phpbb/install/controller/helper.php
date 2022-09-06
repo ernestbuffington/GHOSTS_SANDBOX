@@ -92,7 +92,7 @@ class helper
 	/**
 	 * @var string
 	 */
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/**
 	 * Constructor
@@ -106,9 +106,9 @@ class helper
 	 * @param request				$phpbb_request
 	 * @param symfony_request		$request
 	 * @param router				$router
-	 * @param string				$phpbb_root_path
+	 * @param string				$phpbb3_root_path
 	 */
-	public function __construct(config $config, language $language, language_file_helper $lang_helper, navigation_provider $nav, template $template, path_helper $path_helper, request $phpbb_request, symfony_request $request, router $router, $phpbb_root_path)
+	public function __construct(config $config, language $language, language_file_helper $lang_helper, navigation_provider $nav, template $template, path_helper $path_helper, request $phpbb_request, symfony_request $request, router $router, $phpbb3_root_path)
 	{
 		$this->installer_config = $config;
 		$this->language = $language;
@@ -120,8 +120,8 @@ class helper
 		$this->phpbb_request = $phpbb_request;
 		$this->request = $request;
 		$this->router = $router;
-		$this->phpbb_root_path = $phpbb_root_path;
-		$this->phpbb_admin_path = $phpbb_root_path . 'adm/';
+		$this->phpbb_root_path = $phpbb3_root_path;
+		$this->phpbb_admin_path = $phpbb3_root_path . 'adm/';
 	}
 
 	/**

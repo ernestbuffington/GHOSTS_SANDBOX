@@ -2985,7 +2985,7 @@
 		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-13738">PHPBB3-13738</a>] - Sami still refers to develop-* branches</li>
 		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-13741">PHPBB3-13741</a>] - Remove outdated comments in CSS files</li>
 		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-13742">PHPBB3-13742</a>] - Local avatar driver is not generating correct urls on index</li>
-		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-13743">PHPBB3-13743</a>] - Missing global vars $phpbb_root_path and $phpEx in message_parser.php</li>
+		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-13743">PHPBB3-13743</a>] - Missing global vars $phpbb3_root_path and $phpEx in message_parser.php</li>
 		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-13747">PHPBB3-13747</a>] - Fix test_validate_path_linux method</li>
 		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-13749">PHPBB3-13749</a>] - Add missing slash to base uri in helper route tests</li>
 	</ul>
@@ -3841,7 +3841,7 @@
 		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-12525">PHPBB3-12525</a>] - CONTACT_USER used with username</li>
 		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-12526">PHPBB3-12526</a>] - &quot;Undefined index: filesize&quot; error thrown when editing a PM with attachments</li>
 		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-12527">PHPBB3-12527</a>] - Remove translation editor from ACP</li>
-		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-12529">PHPBB3-12529</a>] - phpbb\controller\resolver::getController doesn't use $phpbb_root_path to check if the template dir exist</li>
+		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-12529">PHPBB3-12529</a>] - phpbb\controller\resolver::getController doesn't use $phpbb3_root_path to check if the template dir exist</li>
 		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-12533">PHPBB3-12533</a>] - The notification link should fill the parent li-container in the notifications dialog</li>
 		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-12534">PHPBB3-12534</a>] - Enabling and disabling extensions should not abuse the red errorbox</li>
 		<li>[<a href="http://tracker.phpbb.com/browse/PHPBB3-12536">PHPBB3-12536</a>] - Get Versions Should Not Require Both Stable and Unstable Branches</li>
@@ -6769,7 +6769,7 @@
 		<li>[Fix] Correctly log action when users request to join a group. (Bug #37585)</li>
 		<li>[Fix] Do not try to create thumbnails for images we cannot open properly. (Bug #48695)</li>
 		<li>[Fix] Apply locale-independent basename() to attachment filenames. New function added: utf8_basename(). (Bug #43335 - Patch by ocean=Yohsuke)</li>
-		<li>[Fix] Adjust build_url() to not prepend $phpbb_root_path if path returned from redirect() is an URL. This fixes redirect issues with some installations and bridges. (Bug #47535)</li>
+		<li>[Fix] Adjust build_url() to not prepend $phpbb3_root_path if path returned from redirect() is an URL. This fixes redirect issues with some installations and bridges. (Bug #47535)</li>
 		<li>[Fix] Do not mark global announcements as read if all topics in a forum become read (Bug #15729).</li>
 		<li>[Fix] Fix general error in registration, caused by an undefined $config variable in validate_referer(). (Bug #49035 - Patch by wjvriend)</li>
 		<li>[Fix] Correctly extract column default value when exporting PostgreSQL tables. (Bug #48955)</li>
@@ -6808,7 +6808,7 @@
 		<li>[Change] Ability to define column split in FAQ/BBCode help. (Bug #31405)</li>
 		<li>[Change] Changed behaviour of group_create() function to support specifying additional group columns.</li>
 		<li>[Change] Hide avatar when avatar-type is not allowed. (Bug #46785 - Patch by cYbercOsmOnauT and nickvergessen)</li>
-		<li>[Change] INCLUDEPHP paths are now relative to $phpbb_root_path. (Bug #45805)</li>
+		<li>[Change] INCLUDEPHP paths are now relative to $phpbb3_root_path. (Bug #45805)</li>
 		<li>[Change] Ability to fetch moderators with get_moderators() even if load_moderators setting is off. (Bug #35955)</li>
 		<li>[Change] &quot;Post details&quot; links with image in MCP. (Bug #39845 - Patch by leviatan21)</li>
 		<li>[Change] PM history now only shows PMs of users you currently reply to. (Bug #39505)</li>
@@ -7495,7 +7495,7 @@
 		<li>[Fix] Cached stylesheet now supporting gzip compression</li>
 		<li>[Fix] Added link to inbox for deleted PMs (Bug #13813)</li>
 		<li>[Fix] Re-syncing the board stats also refreshes the newest user (Bug #13831)</li>
-		<li>[Feature] Ability to externally set $phpbb_root_path if wrapping phpBB3 by defining constant PHPBB_ROOT_PATH</li>
+		<li>[Feature] Ability to externally set $phpbb3_root_path if wrapping phpBB3 by defining constant PHPBB_ROOT_PATH</li>
 		<li>[Fix] Implemented correct left/right floating within ACP in regard to RTL languages (Bug #13777)</li>
 		<li>[Fix] Fixing session problems when using MySQL strict mode in conjunction with very long browser agent string (Bug #13827)</li>
 		<li>[Fix] Disallow post/pm subjects entirely made up from non-printable chars and whitespaces (Bug #13800)</li>

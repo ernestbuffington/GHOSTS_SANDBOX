@@ -25,7 +25,7 @@ if (!defined('IN_PHPBB'))
 */
 function send_avatar_to_browser($file, $browser)
 {
-	global $config, $phpbb_root_path;
+	global $config, $phpbb3_root_path;
 
 	$prefix = $config['avatar_salt'] . '_';
 	$image_dir = $config['avatar_path'];
@@ -41,7 +41,7 @@ function send_avatar_to_browser($file, $browser)
 	{
 		$image_dir = '';
 	}
-	$file_path = $phpbb_root_path . $image_dir . '/' . $prefix . $file;
+	$file_path = $phpbb3_root_path . $image_dir . '/' . $prefix . $file;
 
 	if ((@file_exists($file_path) && @is_readable($file_path)) && !headers_sent())
 	{
@@ -124,9 +124,9 @@ function wrap_img_in_html($src, $title)
 */
 function send_file_to_browser($attachment, $upload_dir, $category)
 {
-	global $user, $db, $phpbb_dispatcher, $phpbb_root_path, $request;
+	global $user, $db, $phpbb_dispatcher, $phpbb3_root_path, $request;
 
-	$filename = $phpbb_root_path . $upload_dir . '/' . $attachment['physical_filename'];
+	$filename = $phpbb3_root_path . $upload_dir . '/' . $attachment['physical_filename'];
 
 	if (!@file_exists($filename))
 	{

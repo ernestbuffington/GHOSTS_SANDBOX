@@ -15,7 +15,7 @@
 * @ignore
 */
 define('IN_PHPBB', true);
-$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './../';
+$phpbb3_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 
 // Thank you sun.
@@ -33,13 +33,13 @@ else if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'
 
 if (isset($_GET['avatar']))
 {
-	require($phpbb_root_path . 'includes/startup.' . $phpEx);
+	require($phpbb3_root_path . 'includes/startup.' . $phpEx);
 
-	require($phpbb_root_path . 'phpbb/class_loader.' . $phpEx);
-	$phpbb_class_loader = new \phpbb\class_loader('phpbb\\', "{$phpbb_root_path}phpbb/", $phpEx);
+	require($phpbb3_root_path . 'phpbb/class_loader.' . $phpEx);
+	$phpbb_class_loader = new \phpbb\class_loader('phpbb\\', "{$phpbb3_root_path}phpbb/", $phpEx);
 	$phpbb_class_loader->register();
 
-	$phpbb_config_php_file = new \phpbb\config_php_file($phpbb_root_path, $phpEx);
+	$phpbb_config_php_file = new \phpbb\config_php_file($phpbb3_root_path, $phpEx);
 	extract($phpbb_config_php_file->get_all());
 
 	if (!defined('PHPBB_ENVIRONMENT'))
@@ -52,17 +52,17 @@ if (isset($_GET['avatar']))
 		exit;
 	}
 
-	require($phpbb_root_path . 'includes/constants.' . $phpEx);
-	require($phpbb_root_path . 'includes/functions.' . $phpEx);
-	require($phpbb_root_path . 'includes/functions_download' . '.' . $phpEx);
-	require($phpbb_root_path . 'includes/utf/utf_tools.' . $phpEx);
+	require($phpbb3_root_path . 'includes/constants.' . $phpEx);
+	require($phpbb3_root_path . 'includes/functions.' . $phpEx);
+	require($phpbb3_root_path . 'includes/functions_download' . '.' . $phpEx);
+	require($phpbb3_root_path . 'includes/utf/utf_tools.' . $phpEx);
 
 	// Setup class loader first
-	$phpbb_class_loader_ext = new \phpbb\class_loader('\\', "{$phpbb_root_path}ext/", $phpEx);
+	$phpbb_class_loader_ext = new \phpbb\class_loader('\\', "{$phpbb3_root_path}ext/", $phpEx);
 	$phpbb_class_loader_ext->register();
 
 	// Set up container
-	$phpbb_container_builder = new \phpbb\di\container_builder($phpbb_root_path, $phpEx);
+	$phpbb_container_builder = new \phpbb\di\container_builder($phpbb3_root_path, $phpEx);
 	$phpbb_container = $phpbb_container_builder->with_config($phpbb_config_php_file)->get_container();
 
 	$phpbb_class_loader->set_cache($phpbb_container->get('cache.driver'));
@@ -147,8 +147,8 @@ if (isset($_GET['avatar']))
 }
 
 // implicit else: we are not in avatar mode
-include($phpbb_root_path . 'common.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_download' . '.' . $phpEx);
+include($phpbb3_root_path . 'common.' . $phpEx);
+require($phpbb3_root_path . 'includes/functions_download' . '.' . $phpEx);
 
 $attach_id = $request->variable('id', 0);
 $mode = $request->variable('mode', '');
@@ -294,7 +294,7 @@ else
 
 	if ($display_cat == ATTACHMENT_CATEGORY_IMAGE && $mode === 'view' && (strpos($attachment['mimetype'], 'image') === 0) && (strpos(strtolower($user->browser), 'msie') !== false) && !phpbb_is_greater_ie_version($user->browser, 7))
 	{
-		wrap_img_in_html(append_sid($phpbb_root_path . 'download/file.' . $phpEx, 'id=' . $attachment['attach_id']), $attachment['real_filename']);
+		wrap_img_in_html(append_sid($phpbb3_root_path . 'download/file.' . $phpEx, 'id=' . $attachment['attach_id']), $attachment['real_filename']);
 		file_gc();
 	}
 	else
@@ -303,13 +303,13 @@ else
 		if ($download_mode == PHYSICAL_LINK)
 		{
 			// This presenting method should no longer be used
-			if (!@is_dir($phpbb_root_path . $config['upload_path']))
+			if (!@is_dir($phpbb3_root_path . $config['upload_path']))
 			{
 				send_status_line(500, 'Internal Server Error');
 				trigger_error($user->lang['PHYSICAL_DOWNLOAD_NOT_POSSIBLE']);
 			}
 
-			redirect($phpbb_root_path . $config['upload_path'] . '/' . $attachment['physical_filename']);
+			redirect($phpbb3_root_path . $config['upload_path'] . '/' . $attachment['physical_filename']);
 			file_gc();
 		}
 		else

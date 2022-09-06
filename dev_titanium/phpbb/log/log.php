@@ -78,7 +78,7 @@ class log implements \phpbb\log\log_interface
 	* phpBB root path
 	* @var string
 	*/
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/**
 	* Admin root path
@@ -99,18 +99,18 @@ class log implements \phpbb\log\log_interface
 	* @param	\phpbb\user		$user	User object
 	* @param	\phpbb\auth\auth		$auth	Auth object
 	* @param	\phpbb\event\dispatcher_interface	$phpbb_dispatcher	Event dispatcher
-	* @param	string		$phpbb_root_path		Root path
+	* @param	string		$phpbb3_root_path		Root path
 	* @param	string		$relative_admin_path	Relative admin root path
 	* @param	string		$php_ext			PHP Extension
 	* @param	string		$log_table		Name of the table we use to store our logs
 	*/
-	public function __construct($db, $user, $auth, $phpbb_dispatcher, $phpbb_root_path, $relative_admin_path, $php_ext, $log_table)
+	public function __construct($db, $user, $auth, $phpbb_dispatcher, $phpbb3_root_path, $relative_admin_path, $php_ext, $log_table)
 	{
 		$this->db = $db;
 		$this->user = $user;
 		$this->auth = $auth;
 		$this->dispatcher = $phpbb_dispatcher;
-		$this->phpbb_root_path = $phpbb_root_path;
+		$this->phpbb_root_path = $phpbb3_root_path;
 		$this->phpbb_admin_path = $this->phpbb_root_path . $relative_admin_path;
 		$this->php_ext = $php_ext;
 		$this->log_table = $log_table;

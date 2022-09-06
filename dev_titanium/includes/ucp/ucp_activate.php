@@ -29,7 +29,7 @@ class ucp_activate
 
 	function main($id, $mode)
 	{
-		global $config, $phpbb_root_path, $phpEx, $request;
+		global $config, $phpbb3_root_path, $phpEx, $request;
 		global $db, $user, $auth, $phpbb_container, $phpbb_log, $phpbb_dispatcher;
 
 		$user_id = $request->variable('u', 0);
@@ -49,7 +49,7 @@ class ucp_activate
 
 		if ($user_row['user_type'] <> USER_INACTIVE && !$user_row['user_newpasswd'])
 		{
-			meta_refresh(3, append_sid("{$phpbb_root_path}index.$phpEx"));
+			meta_refresh(3, append_sid("{$phpbb3_root_path}index.$phpEx"));
 			trigger_error('ALREADY_ACTIVATED');
 		}
 
@@ -99,7 +99,7 @@ class ucp_activate
 
 		if (!$update_password)
 		{
-			include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include_once($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 
 			user_active_flip('activate', $user_row['user_id']);
 
@@ -131,7 +131,7 @@ class ucp_activate
 			$phpbb_notifications = $phpbb_container->get('notification_manager');
 			$phpbb_notifications->delete_notifications('notification.type.admin_activate_user', $user_row['user_id']);
 
-			include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+			include_once($phpbb3_root_path . 'includes/functions_messenger.' . $phpEx);
 
 			$messenger = new messenger(false);
 
@@ -172,7 +172,7 @@ class ucp_activate
 		$vars = array('user_row', 'message');
 		extract($phpbb_dispatcher->trigger_event('core.ucp_activate_after', compact($vars)));
 
-		meta_refresh(3, append_sid("{$phpbb_root_path}index.$phpEx"));
+		meta_refresh(3, append_sid("{$phpbb3_root_path}index.$phpEx"));
 		trigger_error($user->lang[$message]);
 	}
 }

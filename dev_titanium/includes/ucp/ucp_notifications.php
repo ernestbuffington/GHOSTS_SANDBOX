@@ -26,7 +26,7 @@ class ucp_notifications
 	public function main($id, $mode)
 	{
 		global $config, $template, $user, $request, $phpbb_container, $phpbb_dispatcher;
-		global $phpbb_root_path, $phpEx;
+		global $phpbb3_root_path, $phpEx;
 
 		add_form_key('ucp_notification');
 
@@ -162,7 +162,7 @@ class ucp_notifications
 					$template->assign_block_vars('notification_list', $notification->prepare_for_display());
 				}
 
-				$base_url = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=ucp_notifications&amp;mode=notification_list");
+				$base_url = append_sid("{$phpbb3_root_path}ucp.$phpEx", "i=ucp_notifications&amp;mode=notification_list");
 				$start = $pagination->validate_start($start, $config['topics_per_page'], $notifications['total_count']);
 				$pagination->generate_template_pagination($base_url, 'pagination', 'start', $notifications['total_count'], $config['topics_per_page'], $start);
 

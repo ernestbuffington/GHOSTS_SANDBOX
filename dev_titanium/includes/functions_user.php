@@ -433,7 +433,7 @@ function user_add($user_row, $cp_data = false, $notifications_data = null)
 function user_delete($mode, $user_ids, $retain_username = true)
 {
 	global $cache, $config, $db, $user, $phpbb_dispatcher, $phpbb_container;
-	global $phpbb_root_path, $phpEx;
+	global $phpbb3_root_path, $phpEx;
 
 	$db->sql_transaction('begin');
 
@@ -664,7 +664,7 @@ function user_delete($mode, $user_ids, $retain_username = true)
 	{
 		if (!function_exists('delete_posts'))
 		{
-			include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_admin.' . $phpEx);
 		}
 
 		// Delete posts, attachments, etc.
@@ -761,7 +761,7 @@ function user_delete($mode, $user_ids, $retain_username = true)
 	// Clean the private messages tables from the user
 	if (!function_exists('phpbb_delete_users_pms'))
 	{
-		include($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
+		include($phpbb3_root_path . 'includes/functions_privmsgs.' . $phpEx);
 	}
 	phpbb_delete_users_pms($user_ids);
 
@@ -2222,7 +2222,7 @@ function phpbb_style_is_active($style_id)
 */
 function avatar_delete($mode, $row, $clean_db = false)
 {
-	global $phpbb_root_path, $config;
+	global $phpbb3_root_path, $config;
 
 	// Check if the users avatar is actually *not* a group avatar
 	if ($mode == 'user')
@@ -2239,9 +2239,9 @@ function avatar_delete($mode, $row, $clean_db = false)
 	}
 	$filename = get_avatar_filename($row[$mode . '_avatar']);
 
-	if (file_exists($phpbb_root_path . $config['avatar_path'] . '/' . $filename))
+	if (file_exists($phpbb3_root_path . $config['avatar_path'] . '/' . $filename))
 	{
-		@unlink($phpbb_root_path . $config['avatar_path'] . '/' . $filename);
+		@unlink($phpbb3_root_path . $config['avatar_path'] . '/' . $filename);
 		return true;
 	}
 
@@ -2563,7 +2563,7 @@ function group_create(&$group_id, $type, $name, $desc, $group_attributes, $allow
 */
 function group_correct_avatar($group_id, $old_entry)
 {
-	global $config, $db, $phpbb_root_path;
+	global $config, $db, $phpbb3_root_path;
 
 	$group_id		= (int) $group_id;
 	$ext 			= substr(strrchr($old_entry, '.'), 1);
@@ -2571,7 +2571,7 @@ function group_correct_avatar($group_id, $old_entry)
 	$new_filename 	= $config['avatar_salt'] . "_g$group_id.$ext";
 	$new_entry 		= 'g' . $group_id . '_' . substr(time(), -5) . ".$ext";
 
-	$avatar_path = $phpbb_root_path . $config['avatar_path'];
+	$avatar_path = $phpbb3_root_path . $config['avatar_path'];
 	if (@rename($avatar_path . '/'. $old_filename, $avatar_path . '/' . $new_filename))
 	{
 		$sql = 'UPDATE ' . GROUPS_TABLE . '
@@ -2602,7 +2602,7 @@ function avatar_remove_db($avatar_name)
 */
 function group_delete($group_id, $group_name = false)
 {
-	global $db, $cache, $auth, $user, $phpbb_root_path, $phpEx, $phpbb_dispatcher, $phpbb_container, $phpbb_log;
+	global $db, $cache, $auth, $user, $phpbb3_root_path, $phpEx, $phpbb_dispatcher, $phpbb_container, $phpbb_log;
 
 	if (!$group_name)
 	{
@@ -2696,7 +2696,7 @@ function group_delete($group_id, $group_name = false)
 	// Re-cache moderators
 	if (!function_exists('phpbb_cache_moderators'))
 	{
-		include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+		include($phpbb3_root_path . 'includes/functions_admin.' . $phpEx);
 	}
 
 	phpbb_cache_moderators($db, $cache, $auth);
@@ -3605,8 +3605,8 @@ function group_update_listings($group_id)
 	{
 		if (!function_exists('phpbb_cache_moderators'))
 		{
-			global $phpbb_root_path, $phpEx;
-			include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+			global $phpbb3_root_path, $phpEx;
+			include($phpbb3_root_path . 'includes/functions_admin.' . $phpEx);
 		}
 		phpbb_cache_moderators($db, $cache, $auth);
 	}
@@ -3615,8 +3615,8 @@ function group_update_listings($group_id)
 	{
 		if (!function_exists('phpbb_update_foes'))
 		{
-			global $phpbb_root_path, $phpEx;
-			include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+			global $phpbb3_root_path, $phpEx;
+			include($phpbb3_root_path . 'includes/functions_admin.' . $phpEx);
 		}
 		phpbb_update_foes($db, $auth, array($group_id));
 	}

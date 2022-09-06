@@ -36,7 +36,7 @@ class environment extends \Twig\Environment
 	protected $phpbb_dispatcher;
 
 	/** @var string */
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/** @var string */
 	protected $web_root_path;

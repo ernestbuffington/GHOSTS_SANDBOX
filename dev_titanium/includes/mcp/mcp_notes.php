@@ -36,7 +36,7 @@ class mcp_notes
 	function main($id, $mode)
 	{
 		global $user, $template, $request;
-		global $phpbb_root_path, $phpEx;
+		global $phpbb3_root_path, $phpEx;
 
 		$action = $request->variable('action', array('' => ''));
 
@@ -51,8 +51,8 @@ class mcp_notes
 		{
 			case 'front':
 				$template->assign_vars(array(
-					'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=mcp&amp;field=username&amp;select_single=true'),
-					'U_POST_ACTION'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes'),
+					'U_FIND_USERNAME'	=> append_sid("{$phpbb3_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=mcp&amp;field=username&amp;select_single=true'),
+					'U_POST_ACTION'		=> append_sid("{$phpbb3_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes'),
 
 					'L_TITLE'			=> $user->lang['MCP_NOTES'],
 				));
@@ -74,7 +74,7 @@ class mcp_notes
 	*/
 	function mcp_notes_user_view($action)
 	{
-		global $config, $phpbb_log, $request, $phpbb_root_path, $phpEx;
+		global $config, $phpbb_log, $request, $phpbb3_root_path, $phpEx;
 		global $template, $db, $user, $auth, $phpbb_container;
 
 		$user_id = $request->variable('u', 0);
@@ -187,7 +187,7 @@ class mcp_notes
 
 		if (!function_exists('phpbb_get_user_rank'))
 		{
-			include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_display.' . $phpEx);
 		}
 
 		// Generate the appropriate user information for the user we are looking at

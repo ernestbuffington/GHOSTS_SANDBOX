@@ -57,7 +57,7 @@ class acp_styles
 	protected $text_formatter_cache;
 
 	/** @var string */
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/** @var string */
 	protected $php_ext;
@@ -67,7 +67,7 @@ class acp_styles
 
 	public function main($id, $mode)
 	{
-		global $db, $user, $phpbb_admin_path, $phpbb_root_path, $phpEx, $template, $request, $cache, $auth, $config, $phpbb_dispatcher, $phpbb_container;
+		global $db, $user, $phpbb_admin_path, $phpbb3_root_path, $phpEx, $template, $request, $cache, $auth, $config, $phpbb_dispatcher, $phpbb_container;
 
 		$this->db = $db;
 		$this->user = $user;
@@ -77,7 +77,7 @@ class acp_styles
 		$this->auth = $auth;
 		$this->text_formatter_cache = $phpbb_container->get('text_formatter.cache');
 		$this->config = $config;
-		$this->phpbb_root_path = $phpbb_root_path;
+		$this->phpbb_root_path = $phpbb3_root_path;
 		$this->php_ext = $phpEx;
 		$this->dispatcher = $phpbb_dispatcher;
 

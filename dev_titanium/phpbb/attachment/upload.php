@@ -77,9 +77,9 @@ class upload
 	 * @param dispatcher $phpbb_dispatcher
 	 * @param plupload $plupload
 	 * @param user $user
-	 * @param $phpbb_root_path
+	 * @param $phpbb3_root_path
 	 */
-	public function __construct(auth $auth, service $cache, config $config, \phpbb\files\upload $files_upload, language $language, guesser $mimetype_guesser, dispatcher $phpbb_dispatcher, plupload $plupload, user $user, $phpbb_root_path)
+	public function __construct(auth $auth, service $cache, config $config, \phpbb\files\upload $files_upload, language $language, guesser $mimetype_guesser, dispatcher $phpbb_dispatcher, plupload $plupload, user $user, $phpbb3_root_path)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
@@ -90,7 +90,7 @@ class upload
 		$this->phpbb_dispatcher = $phpbb_dispatcher;
 		$this->plupload = $plupload;
 		$this->user = $user;
-		$this->phpbb_root_path = $phpbb_root_path;
+		$this->phpbb_root_path = $phpbb3_root_path;
 	}
 
 	/**

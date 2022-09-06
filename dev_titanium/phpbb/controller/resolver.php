@@ -44,21 +44,21 @@ class resolver implements ControllerResolverInterface
 	* phpBB root path
 	* @var string
 	*/
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/**
 	* Construct method
 	*
 	* @param ContainerInterface $container ContainerInterface object
-	* @param string $phpbb_root_path Relative path to phpBB root
+	* @param string $phpbb3_root_path Relative path to phpBB root
 	* @param \phpbb\template\template $template
 	*/
-	public function __construct(ContainerInterface $container, $phpbb_root_path, \phpbb\template\template $template = null)
+	public function __construct(ContainerInterface $container, $phpbb3_root_path, \phpbb\template\template $template = null)
 	{
 		$this->container = $container;
 		$this->template = $template;
 		$this->type_cast_helper = new \phpbb\request\type_cast_helper();
-		$this->phpbb_root_path = $phpbb_root_path;
+		$this->phpbb_root_path = $phpbb3_root_path;
 	}
 
 	/**

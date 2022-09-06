@@ -25,7 +25,7 @@ class default_resources_locator implements resources_locator_interface
 	 *
 	 * @var string
 	 */
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/**
 	 * Name of the current environment
@@ -44,13 +44,13 @@ class default_resources_locator implements resources_locator_interface
 	/**
 	 * Construct method
 	 *
-	 * @param string	$phpbb_root_path	phpBB root path
+	 * @param string	$phpbb3_root_path	phpBB root path
 	 * @param string	$environment		Name of the current environment
 	 * @param manager	$extension_manager	Extension manager
 	 */
-	public function __construct($phpbb_root_path, $environment, manager $extension_manager = null)
+	public function __construct($phpbb3_root_path, $environment, manager $extension_manager = null)
 	{
-		$this->phpbb_root_path		= $phpbb_root_path;
+		$this->phpbb_root_path		= $phpbb3_root_path;
 		$this->environment			= $environment;
 		$this->extension_manager	= $extension_manager;
 	}

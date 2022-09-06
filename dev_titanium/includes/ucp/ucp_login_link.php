@@ -40,7 +40,7 @@ class ucp_login_link
 	function main($id, $mode)
 	{
 		global $phpbb_container, $request, $template, $user, $phpbb_dispatcher;
-		global $phpbb_root_path, $phpEx;
+		global $phpbb3_root_path, $phpEx;
 
 		// Initialize necessary variables
 		$login_error = null;
@@ -116,7 +116,7 @@ class ucp_login_link
 			'S_HIDDEN_FIELDS'		=> $this->get_hidden_fields($data),
 
 			// Registration elements
-			'REGISTER_ACTION'	=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register'),
+			'REGISTER_ACTION'	=> append_sid("{$phpbb3_root_path}ucp.$phpEx", 'mode=register'),
 
 			// Login elements
 			'LOGIN_ERROR'		=> $login_error,
@@ -228,7 +228,7 @@ class ucp_login_link
 				case LOGIN_ERROR_PASSWORD_CONVERT:
 					$login_error = sprintf(
 						$user->lang[$result['error_msg']],
-						($config['email_enable']) ? '<a href="' . append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=sendpassword') . '">' : '',
+						($config['email_enable']) ? '<a href="' . append_sid("{$phpbb3_root_path}ucp.$phpEx", 'mode=sendpassword') . '">' : '',
 						($config['email_enable']) ? '</a>' : '',
 						($config['board_contact']) ? '<a href="mailto:' . htmlspecialchars($config['board_contact'], ENT_COMPAT) . '">' : '',
 						($config['board_contact']) ? '</a>' : ''
@@ -257,8 +257,8 @@ class ucp_login_link
 	*/
 	protected function perform_redirect()
 	{
-		global $phpbb_root_path, $phpEx;
-		$url = append_sid($phpbb_root_path . 'index.' . $phpEx);
+		global $phpbb3_root_path, $phpEx;
+		$url = append_sid($phpbb3_root_path . 'index.' . $phpEx);
 		redirect($url);
 	}
 }

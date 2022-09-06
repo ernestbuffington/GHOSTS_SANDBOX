@@ -630,7 +630,7 @@ class auth_admin extends \phpbb\auth\auth
 	*/
 	function display_role_mask(&$hold_ary)
 	{
-		global $db, $template, $user, $phpbb_root_path, $phpEx;
+		global $db, $template, $user, $phpbb3_root_path, $phpEx;
 		global $phpbb_container;
 
 		if (!count($hold_ary))
@@ -697,7 +697,7 @@ class auth_admin extends \phpbb\auth\auth
 					$template->assign_block_vars('role_mask.groups', array(
 						'GROUP_ID'		=> $row['group_id'],
 						'GROUP_NAME'	=> $group_helper->get_name($row['group_name']),
-						'U_PROFILE'		=> append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g={$row['group_id']}"))
+						'U_PROFILE'		=> append_sid("{$phpbb3_root_path}memberlist.$phpEx", "mode=group&amp;g={$row['group_id']}"))
 					);
 				}
 				$db->sql_freeresult($result);

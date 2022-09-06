@@ -227,7 +227,7 @@ class session
 	*/
 	function session_begin($update_session_page = true)
 	{
-		global $phpEx, $SID, $_SID, $_EXTRA_URL, $db, $config, $phpbb_root_path;
+		global $phpEx, $SID, $_SID, $_EXTRA_URL, $db, $config, $phpbb3_root_path;
 		global $request, $phpbb_container, $user, $phpbb_log, $phpbb_dispatcher;
 
 		// Give us some basic information
@@ -239,7 +239,7 @@ class session
 		$this->forwarded_for		= $request->header('X-Forwarded-For');
 
 		$this->host					= $this->extract_current_hostname();
-		$this->page					= $this->extract_current_page($phpbb_root_path);
+		$this->page					= $this->extract_current_page($phpbb3_root_path);
 
 		// if the forwarded for header shall be checked we have to validate its contents
 		if ($config['forwarded_for_check'])
@@ -345,7 +345,7 @@ class session
 		if (defined('NEED_SID') && (empty($session_id) || $this->session_id !== $session_id))
 		{
 			send_status_line(401, 'Unauthorized');
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("{$phpbb3_root_path}index.$phpEx"));
 		}
 
 		// if session id is set
@@ -1253,7 +1253,7 @@ class session
 
 		if ($banned && !$return)
 		{
-			global $phpbb_root_path, $phpEx;
+			global $phpbb3_root_path, $phpEx;
 
 			// If the session is empty we need to create a valid one...
 			if (empty($this->session_id))
@@ -1297,7 +1297,7 @@ class session
 			$till_date = ($ban_row['ban_end']) ? $this->format_date($ban_row['ban_end']) : '';
 			$message = ($ban_row['ban_end']) ? 'BOARD_BAN_TIME' : 'BOARD_BAN_PERM';
 
-			$contact_link = phpbb_get_board_contact_link($config, $phpbb_root_path, $phpEx);
+			$contact_link = phpbb_get_board_contact_link($config, $phpbb3_root_path, $phpEx);
 			$message = sprintf($this->lang[$message], $till_date, '<a href="' . $contact_link . '">', '</a>');
 			$message .= ($ban_row['ban_give_reason']) ? '<br /><br />' . sprintf($this->lang['BOARD_BAN_REASON'], $ban_row['ban_give_reason']) : '';
 			$message .= '<br /><br /><em>' . $this->lang['BAN_TRIGGERED_BY_' . strtoupper($ban_triggered_by)] . '</em>';

@@ -31,7 +31,7 @@ class manager
 	protected $php_ext;
 	protected $extensions;
 	protected $extension_table;
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 	protected $cache_name;
 
 	/**
@@ -42,12 +42,12 @@ class manager
 	* @param \phpbb\config\config $config Config object
 	* @param \phpbb\filesystem\filesystem_interface $filesystem
 	* @param string $extension_table The name of the table holding extensions
-	* @param string $phpbb_root_path Path to the phpbb includes directory.
+	* @param string $phpbb3_root_path Path to the phpbb includes directory.
 	* @param string $php_ext php file extension, defaults to php
 	* @param \phpbb\cache\service $cache A cache instance or null
 	* @param string $cache_name The name of the cache variable, defaults to _ext
 	*/
-	public function __construct(ContainerInterface $container, \phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, \phpbb\filesystem\filesystem_interface $filesystem, $extension_table, $phpbb_root_path, $php_ext = 'php', \phpbb\cache\service $cache = null, $cache_name = '_ext')
+	public function __construct(ContainerInterface $container, \phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, \phpbb\filesystem\filesystem_interface $filesystem, $extension_table, $phpbb3_root_path, $php_ext = 'php', \phpbb\cache\service $cache = null, $cache_name = '_ext')
 	{
 		$this->cache = $cache;
 		$this->cache_name = $cache_name;
@@ -56,7 +56,7 @@ class manager
 		$this->db = $db;
 		$this->extension_table = $extension_table;
 		$this->filesystem = $filesystem;
-		$this->phpbb_root_path = $phpbb_root_path;
+		$this->phpbb_root_path = $phpbb3_root_path;
 		$this->php_ext = $php_ext;
 
 		$this->extensions = ($this->cache) ? $this->cache->get($this->cache_name) : false;

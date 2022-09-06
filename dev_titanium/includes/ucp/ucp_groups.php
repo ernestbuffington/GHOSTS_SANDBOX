@@ -28,7 +28,7 @@ class ucp_groups
 
 	function main($id, $mode)
 	{
-		global $config, $phpbb_root_path, $phpEx, $phpbb_admin_path;
+		global $config, $phpbb3_root_path, $phpEx, $phpbb_admin_path;
 		global $db, $user, $auth, $cache, $template;
 		global $request, $phpbb_container, $phpbb_log;
 
@@ -318,7 +318,7 @@ class ucp_groups
 						'GROUP_STATUS'	=> $user->lang['GROUP_IS_' . $group_status],
 						'GROUP_COLOUR'	=> $row['group_colour'],
 
-						'U_VIEW_GROUP'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']),
+						'U_VIEW_GROUP'	=> append_sid("{$phpbb3_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']),
 
 						'S_GROUP_DEFAULT'	=> ($row['group_id'] == $user->data['group_id']) ? true : false,
 						'S_ROW_COUNT'		=> ${$block . '_count'}++)
@@ -374,7 +374,7 @@ class ucp_groups
 						'S_CAN_JOIN'	=> ($row['group_type'] == GROUP_OPEN || $row['group_type'] == GROUP_FREE) ? true : false,
 						'GROUP_COLOUR'	=> $row['group_colour'],
 
-						'U_VIEW_GROUP'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']),
+						'U_VIEW_GROUP'	=> append_sid("{$phpbb3_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']),
 
 						'S_ROW_COUNT'	=> $nonmember_count++)
 					);
@@ -401,7 +401,7 @@ class ucp_groups
 
 				if (!function_exists('phpbb_get_user_rank'))
 				{
-					include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+					include($phpbb3_root_path . 'includes/functions_display.' . $phpEx);
 				}
 
 				add_form_key('ucp_groups');
@@ -864,7 +864,7 @@ class ucp_groups
 
 							'U_ACTION'			=> $this->u_action . "&amp;g=$group_id",
 							'S_UCP_ACTION'		=> $this->u_action . "&amp;g=$group_id",
-							'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=ucp&amp;field=usernames'),
+							'U_FIND_USERNAME'	=> append_sid("{$phpbb3_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=ucp&amp;field=usernames'),
 						));
 
 					break;

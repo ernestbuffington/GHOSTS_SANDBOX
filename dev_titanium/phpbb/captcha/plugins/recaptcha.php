@@ -130,7 +130,7 @@ class recaptcha extends captcha_abstract
 
 	function get_template()
 	{
-		global $config, $user, $template, $phpbb_root_path, $phpEx;
+		global $config, $user, $template, $phpbb3_root_path, $phpEx;
 
 		if ($this->is_solved())
 		{
@@ -138,7 +138,7 @@ class recaptcha extends captcha_abstract
 		}
 		else
 		{
-			$contact_link = phpbb_get_board_contact_link($config, $phpbb_root_path, $phpEx);
+			$contact_link = phpbb_get_board_contact_link($config, $phpbb3_root_path, $phpEx);
 			$explain = $user->lang(($this->type != CONFIRM_POST) ? 'CONFIRM_EXPLAIN' : 'POST_CONFIRM_EXPLAIN', '<a href="' . $contact_link . '">', '</a>');
 
 			$template->assign_vars(array(

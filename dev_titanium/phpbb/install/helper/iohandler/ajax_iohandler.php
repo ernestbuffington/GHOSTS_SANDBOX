@@ -44,7 +44,7 @@ class ajax_iohandler extends iohandler_base
 	/**
 	 * @var string
 	 */
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/**
 	 * @var string

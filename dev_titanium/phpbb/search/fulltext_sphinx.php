@@ -57,7 +57,7 @@ class fulltext_sphinx
 	 * Relative path to board root
 	 * @var string
 	 */
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/**
 	 * PHP Extension
@@ -125,7 +125,7 @@ class fulltext_sphinx
 	 * Creates a new \phpbb\search\fulltext_postgres, which is used as a search backend
 	 *
 	 * @param string|bool $error Any error that occurs is passed on through this reference variable otherwise false
-	 * @param string $phpbb_root_path Relative path to phpBB root
+	 * @param string $phpbb3_root_path Relative path to phpBB root
 	 * @param string $phpEx PHP file extension
 	 * @param \phpbb\auth\auth $auth Auth object
 	 * @param \phpbb\config\config $config Config object
@@ -133,9 +133,9 @@ class fulltext_sphinx
 	 * @param \phpbb\user $user User object
 	 * @param \phpbb\event\dispatcher_interface	$phpbb_dispatcher	Event dispatcher object
 	 */
-	public function __construct(&$error, $phpbb_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher)
+	public function __construct(&$error, $phpbb3_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher)
 	{
-		$this->phpbb_root_path = $phpbb_root_path;
+		$this->phpbb_root_path = $phpbb3_root_path;
 		$this->php_ext = $phpEx;
 		$this->config = $config;
 		$this->phpbb_dispatcher = $phpbb_dispatcher;

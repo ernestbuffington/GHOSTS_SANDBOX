@@ -28,7 +28,7 @@ class file extends \phpbb\cache\driver\base
 	/**
 	* Set cache path
 	*
-	* @param string $cache_dir Define the path to the cache directory (default: $phpbb_root_path . 'cache/')
+	* @param string $cache_dir Define the path to the cache directory (default: $phpbb3_root_path . 'cache/')
 	*/
 	function __construct($cache_dir = null)
 	{

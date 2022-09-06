@@ -59,9 +59,9 @@ class user extends \phpbb\session
 	*/
 	function __construct(\phpbb\language\language $lang, $datetime_class)
 	{
-		global $phpbb_root_path;
+		global $phpbb3_root_path;
 
-		$this->lang_path = $phpbb_root_path . 'language/';
+		$this->lang_path = $phpbb3_root_path . 'language/';
 		$this->language = $lang;
 		$this->datetime = $datetime_class;
 
@@ -109,7 +109,7 @@ class user extends \phpbb\session
 	*/
 	function setup($lang_set = false, $style_id = false)
 	{
-		global $db, $request, $template, $config, $auth, $phpEx, $phpbb_root_path, $cache;
+		global $db, $request, $template, $config, $auth, $phpEx, $phpbb3_root_path, $cache;
 		global $phpbb_dispatcher, $phpbb_container;
 
 		$this->language->set_default_language($config['default_lang']);
@@ -354,7 +354,7 @@ class user extends \phpbb\session
 
 		// Disable board if the install/ directory is still present
 		// For the brave development army we do not care about this, else we need to comment out this every time we develop locally
-		if (!$phpbb_container->getParameter('allow_install_dir') && !defined('ADMIN_START') && !defined('IN_INSTALL') && !defined('IN_LOGIN') && file_exists($phpbb_root_path . 'install') && !is_file($phpbb_root_path . 'install'))
+		if (!$phpbb_container->getParameter('allow_install_dir') && !defined('ADMIN_START') && !defined('IN_INSTALL') && !defined('IN_LOGIN') && file_exists($phpbb3_root_path . 'install') && !is_file($phpbb3_root_path . 'install'))
 		{
 			// Adjust the message slightly according to the permissions
 			if ($auth->acl_gets('a_', 'm_') || $auth->acl_getf_global('m_'))
@@ -434,7 +434,7 @@ class user extends \phpbb\session
 		{
 			if (strpos($this->page['query_string'], 'mode=reg_details') === false && $this->page['page_name'] != "ucp.$phpEx")
 			{
-				redirect(append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=profile&amp;mode=reg_details'));
+				redirect(append_sid("{$phpbb3_root_path}ucp.$phpEx", 'i=profile&amp;mode=reg_details'));
 			}
 		}
 
@@ -820,9 +820,9 @@ class user extends \phpbb\session
 
 		if (!function_exists('remove_newly_registered'))
 		{
-			global $phpbb_root_path, $phpEx;
+			global $phpbb3_root_path, $phpEx;
 
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 		}
 		if ($group = remove_newly_registered($this->data['user_id'], $this->data))
 		{

@@ -39,7 +39,7 @@ class twig extends \phpbb\template\base
 	* phpBB root path
 	* @var string
 	*/
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/**
 	* PHP file extension

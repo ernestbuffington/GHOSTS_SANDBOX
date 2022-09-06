@@ -26,7 +26,7 @@ class acp_ranks
 	function main($id, $mode)
 	{
 		global $db, $user, $template, $cache, $request, $phpbb_dispatcher;
-		global $config, $phpbb_root_path, $phpbb_admin_path, $phpbb_log;
+		global $config, $phpbb3_root_path, $phpbb_admin_path, $phpbb_log;
 
 		$user->add_lang('acp/posting');
 
@@ -180,7 +180,7 @@ class acp_ranks
 				}
 				$db->sql_freeresult($result);
 
-				$imglist = filelist($phpbb_root_path . $config['ranks_path'], '');
+				$imglist = filelist($phpbb3_root_path . $config['ranks_path'], '');
 				$edit_img = $filename_list = '';
 
 				foreach ($imglist as $path => $img_ary)
@@ -216,12 +216,12 @@ class acp_ranks
 				$tpl_ary = array(
 					'S_EDIT'			=> true,
 					'U_BACK'			=> $this->u_action,
-					'RANKS_PATH'		=> $phpbb_root_path . $config['ranks_path'],
+					'RANKS_PATH'		=> $phpbb3_root_path . $config['ranks_path'],
 					'U_ACTION'			=> $this->u_action . '&amp;id=' . $rank_id,
 
 					'RANK_TITLE'		=> (isset($ranks['rank_title'])) ? $ranks['rank_title'] : '',
 					'S_FILENAME_LIST'	=> $filename_list,
-					'RANK_IMAGE'		=> ($edit_img) ? $phpbb_root_path . $config['ranks_path'] . '/' . $edit_img : htmlspecialchars($phpbb_admin_path, ENT_COMPAT) . 'images/spacer.gif',
+					'RANK_IMAGE'		=> ($edit_img) ? $phpbb3_root_path . $config['ranks_path'] . '/' . $edit_img : htmlspecialchars($phpbb_admin_path, ENT_COMPAT) . 'images/spacer.gif',
 					'S_SPECIAL_RANK'	=> (isset($ranks['rank_special']) && $ranks['rank_special']) ? true : false,
 					'MIN_POSTS'			=> (isset($ranks['rank_min']) && !$ranks['rank_special']) ? $ranks['rank_min'] : 0,
 				);
@@ -258,7 +258,7 @@ class acp_ranks
 				'S_RANK_IMAGE'		=> ($row['rank_image']) ? true : false,
 				'S_SPECIAL_RANK'	=> ($row['rank_special']) ? true : false,
 
-				'RANK_IMAGE'		=> $phpbb_root_path . $config['ranks_path'] . '/' . $row['rank_image'],
+				'RANK_IMAGE'		=> $phpbb3_root_path . $config['ranks_path'] . '/' . $row['rank_image'],
 				'RANK_TITLE'		=> $row['rank_title'],
 				'MIN_POSTS'			=> $row['rank_min'],
 

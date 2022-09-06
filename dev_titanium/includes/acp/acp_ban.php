@@ -26,11 +26,11 @@ class acp_ban
 	function main($id, $mode)
 	{
 		global $user, $template, $request, $phpbb_dispatcher;
-		global $phpbb_root_path, $phpEx;
+		global $phpbb3_root_path, $phpEx;
 
 		if (!function_exists('user_ban'))
 		{
-			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			include($phpbb3_root_path . 'includes/functions_user.' . $phpEx);
 		}
 
 		$bansubmit	= $request->is_set_post('bansubmit');
@@ -171,7 +171,7 @@ class acp_ban
 			'S_USERNAME_BAN'	=> ($mode == 'user') ? true : false,
 
 			'U_ACTION'			=> $this->u_action,
-			'U_FIND_USERNAME'	=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=acp_ban&amp;field=ban'),
+			'U_FIND_USERNAME'	=> append_sid("{$phpbb3_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=acp_ban&amp;field=ban'),
 		));
 	}
 }

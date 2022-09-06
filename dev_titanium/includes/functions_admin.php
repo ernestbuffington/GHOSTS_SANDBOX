@@ -904,7 +904,7 @@ function delete_topics($where_type, $where_ids, $auto_sync = true, $post_count_s
 */
 function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync = true, $post_count_sync = true, $call_delete_topics = true)
 {
-	global $db, $config, $phpbb_root_path, $phpEx, $auth, $user, $phpbb_container, $phpbb_dispatcher;
+	global $db, $config, $phpbb3_root_path, $phpEx, $auth, $user, $phpbb_container, $phpbb_dispatcher;
 
 	// Notifications types to delete
 	$delete_notifications_types = array(
@@ -1094,7 +1094,7 @@ function delete_posts($where_type, $where_ids, $auto_sync = true, $posted_sync =
 	}
 
 	$error = false;
-	$search = new $search_type($error, $phpbb_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher);
+	$search = new $search_type($error, $phpbb3_root_path, $phpEx, $auth, $config, $db, $user, $phpbb_dispatcher);
 
 	if ($error)
 	{

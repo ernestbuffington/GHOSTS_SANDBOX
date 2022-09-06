@@ -42,9 +42,9 @@ class p_master
 	*/
 	function __construct($include_path = false)
 	{
-		global $phpbb_root_path;
+		global $phpbb3_root_path;
 
-		$this->include_path = ($include_path !== false) ? $include_path : $phpbb_root_path . 'includes/';
+		$this->include_path = ($include_path !== false) ? $include_path : $phpbb3_root_path . 'includes/';
 
 		// Make sure the path ends with /
 		if (substr($this->include_path, -1) !== '/')
@@ -555,7 +555,7 @@ class p_master
 	*/
 	function load_active($mode = false, $module_url = false, $execute_module = true)
 	{
-		global $phpbb_root_path, $phpbb_admin_path, $phpEx, $user, $template, $request;
+		global $phpbb3_root_path, $phpbb_admin_path, $phpEx, $user, $template, $request;
 
 		$module_path = $this->include_path . $this->p_class;
 		$icat = $request->variable('icat', '');
@@ -604,7 +604,7 @@ class p_master
 			// 0 vendor, 1 extension name, ...
 			if (isset($module_dir[1]))
 			{
-				$module_style_dir = $phpbb_root_path . 'ext/' . $module_dir[0] . '/' . $module_dir[1] . '/adm/style';
+				$module_style_dir = $phpbb3_root_path . 'ext/' . $module_dir[0] . '/' . $module_dir[1] . '/adm/style';
 
 				if (is_dir($module_style_dir))
 				{
@@ -640,7 +640,7 @@ class p_master
 			{
 				$module_style_dir = 'ext/' . $module_dir[0] . '/' . $module_dir[1] . '/styles';
 
-				if (is_dir($phpbb_root_path . $module_style_dir))
+				if (is_dir($phpbb3_root_path . $module_style_dir))
 				{
 					$template->set_style(array($module_style_dir, 'styles'));
 				}
@@ -653,7 +653,7 @@ class p_master
 			}
 			else
 			{
-				$this->module->u_action = $phpbb_root_path . (($user->page['page_dir']) ? $user->page['page_dir'] . '/' : '') . $user->page['page_name'];
+				$this->module->u_action = $phpbb3_root_path . (($user->page['page_dir']) ? $user->page['page_dir'] . '/' : '') . $user->page['page_name'];
 			}
 
 			$this->module->u_action = append_sid($this->module->u_action, 'i=' . $this->get_module_identifier($this->p_name)) . (($icat) ? '&amp;icat=' . $icat : '') . "&amp;mode={$this->p_mode}";

@@ -45,7 +45,7 @@ class helper
 	protected $user;
 
 	/** @var string phpBB root path */
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/** @var array Return templates for a group name string */
 	protected $name_strings;

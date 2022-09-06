@@ -24,7 +24,7 @@ abstract class base_extractor implements extractor_interface
 	/**
 	 * @var    string    phpBB root path
 	 */
-	protected $phpbb_root_path;
+	protected $phpbb3_root_path;
 
 	/**
 	 * @var    \phpbb\request\request_interface
@@ -84,13 +84,13 @@ abstract class base_extractor implements extractor_interface
 	/**
 	 * Constructor
 	 *
-	 * @param string $phpbb_root_path
+	 * @param string $phpbb3_root_path
 	 * @param \phpbb\request\request_interface $request
 	 * @param \phpbb\db\driver\driver_interface $db
 	 */
-	public function __construct($phpbb_root_path, \phpbb\request\request_interface $request, \phpbb\db\driver\driver_interface $db)
+	public function __construct($phpbb3_root_path, \phpbb\request\request_interface $request, \phpbb\db\driver\driver_interface $db)
 	{
-		$this->phpbb_root_path	= $phpbb_root_path;
+		$this->phpbb_root_path	= $phpbb3_root_path;
 		$this->request			= $request;
 		$this->db				= $db;
 		$this->fp				= null;
