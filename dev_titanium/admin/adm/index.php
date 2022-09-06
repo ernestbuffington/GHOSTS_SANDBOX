@@ -18,7 +18,7 @@ define('ADMIN_START', true);
 define('NEED_SID', true);
 
 // Include files
-$phpbb3_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './../';
+$phpbb3_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './../../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 require($phpbb3_root_path . 'common.' . $phpEx);
 require($phpbb3_root_path . 'includes/functions_acp.' . $phpEx);

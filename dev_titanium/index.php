@@ -12,11 +12,15 @@
 */
 
 /**
+
 */
 
 /**
 * @ignore
 */
+//define('HOME_FILE', true);
+//define('MODULE_FILE', true);
+//$_SERVER['PHP_SELF'] = 'modules.php';
 define('IN_PHPBB', true);
 $phpbb3_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);

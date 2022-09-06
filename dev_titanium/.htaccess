@@ -28,6 +28,10 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ app.php [QSA,L]
 
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ modules.php [QSA,L]
+
 #
 # If symbolic links are not already being followed,
 # uncomment the line below.
