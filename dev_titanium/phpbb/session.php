@@ -76,7 +76,7 @@ class session
 		}
 		unset($args);
 
-		// The following examples given are for an request uri of {path to the phpbb directory}/adm/index.php?i=10&b=2
+		// The following examples given are for an request uri of {path to the phpbb directory}/admin/adm/index.php?i=10&b=2
 
 		// The current query string
 		$query_string = trim(implode('&', $use_args));
@@ -115,14 +115,14 @@ class session
 			$page_dir = substr($page_dir, 0, -1);
 		}
 
-		// Current page from phpBB root (for example: adm/index.php?i=10&b=2)
+		// Current page from phpBB root (for example: admin/adm/index.php?i=10&b=2)
 		$page = (($page_dir) ? $page_dir . '/' : '') . $page_name;
 		if ($query_string)
 		{
 			$page .= '?' . $query_string;
 		}
 
-		// The script path from the webroot to the current directory (for example: /phpBB3/adm/) : always prefixed with / and ends in /
+		// The script path from the webroot to the current directory (for example: /phpBB3/admin/adm/) : always prefixed with / and ends in /
 		$script_path = $symfony_request->getBasePath();
 
 		// The script path from the webroot to the phpBB root (for example: /phpBB3/)

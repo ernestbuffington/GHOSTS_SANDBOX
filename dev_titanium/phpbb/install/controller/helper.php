@@ -121,7 +121,7 @@ class helper
 		$this->request = $request;
 		$this->router = $router;
 		$this->phpbb_root_path = $phpbb3_root_path;
-		$this->phpbb_admin_path = $phpbb3_root_path . 'adm/';
+		$this->phpbb_admin_path = $phpbb3_root_path . 'admin/adm/';
 	}
 
 	/**
@@ -254,7 +254,7 @@ class helper
 	protected function page_header($page_title, $selected_language = false)
 	{
 		// Path to templates
-		$paths = array($this->phpbb_root_path . 'install/update/new/adm/', $this->phpbb_admin_path);
+		$paths = array($this->phpbb_root_path . 'install/update/new/admin/adm/', $this->phpbb_admin_path);
 		$paths = array_filter($paths, 'is_dir');
 		$path = array_shift($paths);
 		$path = substr($path, strlen($this->phpbb_root_path));

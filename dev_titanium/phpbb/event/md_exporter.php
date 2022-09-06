@@ -80,10 +80,10 @@ class md_exporter
 	{
 		$this->crawl_eventsmd($md_file, 'adm');
 
-		$file_list = $this->get_recursive_file_list($this->path  . 'adm/style/');
+		$file_list = $this->get_recursive_file_list($this->path  . 'admin/adm/style/');
 		foreach ($file_list as $file)
 		{
-			$file_name = 'adm/style/' . $file;
+			$file_name = 'admin/adm/style/' . $file;
 			$this->validate_events_from_file($file_name, $this->crawl_file_for_events($file_name));
 		}
 
@@ -529,9 +529,9 @@ class md_exporter
 				{
 					$files_list['prosilver'][] = substr($file, strlen('styles/prosilver/template/'));
 				}
-				else if (($this->filter === 'adm') && strpos($file, 'adm/style/') === 0)
+				else if (($this->filter === 'adm') && strpos($file, 'admin/adm/style/') === 0)
 				{
-					$files_list['adm'][] = substr($file, strlen('adm/style/'));
+					$files_list['adm'][] = substr($file, strlen('admin/adm/style/'));
 				}
 				else
 				{
@@ -549,7 +549,7 @@ class md_exporter
 				throw new \LogicException("Invalid file '{$file}' not found for event '{$this->current_event}'", 1);
 			}
 
-			$files_list['adm'][] =  substr($file, strlen('adm/style/'));
+			$files_list['adm'][] =  substr($file, strlen('admin/adm/style/'));
 
 			$this->events_by_file[$file][] = $this->current_event;
 		}

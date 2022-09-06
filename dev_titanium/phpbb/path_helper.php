@@ -47,7 +47,7 @@ class path_helper
 	* @param \phpbb\request\request_interface $request
 	* @param string $phpbb3_root_path Relative path to phpBB root
 	* @param string $php_ext PHP file extension
-	* @param mixed $adm_relative_path Relative path admin path to adm/ root
+	* @param mixed $adm_relative_path Relative path admin path to admin/adm/ root
 	*/
 	public function __construct(\phpbb\symfony_request $symfony_request, \phpbb\filesystem\filesystem_interface $filesystem, \phpbb\request\request_interface $request, $phpbb3_root_path, $php_ext, $adm_relative_path = null)
 	{

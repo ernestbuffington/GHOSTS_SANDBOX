@@ -604,14 +604,14 @@ class p_master
 			// 0 vendor, 1 extension name, ...
 			if (isset($module_dir[1]))
 			{
-				$module_style_dir = $phpbb3_root_path . 'ext/' . $module_dir[0] . '/' . $module_dir[1] . '/adm/style';
+				$module_style_dir = $phpbb3_root_path . 'ext/' . $module_dir[0] . '/' . $module_dir[1] . '/admin/adm/style';
 
 				if (is_dir($module_style_dir))
 				{
 					$template->set_custom_style(array(
 						array(
 							'name' 		=> 'adm',
-							'ext_path' 	=> 'adm/style/',
+							'ext_path' 	=> 'admin/adm/style/',
 						),
 					), array($module_style_dir, $phpbb_admin_path . 'style'));
 				}

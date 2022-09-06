@@ -257,7 +257,7 @@ class installer
 
 				$phpbb3_root_path = $this->container_factory->get_parameter('core.root_path');
 
-				$acp_url = append_sid($phpbb3_root_path . 'adm/index.php', 'i=acp_help_phpbb&mode=help_phpbb', true, $user->session_id);
+				$acp_url = append_sid($phpbb3_root_path . 'admin/adm/index.php', 'i=acp_help_phpbb&mode=help_phpbb', true, $user->session_id);
 				$this->iohandler->add_success_message('INSTALLER_FINISHED', array(
 					'ACP_LINK',
 					$acp_url,

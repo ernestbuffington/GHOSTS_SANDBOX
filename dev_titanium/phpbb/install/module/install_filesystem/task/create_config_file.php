@@ -180,7 +180,7 @@ class create_config_file extends \phpbb\install\task_base
 			'dbpasswd'		=> $this->install_config->get('dbpasswd'),
 			'table_prefix'	=> $this->install_config->get('table_prefix'),
 
-			'phpbb_adm_relative_path'	=> 'adm/',
+			'phpbb_adm_relative_path'	=> 'admin/adm/',
 
 			'acm_type'		=> 'phpbb\cache\driver\file',
 		);
