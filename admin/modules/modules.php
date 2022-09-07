@@ -136,6 +136,14 @@ function modadmin_dispaly_modules($modadmin_modules)
          continue;
       }
 
+      # Fixed by TheGhost 9/7/2022
+	  # Added for phpBB 3 we do not want this to show up in the module list
+	  # Remove phpBB 3 from modules list!
+      if(substr($module['title'],0,13) == 'phpbb') 
+      {
+         continue;
+      }
+
       # lis the top header information
       if($module['title'] == $main_module) 
       {
