@@ -17,7 +17,7 @@
 
 if (!defined('IN_PHPBB'))
 {
-	exit;
+	exit; // use of exit is discouraged
 }
 
 require($phpbb_root_path . 'includes/startup.' . $phpEx);
