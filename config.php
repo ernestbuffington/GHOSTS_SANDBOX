@@ -36,7 +36,7 @@ $dbhost = 'localhost';
 |                                                         |
 | Default: xxx_evo                                        |
 ---------------------------------------------------------*/
-$dbname = 'dev4_main';
+$dbname = 'barebones_an602';
 
 /*----[ $dbuname ] ---------------------------------------
 | The username linked to your database, must have correct |
@@ -44,14 +44,14 @@ $dbname = 'dev4_main';
 |                                                         |
 | Default: xxx_evo                                        |
 ---------------------------------------------------------*/
-$dbuname = 'dev4_user';
+$dbuname = 'barebones_an602';
 
 /*----[ $dbpass ] ----------------------------------------
 | The password associated with your db usersname          |
 |                                                         |
 | Default: null                                           |
 ---------------------------------------------------------*/
-$dbpass = '';
+$dbpass = '@0p-5Si2H7';
 
 /*----[ $dbtype ] ----------------------------------------
 | The type of SQL server you prefer to use                |

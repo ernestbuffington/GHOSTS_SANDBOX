@@ -33,10 +33,10 @@ change the blow to TRUE instead of FALSE.  No other hacks will be affected
 by this change.
 */
 
-$phpbb_root_path = "./../";
+$phpbb2_root_path = "./../";
 if( !empty($setmodules) )
 {
-    include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_topic_shadow.' . $phpEx);
+    include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_topic_shadow.' . $phpEx);
     $filename = basename(__FILE__);
     $module['Forums']['Topic_Shadow'] = $filename;
     
@@ -73,10 +73,10 @@ foreach($params as $var => $default)
 setting.  If this is disabled, settings will NEVER be saved */
 if(!DISABLE_PREFERENCE_SAVING && !$board_config['gzip_compress']) ob_start();
 
-require($phpbb_root_path . 'extension.inc');
+require($phpbb2_root_path . 'extension.inc');
 (file_exists('pagestart.' . $phpEx)) ? require('pagestart.' . $phpEx) : require('pagestart.inc');
 require("../../../includes/functions_admin.php");
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_topic_shadow.' . $phpEx);
+include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_topic_shadow.' . $phpEx);
 @setcookie(MOD_COOKIE_PREF_NAME, serialize($preference_cookie), time() + 31536000, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
 
 /****************************************************************************

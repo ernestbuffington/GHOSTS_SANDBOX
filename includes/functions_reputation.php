@@ -31,7 +31,7 @@ if (!defined('IN_PHPBB'))
 //
 function get_reputation_medals($rep)
 {
-  global $rep_config, $reputation, $lang, $phpbb_root_path;
+  global $rep_config, $reputation, $lang, $phpbb2_root_path;
 
   if ($rep > 0)
   {
@@ -40,7 +40,7 @@ function get_reputation_medals($rep)
     {
       for ($k=1; $k<=round($temp); $k++)
       {
-        $reputation .= '<img src="' . $phpbb_root_path . 'images/reputation_medal_size_1.gif" alt="' . $lang['Reputation'] . ': ' .  round($rep,1) . '" title="' . $lang['Reputation'] . ': ' . round($rep,1) . '" border="0">';
+        $reputation .= '<img src="' . $phpbb2_root_path . 'images/reputation_medal_size_1.gif" alt="' . $lang['Reputation'] . ': ' .  round($rep,1) . '" title="' . $lang['Reputation'] . ': ' . round($rep,1) . '" border="0">';
       }
     }
     else if ($temp < 1)
@@ -50,7 +50,7 @@ function get_reputation_medals($rep)
       {
         for ($k=1; $k<=round($temp); $k++)
         {
-          $reputation .= '<img src="' . $phpbb_root_path . 'images/reputation_medal_size_2.gif" alt="' . $lang['Reputation'] . ': ' . round($rep,1) . '" title="' . $lang['Reputation'] . ': ' . round($rep,1) . '" border="0">';
+          $reputation .= '<img src="' . $phpbb2_root_path . 'images/reputation_medal_size_2.gif" alt="' . $lang['Reputation'] . ': ' . round($rep,1) . '" title="' . $lang['Reputation'] . ': ' . round($rep,1) . '" border="0">';
         }
       } else if ($temp < 1)
       {
@@ -59,7 +59,7 @@ function get_reputation_medals($rep)
         {
           for ($k=1; $k<=round($temp); $k++)
           {
-            $reputation .= '<img src="' . $phpbb_root_path . 'images/reputation_medal_size_3.gif" alt="' . $lang['Reputation'] . ': ' . round($rep,1) . '" title="' . $lang['Reputation'] . ': ' . round($rep,1) . '" border="0">';
+            $reputation .= '<img src="' . $phpbb2_root_path . 'images/reputation_medal_size_3.gif" alt="' . $lang['Reputation'] . ': ' . round($rep,1) . '" title="' . $lang['Reputation'] . ': ' . round($rep,1) . '" border="0">';
           }
         } else if ($temp < 1)
         {
@@ -68,20 +68,20 @@ function get_reputation_medals($rep)
           {
             for ($k=1; $k<=round($temp); $k++)
             {
-              $reputation .= '<img src="' . $phpbb_root_path . 'images/reputation_medal_size_4.gif" alt="' . $lang['Reputation'] . ': ' . round($rep,1) . '" title="' . $lang['Reputation'] . ': ' . round($rep,1) . '" border="0">';
+              $reputation .= '<img src="' . $phpbb2_root_path . 'images/reputation_medal_size_4.gif" alt="' . $lang['Reputation'] . ': ' . round($rep,1) . '" title="' . $lang['Reputation'] . ': ' . round($rep,1) . '" border="0">';
             }
           } else if ($temp < 1)
           {
             for ($k=1; $k<=$rep; $k++)
             {
-              $reputation .= '<img src="' . $phpbb_root_path . 'images/reputation_medal_size_5.gif" alt="' . $lang['Reputation'] . ': ' . round($rep,1) . '" title="' . $lang['Reputation'] . ': ' . round($rep,1) . '" border="0">';
+              $reputation .= '<img src="' . $phpbb2_root_path . 'images/reputation_medal_size_5.gif" alt="' . $lang['Reputation'] . ': ' . round($rep,1) . '" title="' . $lang['Reputation'] . ': ' . round($rep,1) . '" border="0">';
             }
           }
         }
       }
     }
   } else if ($rep < 0)
-  $reputation = '<img src="' . $phpbb_root_path . 'images/reputation_medal_neg.gif" alt="' . $lang['Reputation'] . ': ' . round($rep,1) . '" title="' . $lang['Reputation'] . ': ' . round($rep,1) . '" border="0">';
+  $reputation = '<img src="' . $phpbb2_root_path . 'images/reputation_medal_neg.gif" alt="' . $lang['Reputation'] . ': ' . round($rep,1) . '" title="' . $lang['Reputation'] . ': ' . round($rep,1) . '" border="0">';
 
   return $reputation;
 }

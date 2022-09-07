@@ -183,7 +183,7 @@ class Template {
 	 */
 	function load_config($root, $edit_db)
 	{
-		global $board_config, $phpbb_root_path, $phpEx;
+		global $board_config, $phpbb2_root_path, $phpEx;
 		// getting mod version from config and comparing with real data
 		$ver = isset($board_config['xs_version']) ? $board_config['xs_version'] : 0;
 		// check configuration
@@ -319,16 +319,16 @@ class Template {
 	 */
 	function set_rootdir($dir)
 	{
-		global $board_config, $phpbb_root_path;
+		global $board_config, $phpbb2_root_path;
 		if (!@is_dir($dir))
 		{
 			return false;
 		}
 		$dir = str_replace('\\', '/', $dir);
 		// creating absolute path for cache
-		$this->cachedir = $phpbb_root_path . XS_DIR_CACHE . '/';
+		$this->cachedir = $phpbb2_root_path . XS_DIR_CACHE . '/';
 		// creating absolute path for current template and root dir
-		$this->tpldir = $phpbb_root_path . 'templates/';
+		$this->tpldir = $phpbb2_root_path . 'templates/';
 		$this->tpldir_len = strlen($this->tpldir);
 		$this->root = $dir;
 		$this->tpl = $this->template_name($dir);
@@ -2181,7 +2181,7 @@ class Template {
 
 	function xs_startup()
 	{
-		global $phpEx, $board_config, $phpbb_root_path;
+		global $phpEx, $board_config, $phpbb2_root_path;
 		if(empty($this->xs_started))
 		{	// adding predefined variables
 			$this->xs_started = 1;
@@ -2202,7 +2202,7 @@ class Template {
 			// can be used to make truly multi-lingual templates
 			$this->vars['LANG'] = isset($this->vars['LANG']) ? $this->vars['LANG'] : $board_config['default_lang'];
 			// adding current template
-			$tpl = $this->root . '/'; // $phpbb_root_path . 'templates/' . $this->tpl . '/';
+			$tpl = $this->root . '/'; // $phpbb2_root_path . 'templates/' . $this->tpl . '/';
 			if(substr($tpl, 0, 2) === './')
 			{
 				$tpl = substr($tpl, 2, strlen($tpl));
@@ -2313,11 +2313,11 @@ class Template {
 	*/
 	function _add_config($tpl, $add_vars = true)
 	{
-		global $phpbb_root_path;
-		if(@file_exists($phpbb_root_path . 'templates/' . $tpl . '/xs_config.cfg'))
+		global $phpbb2_root_path;
+		if(@file_exists($phpbb2_root_path . 'templates/' . $tpl . '/xs_config.cfg'))
 		{
 			$style_config = array();
-			include($phpbb_root_path . 'templates/' . $tpl . '/xs_config.cfg');
+			include($phpbb2_root_path . 'templates/' . $tpl . '/xs_config.cfg');
 			if(count($style_config))
 			{
 				global $board_config, $db;
@@ -2365,11 +2365,11 @@ class Template {
 	*/
 	function _refresh_config($tpl, $add_vars = false)
 	{
-		global $phpbb_root_path;
-		if(@file_exists($phpbb_root_path . 'templates/' . $tpl . '/xs_config.cfg'))
+		global $phpbb2_root_path;
+		if(@file_exists($phpbb2_root_path . 'templates/' . $tpl . '/xs_config.cfg'))
 		{
 			$style_config = array();
-			include($phpbb_root_path . 'templates/' . $tpl . '/xs_config.cfg');
+			include($phpbb2_root_path . 'templates/' . $tpl . '/xs_config.cfg');
 			if(count($style_config))
 			{
 				global $board_config, $db;

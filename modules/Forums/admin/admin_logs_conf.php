@@ -37,8 +37,8 @@ if( !empty($setmodules) )
 // Load default header
 //
 $module_name = basename(dirname(dirname(__FILE__)));
-$phpbb_root_path = './../';
-require_once($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require_once($phpbb2_root_path . 'extension.inc');
 require_once('./pagestart.' . $phpEx);
 include_once("../../../includes/functions_log.php");
 $template->set_filenames(array(

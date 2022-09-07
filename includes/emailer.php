@@ -141,7 +141,7 @@ class emailer
 
         function use_template($template_file, $template_lang = '')
         {
-                global $board_config, $phpbb_root_path;
+                global $board_config, $phpbb2_root_path;
 
                 if (trim($template_file) == '')
                 {
@@ -155,11 +155,11 @@ class emailer
 
                 if (empty($this->tpl_msg[$template_lang . $template_file]))
                 {
-                        $tpl_file = $phpbb_root_path . 'language/lang_' . $template_lang . '/email/' . $template_file . '.tpl';
+                        $tpl_file = $phpbb2_root_path . 'language/lang_' . $template_lang . '/email/' . $template_file . '.tpl';
 
                         if (!@file_exists(@phpbb_realpath($tpl_file)))
                         {
-                                $tpl_file = $phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/email/' . $template_file . '.tpl';
+                                $tpl_file = $phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/email/' . $template_file . '.tpl';
 
                                 if (!@file_exists(@phpbb_realpath($tpl_file)))
                                 {
@@ -196,7 +196,7 @@ class emailer
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
         {
-                global $board_config, $lang, $phpEx, $phpbb_root_path, $db, $cache;
+                global $board_config, $lang, $phpEx, $phpbb2_root_path, $db, $cache;
 
             // Escape all quotes, else the eval will fail.
                 $this->msg = str_replace ("'", "\'", $this->msg);

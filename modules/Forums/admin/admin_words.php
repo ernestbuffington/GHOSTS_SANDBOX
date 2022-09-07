@@ -36,8 +36,8 @@ define('IN_PHPBB', 1);
 //
 // Load default header
 //
-$phpbb_root_path = "./../";
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = "./../";
+require($phpbb2_root_path . 'extension.inc');
 $cancel = (isset($HTTP_POST_VARS['cancel']) || isset($_POST['cancel'])) ? true : false;
 $no_page_header = $cancel;
 require('./pagestart.' . $phpEx);

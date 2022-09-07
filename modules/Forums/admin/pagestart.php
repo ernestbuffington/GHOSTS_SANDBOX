@@ -40,8 +40,8 @@ if (!defined('IN_PHPBB'))
 define('IN_ADMIN', true);
 define('FORUM_ADMIN', true);
 include(dirname(dirname(dirname(dirname(__FILE__)))) .  "/mainfile.php");
-$phpbb_root_path = './../';
-include(NUKE_FORUMS_DIR.'common.php');
+$phpbb2_root_path = './../';
+include(NUKE_PHPBB2_DIR.'common.php');
 
 /*****[BEGIN]******************************************
  [ Mod:    Admin IP Lock                       v2.1.0 ]

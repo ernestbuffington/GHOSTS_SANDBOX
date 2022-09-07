@@ -26,20 +26,20 @@
 
 define('IN_PHPBB', true);
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 if ( isset($HTTP_POST_VARS['cancel']) )
 {
 
 }
 
-if ( !file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_sig_control.' . $phpEx)) ) 
+if ( !file_exists(@phpbb_realpath($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_sig_control.' . $phpEx)) ) 
 { 
-    include($phpbb_root_path . 'language/lang_english/lang_sig_control.' . $phpEx); 
+    include($phpbb2_root_path . 'language/lang_english/lang_sig_control.' . $phpEx); 
 } else 
 { 
-    include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_sig_control.' . $phpEx); 
+    include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_sig_control.' . $phpEx); 
 } 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -47,7 +47,7 @@ if ( !file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $board_c
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=<?php echo $user->lang['ENCODING']; ?>">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="stylesheet" href="<?php echo $phpbb_root_path . 'templates/' . $theme['template_name'] . '/' . $theme['head_stylesheet'];?>" type="text/css">
+<link rel="stylesheet" href="<?php echo $phpbb2_root_path . 'templates/' . $theme['template_name'] . '/' . $theme['head_stylesheet'];?>" type="text/css">
 <title><?php echo $board_config['sitename']; ?></title>
 <style type="text/css">
 <!--

@@ -39,9 +39,9 @@ if ( $debug || $board_config['ropm_quick_reply'])
 //if ( $board_config['ropm_quick_reply'])
 {
 $language = $board_config['default_lang'];
-if ( !file_exists($phpbb_root_path . 'language/lang_' . $language . '/lang_main_pmqr.'.$phpEx) )
+if ( !file_exists($phpbb2_root_path . 'language/lang_' . $language . '/lang_main_pmqr.'.$phpEx) )
 $language = 'english';
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_main_pmqr.' . $phpEx);
+include($phpbb2_root_path . 'language/lang_' . $language . '/lang_main_pmqr.' . $phpEx);
 
 $template->set_filenames(array(
    'ropm_quick_reply_output' => 'ropm_quick_reply.tpl')

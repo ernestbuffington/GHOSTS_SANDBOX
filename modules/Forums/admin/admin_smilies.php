@@ -41,8 +41,8 @@ if( !empty($setmodules) )
         return;
 }
 
-$phpbb_root_path = "./../";
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = "./../";
+require($phpbb2_root_path . 'extension.inc');
 
 $cancel = ( isset($HTTP_POST_VARS['cancel']) || isset($_POST['cancel']) ) ? true : false;
 $no_page_header = $cancel;
@@ -80,13 +80,13 @@ $delimeter  = '=+:';
 //
 // Read a listing of uploaded smilies for use in the add or edit smliey code...
 //
-$dir = @opendir($phpbb_root_path . $board_config['smilies_path']);
+$dir = @opendir($phpbb2_root_path . $board_config['smilies_path']);
 
 while($file = @readdir($dir))
 {
-        if( !@is_dir(phpbb_realpath($phpbb_root_path . $board_config['smilies_path'] . '/' . $file)) )
+        if( !@is_dir(phpbb_realpath($phpbb2_root_path . $board_config['smilies_path'] . '/' . $file)) )
         {
-                $img_size = @getimagesize($phpbb_root_path . $board_config['smilies_path'] . '/' . $file);
+                $img_size = @getimagesize($phpbb2_root_path . $board_config['smilies_path'] . '/' . $file);
 
                 if( $img_size[0] && $img_size[1] )
                 {
@@ -145,7 +145,7 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
                         }
                 }
 
-                $fcontents = @file($phpbb_root_path . $board_config['smilies_path'] . '/'. $smile_pak);
+                $fcontents = @file($phpbb2_root_path . $board_config['smilies_path'] . '/'. $smile_pak);
 
                 if( empty($fcontents) )
                 {
@@ -305,12 +305,12 @@ else if( isset($HTTP_POST_VARS['add']) || isset($HTTP_GET_VARS['add']) )
                 "L_SUBMIT" => $lang['Submit'],
                 "L_RESET" => $lang['Reset'],
 
-                "SMILEY_IMG" => $phpbb_root_path . $board_config['smilies_path'] . '/' . $smiley_images[0],
+                "SMILEY_IMG" => $phpbb2_root_path . $board_config['smilies_path'] . '/' . $smiley_images[0],
 
                 "S_SMILEY_ACTION" => append_sid("admin_smilies.$phpEx"),
                 "S_HIDDEN_FIELDS" => $s_hidden_fields,
                 "S_FILENAME_OPTIONS" => $filename_list,
-                "S_SMILEY_BASEDIR" => $phpbb_root_path . $board_config['smilies_path'])
+                "S_SMILEY_BASEDIR" => $phpbb2_root_path . $board_config['smilies_path'])
         );
 
         $template->pparse("body");
@@ -418,12 +418,12 @@ else if ( $mode != "" )
                                 "L_SUBMIT" => $lang['Submit'],
                                 "L_RESET" => $lang['Reset'],
 
-                                "SMILEY_IMG" => $phpbb_root_path . $board_config['smilies_path'] . '/' . $smiley_edit_img,
+                                "SMILEY_IMG" => $phpbb2_root_path . $board_config['smilies_path'] . '/' . $smiley_edit_img,
 
                                 "S_SMILEY_ACTION" => append_sid("admin_smilies.$phpEx"),
                                 "S_HIDDEN_FIELDS" => $s_hidden_fields,
                                 "S_FILENAME_OPTIONS" => $filename_list,
-                                "S_SMILEY_BASEDIR" => $phpbb_root_path . $board_config['smilies_path'])
+                                "S_SMILEY_BASEDIR" => $phpbb2_root_path . $board_config['smilies_path'])
                         );
 
                         $template->pparse("body");
@@ -575,7 +575,7 @@ else
                         "ROW_COLOR" => "#" . $row_color,
                         "ROW_CLASS" => $row_class,
 
-                        "SMILEY_IMG" =>  $phpbb_root_path . $board_config['smilies_path'] . '/' . $smilies[$i]['smile_url'],
+                        "SMILEY_IMG" =>  $phpbb2_root_path . $board_config['smilies_path'] . '/' . $smilies[$i]['smile_url'],
                         "CODE" => $smilies[$i]['code'],
                         "EMOT" => $smilies[$i]['emoticon'],
 

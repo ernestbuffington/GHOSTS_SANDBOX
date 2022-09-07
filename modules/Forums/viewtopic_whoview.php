@@ -30,9 +30,9 @@
  ***************************************************************************/
 
 define('IN_PHPBB', true);
-$phpbb_root_path = 'modules/Forums/';
-include($phpbb_root_path.'extension.inc');
-include($phpbb_root_path.'common.'.$phpEx);
+$phpbb2_root_path = 'modules/Forums/';
+include($phpbb2_root_path.'extension.inc');
+include($phpbb2_root_path.'common.'.$phpEx);
 include('header.php');
 
 date_default_timezone_set('America/New_York');

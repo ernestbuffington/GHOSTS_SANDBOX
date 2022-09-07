@@ -24,15 +24,15 @@ if ((!(isset($popup)) OR ($popup != "1")) && !isset($HTTP_GET_VARS['printertopic
 }
 else
 {
-    $phpbb_root_path = NUKE_FORUMS_DIR;
+    $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 define('IN_PHPBB', true); 
 
 
 
 
-include($phpbb_root_path . 'extension.inc'); 
-include($phpbb_root_path . 'common.'.$phpEx); 
+include($phpbb2_root_path . 'extension.inc'); 
+include($phpbb2_root_path . 'common.'.$phpEx); 
 include("includes/functions_userdel.php");
 
 //
@@ -55,7 +55,7 @@ if ( !$if_admin )
 	message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
 }
 //
-include($phpbb_root_path.'language/lang_' . $userdata['user_lang'] . '/lang_user_delete.'.$phpEx);
+include($phpbb2_root_path.'language/lang_' . $userdata['user_lang'] . '/lang_user_delete.'.$phpEx);
 
 //
 // Set ID of deleted user

@@ -29,11 +29,11 @@ define('IN_PHPBB', true);
 //
 // Let's set the root dir for phpBB
 //
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require($phpbb2_root_path . 'extension.inc');
 if (!empty($board_config))
 {
-    @include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
+    @include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
 }
 
 if( !empty($setmodules) )
@@ -64,9 +64,9 @@ else
 
 $lang_decollapse = (isset($HTTP_GET_VARS['d_lang'])) ? trim($HTTP_GET_VARS['d_lang']) : '';
 $submit = (isset($HTTP_POST_VARS['submit'])) ? TRUE : FALSE;
-@include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
-@include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . $phpEx);
-include($phpbb_root_path . 'stats_mod/includes/constants.'.$phpEx);
+@include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
+@include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . $phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 
 $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
@@ -82,9 +82,9 @@ while ($row = $db->sql_fetchrow($result))
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
 
-include($phpbb_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
 
 $update_list = ( isset($HTTP_POST_VARS['update']) ) ? $HTTP_POST_VARS['update'] : array();
 $delete_list = ( isset($HTTP_POST_VARS['delete']) ) ? $HTTP_POST_VARS['delete'] : array();
@@ -225,8 +225,8 @@ if ($mode == 'select')
         'L_DELETE_LANG' => $lang['Delete_language'],
         'L_IMPORT_NEW_LANGUAGE' => $lang['Import_new_language'],
 
-        'U_NEW_LANG_IMPORT' => $phpbb_root_path . 'admin/import_lang.php?mode=import_new_lang',
-        'U_LANG_COMPLETE_EXPORT' => $phpbb_root_path . 'admin/download_lang.php?mode=export_everything')
+        'U_NEW_LANG_IMPORT' => $phpbb2_root_path . 'admin/import_lang.php?mode=import_new_lang',
+        'U_LANG_COMPLETE_EXPORT' => $phpbb2_root_path . 'admin/download_lang.php?mode=export_everything')
     );
     
     // Collect available Languages
@@ -246,20 +246,20 @@ if ($mode == 'select')
         if ($lang_decollapse == $provided_languages[$i])
         {
             $col_decol = '-';
-            $link_col_decol = $phpbb_root_path . 'admin/admin_stats_lang.php?mode=select';
+            $link_col_decol = $phpbb2_root_path . 'admin/admin_stats_lang.php?mode=select';
         }
         else
         {
             $col_decol = '+';
-            $link_col_decol = $phpbb_root_path . 'admin/admin_stats_lang.php?mode=select&amp;d_lang=' . $provided_languages[$i];
+            $link_col_decol = $phpbb2_root_path . 'admin/admin_stats_lang.php?mode=select&amp;d_lang=' . $provided_languages[$i];
         }
 
         $template->assign_block_vars('langrow', array(
             'LANGUAGE' => $provided_languages[$i],
             'L_COLLAPSE_DECOLLAPSE' => $col_decol,
             'U_COLLAPSE_DECOLLAPSE' => $link_col_decol,
-            'U_LANG_COMPLETE_EDIT' => $phpbb_root_path . 'admin/admin_stats_lang.php?mode=select&amp;m_mode=edit&amp;lang=' . $provided_languages[$i] . '&amp;d_lang=' . $lang_decollapse,
-            'U_LANG_COMPLETE_EXPORT' => $phpbb_root_path . 'admin/download_lang.php?mode=export_lang&amp;lang=' . $provided_languages[$i])
+            'U_LANG_COMPLETE_EDIT' => $phpbb2_root_path . 'admin/admin_stats_lang.php?mode=select&amp;m_mode=edit&amp;lang=' . $provided_languages[$i] . '&amp;d_lang=' . $lang_decollapse,
+            'U_LANG_COMPLETE_EXPORT' => $phpbb2_root_path . 'admin/download_lang.php?mode=export_lang&amp;lang=' . $provided_languages[$i])
         );
 
         if ($lang_decollapse == $provided_languages[$i])
@@ -276,8 +276,8 @@ if ($mode == 'select')
                 $template->assign_block_vars('langrow.modulerow', array(
                     'MODULE_NAME' => $modules[$j]['long_name'],
                     'MODULE_DESC' => $modules[$j]['extra_info'],
-                    'U_LANG_EDIT' => $phpbb_root_path . 'admin/admin_stats_lang.php?mode=select&amp;m_mode=edit&amp;lang=' . $provided_languages[$i] . '&amp;module=' . $modules[$j]['module_id'] . '&amp;d_lang=' . $lang_decollapse,
-                    'U_LANG_EXPORT' => $phpbb_root_path . 'admin/download_lang.php?mode=export_module&amp;lang=' . $provided_languages[$i] . '&amp;module=' . $modules[$j]['module_id'],
+                    'U_LANG_EDIT' => $phpbb2_root_path . 'admin/admin_stats_lang.php?mode=select&amp;m_mode=edit&amp;lang=' . $provided_languages[$i] . '&amp;module=' . $modules[$j]['module_id'] . '&amp;d_lang=' . $lang_decollapse,
+                    'U_LANG_EXPORT' => $phpbb2_root_path . 'admin/download_lang.php?mode=export_module&amp;lang=' . $provided_languages[$i] . '&amp;module=' . $modules[$j]['module_id'],
                     'INFORMATIONS' => $informations)
                 );
             }

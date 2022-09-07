@@ -39,19 +39,19 @@ $module_name = basename(dirname(__FILE__));
 require("modules/".$module_name."/nukebb.php");
 
 define('IN_PHPBB', true);
-//$phpbb_root_path = "./";
+//$phpbb2_root_path = "./";
 
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
 
 $userdata = session_pagestart($user_ip, PAGE_INDEX);
 init_userprefs($userdata);
 
-include($phpbb_root_path . 'stats_mod/includes/constants.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/template.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/core.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/template.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/core.'.$phpEx);
 
 if (STATS_DEBUG)
 {
@@ -122,7 +122,7 @@ for ($i = 0; $i < count($languages_to_include); $i++)
 
     for ($j = 0; $j < count($lang_failover) && !$found; $j++)
     {
-        $language_file = $phpbb_root_path . str_replace('xxx', $lang_failover[$j], $languages_to_include[$i]);
+        $language_file = $phpbb2_root_path . str_replace('xxx', $lang_failover[$j], $languages_to_include[$i]);
 
         if (file_exists($language_file))
         {
@@ -161,21 +161,21 @@ if ($development)
 {
     $first_iterate = TRUE;
 
-    $core->current_module_path = $phpbb_root_path . $dev_module['location'] . '/' . trim($dev_module['short_name']) . '/';
+    $core->current_module_path = $phpbb2_root_path . $dev_module['location'] . '/' . trim($dev_module['short_name']) . '/';
     $core->current_module_name = trim($dev_module['short_name']);
     $core->current_module_id = -1;
     $core->do_not_use_cache = TRUE;
 
     // Include Language File
     $language = $board_config['default_lang'];
-    $language_file = $phpbb_root_path . $dev_module['lang_path'] . '/lang_' . $language . '/lang_modules.' . $phpEx;
+    $language_file = $phpbb2_root_path . $dev_module['lang_path'] . '/lang_' . $language . '/lang_modules.' . $phpEx;
 
     if (!file_exists($language_file))
     {
         $language = $default_board_lang;
     }
 
-    $language_file = $phpbb_root_path . $dev_module['lang_path'] . '/lang_' . $language . '/lang_modules.' . $phpEx;
+    $language_file = $phpbb2_root_path . $dev_module['lang_path'] . '/lang_' . $language . '/lang_modules.' . $phpEx;
 
     include($language_file);
 
@@ -190,7 +190,7 @@ while ($iterate_index < $iterate_end)
     $first_iterate = ($iterate_index == 0 && !$development) ? TRUE : FALSE;
     $last_iterate = ($iterate_index == $iterate_end-1) ? TRUE : FALSE;
 
-    $core->current_module_path = $phpbb_root_path . 'modules/' . trim($modules[$iterate_index]['short_name']) . '/';
+    $core->current_module_path = $phpbb2_root_path . 'modules/' . trim($modules[$iterate_index]['short_name']) . '/';
     $core->current_module_name = trim($modules[$iterate_index]['short_name']);
     $core->current_module_id = intval($modules[$iterate_index]['module_id']);
 
@@ -229,10 +229,10 @@ if (!$db->sql_query($sql))
 
 if (STATS_DEBUG)
 {
-    if (!file_exists($phpbb_root_path . 'modules/cache/explain'))
+    if (!file_exists($phpbb2_root_path . 'modules/cache/explain'))
     {
         @umask(0);
-        mkdir($phpbb_root_path . 'modules/cache/explain', $directory_mode);
+        mkdir($phpbb2_root_path . 'modules/cache/explain', $directory_mode);
     }
 
     $m_time = microtime();
@@ -241,7 +241,7 @@ if (STATS_DEBUG)
     $stats_endtime = $m_time;
     $stats_totaltime = ($stats_endtime - $stats_starttime);
 
-    $explain = ($userdata['user_level'] == ADMIN) ? $phpbb_root_path . 'modules/cache/explain/e' . $userdata['user_id'] . '.html' : '';
+    $explain = ($userdata['user_level'] == ADMIN) ? $phpbb2_root_path . 'modules/cache/explain/e' . $userdata['user_id'] . '.html' : '';
 
     $template->assign_vars(array(
         'TIME' => $stats_totaltime,
@@ -254,7 +254,7 @@ if (STATS_DEBUG)
 
     if ($stat_db->sql_time > 0)
     {
-        $fp = fopen($phpbb_root_path . 'modules/cache/explain/e' . $userdata['user_id'] . '.html', 'wt');
+        $fp = fopen($phpbb2_root_path . 'modules/cache/explain/e' . $userdata['user_id'] . '.html', 'wt');
         fwrite($fp, $stat_db->sql_report);
         $str = "<pre><strong>The Statistics Mod generated " . $stat_db->num_queries . " queries,\nspending " . $stat_db->sql_time . ' doing MySQL queries and ' . ($stats_totaltime - $stat_db->sql_time) . ' doing PHP things.</strong></pre>';
         fwrite($fp, $str);

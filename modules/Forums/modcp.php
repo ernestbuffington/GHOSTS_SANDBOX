@@ -65,9 +65,9 @@ require("modules/".$module_name."/nukebb.php");
 
 define('IN_PHPBB', true);
 
-include($phpbb_root_path . 'extension.inc');
+include($phpbb2_root_path . 'extension.inc');
 
-include($phpbb_root_path . 'common.'.$phpEx);
+include($phpbb2_root_path . 'common.'.$phpEx);
 
 include("includes/bbcode.$phpEx");
 
@@ -76,7 +76,7 @@ include("includes/functions_admin.$phpEx");
 /*****[BEGIN]******************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/
-include($phpbb_root_path . 'reputation_common.'.$phpEx);
+include($phpbb2_root_path . 'reputation_common.'.$phpEx);
 /*****[END]********************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/

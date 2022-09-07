@@ -45,8 +45,8 @@ define('IN_PHPBB', 1);
 // Load default header
 //
 $no_page_header = TRUE;
-$phpbb_root_path = "./../";
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = "./../";
+require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 /*****[BEGIN]******************************************
  [ Mod:     Log Moderator Actions              v1.1.6 ]

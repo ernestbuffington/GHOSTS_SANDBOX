@@ -29,11 +29,11 @@ define('IN_PHPBB', true);
 //
 // Let's set the root dir for phpBB
 //
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require($phpbb2_root_path . 'extension.inc');
 if (!empty($board_config))
 {
-    @include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
+    @include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
 }
 
 if( !empty($setmodules) )
@@ -55,9 +55,9 @@ else
 }
 
 $submit = (isset($HTTP_POST_VARS['submit'])) ? TRUE : FALSE;
-@include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
-@include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . $phpEx);
-include($phpbb_root_path . 'stats_mod/includes/constants.'.$phpEx);
+@include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
+@include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . $phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 
 $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
@@ -73,9 +73,9 @@ while ($row = $db->sql_fetchrow($result))
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
 
-include($phpbb_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
 
 if ($submit)
 {

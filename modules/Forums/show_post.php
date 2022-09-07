@@ -45,9 +45,9 @@
 if (!defined('MODULE_FILE')) die ("You can't access this file directly...");
 
 define('IN_PHPBB', true);
-$phpbb_root_path = NUKE_FORUMS_DIR;
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
+$phpbb2_root_path = NUKE_PHPBB2_DIR;
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
 include_once('includes/bbcode.'.$phpEx);
 
 # Start initial var setup

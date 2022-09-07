@@ -65,11 +65,11 @@ if ($popup != "1") {
     $module_name = basename(dirname(__FILE__));
     require ("modules/" . $module_name . "/nukebb.php");
 } else {
-    $phpbb_root_path = NUKE_FORUMS_DIR;
+    $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 define('IN_PHPBB', true);
-include ($phpbb_root_path . 'extension.inc');
-include ($phpbb_root_path . 'common.' . $phpEx);
+include ($phpbb2_root_path . 'extension.inc');
+include ($phpbb2_root_path . 'common.' . $phpEx);
 include ("includes/bbcode.php");
 include ("includes/functions_search.php");
 //
@@ -246,8 +246,8 @@ if ($mode == 'searchuser') {
             $db->sql_freeresult($result);
             $total_match_count = count($search_ids);
         } else if ($search_keywords != '') {
-            $stopword_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt');
-            $synonym_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_synonyms.txt');
+            $stopword_array = @file($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt');
+            $synonym_array = @file($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_synonyms.txt');
             $split_search = array();
             $stripped_keywords = stripslashes($search_keywords);
             $split_search = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('search', $stripped_keywords, $stopword_array, $synonym_array), 'search') : split(' ', $search_keywords);

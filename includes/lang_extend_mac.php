@@ -48,33 +48,33 @@ if ( !defined('LANG_EXTEND_DONE') )
     // get the english settings
     if ( $board_config['default_lang'] != 'english' )
     {
-        $dir = @opendir($phpbb_root_path . 'language/lang_english');
+        $dir = @opendir($phpbb2_root_path . 'language/lang_english');
         while( $file = @readdir($dir) )
         {
             if( preg_match("/^lang_extend_.*?\." . $phpEx . "$/", $file) )
             {
-                @include_once($phpbb_root_path . 'language/lang_english/' . $file);
+                @include_once($phpbb2_root_path . 'language/lang_english/' . $file);
             }
         }
         // include the personalisations
-        @include_once($phpbb_root_path . 'language/lang_english/lang_extend.' . $phpEx);
+        @include_once($phpbb2_root_path . 'language/lang_english/lang_extend.' . $phpEx);
         @closedir($dir);
     }
 
     // get the user settings
     if ( !empty($board_config['default_lang']) )
     {
-        $dir = @opendir($phpbb_root_path . 'language/lang_' . $board_config['default_lang']);
+        $dir = @opendir($phpbb2_root_path . 'language/lang_' . $board_config['default_lang']);
         while( $file = @readdir($dir) )
         {
             if( preg_match("/^lang_extend_.*?\." . $phpEx . "$/", $file) )
             {
-                @include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/' . $file);
+                @include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/' . $file);
             }
         }
         // include the personalisations
-        if(file_exists($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_extend.' . $phpEx)) {
-		@include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_extend.' . $phpEx);
+        if(file_exists($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_extend.' . $phpEx)) {
+		@include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_extend.' . $phpEx);
 		}
         @closedir($dir);
     }

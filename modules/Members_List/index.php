@@ -48,11 +48,11 @@
 if (!defined('MODULE_FILE'))die('You can\'t access this file directly...');
 
 $module_name = basename(dirname(__FILE__));
-require(NUKE_FORUMS_DIR.'/nukebb.php');
+require(NUKE_PHPBB2_DIR.'/nukebb.php');
 
 define('IN_PHPBB', true);
-include($phpbb_root_path.'extension.inc');
-include($phpbb_root_path.'common.'.$phpEx);
+include($phpbb2_root_path.'extension.inc');
+include($phpbb2_root_path.'common.'.$phpEx);
 
 # Start session management
 $userdata = session_pagestart($user_ip, PAGE_VIEWMEMBERS);

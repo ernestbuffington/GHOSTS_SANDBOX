@@ -30,14 +30,14 @@ if ($popup != "1"){
 }
 else
 {
-    $phpbb_root_path = NUKE_FORUMS_DIR;
+    $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
 define('IN_PHPBB', true);
-$phpbb_root_path = NUKE_FORUMS_DIR;
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
-require( $phpbb_root_path . 'gf_funcs/gen_funcs.' . $phpEx );
+$phpbb2_root_path = NUKE_PHPBB2_DIR;
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
+require( $phpbb2_root_path . 'gf_funcs/gen_funcs.' . $phpEx );
 include('includes/constants.'. $phpEx);
 
 //
@@ -143,7 +143,7 @@ while( $row = $db->sql_fetchrow($result) ) {
  ******************************************************/
         $template->assign_block_vars('gamerow', array(
                 'GAMENAME' => $row['game_name'],
-                'GAMEPIC' => ( $row['game_pic'] != '' ) ? "<a href='" . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . "'><img src='".$phpbb_root_path ."games/pics/" . $row['game_pic'] . "' align='absmiddle' border='0' width='30' height='30' alt='" . $row['game_name'] . "' ></a>" : '' ,
+                'GAMEPIC' => ( $row['game_pic'] != '' ) ? "<a href='" . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . "'><img src='".$phpbb2_root_path ."games/pics/" . $row['game_pic'] . "' align='absmiddle' border='0' width='30' height='30' alt='" . $row['game_name'] . "' ></a>" : '' ,
                 'GAMESET' => ( $row['game_set'] != 0  ) ? $lang['game_actual_nbset'] . $row['game_set'] : '',
                 'GAMEDESC' => $row['game_desc'],
                 'HIGHSCORE' => number_format($row['game_highscore']),
@@ -151,11 +151,11 @@ while( $row = $db->sql_fetchrow($result) ) {
                 'CLICKPLAY' => '<a href="' . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . '">Click to Play!</a>',
                 'NORECORD' => ( $row['game_highscore'] == 0 ) ? $lang['no_record'] : '',
                 'HIGHUSER' => ( $row['game_highuser'] != 0 ) ? '(' . $row['username'] . ')' : '' ,
-                'URL_SCOREBOARD' => '<nobr><a class="cattitle" href="' . append_sid("scoreboard.$phpEx?gid=" . $row['game_id'] ) . '">' . "<img src='".$phpbb_root_path ."templates/" . $theme['template_name'] . "/images/scoreboard.gif' align='absmiddle' border='0' alt='" . $lang['scoreboard'] . " " . $row['game_name'] . "'>" . '</a></nobr> ',
+                'URL_SCOREBOARD' => '<nobr><a class="cattitle" href="' . append_sid("scoreboard.$phpEx?gid=" . $row['game_id'] ) . '">' . "<img src='".$phpbb2_root_path ."templates/" . $theme['template_name'] . "/images/scoreboard.gif' align='absmiddle' border='0' alt='" . $lang['scoreboard'] . " " . $row['game_name'] . "'>" . '</a></nobr> ',
                 'GAMEID' => $row['game_id'],
                 'DATEHIGH' => "<nobr>" . create_date( $board_config['default_dateformat'] , $row['game_highdate'] , $board_config['board_timezone'] ) . "</nobr>",
                 'YOURDATEHIGH' => "<nobr>" . create_date( $board_config['default_dateformat'] , $row['score_date'] , $board_config['board_timezone'] ) . "</nobr>",
-                'IMGFIRST' => ( $row['game_highuser'] == $userdata['user_id'] ) ? "&nbsp;&nbsp;<img src='".$phpbb_root_path ."templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
+                'IMGFIRST' => ( $row['game_highuser'] == $userdata['user_id'] ) ? "&nbsp;&nbsp;<img src='".$phpbb2_root_path ."templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
                 'ADD_FAV' => ($arcade_config['use_fav_category'])?'<td class="row1" width="25" align="center" valign="center"><a href="' . append_sid("arcade.$phpEx?favori=" . $row['game_id'] ) .'"><img src="modules/Forums/templates/subSilver/images/favs.gif" border=0 alt="'.$lang['add_fav'].'"></a></td>':'',
                 'GAMEPOPUPLINK' => "<a href='javascript:Arcade_Popup(\"".append_sid("gamespopup.$phpEx?gid=".$row['game_id'] )."\", \"New_Window\",\"".$row['game_width']."\",\"".$row['game_height']."\", \"no\")'>New Window</a>",
                 'GAMELINK' => '<nobr><a href="' . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . '">' . $row['game_name'] . '</a></nobr> ' )
@@ -187,8 +187,8 @@ $template->assign_block_vars('arcade_search', array(
 
 //
 // Output page header
-include($phpbb_root_path . 'headingarcade.'.$phpEx);
-include($phpbb_root_path . 'whoisplaying.'.$phpEx);
+include($phpbb2_root_path . 'headingarcade.'.$phpEx);
+include($phpbb2_root_path . 'whoisplaying.'.$phpEx);
 $page_title = $lang['arcade'];
 include('includes/page_header.'.$phpEx);
 $template->pparse('body');
@@ -245,7 +245,7 @@ while( $row = $db->sql_fetchrow($result) ) {
  ******************************************************/
         $template->assign_block_vars('gamerow', array(
                 'GAMENAME' => $row['game_name'],
-                'GAMEPIC' => ( $row['game_pic'] != '' ) ? "<a href='" . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . "'><img src='".$phpbb_root_path ."games/pics/" . $row['game_pic'] . "' align='absmiddle' border='0' width='30' height='30' alt='" . $row['game_name'] . "' ></a>" : '' ,
+                'GAMEPIC' => ( $row['game_pic'] != '' ) ? "<a href='" . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . "'><img src='".$phpbb2_root_path ."games/pics/" . $row['game_pic'] . "' align='absmiddle' border='0' width='30' height='30' alt='" . $row['game_name'] . "' ></a>" : '' ,
                 'GAMESET' => ( $row['game_set'] != 0  ) ? $lang['game_actual_nbset'] . $row['game_set'] : '',
                 'GAMEDESC' => $row['game_desc'],
                 'HIGHSCORE' => number_format($row['game_highscore']),
@@ -253,11 +253,11 @@ while( $row = $db->sql_fetchrow($result) ) {
                 'CLICKPLAY' => '<a href="' . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . '">Click to Play!</a>',
                 'NORECORD' => ( $row['game_highscore'] == 0 ) ? $lang['no_record'] : '',
                 'HIGHUSER' => ( $row['game_highuser'] != 0 ) ? '(' . $row['username'] . ')' : '' ,
-                'URL_SCOREBOARD' => '<nobr><a class="cattitle" href="' . append_sid("scoreboard.$phpEx?gid=" . $row['game_id'] ) . '">' . "<img src='".$phpbb_root_path ."templates/" . $theme['template_name'] . "/images/scoreboard.gif' align='absmiddle' border='0' alt='" . $lang['scoreboard'] . " " . $row['game_name'] . "'>" . '</a></nobr> ',
+                'URL_SCOREBOARD' => '<nobr><a class="cattitle" href="' . append_sid("scoreboard.$phpEx?gid=" . $row['game_id'] ) . '">' . "<img src='".$phpbb2_root_path ."templates/" . $theme['template_name'] . "/images/scoreboard.gif' align='absmiddle' border='0' alt='" . $lang['scoreboard'] . " " . $row['game_name'] . "'>" . '</a></nobr> ',
                 'GAMEID' => $row['game_id'],
                 'DATEHIGH' => "<nobr>" . create_date( $board_config['default_dateformat'] , $row['game_highdate'] , $board_config['board_timezone'] ) . "</nobr>",
                 'YOURDATEHIGH' => "<nobr>" . create_date( $board_config['default_dateformat'] , $row['score_date'] , $board_config['board_timezone'] ) . "</nobr>",
-                'IMGFIRST' => ( $row['game_highuser'] == $userdata['user_id'] ) ? "&nbsp;&nbsp;<img src='".$phpbb_root_path ."templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
+                'IMGFIRST' => ( $row['game_highuser'] == $userdata['user_id'] ) ? "&nbsp;&nbsp;<img src='".$phpbb2_root_path ."templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
                 'ADD_FAV' => ($arcade_config['use_fav_category'])?'<td class="row1" width="25" align="center" valign="center"><a href="' . append_sid("arcade.$phpEx?favori=" . $row['game_id'] ) .'"><img src="modules/Forums/templates/subSilver/images/favs.gif" border=0 alt="'.$lang['add_fav'].'"></a></td>':'',
                 'GAMEPOPUPLINK' => "<a href='javascript:Arcade_Popup(\"".append_sid("gamespopup.$phpEx?gid=".$row['game_id'] )."\", \"New_Window\",\"".$row['game_width']."\",\"".$row['game_height']."\", \"no\")'>New Window</a>",
                 'GAMELINK' => '<nobr><a href="' . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . '">' . $row['game_name'] . '</a></nobr> ' )
@@ -289,8 +289,8 @@ $template->assign_block_vars('arcade_search', array(
 
 //
 // Output page header
-include($phpbb_root_path . 'headingarcade.'.$phpEx);
-include($phpbb_root_path . 'whoisplaying.'.$phpEx);
+include($phpbb2_root_path . 'headingarcade.'.$phpEx);
+include($phpbb2_root_path . 'whoisplaying.'.$phpEx);
 $page_title = $lang['arcade'];
 include('includes/page_header.'.$phpEx);
 $template->pparse('body');
@@ -406,7 +406,7 @@ while( $row = $db->sql_fetchrow($result) ) {
  ******************************************************/
         $template->assign_block_vars('gamerow', array(
                 'GAMENAME' => $row['game_name'],
-                'GAMEPIC' => ( $row['game_pic'] != '' ) ? "<a href='" . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . "'><img src='".$phpbb_root_path ."games/pics/" . $row['game_pic'] . "' align='absmiddle' border='0' width='30' height='30' alt='" . $row['game_name'] . "' ></a>" : '' ,
+                'GAMEPIC' => ( $row['game_pic'] != '' ) ? "<a href='" . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . "'><img src='".$phpbb2_root_path ."games/pics/" . $row['game_pic'] . "' align='absmiddle' border='0' width='30' height='30' alt='" . $row['game_name'] . "' ></a>" : '' ,
                 'GAMESET' => ( $row['game_set'] != 0  ) ? $lang['game_actual_nbset'] . $row['game_set'] : '',
                 'GAMEDESC' => $row['game_desc'],
                 'HIGHSCORE' => number_format($row['game_highscore']),
@@ -414,11 +414,11 @@ while( $row = $db->sql_fetchrow($result) ) {
                 'CLICKPLAY' => '<a href="' . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . '">Click to Play!</a>',
                 'NORECORD' => ( $row['game_highscore'] == 0 ) ? $lang['no_record'] : '',
                 'HIGHUSER' => ( $row['game_highuser'] != 0 ) ? '(' . $row['username'] . ')' : '' ,
-                'URL_SCOREBOARD' => '<nobr><a class="cattitle" href="' . append_sid("scoreboard.$phpEx?gid=" . $row['game_id'] ) . '">' . "<img src='".$phpbb_root_path ."templates/" . $theme['template_name'] . "/images/scoreboard.gif' align='absmiddle' border='0' alt='" . $lang['scoreboard'] . " " . $row['game_name'] . "'>" . '</a></nobr> ',
+                'URL_SCOREBOARD' => '<nobr><a class="cattitle" href="' . append_sid("scoreboard.$phpEx?gid=" . $row['game_id'] ) . '">' . "<img src='".$phpbb2_root_path ."templates/" . $theme['template_name'] . "/images/scoreboard.gif' align='absmiddle' border='0' alt='" . $lang['scoreboard'] . " " . $row['game_name'] . "'>" . '</a></nobr> ',
                 'GAMEID' => $row['game_id'],
                 'DATEHIGH' => "<nobr>" . create_date( $board_config['default_dateformat'] , $row['game_highdate'] , $board_config['board_timezone'] ) . "</nobr>",
                 'YOURDATEHIGH' => "<nobr>" . create_date( $board_config['default_dateformat'] , $row['score_date'] , $board_config['board_timezone'] ) . "</nobr>",
-                'IMGFIRST' => ( $row['game_highuser'] == $userdata['user_id'] ) ? "&nbsp;&nbsp;<img src='".$phpbb_root_path ."templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
+                'IMGFIRST' => ( $row['game_highuser'] == $userdata['user_id'] ) ? "&nbsp;&nbsp;<img src='".$phpbb2_root_path ."templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
                 'ADD_FAV' => ($arcade_config['use_fav_category'])?'<td class="row1" width="25" align="center" valign="center"><a href="' . append_sid("arcade.$phpEx?favori=" . $row['game_id'] ) .'"><img src="modules/Forums/templates/subSilver/images/favs.gif" border=0 alt="'.$lang['add_fav'].'"></a></td>':'',
                 'GAMEPOPUPLINK' => "<a href='javascript:Arcade_Popup(\"".append_sid("gamespopup.$phpEx?gid=".$row['game_id'] )."\", \"New_Window\",\"".$row['game_width']."\",\"".$row['game_height']."\", \"no\")'>New Window</a>",
                 'GAMELINK' => '<nobr><a href="' . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . '">' . $row['game_name'] . '</a></nobr> ' )
@@ -439,8 +439,8 @@ while( $row = $db->sql_fetchrow($result) ) {
 
 //
 // Output page header
-include($phpbb_root_path . 'headingarcade.'.$phpEx);
-include($phpbb_root_path . 'whoisplaying.'.$phpEx);
+include($phpbb2_root_path . 'headingarcade.'.$phpEx);
+include($phpbb2_root_path . 'whoisplaying.'.$phpEx);
 $page_title = $lang['arcade'];
 include('includes/page_header.'.$phpEx);
 $template->pparse('body');

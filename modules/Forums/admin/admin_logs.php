@@ -37,8 +37,8 @@ if( !empty($setmodules) )
 // Load default header
 //
 $module_name = basename(dirname(dirname(__FILE__)));
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 $template->set_filenames(array(
     "body" => "admin/logs_body.tpl")
@@ -59,7 +59,7 @@ else
         $sort_order = 'ASC';
     }
 
-if ( file_exists($phpbb_root_path . 'log_actions_db_update.' . $phpEx) )
+if ( file_exists($phpbb2_root_path . 'log_actions_db_update.' . $phpEx) )
 {
     message_die(GENERAL_MESSAGE, $lang['File_not_deleted']);
 }

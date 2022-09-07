@@ -31,11 +31,11 @@ define('IN_PHPBB', true);
 //
 // Let's set the root dir for phpBB
 //
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require($phpbb2_root_path . 'extension.inc');
 if (!empty($board_config))
 {
-    @include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
+    @include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
 }
 
 if( !empty($setmodules) )
@@ -66,8 +66,8 @@ else
 {
     $mode = '';
 }
-@include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
-include($phpbb_root_path . 'stats_mod/includes/constants.'.$phpEx);
+@include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 
 $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
@@ -83,9 +83,9 @@ while ($row = $db->sql_fetchrow($result))
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
 
-include($phpbb_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
 
 if ($cancel)
 {
@@ -165,7 +165,7 @@ if (($mode == 'mod_install') && ($submit))
 
     if ( isset($HTTP_POST_VARS['fileselect']) )
     {
-        $filename = $phpbb_root_path . 'modules/pakfiles/' . trim($HTTP_POST_VARS['selected_pak_file']);
+        $filename = $phpbb2_root_path . 'modules/pakfiles/' . trim($HTTP_POST_VARS['selected_pak_file']);
     }
     else if (isset($HTTP_POST_VARS['fileupload']))
     {
@@ -184,13 +184,13 @@ if (($mode == 'mod_install') && ($submit))
             message_die(GENERAL_ERROR, 'Unable to upload file, please use the pak file selector');
         }
 
-        if (!file_exists($phpbb_root_path . 'modules/cache'))
+        if (!file_exists($phpbb2_root_path . 'modules/cache'))
         {
             @umask(0);
-            mkdir($phpbb_root_path . 'modules/cache', $directory_mode);
+            mkdir($phpbb2_root_path . 'modules/cache', $directory_mode);
         }
         
-        if (!($fp = fopen($phpbb_root_path . 'modules/cache/temp.pak', 'wt')))
+        if (!($fp = fopen($phpbb2_root_path . 'modules/cache/temp.pak', 'wt')))
         {
             message_die(GENERAL_ERROR, 'Unable to write temp file');
         }
@@ -198,7 +198,7 @@ if (($mode == 'mod_install') && ($submit))
         fwrite($fp, $contents, strlen($contents));
         fclose($fp);
 
-        $filename = $phpbb_root_path . 'modules/cache/temp.pak';
+        $filename = $phpbb2_root_path . 'modules/cache/temp.pak';
     }
     else
     {
@@ -328,11 +328,11 @@ if (($mode == 'mod_install') && (!$submit))
     {
         $module_paks = array();
     
-        $dir = @opendir($phpbb_root_path . 'modules/pakfiles');
+        $dir = @opendir($phpbb2_root_path . 'modules/pakfiles');
 
         while($file = @readdir($dir))
         {
-            if( !@is_dir($phpbb_root_path . 'modules/pakfiles' . '/' . $file) )
+            if( !@is_dir($phpbb2_root_path . 'modules/pakfiles' . '/' . $file) )
             {
                 if ( preg_match('/\.pak$/i', $file) )
                 {
@@ -377,7 +377,7 @@ if (($mode == 'mod_install') && (!$submit))
             'L_INSTALL_MODULE_EXPLAIN' => $lang['Install_module_explain'],
             'L_UPLOAD_MODULE' => $lang['Upload_module_pak'],
             'L_SUBMIT' => $lang['Submit'],
-            'S_ACTION' => append_sid($phpbb_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode),
+            'S_ACTION' => append_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode),
             'S_UPLOAD_HIDDEN_FIELDS' => $s_hidden_fields)
         );
 
@@ -444,11 +444,11 @@ if ($mode == 'mod_manage')
             'MODULE_DESC' => trim(nl2br($row['extra_info'])),
 
             'U_VIEW_MODULE' => '../../../modules.php?name=Forums&amp;file=statistics&amp;preview='.$module_id,
-            'U_MODULE_EDIT' => append_sid($phpbb_root_path . 'admin/admin_edit_module.'.$phpEx.'?mode=mod_edit&amp;module='.$module_id),
-            'U_MODULE_DELETE' => append_sid($phpbb_root_path . 'admin/admin_statistics.'.$phpEx.'?mode=mod_delete&amp;module='.$module_id),
-            'U_MODULE_MOVE_UP' => append_sid($phpbb_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;move_up='.$module_id),
-            'U_MODULE_MOVE_DOWN' => append_sid($phpbb_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;move_down='.$module_id),
-            'U_MODULE_ACTIVATE' => ($module_active) ? append_sid($phpbb_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;deactivate='.$module_id) : append_sid($phpbb_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;activate='.$module_id),
+            'U_MODULE_EDIT' => append_sid($phpbb2_root_path . 'admin/admin_edit_module.'.$phpEx.'?mode=mod_edit&amp;module='.$module_id),
+            'U_MODULE_DELETE' => append_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode=mod_delete&amp;module='.$module_id),
+            'U_MODULE_MOVE_UP' => append_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;move_up='.$module_id),
+            'U_MODULE_MOVE_DOWN' => append_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;move_down='.$module_id),
+            'U_MODULE_ACTIVATE' => ($module_active) ? append_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;deactivate='.$module_id) : append_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;activate='.$module_id),
             'ACTIVATE' => ($module_active) ? $lang['Deactivate'] : $lang['Activate'])
         );
     }
@@ -484,7 +484,7 @@ if ($mode == 'mod_delete')
             'L_YES' => $lang['Yes'],
             'L_NO' => $lang['No'],
 
-            'S_CONFIRM_ACTION' => append_sid($phpbb_root_path . "admin/admin_statistics.$phpEx"),
+            'S_CONFIRM_ACTION' => append_sid($phpbb2_root_path . "admin/admin_statistics.$phpEx"),
             'S_HIDDEN_FIELDS' => $hidden_fields)
         );
     }
@@ -516,7 +516,7 @@ if ($mode == 'mod_delete')
         $short_name = trim($row['short_name']);
         
         // Ok, collect the Informations for deleting the Language Variables
-        $language_directory = $phpbb_root_path . 'modules/language';
+        $language_directory = $phpbb2_root_path . 'modules/language';
         $languages = array();
 
         if (!file_exists($language_directory))
@@ -545,7 +545,7 @@ if ($mode == 'mod_delete')
         // Ok, go through all Languages and generate new Language Files
         for ($i = 0; $i < count($languages); $i++)
         {
-            $language_file = $phpbb_root_path . 'modules/language/' . $languages[$i] . '/lang_modules.php';
+            $language_file = $phpbb2_root_path . 'modules/language/' . $languages[$i] . '/lang_modules.php';
             $file_content = implode('', file($language_file));
             if (trim($file_content) != '')
             {
@@ -604,8 +604,8 @@ if ($mode == 'mod_delete')
             for ($i = 0; $i < count($languages); $i++)
             {
                 $language = trim($languages[$i]);
-                $language_dir = $phpbb_root_path . 'modules/language';
-                $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
+                $language_dir = $phpbb2_root_path . 'modules/language';
+                $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
 
                 if (file_exists($language_file))
                 {
@@ -628,8 +628,8 @@ if ($mode == 'mod_delete')
             for ($i = 0; $i < count($languages); $i++)
             {
                 $language = trim($languages[$i]);
-                $language_dir = $phpbb_root_path . 'modules/language';
-                $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
+                $language_dir = $phpbb2_root_path . 'modules/language';
+                $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
 
                 if (!file_exists($language_dir))
                 {
@@ -671,8 +671,8 @@ if ($mode == 'mod_delete')
         }
     
         // Delete the Module Files
-        $directory = $phpbb_root_path . 'modules/' . $short_name;
-        $module_file = $phpbb_root_path . 'modules/' . $short_name . '/module.php';
+        $directory = $phpbb2_root_path . 'modules/' . $short_name;
+        $module_file = $phpbb2_root_path . 'modules/' . $short_name . '/module.php';
 
         if (file_exists($module_file))
         {

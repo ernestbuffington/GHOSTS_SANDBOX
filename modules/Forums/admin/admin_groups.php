@@ -47,8 +47,8 @@ if ( !empty($setmodules) )
 //
 // Load default header
 //
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 /*****[BEGIN]******************************************
  [ Mod:     Group Colors                       v1.0.0 ]
@@ -61,7 +61,7 @@ include('../../../includes/functions_selects.php');
 /*****[BEGIN]******************************************
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_mass_pm.' . $phpEx);
+include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_mass_pm.' . $phpEx);
 /*****[END]********************************************
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/

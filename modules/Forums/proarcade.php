@@ -28,13 +28,13 @@ if ($popup != "1"){
 }
 else
 {
-    $phpbb_root_path = NUKE_FORUMS_DIR;
+    $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
 define('IN_PHPBB', true);
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-require($phpbb_root_path . 'gf_funcs/gen_funcs.' . $phpEx);
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.' . $phpEx);
+require($phpbb2_root_path . 'gf_funcs/gen_funcs.' . $phpEx);
 
 $gid = get_var_gf(array('name'=>'gid', 'intval'=>true, 'default'=>0));
 

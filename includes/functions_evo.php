@@ -598,7 +598,7 @@ function EvoDate($format, $gmepoch, $tz)
 	static $translate;
 	    if ( empty($translate) && $board_config['default_lang'] != 'english' )
     {
-    		@include(NUKE_FORUMS_DIR.'language/lang_'.$lang.'/lang_time.php');
+    		@include(NUKE_PHPBB2_DIR.'language/lang_'.$lang.'/lang_time.php');
     		if (!(empty($langtime['datetime'])))
     		{
         	while ( list($match, $replace) = @each($langtime['datetime']) )
@@ -931,7 +931,7 @@ function ValidateURL($url, $type, $where)
     if(substr($url, strlen($url)-4,4) == '.php') {
         DisplayError(_URL_PHP_ERR . $where);
     }
-    if(substr($url, strlen($url)-15,15) == NUKE_FORUMS_DIR) {
+    if(substr($url, strlen($url)-15,15) == NUKE_PHPBB2_DIR) {
         DisplayError(_URL_MODULE_FORUM_ERR . $where);
     }
     return $url;

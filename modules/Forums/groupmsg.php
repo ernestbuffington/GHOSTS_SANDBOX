@@ -48,12 +48,12 @@
 
 define('IN_PHPBB', true);
 
-$phpbb_root_path = NUKE_FORUMS_DIR;
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
+$phpbb2_root_path = NUKE_PHPBB2_DIR;
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
 include('includes/bbcode.'.$phpEx);
 include('includes/functions_post.'.$phpEx);
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_mass_pm.' . $phpEx);
+include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_mass_pm.' . $phpEx);
 include(NUKE_BASE_DIR.'header.php');
 //
 // Is PM disabled?

@@ -43,11 +43,11 @@ if ($popup != "1")
     }
     else
     {
-    $phpbb_root_path = NUKE_FORUMS_DIR;
+    $phpbb2_root_path = NUKE_PHPBB2_DIR;
     }
 define('IN_PHPBB', true);
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
 
 //
 // Start session management
@@ -64,11 +64,11 @@ $std_rank_max_users = 10; // number of displayed members in the memberlist : -1=
 if ( isset($check_access) ) return;
 
 $rank_extended = function_exists('extended_rank');
-$profilcp = file_exists($phpbb_root_path . 'profilcp/functions_profile.' . $phpEx);
+$profilcp = file_exists($phpbb2_root_path . 'profilcp/functions_profile.' . $phpEx);
 if ($profilcp)
 {
     $rank_extended = false;
-    include($phpbb_root_path . 'profilcp/functions_profile.' . $phpEx);
+    include($phpbb2_root_path . 'profilcp/functions_profile.' . $phpEx);
 }
 
 function get_rank_title($rank_title)

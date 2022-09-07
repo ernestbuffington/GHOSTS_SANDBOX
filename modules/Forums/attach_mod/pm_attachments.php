@@ -207,7 +207,7 @@ class attach_pm extends attach_parent
     */
     function privmsgs_attachment_mod($mode)
     {
-        global $attach_config, $template, $lang, $userdata, $HTTP_POST_VARS, $phpbb_root_path, $phpEx, $db;
+        global $attach_config, $template, $lang, $userdata, $HTTP_POST_VARS, $phpbb2_root_path, $phpEx, $db;
         global $confirm, $delete, $delete_all, $post_id, $privmsgs_id, $privmsg_id, $submit, $refresh, $mark_list, $folder;
 
         if ($folder != 'outbox')

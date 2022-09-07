@@ -150,7 +150,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
  [ Mod:    Must first vote to see results      v1.0.0 ]
  ******************************************************/
 {
-        global $board_config, $userdata, $lang, $phpEx, $phpbb_root_path;
+        global $board_config, $userdata, $lang, $phpEx, $phpbb2_root_path;
 
         // Check username
         if (!empty($username))
@@ -271,7 +271,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        global $board_config, $lang, $db, $phpbb_root_path, $phpEx, $userdata, $user_ip;
+        global $board_config, $lang, $db, $phpbb2_root_path, $phpEx, $userdata, $user_ip;
 
             /*--FNA--*/
 
@@ -642,7 +642,7 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        global $board_config, $lang, $db, $phpbb_root_path, $phpEx, $userdata, $user_ip;
+        global $board_config, $lang, $db, $phpbb2_root_path, $phpEx, $userdata, $user_ip;
 
         if ($mode != 'poll_delete')
         {
@@ -745,7 +745,7 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 //
 function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topic_id, &$post_id, &$notify_user)
 {
-        global $board_config, $lang, $db, $phpbb_root_path, $phpEx, $userdata, $user_ip;
+        global $board_config, $lang, $db, $phpbb2_root_path, $phpEx, $userdata, $user_ip;
 
         $current_time = time();
 
@@ -985,7 +985,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 //
 function generate_smilies($mode, $page_id)
 {
-        global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb_root_path, $user_ip, $session_length, $starttime, $userdata;
+        global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb2_root_path, $user_ip, $session_length, $starttime, $userdata;
 
         $inline_columns = 4;
         $inline_rows = 5;

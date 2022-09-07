@@ -74,12 +74,12 @@ if ( (!strstr($attachment_version, '2.4.')) )
 
 $language = $board_config['default_lang'];
 
-if( !file_exists($phpbb_root_path . 'language/lang_' . $language . '/lang_admin_attach.'.$phpEx) )
+if( !file_exists($phpbb2_root_path . 'language/lang_' . $language . '/lang_admin_attach.'.$phpEx) )
 {
     $language = $attach_config['board_lang'];
 }
 
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_admin_attach.' . $phpEx);
+include($phpbb2_root_path . 'language/lang_' . $language . '/lang_admin_attach.' . $phpEx);
 
 $order_by = 'download_count DESC LIMIT ' . $core->return_limit;
 

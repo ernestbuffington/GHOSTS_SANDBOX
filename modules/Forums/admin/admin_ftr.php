@@ -18,10 +18,10 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = '../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = '../';
+require($phpbb2_root_path . 'extension.inc');
 require('pagestart.' . $phpEx);
-include($phpbb_root_path .'language/lang_'. $board_config['default_lang'] .'/lang_ftr.'. $phpEx);
+include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/lang_ftr.'. $phpEx);
 
 	$mode 				= ( isset($HTTP_POST_VARS['mode']) ) ? $HTTP_POST_VARS['mode'] : $HTTP_GET_VARS['mode'];
 	$update 			= ( isset($HTTP_POST_VARS['update']) ) ? $HTTP_POST_VARS['update'] : $HTTP_GET_VARS['update'];

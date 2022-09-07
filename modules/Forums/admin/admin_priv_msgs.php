@@ -34,8 +34,8 @@ $aprvmUtil->copyrightYear = '2001, 2005';
 /** Module Setup
 /***************************************************************************/
 define('PRIVMSGS_ALL_MAIL', -1);
-$phpbb_root_path = '../';
-include($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = '../';
+include($phpbb2_root_path . 'extension.inc');
 include_once("pagestart.$phpEx");
 include_once('./../../../includes/bbcode.' . $phpEx);
 $aprvmUtil->find_lang_file('lang_admin_priv_msgs');
@@ -746,15 +746,15 @@ class aprvmUtils
     */
     function find_lang_file($filename)
     {
-        global $lang, $phpbb_root_path, $board_config, $phpEx;
+        global $lang, $phpbb2_root_path, $board_config, $phpEx;
         
-        if (file_exists($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/$filename.$phpEx"))
+        if (file_exists($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . "/$filename.$phpEx"))
         {
-            include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/$filename.$phpEx");
+            include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . "/$filename.$phpEx");
         }
-        elseif (file_exists($phpbb_root_path . "language/lang_english/$filename.$phpEx"))
+        elseif (file_exists($phpbb2_root_path . "language/lang_english/$filename.$phpEx"))
         {
-            include_once($phpbb_root_path . "language/lang_english/$filename.$phpEx");
+            include_once($phpbb2_root_path . "language/lang_english/$filename.$phpEx");
         }
         else
         {

@@ -31,11 +31,11 @@ global $file_mode;
 //
 // Let's set the root dir for phpBB
 //
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require($phpbb2_root_path . 'extension.inc');
 if (!empty($board_config))
 {
-    @include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
+    @include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
 }
 
 require('pagestart.' . $phpEx);
@@ -51,9 +51,9 @@ else
 
 $no_page_header = true;
 
-@include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
-@include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . $phpEx);
-include($phpbb_root_path . 'stats_mod/includes/constants.'.$phpEx);
+@include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
+@include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . $phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 
 $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
@@ -69,9 +69,9 @@ while ($row = $db->sql_fetchrow($result))
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
 
-include($phpbb_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
 
 if ($mode == 'export_module')
 {
@@ -98,7 +98,7 @@ if ($mode == 'export_module')
     $row = $db->sql_fetchrow($result);
     $short_name = trim($row['short_name']);
     
-    if (!($fp = fopen($phpbb_root_path . 'modules/cache/temp.pak', 'wb')))
+    if (!($fp = fopen($phpbb2_root_path . 'modules/cache/temp.pak', 'wb')))
     {
         message_die(GENERAL_ERROR, 'Unable to write Package File to cache.');
     }
@@ -134,10 +134,10 @@ if ($mode == 'export_module')
 
     fclose($fp);
 
-    $content = implode('', file($phpbb_root_path . 'modules/cache/temp.pak'));
+    $content = implode('', file($phpbb2_root_path . 'modules/cache/temp.pak'));
     
-    @chmod($phpbb_root_path . 'modules/cache/temp.pak', $file_mode);
-    @unlink($phpbb_root_path . 'modules/cache/temp.pak');
+    @chmod($phpbb2_root_path . 'modules/cache/temp.pak', $file_mode);
+    @unlink($phpbb2_root_path . 'modules/cache/temp.pak');
 
     $filename = $short_name . '_' . str_replace('lang_', '', $language) . '.pak';
     
@@ -170,7 +170,7 @@ else if ($mode == 'export_lang')
     $rows = $db->sql_fetchrowset($result);
     $num_rows = $db->sql_numrows($result);
     
-    if (!($fp = fopen($phpbb_root_path . 'modules/cache/temp.pak', 'wb')))
+    if (!($fp = fopen($phpbb2_root_path . 'modules/cache/temp.pak', 'wb')))
     {
         message_die(GENERAL_ERROR, 'Unable to write Package File to cache.');
     }
@@ -211,10 +211,10 @@ else if ($mode == 'export_lang')
 
     fclose($fp);
 
-    $content = implode('', file($phpbb_root_path . 'modules/cache/temp.pak'));
+    $content = implode('', file($phpbb2_root_path . 'modules/cache/temp.pak'));
     
-    @chmod($phpbb_root_path . 'modules/cache/temp.pak', $file_mode);
-    @unlink($phpbb_root_path . 'modules/cache/temp.pak');
+    @chmod($phpbb2_root_path . 'modules/cache/temp.pak', $file_mode);
+    @unlink($phpbb2_root_path . 'modules/cache/temp.pak');
 
     $filename = $language . '.pak';
     
@@ -242,7 +242,7 @@ else if ($mode == 'export_everything')
     
     $languages = get_all_installed_languages();
         
-    if (!($fp = fopen($phpbb_root_path . 'modules/cache/temp.pak', 'wb')))
+    if (!($fp = fopen($phpbb2_root_path . 'modules/cache/temp.pak', 'wb')))
     {
         message_die(GENERAL_ERROR, 'Unable to write Package File to cache.');
     }
@@ -288,10 +288,10 @@ else if ($mode == 'export_everything')
 
     fclose($fp);
 
-    $content = implode('', file($phpbb_root_path . 'modules/cache/temp.pak'));
+    $content = implode('', file($phpbb2_root_path . 'modules/cache/temp.pak'));
     
-    @chmod($phpbb_root_path . 'modules/cache/temp.pak', $file_mode);
-    @unlink($phpbb_root_path . 'modules/cache/temp.pak');
+    @chmod($phpbb2_root_path . 'modules/cache/temp.pak', $file_mode);
+    @unlink($phpbb2_root_path . 'modules/cache/temp.pak');
 
     $filename = 'statsv3_lang.pak';
     

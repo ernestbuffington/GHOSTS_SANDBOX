@@ -27,12 +27,12 @@ if (is_admin())
     }
     else
     {
-        $phpbb_root_path = 'modules/Forums/';
+        $phpbb2_root_path = 'modules/Forums/';
     }
 
     define('IN_PHPBB', true);
-    include($phpbb_root_path . 'extension.inc');
-    include($phpbb_root_path . 'common.'.$phpEx);
+    include($phpbb2_root_path . 'extension.inc');
+    include($phpbb2_root_path . 'common.'.$phpEx);
     include('includes/functions_search.'.$phpEx);
 
     // Start session management

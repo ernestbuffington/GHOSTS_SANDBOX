@@ -37,15 +37,15 @@ function sql_quote($data)
 
 function clear_directory($file = 'modules/cache') 
 {
-    global $directory_mode, $phpbb_root_path;
+    global $directory_mode, $phpbb2_root_path;
 
-    if (file_exists($phpbb_root_path . $file)) 
+    if (file_exists($phpbb2_root_path . $file)) 
     {
-        @chmod($phpbb_root_path . $file, $directory_mode);
+        @chmod($phpbb2_root_path . $file, $directory_mode);
             
-        if (is_dir($phpbb_root_path . $file))
+        if (is_dir($phpbb2_root_path . $file))
         {
-            $dir = opendir($phpbb_root_path . $file); 
+            $dir = opendir($phpbb2_root_path . $file); 
             while ($filename = readdir($dir)) 
             {
                 if ($filename != '.' && $filename != '..' && $filename != '.htaccess' && $filename != 'CVS' && $filename != 'pakfiles') 
@@ -56,12 +56,12 @@ function clear_directory($file = 'modules/cache')
             closedir($dir);
             if ($file != 'modules')
             {
-                @rmdir($phpbb_root_path . $file);
+                @rmdir($phpbb2_root_path . $file);
             }
         } 
         else 
         {
-            @unlink($phpbb_root_path . $file);
+            @unlink($phpbb2_root_path . $file);
         }
     }
 }

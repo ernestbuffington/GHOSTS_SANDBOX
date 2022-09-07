@@ -30,8 +30,8 @@ if( !empty($setmodules) )
 //
 // Let's set the root dir for phpBB
 //
-$phpbb_root_path = "./../";
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = "./../";
+require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 
 //
@@ -51,7 +51,7 @@ if (!isset($nav_separator)) $nav_separator = '&nbsp;->&nbsp;';
 //
 function icons_read()
 {
-	global $phpEx, $phpbb_root_path;
+	global $phpEx, $phpbb2_root_path;
 	global $icones, $icon_defined_special, $map_icon;
 
 	// read icons
@@ -68,7 +68,7 @@ function icons_read()
 
 function icons_write()
 {
-	global $phpEx, $phpbb_root_path, $template;
+	global $phpEx, $phpbb2_root_path, $template;
 	global $icones, $icon_defined_special, $map_icon;
 
 	// rebuild the map

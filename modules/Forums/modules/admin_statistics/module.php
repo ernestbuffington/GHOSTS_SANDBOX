@@ -36,7 +36,7 @@ $attachment_version = ($attachment_mod_installed) ? ATTACH_VERSION : '';
 
 if ( $attachment_mod_installed )
 {
-    @include_once($phpbb_root_path . 'attach_mod/includes/functions_admin.'.$phpEx);
+    @include_once($phpbb2_root_path . 'attach_mod/includes/functions_admin.'.$phpEx);
 }
 
 $sql = "SELECT COUNT(user_id) AS total

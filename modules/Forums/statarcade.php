@@ -30,13 +30,13 @@ if ($popup != "1"){
 }
 else
 {
-    $phpbb_root_path = NUKE_FORUMS_DIR;
+    $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
 define('IN_PHPBB', true);
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
-require($phpbb_root_path . 'gf_funcs/gen_funcs.' . $phpEx);
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
+require($phpbb2_root_path . 'gf_funcs/gen_funcs.' . $phpEx);
 
 $uid = get_var_gf(array('name' => 'uid', 'intval' => true, 'default' => 0));
 
@@ -213,7 +213,7 @@ while(!$fini) {
                                 'DATHIGHSCR' => create_date($board_config['default_dateformat'] , $gamelist[$i]['score_date'] , $board_config['board_timezone']),
                                 'L_POSGAME' => $lang['statposition'],
                                 'POSGAME' => ( $pos == 1 ) ? $pos . "st" : ( ( $pos == 2 ) ? $pos . "nd" : ( ( $pos == 3 ) ? $pos . "rd" : $pos . "th" ) ),
-                                'IMGFIRST' => ( $tbhighuser[ $gamelist[$i]['game_id'] ] == $uid ) ? "<img src='".$phpbb_root_path . "templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
+                                'IMGFIRST' => ( $tbhighuser[ $gamelist[$i]['game_id'] ] == $uid ) ? "<img src='".$phpbb2_root_path . "templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
                                 'L_TPSMOY' => $lang['statmedtime'],
                                 'TPSMOY' =>  ($gamelist[$i]['score_set'] == 0) ? "n/a" : $avgtime)
                         );

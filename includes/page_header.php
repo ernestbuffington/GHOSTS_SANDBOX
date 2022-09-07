@@ -56,10 +56,10 @@ global $name, $sitename, $is_inline_review, $prefix, $db, $cache, $ThemeSel;
 OpenTable();
 
 # Mod: Advanced Time Management v2.2.0 START
-if(!file_exists(@phpbb_realpath($phpbb_root_path.'language/lang_'.$board_config['default_lang'].'/lang_adv_time.'.$phpEx)))
-include_once($phpbb_root_path . 'language/lang_english/lang_adv_time.' . $phpEx);
+if(!file_exists(@phpbb_realpath($phpbb2_root_path.'language/lang_'.$board_config['default_lang'].'/lang_adv_time.'.$phpEx)))
+include_once($phpbb2_root_path . 'language/lang_english/lang_adv_time.' . $phpEx);
 else
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx);
+include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx);
 if(($userdata['user_id'] != ANONYMOUS && $userdata['user_time_mode'] >= 4)
 || ($userdata['user_id'] == ANONYMOUS && $board_config['default_time_mode'] >= 4)):
     global $pc_dateTime, $HTTP_SESSION_VARS, $HTTP_GET_VARS;

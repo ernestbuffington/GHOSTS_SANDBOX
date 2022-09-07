@@ -30,11 +30,11 @@ if (!defined('MODULE_FILE')) {
 }
 
 define('IN_PHPBB', true);
-$phpbb_root_path = NUKE_FORUMS_DIR;
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
-include($phpbb_root_path . 'reputation_common.'.$phpEx);
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_reputation.' . $phpEx);
+$phpbb2_root_path = NUKE_PHPBB2_DIR;
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
+include($phpbb2_root_path . 'reputation_common.'.$phpEx);
+include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_reputation.' . $phpEx);
 
 $userdata = session_pagestart($user_ip, PAGE_REPUTATION);
 init_userprefs($userdata);
@@ -473,10 +473,10 @@ switch( $action  )
       $row2 = $db->sql_fetchrow($result2);
       if ($row['rep_neg'] == 1) // Если репутация отрицательная
       {
-        $row['rep_neg'] = '<img src="' . $phpbb_root_path . 'images/reputation_neg.gif">';
+        $row['rep_neg'] = '<img src="' . $phpbb2_root_path . 'images/reputation_neg.gif">';
       } else
       {
-        $row['rep_neg'] = '<img src="' . $phpbb_root_path . 'images/reputation_pos.gif">';
+        $row['rep_neg'] = '<img src="' . $phpbb2_root_path . 'images/reputation_pos.gif">';
       }
       $u_post = append_sid("viewtopic.$phpEx?" . POST_POST_URL . '=' . $row['post_id'] . "#" . $row['post_id']);
       $post = $row['topic_title'];
@@ -655,10 +655,10 @@ switch( $action  )
 
       if ($row['rep_neg'] == 1) // Если репутация отрицательная
       {
-        $row['rep_neg'] = '<img src="' . $phpbb_root_path . 'images/reputation_neg.gif">';
+        $row['rep_neg'] = '<img src="' . $phpbb2_root_path . 'images/reputation_neg.gif">';
       } else
       {
-        $row['rep_neg'] = '<img src="' . $phpbb_root_path . 'images/reputation_pos.gif">';
+        $row['rep_neg'] = '<img src="' . $phpbb2_root_path . 'images/reputation_pos.gif">';
       }
       $u_post = append_sid("viewtopic.$phpEx?" . POST_POST_URL . '=' . $row['post_id'] . "#" . $row['post_id']);
       $post = $row['topic_title'];

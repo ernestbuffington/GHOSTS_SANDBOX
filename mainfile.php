@@ -281,7 +281,7 @@ define('NUKE_ADMIN_DIR', NUKE_BASE_DIR . 'admin/');
 define('NUKE_RSS_DIR', NUKE_INCLUDE_DIR . 'rss/');
 define('NUKE_DB_DIR', NUKE_INCLUDE_DIR . 'db/');
 define('NUKE_ADMIN_MODULE_DIR', NUKE_ADMIN_DIR . 'modules/');
-define('NUKE_FORUMS_DIR', (defined("IN_ADMIN") ? './../' : 'modules/Forums/'));
+define('NUKE_PHPBB2_DIR', (defined("IN_ADMIN") ? './../' : 'modules/Forums/'));
 define('NUKE_CACHE_DIR', NUKE_INCLUDE_DIR . 'cache/');
 define('NUKE_CLASSES_DIR', NUKE_INCLUDE_DIR . 'classes/');
 define('NUKE_ZEND_DIR', NUKE_INCLUDE_DIR . 'Zend/');

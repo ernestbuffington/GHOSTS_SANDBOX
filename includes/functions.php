@@ -180,7 +180,7 @@ function get_forum_display_sort_option($selected_row=0, $action='list', $list='s
  ******************************************************/
 function get_icon_title($icon, $empty=0, $topic_type=-1, $admin=false)
 {
-	global $lang, $images, $phpEx, $phpbb_root_path;
+	global $lang, $images, $phpEx, $phpbb2_root_path;
 
 	// get icons parameters
 	include(NUKE_INCLUDE_DIR . 'posting_icons.' . $phpEx);
@@ -894,7 +894,7 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
 // Initialise user settings on page load
 function init_userprefs($userdata)
 {
-    global $board_config, $theme, $images, $template, $lang, $phpEx, $phpbb_root_path, $db, $nav_links;
+    global $board_config, $theme, $images, $template, $lang, $phpEx, $phpbb2_root_path, $db, $nav_links;
 
 /*****[BEGIN]******************************************
  [ Mod:     Post Icons                         v1.0.1 ]
@@ -938,7 +938,7 @@ function init_userprefs($userdata)
 		$default_lang = phpbb_ltrim(basename(phpbb_rtrim($board_config['default_lang'])), "'");
 	}
 
-	if ( !file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $default_lang . '/lang_main.'.$phpEx)) )
+	if ( !file_exists(@phpbb_realpath($phpbb2_root_path . 'language/lang_' . $default_lang . '/lang_main.'.$phpEx)) )
 	{
 		if ( $userdata['user_id'] != ANONYMOUS )
 		{
@@ -953,7 +953,7 @@ function init_userprefs($userdata)
 			$default_lang = 'english';
 		}
 
-		if ( !file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $default_lang . '/lang_main.'.$phpEx)) )
+		if ( !file_exists(@phpbb_realpath($phpbb2_root_path . 'language/lang_' . $default_lang . '/lang_main.'.$phpEx)) )
 		{
 			message_die(CRITICAL_ERROR, 'Could not locate valid language pack');
 		}
@@ -989,18 +989,18 @@ function init_userprefs($userdata)
 		$board_config['default_lang'] = $default_lang;
 	}
 
-    include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . $phpEx);
+    include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . $phpEx);
 
     /*--FNA #1--*/
 
     if ( defined('IN_ADMIN') )
     {
-        if( !file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.'.$phpEx)) )
+        if( !file_exists(@phpbb_realpath($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.'.$phpEx)) )
         {
             $board_config['default_lang'] = 'english';
         }
 
-        include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . $phpEx);
+        include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . $phpEx);
     }
 
 /*****[BEGIN]******************************************
@@ -1065,7 +1065,7 @@ function init_userprefs($userdata)
 
 function setup_style($style)
 {
-    global $db, $prefix, $board_config, $template, $images, $phpbb_root_path, $name, $user, $cookie;
+    global $db, $prefix, $board_config, $template, $images, $phpbb2_root_path, $name, $user, $cookie;
 
     if($name == "Forums"){
         $default_style=$board_config['default_style'];
@@ -1125,7 +1125,7 @@ function setup_style($style)
         $template_path = "themes/$ThemeSel/";
     } else {
         $template_name = $row['template_name'];
-        $template_path = $phpbb_root_path . 'templates/';
+        $template_path = $phpbb2_root_path . 'templates/';
     }
     $template = new Template($template_path . $template_name, $board_config, $db);
 
@@ -1145,7 +1145,7 @@ function setup_style($style)
             message_die(CRITICAL_ERROR, "Could not open $template_name template config file", '', __LINE__, __FILE__);
         }
 
-        //$img_lang = ( file_exists(@phpbb_realpath($phpbb_root_path . $current_template_path . '/images/lang_' . $board_config['default_lang'])) ) ? $board_config['default_lang'] : 'english';
+        //$img_lang = ( file_exists(@phpbb_realpath($phpbb2_root_path . $current_template_path . '/images/lang_' . $board_config['default_lang'])) ) ? $board_config['default_lang'] : 'english';
         $img_lang = ( file_exists(@phpbb_realpath($current_template_path . '/images/lang_' . $board_config['default_lang'])) ) ? $board_config['default_lang'] : 'english';
 
         while( list($key, $value) = @each($images) )
@@ -1524,7 +1524,7 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 //
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
-    global $db, $template, $board_config, $theme, $lang, $phpEx, $phpbb_root_path, $nav_links, $gen_simple_header, $images, $userdata, $user_ip, $session_length, $starttime;
+    global $db, $template, $board_config, $theme, $lang, $phpEx, $phpbb2_root_path, $nav_links, $gen_simple_header, $images, $userdata, $user_ip, $session_length, $starttime;
     static $has_died, $msg_history;
 	
 	if ( !isset($msg_history) || ( isset($msg_history) && !is_array($msg_history) ) )
@@ -1649,12 +1649,12 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
         {
             if ( !empty($board_config['default_lang']) )
             {
-                include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main.'.$phpEx);
+                include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main.'.$phpEx);
                 /*--FNA #2--*/
             }
             else
             {
-                include($phpbb_root_path . 'language/lang_english/lang_main.'.$phpEx);
+                include($phpbb2_root_path . 'language/lang_english/lang_main.'.$phpEx);
                 /*--FNA #3--*/
             }
         }
@@ -1675,7 +1675,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
             if (file_exists("themes/$ThemeSel/forums/".$board_config['board_template']."/index_body.tpl")) {
                 $template = new Template("themes/$ThemeSel/forums/".$board_config['board_template']."");
             } else {
-                $template = new Template($phpbb_root_path . 'templates/' . $board_config['board_template']);
+                $template = new Template($phpbb2_root_path . 'templates/' . $board_config['board_template']);
             }
         }*/
         if ( empty($theme) )
@@ -1692,7 +1692,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
         }
         else
         {
-            include($phpbb_root_path . 'admin/page_header_admin.'.$phpEx);
+            include($phpbb2_root_path . 'admin/page_header_admin.'.$phpEx);
         }
     }
 
@@ -1729,16 +1729,16 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
             // Critical errors mean we cannot rely on _ANY_ DB information being
             // available so we're going to dump out a simple echo'd statement
             //
-            if (file_exists($phpbb_root_path . 'language/lang_' . $lang . 'lang_main.' . $phpEx))
+            if (file_exists($phpbb2_root_path . 'language/lang_' . $lang . 'lang_main.' . $phpEx))
             {
-                include($phpbb_root_path . 'language/lang_' . $lang . 'lang_main.' . $phpEx);
+                include($phpbb2_root_path . 'language/lang_' . $lang . 'lang_main.' . $phpEx);
             }
             else
             {
-                include($phpbb_root_path . 'language/lang_english/lang_main.'.$phpEx);
+                include($phpbb2_root_path . 'language/lang_english/lang_main.'.$phpEx);
             }
 
-            //include($phpbb_root_path . 'language/lang_english/lang_main.'.$phpEx);
+            //include($phpbb2_root_path . 'language/lang_english/lang_main.'.$phpEx);
 
             if ( empty($msg_text) )
             {
@@ -1797,7 +1797,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
         }
         else
         {
-            include($phpbb_root_path . 'admin/page_footer_admin.'.$phpEx);
+            include($phpbb2_root_path . 'admin/page_footer_admin.'.$phpEx);
         }
     }
     else
@@ -1816,9 +1816,9 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 // dougk_ff7 <October 5, 2002>
 function phpbb_realpath($path)
 {
-    global $phpbb_root_path, $phpEx;
+    global $phpbb2_root_path, $phpEx;
 
-    return (!@function_exists('realpath') || !@realpath($phpbb_root_path . 'includes/functions.'.$phpEx)) ? $path : @realpath($path);
+    return (!@function_exists('realpath') || !@realpath($phpbb2_root_path . 'includes/functions.'.$phpEx)) ? $path : @realpath($path);
 }
 
 // modded by Quake for NOT using $nukeuser
@@ -2003,7 +2003,7 @@ function is_category_collapsed($cat_id)
 //
 function password_check ($mode, $id, $password, $redirect)
 {
-	global $db, $template, $theme, $board_config, $lang, $phpEx, $phpbb_root_path, $gen_simple_header;
+	global $db, $template, $theme, $board_config, $lang, $phpEx, $phpbb2_root_path, $gen_simple_header;
 	global $userdata;
 	global $HTTP_COOKIE_VARS;
 	$cookie_name = $board_config['cookie_name'];
@@ -2047,7 +2047,7 @@ function password_check ($mode, $id, $password, $redirect)
 }
 function password_box ($mode, $s_form_action)
 {
-	global $db, $template, $theme, $board_config, $lang, $phpEx, $phpbb_root_path, $gen_simple_header;
+	global $db, $template, $theme, $board_config, $lang, $phpEx, $phpbb2_root_path, $gen_simple_header;
 	global $userdata;
 	$l_enter_password = ( $mode == 'topic' ) ? $lang['Enter_topic_password'] : $lang['Enter_forum_password'];
 	$page_title = $l_enter_password;

@@ -32,7 +32,7 @@ if (!defined('IN_PHPBB'))
 // Build and install Module
 function build_module($info_array, $lang_array, $php_file, $module_id = -1)
 {
-    global $directory_mode, $file_mode, $phpbb_root_path, $db, $lang;
+    global $directory_mode, $file_mode, $phpbb2_root_path, $db, $lang;
     
     if ($module_id == -1)
     {
@@ -70,7 +70,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
         }
     }
 
-    $directory = $phpbb_root_path . 'modules/' . trim($info_array['short_name']);
+    $directory = $phpbb2_root_path . 'modules/' . trim($info_array['short_name']);
 
     if (!file_exists($directory))
     {
@@ -110,8 +110,8 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
     while (list($key, $data) = @each($lang_array))
     {
         $language = trim($key);
-        $language_dir = $phpbb_root_path . 'modules/language';
-        $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
+        $language_dir = $phpbb2_root_path . 'modules/language';
+        $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
 
         if (!file_exists($language_dir))
         {

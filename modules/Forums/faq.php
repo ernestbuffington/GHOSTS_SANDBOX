@@ -40,8 +40,8 @@ $module_name = basename(dirname(__FILE__));
 require("modules/".$module_name."/nukebb.php");
 
 define('IN_PHPBB', true);
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
 
 //
 // Start session management
@@ -90,7 +90,7 @@ else
         $lang_file = 'lang_faq';
         $l_title = $lang['FAQ'];
 }*/
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/' . $lang_file . '.' . $phpEx);
+include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/' . $lang_file . '.' . $phpEx);
 
 /*****[BEGIN]******************************************
  [ Mod:    Attachment Mod                      v2.4.1 ]

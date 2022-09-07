@@ -21,12 +21,12 @@ if (!defined('IN_PHPBB'))
     die('Hacking attempt');
 }
 
-include($phpbb_root_path . 'attach_mod/includes/constants.' . $phpEx);
-include($phpbb_root_path . 'attach_mod/includes/functions_includes.' . $phpEx);
-include($phpbb_root_path . 'attach_mod/includes/functions_attach.' . $phpEx);
-include($phpbb_root_path . 'attach_mod/includes/functions_delete.' . $phpEx);
-include($phpbb_root_path . 'attach_mod/includes/functions_thumbs.' . $phpEx);
-include($phpbb_root_path . 'attach_mod/includes/functions_filetypes.' . $phpEx);
+include($phpbb2_root_path . 'attach_mod/includes/constants.' . $phpEx);
+include($phpbb2_root_path . 'attach_mod/includes/functions_includes.' . $phpEx);
+include($phpbb2_root_path . 'attach_mod/includes/functions_attach.' . $phpEx);
+include($phpbb2_root_path . 'attach_mod/includes/functions_delete.' . $phpEx);
+include($phpbb2_root_path . 'attach_mod/includes/functions_thumbs.' . $phpEx);
+include($phpbb2_root_path . 'attach_mod/includes/functions_filetypes.' . $phpEx);
 
 if (defined('ATTACH_INSTALL'))
 {
@@ -38,15 +38,15 @@ if (defined('ATTACH_INSTALL'))
 */
 function attach_mod_get_lang($language_file)
 {
-    global $phpbb_root_path, $phpEx, $attach_config, $board_config;
+    global $phpbb2_root_path, $phpEx, $attach_config, $board_config;
 
     $language = $board_config['default_lang'];
 
-    if (!file_exists($phpbb_root_path . 'language/lang_' . $language . '/' . $language_file . '.' . $phpEx))
+    if (!file_exists($phpbb2_root_path . 'language/lang_' . $language . '/' . $language_file . '.' . $phpEx))
     {
         $language = $attach_config['board_lang'];
         
-        if (!file_exists($phpbb_root_path . 'language/lang_' . $language . '/' . $language_file . '.' . $phpEx))
+        if (!file_exists($phpbb2_root_path . 'language/lang_' . $language . '/' . $language_file . '.' . $phpEx))
         {
             message_die(GENERAL_MESSAGE, 'Attachment Mod language file does not exist: language/lang_' . $language . '/' . $language_file . '.' . $phpEx);
         }
@@ -66,16 +66,16 @@ function attach_mod_get_lang($language_file)
 */
 function include_attach_lang()
 {
-    global $phpbb_root_path, $phpEx, $lang, $board_config, $attach_config;
+    global $phpbb2_root_path, $phpEx, $lang, $board_config, $attach_config;
     
     // Include Language
     $language = attach_mod_get_lang('lang_main_attach');
-    include_once($phpbb_root_path . 'language/lang_' . $language . '/lang_main_attach.' . $phpEx);
+    include_once($phpbb2_root_path . 'language/lang_' . $language . '/lang_main_attach.' . $phpEx);
 
     if (defined('IN_ADMIN'))
     {
         $language = attach_mod_get_lang('lang_admin_attach');
-        include_once($phpbb_root_path . 'language/lang_' . $language . '/lang_admin_attach.' . $phpEx);
+        include_once($phpbb2_root_path . 'language/lang_' . $language . '/lang_admin_attach.' . $phpEx);
     }
 }
 
@@ -107,7 +107,7 @@ function get_config()
 }
 
 // Get Attachment Config
-$cache_dir = $phpbb_root_path . '/cache';
+$cache_dir = $phpbb2_root_path . '/cache';
 $cache_file = $cache_dir . '/attach_config.php';
 $attach_config = array();
 
@@ -153,13 +153,13 @@ else
 
 // Please do not change the include-order, it is valuable for proper execution.
 // Functions for displaying Attachment Things
-include($phpbb_root_path . 'attach_mod/displaying.' . $phpEx);
+include($phpbb2_root_path . 'attach_mod/displaying.' . $phpEx);
 
 // Posting Attachments Class (HAVE TO BE BEFORE PM)
-include($phpbb_root_path . 'attach_mod/posting_attachments.' . $phpEx);
+include($phpbb2_root_path . 'attach_mod/posting_attachments.' . $phpEx);
 
 // PM Attachments Class
-include($phpbb_root_path . 'attach_mod/pm_attachments.' . $phpEx);
+include($phpbb2_root_path . 'attach_mod/pm_attachments.' . $phpEx);
 
 if (!intval($attach_config['allow_ftp_upload']))
 {

@@ -42,13 +42,13 @@ if (!defined('IN_PHPBB'))
     This is the heart of the Statistics Mod, here are all root classes defined.
 */
 
-include($phpbb_root_path . 'stats_mod/content/bars.' . $phpEx);
-include($phpbb_root_path . 'stats_mod/content/statistical.' . $phpEx);
-include($phpbb_root_path . 'stats_mod/content/values.' . $phpEx);
+include($phpbb2_root_path . 'stats_mod/content/bars.' . $phpEx);
+include($phpbb2_root_path . 'stats_mod/content/statistical.' . $phpEx);
+include($phpbb2_root_path . 'stats_mod/content/values.' . $phpEx);
 
 // db cache
-include($phpbb_root_path . 'stats_mod/db_cache.' . $phpEx);
-include($phpbb_root_path . 'stats_mod/functions.' . $phpEx);
+include($phpbb2_root_path . 'stats_mod/db_cache.' . $phpEx);
+include($phpbb2_root_path . 'stats_mod/functions.' . $phpEx);
 
 /*****[BEGIN]******************************************
  [ Mod:     Smilies in Topic Titles            v1.0.0 ]

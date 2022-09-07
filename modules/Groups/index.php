@@ -38,10 +38,10 @@ Auto Group                               v1.2.2       11/06/2006
 if(!defined('NUKE_EVO')) exit;
 
 $module_name = basename(dirname(__FILE__));
-require(NUKE_FORUMS_DIR . 'nukebb.php');
+require(NUKE_PHPBB2_DIR . 'nukebb.php');
 define('IN_PHPBB', true);
-include(NUKE_FORUMS_DIR . 'extension.inc');
-include(NUKE_FORUMS_DIR . 'common.php');
+include(NUKE_PHPBB2_DIR . 'extension.inc');
+include(NUKE_PHPBB2_DIR . 'common.php');
 
 /*****[BEGIN]******************************************
 [ Mod:    Online/Offline/Hidden               v2.2.7 ]

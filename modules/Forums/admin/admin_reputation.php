@@ -32,8 +32,8 @@ if( !empty($setmodules) )
 //
 // Let's set the root dir for phpBB
 //
-$phpbb_root_path = "./../";
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = "./../";
+require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 
 //

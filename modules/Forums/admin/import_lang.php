@@ -31,11 +31,11 @@ define('IN_PHPBB', true);
 //
 // Let's set the root dir for phpBB
 //
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require($phpbb2_root_path . 'extension.inc');
 if (!empty($board_config))
 {
-    @include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
+    @include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
 }
 
 require('pagestart.' . $phpEx);
@@ -57,8 +57,8 @@ if ($cancel)
     $no_page_header = TRUE;
 }
 
-@include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
-include($phpbb_root_path . 'stats_mod/includes/constants.'.$phpEx);
+@include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 
 $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
@@ -74,9 +74,9 @@ while ($row = $db->sql_fetchrow($result))
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
 
-include($phpbb_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
 
 if ($cancel)
 {
@@ -160,7 +160,7 @@ if ($mode == 'import_new_lang' && $submit)
 
     if ( isset($HTTP_POST_VARS['fileselect']) )
     {
-        $filename = $phpbb_root_path . 'modules/pakfiles/' . trim($HTTP_POST_VARS['selected_pak_file']);
+        $filename = $phpbb2_root_path . 'modules/pakfiles/' . trim($HTTP_POST_VARS['selected_pak_file']);
     }
     else if (isset($HTTP_POST_VARS['fileupload']))
     {
@@ -179,13 +179,13 @@ if ($mode == 'import_new_lang' && $submit)
             message_die(GENERAL_ERROR, 'Unable to upload file, please use the pak file selector');
         }
 
-        if (!file_exists($phpbb_root_path . 'modules/cache'))
+        if (!file_exists($phpbb2_root_path . 'modules/cache'))
         {
             @umask(0);
-            mkdir($phpbb_root_path . 'modules/cache', $directory_mode);
+            mkdir($phpbb2_root_path . 'modules/cache', $directory_mode);
         }
         
-        if (!($fp = fopen($phpbb_root_path . 'modules/cache/temp.pak', 'wt')))
+        if (!($fp = fopen($phpbb2_root_path . 'modules/cache/temp.pak', 'wt')))
         {
             message_die(GENERAL_ERROR, 'Unable to write temp file');
         }
@@ -193,7 +193,7 @@ if ($mode == 'import_new_lang' && $submit)
         fwrite($fp, $contents, strlen($contents));
         fclose($fp);
 
-        $filename = $phpbb_root_path . 'modules/cache/temp.pak';
+        $filename = $phpbb2_root_path . 'modules/cache/temp.pak';
     }
     else
     {
@@ -282,11 +282,11 @@ if (($mode == 'import_new_lang') && (!$submit))
     {
         $lang_paks = array();
     
-        $dir = @opendir($phpbb_root_path . 'modules/pakfiles');
+        $dir = @opendir($phpbb2_root_path . 'modules/pakfiles');
 
         while($file = @readdir($dir))
         {
-            if( !@is_dir($phpbb_root_path . 'modules/pakfiles' . '/' . $file) )
+            if( !@is_dir($phpbb2_root_path . 'modules/pakfiles' . '/' . $file) )
             {
                 if ( preg_match('/\.pak$/i', $file) )
                 {
@@ -331,7 +331,7 @@ if (($mode == 'import_new_lang') && (!$submit))
             'L_IMPORT_LANGUAGE_EXPLAIN' => $lang['Import_new_language_explain'],
             'L_UPLOAD_LANGUAGE' => $lang['Upload_language_pak'],
             'L_SUBMIT' => $lang['Submit'],
-            'S_ACTION' => append_sid($phpbb_root_path . 'admin/import_lang.'.$phpEx.'?mode='.$mode),
+            'S_ACTION' => append_sid($phpbb2_root_path . 'admin/import_lang.'.$phpEx.'?mode='.$mode),
             'S_UPLOAD_HIDDEN_FIELDS' => $s_hidden_fields)
         );
 

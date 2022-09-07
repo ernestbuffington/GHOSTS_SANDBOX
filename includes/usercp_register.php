@@ -61,7 +61,7 @@ $unhtml_specialchars_replace = array('>', '<', '"', '&');
 # agreed to registration conditions/coppa
 function show_coppa()
 {
-	global $userdata, $template, $lang, $phpbb_root_path, $phpEx;
+	global $userdata, $template, $lang, $phpbb2_root_path, $phpEx;
 
 	$template->set_filenames(array(
 			'body' => 'agreement.tpl')
@@ -193,7 +193,7 @@ $coppa = ( empty($HTTP_POST_VARS['coppa']) && empty($HTTP_GET_VARS['coppa']) ) ?
 
 # Check and initialize some variables if needed
 # Mod: Custom mass PM v1.4.7 START
-include($phpbb_root_path . 'language/lang_'.$board_config['default_lang'].'/lang_mass_pm.'.$phpEx);
+include($phpbb2_root_path . 'language/lang_'.$board_config['default_lang'].'/lang_mass_pm.'.$phpEx);
 # Mod: Custom mass PM v1.4.7 END
 if(
 isset($HTTP_POST_VARS['submit']) ||

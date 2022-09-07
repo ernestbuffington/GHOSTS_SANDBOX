@@ -42,13 +42,13 @@ if( !empty($setmodules) )
 
 // Set root dir for phpBB
 //
-    $phpbb_root_path = './../';
+    $phpbb2_root_path = './../';
 
 // Set includes
 //
-    include($phpbb_root_path . 'extension.inc');
+    include($phpbb2_root_path . 'extension.inc');
     include('./pagestart.' . $phpEx);
-    include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_voting.' . $phpEx);
+    include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_voting.' . $phpEx);
 
 // Initialize variables
 //
@@ -171,7 +171,7 @@ if( !empty($setmodules) )
             'S_FIELD_SELECT' => $select_sort_field,
             'S_ORDER_SELECT' => $select_sort_order,
 
-            'ADMIN_VOTING_ICON' => '<img src="' . $phpbb_root_path . 'templates/subSilver/images/admin_voting_icon.gif" alt="" />',
+            'ADMIN_VOTING_ICON' => '<img src="' . $phpbb2_root_path . 'templates/subSilver/images/admin_voting_icon.gif" alt="" />',
             ));
 
     // Assign Username array

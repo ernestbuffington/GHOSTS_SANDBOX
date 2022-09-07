@@ -25,12 +25,12 @@ message_die(GENERAL_ERROR, $message);
 }
 
 $language = $board_config['default_lang'];
-if ( !file_exists($phpbb_root_path . 'language/lang_' . $language . '/lang_main_arcade.'.$phpEx) )
+if ( !file_exists($phpbb2_root_path . 'language/lang_' . $language . '/lang_main_arcade.'.$phpEx) )
 {
     $language = 'english';
 }
 
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_main_arcade.' . $phpEx);
+include($phpbb2_root_path . 'language/lang_' . $language . '/lang_main_arcade.' . $phpEx);
 
 function read_arcade_config() {
         global $db;

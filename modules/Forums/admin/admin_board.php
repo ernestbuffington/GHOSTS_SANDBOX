@@ -59,19 +59,19 @@ if( !empty($setmodules) )
 //
 // Let's set the root dir for phpBB
 //
-$phpbb_root_path = "./../";
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = "./../";
+require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 include("../../../includes/functions_selects.php");
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-if ( !file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx)) )
+if ( !file_exists(@phpbb_realpath($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx)) )
 {
-    include_once($phpbb_root_path . 'language/lang_english/lang_adv_time.' . $phpEx);
+    include_once($phpbb2_root_path . 'language/lang_english/lang_adv_time.' . $phpEx);
 } else
 {
-    include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx);
+    include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx);
 }
 /*****[END]********************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
@@ -165,7 +165,7 @@ else
 		if ($config_name == 'avatar_path')
 		{
 			$new['avatar_path'] = trim($new['avatar_path']);
-			if (strstr($new['avatar_path'], "\0") || !is_dir($phpbb_root_path . $new['avatar_path']) || !is_writable($phpbb_root_path . $new['avatar_path']))
+			if (strstr($new['avatar_path'], "\0") || !is_dir($phpbb2_root_path . $new['avatar_path']) || !is_writable($phpbb2_root_path . $new['avatar_path']))
 			{
 				$new['avatar_path'] = $default_config['avatar_path'];
 			}

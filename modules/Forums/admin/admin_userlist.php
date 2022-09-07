@@ -42,8 +42,8 @@ if( !empty($setmodules) )
     return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 
 //
@@ -207,7 +207,7 @@ switch( $mode )
         //
         if ( $cancel )
         {
-            redirect($phpbb_root_path . 'admin/admin_userlist.'.$phpEx);
+            redirect($phpbb2_root_path . 'admin/admin_userlist.'.$phpEx);
         }
 
         //
@@ -410,7 +410,7 @@ switch( $mode )
         //
         if ( $cancel )
         {
-            redirect($phpbb_root_path . 'admin/admin_userlist.'.$phpEx);
+            redirect($phpbb2_root_path . 'admin/admin_userlist.'.$phpEx);
         }
 
         //
@@ -542,7 +542,7 @@ switch( $mode )
                 'L_GROUP' => $lang['Group'],
 
                 'S_GROUP_VARIABLE' => POST_GROUPS_URL,
-                'S_ACTION' => append_sid($phpbb_root_path . 'admin/admin_userlist.'.$phpEx.'?mode=group'),
+                'S_ACTION' => append_sid($phpbb2_root_path . 'admin/admin_userlist.'.$phpEx.'?mode=group'),
                 'L_GO' => $lang['Go'],
                 'L_CANCEL' => $lang['Cancel'],
                 'L_SELECT' => $lang['Select_one'],
@@ -747,11 +747,11 @@ switch( $mode )
                 {
                     $temp = 'num';
                 }
-                $alphanum_search_url = append_sid($phpbb_root_path . "admin/admin_userlist.$phpEx?sort=$sort&amp;order=$sort_order&amp;show=$show&amp;alphanum=$temp");
+                $alphanum_search_url = append_sid($phpbb2_root_path . "admin/admin_userlist.$phpEx?sort=$sort&amp;order=$sort_order&amp;show=$show&amp;alphanum=$temp");
             }
             else
             {
-                $alphanum_search_url = append_sid($phpbb_root_path . "admin/admin_userlist.$phpEx?sort=$sort&amp;order=$sort_order&amp;show=$show");
+                $alphanum_search_url = append_sid($phpbb2_root_path . "admin/admin_userlist.$phpEx?sort=$sort&amp;order=$sort_order&amp;show=$show");
             }
 
             if ( ( $alphanum == $temp ) || ( $alpha_range[$i] == $lang['All'] && empty($alphanum) ) )
@@ -794,7 +794,7 @@ switch( $mode )
             'L_WEBSITE' => $lang['Website'],
 
             'S_USER_VARIABLE' => POST_USERS_URL,
-            'S_ACTION' => append_sid($phpbb_root_path . 'admin/admin_userlist.'.$phpEx),
+            'S_ACTION' => append_sid($phpbb2_root_path . 'admin/admin_userlist.'.$phpEx),
             'L_GO' => $lang['Go'],
             'L_SELECT' => $lang['Select_one'],
             'L_DELETE' => $lang['Delete'],
@@ -984,8 +984,8 @@ switch( $mode )
 
                 'EMAIL' => $row['user_email'],
                 'U_PM' => ("../../../modules.php?name=Private_Messages&amp;file=index&amp;mode=post&amp;u=$row[user_id]"),
-                'U_MANAGE' => append_sid($phpbb_root_path . 'admin/admin_users.'.$phpEx.'?mode=edit&amp;' . POST_USERS_URL . '=' . $row['user_id']),
-                'U_PERMISSIONS' => append_sid($phpbb_root_path . 'admin/admin_ug_auth.'.$phpEx.'?mode=user&amp;' . POST_USERS_URL . '=' . $row['user_id']))
+                'U_MANAGE' => append_sid($phpbb2_root_path . 'admin/admin_users.'.$phpEx.'?mode=edit&amp;' . POST_USERS_URL . '=' . $row['user_id']),
+                'U_PERMISSIONS' => append_sid($phpbb2_root_path . 'admin/admin_ug_auth.'.$phpEx.'?mode=user&amp;' . POST_USERS_URL . '=' . $row['user_id']))
             );
 
             //
@@ -1057,7 +1057,7 @@ switch( $mode )
         {
             $total_members = $total['total'];
 
-            $pagination = generate_pagination($phpbb_root_path . "admin/admin_userlist.$phpEx?sort=$sort&amp;order=$sort_order&amp;show=$show" . ( ( isset($alphanum) ) ? "&amp;alphanum=$alphanum" : '' ), $total_members, $show, $start);
+            $pagination = generate_pagination($phpbb2_root_path . "admin/admin_userlist.$phpEx?sort=$sort&amp;order=$sort_order&amp;show=$show" . ( ( isset($alphanum) ) ? "&amp;alphanum=$alphanum" : '' ), $total_members, $show, $start);
         }
 
         $template->assign_vars(array(

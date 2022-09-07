@@ -80,8 +80,8 @@ if( !empty($setmodules) )
 }
 
 $root_path = "./../../../";
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require($phpbb2_root_path . 'extension.inc');
 require('pagestart.' . $phpEx);
 
 //include($root_path . 'includes/constants.'.$phpEx);
@@ -121,7 +121,7 @@ while ($avatar_rowset = $db->sql_fetchrow($result))
 
 // This is the variable that points to the path of the avatars
 // You may need to ajust this to meet your needs ;)
-$real_avatar_dir = $phpbb_root_path . '../../' . $board_config['avatar_path'];
+$real_avatar_dir = $phpbb2_root_path . '../../' . $board_config['avatar_path'];
 
 echo '<h1>Avatar Management</h1>
 

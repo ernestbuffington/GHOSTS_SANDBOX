@@ -15,12 +15,12 @@
 
 define('IN_PHPBB', 1);
 
-$phpbb_root_path = "../";
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = "../";
+require($phpbb2_root_path . 'extension.inc');
 require('pagestart.' . $phpEx);
-require($phpbb_root_path . 'gf_funcs/gen_funcs.' . $phpEx);
-require($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_arcade.' . $phpEx);
-require($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_arcade.' . $phpEx);
+require($phpbb2_root_path . 'gf_funcs/gen_funcs.' . $phpEx);
+require($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_arcade.' . $phpEx);
+require($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_arcade.' . $phpEx);
 
 $mode = get_var_gf(array('name' => 'mode', 'intval' => false, 'okvar' => array('create','edit','editsave','createsave','delete', 'move'), 'default' => ''));
 $arcade_catid = get_var_gf(array('name' => 'arcade_catid', 'intval' => true));

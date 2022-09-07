@@ -77,10 +77,10 @@ class Stats_template {
 
     function set_template($stats_template = '')
     {
-        global $directory_mode, $phpbb_root_path;
-        $this->root = $phpbb_root_path . 'templates/' . $stats_template . '/stats_mod';
-        $this->cachedir = $phpbb_root_path . 'modules/cache/templates/' . $stats_template . '/';
-        $module_cache_dir = $phpbb_root_path . 'modules/cache';
+        global $directory_mode, $phpbb2_root_path;
+        $this->root = $phpbb2_root_path . 'templates/' . $stats_template . '/stats_mod';
+        $this->cachedir = $phpbb2_root_path . 'modules/cache/templates/' . $stats_template . '/';
+        $module_cache_dir = $phpbb2_root_path . 'modules/cache';
         
         if (!file_exists($module_cache_dir))
         {
@@ -88,7 +88,7 @@ class Stats_template {
             mkdir($module_cache_dir, $directory_mode);
         }
 
-        $template_cache_dir = $phpbb_root_path . 'modules/cache/templates';
+        $template_cache_dir = $phpbb2_root_path . 'modules/cache/templates';
         
         if (!file_exists($template_cache_dir))
         {
@@ -776,15 +776,15 @@ class Stats_template {
 
     function compile_cache_clear($file = 'modules/cache') 
     {
-        global $directory_mode, $phpbb_root_path;
+        global $directory_mode, $phpbb2_root_path;
 
-        if (file_exists($phpbb_root_path . $file)) 
+        if (file_exists($phpbb2_root_path . $file)) 
         {
-            chmod($phpbb_root_path . $file, $directory_mode);
+            chmod($phpbb2_root_path . $file, $directory_mode);
             
-            if (is_dir($phpbb_root_path . $file))
+            if (is_dir($phpbb2_root_path . $file))
             {
-                $dir = opendir($phpbb_root_path . $file); 
+                $dir = opendir($phpbb2_root_path . $file); 
                 while ($filename = readdir($dir)) 
                 {
                     if ($filename != '.' && $filename != '..') 
@@ -793,18 +793,18 @@ class Stats_template {
                     }
                 }
                 closedir($dir);
-                rmdir($phpbb_root_path . $file);
+                rmdir($phpbb2_root_path . $file);
             } 
             else 
             {
-                unlink($phpbb_root_path . $file);
+                unlink($phpbb2_root_path . $file);
             }
         }
     }
 
     function compile_cache_show(&$template, $decompile = false)
     {
-        global $phpbb_root_path;
+        global $phpbb2_root_path;
 
         $template_cache = array();
 

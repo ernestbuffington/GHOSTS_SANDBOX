@@ -258,7 +258,7 @@ function display_avatar_gallery($mode, $category, $user_id, $email, $current_ema
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
 {
-		global $board_config, $db, $template, $lang, $images, $theme, $phpbb_root_path, $phpEx, $userdata;
+		global $board_config, $db, $template, $lang, $images, $theme, $phpbb2_root_path, $phpEx, $userdata;
 
 		$dir = @opendir($board_config['avatar_gallery_path']);
 

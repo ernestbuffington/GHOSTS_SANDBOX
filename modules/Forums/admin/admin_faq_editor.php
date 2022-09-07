@@ -37,11 +37,11 @@ if( !empty($setmodules) )
 /*****[END]********************************************
  [ Mod:     Board Rules                        v2.0.0 ]
  ******************************************************/
-    if(file_exists($phpbb_root_path . 'attach_mod/attachment_mod.'.$phpEx))
+    if(file_exists($phpbb2_root_path . 'attach_mod/attachment_mod.'.$phpEx))
     {
        $module['Faq_manager']['attachment_faq'] = "$file?file=faq_attach";
     }
-    if(file_exists($phpbb_root_path . 'mods/prillian/im_main.'.$phpEx))
+    if(file_exists($phpbb2_root_path . 'mods/prillian/im_main.'.$phpEx))
     {
        $module['Faq_manager']['prillian_faq'] = "$file?file=prillian_faq";
        $module['Faq_manager']['bid_faq'] = "$file?file=bid_faq";
@@ -150,11 +150,11 @@ $faq_header = '<'."?php
 
 $faq_footer = "\n\n?" . '>';
 
-$phpbb_root_path = "./../";
-include($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = "./../";
+include($phpbb2_root_path . 'extension.inc');
 include('./pagestart.' . $phpEx);
 include("../../../includes/functions_selects.php");
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_faq_editor.' . $phpEx);
+include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_faq_editor.' . $phpEx);
 
 // initially include the current FAQ or BBCode guide, depending on the file= in the query_string
 $file = isset($HTTP_GET_VARS['file']) ? htmlspecialchars($HTTP_GET_VARS['file']) : 'faq';
@@ -167,7 +167,7 @@ if( !isset($HTTP_GET_VARS['language']) && !isset($HTTP_POST_VARS['language']) )
 
     $template->assign_vars(array(
         'L_LANGUAGE' => $lang['faq_select_language'],
-        'LANGUAGE_SELECT' => language_select($board_config['default_lang'], 'language', $phpbb_root_path.'language'),
+        'LANGUAGE_SELECT' => language_select($board_config['default_lang'], 'language', $phpbb2_root_path.'language'),
         'S_ACTION' => append_sid("admin_faq_editor.$phpEx?file=$file"),
         'L_SUBMIT' => $lang['faq_retrieve'],
         'L_TITLE' => $lang['faq_editor'],
@@ -183,7 +183,7 @@ if( !isset($HTTP_GET_VARS['language']) && !isset($HTTP_POST_VARS['language']) )
 $language = isset($HTTP_GET_VARS['language']) ? $HTTP_GET_VARS['language'] : $HTTP_POST_VARS['language'];
 
 // the FAQ which will generate our $faq array
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_' . $file . '.' . $phpEx);
+include($phpbb2_root_path . 'language/lang_' . $language . '/lang_' . $file . '.' . $phpEx);
 
 // change into our array
 list($blocks, $quests) = faq_to_array($faq);
@@ -496,7 +496,7 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
 
     // write these changes back to the FAQ file
 
-    $fp = fopen($phpbb_root_path . 'language/lang_' . $language . '/lang_' . $file . '.' . $phpEx, 'w');
+    $fp = fopen($phpbb2_root_path . 'language/lang_' . $language . '/lang_' . $file . '.' . $phpEx, 'w');
 
     if($fp)
     {

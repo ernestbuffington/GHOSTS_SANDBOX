@@ -254,10 +254,10 @@ if(get_evo_option('recap_site_key') && get_evo_option('recap_priv_key'))
 /*****[BEGIN]******************************************
  [ Mod:     IE PNG Fix                         v1.0.0 ]
  ******************************************************/
-$arcade_on = (isset($_GET['file']) && $_GET['file'] == 'arcade_games') ? true : (isset($_POST['file']) && $_POST['file'] == 'arcade_games') ? true : false;
+$arcade_on = ((isset($_GET['file']) && $_GET['file'] == 'arcade_games')) ? true : ((isset($_POST['file']) && $_POST['file'] == 'arcade_games')) ? true : false; //Fix
 
 if (!$arcade_on) {
-    $arcade_on = (isset($_GET['do']) && $_GET['do'] == 'newscore') ? true : (isset($_POST['do']) && $_POST['do'] == 'newscore') ? true : false;
+    $arcade_on = ((isset($_GET['do']) && $_GET['do'] == 'newscore')) ? true : ((isset($_POST['do']) && $_POST['do'] == 'newscore')) ? true : false; //Fix
 }
 /*****[END]********************************************
  [ Mod:     IE PNG Fix                         v1.0.0 ]

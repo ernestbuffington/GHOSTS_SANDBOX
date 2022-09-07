@@ -38,8 +38,8 @@ if( !empty($setmodules) )
 //
 // Let's set the root dir for phpBB
 //
-$phpbb_root_path = '../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = '../';
+require($phpbb2_root_path . 'extension.inc');
 
 require('pagestart.' . $phpEx);
 
@@ -59,8 +59,8 @@ if (($mode == 'mod_pak') && ($submit))
     $no_page_header = true;
 }
 
-@include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
-include($phpbb_root_path . 'stats_mod/includes/constants.'.$phpEx);
+@include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 
 $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
@@ -76,9 +76,9 @@ while ($row = $db->sql_fetchrow($result))
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
 
-include($phpbb_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
-include($phpbb_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
+include($phpbb2_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
 
 // BEGIN Package Module
 if (($mode == 'mod_pak') && ($submit))
@@ -90,7 +90,7 @@ if (($mode == 'mod_pak') && ($submit))
     $pak_name = (trim($HTTP_POST_VARS['pak_name']) != '') ? trim($HTTP_POST_VARS['pak_name']) . '.pak' : 'module.pak';
 
     // create temporary file
-    if (!($fp = fopen($phpbb_root_path . 'modules/cache/' . $pak_name, 'wb')))
+    if (!($fp = fopen($phpbb2_root_path . 'modules/cache/' . $pak_name, 'wb')))
     {
         message_die(GENERAL_ERROR, 'Unable to write Package File. Please check the Package Naming.');
     }
@@ -102,7 +102,7 @@ if (($mode == 'mod_pak') && ($submit))
     fwrite($fp, 'INFO', 4);
     fwrite($fp, pack("C*", 0xCC, 0xFC, 0xFF), 3);
 
-    $content = implode('', file($phpbb_root_path . 'modules/pakfiles/' . $info_file));
+    $content = implode('', file($phpbb2_root_path . 'modules/pakfiles/' . $info_file));
     $size = strlen($content);
     fwrite($fp, $content, $size);
     fwrite($fp, pack("C*", 0xCC, 0xCC, 0xFF), 3);
@@ -112,7 +112,7 @@ if (($mode == 'mod_pak') && ($submit))
     fwrite($fp, pack("C*", 0xFF, 0xFC, 0xCC), 3);
     fwrite($fp, 'LANG', 4);
     fwrite($fp, pack("C*", 0xCC, 0xFC, 0xFF), 3);
-    $content = implode('', file($phpbb_root_path . 'modules/pakfiles/' . $lang_file));
+    $content = implode('', file($phpbb2_root_path . 'modules/pakfiles/' . $lang_file));
     $size = strlen($content);
     fwrite($fp, $content, $size);
     fwrite($fp, pack("C*", 0xCC, 0xCC, 0xFF), 3);
@@ -122,7 +122,7 @@ if (($mode == 'mod_pak') && ($submit))
     fwrite($fp, pack("C*", 0xFF, 0xFC, 0xCC), 3);
     fwrite($fp, 'MOD', 3);
     fwrite($fp, pack("C*", 0xCC, 0xFC, 0xFF), 3);
-    $content = implode('', file($phpbb_root_path . 'modules/pakfiles/' . $php_file));
+    $content = implode('', file($phpbb2_root_path . 'modules/pakfiles/' . $php_file));
     $size = strlen($content);
     fwrite($fp, $content, $size);
     fwrite($fp, pack("C*", 0xCC, 0xCC, 0xFF), 3);
@@ -131,9 +131,9 @@ if (($mode == 'mod_pak') && ($submit))
 
     fclose($fp);
 
-    $content = implode('', file($phpbb_root_path . 'modules/cache/' . $pak_name));
+    $content = implode('', file($phpbb2_root_path . 'modules/cache/' . $pak_name));
     
-    unlink($phpbb_root_path . 'modules/cache/' . $pak_name);
+    unlink($phpbb2_root_path . 'modules/cache/' . $pak_name);
 
     header("Content-Type: text/x-delimtext; name=\"" . $pak_name . "\"");
     header("Content-disposition: attachment; filename=" . $pak_name);
@@ -154,11 +154,11 @@ if (($mode == 'mod_pak') && (!$submit))
     $lang_files = array();
     $php_files = array();
     
-    $dir = @opendir($phpbb_root_path . 'modules/pakfiles');
+    $dir = @opendir($phpbb2_root_path . 'modules/pakfiles');
 
     while($file = @readdir($dir))
     {
-        if( !@is_dir($phpbb_root_path . 'modules/pakfiles' . '/' . $file) )
+        if( !@is_dir($phpbb2_root_path . 'modules/pakfiles' . '/' . $file) )
         {
             if ( preg_match('/\.info$/i', $file) )
             {
@@ -228,7 +228,7 @@ if (($mode == 'mod_pak') && (!$submit))
         'L_PACKAGE_NAME' => $lang['Package_name'],
         'L_CREATE' => $lang['Create'],
     
-        'S_ACTION' => append_sid($phpbb_root_path . 'admin/admin_mod_package.' . $phpEx . '?mode=' . $mode),
+        'S_ACTION' => append_sid($phpbb2_root_path . 'admin/admin_mod_package.' . $phpEx . '?mode=' . $mode),
         'S_LANG_FILE' => $lang_select_field,
         'S_INFO_FILE' => $info_select_field,
         'S_PHP_FILE' => $php_select_field)

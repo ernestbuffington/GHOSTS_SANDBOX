@@ -245,7 +245,7 @@ $user_ip = encode_ip($client_ip);
 /*****[BEGIN]******************************************
  [ Mod:    Attachment Mod                      v2.4.1 ]
  ******************************************************/
-include($phpbb_root_path . 'attach_mod/attachment_mod.php');
+include($phpbb2_root_path . 'attach_mod/attachment_mod.php');
 /*****[END]********************************************
  [ Mod:    Attachment Mod                      v2.4.1 ]
  ******************************************************/

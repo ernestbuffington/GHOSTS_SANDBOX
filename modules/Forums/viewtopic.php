@@ -72,12 +72,12 @@ if((!(isset($popup)) OR ($popup != "1")) && !isset($HTTP_GET_VARS['printertopic'
     $module_name = basename(dirname(__FILE__));
     require("modules/".$module_name."/nukebb.php");
 else:
-    $phpbb_root_path = NUKE_FORUMS_DIR;
+    $phpbb2_root_path = NUKE_PHPBB2_DIR;
 endif;
 
 define('IN_PHPBB', true);
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
 
 # Mod: Super Quick Reply v1.3.2 START
 include("includes/functions_post.php");
@@ -86,7 +86,7 @@ include("includes/functions_post.php");
 include_once("includes/bbcode.php");
 
 # Mod: Users Reputations Systems v1.0.0 START
-include($phpbb_root_path . 'reputation_common.'.$phpEx);
+include($phpbb2_root_path . 'reputation_common.'.$phpEx);
 include('includes/functions_reputation.'.$phpEx);
 # Mod: Users Reputations Systems v1.0.0 END
 
@@ -314,10 +314,10 @@ init_userprefs($userdata);
 # End session management
 
 # Mod: Printer Topic v1.0.8 START
-if(!file_exists(@phpbb_realpath($phpbb_root_path.'language/lang_'.$board_config['default_lang'].'/lang_printertopic.'.$phpEx)))
-include($phpbb_root_path.'language/lang_english/lang_printertopic.'.$phpEx);
+if(!file_exists(@phpbb_realpath($phpbb2_root_path.'language/lang_'.$board_config['default_lang'].'/lang_printertopic.'.$phpEx)))
+include($phpbb2_root_path.'language/lang_english/lang_printertopic.'.$phpEx);
 else
-include($phpbb_root_path.'language/lang_'.$board_config['default_lang'].'/lang_printertopic.'.$phpEx);
+include($phpbb2_root_path.'language/lang_'.$board_config['default_lang'].'/lang_printertopic.'.$phpEx);
 # Mod: Printer Topic v1.0.8 END
 
 
@@ -1995,7 +1995,7 @@ for($i = 0; $i < $total_posts; $i++):
 				  WHERE user_id = '".$userdata['user_id']."'";
 			$db->sql_query($q);
 		  else: # They Have Not Clicked The Link Yet
-			include_once($phpbb_root_path.'language/lang_'.$board_config['default_lang'].'/lang_ftr.'.$phpEx);		
+			include_once($phpbb2_root_path.'language/lang_'.$board_config['default_lang'].'/lang_ftr.'.$phpEx);		
 			$force_message = $board_config['ftr_msg'];
 			$topic 		 = $board_config['ftr_topic'];
 			$installed 	 = $board_config['ftr_installed'];
@@ -2299,7 +2299,7 @@ if(!isset($HTTP_GET_VARS['printertopic'])):
    # Base: At a Glance v2.2.1 START
    # Mod: At a Glance Options v1.0.0 START
    if(show_glance("topics")) 
-   include($phpbb_root_path.'glance.'.$phpEx);
+   include($phpbb2_root_path.'glance.'.$phpEx);
    # Base: At a Glance v2.2.1 START
    # Mod: At a Glance Options v1.0.0 START
 

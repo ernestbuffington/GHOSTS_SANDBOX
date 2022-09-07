@@ -97,9 +97,9 @@ if( !empty($setmodules) )
 
 //
 
-$phpbb_root_path = "./../";
+$phpbb2_root_path = "./../";
 
-require($phpbb_root_path . 'extension.inc');
+require($phpbb2_root_path . 'extension.inc');
 
 require('./pagestart.' . $phpEx);
 
@@ -1301,7 +1301,7 @@ if( !empty($mode) )
 
 								'ICON' => ( $forumicon ) ? $forumicon : '', 
 
-								'ICON_DISPLAY' => ( $forumicon ) ? '<img src="' . $phpbb_root_path . $forumicon . '" />' : '')
+								'ICON_DISPLAY' => ( $forumicon ) ? '<img src="' . $phpbb2_root_path . $forumicon . '" />' : '')
 
 /*****[END]********************************************
 
@@ -2955,7 +2955,7 @@ if( $total_categories = $db->sql_numrows($q_categories) )
 
  ******************************************************/
 
-										'FORUM_ICON_IMG' => ( $forum_rows[$j]['forum_icon'] ) ? '<img src="' . $phpbb_root_path . $forum_rows[$j]['forum_icon'] . '" alt="'.$forum_data[$j]['forum_name'].'" title="'.$forum_data[$j]['forum_name'].'" />' : '',
+										'FORUM_ICON_IMG' => ( $forum_rows[$j]['forum_icon'] ) ? '<img src="' . $phpbb2_root_path . $forum_rows[$j]['forum_icon'] . '" alt="'.$forum_data[$j]['forum_name'].'" title="'.$forum_data[$j]['forum_name'].'" />' : '',
 
 /*****[END]********************************************
 

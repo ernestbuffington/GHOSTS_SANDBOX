@@ -44,8 +44,8 @@ if( !empty($setmodules) )
 // Let's set the root dir for phpBB
 //
 $no_page_header = FALSE;
-$phpbb_root_path = "./../";
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = "./../";
+require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 //
 // Let's start by playing with some HTTP VARS

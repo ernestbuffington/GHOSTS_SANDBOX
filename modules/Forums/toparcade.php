@@ -30,13 +30,13 @@ if ($popup != "1"){
 }
 else
 {
-    $phpbb_root_path = NUKE_FORUMS_DIR;
+    $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
 define('IN_PHPBB', true);
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
-require($phpbb_root_path . 'gf_funcs/gen_funcs.' . $phpEx);
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
+require($phpbb2_root_path . 'gf_funcs/gen_funcs.' . $phpEx);
 
 $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE"))) ? "Refresh: 0; URL=" : "Location: ";
 
@@ -161,7 +161,7 @@ $template->assign_vars(array(
         'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $games_par_page) + 1), ceil($total_games / $games_par_page)))
 );
 
-include($phpbb_root_path . 'hall_of_fame.'.$phpEx);
+include($phpbb2_root_path . 'hall_of_fame.'.$phpEx);
 
 //
 // Output page header

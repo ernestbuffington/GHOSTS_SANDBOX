@@ -27,8 +27,8 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 
 //
@@ -36,10 +36,10 @@ require('./pagestart.' . $phpEx);
 //
 if(!defined('XD_LANG_INCLUDED'))
 {
-	$xs_lang_file = $phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_xd.'.$phpEx;
+	$xs_lang_file = $phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_xd.'.$phpEx;
 	if( !@file_exists($xs_lang_file) )
 	{	// load english version if there is no translation to current language
-		$xs_lang_file = $phpbb_root_path . 'language/lang_english/lang_xd.'.$phpEx;
+		$xs_lang_file = $phpbb2_root_path . 'language/lang_english/lang_xd.'.$phpEx;
 	}
 	@include($xs_lang_file);
 	define('XD_LANG_INCLUDED', true);
@@ -218,9 +218,9 @@ if ($type == 'user')
 			'L_LOOK_UP' => $lang['Look_up_user'],
 			'L_FIND_USERNAME' => $lang['Find_username'],
 
-			'U_SEARCH_USER' => append_sid($phpbb_root_path . "search.$phpEx?mode=searchuser"),
+			'U_SEARCH_USER' => append_sid($phpbb2_root_path . "search.$phpEx?mode=searchuser"),
 
-			'S_USER_ACTION' => append_sid($phpbb_root_path . "admin/admin_xdata_auth.$phpEx?type=user"),
+			'S_USER_ACTION' => append_sid($phpbb2_root_path . "admin/admin_xdata_auth.$phpEx?type=user"),
 			'S_USER_SELECT' => $select_list
 			)
 		);

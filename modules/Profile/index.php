@@ -32,20 +32,20 @@ exit('You can\'t access this file directly...');
 
 if ($popup != "1"){
     $module_name = basename(dirname(__FILE__));
-    require(NUKE_FORUMS_DIR.'nukebb.php');
+    require(NUKE_PHPBB2_DIR.'nukebb.php');
 }
 else
 {
-    $phpbb_root_path = NUKE_FORUMS_DIR;
+    $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
 define('IN_PHPBB', true);
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
 /*****[BEGIN]******************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/
-include($phpbb_root_path . 'reputation_common.'.$phpEx);
+include($phpbb2_root_path . 'reputation_common.'.$phpEx);
 include('includes/functions_reputation.'.$phpEx);
 /*****[END]********************************************
  [ Mod:     Users Reputations System           v1.0.0 ]
@@ -63,7 +63,7 @@ init_userprefs($userdata);
  ******************************************************/
 if( $userdata['session_logged_in']  &&  $userdata['user_level'] == ADMIN )
 {
-	include($phpbb_root_path.'language/lang_' . $userdata['user_lang'] . '/lang_user_delete.'.$phpEx);
+	include($phpbb2_root_path.'language/lang_' . $userdata['user_lang'] . '/lang_user_delete.'.$phpEx);
 }
 /*****[END]********************************************
  [ Mod:   Admin delete user with all postings v.1.0.5 ]

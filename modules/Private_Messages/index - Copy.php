@@ -78,7 +78,7 @@ if (empty($row_title['custom_title'])) {
 }
 if (!(isset($popup)) || ($popup != "1")) {
     $module_name = basename(dirname(__FILE__));
-    require(NUKE_FORUMS_DIR.'nukebb.php');
+    require(NUKE_PHPBB2_DIR.'nukebb.php');
     // title($sitename.': '.$mod_name);
     // if (is_user()) {
     //     include(NUKE_MODULES_DIR.'Your_Account/navbar.php');
@@ -88,12 +88,12 @@ if (!(isset($popup)) || ($popup != "1")) {
     //     echo "<br />";
     // }
 } else {
-    $phpbb_root_path = NUKE_FORUMS_DIR;
+    $phpbb2_root_path = NUKE_PHPBB2_DIR;
     $nuke_file_path = 'modules.php?name=Forums&file=';
 }
 define('IN_PHPBB', true);
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
 include(NUKE_INCLUDE_DIR.'bbcode.php');
 include(NUKE_INCLUDE_DIR.'functions_post.php');
 
@@ -2595,7 +2595,7 @@ $post_pm_img = '<a href="' . $post_pm . '"><img src="' . $images['pm_postmsg'] .
 /*****[BEGIN]******************************************
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_mass_pm.' . $phpEx);
+include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_mass_pm.' . $phpEx);
 if ( $userdata['user_level'] == ADMIN )
 {
     $mass_pm_img = '<a href="' . append_sid("groupmsg.$phpEx") . '"><img src="' . $images['mass_pm'] . '" border="0" alt="' . $lang['Mass_pm'] . '" /></a>';

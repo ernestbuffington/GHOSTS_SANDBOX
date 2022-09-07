@@ -28,11 +28,11 @@ if( !empty($setmodules) )
     return;
 }
 
-$phpbb_root_path = "./../";
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = "./../";
+require($phpbb2_root_path . 'extension.inc');
 
 require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_auc.' . $phpEx);
+include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_auc.' . $phpEx);
 
     if (isset($HTTP_POST_VARS['mode']) || isset($HTTP_GET_VARS['mode']))
         $mode = (isset($HTTP_POST_VARS['mode'])) ? $HTTP_POST_VARS['mode'] : $HTTP_GET_VARS['mode'];

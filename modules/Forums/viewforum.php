@@ -93,12 +93,12 @@ if($popup != "1"):
  $module_name = basename(dirname(__FILE__));
  require("modules/".$module_name."/nukebb.php");
 else:
- $phpbb_root_path = NUKE_FORUMS_DIR;
+ $phpbb2_root_path = NUKE_PHPBB2_DIR;
 endif;
 
 define('IN_PHPBB', true);
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
 
 # Mod: Post Icons v1.0.1 START
 include('includes/posting_icons.'. $phpEx);
@@ -506,7 +506,7 @@ $template->assign_vars(array(
         'FORUM_NAME' => $forum_row['forum_name'],
         
 		# Mod: Forum Icons v1.0.4 START
-		'FORUM_ICON_IMG' => ($forum_row['forum_icon']) ? '<img src="'.$phpbb_root_path.$forum_row['forum_icon'].'" 
+		'FORUM_ICON_IMG' => ($forum_row['forum_icon']) ? '<img src="'.$phpbb2_root_path.$forum_row['forum_icon'].'" 
 		alt="'.$forum_row['forum_name'].'" title="'.$forum_row['forum_name'].'" />&nbsp;' : '',
 		# Mod: Forum Icons v1.0.4 END
 
@@ -1072,7 +1072,7 @@ if($total_forums)
 # Base: At a Glance v2.2.1 START
 # Mod: At a Glance Option v1.0.0 START
 if (show_glance("forums")) 
-include($phpbb_root_path . 'glance.'.$phpEx);
+include($phpbb2_root_path . 'glance.'.$phpEx);
 # Base: At a Glance v2.2.1 END
 # Mod: At a Glance Option v1.0.0 END
 

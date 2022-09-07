@@ -28,13 +28,13 @@ if( !empty($setmodules) )
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require($phpbb2_root_path . 'extension.inc');
 require('pagestart.' . $phpEx);
 
-@include_once($phpbb_root_path . 'attach_mod/includes/constants.'.$phpEx);
+@include_once($phpbb2_root_path . 'attach_mod/includes/constants.'.$phpEx);
 include(NUKE_INCLUDE_DIR.'functions_admin.'.$phpEx);
-@include_once($phpbb_root_path . 'attach_mod/includes/functions_attach.'.$phpEx);
+@include_once($phpbb2_root_path . 'attach_mod/includes/functions_attach.'.$phpEx);
 
 if (!intval($attach_config['allow_ftp_upload']))
 {
@@ -52,8 +52,8 @@ else
     $upload_dir = $attach_config['download_path'];
 }
 
-include($phpbb_root_path . 'attach_mod/includes/functions_selects.' . $phpEx);
-include($phpbb_root_path . 'attach_mod/includes/functions_admin.' . $phpEx);
+include($phpbb2_root_path . 'attach_mod/includes/functions_selects.' . $phpEx);
+include($phpbb2_root_path . 'attach_mod/includes/functions_admin.' . $phpEx);
 
 // Check if the language got included
 if (!isset($lang['Test_settings_successful']))
@@ -191,7 +191,7 @@ while ($row = $db->sql_fetchrow($result))
 }
 $db->sql_freeresult($result);
 
-$cache_dir = $phpbb_root_path . '/cache';
+$cache_dir = $phpbb2_root_path . '/cache';
 $cache_file = $cache_dir . '/attach_config.php';
 
 if ((file_exists($cache_dir)) && (is_dir($cache_dir)))

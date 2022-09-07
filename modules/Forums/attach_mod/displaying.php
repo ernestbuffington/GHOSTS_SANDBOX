@@ -617,7 +617,7 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
 function display_attachments($post_id)
 {
     global $template, $upload_dir, $userdata, $allowed_extensions, $display_categories, $download_modes, $db, $lang, $phpEx, $attachments, $upload_icons, $attach_config;
-    global $phpbb_root_path;
+    global $phpbb2_root_path;
 
 	$num_attachments = sizeof($attachments['_' . $post_id]);
 
@@ -738,7 +738,7 @@ function display_attachments($post_id)
                 // Images
                 // NOTE: If you want to use the download.php everytime an image is displayed inlined, replace the
                 // Section between BEGIN and END with (Without the // of course):
-                //    $img_source = append_sid($phpbb_root_path . 'download.' . $phpEx . '?id=' . $attachments['_' . $post_id][$i]['attach_id']);
+                //    $img_source = append_sid($phpbb2_root_path . 'download.' . $phpEx . '?id=' . $attachments['_' . $post_id][$i]['attach_id']);
                 //    $download_link = TRUE;
                 //
                 //

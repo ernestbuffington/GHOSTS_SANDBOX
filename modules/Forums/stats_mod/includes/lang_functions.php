@@ -87,9 +87,9 @@ function get_modules_from_lang_block($lang_block)
 // Get provided Languages from an Module
 function get_module_languages($short_name)
 {
-    global $phpbb_root_path;
+    global $phpbb2_root_path;
 
-    $language_directory = $phpbb_root_path . 'modules/language';
+    $language_directory = $phpbb2_root_path . 'modules/language';
     $languages = array();
 
     if (!file_exists($language_directory))
@@ -118,7 +118,7 @@ function get_module_languages($short_name)
     // Ok, go through all Languages and generate the Language Array
     for ($i = 0; $i < count($languages); $i++)
     {
-        $language_file = $phpbb_root_path . 'modules/language/' . $languages[$i] . '/lang_modules.php';
+        $language_file = $phpbb2_root_path . 'modules/language/' . $languages[$i] . '/lang_modules.php';
         $file_content = implode('', file($language_file));
         if (trim($file_content) != '')
         {
@@ -136,9 +136,9 @@ function get_module_languages($short_name)
 // Get Languages available on this system
 function get_all_installed_languages()
 {
-    global $phpbb_root_path;
+    global $phpbb2_root_path;
 
-    $language_directory = $phpbb_root_path . 'modules/language';
+    $language_directory = $phpbb2_root_path . 'modules/language';
     $languages = array();
 
     if (!file_exists($language_directory))
@@ -167,7 +167,7 @@ function get_all_installed_languages()
     // Ok, go through all Languages and generate the Language Array
     for ($i = 0; $i < count($languages); $i++)
     {
-        $language_file = $phpbb_root_path . 'modules/language/' . $languages[$i] . '/lang_modules.php';
+        $language_file = $phpbb2_root_path . 'modules/language/' . $languages[$i] . '/lang_modules.php';
         if (file_exists($language_file))
         {
             $found_languages[] = $languages[$i]; 
@@ -180,18 +180,18 @@ function get_all_installed_languages()
 // has module content within this language ?
 function module_is_in_lang($short_name, $language)
 {
-    global $phpbb_root_path;
+    global $phpbb2_root_path;
 
     $found = FALSE;
     
-    $language_directory = $phpbb_root_path . 'modules/language';
+    $language_directory = $phpbb2_root_path . 'modules/language';
 
     if (!file_exists($language_directory))
     {
         message_die(GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
     $file_content = implode('', file($language_file));
     if (trim($file_content) != '')
     {
@@ -208,18 +208,18 @@ function module_is_in_lang($short_name, $language)
 // Get Language Entries from given Module and Language
 function get_lang_entries($short_name, $language)
 {
-    global $phpbb_root_path;
+    global $phpbb2_root_path;
 
     $lang_entries = array();
     
-    $language_directory = $phpbb_root_path . 'modules/language';
+    $language_directory = $phpbb2_root_path . 'modules/language';
 
     if (!file_exists($language_directory))
     {
         message_die(GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
     include($language_file);
     $keys = array();
     eval('$current_lang = $' . trim($short_name) . ';');
@@ -241,7 +241,7 @@ function get_lang_entries($short_name, $language)
 // Set specific language key, $value is the new key value
 function set_lang_entry($language, $module_id, $key, $value)
 {
-    global $directory_mode, $file_mode, $db, $phpbb_root_path;
+    global $directory_mode, $file_mode, $db, $phpbb2_root_path;
 
     $language = trim($language);
     $module_id = intval($module_id);
@@ -264,14 +264,14 @@ function set_lang_entry($language, $module_id, $key, $value)
     $short_name = trim($row['short_name']);
     $lang_entries = array();
 
-    $language_directory = $phpbb_root_path . 'modules/language';
+    $language_directory = $phpbb2_root_path . 'modules/language';
 
     if (!file_exists($language_directory))
     {
         message_die(GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
     include($language_file);
     $keys = array();
     eval('$current_lang = $' . trim($short_name) . ';');
@@ -359,7 +359,7 @@ function set_lang_entry($language, $module_id, $key, $value)
 // Set specific language block, $lang_block is the new language definition block as string
 function set_lang_block($language, $module_id, $lang_block)
 {
-    global $directory_mode, $file_mode, $db, $phpbb_root_path;
+    global $directory_mode, $file_mode, $db, $phpbb2_root_path;
 
     $language = trim($language);
     $module_id = intval($module_id);
@@ -381,14 +381,14 @@ function set_lang_block($language, $module_id, $lang_block)
     $short_name = trim($row['short_name']);
     $lang_entries = array();
 
-    $language_directory = $phpbb_root_path . 'modules/language';
+    $language_directory = $phpbb2_root_path . 'modules/language';
 
     if (!file_exists($language_directory))
     {
         message_die(GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
 
     // Write Language File
     chmod($language_directory, $directory_mode);
@@ -446,7 +446,7 @@ function set_lang_block($language, $module_id, $lang_block)
 // Add new key to a modules language block
 function lang_add_new_key($language, $module_id, $add_key, $add_value)
 {
-    global $directory_mode, $file_mode, $db, $phpbb_root_path;
+    global $directory_mode, $file_mode, $db, $phpbb2_root_path;
 
     $language = trim($language);
     $module_id = intval($module_id);
@@ -469,14 +469,14 @@ function lang_add_new_key($language, $module_id, $add_key, $add_value)
     $short_name = trim($row['short_name']);
     $lang_entries = array();
 
-    $language_directory = $phpbb_root_path . 'modules/language';
+    $language_directory = $phpbb2_root_path . 'modules/language';
 
     if (!file_exists($language_directory))
     {
         message_die(GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
     include($language_file);
     $keys = array();
     eval('$current_lang = $' . trim($short_name) . ';');
@@ -565,7 +565,7 @@ function lang_add_new_key($language, $module_id, $add_key, $add_value)
 // Delete key out of language block
 function delete_lang_key($language, $module_id, $key_name)
 {
-    global $directory_mode, $file_mode, $db, $phpbb_root_path;
+    global $directory_mode, $file_mode, $db, $phpbb2_root_path;
 
     $language = trim($language);
     $module_id = intval($module_id);
@@ -587,14 +587,14 @@ function delete_lang_key($language, $module_id, $key_name)
     $short_name = trim($row['short_name']);
     $lang_entries = array();
 
-    $language_directory = $phpbb_root_path . 'modules/language';
+    $language_directory = $phpbb2_root_path . 'modules/language';
 
     if (!file_exists($language_directory))
     {
         message_die(GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
     include($language_file);
     $keys = array();
     eval('$current_lang = $' . trim($short_name) . ';');
@@ -676,11 +676,11 @@ function delete_lang_key($language, $module_id, $key_name)
 // Add Empty Language
 function add_empty_language($new_language)
 {
-    global $directory_mode, $file_mode, $db, $phpbb_root_path, $lang;
+    global $directory_mode, $file_mode, $db, $phpbb2_root_path, $lang;
 
     $language = trim($new_language);
 
-    $language_directory = $phpbb_root_path . 'modules/language';
+    $language_directory = $phpbb2_root_path . 'modules/language';
 
     if (!file_exists($language_directory))
     {
@@ -699,7 +699,7 @@ function add_empty_language($new_language)
         chmod($language_directory . '/' . $language, $directory_mode);
     }
 
-    $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
 
     $sql = "SELECT short_name FROM " . MODULES_TABLE;
 
@@ -763,19 +763,19 @@ function add_empty_language($new_language)
 // Add new Language, use schema
 function add_new_language($new_language, $lang_schema)
 {
-    global $directory_mode, $file_mode, $db, $phpbb_root_path, $lang;
+    global $directory_mode, $file_mode, $db, $phpbb2_root_path, $lang;
 
     $language = trim($new_language);
     $lang_schema = trim($lang_schema);
 
-    $language_directory = $phpbb_root_path . 'modules/language';
+    $language_directory = $phpbb2_root_path . 'modules/language';
 
     if (!file_exists($language_directory))
     {
         message_die(GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    $schema_language_file = $phpbb_root_path . 'modules/language/' . $lang_schema . '/lang_modules.php';
+    $schema_language_file = $phpbb2_root_path . 'modules/language/' . $lang_schema . '/lang_modules.php';
 
     if (!file_exists($schema_language_file))
     {
@@ -795,7 +795,7 @@ function add_new_language($new_language, $lang_schema)
         chmod($language_directory . '/' . $language, $directory_mode);
     }
 
-    $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
     $contents = implode('', @file($schema_language_file));
 
     if (file_exists($language_file))
@@ -819,13 +819,13 @@ function add_new_language($new_language, $lang_schema)
 // Add Language, Language Content is provided
 function add_new_language_predefined($new_language, $modules)
 {
-    global $directory_mode, $file_mode, $db, $phpbb_root_path, $lang;
+    global $directory_mode, $file_mode, $db, $phpbb2_root_path, $lang;
 
     // Module content is defined as array(short_name, content)
 
     $language = trim($new_language);
 
-    $language_directory = $phpbb_root_path . 'modules/language';
+    $language_directory = $phpbb2_root_path . 'modules/language';
 
     if (!file_exists($language_directory))
     {
@@ -844,7 +844,7 @@ function add_new_language_predefined($new_language, $modules)
         chmod($language_directory . '/' . $language, $directory_mode);
     }
 
-    $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
 
     @reset($modules);
     while (list($short_name, $lang_content) = each($modules))
@@ -893,7 +893,7 @@ function add_new_language_predefined($new_language, $modules)
 
 function delete_complete_language($language)
 {
-    global $db, $phpbb_root_path;
+    global $db, $phpbb2_root_path;
 
     $language = trim($language);
 

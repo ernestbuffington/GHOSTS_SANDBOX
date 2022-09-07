@@ -43,7 +43,7 @@ if (!defined('IN_PHPBB'))
 
 function topic_review($topic_id, $is_inline_review)
 {
-        global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb_root_path, $userdata, $user_ip, $orig_word, $replacement_word, $starttime;
+        global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb2_root_path, $userdata, $user_ip, $orig_word, $replacement_word, $starttime;
 /*****[BEGIN]******************************************
  [ Mod:     Post Icons                         v1.0.1 ]
  ******************************************************/

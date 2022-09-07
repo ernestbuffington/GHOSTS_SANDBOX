@@ -106,7 +106,7 @@ function phpBB_whoisonline($force=FALSE)
  ******************************************************/
 function select_session_url($session_page, $url_qs, $url_ps, $specific, $level, $id, $forum_data, $topic_data, $user_data, $cat_data)
 {
-    global $lang, $phpEx, $userdata, $phpbb_root_path;
+    global $lang, $phpEx, $userdata, $phpbb2_root_path;
     include_once(NUKE_INCLUDE_DIR.'constants.'. $phpEx);
     unset($location);
 

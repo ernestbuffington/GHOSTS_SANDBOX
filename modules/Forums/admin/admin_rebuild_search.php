@@ -33,8 +33,8 @@ if ( !empty($setmodules) )
 // Let's set the root dir for phpBB
 //
 $no_page_header = true;
-$phpbb_root_path = "./../";
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = "./../";
+require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 require('./../../../includes/functions_search.'.$phpEx);
 require('./../../../includes/functions_admin_rebuild_search.'.$phpEx);
@@ -42,7 +42,7 @@ require('./../../../includes/functions_admin_rebuild_search.'.$phpEx);
 //
 // Language File
 //
-include($phpbb_root_path.'language/lang_'.$board_config['default_lang'].'/lang_admin_rebuild_search.'.$phpEx);
+include($phpbb2_root_path.'language/lang_'.$board_config['default_lang'].'/lang_admin_rebuild_search.'.$phpEx);
 
 
 // define some constants

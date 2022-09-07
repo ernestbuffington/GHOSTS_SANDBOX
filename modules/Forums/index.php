@@ -51,12 +51,12 @@ if ($popup != "1")
     }
     else
     {
-        $phpbb_root_path = NUKE_FORUMS_DIR;
+        $phpbb2_root_path = NUKE_PHPBB2_DIR;
     }
 
 define('IN_PHPBB', true);
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
 
 include('includes/bbcode.'.$phpEx);
 
@@ -499,7 +499,7 @@ if( ( $total_categories = count($category_rows) ) )
 		'IMG_DW_ARROW'			=> $images['down_arrow'],
 		'IMG_PLUS'				=> $images['icon_sign_plus'],
 		'IMG_MINUS'				=> $images['icon_sign_minus'],
-		'SPACER'				=> $phpbb_root_path . 'images/spacer.gif',
+		'SPACER'				=> $phpbb2_root_path . 'images/spacer.gif',
 /*****[END]********************************************
  [ Mod:    DHTML Collapsible Forum Index MOD     v1.1.1]
  ******************************************************/
@@ -796,7 +796,7 @@ if( ( $total_categories = count($category_rows) ) )
  [ Mod:    Forum Icons                         v1.0.4 ]
  ******************************************************/ 
 								                                'FORUM_FOLDER_IMG' => ( $forum_data[$j]['title_is_link'] == 1 && $forum_data[$j]['forum_link_icon'] != '' ) ? $forum_data[$j]['forum_link_icon'] : $folder_image,
-																'FORUM_ICON_IMG' => ($icon) ? '<img src="' . $phpbb_root_path . $icon . '" alt="'.$forum_data[$j]['forum_name'].'" title="'.$forum_data[$j]['forum_name'].'" />' : '',
+																'FORUM_ICON_IMG' => ($icon) ? '<img src="' . $phpbb2_root_path . $icon . '" alt="'.$forum_data[$j]['forum_name'].'" title="'.$forum_data[$j]['forum_name'].'" />' : '',
 								                                'FORUM_LINK_COUNT' => ( $forum_data[$j]['title_is_link'] == 1 ) ? sprintf($lang['Forum_link_count'], $forum_data[$j]['forum_link_count']) : '',
 								                                'FORUM_LINK_TARGET' => ($forum_data[$j]['forum_link_target']) ? 'target="_blank"' : '',
 /*****[END]********************************************
@@ -1024,7 +1024,7 @@ for( $i = 0; $i < count($subforums_list); $i++ )
  [ Mod:     At a Glance Options                v1.0.0 ]
  ******************************************************/
 if (show_glance("index")) {
-    include($phpbb_root_path . 'glance.php');
+    include($phpbb2_root_path . 'glance.php');
 }
 /*****[END]********************************************
  [ Mod:     At a Glance Options                v1.0.0 ]

@@ -72,7 +72,7 @@ if ($popup != "1"){
 
 	{
 
-	$phpbb_root_path = NUKE_FORUMS_DIR;
+	$phpbb2_root_path = NUKE_PHPBB2_DIR;
 
 }
 
@@ -80,9 +80,9 @@ if ($popup != "1"){
 
 define('IN_PHPBB', true);
 
-include($phpbb_root_path . 'extension.inc');
+include($phpbb2_root_path . 'extension.inc');
 
-include($phpbb_root_path . 'common.'.$phpEx);
+include($phpbb2_root_path . 'common.'.$phpEx);
 
 include_once("includes/bbcode.php");
 
@@ -91,7 +91,7 @@ include("includes/functions_post.php");
 /*****[BEGIN]******************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/
-include($phpbb_root_path . 'reputation_common.'.$phpEx);
+include($phpbb2_root_path . 'reputation_common.'.$phpEx);
 include('includes/functions_reputation.'.$phpEx);
 /*****[END]********************************************
  [ Mod:     Users Reputations System           v1.0.0 ]

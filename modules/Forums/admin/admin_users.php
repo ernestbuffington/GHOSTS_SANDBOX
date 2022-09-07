@@ -56,8 +56,8 @@ if( !empty($setmodules) )
         return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+$phpbb2_root_path = './../';
+require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 require("../../../includes/bbcode.php");
 require("../../../includes/functions_post.php");
@@ -67,12 +67,12 @@ require("../../../includes/functions_validate.php");
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-if ( !file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx)) )
+if ( !file_exists(@phpbb_realpath($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx)) )
 {
-    include_once($phpbb_root_path . 'language/lang_english/lang_adv_time.' . $phpEx);
+    include_once($phpbb2_root_path . 'language/lang_english/lang_adv_time.' . $phpEx);
 } else
 {
-    include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx);
+    include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx);
 }
 /*****[END]********************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]

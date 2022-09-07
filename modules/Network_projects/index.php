@@ -36,6 +36,7 @@ define('SUPPORT_NETWORK', true);
 
 define('INDEX_FILE', true);
 
+if (defined('network') ):
 if(!defined('NETWORK_SUPPORT_FUNC'))
 {
  $op = "LoadError"; 
@@ -100,4 +101,8 @@ switch($op)
   include_once(NUKE_MODULES_DIR.$module_name."/public/TaskMap.php");
   break;
 }
+else:
+$back = "<script>history.go(-1);</script>";
+print_r($back);	
+endif;
 ?>

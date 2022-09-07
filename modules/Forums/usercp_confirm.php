@@ -34,10 +34,10 @@ if (!defined('MODULE_FILE')) {
 }
 
 define('IN_PHPBB', true);
-$phpbb_root_path = NUKE_FORUMS_DIR;
+$phpbb2_root_path = NUKE_PHPBB2_DIR;
 
-include_once($phpbb_root_path . 'extension.inc');
-include_once($phpbb_root_path . 'common.'.$phpEx);
+include_once($phpbb2_root_path . 'extension.inc');
+include_once($phpbb2_root_path . 'common.'.$phpEx);
 include_once('includes/bbcode.'.$phpEx);
 
 //
