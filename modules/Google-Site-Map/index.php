@@ -612,17 +612,20 @@ while ($row2 = $nuke_db->sql_fetchrow($result2)):
 						if($xml):
                         $sitemap->addItem('/modules.php?name=Forums&file=viewforum&f='.$fid.'', '0.8', 'daily', 'Jun 25');
                         endif;
-						$resultT = $nuke_db->sql_query('SELECT topic_title, topic_id FROM '.$prefix.'_bbtopics WHERE `forum_id`="'.$fid.'" ORDER BY topic_id DESC LIMIT 0,'.$ntopics);
-						while($rowT = $nuke_db->sql_fetchrow($resultT)): 
-						print '<tr><td></td><td>';
-						print '&nbsp;&nbsp;&nbsp;&nbsp;<font color="darkgreen"><i style="vertical-align: middle;" 
-						class="fa fa-unlock-alt"></i></font>&nbsp;';
-						print '<a href="modules.php?name=Forums&amp;file=viewtopic&amp;t='.$rowT[topic_id].'">'.$rowT[topic_title].'</a></td>';
-						if($xml):
-                        $sitemap->addItem('/modules.php?name=Forums&file=viewtopic&t='.$rowT[topic_id].'', '0.8', 'daily', 'Jun 25');
-                        endif;
+						$ntopics = '10000';
+						$topic_id_and_title = $nuke_db->sql_query('SELECT `topic_title`, `topic_id` FROM '.$prefix.'_bbtopics WHERE `forum_id`='.$fid.' ORDER BY `topic_id` DESC LIMIT 0,'.$ntopics);
+						while($list_topic_id_and_title = $nuke_db->sql_fetchrow($topic_id_and_title)):
+						$topic_title = $list_topic_id_and_title['topic_title'];
+						$topic_id = $list_topic_id_and_title['topic_id'];
+						  print '<tr><td></td><td>';
+						  print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="darkgreen"><i style="vertical-align: middle;" 
+						  class="fa fa-unlock-alt"></i></font>&nbsp;';
+						  print '<a href="modules.php?name=Forums&amp;file=viewtopic&amp;t='.$topic_id.'">'.$topic_title.'</a></td>';
+						   if($xml):
+                           $sitemap->addItem('/modules.php?name=Forums&file=viewtopic&t='.$topic_id.'', '0.8', 'daily', 'Jun 25');
+                           endif;
 						endwhile;
-                       $nuke_db->sql_freeresult($resultT);
+                       $nuke_db->sql_freeresult($topic_id_and_title);
 					endif;
 				endwhile;
 				$nuke_db->sql_freeresult($result6);
