@@ -115,7 +115,7 @@
 											<option style="color:black; background-color: {T_TD_COLOR1}" value="black" class="genmed">{L_COLOR_BLACK}</option>
 										</select>
 									</td>
-									<td align="right" width="30%"><a href="http://hvmdesign.com/" class="gensmall" title="Advanced BBCode Box v5.0.0 MOD - by Disturbed One - www.HVMDesign.com" target="blank">&copy;</a></td>
+									<td align="right" width="30%"><a href="http://hvmdesign.com/" class="gensmall" title="Advanced BBCode Box v5.0.0 NUKE_MOD - by Disturbed One - www.HVMDesign.com" target="blank">&copy;</a></td>
 								</tr>
 							</table>
 						</td>

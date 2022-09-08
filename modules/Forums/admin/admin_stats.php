@@ -24,7 +24,7 @@
 *
 ***************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 //
 // Let's set the root dir for phpBB
@@ -61,14 +61,14 @@ include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 
 $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
 }
 
 $stats_config = array();
 
-while ($row = $db->sql_fetchrow($result))
+while ($row = $nuke_db->sql_fetchrow($result))
 {
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
@@ -87,9 +87,9 @@ if ($submit)
     {
         $sql = "UPDATE " . STATS_CONFIG_TABLE . " SET config_value = '" . trim($HTTP_POST_VARS['return_limit']) . "' WHERE config_name = 'return_limit'";
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to update statistics config table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to update statistics config table', '', __LINE__, __FILE__, $sql);
         }
         
         $config_update = TRUE;
@@ -99,14 +99,14 @@ if ($submit)
     {
         $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
         }
 
         $stats_config = array();
 
-        while ($row = $db->sql_fetchrow($result))
+        while ($row = $nuke_db->sql_fetchrow($result))
         {
             $stats_config[$row['config_name']] = trim($row['config_value']);
         }
@@ -119,9 +119,9 @@ if ($submit)
     {
         $sql = "UPDATE " . STATS_CONFIG_TABLE . " SET config_value = '0' WHERE config_name = 'page_views'";
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to update statistics config table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to update statistics config table', '', __LINE__, __FILE__, $sql);
         }
 
         $message = ($message == '') ? $message . $lang['Msg_reset_view_count'] : $message . '<br />' . $lang['Msg_reset_view_count'];
@@ -132,21 +132,21 @@ if ($submit)
     {
         $sql = "UPDATE " . STATS_CONFIG_TABLE . " SET config_value = '" . time() . "' WHERE config_name = 'install_date'";
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to update statistics config table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to update statistics config table', '', __LINE__, __FILE__, $sql);
         }
 
         $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
         }
 
         $stats_config = array();
 
-        while ($row = $db->sql_fetchrow($result))
+        while ($row = $nuke_db->sql_fetchrow($result))
         {
             $stats_config[$row['config_name']] = trim($row['config_value']);
         }
@@ -160,24 +160,24 @@ if ($submit)
         // Clear Module Cache
         $sql = "UPDATE " . CACHE_TABLE . " SET module_cache_time = 0, db_cache = '', priority = 0";
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to update cache table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to update cache table', '', __LINE__, __FILE__, $sql);
         }
 
         // Clear the Smilies Cache
         $sql = "DELETE FROM " . SMILIE_INDEX_TABLE;
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to update smiley index table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to update smiley index table', '', __LINE__, __FILE__, $sql);
         }
 
         $sql = "UPDATE " . SMILIE_INFO_TABLE . " SET last_post_id = 0, last_update_time = 0";
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to update smiley info table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to update smiley info table', '', __LINE__, __FILE__, $sql);
         }
 
         // Clear Cache Directory

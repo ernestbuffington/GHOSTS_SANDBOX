@@ -21,7 +21,7 @@ global $evouserinfo_rank;
 
 function evouserinfo_rank() 
 {
-    global $evouserinfo_addons, $db, $prefix, $userinfo, $evouserinfo_rank;
+    global $evouserinfo_addons, $nuke_db, $prefix, $userinfo, $evouserinfo_rank;
    # Mod: Multiple Ranks And Staff View v2.0.3 START
    require_once(NUKE_INCLUDE_DIR.'functions_mg_ranks.php');
    $ranks_sql = query_ranks();

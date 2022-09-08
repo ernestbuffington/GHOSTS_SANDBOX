@@ -25,72 +25,72 @@ global $evouserinfo_addons, $evouserinfo_users;
 
 function evouserinfo_newest_user() 
 {
-    global $db, $user_prefix;
+    global $nuke_db, $nuke_user_prefix;
     # do not list the latest user if they are in ghost mode!
-    $sql = "SELECT `user_id`, `username` FROM ".$user_prefix."_users WHERE user_active = 1 AND user_level > 0 AND user_allow_viewonline = 1 ORDER BY user_id DESC LIMIT 1";
-    $result = $db->sql_query($sql);
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $sql = "SELECT `user_id`, `username` FROM ".$nuke_user_prefix."_users WHERE user_active = 1 AND user_level > 0 AND user_allow_viewonline = 1 ORDER BY user_id DESC LIMIT 1";
+    $result = $nuke_db->sql_query($sql);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     return (isset($row)) ? $row : '?';
 }
 
 function evouserinfo_new_today() 
 {
-    global $user_prefix, $db;
+    global $nuke_user_prefix, $nuke_db;
 
-    $sql = "SELECT COUNT(*) FROM ".$user_prefix."_users WHERE user_regdate='".date("M d, Y")."'";
-    $result = $db->sql_query($sql);
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $sql = "SELECT COUNT(*) FROM ".$nuke_user_prefix."_users WHERE user_regdate='".date("M d, Y")."'";
+    $result = $nuke_db->sql_query($sql);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     return (isset($row[0])) ? $row[0] : '?';
 }
 
 function evouserinfo_new_yesterday() 
 {
-    global $user_prefix, $db;
+    global $nuke_user_prefix, $nuke_db;
 
-    $sql = "SELECT COUNT(*) FROM ".$user_prefix."_users WHERE user_regdate='".date("M d, Y", time()-86400)."'";
-    $result = $db->sql_query($sql);
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $sql = "SELECT COUNT(*) FROM ".$nuke_user_prefix."_users WHERE user_regdate='".date("M d, Y", time()-86400)."'";
+    $result = $nuke_db->sql_query($sql);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     return (isset($row[0])) ? $row[0] : '?';
 }
 
 function evouserinfo_waiting() 
 {
-    global $user_prefix, $db;
+    global $nuke_user_prefix, $nuke_db;
 
-    $sql = "SELECT COUNT(*) FROM ".$user_prefix."_users_temp";
-    $result = $db->sql_query($sql);
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $sql = "SELECT COUNT(*) FROM ".$nuke_user_prefix."_users_temp";
+    $result = $nuke_db->sql_query($sql);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     return (isset($row[0])) ? $row[0] : '?';
 }
 
 function evouserinfo_total_hidden() 
 {
-    global $user_prefix, $db;
+    global $nuke_user_prefix, $nuke_db;
 
-    $sql = "SELECT COUNT(*) FROM ".$user_prefix."_users WHERE user_id > 1 AND user_allow_viewonline != 1";
-    $result = $db->sql_query($sql);
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $sql = "SELECT COUNT(*) FROM ".$nuke_user_prefix."_users WHERE user_id > 1 AND user_allow_viewonline != 1";
+    $result = $nuke_db->sql_query($sql);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     return (isset($row[0])) ? $row[0] : '?';
 }
 
 function evouserinfo_total() 
 {
-    global $user_prefix, $db;
+    global $nuke_user_prefix, $nuke_db;
 
-    $sql = "SELECT COUNT(*) FROM ".$user_prefix."_users WHERE user_id > 1";
-    $result = $db->sql_query($sql);
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $sql = "SELECT COUNT(*) FROM ".$nuke_user_prefix."_users WHERE user_id > 1";
+    $result = $nuke_db->sql_query($sql);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     return (isset($row[0])) ? $row[0] : '?';
 }

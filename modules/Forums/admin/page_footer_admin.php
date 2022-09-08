@@ -24,12 +24,12 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
 
-global $do_gzip_compress, $template, $cache, $userdata, $db, $lang, $board_config;
+global $do_gzip_compress, $template, $cache, $userdata, $nuke_db, $lang, $board_config;
 //
 // Show the overall footer.
 //
@@ -38,7 +38,7 @@ $template->set_filenames(array(
 );
 
 $template->assign_vars(array(
-    'PHPBB_VERSION' => ($userdata['user_level'] == ADMIN && $userdata['user_id'] != ANONYMOUS) ? '2' . $board_config['version'] : '',
+    'PHPBB_VERSION' => ($userdata['user_level'] == NUKE_ADMIN && $userdata['user_id'] != NUKE_ANONYMOUS) ? '2' . $board_config['version'] : '',
         'TRANSLATION_INFO' => (isset($lang['TRANSLATION_INFO'])) ? $lang['TRANSLATION_INFO'] : ((isset($lang['TRANSLATION'])) ? $lang['TRANSLATION'] : ''))
 );
 
@@ -52,7 +52,7 @@ $cache->resync();
 //
 // Close our DB connection.
 //
-$db->sql_close();
+$nuke_db->sql_close();
 
 //
 // Compress buffered output if required

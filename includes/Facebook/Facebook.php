@@ -274,7 +274,7 @@ class Facebook
     }
 
     /**
-     * Returns the redirect login helper.
+     * Returns the nuke_redirect login helper.
      *
      * @return FacebookRedirectLoginHelper
      */

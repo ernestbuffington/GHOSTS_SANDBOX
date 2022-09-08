@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -16,7 +16,7 @@ if (!defined('NUKESENTINEL_ADMIN')) {
 }
 
 $tid = intval($tid);
-$tidinfo = $db->sql_fetchrow($db->sql_query("SELECT * FROM `".$prefix."_nsnst_tracked_ips` WHERE `tid`='$tid' LIMIT 0,1"));
+$tidinfo = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_tracked_ips` WHERE `tid`='$tid' LIMIT 0,1"));
 include_once(NUKE_BASE_DIR.'header.php');
 OpenTable();
 OpenMenu(_AB_ADDIP);
@@ -63,8 +63,8 @@ echo '</select><br />'."\n";
 echo _AB_EXPIRESINS.'</td></tr>'."\n";
 echo '<tr><td bgcolor="'.$bgcolor2.'" valign="top"><strong>'._AB_NOTES.':</strong></td><td><textarea name="tidinfo[notes]" rows="10" cols="60">'.$getIPs['notes'].'</textarea></td></tr>'."\n";
 echo '<tr><td bgcolor="'.$bgcolor2.'"><strong>'._AB_REASON.':</strong></td><td><select name="tidinfo[reason]">'."\n";
-$result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_blockers` ORDER BY `block_name`");
-while($blockerrow = $db->sql_fetchrow($result)) {
+$result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_blockers` ORDER BY `block_name`");
+while($blockerrow = $nuke_db->sql_fetchrow($result)) {
   echo '<option value="'.$blockerrow['blocker'].'">'.$blockerrow['reason'].'</option>'."\n";
 }
 echo '</select></td></tr>'."\n";

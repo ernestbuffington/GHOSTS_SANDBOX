@@ -33,10 +33,10 @@ if (!defined('MODULE_FILE')) {
 
 $pos = strpos($_SERVER['QUERY_STRING'],"=profile");
 if($pos !== false && $pos != strlen($_SERVER['QUERY_STRING'])) {
-    $redirector = "modules.php?name=Profile" . substr($_SERVER['QUERY_STRING'],$pos+8);
+    $nuke_redirector = "modules.php?name=Profile" . substr($_SERVER['QUERY_STRING'],$pos+8);
 } else {
-    $redirector = "modules.php?name=Profile";
+    $nuke_redirector = "modules.php?name=Profile";
 }
-redirect($redirector);
+nuke_redirect($nuke_redirector);
 
 ?>

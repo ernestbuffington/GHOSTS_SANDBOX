@@ -8,7 +8,7 @@
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2005 by NukeScripts Network       */
 /********************************************************/
-global $db2;
+global $network_db;
 if(!defined('NETWORK_SUPPORT_ADMIN')) { die("Illegal Access Detected!!!"); }
 include_once(NUKE_INCLUDE_DIR."counter.php");
 $request = pjrequest_info($request_id);
@@ -58,11 +58,11 @@ if($request['date_modified'] != '0'){
   echo "<tr><td align='center'><img src='$pjimage'></td>\n";
   echo "<td colspan='3' width='100%'><nobr>"._NETWORK_MODIFIED.": <strong>$modify_date</strong></nobr></td></tr>\n";
 }
-$memberresult = $db2->sql_query("SELECT `member_id` FROM `".$network_prefix."_requests_members` WHERE `request_id`='$request_id' ORDER BY `member_id`");
-$member_total = $db2->sql_numrows($memberresult);
+$memberresult = $network_db->sql_query("SELECT `member_id` FROM `".$network_prefix."_requests_members` WHERE `request_id`='$request_id' ORDER BY `member_id`");
+$member_total = $network_db->sql_numrows($memberresult);
 echo "<tr><td colspan='4' width='100%'><nobr><strong>"._NETWORK_REQUESTMEMBERS."</strong></nobr></td></tr>\n";
 if($member_total != 0){
-  while(list($member_id) = $db2->sql_fetchrow($memberresult)) {
+  while(list($member_id) = $network_db->sql_fetchrow($memberresult)) {
     $pjimage = pjimage("member.png", $module_name);
     $member = pjmember_info($member_id);
     echo "<tr><td><img src='$pjimage'></td><td colspan='3' width='100%'>".$member['member_name']." (".$member['member_email'].")</td></tr>\n";
@@ -72,12 +72,12 @@ if($member_total != 0){
 }
 echo "</table>\n";
 echo "<br />\n";
-$commentresult = $db2->sql_query("SELECT `comment_id` FROM `".$network_prefix."_requests_comments` WHERE `request_id`='$request_id' ORDER BY `date_commented` asc");
-$comment_total = $db2->sql_numrows($commentresult);
+$commentresult = $network_db->sql_query("SELECT `comment_id` FROM `".$network_prefix."_requests_comments` WHERE `request_id`='$request_id' ORDER BY `date_commented` asc");
+$comment_total = $network_db->sql_numrows($commentresult);
 echo "<table border='1' cellpadding='2' cellspacing='0' width='100%'>\n";
 echo "<tr><td width='100%'><nobr><strong>"._NETWORK_COMMENTS."</strong></nobr></td><tr>\n";
 if($comment_total > 0){
-  while(list($comment_id) = $db2->sql_fetchrow($commentresult)) {
+  while(list($comment_id) = $network_db->sql_fetchrow($commentresult)) {
     $comment = pjrequestcomment_info($comment_id);
     $comment_date = date($pj_config['request_date_format'], $comment_date);
     echo "<tr><td><nobr><strong>".$comment['commenter_email']." @ $comment_date</strong>";

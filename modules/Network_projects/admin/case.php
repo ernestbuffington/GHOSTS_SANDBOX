@@ -18,15 +18,15 @@
 if (!defined('ADMIN_FILE')) {
    die('Access Denied');
 }
-global $prefix, $db2;
+global $prefix, $network_db;
 $module_name = basename(dirname(dirname(__FILE__)));
 $aid = substr($aid, 0,125);
-$query = $db2->sql_query("SELECT `title`, `admins` FROM `".$prefix."_modules` WHERE `title`='$module_name'");
-list($mod_title, $admins) = $db2->sql_fetchrow($query);
-$db2->sql_freeresult($query);
-$query2 = $db2->sql_query("SELECT `name`, `radminsuper` FROM `".$prefix."_authors` WHERE `aid`='$aid'");
-list($rname, $radminsuper) = $db2->sql_fetchrow($query2);
-$db2->sql_freeresult($query2);
+$query = $network_db->sql_query("SELECT `title`, `admins` FROM `".$prefix."_modules` WHERE `title`='$module_name'");
+list($mod_title, $admins) = $network_db->sql_fetchrow($query);
+$network_db->sql_freeresult($query);
+$query2 = $network_db->sql_query("SELECT `name`, `radminsuper` FROM `".$prefix."_authors` WHERE `aid`='$aid'");
+list($rname, $radminsuper) = $network_db->sql_fetchrow($query2);
+$network_db->sql_freeresult($query2);
 $admins = explode(",", $admins);
 $auth_user = 0;
 for($i=0; $i < sizeof($admins); $i++) { if($rname == $admins[$i] AND !empty($admins)) { $auth_user = 1; } }

@@ -14,7 +14,7 @@
   </tr>    
   <!-- BEGIN colors -->
   <tr>    
-    <td class="{colors.ROW_CLASS}" style="height: 35px;">{colors.USER}</td>
+    <td class="{colors.ROW_CLASS}" style="height: 35px;">{colors.NUKE_USER}</td>
     <td class="{colors.ROW_CLASS}" style="height: 35px;">{colors.INFO_LINE}</td>                                    
   </tr>    
   <!-- END colors -->

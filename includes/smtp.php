@@ -38,13 +38,13 @@ function server_parse($socket, $response, $line = __LINE__)
         {
                 if (!($server_response = fgets($socket, 256)))
                 {
-                        message_die(GENERAL_ERROR, "Couldn't get mail server response codes", "", $line, __FILE__);
+                        message_die(NUKE_GENERAL_ERROR, "Couldn't get mail server response codes", "", $line, __FILE__);
                 }
         }
 
         if (!(substr($server_response, 0, 3) == $response))
         {
-                message_die(GENERAL_ERROR, "Ran into problems sending Mail. Response: $server_response", "", $line, __FILE__);
+                message_die(NUKE_GENERAL_ERROR, "Ran into problems sending Mail. Response: $server_response", "", $line, __FILE__);
         }
 }
 
@@ -102,18 +102,18 @@ function smtpmail($mail_to, $subject, $message, $headers = '')
 
         if (trim($subject) == '')
         {
-                message_die(GENERAL_ERROR, "No email Subject specified", "", __LINE__, __FILE__);
+                message_die(NUKE_GENERAL_ERROR, "No email Subject specified", "", __LINE__, __FILE__);
         }
 
         if (trim($message) == '')
         {
-                message_die(GENERAL_ERROR, "Email message was blank", "", __LINE__, __FILE__);
+                message_die(NUKE_GENERAL_ERROR, "Email message was blank", "", __LINE__, __FILE__);
         }
         // Ok we have error checked as much as we can to this point let's get on
         // it already.
         if( !$socket = @fsockopen($board_config['smtp_host'], 25, $errno, $errstr, 20) )
         {
-                message_die(GENERAL_ERROR, "Could not connect to smtp host : $errno : $errstr", "", __LINE__, __FILE__);
+                message_die(NUKE_GENERAL_ERROR, "Could not connect to smtp host : $errno : $errstr", "", __LINE__, __FILE__);
         }
 
         // Wait for reply

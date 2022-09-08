@@ -37,8 +37,8 @@ define('_YOUHAVE_X_MSGS','You Have <strong><span class="blink-one">%s</span></st
 define('_WATCH_YOUTUBE','Watch this video on YouTube');
 define("_POSTEDBY","Posted by");
 define("_ON","on");
-define("_CHARSET","UTF-8");
-define("_LANG_DIRECTION","ltr");
+define("_NUKE_CHARSET","UTF-8");
+define("_NUKE_LANG_DIRECTION","ltr");
 define('_INVISIBLEMODULES', 'Invisible Modules');
 define('_NOACTIVEMODULES', 'Inactive Modules');
 define('_NONE', 'None');

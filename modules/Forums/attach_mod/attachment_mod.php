@@ -16,7 +16,7 @@
 
 global $file_mode;
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -48,7 +48,7 @@ function attach_mod_get_lang($language_file)
         
         if (!file_exists($phpbb2_root_path . 'language/lang_' . $language . '/' . $language_file . '.' . $phpEx))
         {
-            message_die(GENERAL_MESSAGE, 'Attachment Mod language file does not exist: language/lang_' . $language . '/' . $language_file . '.' . $phpEx);
+            message_die(NUKE_GENERAL_MESSAGE, 'Attachment Mod language file does not exist: language/lang_' . $language . '/' . $language_file . '.' . $phpEx);
         }
         else
         {
@@ -84,18 +84,18 @@ function include_attach_lang()
 */
 function get_config()
 {
-    global $db, $board_config;
+    global $nuke_db, $board_config;
 
     $attach_config = array();
 
     $sql = 'SELECT *
         FROM ' . ATTACH_CONFIG_TABLE;
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Could not query attachment information', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query attachment information', '', __LINE__, __FILE__, $sql);
     }
 
-    while ($row = $db->sql_fetchrow($result))
+    while ($row = $nuke_db->sql_fetchrow($result))
     {
         $attach_config[$row['config_name']] = trim($row['config_value']);
     }
@@ -172,7 +172,7 @@ else
 
 if (!function_exists('attach_mod_sql_escape'))
 {
-    message_die(GENERAL_MESSAGE, 'You haven\'t correctly updated/installed the Attachment Mod.<br />You seem to forgot uploading a new file. Please refer to the update instructions for help and make sure you have uploaded every file correctly.');
+    message_die(NUKE_GENERAL_MESSAGE, 'You haven\'t correctly updated/installed the Attachment Mod.<br />You seem to forgot uploading a new file. Please refer to the update instructions for help and make sure you have uploaded every file correctly.');
 }
 
 ?>

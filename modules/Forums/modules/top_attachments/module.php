@@ -13,7 +13,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -64,12 +64,12 @@ if ($attachment_version == '')
 
 if ( !$attachment_mod_installed )
 {
-    message_die(GENERAL_MESSAGE, "The Attachment Mod have to be installed in order to see the Top Downloaded Attachments.");
+    message_die(NUKE_GENERAL_MESSAGE, "The Attachment Mod have to be installed in order to see the Top Downloaded Attachments.");
 }
 
 if ( (!strstr($attachment_version, '2.4.')) )
 {
-    message_die(GENERAL_MESSAGE, 'Wrong Attachment Mod Version detected.<br />Please update your Attachment Mod (V' . $attachment_version . ') to at least Version 2.3.0.');
+    message_die(NUKE_GENERAL_MESSAGE, 'Wrong Attachment Mod Version detected.<br />Please update your Attachment Mod (V' . $attachment_version . ') to at least Version 2.3.0.');
 }
 
 $language = $board_config['default_lang'];
@@ -84,7 +84,7 @@ include($phpbb2_root_path . 'language/lang_' . $language . '/lang_admin_attach.'
 $order_by = 'download_count DESC LIMIT ' . $core->return_limit;
 
 $sql = "SELECT a.post_id, p.forum_id as post_forum_id, t.topic_title, d.*
-FROM " . ATTACHMENTS_TABLE . " a, " . ATTACHMENTS_DESC_TABLE . " d, "  . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
+FROM " . ATTACHMENTS_TABLE . " a, " . ATTACHMENTS_DESC_TABLE . " d, "  . NUKE_POSTS_TABLE . " p, " . NUKE_BB_TOPICS_TABLE . " t
 WHERE (a.post_id = p.post_id) AND (p.topic_id = t.topic_id) AND (a.attach_id = d.attach_id)";
 
 if ($exclude_images)
@@ -163,7 +163,7 @@ for ($i = 0; $i < $num_attachments; $i++)
         $topic_title_2 = substr($topic_title, 0, 20) . '...';
     }
 
-    $view_topic = append_sid('viewtopic.' . $phpEx . '?' . POST_POST_URL . '=' . intval($attachments[$i]['post_id']) . '#' . intval($attachments[$i]['post_id']));
+    $view_topic = append_sid('viewtopic.' . $phpEx . '?' . NUKE_POST_POST_URL . '=' . intval($attachments[$i]['post_id']) . '#' . intval($attachments[$i]['post_id']));
 
     $data[$i]['topic_title'] = ($topic_title_2 != '') ? '<a href="' . $view_topic . '" class="gen" title="' . $topic_title . '" target="_blank">' . $topic_title_2 . '</a>' : '<a href="' . $view_topic . '" class="gen" target="_blank">' . $topic_title . '</a>';
 

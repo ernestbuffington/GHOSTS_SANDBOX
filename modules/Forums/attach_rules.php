@@ -32,7 +32,7 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', TRUE);
+define('IN_PHPBB2', true);
 
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
@@ -41,25 +41,25 @@ $forum_id = get_var('f', 0);
 $privmsg = (!$forum_id) ? true : false;
 
 // Start Session Management
-$userdata = session_pagestart($user_ip, PAGE_INDEX);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
 init_userprefs($userdata);
 
 // Display the allowed Extension Groups and Upload Size
 if ($privmsg)
 {
-    $auth['auth_attachments'] = ($userdata['user_level'] != ADMIN) ? intval($attach_config['allow_pm_attach']) : true;
+    $auth['auth_attachments'] = ($userdata['user_level'] != NUKE_ADMIN) ? intval($attach_config['allow_pm_attach']) : true;
     $auth['auth_view'] = true;
     $_max_filesize = $attach_config['max_filesize_pm'];
 }
 else
 {
-    $auth = auth(AUTH_ALL, $forum_id, $userdata);
+    $auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata);
     $_max_filesize = $attach_config['max_filesize'];
 }
 
 if (!($auth['auth_attachments'] && $auth['auth_view']))
 {
-    message_die(GENERAL_ERROR, 'You are not allowed to call this file (ID:2)');
+    message_die(NUKE_GENERAL_ERROR, 'You are not allowed to call this file (ID:2)');
 }
 
 $template->set_filenames(array(
@@ -71,15 +71,15 @@ $sql = 'SELECT group_id, group_name, max_filesize, forum_permissions
     WHERE allow_group = 1
     ORDER BY group_name ASC';
 
-if (!($result = $db->sql_query($sql)))
+if (!($result = $nuke_db->sql_query($sql)))
 {
-    message_die(GENERAL_ERROR, 'Could not query Extension Groups.', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query Extension Groups.', '', __LINE__, __FILE__, $sql);
 }
 
 $allowed_filesize = array();
-$rows = $db->sql_fetchrowset($result);
-$num_rows = $db->sql_numrows($result);
-$db->sql_freeresult($result);
+$rows = $nuke_db->sql_fetchrowset($result);
+$num_rows = $nuke_db->sql_numrows($result);
+$nuke_db->sql_freeresult($result);
 
 // Ok, only process those Groups allowed within this forum
 $nothing = true;
@@ -117,14 +117,14 @@ for ($i = 0; $i < $num_rows; $i++)
             WHERE group_id = " . (int) $rows[$i]['group_id'] . "
             ORDER BY extension ASC";
 
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Could not query Extensions.', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not query Extensions.', '', __LINE__, __FILE__, $sql);
         }
 
-        $e_rows = $db->sql_fetchrowset($result);
-        $e_num_rows = $db->sql_numrows($result);
-        $db->sql_freeresult($result);
+        $e_rows = $nuke_db->sql_fetchrowset($result);
+        $e_num_rows = $nuke_db->sql_numrows($result);
+        $nuke_db->sql_freeresult($result);
 
         for ($j = 0; $j < $e_num_rows; $j++)
         {

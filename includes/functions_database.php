@@ -7,12 +7,12 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 /**
  * Retrieve the database variable
  *
- * @global db $db Evolution Xtreme database abstraction object.
+ * @global db $nuke_db Evolution Xtreme database abstraction object.
  * @return object Database Object
  */
 function _db() {
-	global $db;
-	return $db;
+	global $nuke_db;
+	return $nuke_db;
 }
 
 /**

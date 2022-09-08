@@ -39,14 +39,14 @@ if (!defined('MODULE_FILE')) {
 $module_name = basename(dirname(__FILE__));
 require("modules/".$module_name."/nukebb.php");
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_FAQ);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_FAQ);
 init_userprefs($userdata);
 //
 // End session management

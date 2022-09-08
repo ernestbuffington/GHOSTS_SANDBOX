@@ -38,7 +38,7 @@
 	   die('Access Denied');
 	}
 
-	global $prefix, $db, $admdata, $admin_file;
+	global $prefix, $nuke_db, $admdata, $admin_file;
 	
 	$module_name = basename(dirname(dirname(__FILE__)));
 	
@@ -46,13 +46,13 @@
 	{
 		function weblinks_parent($parentid, $title) 
 		{
-			global $prefix,$db;
+			global $prefix,$nuke_db;
 			$parentid = intval($parentid);
-			$row = $db->sql_fetchrow($db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories WHERE cid='$parentid'"));
+			$row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories WHERE cid='$parentid'"));
 			$cid = intval($row['cid']);
 			$ptitle = $row['title'];
 			$pparentid = intval($row['parentid']);
-			$db->sql_freeresult($result);
+			$nuke_db->sql_freeresult($result);
 			if (!empty($ptitle))
 			{
 				$title = $ptitle."/".$title;
@@ -66,7 +66,7 @@
 
 		function links() 
 		{
-			global $prefix, $db, $admin_file;
+			global $prefix, $nuke_db, $admin_file;
 			include_once(NUKE_BASE_DIR.'header.php');
 			OpenTable();
 			
@@ -87,16 +87,16 @@
 				{
 					echo "<center><a href=\"modules.php?name=Web_Links\"><img style=\"max-height: 50px;\" src=\"modules/Web_Links/images/Web_links/Web_Links.png\" border=\"0\" alt=\"\"></a><br /><br />";
 				}
-				$result = $db->sql_query("SELECT * FROM " . $prefix . "_links_links");
-				$numrows = $db->sql_numrows($result);
+				$result = $nuke_db->sql_query("SELECT * FROM " . $prefix . "_links_links");
+				$numrows = $nuke_db->sql_numrows($result);
 				echo "<span class=\"content\">" . _THEREARE . " <strong>$numrows</strong> " . _LINKSINDB . "</span></center>";
 			
 			CloseTable();
 			//echo "<br />";
-			$result2 = $db->sql_query("SELECT requestid,lid,cid,title,url,description,modifysubmitter FROM " . $prefix . "_links_modrequest WHERE brokenlink='1'");
-			$totalbrokenlinks = $db->sql_numrows($result2);
-			$result3 = $db->sql_query("SELECT requestid,lid,cid,title,url,description,modifysubmitter FROM " . $prefix . "_links_modrequest WHERE brokenlink='0'");
-			$totalmodrequests = $db->sql_numrows($result3);
+			$result2 = $nuke_db->sql_query("SELECT requestid,lid,cid,title,url,description,modifysubmitter FROM " . $prefix . "_links_modrequest WHERE brokenlink='1'");
+			$totalbrokenlinks = $nuke_db->sql_numrows($result2);
+			$result3 = $nuke_db->sql_query("SELECT requestid,lid,cid,title,url,description,modifysubmitter FROM " . $prefix . "_links_modrequest WHERE brokenlink='0'");
+			$totalmodrequests = $nuke_db->sql_numrows($result3);
     		OpenTable();
 			
 				echo "<center><span class=\"content\">[ <a href=\"".$admin_file.".php?op=LinksCleanVotes\">" . _CLEANLINKSDB . "</a> | ";
@@ -106,13 +106,13 @@
 	
     		CloseTable();	
     		//echo "<br />";
-			$result4 = $db->sql_query("SELECT lid, cid, sid, title, url, description, name, email, submitter FROM " . $prefix . "_links_newlink ORDER BY lid");
-			$numrows = $db->sql_numrows($result4);
+			$result4 = $nuke_db->sql_query("SELECT lid, cid, sid, title, url, description, name, email, submitter FROM " . $prefix . "_links_newlink ORDER BY lid");
+			$numrows = $nuke_db->sql_numrows($result4);
     		if ($numrows > 0) 
 			{
     			OpenTable();
     			echo "<center><span class=\"option\"><strong>" . _LINKSWAITINGVAL . "</strong></span></center><br /><br />";
-				while($row4 = $db->sql_fetchrow($result4)) 
+				while($row4 = $nuke_db->sql_fetchrow($result4)) 
 				{
 					$lid = intval($row4['lid']);
 					$cid = intval($row4['cid']);
@@ -139,8 +139,8 @@
 					echo "<input type=\"hidden\" name=\"lid\" value=\"$lid\">";
 					echo "<input type=\"hidden\" name=\"submitter\" value=\"$submitter\">";
 					echo "" . _CATEGORY . ": <select name=\"cat\">";
-    				$result5 = $db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY title");
-    				while ($row5 = $db->sql_fetchrow($result5)) 
+    				$result5 = $nuke_db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY title");
+    				while ($row5 = $nuke_db->sql_fetchrow($result5)) 
 					{
     					$cid2      = intval($row5['cid']);
     					$ctitle2   = stripslashes($row5['title']);
@@ -185,16 +185,16 @@
 			//echo "<br />";
 
 // Add a New Sub-Category
-    $result6 = $db->sql_query("SELECT * FROM " . $prefix . "_links_categories");
-    $numrows = $db->sql_numrows($result6);
+    $result6 = $nuke_db->sql_query("SELECT * FROM " . $prefix . "_links_categories");
+    $numrows = $nuke_db->sql_numrows($result6);
     if ($numrows>0) {
     OpenTable();
     echo "<form method=\"post\" action=\"".$admin_file.".php?op=LinksAddSubCat\">"
         ."<span class=\"option\"><strong>" . _ADDSUBCATEGORY . "</strong></span><br /><br />"
         ."" . _NAME . ": <input type=\"text\" name=\"new_sub_title\" size=\"30\" maxlength=\"100\">&nbsp;" . _IN . "&nbsp;";
-        $result7 = $db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY parentid,title");
+        $result7 = $nuke_db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY parentid,title");
     echo "<select name=\"cid\">";
-    while($row7 = $db->sql_fetchrow($result7)) {
+    while($row7 = $nuke_db->sql_fetchrow($result7)) {
         $cid2 = intval($row7['cid']);
         $ctitle2 = stripslashes($row7['title']);
         $parentid2 = intval($row7['parentid']);
@@ -212,17 +212,17 @@
     }
 
 // Add a New Link to Database
-    $result8 = $db->sql_query("SELECT cid, title FROM " . $prefix . "_links_categories");
-    $numrows = $db->sql_numrows($result8);
+    $result8 = $nuke_db->sql_query("SELECT cid, title FROM " . $prefix . "_links_categories");
+    $numrows = $nuke_db->sql_numrows($result8);
     if ($numrows>0) {
     OpenTable();
     echo "<form method=\"post\" action=\"".$admin_file.".php\">"
         ."<span class=\"option\"><strong>" . _ADDNEWLINK . "</strong></span><br /><br />"
         ."" . _PAGETITLE . ": <input type=\"text\" name=\"xtitle\" size=\"50\" maxlength=\"100\"><br />"
         ."" . _PAGEURL . ": <input type=\"text\" name=\"url\" size=\"50\" maxlength=\"100\" value=\"http://\"><br />";
-        $result9 = $db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY title");
+        $result9 = $nuke_db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY title");
     echo "" . _CATEGORY . ": <select name=\"cat\">";
-    while($row9 = $db->sql_fetchrow($result9)) {
+    while($row9 = $nuke_db->sql_fetchrow($result9)) {
         $cid2 = intval($row9['cid']);
         $ctitle2 = stripslashes($row9['title']);
         $parentid2 = intval($row9['parentid']);
@@ -244,15 +244,15 @@
     }
 
 // Modify Category
-    $result10 = $db->sql_query("SELECT * FROM " . $prefix . "_links_categories");
-    $numrows = $db->sql_numrows($result10);
+    $result10 = $nuke_db->sql_query("SELECT * FROM " . $prefix . "_links_categories");
+    $numrows = $nuke_db->sql_numrows($result10);
     if ($numrows>0) {
     OpenTable();
     echo "<form method=\"post\" action=\"".$admin_file.".php\">"
         ."<span class=\"option\"><strong>" . _MODCATEGORY . "</strong></span><br /><br />";
-    $result11 = $db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY title");
+    $result11 = $nuke_db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY title");
     echo "" . _CATEGORY . ": <select name=\"cat\">";
-    while($row11 = $db->sql_fetchrow($result11)) {
+    while($row11 = $nuke_db->sql_fetchrow($result11)) {
         $cid2 = intval($row11['cid']);
         $ctitle2 = stripslashes($row11['title']);
         $parentid2 = intval($row11['parentid']);
@@ -269,8 +269,8 @@
     }
 
 // Modify Links
-    $result12 = $db->sql_query("SELECT * FROM " . $prefix . "_links_links");
-    $numrows = $db->sql_numrows($result12);
+    $result12 = $nuke_db->sql_query("SELECT * FROM " . $prefix . "_links_links");
+    $numrows = $nuke_db->sql_numrows($result12);
     if ($numrows>0) {
     OpenTable();
 /*****[BEGIN]******************************************
@@ -279,8 +279,8 @@
     echo "<br /><form method=\"post\" action=\"".$admin_file.".php\">";
     echo "<span class=\"content\"><strong>"._MODLINK."</strong><br /><br />";
     echo ""._LINKID.": <select name=\"lid\">";
-     $czresult = $db->sql_query("SELECT lid, title FROM ".$prefix."_links_links ORDER BY title");
-    while($rowcz = $db->sql_fetchrow($czresult)) {
+     $czresult = $nuke_db->sql_query("SELECT lid, title FROM ".$prefix."_links_links ORDER BY title");
+    while($rowcz = $nuke_db->sql_fetchrow($czresult)) {
        $lid = intval($rowcz['lid']);
        $title = $rowcz['title'];
     echo "<option value=\"".$lid."\">".$title."</option>";}
@@ -297,16 +297,16 @@
     }
 
 // Transfer Categories
-    $result13 = $db->sql_query("SELECT * FROM " . $prefix . "_links_links");
-    $numrows = $db->sql_numrows($result13);
+    $result13 = $nuke_db->sql_query("SELECT * FROM " . $prefix . "_links_links");
+    $numrows = $nuke_db->sql_numrows($result13);
     if ($numrows>0) {
     OpenTable();
     echo "<form method=\"post\" action=\"".$admin_file.".php\">"
         ."<span class=\"option\"><strong>" . _EZTRANSFERLINKS . "</strong></span><br /><br />"
         ."" . _CATEGORY . ": "
         ."<select name=\"cidfrom\">";
-        $result14 = $db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY parentid,title");
-    while($row14 = $db->sql_fetchrow($result14)) {
+        $result14 = $nuke_db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY parentid,title");
+    while($row14 = $nuke_db->sql_fetchrow($result14)) {
         $cid2 = intval($row14['cid']);
         $ctitle2 = stripslashes($row14['title']);
         $parentid2 = intval($row14['parentid']);
@@ -315,9 +315,9 @@
     }
     echo "</select><br />"
         ."" . _IN . "&nbsp;" . _CATEGORY . ": ";
-    $result15 = $db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY parentid,title");
+    $result15 = $nuke_db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY parentid,title");
     echo "<select name=\"cidto\">";
-    while($row15 = $db->sql_fetchrow($result15)) {
+    while($row15 = $nuke_db->sql_fetchrow($result15)) {
         $cid2 = intval($row15['cid']);
         $ctitle2 = stripslashes($row15['title']);
         $parentid2 = $row15['parentid'];
@@ -338,14 +338,14 @@
 
 function LinksTransfer($cidfrom,$cidto) 
 {
-    global $prefix, $db, $admin_file;
-    $db->sql_query("UPDATE " . $prefix . "_links_links set cid=$cidto WHERE cid='$cidfrom'");
+    global $prefix, $nuke_db, $admin_file;
+    $nuke_db->sql_query("UPDATE " . $prefix . "_links_links set cid=$cidto WHERE cid='$cidfrom'");
 
-    redirect($admin_file.".php?op=Links");
+    nuke_redirect($admin_file.".php?op=Links");
 }
 
 function LinksModLink($lid) {
-    global $prefix, $db, $admin_file, $bgcolor1, $bgcolor2;
+    global $prefix, $nuke_db, $admin_file, $bgcolor1, $bgcolor2;
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Links\">" . _WEBLINKS_ADMIN_HEADER . "</a></div>\n";
@@ -355,14 +355,14 @@ function LinksModLink($lid) {
 	//echo "<br />";
     global $anonymous;
     $lid = intval($lid);
-    $result = $db->sql_query("SELECT cid, title, url, description, name, email, hits FROM " . $prefix . "_links_links WHERE lid='$lid'");
+    $result = $nuke_db->sql_query("SELECT cid, title, url, description, name, email, hits FROM " . $prefix . "_links_links WHERE lid='$lid'");
     OpenTable();
     echo "<center><span class=\"title\"><strong>" . _WEBLINKSADMIN . "</strong></span></center>";
     CloseTable();
     //echo "<br />";
     OpenTable();
     echo "<center><span class=\"option\"><strong>" . _MODLINK . "</strong></span></center><br /><br />";
-    while($row = $db->sql_fetchrow($result)) {
+    while($row = $nuke_db->sql_fetchrow($result)) {
         $cid = intval($row['cid']);
         $title = stripslashes($row['title']);
         $url = $row['url'];
@@ -380,8 +380,8 @@ function LinksModLink($lid) {
         ."" . _HITS . ": <input type=\"text\" name=\"hits\" value=\"$hits\" size=\"12\" maxlength=\"11\"><br />";
     echo "<input type=\"hidden\" name=\"lid\" value=\"$lid\">"
         ."" . _CATEGORY . ": <select name=\"cat\">";
-    $result2 = $db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY title");
-    while($row2 = $db->sql_fetchrow($result2)) {
+    $result2 = $nuke_db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY title");
+    while($row2 = $nuke_db->sql_fetchrow($result2)) {
         $cid2 = intval($row2['cid']);
         $ctitle2 = stripslashes($row2['title']);
         $parentid2 = $row2['parentid'];
@@ -400,8 +400,8 @@ function LinksModLink($lid) {
     CloseTable();
     //echo "<br />";
     /* Modify or Add Editorial */
-    $resulted2 = $db->sql_query("SELECT adminid, editorialtimestamp, editorialtext, editorialtitle FROM " . $prefix . "_links_editorials WHERE linkid='$lid'");
-        $recordexist = $db->sql_numrows($resulted2);
+    $resulted2 = $nuke_db->sql_query("SELECT adminid, editorialtimestamp, editorialtext, editorialtitle FROM " . $prefix . "_links_editorials WHERE linkid='$lid'");
+        $recordexist = $nuke_db->sql_numrows($resulted2);
     OpenTable();
     /* if returns 'bad query' status 0 (add editorial) */
         if ($recordexist == 0) {
@@ -413,7 +413,7 @@ function LinksModLink($lid) {
             ."</select><input type=\"hidden\" name=\"op\" value=\"LinksAddEditorial\"><input type=\"submit\" value=\"Add\">";
         } else {
     /* if returns 'cool' then status 1 (modify editorial) */
-            while($row3 = $db->sql_fetchrow($resulted2)) {
+            while($row3 = $nuke_db->sql_fetchrow($resulted2)) {
             $editorialtimestamp = $row3['editorialtimestamp'];
             $editorialtext = stripslashes($row3['editorialtext']);
             $editorialtitle = stripslashes($row3['editorialtitle']);
@@ -436,15 +436,15 @@ function LinksModLink($lid) {
     //echo "<br />";
     OpenTable();
     /* Show Comments */
-    $result4 = $db->sql_query("SELECT ratingdbid, ratinguser, ratingcomments, ratingtimestamp FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid' AND ratingcomments != '' ORDER BY ratingtimestamp DESC");
-    $totalcomments = $db->sql_numrows($result4);
+    $result4 = $nuke_db->sql_query("SELECT ratingdbid, ratinguser, ratingcomments, ratingtimestamp FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid' AND ratingcomments != '' ORDER BY ratingtimestamp DESC");
+    $totalcomments = $nuke_db->sql_numrows($result4);
     echo "<table valign=top width=100%>";
     echo "<tr><td colspan=7><strong>Link Comments (total comments: $totalcomments)</strong><br /><br /></td></tr>";
     echo "<tr><td width=20 colspan=1><strong>User  </strong></td><td colspan=5><strong>Comment  </strong></td><td><strong><center>Delete</center></strong></td><br /></tr>";
     if ($totalcomments == 0) echo "<tr><td colspan=7><center><font color=cccccc>No Comments<br /></span></center></td></tr>";
     $x=0;
     $colorswitch="$bgcolor1";
-    while($row4 = $db->sql_fetchrow($result4)) {
+    while($row4 = $nuke_db->sql_fetchrow($result4)) {
     $ratingdbid = intval($row4['ratingdbid']);
     $ratinguser = $row4['ratinguser'];
     $ratingcomments = stripslashes($row4['ratingcomments']);
@@ -460,14 +460,14 @@ function LinksModLink($lid) {
         else $colorswitch="$bgcolor1";
         }
     // Show Registered Users Votes
-    $result5 = $db->sql_query("SELECT ratingdbid, ratinguser, rating, ratinghostname, ratingtimestamp FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid' AND ratinguser != 'outside' AND ratinguser != '$anonymous' ORDER BY ratingtimestamp DESC");
-    $totalvotes = $db->sql_numrows($result5);
+    $result5 = $nuke_db->sql_query("SELECT ratingdbid, ratinguser, rating, ratinghostname, ratingtimestamp FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid' AND ratinguser != 'outside' AND ratinguser != '$anonymous' ORDER BY ratingtimestamp DESC");
+    $totalvotes = $nuke_db->sql_numrows($result5);
     echo "<tr><td colspan=7><br /><br /><strong>Registered User Votes (total votes: $totalvotes)</strong><br /><br /></td></tr>";
     echo "<tr><td><strong>User  </strong></td><td><strong>IP Address  </strong></td><td><strong>Rating  </strong></td><td><strong>User AVG Rating  </strong></td><td><strong>Total Ratings  </strong></td><td><strong>Date  </strong></td></span></strong><td><strong><center>Delete</center></strong></td><br /></tr>";
     if ($totalvotes == 0) echo "<tr><td colspan=7><center><font color=cccccc>No Registered User Votes<br /></span></center></td></tr>";
     $x=0;
     $colorswitch="$bgcolor1";
-    while($row5 = $db->sql_fetchrow($result5)) {
+    while($row5 = $nuke_db->sql_fetchrow($result5)) {
     $ratingdbid = intval($row5['ratingdbid']);
     $ratinguser = $row5['ratinguser'];
     $rating = intval($row5['rating']);
@@ -480,10 +480,10 @@ function LinksModLink($lid) {
             $formatted_date = date("F j, Y", $timestamp);
 
         //Individual user information
-        $result6 = $db->sql_query("SELECT rating FROM " . $prefix . "_links_votedata WHERE ratinguser = '$ratinguser'");
-            $usertotalcomments = $db->sql_numrows($result6);
+        $result6 = $nuke_db->sql_query("SELECT rating FROM " . $prefix . "_links_votedata WHERE ratinguser = '$ratinguser'");
+            $usertotalcomments = $nuke_db->sql_numrows($result6);
             $useravgrating = 0;
-            while($row6 = $db->sql_fetchrow($result6)) $useravgrating = $useravgrating + $rating2;
+            while($row6 = $nuke_db->sql_fetchrow($result6)) $useravgrating = $useravgrating + $rating2;
             $useravgrating = $useravgrating / $usertotalcomments;
             $useravgrating = number_format($useravgrating, 1);
             echo "<tr><td bgcolor=$colorswitch>$ratinguser</td><td bgcolor=$colorswitch>$ratinghostname</td><td bgcolor=$colorswitch>$rating</td><td bgcolor=$colorswitch>$useravgrating</td><td bgcolor=$colorswitch>$usertotalcomments</td><td bgcolor=$colorswitch>$formatted_date  </span></strong></td><td bgcolor=$colorswitch><center><strong><a href=".$admin_file.".php?op=LinksDelVote&lid=$lid&rid=$ratingdbid>X</a></strong></center></td></tr><br />";
@@ -493,14 +493,14 @@ function LinksModLink($lid) {
         }
 
     // Show Unregistered Users Votes
-    $result7 = $db->sql_query("SELECT ratingdbid, rating, ratinghostname, ratingtimestamp FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid' AND ratinguser = '$anonymous' ORDER BY ratingtimestamp DESC");
-    $totalvotes = $db->sql_numrows($result7);
+    $result7 = $nuke_db->sql_query("SELECT ratingdbid, rating, ratinghostname, ratingtimestamp FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid' AND ratinguser = '$anonymous' ORDER BY ratingtimestamp DESC");
+    $totalvotes = $nuke_db->sql_numrows($result7);
     echo "<tr><td colspan=7><strong><br /><br />Unregistered User Votes (total votes: $totalvotes)</strong><br /><br /></td></tr>";
     echo "<tr><td colspan=2><strong>IP Address  </strong></td><td colspan=3><strong>Rating  </strong></td><td><strong>Date  </strong></span></td><td><strong><center>Delete</center></strong></td><br /></tr>";
     if ($totalvotes == 0) echo "<tr><td colspan=7><center><font color=cccccc>No Unregistered User Votes<br /></span></center></td></tr>";
     $x=0;
     $colorswitch="$bgcolor1";
-    while($row7 = $db->sql_fetchrow($result7)) {
+    while($row7 = $nuke_db->sql_fetchrow($result7)) {
     $ratingdbid = intval($row7['ratingdbid']);
     $rating = intval($row7['rating']);
     $ratinghostname = $row7['ratinghostname'];
@@ -517,14 +517,14 @@ function LinksModLink($lid) {
         }
 
     // Show Outside Users Votes
-    $result8 = $db->sql_query("SELECT ratingdbid, rating, ratinghostname, ratingtimestamp FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid' AND ratinguser = 'outside' ORDER BY ratingtimestamp DESC");
-    $totalvotes = $db->sql_numrows($result8);
+    $result8 = $nuke_db->sql_query("SELECT ratingdbid, rating, ratinghostname, ratingtimestamp FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid' AND ratinguser = 'outside' ORDER BY ratingtimestamp DESC");
+    $totalvotes = $nuke_db->sql_numrows($result8);
     echo "<tr><td colspan=7><strong><br /><br />Outside User Votes (total votes: $totalvotes)</strong><br /><br /></td></tr>";
     echo "<tr><td colspan=2><strong>IP Address  </strong></td><td colspan=3><strong>Rating  </strong></td><td><strong>Date  </strong></td></span></strong><td><strong><center>Delete</center></strong></td><br /></tr>";
     if ($totalvotes == 0) echo "<tr><td colspan=7><center><font color=cccccc>No Votes FROM Outside $sitename<br /></span></center></td></tr>";
     $x=0;
     $colorswitch="$bgcolor1";
-    while($row8 = $db->sql_fetchrow($result8)) {
+    while($row8 = $nuke_db->sql_fetchrow($result8)) {
     $ratingdbid = intval($row8['ratingdbid']);
     $rating = intval($row8['rating']);
     $ratinghostname = $row8['ratinghostname'];
@@ -550,29 +550,29 @@ function LinksModLink($lid) {
 }
 
 function LinksDelComment($lid, $rid) {
-    global $prefix, $db, $admin_file;
+    global $prefix, $nuke_db, $admin_file;
     $rid = intval($rid);
     $lid = intval($lid);
-    $db->sql_query("UPDATE " . $prefix . "_links_votedata SET ratingcomments='' WHERE ratingdbid = '$rid'");
-    $db->sql_query("UPDATE " . $prefix . "_links_links SET totalcomments = (totalcomments - 1) WHERE lid = '$lid'");
-    redirect($admin_file.".php?op=LinksModLink&lid=$lid");
+    $nuke_db->sql_query("UPDATE " . $prefix . "_links_votedata SET ratingcomments='' WHERE ratingdbid = '$rid'");
+    $nuke_db->sql_query("UPDATE " . $prefix . "_links_links SET totalcomments = (totalcomments - 1) WHERE lid = '$lid'");
+    nuke_redirect($admin_file.".php?op=LinksModLink&lid=$lid");
 
 }
 
 function LinksDelVote($lid, $rid) {
-    global $prefix, $db, $admin_file;
+    global $prefix, $nuke_db, $admin_file;
     $rid = intval($rid);
     $lid = intval($lid);
-    $db->sql_query("delete FROM " . $prefix . "_links_votedata WHERE ratingdbid=$rid");
-    $voteresult = $db->sql_query("SELECT rating, ratinguser, ratingcomments FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid'");
-    $totalvotesDB = $db->sql_numrows($voteresult);
+    $nuke_db->sql_query("delete FROM " . $prefix . "_links_votedata WHERE ratingdbid=$rid");
+    $voteresult = $nuke_db->sql_query("SELECT rating, ratinguser, ratingcomments FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid'");
+    $totalvotesDB = $nuke_db->sql_numrows($voteresult);
     include(NUKE_MODULES_DIR.$module_name.'/voteinclude.php');
-    $db->sql_query("UPDATE " . $prefix . "_links_links SET linkratingsummary='$finalrating', totalvotes='$totalvotesDB', totalcomments='$truecomments' WHERE lid = '$lid'");
-    redirect($admin_file.".php?op=LinksModLink&lid=$lid");
+    $nuke_db->sql_query("UPDATE " . $prefix . "_links_links SET linkratingsummary='$finalrating', totalvotes='$totalvotesDB', totalcomments='$truecomments' WHERE lid = '$lid'");
+    nuke_redirect($admin_file.".php?op=LinksModLink&lid=$lid");
 }
 
 function LinksEditBrokenLinks($lid) {
-    global $prefix, $db, $admin_file;
+    global $prefix, $nuke_db, $admin_file;
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Links\">" . _WEBLINKS_ADMIN_HEADER . "</a></div>\n";
@@ -582,7 +582,7 @@ function LinksEditBrokenLinks($lid) {
 	//echo "<br />";
     OpenTable();
     echo "<center><span class=\"option\"><strong>" . _EZBROKENLINKS . "</strong></span></center><br /><br />";
-    $row = $db->sql_fetchrow($db->sql_query("SELECT requestid, lid, cid, title, url, description, modifysubmitter FROM " . $prefix . "_links_modrequest WHERE brokenlink='1' ORDER BY requestid"));
+    $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT requestid, lid, cid, title, url, description, modifysubmitter FROM " . $prefix . "_links_modrequest WHERE brokenlink='1' ORDER BY requestid"));
     $requestid = intval($row['requestid']);
     $lid = intval($row['lid']);
     $cid = intval($row['cid']);
@@ -590,7 +590,7 @@ function LinksEditBrokenLinks($lid) {
     $url = $row['url'];
     $description = stripslashes($row['description']);
     $modifysubmitter = $row['modifysubmitter'];
-    $row2 = $db->sql_fetchrow($db->sql_query("SELECT name,email,hits FROM " . $prefix . "_links_links WHERE lid='$lid'"));
+    $row2 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT name,email,hits FROM " . $prefix . "_links_links WHERE lid='$lid'"));
     $name = $row2['name'];
     $email = $row2['email'];
     $hits = intval($row2['hits']);
@@ -605,8 +605,8 @@ function LinksEditBrokenLinks($lid) {
     echo "<input type=\"hidden\" name=\"lid\" value=\"$lid\">";
     echo "<input type=\"hidden\" name=\"hits\" value=\"$hits\">";
     echo "" . _CATEGORY . ": <select name=\"cat\">";
-    $result = $db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY title");
-    while ($row = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query("SELECT cid, title, parentid FROM " . $prefix . "_links_categories ORDER BY title");
+    while ($row = $nuke_db->sql_fetchrow($result)) {
     $cid2 = intval($row['cid']);
     $ctitle2 = $row['title'];
     $parentid2 = intval($row['parentid']);
@@ -625,7 +625,7 @@ function LinksEditBrokenLinks($lid) {
 }
 
 function LinksListBrokenLinks() {
-    global $bgcolor1, $bgcolor2, $prefix, $db, $user_prefix, $admin_file;
+    global $bgcolor1, $bgcolor2, $prefix, $nuke_db, $nuke_user_prefix, $admin_file;
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Links\">" . _WEBLINKS_ADMIN_HEADER . "</a></div>\n";
@@ -638,8 +638,8 @@ function LinksListBrokenLinks() {
     CloseTable();
     echo "<br />";
     OpenTable();
-    $result = $db->sql_query("SELECT requestid, lid, modifysubmitter FROM " . $prefix . "_links_modrequest WHERE brokenlink='1' ORDER BY requestid");
-    $totalbrokenlinks = $db->sql_numrows($result);
+    $result = $nuke_db->sql_query("SELECT requestid, lid, modifysubmitter FROM " . $prefix . "_links_modrequest WHERE brokenlink='1' ORDER BY requestid");
+    $totalbrokenlinks = $nuke_db->sql_numrows($result);
     echo "<center><span class=\"option\"><strong>" . _USERREPBROKEN . " ($totalbrokenlinks)</strong></span></center><br /><br /><center>"
     ."" . _IGNOREINFO . "<br />"
     ."" . _DELETEINFO . "</center><br /><br /><br />"
@@ -656,20 +656,20 @@ function LinksListBrokenLinks() {
             ."<td><strong>" . _IGNORE . "</strong></td>"
             ."<td><strong>" . _DELETE . "</strong></td>"
             ."</tr>";
-    while($row = $db->sql_fetchrow($result)) {
+    while($row = $nuke_db->sql_fetchrow($result)) {
         $requestid = intval($row['requestid']);
         $lid = intval($row['lid']);
         $modifysubmitter = $row['modifysubmitter'];
-        $result2 = $db->sql_query("SELECT title, url, submitter FROM " . $prefix . "_links_links WHERE lid='$lid'");
+        $result2 = $nuke_db->sql_query("SELECT title, url, submitter FROM " . $prefix . "_links_links WHERE lid='$lid'");
         if ($modifysubmitter != '$anonymous') {
-        $row3 = $db->sql_fetchrow($db->sql_query("SELECT user_email FROM " . $user_prefix . "_users WHERE username='$modifysubmitter'"));
+        $row3 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_email FROM " . $nuke_user_prefix . "_users WHERE username='$modifysubmitter'"));
         $email = stripslashes($row3['user_email']);
         }
-    $row2 = $db->sql_fetchrow($result2);
+    $row2 = $nuke_db->sql_fetchrow($result2);
             $title = stripslashes($row2['title']);
             $url = $row2['url'];
             $owner = $row2['submitter'];
-            $row4 = $db->sql_fetchrow($db->sql_query("SELECT user_email FROM " . $user_prefix . "_users WHERE username='$owner'"));
+            $row4 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_email FROM " . $nuke_user_prefix . "_users WHERE username='$owner'"));
             $owneremail = stripslashes($row4['user_email']);
             echo "<tr>"
             ."<td bgcolor=\"$colorswitch\"><a href=\"index.php?url=$url\">$title</a>"
@@ -705,9 +705,9 @@ function LinksListBrokenLinks() {
 }
 
 function LinksDelBrokenLinks($lid) {
-    global $prefix, $db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $cache;
     $lid = intval($lid);
-    $db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE lid='$lid'");
+    $nuke_db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE lid='$lid'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -716,13 +716,13 @@ function LinksDelBrokenLinks($lid) {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $db->sql_query("delete FROM " . $prefix . "_links_links WHERE lid='$lid'");
-    redirect($admin_file.".php?op=LinksListBrokenLinks");
+    $nuke_db->sql_query("delete FROM " . $prefix . "_links_links WHERE lid='$lid'");
+    nuke_redirect($admin_file.".php?op=LinksListBrokenLinks");
 }
 
 function LinksIgnoreBrokenLinks($lid) {
-    global $prefix, $db, $admin_file, $cache;
-    $db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE lid='$lid' and brokenlink='1'");
+    global $prefix, $nuke_db, $admin_file, $cache;
+    $nuke_db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE lid='$lid' and brokenlink='1'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -731,11 +731,11 @@ function LinksIgnoreBrokenLinks($lid) {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    redirect($admin_file.".php?op=LinksListBrokenLinks");
+    nuke_redirect($admin_file.".php?op=LinksListBrokenLinks");
 }
 
 function LinksListModRequests() {
-    global $bgcolor2, $prefix, $db, $user_prefix, $admin_file;
+    global $bgcolor2, $prefix, $nuke_db, $nuke_user_prefix, $admin_file;
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Links\">" . _WEBLINKS_ADMIN_HEADER . "</a></div>\n";
@@ -748,11 +748,11 @@ function LinksListModRequests() {
     CloseTable();
     //echo "<br />";
     OpenTable();
-    $result = $db->sql_query("SELECT requestid, lid, cid, sid, title, url, description, modifysubmitter FROM " . $prefix . "_links_modrequest WHERE brokenlink='0' ORDER BY requestid");
-    $totalmodrequests = $db->sql_numrows($result);
+    $result = $nuke_db->sql_query("SELECT requestid, lid, cid, sid, title, url, description, modifysubmitter FROM " . $prefix . "_links_modrequest WHERE brokenlink='0' ORDER BY requestid");
+    $totalmodrequests = $nuke_db->sql_numrows($result);
     echo "<center><span class=\"option\"><strong>" . _USERMODREQUEST . " ($totalmodrequests)</strong></span></center><br /><br /><br />";
     echo "<table width=\"95%\"><tr><td>";
-    while($row = $db->sql_fetchrow($result)) {
+    while($row = $nuke_db->sql_fetchrow($result)) {
         $requestid = intval($row['requestid']);
         $lid = intval($row['lid']);
         $cid = intval($row['cid']);
@@ -762,7 +762,7 @@ function LinksListModRequests() {
         $description = stripslashes($row['description']);
         $xdescription = str_replace("<a href=\"http://", "<a href=\"index.php?url=http://", $description);
         $modifysubmitter = $row['modifysubmitter'];
-    $row2 = $db->sql_fetchrow($db->sql_query("SELECT cid, sid, title, url, description, submitter FROM " . $prefix . "_links_links WHERE lid='$lid'"));
+    $row2 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT cid, sid, title, url, description, submitter FROM " . $prefix . "_links_links WHERE lid='$lid'"));
         $origcid = intval($row2['cid']);
         $origsid = intval($row2['sid']);
         $origtitle = stripslashes($row2['title']);
@@ -770,17 +770,17 @@ function LinksListModRequests() {
         $origdescription = stripslashes($row2['description']);
         $xorigdescription = str_replace("<a href=\"http://", "<a href=\"index.php?url=http://", $xorigdescription);
         $owner = $row2['submitter'];
-    $result3 = $db->sql_query("SELECT title FROM " . $prefix . "_links_categories WHERE cid='$cid'");
-    $result5 = $db->sql_query("SELECT title FROM " . $prefix . "_links_categories WHERE cid='$origcid'");
-    $result7 = $db->sql_query("SELECT user_email FROM " . $user_prefix . "_users WHERE username='$modifysubmitter'");
-    $result8 = $db->sql_query("SELECT user_email FROM " . $user_prefix . "_users WHERE username='$owner'");
-    $row3 = $db->sql_fetchrow($result3);
+    $result3 = $nuke_db->sql_query("SELECT title FROM " . $prefix . "_links_categories WHERE cid='$cid'");
+    $result5 = $nuke_db->sql_query("SELECT title FROM " . $prefix . "_links_categories WHERE cid='$origcid'");
+    $result7 = $nuke_db->sql_query("SELECT user_email FROM " . $nuke_user_prefix . "_users WHERE username='$modifysubmitter'");
+    $result8 = $nuke_db->sql_query("SELECT user_email FROM " . $nuke_user_prefix . "_users WHERE username='$owner'");
+    $row3 = $nuke_db->sql_fetchrow($result3);
         $cidtitle = stripslashes($row3['title']);
-    $row5 = $db->sql_fetchrow($result5);
+    $row5 = $nuke_db->sql_fetchrow($result5);
         $origcidtitle = stripslashes($row5['title']);
-    $row7 = $db->sql_fetchrow($result7);
+    $row7 = $nuke_db->sql_fetchrow($result7);
         $modifysubmitteremail = $row7['user_email'];
-    $row8 = $db->sql_fetchrow($result8);
+    $row8 = $nuke_db->sql_fetchrow($result8);
         $owneremail = $row8['user_email'];
         if (empty($owner)) {
         $owner="administration";
@@ -844,10 +844,10 @@ function LinksListModRequests() {
 }
 
 function LinksChangeModRequests($requestid) {
-    global $prefix, $db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $cache;
     $requestid = intval($requestid);
-    $result = $db->sql_query("SELECT requestid, lid, cid, sid, title, url, description FROM " . $prefix . "_links_modrequest WHERE requestid='$requestid'");
-    while ($row = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query("SELECT requestid, lid, cid, sid, title, url, description FROM " . $prefix . "_links_modrequest WHERE requestid='$requestid'");
+    while ($row = $nuke_db->sql_fetchrow($result)) {
         $requestid = intval($row['requestid']);
         $lid = intval($row['lid']);
         $cid = intval($row['cid']);
@@ -855,9 +855,9 @@ function LinksChangeModRequests($requestid) {
         $title = stripslashes($row['title']);
         $url = $row['url'];
         $description = stripslashes($row['description']);
-        $db->sql_query("UPDATE " . $prefix . "_links_links SET cid='$cid', sid='$sid', title='$title', url='$url', description='$description' WHERE lid = '$lid'");
+        $nuke_db->sql_query("UPDATE " . $prefix . "_links_links SET cid='$cid', sid='$sid', title='$title', url='$url', description='$description' WHERE lid = '$lid'");
     }
-    $db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE requestid=$requestid");
+    $nuke_db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE requestid=$requestid");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -866,13 +866,13 @@ function LinksChangeModRequests($requestid) {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    redirect($admin_file.".php?op=LinksListModRequests");
+    nuke_redirect($admin_file.".php?op=LinksListModRequests");
 }
 
 function LinksChangeIgnoreRequests($requestid) {
-    global $prefix, $db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $cache;
     $requestid = intval($requestid);
-    $db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE requestid=$requestid");
+    $nuke_db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE requestid=$requestid");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -881,24 +881,24 @@ function LinksChangeIgnoreRequests($requestid) {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    redirect($admin_file.".php?op=LinksListModRequests");
+    nuke_redirect($admin_file.".php?op=LinksListModRequests");
 }
 
 function LinksCleanVotes() {
-    global $prefix, $db, $admin_file;
-    $result = $db->sql_query("SELECT distinct ratinglid FROM " .$prefix  . "_links_votedata");
-    while ($row = $db->sql_fetchrow($result)) {
+    global $prefix, $nuke_db, $admin_file;
+    $result = $nuke_db->sql_query("SELECT distinct ratinglid FROM " .$prefix  . "_links_votedata");
+    while ($row = $nuke_db->sql_fetchrow($result)) {
     $lid = intval($row['ratinglid']);
-    $voteresult = $db->sql_query("SELECT rating, ratinguser, ratingcomments FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid'");
-    $totalvotesDB = $db->sql_numrows($voteresult);
+    $voteresult = $nuke_db->sql_query("SELECT rating, ratinguser, ratingcomments FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid'");
+    $totalvotesDB = $nuke_db->sql_numrows($voteresult);
     include(NUKE_MODULES_DIR.$module_name.'/voteinclude.php');
-        $db->sql_query("UPDATE " . $prefix . "_links_links SET linkratingsummary='$finalrating', totalvotes='$totalvotesDB', totalcomments='$truecomments' WHERE lid = '$lid'");
+        $nuke_db->sql_query("UPDATE " . $prefix . "_links_links SET linkratingsummary='$finalrating', totalvotes='$totalvotesDB', totalcomments='$truecomments' WHERE lid = '$lid'");
     }
-    redirect($admin_file.".php?op=Links");
+    nuke_redirect($admin_file.".php?op=Links");
 }
 
 function LinksModLinkS($lid, $xtitle, $url, $description, $name, $email, $hits, $cat) {
-    global $prefix, $db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $cache;
     $cat = explode("-", $cat);
     if (empty($cat[1])) {
         $cat[1] = 0;
@@ -908,13 +908,13 @@ function LinksModLinkS($lid, $xtitle, $url, $description, $name, $email, $hits, 
     $description = Fix_Quotes($description);
     $name = Fix_Quotes($name);
     $email = Fix_Quotes($email);
-    $db->sql_query("UPDATE " . $prefix . "_links_links set cid='$cat[0]', sid='$cat[1]', title='$xtitle', url='$url', description='$description', name='$name', email='$email', hits='$hits' WHERE lid='$lid'");
+    $nuke_db->sql_query("UPDATE " . $prefix . "_links_links set cid='$cat[0]', sid='$cat[1]', title='$xtitle', url='$url', description='$description', name='$name', email='$email', hits='$hits' WHERE lid='$lid'");
     // Has the link been submitted for modification? we edited it so let's remove it FROM the modrequest table
     $sql = "SELECT * FROM " . $prefix . "_links_modrequest WHERE lid='$lid'";
-    $result = $db->sql_query($sql);
-    $numrows = $db->sql_numrows($result);
+    $result = $nuke_db->sql_query($sql);
+    $numrows = $nuke_db->sql_numrows($result);
     if ($numrows>0) {
-    $db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE lid='$lid'");
+    $nuke_db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE lid='$lid'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -924,19 +924,19 @@ function LinksModLinkS($lid, $xtitle, $url, $description, $name, $email, $hits, 
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
     }
-    redirect($admin_file.".php?op=Links");
+    nuke_redirect($admin_file.".php?op=Links");
 }
 
 function LinksDelLink($lid) {
-    global $prefix, $db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $cache;
     $lid = intval($lid);
-    $db->sql_query("delete FROM " . $prefix . "_links_links WHERE lid='$lid'");
+    $nuke_db->sql_query("delete FROM " . $prefix . "_links_links WHERE lid='$lid'");
     // Has the link been submitted for modification? we deleted it so let's remove it FROM the modrequest table
     $sql = "SELECT * FROM " . $prefix . "_links_modrequest WHERE lid='$lid'";
-    $result = $db->sql_query($sql);
-    $numrows = $db->sql_numrows($result);
+    $result = $nuke_db->sql_query($sql);
+    $numrows = $nuke_db->sql_numrows($result);
     if ($numrows>0) {
-    $db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE lid='$lid'");
+    $nuke_db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE lid='$lid'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -946,11 +946,11 @@ function LinksDelLink($lid) {
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
     }
-    redirect($admin_file.".php?op=Links");
+    nuke_redirect($admin_file.".php?op=Links");
 }
 
 function LinksModCat($cat) {
-    global $prefix, $db, $admin_file;
+    global $prefix, $nuke_db, $admin_file;
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Links\">" . _WEBLINKS_ADMIN_HEADER . "</a></div>\n";
@@ -969,7 +969,7 @@ function LinksModCat($cat) {
     OpenTable();
     echo "<center><span class=\"option\"><strong>" . _MODCATEGORY . "</strong></span></center><br /><br />";
     if ($cat[1]==0) {
-    $row = $db->sql_fetchrow($db->sql_query("SELECT title, cdescription FROM " . $prefix . "_links_categories WHERE cid='$cat[0]'"));
+    $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT title, cdescription FROM " . $prefix . "_links_categories WHERE cid='$cat[0]'"));
     $title = stripslashes($row['title']);
     $cdescription = stripslashes($row['cdescription']);
     echo "<form action=\"".$admin_file.".php\" method=\"get\">"
@@ -986,9 +986,9 @@ function LinksModCat($cat) {
         ."<input type=\"hidden\" name=\"op\" value=\"LinksDelCat\">"
         ."<input type=\"submit\" value=\"" . _DELETE . "\"></form></td></tr></table>";
     } else {
-    $row2 = $db->sql_fetchrow($db->sql_query("SELECT title FROM " . $prefix . "_links_categories WHERE cid='$cat[0]'"));
+    $row2 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT title FROM " . $prefix . "_links_categories WHERE cid='$cat[0]'"));
     $ctitle = stripslashes($row2['title']);
-    $row3 = $db->sql_fetchrow($db->sql_query("SELECT title FROM " . $prefix . "_links_subcategories WHERE sid='$cat[1]'"));
+    $row3 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT title FROM " . $prefix . "_links_subcategories WHERE sid='$cat[1]'"));
     $stitle = stripslashes($row3['title']);
     echo "<form action=\"".$admin_file.".php\" method=\"get\">"
         ."" . _CATEGORY . ": $ctitle<br />"
@@ -1011,44 +1011,44 @@ function LinksModCat($cat) {
 }
 
 function LinksModCatS($cid, $sid, $sub, $title, $cdescription) {
-    global $prefix, $db, $admin_file;
+    global $prefix, $nuke_db, $admin_file;
     $cid = intval($cid);
     if ($sub==0) {
-    $db->sql_query("UPDATE " . $prefix . "_links_categories set title='$title', cdescription='$cdescription' WHERE cid='$cid'");
+    $nuke_db->sql_query("UPDATE " . $prefix . "_links_categories set title='$title', cdescription='$cdescription' WHERE cid='$cid'");
     } else {
-    $db->sql_query("UPDATE " . $prefix . "_links_subcategories set title='$title' WHERE sid='$sid'");
+    $nuke_db->sql_query("UPDATE " . $prefix . "_links_subcategories set title='$title' WHERE sid='$sid'");
     }
-    redirect($admin_file.".php?op=Links");
+    nuke_redirect($admin_file.".php?op=Links");
 }
 
 function LinksDelCat($cid, $sid, $sub, $ok=0) {
-    global $prefix, $db, $admin_file;
+    global $prefix, $nuke_db, $admin_file;
     include_once(NUKE_BASE_DIR.'header.php');
     $cid = intval($cid);
     if($ok==1) {
     if ($sub>0) {
-        $db->sql_query("delete FROM " . $prefix . "_links_categories WHERE cid='$cid'");
-        $db->sql_query("delete FROM " . $prefix . "_links_links WHERE cid='$cid'");
+        $nuke_db->sql_query("delete FROM " . $prefix . "_links_categories WHERE cid='$cid'");
+        $nuke_db->sql_query("delete FROM " . $prefix . "_links_links WHERE cid='$cid'");
     } else {
-        $db->sql_query("delete FROM " . $prefix . "_links_links WHERE cid='$cid'");
+        $nuke_db->sql_query("delete FROM " . $prefix . "_links_links WHERE cid='$cid'");
         // suppression des liens de cat�gories filles
-    $result2 = $db->sql_query("SELECT cid FROM " . $prefix . "_links_categories WHERE parentid='$cid'");
-    while ($row2 = $db->sql_fetchrow($result2)) {
+    $result2 = $nuke_db->sql_query("SELECT cid FROM " . $prefix . "_links_categories WHERE parentid='$cid'");
+    while ($row2 = $nuke_db->sql_fetchrow($result2)) {
     $cid2 = intval($row2['cid']);
-            $db->sql_query("delete FROM " . $prefix . "_links_links WHERE cid='$cid2'");
+            $nuke_db->sql_query("delete FROM " . $prefix . "_links_links WHERE cid='$cid2'");
         }
-        $db->sql_query("delete FROM " . $prefix . "_links_categories WHERE parentid='$cid'");
-        $db->sql_query("delete FROM " . $prefix . "_links_categories WHERE cid='$cid'");
+        $nuke_db->sql_query("delete FROM " . $prefix . "_links_categories WHERE parentid='$cid'");
+        $nuke_db->sql_query("delete FROM " . $prefix . "_links_categories WHERE cid='$cid'");
     }
-    redirect($admin_file.".php?op=Links");
+    nuke_redirect($admin_file.".php?op=Links");
     } else {
-    $result = $db->sql_query("SELECT * FROM " . $prefix . "_links_categories WHERE parentid='$cid'");
-    $nbsubcat = $db->sql_numrows($result);
-    $result3 = $db->sql_query("SELECT cid FROM " . $prefix . "_links_categories WHERE parentid='$cid'");
-    while ($row3 = $db->sql_fetchrow($result3)) {
+    $result = $nuke_db->sql_query("SELECT * FROM " . $prefix . "_links_categories WHERE parentid='$cid'");
+    $nbsubcat = $nuke_db->sql_numrows($result);
+    $result3 = $nuke_db->sql_query("SELECT cid FROM " . $prefix . "_links_categories WHERE parentid='$cid'");
+    while ($row3 = $nuke_db->sql_fetchrow($result3)) {
     $cid2 = intval($row3['cid']);
-        $result4 = $db->sql_query("SELECT * FROM " . $prefix . "_links_links WHERE cid='$cid2'");
-        $nblink += $db->sql_numrows($result4);
+        $result4 = $nuke_db->sql_query("SELECT * FROM " . $prefix . "_links_links WHERE cid='$cid2'");
+        $nblink += $nuke_db->sql_numrows($result4);
     }
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Links\">" . _WEBLINKS_ADMIN_HEADER . "</a></div>\n";
@@ -1068,9 +1068,9 @@ function LinksDelCat($cid, $sid, $sub, $ok=0) {
 }
 
 function LinksDelNew($lid) {
-    global $prefix, $db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $cache;
     $lid = intval($lid);
-    $db->sql_query("delete FROM " . $prefix . "_links_newlink WHERE lid='$lid'");
+    $nuke_db->sql_query("delete FROM " . $prefix . "_links_newlink WHERE lid='$lid'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -1078,14 +1078,14 @@ function LinksDelNew($lid) {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    redirect($admin_file.".php?op=Links");
+    nuke_redirect($admin_file.".php?op=Links");
 }
 
 function LinksAddCat($new_cat_title, $cdescription) {
-    global $prefix, $db, $admin_file;
+    global $prefix, $nuke_db, $admin_file;
     $parentid=0;
-    $result = $db->sql_query("SELECT cid FROM " . $prefix . "_links_categories WHERE title='$new_cat_title'");
-    $numrows = $db->sql_numrows($result);
+    $result = $nuke_db->sql_query("SELECT cid FROM " . $prefix . "_links_categories WHERE title='$new_cat_title'");
+    $numrows = $nuke_db->sql_numrows($result);
     if ($numrows>0) {
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
@@ -1101,16 +1101,16 @@ function LinksAddCat($new_cat_title, $cdescription) {
     CloseTable();
     include_once(NUKE_BASE_DIR.'footer.php');
     } else {
-    $db->sql_query("insert into " . $prefix . "_links_categories values (NULL, '$new_cat_title', '$cdescription', '$parentid')");
-    redirect($admin_file.".php?op=Links");
+    $nuke_db->sql_query("insert into " . $prefix . "_links_categories values (NULL, '$new_cat_title', '$cdescription', '$parentid')");
+    nuke_redirect($admin_file.".php?op=Links");
     }
 }
 
 function LinksAddSubCat($cid, $new_sub_title, $cdescription) {
-    global $prefix, $db, $admin_file;
+    global $prefix, $nuke_db, $admin_file;
     $cid = intval($cid);
-    $result = $db->sql_query("SELECT cid FROM " . $prefix . "_links_categories WHERE title='$new_sub_title' AND cid='$cid'");
-    $numrows = $db->sql_numrows($result);
+    $result = $nuke_db->sql_query("SELECT cid FROM " . $prefix . "_links_categories WHERE title='$new_sub_title' AND cid='$cid'");
+    $numrows = $nuke_db->sql_numrows($result);
     if ($numrows>0) {
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
@@ -1126,15 +1126,15 @@ function LinksAddSubCat($cid, $new_sub_title, $cdescription) {
         ."" . _GOBACK . "<br /><br />";
     include_once(NUKE_BASE_DIR.'footer.php');
     } else {
-    $db->sql_query("insert into " . $prefix . "_links_categories values (NULL, '$new_sub_title', '$cdescription', '$cid')");
-    redirect($admin_file.".php?op=Links");
+    $nuke_db->sql_query("insert into " . $prefix . "_links_categories values (NULL, '$new_sub_title', '$cdescription', '$cid')");
+    nuke_redirect($admin_file.".php?op=Links");
     }
 }
 
 function LinksAddEditorial($linkid, $editorialtitle, $editorialtext) {
-    global $aid, $prefix, $db, $admin_file;
+    global $aid, $prefix, $nuke_db, $admin_file;
     $editorialtext = Fix_Quotes($editorialtext);
-    $db->sql_query("insert into " . $prefix . "_links_editorials values ('$linkid', '$aid', now(), '$editorialtext', '$editorialtitle')");
+    $nuke_db->sql_query("insert into " . $prefix . "_links_editorials values ('$linkid', '$aid', now(), '$editorialtext', '$editorialtitle')");
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Links\">" . _WEBLINKS_ADMIN_HEADER . "</a></div>\n";
@@ -1153,10 +1153,10 @@ function LinksAddEditorial($linkid, $editorialtitle, $editorialtext) {
 }
 
 function LinksModEditorial($linkid, $editorialtitle, $editorialtext) {
-    global $prefix, $db, $admin_file;
+    global $prefix, $nuke_db, $admin_file;
     $linkid = intval($linkid);
     $editorialtext = Fix_Quotes($editorialtext);
-    $db->sql_query("UPDATE " . $prefix . "_links_editorials set editorialtext='$editorialtext', editorialtitle='$editorialtitle' WHERE linkid='$linkid'");
+    $nuke_db->sql_query("UPDATE " . $prefix . "_links_editorials set editorialtext='$editorialtext', editorialtitle='$editorialtitle' WHERE linkid='$linkid'");
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Links\">" . _WEBLINKS_ADMIN_HEADER . "</a></div>\n";
@@ -1174,9 +1174,9 @@ function LinksModEditorial($linkid, $editorialtitle, $editorialtext) {
 }
 
 function LinksDelEditorial($linkid) {
-    global $prefix, $db, $admin_file;
+    global $prefix, $nuke_db, $admin_file;
     $linkid = intval($linkid);
-    $db->sql_query("delete FROM " . $prefix . "_links_editorials WHERE linkid='$linkid'");
+    $nuke_db->sql_query("delete FROM " . $prefix . "_links_editorials WHERE linkid='$linkid'");
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Links\">" . _WEBLINKS_ADMIN_HEADER . "</a></div>\n";
@@ -1194,7 +1194,7 @@ function LinksDelEditorial($linkid) {
 }
 
 function LinksLinkCheck() {
-    global $prefix, $db, $admin_file;
+    global $prefix, $nuke_db, $admin_file;
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Links\">" . _WEBLINKS_ADMIN_HEADER . "</a></div>\n";
@@ -1211,8 +1211,8 @@ function LinksLinkCheck() {
     ."<table width=\"100%\" align=\"center\"><tr><td colspan=\"2\" align=\"center\">"
     ."<a href=\"".$admin_file.".php?op=LinksValidate&amp;cid=0&amp;sid=0\">" . _CHECKALLLINKS . "</a><br /><br /></td></tr>"
     ."<tr><td valign=\"top\"><center><strong>" . _CHECKCATEGORIES . "</strong><br />" . _INCLUDESUBCATEGORIES . "<br /><br /><span class=\"tiny\">";
-    $result = $db->sql_query("SELECT cid, title FROM " . $prefix . "_links_categories ORDER BY title");
-    while ($row = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query("SELECT cid, title FROM " . $prefix . "_links_categories ORDER BY title");
+    while ($row = $nuke_db->sql_fetchrow($result)) {
     $cid = intval($row['cid']);
     $title = $row['title'];
         $transfertitle = str_replace (" ", "_", $title);
@@ -1224,7 +1224,7 @@ function LinksLinkCheck() {
 }
 
 function LinksValidate($cid, $sid, $ttitle) {
-    global $bgcolor2, $prefix, $db, $admin_file;
+    global $bgcolor2, $prefix, $nuke_db, $admin_file;
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Links\">" . _WEBLINKS_ADMIN_HEADER . "</a></div>\n";
@@ -1242,20 +1242,20 @@ function LinksValidate($cid, $sid, $ttitle) {
     echo "<table width=100% border=0>";
     if ($cid==0 && $sid==0) {
     echo "<tr><td colspan=\"3\"><center><strong>" . _CHECKALLLINKS . "</strong><br />" . _BEPATIENT . "</center><br /><br /></td></tr>";
-    $result = $db->sql_query("SELECT lid, title, url FROM " . $prefix . "_links_links ORDER BY title");
+    $result = $nuke_db->sql_query("SELECT lid, title, url FROM " . $prefix . "_links_links ORDER BY title");
     }
     /* Check Categories & Subcategories */
     if ($cid!=0 && $sid==0) {
     echo "<tr><td colspan=\"3\"><center><strong>" . _VALIDATINGCAT . ": $transfertitle</strong><br />" . _BEPATIENT . "</center><br /><br /></td></tr>";
-    $result = $db->sql_query("SELECT lid, title, url FROM " . $prefix . "_links_links WHERE cid='$cid' ORDER BY title");
+    $result = $nuke_db->sql_query("SELECT lid, title, url FROM " . $prefix . "_links_links WHERE cid='$cid' ORDER BY title");
     }
     /* Check Only Subcategory */
     if ($cid==0 && $sid!=0) {
        echo "<tr><td colspan=\"3\"><center><strong>" . _VALIDATINGSUBCAT . ": $transfertitle</strong><br />" . _BEPATIENT . "</center><br /><br /></td></tr>";
-       $result = $db->sql_query("SELECT lid, title, url FROM " . $prefix . "_links_links WHERE sid='$sid' ORDER BY title");
+       $result = $nuke_db->sql_query("SELECT lid, title, url FROM " . $prefix . "_links_links WHERE sid='$sid' ORDER BY title");
     }
     echo "<tr><td bgcolor=\"$bgcolor2\" align=\"center\"><strong>" . _STATUS . "</strong></td><td bgcolor=\"$bgcolor2\" width=\"100%\"><strong>" . _LINKTITLE . "</strong></td><td bgcolor=\"$bgcolor2\" align=\"center\"><strong>" . _FUNCTIONS . "</strong></td></tr>";
-    while($row = $db->sql_fetchrow($result)) {
+    while($row = $nuke_db->sql_fetchrow($result)) {
     $lid = intval($row['lid']);
     $title = stripslashes($row['title']);
     $url = stripslashes($row['url']);
@@ -1280,9 +1280,9 @@ function LinksValidate($cid, $sid, $ttitle) {
 }
 
 function LinksAddLink($new, $lid, $xtitle, $url, $cat, $description, $name, $email, $submitter) {
-    global $prefix, $db, $sitename, $nukeurl, $admin_file, $cache;
-    $result = $db->sql_query("SELECT url FROM " . $prefix . "_links_links WHERE url='$url'");
-    $numrows = $db->sql_numrows($result);
+    global $prefix, $nuke_db, $sitename, $nukeurl, $admin_file, $cache;
+    $result = $nuke_db->sql_query("SELECT url FROM " . $prefix . "_links_links WHERE url='$url'");
+    $numrows = $nuke_db->sql_numrows($result);
     if ($numrows>0) {
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
@@ -1375,7 +1375,7 @@ function LinksAddLink($new, $lid, $xtitle, $url, $cat, $description, $name, $ema
     $description = Fix_Quotes($description);
     $name = Fix_Quotes($name);
     $email = Fix_Quotes($email);
-    $db->sql_query("insert into " . $prefix . "_links_links values (NULL, '$cat[0]', '$cat[1]', '$xtitle', '$url', '$description', now(), '$name', '$email', '0', '$submitter', '0', '0', '0')");
+    $nuke_db->sql_query("insert into " . $prefix . "_links_links values (NULL, '$cat[0]', '$cat[1]', '$xtitle', '$url', '$description', now(), '$name', '$email', '0', '$submitter', '0', '0', '0')");
     global $nukeurl, $sitename;
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
@@ -1391,7 +1391,7 @@ function LinksAddLink($new, $lid, $xtitle, $url, $cat, $description, $name, $ema
     echo "[ <a href=\"".$admin_file.".php?op=Links\">" . _WEBLINKSADMIN . "</a> ]</center><br /><br />";
     CloseTable();
     if ($new==1) {
-    $db->sql_query("delete FROM " . $prefix . "_links_newlink WHERE lid='$lid'");
+    $nuke_db->sql_query("delete FROM " . $prefix . "_links_newlink WHERE lid='$lid'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

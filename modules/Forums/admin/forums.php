@@ -40,14 +40,14 @@ if (!defined('ADMIN_FILE')) {
    die ("Access Denied");
 }
 
-global $prefix, $db, $admdata;
+global $prefix, $nuke_db, $admdata;
 $module_name = basename(dirname(dirname(__FILE__)));
 if(is_mod_admin($module_name)) {
 
     switch($op) {
     
         case "forums":
-        redirect("modules/$module_name/admin/index.php");
+        nuke_redirect("modules/$module_name/admin/index.php");
     }
 
 } else {

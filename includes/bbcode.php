@@ -44,7 +44,7 @@
 	  Lytebox Resize Images                    v3.2.2
 	  Hide BBCode                              v1.2.0
  ************************************************************************/
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 exit('Hacking attempt');
 
 define("BBCODE_UID_LEN", 10);
@@ -88,7 +88,7 @@ function load_bbcode_template()
 # Nathan Codding, Sept 26 2001
 function prepare_bbcode_template($bbcode_tpl)
 {
-    global $lang, $db;
+    global $lang, $nuke_db;
 
     $bbcode_tpl['olist_open'] = str_replace('{LIST_TYPE}','\\1',$bbcode_tpl['olist_open']);
 
@@ -132,7 +132,7 @@ function prepare_bbcode_template($bbcode_tpl)
 /*****[BEGIN]******************************************
  [ Mod:     PHP Syntax Highlighter BBCode      v3.0.7 ]
  ******************************************************/
-    $bbcode_tpl['php_open'] = str_replace('{L_PHP}', $lang['PHPCode'], $bbcode_tpl['php_open']); // PHP MOD
+    $bbcode_tpl['php_open'] = str_replace('{L_PHP}', $lang['PHPCode'], $bbcode_tpl['php_open']); // PHP NUKE_MOD
 /*****[END]********************************************
  [ Mod:     PHP Syntax Highlighter BBCode      v3.0.7 ]
  ******************************************************/
@@ -591,7 +591,7 @@ function bbencode_first_pass($text, $uid)
     $text = " " . $text;
     if( preg_match('/<img.*>/', $text) )
     {
-    //    message_die(GENERAL_ERROR, "The ".htmlentities("<img>")." tag is not allowed");
+    //    message_die(NUKE_GENERAL_ERROR, "The ".htmlentities("<img>")." tag is not allowed");
     }
     // [CODE] and [/CODE] for posting code (HTML, PHP, C etc etc) in your posts.
     $text = bbencode_first_pass_pda($text, $uid, '[code]', '[/code]', '', true, '');
@@ -729,10 +729,10 @@ function bbencode_first_pass($text, $uid)
 
 function evo_mention($user)
 {
-	global $db, $bbcode_tpl, $lang;
+	global $nuke_db, $bbcode_tpl, $lang;
 	
 
-	$row = $db->sql_ufetchrow("SELECT `user_id`, `username` FROM `".USERS_TABLE."` WHERE `username` = '".$user."'");
+	$row = $nuke_db->sql_ufetchrow("SELECT `user_id`, `username` FROM `".NUKE_USERS_TABLE."` WHERE `username` = '".$user."'");
 	// return $user.' - '.$row['user_id'];
   return '<a href="modules.php?name=Private_Messages&mode=post&u='.$row['user_id'].'" target="_blank" alt="'.$lang['Send_private_message'].'" title="'.$lang['Send_private_message'].'">'.$user.'</a>';
 }
@@ -943,7 +943,7 @@ function bbencode_first_pass_pda($text, $uid, $open_tag, $close_tag, $close_tag_
 
     if ($mark_lowest_level && $open_is_regexp)
     {
-        message_die(GENERAL_ERROR, "Unsupported operation for bbcode_first_pass_pda().");
+        message_die(NUKE_GENERAL_ERROR, "Unsupported operation for bbcode_first_pass_pda().");
     }
 
     // Start at the 2nd char of the string, looking for opening tags.
@@ -1217,7 +1217,7 @@ function bbencode_second_pass_code($text, $uid, $bbcode_tpl)
  [ Mod:     PHP Syntax Highlighter BBCode      v3.0.7 ]
  ******************************************************/
 /**
- * PHP MOD
+ * PHP NUKE_MOD
  * Original code/function by phpBB Group
  * Modified by JW Frazier / Fubonis < php_fubonis@yahoo.com >
  */
@@ -1476,7 +1476,7 @@ function smilies_pass($message)
 
     if (!isset($orig))
     {
-        global $db, $board_config, $cache;
+        global $nuke_db, $board_config, $cache;
         $orig = $repl = array();
 
 /*****[BEGIN]******************************************
@@ -1486,12 +1486,12 @@ function smilies_pass($message)
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-            $sql = 'SELECT * FROM ' . SMILIES_TABLE;
-            if( !$result = $db->sql_query($sql) )
+            $sql = 'SELECT * FROM ' . NUKE_SMILIES_TABLE;
+            if( !$result = $nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Couldn't obtain smilies data", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't obtain smilies data", "", __LINE__, __FILE__, $sql);
             }
-            $smilies = $db->sql_fetchrowset($result);
+            $smilies = $nuke_db->sql_fetchrowset($result);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

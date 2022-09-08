@@ -21,36 +21,36 @@ global $evouserinfo_addons, $evouserinfo_posts;
 
 function evouserinfo_total_posts() 
 {
-    global $db, $prefix;
+    global $nuke_db, $prefix;
     
     $sql = "SELECT COUNT(*) FROM ".$prefix."_bbposts";
-    $result = $db->sql_query($sql);
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $result = $nuke_db->sql_query($sql);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
     
     return (isset($row[0])) ? $row[0] : '?';
 }
 
 function evouserinfo_total_topics() 
 {
-    global $db, $prefix;
+    global $nuke_db, $prefix;
     
     $sql = "SELECT COUNT(*) FROM ".$prefix."_bbtopics";
-    $result = $db->sql_query($sql);
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $result = $nuke_db->sql_query($sql);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
     
     return (isset($row[0])) ? $row[0] : '?';
 }
 
 function evouserinfo_ur_total_topics() 
 {
-    global $db, $prefix, $userinfo;
+    global $nuke_db, $prefix, $userinfo;
     
     $sql = "SELECT COUNT(*) FROM ".$prefix."_bbtopics WHERE topic_poster='".$userinfo['user_id']."'";
-    $result = $db->sql_query($sql);
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $result = $nuke_db->sql_query($sql);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
     
     return (isset($row[0])) ? number_format($row[0]) : '?';
 }

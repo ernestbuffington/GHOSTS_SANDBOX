@@ -42,17 +42,17 @@ if ( ($ulevel < 1) OR ($uactive < 1) ) {
 }
 
 if(isset($_GET['name']) && isset($_GET['file']) || isset($_GET['mode'])) {
-    if ( ($_GET['name']=='Forums') && ($_GET['file']=='profile') && ($_GET['mode']=='register') ) redirect("modules.php?name=Your_Account&op=new_user");
+    if ( ($_GET['name']=='Forums') && ($_GET['file']=='profile') && ($_GET['mode']=='register') ) nuke_redirect("modules.php?name=Your_Account&op=new_user");
 }
 // CNB Mod
 // WARNING THIS SECTION OF CODE PREVENTS NEW POSTS REGISTERING AS UNREAD
 
 if (is_user()) {
     $lv = time();
-    //$db->sql_query("UPDATE ".$user_prefix."_users SET user_lastvisit='$lv' WHERE user_id='".$uinfo['user_id']."'");
-    $result = $db->sql_query("SELECT time FROM ".$prefix."_session WHERE uname='$uinfo[username]'");
-    list($sessiontime) = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    //$nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET user_lastvisit='$lv' WHERE user_id='".$uinfo['user_id']."'");
+    $result = $nuke_db->sql_query("SELECT time FROM ".$prefix."_session WHERE uname='$uinfo[username]'");
+    list($sessiontime) = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
 // modified by menelaos dot hetnet dot nl to reduce amount of sql-queries
 /*****[BEGIN]******************************************
@@ -62,11 +62,11 @@ if (is_user()) {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-      $configresult = $db->sql_query("SELECT config_name, config_value FROM ".$prefix."_cnbya_config");
-      while (list($config_name, $config_value) = $db->sql_fetchrow($configresult)) {
+      $configresult = $nuke_db->sql_query("SELECT config_name, config_value FROM ".$prefix."_cnbya_config");
+      while (list($config_name, $config_value) = $nuke_db->sql_fetchrow($configresult)) {
           $ya_config[$config_name] = $config_value;
       }
-      $db->sql_freeresult($configresult);
+      $nuke_db->sql_freeresult($configresult);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -87,25 +87,25 @@ if (is_user()) {
         $r_username = $uinfo['username'];
         @setcookie("user");
         if (trim($cookiepath) != '') setcookie("user","","","$ya_config[cookiepath]");
-        $db->sql_query("DELETE FROM ".$prefix."_session WHERE uname='$r_username'");
-        $db->sql_query("OPTIMIZE TABLE ".$prefix."_session");
-        $db->sql_query("DELETE FROM ".$prefix."_bbsessions WHERE session_user_id='$r_uid'");
-        $db->sql_query("OPTIMIZE TABLE ".$prefix."_bbsessions");
+        $nuke_db->sql_query("DELETE FROM ".$prefix."_session WHERE uname='$r_username'");
+        $nuke_db->sql_query("OPTIMIZE TABLE ".$prefix."_session");
+        $nuke_db->sql_query("DELETE FROM ".$prefix."_bbsessions WHERE session_user_id='$r_uid'");
+        $nuke_db->sql_query("OPTIMIZE TABLE ".$prefix."_bbsessions");
         unset($user);
         unset($cookie);
-      redirect("modules.php?name=Your_Account");
+      nuke_redirect("modules.php?name=Your_Account");
       exit;
     };
 
     // WARNING THIS SECTION OF CODE CAN SLOW SITE LOAD TIME DOWN!!!!!!!!!!!!!
     // IF YOU DO NOT WANT TO USE THIS CODE YOU DO NOT HAVE TO.
-    // THIS FUNCTION IS IN USER ADMIN AND CAN BE TRIGGERED ONLY
-    // WHEN THE ADMIN WANTS IT RUN.
+    // THIS FUNCTION IS IN NUKE_USER NUKE_ADMIN AND CAN BE TRIGGERED ONLY
+    // WHEN THE NUKE_ADMIN WANTS IT RUN.
     if (($autosuspend > 0) AND ($autosuspendmain==1)) {
         $st = time() - $autosuspend;
-        $susresult = $db->sql_query("SELECT user_id FROM ".$user_prefix."_users WHERE user_lastvisit <= $st AND user_level > 0");
-            while(list($sus_uid) = $db->sql_fetchrow($susresult)) {
-            $db->sql_query("UPDATE ".$user_prefix."_users SET user_level='0', user_active='0' WHERE user_id='$sus_uid'");
+        $susresult = $nuke_db->sql_query("SELECT user_id FROM ".$nuke_user_prefix."_users WHERE user_lastvisit <= $st AND user_level > 0");
+            while(list($sus_uid) = $nuke_db->sql_fetchrow($susresult)) {
+            $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET user_level='0', user_active='0' WHERE user_id='$sus_uid'");
     }
   }
 

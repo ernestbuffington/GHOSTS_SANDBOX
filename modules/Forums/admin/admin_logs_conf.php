@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -46,31 +46,31 @@ $template->set_filenames(array(
 );
 
 $sql = "SELECT config_value AS all_admin
-FROM " . LOGS_CONFIG_TABLE . "
+FROM " . NUKE_BB_LOGS_CONFIG_TABLE . "
 WHERE config_name = 'all_admin' ";
 
-if(!$result = $db->sql_query($sql))
+if(!$result = $nuke_db->sql_query($sql))
 {
-   message_die(CRITICAL_ERROR, "Could not query log config informations", "", __LINE__, __FILE__, $sql);
+   message_die(NUKE_CRITICAL_ERROR, "Could not query log config informations", "", __LINE__, __FILE__, $sql);
 }
-$row = $db->sql_fetchrow($result);
+$row = $nuke_db->sql_fetchrow($result);
 $all_admin_authorized = $row['all_admin'];
 
 if ( $all_admin_authorized == '0' && $userdata['user_id'] <> '2' && !is_mod_admin($module_name) && $userdata['user_view_log'] <> '1' )
 {
-    message_die(GENERAL_MESSAGE, $lang['Admin_not_authorized']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['Admin_not_authorized']);
 }
 
 $sql = "SELECT *
-FROM " . LOGS_CONFIG_TABLE ;
+FROM " . NUKE_BB_LOGS_CONFIG_TABLE ;
 
-if(!$result = $db->sql_query($sql))
+if(!$result = $nuke_db->sql_query($sql))
 {
-   message_die(CRITICAL_ERROR, "Could not query log config informations", "", __LINE__, __FILE__, $sql);
+   message_die(NUKE_CRITICAL_ERROR, "Could not query log config informations", "", __LINE__, __FILE__, $sql);
 }
 else
 {
-    while ( $row = $db->sql_fetchrow($result) )
+    while ( $row = $nuke_db->sql_fetchrow($result) )
     {
         $config_name = $row['config_name'];
         $config_value = $row['config_value'];
@@ -79,12 +79,12 @@ else
         $new[$config_name] = ( isset($HTTP_POST_VARS[$config_name]) ) ? $HTTP_POST_VARS[$config_name] : $default_config[$config_name];
         if ( isset($HTTP_POST_VARS['submit']) )
         {
-            $sql = "UPDATE " . LOGS_CONFIG_TABLE . " SET
+            $sql = "UPDATE " . NUKE_BB_LOGS_CONFIG_TABLE . " SET
                 config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
                 WHERE config_name = '$config_name'";
-            if( !$db->sql_query($sql) )
+            if( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Failed to update configuration for $config_name", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Failed to update configuration for $config_name", "", __LINE__, __FILE__, $sql);
             }
         }
     }
@@ -93,7 +93,7 @@ else
     {
         $message = $lang['Log_Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_conf.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
     }
 }
 
@@ -105,17 +105,17 @@ $delete_admin_username = ( isset($HTTP_POST_VARS['delete_admin']) ) ? $HTTP_POST
 //
 
 $sql = "SELECT user_id, username
-    FROM " . USERS_TABLE . "
+    FROM " . NUKE_USERS_TABLE . "
     WHERE user_level = '2'
     AND user_id <> '2'
     AND user_view_log = '0' ";
-$result = $db->sql_query($sql);
+$result = $nuke_db->sql_query($sql);
 if( !$result )
 {
-    message_die(GENERAL_ERROR, "Couldn't selected informations about user.", "",__LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, "Couldn't selected informations about user.", "",__LINE__, __FILE__, $sql);
 }
 
-$choose = $db->sql_fetchrowset($result);
+$choose = $nuke_db->sql_fetchrowset($result);
 $add_admin_select = '<select name="add_admin_select">';
 
 if( empty($choose) )
@@ -140,22 +140,22 @@ if ( $add_admin_username )
         //
         // Allow a admin to see the logs
         //
-        $sql = "UPDATE " . USERS_TABLE . "
+        $sql = "UPDATE " . NUKE_USERS_TABLE . "
             SET user_view_log = '1'
             WHERE user_id = '$choose_username_add' ";
-            $result = $db->sql_query($sql);
+            $result = $nuke_db->sql_query($sql);
             if( !$result )
             {
-                message_die(GENERAL_ERROR, "Couldn't allow this admin to see the logs.", "",__LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't allow this admin to see the logs.", "",__LINE__, __FILE__, $sql);
             }
             else
             {
-                message_die(GENERAL_MESSAGE, $lang['Admins_add_success'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_conf.$phpEx") . "\">", "</a>"));
+                message_die(NUKE_GENERAL_MESSAGE, $lang['Admins_add_success'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_conf.$phpEx") . "\">", "</a>"));
             }
     }
     else
     {
-        message_die(GENERAL_MESSAGE, $lang['No_admins_allow'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_conf.$phpEx") . "\">", "</a>"));
+        message_die(NUKE_GENERAL_MESSAGE, $lang['No_admins_allow'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_conf.$phpEx") . "\">", "</a>"));
     }
 }
 
@@ -164,16 +164,16 @@ if ( $add_admin_username )
 //
 
 $sql = "SELECT user_id, username
-    FROM " . USERS_TABLE . "
+    FROM " . NUKE_USERS_TABLE . "
     WHERE user_level = '1'
     AND user_id <> '2'
     AND user_view_log = '1' ";
-$result = $db->sql_query($sql);
+$result = $nuke_db->sql_query($sql);
 if( !$result )
 {
-    message_die(GENERAL_ERROR, "Couldn't selected informations about user.", "",__LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, "Couldn't selected informations about user.", "",__LINE__, __FILE__, $sql);
 }
-$choose_delete = trim($db->sql_fetchrowset($result));
+$choose_delete = trim($nuke_db->sql_fetchrowset($result));
 $delete_admin_select = '<select name="delete_admin_select[]" multiple="multiple" size="4">';
 
 if( empty($choose_delete) )
@@ -200,7 +200,7 @@ if ( $delete_admin_username )
         //
         // Disllow a admin to see the logs
         //
-        $sql = "UPDATE " . USERS_TABLE . "
+        $sql = "UPDATE " . NUKE_USERS_TABLE . "
             SET user_view_log = '0'
             WHERE user_id ";
 
@@ -212,19 +212,19 @@ if ( $delete_admin_username )
             {
                 $sql .= " = $choose_username_del_sql ";
             }
-            $result = $db->sql_query($sql);
+            $result = $nuke_db->sql_query($sql);
             if( !$result )
             {
-                message_die(GENERAL_ERROR, "Couldn't disallow this admin to see the logs.", "",__LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't disallow this admin to see the logs.", "",__LINE__, __FILE__, $sql);
             }
             else
             {
-                message_die(GENERAL_MESSAGE, $lang['Admins_del_success'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_config.$phpEx") . "\">", "</a>"));
+                message_die(NUKE_GENERAL_MESSAGE, $lang['Admins_del_success'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_config.$phpEx") . "\">", "</a>"));
             }
     }
     else
     {
-        message_die(GENERAL_MESSAGE, $lang['No_admins_disallow'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_config.$phpEx") . "\">", "</a>"));
+        message_die(NUKE_GENERAL_MESSAGE, $lang['No_admins_disallow'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_config.$phpEx") . "\">", "</a>"));
     }
 }
 
@@ -238,7 +238,7 @@ if ( $do_prune )
 
     if ( $prune )
     {
-        message_die(GENERAL_MESSAGE, $lang['Prune_success'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_conf.$phpEx") . "\">", "</a>"));
+        message_die(NUKE_GENERAL_MESSAGE, $lang['Prune_success'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_conf.$phpEx") . "\">", "</a>"));
     }
 }
 $all_admin_yes = ( $new['all_admin'] ) ? "checked=\"checked\"" : "";

@@ -8,7 +8,7 @@
  *
  */
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -26,7 +26,7 @@ require('./pagestart.' . $phpEx);
 include('../../../includes/functions_admin.'.$phpEx);
 
 //
-// include language file (borrowed mercilessly from CyberAlien's eXtreme Styles MOD)
+// include language file (borrowed mercilessly from CyberAlien's eXtreme Styles NUKE_MOD)
 //
 if(!defined('XD_LANG_INCLUDED'))
 {
@@ -66,7 +66,7 @@ switch ($mode)
 
 		if ( ! isset($HTTP_GET_VARS['name']) )
 		{
-			message_die(GENERAL_ERROR, $lang['XData_no_field_selected']);
+			message_die(NUKE_GENERAL_ERROR, $lang['XData_no_field_selected']);
 		}
 		else
 		{
@@ -74,43 +74,43 @@ switch ($mode)
 
 			if ( ! isset($xd_meta[$name]) )
 			{
-				message_die(GENERAL_ERROR, $lang['XData_field_non_existant']);
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_field_non_existant']);
 			}
 		}
 
 		$swap1 = $xd_meta[$name];
 
 		$sql = "SELECT field_id, field_order
-			FROM " . XDATA_FIELDS_TABLE ."
+			FROM " . NUKE_XDATA_FIELDS_TABLE ."
 			WHERE field_order " . ( ($mode == 'up') ? '<' : '>' ) . $swap1['field_order'] . "
 			ORDER BY field_order " . ( ($mode == 'up') ? 'DESC' : 'ASC' ) . "
 			LIMIT 1";
 
-		if ( !( $result = $db->sql_query($sql) ) )
+		if ( !( $result = $nuke_db->sql_query($sql) ) )
 		{
-			message_die(GENERAL_ERROR, $lang['XData_unable_to_switch_fields'], '', __LINE__, __FILE__, $sql);
+			message_die(NUKE_GENERAL_ERROR, $lang['XData_unable_to_switch_fields'], '', __LINE__, __FILE__, $sql);
 		}
 
-		$swap2 = $db->sql_fetchrow($result);
+		$swap2 = $nuke_db->sql_fetchrow($result);
 
 		if ($swap1 && $swap2)
 		{
-			$sql = "UPDATE " . XDATA_FIELDS_TABLE . "
+			$sql = "UPDATE " . NUKE_XDATA_FIELDS_TABLE . "
 				SET field_order = " . $swap2['field_order'] . "
 				WHERE field_id = " . $swap1['field_id'];
 
-			if ( ! $db->sql_query($sql) )
+			if ( ! $nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, $lang['XData_unable_to_switch_fields'], '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_unable_to_switch_fields'], '', __LINE__, __FILE__, $sql);
 			}
 
-		    $sql = "UPDATE " . XDATA_FIELDS_TABLE . "
+		    $sql = "UPDATE " . NUKE_XDATA_FIELDS_TABLE . "
 				SET field_order = " . $swap1['field_order'] . "
 				WHERE field_id = " . $swap2['field_id'];
 
-			if ( ! $db->sql_query($sql) )
+			if ( ! $nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, $lang['XData_unable_to_switch_fields'], '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_unable_to_switch_fields'], '', __LINE__, __FILE__, $sql);
 			}
 		}
 
@@ -126,12 +126,12 @@ switch ($mode)
 		}
 		else
 		{
-			message_die(GENERAL_ERROR, 'No field was specified.');
+			message_die(NUKE_GENERAL_ERROR, 'No field was specified.');
 		}
 
 		if ( ! isset($xd_meta[$name]) )
 		{
-			message_die(GENERAL_ERROR, 'That field does not exist.');
+			message_die(NUKE_GENERAL_ERROR, 'That field does not exist.');
 		}
 
 		if ( ! isset($HTTP_POST_VARS['submit']) )
@@ -156,10 +156,10 @@ switch ($mode)
 				case '':
 										$regexp_none = true;
 				break;
-				case XD_REGEXP_NUMBERS:
+				case NUKE_XD_REGEXP_NUMBERS:
 										$regexp_numbers = true;
 				break;
-				case XD_REGEXP_LETTERS:
+				case NUKE_XD_REGEXP_LETTERS:
 										$regexp_letters = true;
 				break;
 				default:
@@ -197,17 +197,17 @@ switch ($mode)
 				'DEFAULT_AUTH_ALLOW_CHECKED' => ( $meta['default_auth'] == 1 ) ? ' checked="checked"' : '',
 				'DEFAULT_AUTH_DENY_CHECKED' => ( $meta['default_auth'] == 0 ) ? ' checked="checked"' : '',
 
-				'DISPLAY_REGISTER_NORMAL_CHECKED' => ( $meta['display_register'] == XD_DISPLAY_NORMAL ) ? ' checked="checked"' : '',
-				'DISPLAY_REGISTER_NONE_CHECKED' => ( $meta['display_register'] == XD_DISPLAY_NONE ) ? ' checked="checked"' : '',
-				'DISPLAY_REGISTER_ROOT_CHECKED' => ( $meta['display_register'] == XD_DISPLAY_ROOT ) ? ' checked="checked"' : '',
+				'DISPLAY_REGISTER_NORMAL_CHECKED' => ( $meta['display_register'] == NUKE_XD_DISPLAY_NORMAL ) ? ' checked="checked"' : '',
+				'DISPLAY_REGISTER_NONE_CHECKED' => ( $meta['display_register'] == NUKE_XD_DISPLAY_NONE ) ? ' checked="checked"' : '',
+				'DISPLAY_REGISTER_ROOT_CHECKED' => ( $meta['display_register'] == NUKE_XD_DISPLAY_ROOT ) ? ' checked="checked"' : '',
 
-				'DISPLAY_POSTING_NORMAL_CHECKED' => ( $meta['display_posting'] == XD_DISPLAY_NORMAL ) ? ' checked="checked"' : '',
-				'DISPLAY_POSTING_NONE_CHECKED' => ( $meta['display_posting'] == XD_DISPLAY_NONE ) ? ' checked="checked"' : '',
-				'DISPLAY_POSTING_ROOT_CHECKED' => ( $meta['display_posting'] == XD_DISPLAY_ROOT ) ? ' checked="checked"' : '',
+				'DISPLAY_POSTING_NORMAL_CHECKED' => ( $meta['display_posting'] == NUKE_XD_DISPLAY_NORMAL ) ? ' checked="checked"' : '',
+				'DISPLAY_POSTING_NONE_CHECKED' => ( $meta['display_posting'] == NUKE_XD_DISPLAY_NONE ) ? ' checked="checked"' : '',
+				'DISPLAY_POSTING_ROOT_CHECKED' => ( $meta['display_posting'] == NUKE_XD_DISPLAY_ROOT ) ? ' checked="checked"' : '',
 
-				'DISPLAY_PROFILE_NORMAL_CHECKED' => ( $meta['display_viewprofile'] == XD_DISPLAY_NORMAL ) ? ' checked="checked"' : '',
-				'DISPLAY_PROFILE_NONE_CHECKED' => ( $meta['display_viewprofile'] == XD_DISPLAY_NONE ) ? ' checked="checked"' : '',
-				'DISPLAY_PROFILE_ROOT_CHECKED' => ( $meta['display_viewprofile'] == XD_DISPLAY_ROOT ) ? ' checked="checked"' : '',
+				'DISPLAY_PROFILE_NORMAL_CHECKED' => ( $meta['display_viewprofile'] == NUKE_XD_DISPLAY_NORMAL ) ? ' checked="checked"' : '',
+				'DISPLAY_PROFILE_NONE_CHECKED' => ( $meta['display_viewprofile'] == NUKE_XD_DISPLAY_NONE ) ? ' checked="checked"' : '',
+				'DISPLAY_PROFILE_ROOT_CHECKED' => ( $meta['display_viewprofile'] == NUKE_XD_DISPLAY_ROOT ) ? ' checked="checked"' : '',
 
 				'HANDLE_INPUT_YES_CHECKED' => ( $meta['handle_input'] == 1 ) ? ' checked="checked"' : '',
 				'HANDLE_INPUT_NO_CHECKED' => ( $meta['handle_input'] == 0 ) ? ' checked="checked"' : '',
@@ -227,8 +227,8 @@ switch ($mode)
                 'SIGNUP_YES_CHECKED' => ( $meta['signup'] == 1 ) ? ' checked="checked"' : '',
                 'SIGNUP_NO_CHECKED' => ( $meta['signup'] == 0 ) ? ' checked="checked"' : '',
 
-                		'AUTH_ALLOW' => XD_AUTH_ALLOW,
-        			'AUTH_DENY' => XD_AUTH_DENY,
+                		'AUTH_ALLOW' => NUKE_XD_AUTH_ALLOW,
+        			'AUTH_DENY' => NUKE_XD_AUTH_DENY,
 
 				'S_HIDDEN_FIELDS' => '<input type="hidden" name="mode" value="edit" /><input type="hidden" name="name" value="'.$name.'" />'
 				)
@@ -313,10 +313,10 @@ switch ($mode)
 						$field_regexp = '';
 				break;
 				case 'numbers':
-						$field_regexp = XD_REGEXP_NUMBERS;
+						$field_regexp = NUKE_XD_REGEXP_NUMBERS;
 				break;
 				case 'letters':
-						$field_regexp = XD_REGEXP_LETTERS;
+						$field_regexp = NUKE_XD_REGEXP_LETTERS;
 				break;
 				case 'custom':
 						$field_regexp = $HTTP_POST_VARS['regexp_custom'];
@@ -325,9 +325,9 @@ switch ($mode)
             $signup = ( isset($HTTP_POST_VARS['signup']) ) ? intval($HTTP_POST_VARS['signup']) : 0;
             $viewtopic = ( isset($HTTP_POST_VARS['viewtopic']) ) ? intval($HTTP_POST_VARS['viewtopic']) : 0;
 			$default_auth = ( isset($HTTP_POST_VARS['default_auth']) ) ? htmlspecialchars($HTTP_POST_VARS['default_auth']) : '';
-			$display_register = ( isset($HTTP_POST_VARS['display_register']) ) ? intval($HTTP_POST_VARS['display_register']) : XD_DISPLAY_NORMAL;
-			$display_viewprofile = ( isset($HTTP_POST_VARS['display_viewprofile']) ) ? intval($HTTP_POST_VARS['display_viewprofile']) : XD_DISPLAY_NORMAL;
-			$display_posting = ( isset($HTTP_POST_VARS['display_posting']) ) ? intval($HTTP_POST_VARS['display_posting']) : XD_DISPLAY_NORMAL;
+			$display_register = ( isset($HTTP_POST_VARS['display_register']) ) ? intval($HTTP_POST_VARS['display_register']) : NUKE_XD_DISPLAY_NORMAL;
+			$display_viewprofile = ( isset($HTTP_POST_VARS['display_viewprofile']) ) ? intval($HTTP_POST_VARS['display_viewprofile']) : NUKE_XD_DISPLAY_NORMAL;
+			$display_posting = ( isset($HTTP_POST_VARS['display_posting']) ) ? intval($HTTP_POST_VARS['display_posting']) : NUKE_XD_DISPLAY_NORMAL;
 			$handle_input = ( isset($HTTP_POST_VARS['handle_input']) ) ? intval($HTTP_POST_VARS['handle_input']) : 1;
 			$allow_bbcode =  (isset($HTTP_POST_VARS['allow_bbcode']) ) ? intval($HTTP_POST_VARS['allow_bbcode']) : 1;
 			$allow_smilies =  ( isset($HTTP_POST_VARS['allow_smilies']) ) ? intval($HTTP_POST_VARS['allow_smilies']) : 1;
@@ -337,22 +337,22 @@ switch ($mode)
 
 			if ( $code_name == '' )
 			{
-            			message_die(GENERAL_ERROR, 'No field specified.');
+            			message_die(NUKE_GENERAL_ERROR, 'No field specified.');
 			}
 			elseif ( ! isset($xd_meta[$code_name]) )
 			{
-				message_die(GENERAL_ERROR, 'The field you were editing does not exist.');
+				message_die(NUKE_GENERAL_ERROR, 'The field you were editing does not exist.');
 			}
 
 			if ( strlen($field_regexp) > 0 )
 			{
-				$check = create_function('$errno, $errstr, $errfile, $errline', 'message_die("GENERAL_ERROR", "You have an error in your regular expression syntax:<br /><br />$errstr");');
+				$check = create_function('$errno, $errstr, $errfile, $errline', 'message_die("NUKE_GENERAL_ERROR", "You have an error in your regular expression syntax:<br /><br />$errstr");');
 				set_error_handler($check);
 				$test = preg_match($field_regexp, 'this is a test to see whether the regexp will compile properly');
 				restore_error_handler();
 			}
 
-			$sql = "UPDATE " . XDATA_FIELDS_TABLE . "
+			$sql = "UPDATE " . NUKE_XDATA_FIELDS_TABLE . "
 				SET field_name = '" . $field_name . "',
 				" . "field_desc = '" . $field_desc . "',
 				" . "field_type = '" . $type . "',
@@ -375,13 +375,13 @@ switch ($mode)
 				. "'
 				WHERE code_name = '" . $code_name . "'";
 
-			if ( ! $db->sql_query($sql) )
+			if ( ! $nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, $lang['XData_error_updating_fields'], '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_error_updating_fields'], '', __LINE__, __FILE__, $sql);
 			}
 
            	 $message = $lang['Edit_success'] . "<br /><br />" . sprintf($lang['Click_return_fields'], "<a href=\"" . append_sid("admin_xdata_fields.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
-			message_die(GENERAL_MESSAGE, $message);
+			message_die(NUKE_GENERAL_MESSAGE, $message);
 		}
 
 		break;
@@ -398,8 +398,8 @@ switch ($mode)
 
         	$template->assign_vars(array(
         			'DEFAULT_AUTH_ALLOW_CHECKED' => ' checked="checked"',
-        			'AUTH_ALLOW' => XD_AUTH_ALLOW,
-        			'AUTH_DENY' => XD_AUTH_DENY,
+        			'AUTH_ALLOW' => NUKE_XD_AUTH_ALLOW,
+        			'AUTH_DENY' => NUKE_XD_AUTH_DENY,
                 		'DISPLAY_REGISTER_NORMAL_CHECKED' => ' checked="checked"',
 				'DISPLAY_PROFILE_NORMAL_CHECKED' => ' checked="checked"',
 				'DISPLAY_POSTING_NORMAL_CHECKED' => ' checked="checked"',
@@ -486,10 +486,10 @@ switch ($mode)
 						$field_regexp = '';
 				break;
 				case 'numbers':
-						$field_regexp = XD_REGEXP_NUMBERS;
+						$field_regexp = NUKE_XD_REGEXP_NUMBERS;
 				break;
 				case 'letters':
-						$field_regexp = XD_REGEXP_LETTERS;
+						$field_regexp = NUKE_XD_REGEXP_LETTERS;
 				break;
 				case 'custom':
 						$field_regexp = $HTTP_POST_VARS['regexp_custom'];
@@ -498,9 +498,9 @@ switch ($mode)
             $signup = ( isset($HTTP_POST_VARS['signup']) ) ? intval($HTTP_POST_VARS['signup']) : 0;
             $viewtopic = ( isset($HTTP_POST_VARS['viewtopic']) ) ? intval($HTTP_POST_VARS['viewtopic']) : 0;
 			$default_auth = ( isset($HTTP_POST_VARS['default_auth']) ) ? htmlspecialchars($HTTP_POST_VARS['default_auth']) : '';
-			$display_register = ( isset($HTTP_POST_VARS['display_register']) ) ? intval($HTTP_POST_VARS['display_register']) : XD_DISPLAY_NORMAL;
-			$display_viewprofile = ( isset($HTTP_POST_VARS['display_viewprofile']) ) ? intval($HTTP_POST_VARS['display_viewprofile']) : XD_DISPLAY_NORMAL;
-			$display_posting = ( isset($HTTP_POST_VARS['display_posting']) ) ? intval($HTTP_POST_VARS['display_posting']) : XD_DISPLAY_NORMAL;
+			$display_register = ( isset($HTTP_POST_VARS['display_register']) ) ? intval($HTTP_POST_VARS['display_register']) : NUKE_XD_DISPLAY_NORMAL;
+			$display_viewprofile = ( isset($HTTP_POST_VARS['display_viewprofile']) ) ? intval($HTTP_POST_VARS['display_viewprofile']) : NUKE_XD_DISPLAY_NORMAL;
+			$display_posting = ( isset($HTTP_POST_VARS['display_posting']) ) ? intval($HTTP_POST_VARS['display_posting']) : NUKE_XD_DISPLAY_NORMAL;
          	$handle_input = ( isset($HTTP_POST_VARS['handle_input']) ) ? intval($HTTP_POST_VARS['handle_input']) : 1;
 			$allow_bbcode = ( isset($HTTP_POST_VARS['allow_bbcode']) ) ? intval($HTTP_POST_VARS['allow_bbcode']) : 0;
 			$allow_smilies = ( isset($HTTP_POST_VARS['allow_smilies']) ) ? intval($HTTP_POST_VARS['allow_smilies']) : 0;
@@ -510,21 +510,21 @@ switch ($mode)
 
 			if ( strlen($field_regexp) > 0 )
 			{
-				$check = create_function('$errno, $errstr, $errfile, $errline', 'message_die("GENERAL_ERROR", $lang[\'Regexp_error\']."<br /><br />$errstr");');
+				$check = create_function('$errno, $errstr, $errfile, $errline', 'message_die("NUKE_GENERAL_ERROR", $lang[\'Regexp_error\']."<br /><br />$errstr");');
 				set_error_handler($check);
 				$test = preg_match($field_regexp, 'this is a test to see whether the regexp will compile properly');
 				restore_error_handler();
 			}
 
 			$sql = "SELECT MAX(field_id)+1 AS field_id, MAX(field_order)+1 AS field_order
-			        FROM " . XDATA_FIELDS_TABLE;
+			        FROM " . NUKE_XDATA_FIELDS_TABLE;
 
-			if ( !($result = $db->sql_query($sql)) )
+			if ( !($result = $nuke_db->sql_query($sql)) )
 			{
-            			message_die(GENERAL_ERROR, $lang['XData_error_obtaining_new_field_info'], '', __LINE__, __FILE__, $sql);
+            			message_die(NUKE_GENERAL_ERROR, $lang['XData_error_obtaining_new_field_info'], '', __LINE__, __FILE__, $sql);
 			}
 
-			$new_info = $db->sql_fetchrow($result);
+			$new_info = $nuke_db->sql_fetchrow($result);
 			$field_id = $new_info['field_id'];
 			$field_order = $new_info['field_order'];
 
@@ -532,21 +532,21 @@ switch ($mode)
 
             		if ( isset($xd_meta[$new_code_name]) )
 			{
-				message_die(GENERAL_ERROR, $lang['XD_duplicate_name']);
+				message_die(NUKE_GENERAL_ERROR, $lang['XD_duplicate_name']);
 			}
 
-			$sql = "INSERT INTO " . XDATA_FIELDS_TABLE . "
+			$sql = "INSERT INTO " . NUKE_XDATA_FIELDS_TABLE . "
 				(field_id, field_name, field_desc, field_type, field_length, field_values, field_regexp, field_order, code_name, default_auth, display_register, display_viewprofile, display_posting, handle_input, allow_bbcode, allow_smilies, allow_html, manditory, viewtopic, signup)
 				VALUES
 				($field_id, '$field_name', '$field_desc', '$field_type', $field_length, '$field_values', '$field_regexp', $field_order, '$code_name', $default_auth, $display_register, $display_viewprofile, $display_posting, $handle_input, $allow_bbcode, $allow_smilies, $allow_html, $manditory, $viewtopic, $signup)";
 
-			if ( ! $db->sql_query($sql) )
+			if ( ! $nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, $lang['XData_failure_inserting_data'], '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_inserting_data'], '', __LINE__, __FILE__, $sql);
 			}
 
            		 $message = $lang['Add_success'] . "<br /><br />" . sprintf($lang['Click_return_fields'], "<a href=\"" . append_sid("admin_xdata_fields.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
-			message_die(GENERAL_MESSAGE, $message);
+			message_die(NUKE_GENERAL_MESSAGE, $message);
 		}
 
 		break;
@@ -566,12 +566,12 @@ switch ($mode)
 			}
 			else
 			{
-				message_die(GENERAL_ERROR, $lang['XData_no_field_selected'] );
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_no_field_selected'] );
 			}
 
             if ( ! isset($xd_meta[$code_name]) )
 			{
-				message_die(GENERAL_ERROR, $lang['XData_field_non_existant']);
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_field_non_existant']);
 			}
 
 			$template->set_filenames( array( 'body' => 'admin/xd_confirm_delete.tpl' ) );
@@ -604,40 +604,40 @@ switch ($mode)
 			}
 			else
 			{
-				message_die(GENERAL_ERROR, $lang['XData_no_field_selected']);
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_no_field_selected']);
 			}
 
             		if ( ! isset($xd_meta[$code_name]) )
 			{
-				message_die(GENERAL_ERROR, $lang['XData_field_non_existant']);
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_field_non_existant']);
 			}
 
-			$sql = "DELETE FROM " . XDATA_DATA_TABLE . "
+			$sql = "DELETE FROM " . NUKE_XDATA_DATA_TABLE . "
 				WHERE field_id = " . $xd_meta[$code_name]['field_id'];
 
-			if ( ! $db->sql_query($sql) )
+			if ( ! $nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, $lang['XData_failure_removing_data'], "", __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_removing_data'], "", __LINE__, __FILE__, $sql);
 			}
 
-          		  $sql = "DELETE FROM " . XDATA_AUTH_TABLE . "
+          		  $sql = "DELETE FROM " . NUKE_XDATA_AUTH_TABLE . "
 				WHERE field_id = " . $xd_meta[$code_name]['field_id'];
 
-			if ( ! $db->sql_query($sql) )
+			if ( ! $nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, $lang['XData_failure_removing_data'], "", __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_removing_data'], "", __LINE__, __FILE__, $sql);
 			}
 
-			$sql = "DELETE FROM " . XDATA_FIELDS_TABLE . "
+			$sql = "DELETE FROM " . NUKE_XDATA_FIELDS_TABLE . "
 				WHERE code_name = '" . $code_name . "'";
 
-			if ( ! $db->sql_query($sql) )
+			if ( ! $nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, $lang['XData_failure_removing_data'], "", __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_removing_data'], "", __LINE__, __FILE__, $sql);
 			}
 
 			$message = $lang['Delete_success'] . "<br /><br />" . sprintf($lang['Click_return_fields'], "<a href=\"" . append_sid("admin_xdata_fields.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
-			message_die(GENERAL_MESSAGE, $message);
+			message_die(NUKE_GENERAL_MESSAGE, $message);
 
 		}
 		else

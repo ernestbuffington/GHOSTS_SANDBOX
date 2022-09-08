@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -32,7 +32,7 @@ if(!isset($min)) $min=0;
 if(!isset($max)) $max=$min+$perpage;
 if(!isset($column) or !$column or $column=="") $column = "user_agent";
 if(!isset($direction) or !$direction or $direction=="") $direction = "asc";
-$totalselected = $db->sql_numrows($db->sql_query("SELECT DISTINCT(`user_agent`) FROM `".$prefix."_nsnst_tracked_ips` GROUP BY 1"));
+$totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`user_agent`) FROM `".$prefix."_nsnst_tracked_ips` GROUP BY 1"));
 if($totalselected > 0) {
   // Page Sorting
   $selcolumn1 = $selcolumn2 = $selcolumn3 = $seldirection1 = $seldirection2 = "";
@@ -67,9 +67,9 @@ if($totalselected > 0) {
   echo '<td align="center"><strong>'._AB_HITS.'</strong></td>'."\n";
   echo '<td align="center"><strong>'._AB_FUNCTIONS.'</strong></td>'."\n";
   echo '</tr>'."\n";
-  $result = $db->sql_query("SELECT DISTINCT(`user_agent`), tid, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` GROUP BY 1 ORDER BY $column $direction LIMIT $min, $perpage");
-  while(list($user_agent, $tid, $lastview, $hits) = $db->sql_fetchrow($result)){
-    $trackedips = $db->sql_numrows($db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_agent`='$user_agent'"));
+  $result = $nuke_db->sql_query("SELECT DISTINCT(`user_agent`), tid, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` GROUP BY 1 ORDER BY $column $direction LIMIT $min, $perpage");
+  while(list($user_agent, $tid, $lastview, $hits) = $nuke_db->sql_fetchrow($result)){
+    $trackedips = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_agent`='$user_agent'"));
     echo '<tr onmouseover="this.style.backgroundColor=\''.$bgcolor2.'\'" onmouseout="this.style.backgroundColor=\''.$bgcolor1.'\'" bgcolor="'.$bgcolor1.'">'."\n";
     echo '<td>'.htmlentities($user_agent, ENT_QUOTES).'</td>'."\n";
     echo '<td align="center"><a href="'.$admin_file.'.php?op=ABTrackedAgentsIPs&amp;tid='.$tid.'" target="_blank">'.$trackedips.'</a></td>'."\n";

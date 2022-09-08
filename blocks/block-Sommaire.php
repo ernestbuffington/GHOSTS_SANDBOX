@@ -33,7 +33,7 @@
 
 if(!defined('NUKE_EVO')) exit;
 
-global $db, $admin, $user, $prefix, $user_prefix, $cookie, $def_module, $currentlang, $cookie, $cache;
+global $nuke_db, $admin, $user, $prefix, $nuke_user_prefix, $cookie, $def_module, $currentlang, $cookie, $cache;
 
 if (file_exists(NUKE_LANGUAGE_DIR.'Sommaire/lang-'.$currentlang.'.php')) {
     include_once(NUKE_LANGUAGE_DIR.'Sommaire/lang-'.$currentlang.'.php');
@@ -56,8 +56,8 @@ if(!($row = $cache->load('sommaire_row', 'block'))) {
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
 $sql="SELECT t1.invisible, t2.main_module FROM ".$prefix."_sommaire AS t1, ".$prefix."_main AS t2 LIMIT 1";
-$result = $db->sql_query($sql);
-$row = $db->sql_fetchrow($result);
+$result = $nuke_db->sql_query($sql);
+$row = $nuke_db->sql_fetchrow($result);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -87,7 +87,7 @@ $imgnew="new.gif";
 ///////////// on récupère les infos pour savoir si le user a des messages privés non lus /////////////////
 if ($is_user==1 && $detectPM==1) {
     $uid=intval($uid); // on sécurise l'appel à la BDD
-     $newpms = $db->sql_fetchrow($db->sql_query("SELECT COUNT(*) FROM " . $prefix . "_bbprivmsgs WHERE privmsgs_to_userid='$uid' AND (privmsgs_type='5' OR privmsgs_type='1')")); //2 requetes SQL
+     $newpms = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT COUNT(*) FROM " . $prefix . "_bbprivmsgs WHERE privmsgs_to_userid='$uid' AND (privmsgs_type='5' OR privmsgs_type='1')")); //2 requetes SQL
 }
 // voilà, si $newpms[0]>0 --> il y a des PMs non lus //
 
@@ -106,8 +106,8 @@ if ($gestiongroupe==1) {
 else {
     $sql = "SELECT title, custom_title, view, active FROM ".$prefix."_modules WHERE active='1' AND inmenu='1' AND `title` NOT LIKE '~l~%' ORDER BY custom_title ASC";
 }
-    $modulesaffiche= $db->sql_query($sql);
-    while($tempo = $db->sql_fetchrow($modulesaffiche)) {
+    $modulesaffiche= $nuke_db->sql_query($sql);
+    while($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) {
         $tempoA[] = $tempo;
     }
 /*****[BEGIN]******************************************
@@ -154,8 +154,8 @@ if (!($row2A = $cache->load('sommaire_row2', 'block'))) {
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
     $sql2= "SELECT groupmenu, module, url, url_text, image, new, new_days, class, bold FROM ".$prefix."_sommaire_categories ORDER BY id ASC";
-    $result2= $db->sql_query($sql2);
-    while($row2=$db->sql_fetchrow($result2)) {
+    $result2= $nuke_db->sql_query($sql2);
+    while($row2=$nuke_db->sql_fetchrow($result2)) {
         $row2A[] = $row2;
     } //on récupère la première ligne de la table, et on affecte aux variables.
 /*****[BEGIN]******************************************
@@ -240,8 +240,8 @@ if (!($row3 = $cache->load('sommaire_row3', 'block'))) {
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
     $sql = "SELECT groupmenu, name, image, lien, hr, center, bgcolor, invisible, class, bold, new, listbox, dynamic FROM ".$prefix."_sommaire ORDER BY groupmenu ASC";
-    $result = $db->sql_query($sql);
-    while ($row = $db->sql_fetchrow($result)) {  // on va afficher chaque catégorie, puis les modules correspondants//
+    $result = $nuke_db->sql_query($sql);
+    while ($row = $nuke_db->sql_fetchrow($result)) {  // on va afficher chaque catégorie, puis les modules correspondants//
         $row3[] = $row;
     }
 /*****[BEGIN]******************************************
@@ -676,8 +676,8 @@ $cache->save('sommaire_row3', 'block', $row3);
                                     if ($nomdumodule=="Downloads" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") {
                                         $where = (preg_match("/^cid=[0-9]*$/",$temponomdumodule[2])) ? " WHERE $temponomdumodule[2]" : "";
                                         $sqlimgnew="SELECT date FROM ".$prefix."_downloads_downloads".$where." ORDER BY date DESC LIMIT 1";
-                                        $resultimgnew=$db->sql_query($sqlimgnew);
-                                        $rowimgnew = $db->sql_fetchrow($resultimgnew);
+                                        $resultimgnew=$nuke_db->sql_query($sqlimgnew);
+                                        $rowimgnew = $nuke_db->sql_fetchrow($resultimgnew);
                                         if ($rowimgnew['date']) {
                                             preg_match ("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $rowimgnew['date'], $datetime);
                                             $zedate = mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]);
@@ -690,8 +690,8 @@ $cache->save('sommaire_row3', 'block', $row3);
                                     elseif ($nomdumodule=="Web_Links" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") {
                                         $where = (preg_match("/^cid=[0-9]*$/",$temponomdumodule[2])) ? " WHERE $temponomdumodule[2]" : "";
                                         $sqlimgnew="SELECT date FROM ".$prefix."_links_links".$where." ORDER BY date DESC LIMIT 1";
-                                        $resultimgnew=$db->sql_query($sqlimgnew);
-                                        $rowimgnew = $db->sql_fetchrow($resultimgnew);
+                                        $resultimgnew=$nuke_db->sql_query($sqlimgnew);
+                                        $rowimgnew = $nuke_db->sql_fetchrow($resultimgnew);
                                         if ($rowimgnew['date']) {
                                             preg_match ("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $rowimgnew['date'], $datetime);
                                             $zedate = mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]);
@@ -704,8 +704,8 @@ $cache->save('sommaire_row3', 'block', $row3);
                                     elseif ($nomdumodule=="Content" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") {
                                         $where = (preg_match("/^cid=[0-9]*$/",$temponomdumodule[2])) ? " WHERE $temponomdumodule[2]" : "";
                                         $sqlimgnew="SELECT date FROM ".$prefix."_pages".$where." ORDER BY date DESC LIMIT 1";
-                                        $resultimgnew=$db->sql_query($sqlimgnew);
-                                        $rowimgnew = $db->sql_fetchrow($resultimgnew);
+                                        $resultimgnew=$nuke_db->sql_query($sqlimgnew);
+                                        $rowimgnew = $nuke_db->sql_fetchrow($resultimgnew);
                                         if ($rowimgnew['date']) {
                                             preg_match ("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $rowimgnew['date'], $datetime);
                                             $zedate = mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]);
@@ -718,8 +718,8 @@ $cache->save('sommaire_row3', 'block', $row3);
                                     elseif ($nomdumodule=="Reviews" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") {
                                         $where = "";
                                         $sqlimgnew="SELECT date FROM ".$prefix."_reviews".$where." ORDER BY date DESC LIMIT 1";
-                                        $resultimgnew=$db->sql_query($sqlimgnew);
-                                        $rowimgnew = $db->sql_fetchrow($resultimgnew);
+                                        $resultimgnew=$nuke_db->sql_query($sqlimgnew);
+                                        $rowimgnew = $nuke_db->sql_fetchrow($resultimgnew);
                                         if ($rowimgnew['date']) {
                                             preg_match ("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/", $rowimgnew['date'], $datetime);
                                             $zedate = mktime(0,0,0,$datetime[2],$datetime[3],$datetime[1]);
@@ -732,8 +732,8 @@ $cache->save('sommaire_row3', 'block', $row3);
                                     elseif ($nomdumodule=="Journal" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") {
                                         $where = "";
                                         $sqlimgnew="SELECT mdate FROM ".$prefix."_journal".$where." ORDER BY mdate DESC LIMIT 1";
-                                        $resultimgnew=$db->sql_query($sqlimgnew);
-                                        $rowimgnew = $db->sql_fetchrow($resultimgnew);
+                                        $resultimgnew=$nuke_db->sql_query($sqlimgnew);
+                                        $rowimgnew = $nuke_db->sql_fetchrow($resultimgnew);
                                         if ($rowimgnew['mdate']) {
                                             preg_match ("/([0-9]{1,2})-([0-9]{1,2})-([0-9]{4})/", $rowimgnew['mdate'], $datetime);
                                             $zedate = mktime(0,0,0,$datetime[1],$datetime[2],$datetime[3]);
@@ -746,8 +746,8 @@ $cache->save('sommaire_row3', 'block', $row3);
                                     elseif ($nomdumodule=="Blog" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") {
                                         $where = (preg_match("/^new_topic=[0-9]*$/",$temponomdumodule[1])) ? " WHERE ".str_replace("new_","",$temponomdumodule[1])."" : "";
                                         $sqlimgnew="SELECT datePublished FROM ".$prefix."_stories".$where." ORDER BY datePublished DESC LIMIT 1";
-                                        $resultimgnew=$db->sql_query($sqlimgnew);
-                                        $rowimgnew = $db->sql_fetchrow($resultimgnew);
+                                        $resultimgnew=$nuke_db->sql_query($sqlimgnew);
+                                        $rowimgnew = $nuke_db->sql_fetchrow($resultimgnew);
                                         if ($rowimgnew['datePublished']) {
                                             preg_match ("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $rowimgnew['datePublished'], $datetime);
                                             $zedate = mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]);
@@ -850,8 +850,8 @@ if ($is_admin===1) {
                         ."<select name=\"somlistboxinvisibles\" onchange=\"sommaire_envoielistbox(this.options[this.selectedIndex].value)\">"
                         ."<option value=\"select\">"._SOMSELECTALINK."";
         $sql = "SELECT title, custom_title FROM ".$prefix."_modules WHERE active='1' AND inmenu='0' AND `title` NOT LIKE '~l~%' ORDER BY title ASC";
-        $result = $db->sql_query($sql);
-        while ($row = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query($sql);
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             $module[$key]=$row['title'];
             $key++;
             $mn_title = $row['title'];
@@ -887,8 +887,8 @@ if (!($row4 = $cache->load('sommaire_row4', 'block'))) {
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
         $sql = "SELECT title, custom_title FROM ".$prefix."_modules WHERE active='0' AND `title` NOT LIKE '~l~%' ORDER BY title ASC";
-        $result = $db->sql_query($sql);
-        while ($row = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query($sql);
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             $row4[] = $row;
         }
 /*****[BEGIN]******************************************

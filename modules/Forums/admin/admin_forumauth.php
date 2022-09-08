@@ -30,7 +30,7 @@
       Global Announcements                     v1.2.8       06/13/2005
  ************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -56,13 +56,13 @@ require('./pagestart.' . $phpEx);
  ******************************************************/
 //                View      Read      Post      Reply     Edit     Delete    Sticky   Announce    Vote      Poll      Global Announcement
 $simple_auth_ary = array(
-        0  => array(AUTH_ALL, AUTH_ALL, AUTH_ALL, AUTH_ALL, AUTH_REG, AUTH_REG, AUTH_MOD, AUTH_MOD, AUTH_REG, AUTH_REG, AUTH_MOD),
-        1  => array(AUTH_ALL, AUTH_ALL, AUTH_REG, AUTH_REG, AUTH_REG, AUTH_REG, AUTH_MOD, AUTH_MOD, AUTH_REG, AUTH_REG, AUTH_MOD),
-        2  => array(AUTH_REG, AUTH_REG, AUTH_REG, AUTH_REG, AUTH_REG, AUTH_REG, AUTH_MOD, AUTH_MOD, AUTH_REG, AUTH_REG, AUTH_MOD),
-        3  => array(AUTH_ALL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_MOD, AUTH_ACL, AUTH_ACL, AUTH_MOD),
-        4  => array(AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_MOD, AUTH_ACL, AUTH_ACL, AUTH_MOD),
-        5  => array(AUTH_ALL, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD),
-        6  => array(AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD),
+        0  => array(NUKE_AUTH_ALL, NUKE_AUTH_ALL, NUKE_AUTH_ALL, NUKE_AUTH_ALL, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_MOD),
+        1  => array(NUKE_AUTH_ALL, NUKE_AUTH_ALL, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_MOD),
+        2  => array(NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_MOD),
+        3  => array(NUKE_AUTH_ALL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_MOD, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_MOD),
+        4  => array(NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_MOD, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_MOD),
+        5  => array(NUKE_AUTH_ALL, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD),
+        6  => array(NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD),
 /*****[END]********************************************
  [ Mod:     Global Announcements               v1.2.8 ]
  ******************************************************/
@@ -98,8 +98,8 @@ $field_names = array(
  [ Mod:     Global Announcements               v1.2.8 ]
  ******************************************************/
 
-$forum_auth_levels = array('ALL', 'REG', 'PRIVATE', 'MOD', 'ADMIN');
-$forum_auth_const = array(AUTH_ALL, AUTH_REG, AUTH_ACL, AUTH_MOD, AUTH_ADMIN);
+$forum_auth_levels = array('ALL', 'REG', 'PRIVATE', 'NUKE_MOD', 'NUKE_ADMIN');
+$forum_auth_const = array(NUKE_AUTH_ALL, NUKE_AUTH_REG, NUKE_AUTH_ACL, NUKE_AUTH_MOD, NUKE_AUTH_ADMIN);
 
 /*****[BEGIN]******************************************
  [ Mod:    Attachment Mod                      v2.4.1 ]
@@ -109,9 +109,9 @@ attach_setup_forum_auth($simple_auth_ary, $forum_auth_fields, $field_names);
  [ Mod:    Attachment Mod                      v2.4.1 ]
  ******************************************************/
 
-if(isset($HTTP_GET_VARS[POST_FORUM_URL]) || isset($HTTP_POST_VARS[POST_FORUM_URL]))
+if(isset($HTTP_GET_VARS[NUKE_POST_FORUM_URL]) || isset($HTTP_POST_VARS[NUKE_POST_FORUM_URL]))
 {
-        $forum_id = (isset($HTTP_POST_VARS[POST_FORUM_URL])) ? intval($HTTP_POST_VARS[POST_FORUM_URL]) : intval($HTTP_GET_VARS[POST_FORUM_URL]);
+        $forum_id = (isset($HTTP_POST_VARS[NUKE_POST_FORUM_URL])) ? intval($HTTP_POST_VARS[NUKE_POST_FORUM_URL]) : intval($HTTP_GET_VARS[NUKE_POST_FORUM_URL]);
         $forum_sql = "AND forum_id = $forum_id";
 }
 else
@@ -149,7 +149,7 @@ if( isset($HTTP_POST_VARS['submit']) )
 
          if (is_array($simple_ary))
          {
-            $sql = "UPDATE " . FORUMS_TABLE . " SET $sql WHERE forum_id = $forum_id";
+            $sql = "UPDATE " . NUKE_FORUMS_TABLE . " SET $sql WHERE forum_id = $forum_id";
          }
       }
       else
@@ -160,23 +160,23 @@ if( isset($HTTP_POST_VARS['submit']) )
 
                                 if ( $forum_auth_fields[$i] == 'auth_vote' )
                                 {
-                                        if ( $HTTP_POST_VARS['auth_vote'] == AUTH_ALL )
+                                        if ( $HTTP_POST_VARS['auth_vote'] == NUKE_AUTH_ALL )
                                         {
-                                                $value = AUTH_REG;
+                                                $value = NUKE_AUTH_REG;
                                         }
                                 }
 
                                 $sql .= ( ( $sql != '' ) ? ', ' : '' ) .$forum_auth_fields[$i] . ' = ' . $value;
                         }
 
-                        $sql = "UPDATE " . FORUMS_TABLE . " SET $sql WHERE forum_id = $forum_id";
+                        $sql = "UPDATE " . NUKE_FORUMS_TABLE . " SET $sql WHERE forum_id = $forum_id";
                 }
 
                 if ( $sql != '' )
                 {
-                        if ( !$db->sql_query($sql) )
+                        if ( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not update auth table', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not update auth table', '', __LINE__, __FILE__, $sql);
                         }
                 }
 
@@ -185,10 +185,10 @@ if( isset($HTTP_POST_VARS['submit']) )
         }
 
         $template->assign_vars(array(
-                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("admin_forumauth.$phpEx?" . POST_FORUM_URL . "=$forum_id") . '">')
+                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("admin_forumauth.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id") . '">')
         );
         $message = $lang['Forum_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumauth'],  '<a href="' . append_sid("admin_forumauth.$phpEx") . '">', "</a>");
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
 
 } // End of submit
 
@@ -198,17 +198,17 @@ if( isset($HTTP_POST_VARS['submit']) )
 // was
 //
 $sql = "SELECT f.*
-        FROM " . FORUMS_TABLE . " f, " . CATEGORIES_TABLE . " c
+        FROM " . NUKE_FORUMS_TABLE . " f, " . NUKE_CATEGORIES_TABLE . " c
         WHERE c.cat_id = f.cat_id
         $forum_sql
         ORDER BY c.cat_order ASC, f.forum_order ASC";
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-        message_die(GENERAL_ERROR, "Couldn't obtain forum list", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't obtain forum list", "", __LINE__, __FILE__, $sql);
 }
 
-$forum_rows = $db->sql_fetchrowset($result);
-$db->sql_freeresult($result);
+$forum_rows = $nuke_db->sql_fetchrowset($result);
+$nuke_db->sql_freeresult($result);
 
 if( empty($forum_id) )
 {
@@ -220,7 +220,7 @@ if( empty($forum_id) )
                 'body' => 'admin/auth_select_body.tpl')
         );
 
-        $select_list = '<select name="' . POST_FORUM_URL . '">';
+        $select_list = '<select name="' . NUKE_POST_FORUM_URL . '">';
         for($i = 0; $i < count($forum_rows); $i++)
         {
 /*****[BEGIN]******************************************
@@ -356,11 +356,11 @@ else
         }
 
         $adv_mode = ( empty($adv) ) ? '1' : '0';
-        $switch_mode = append_sid("admin_forumauth.$phpEx?" . POST_FORUM_URL . "=" . $forum_id . "&adv=". $adv_mode);
+        $switch_mode = append_sid("admin_forumauth.$phpEx?" . NUKE_POST_FORUM_URL . "=" . $forum_id . "&adv=". $adv_mode);
         $switch_mode_text = ( empty($adv) ) ? $lang['Advanced_mode'] : $lang['Simple_mode'];
         $u_switch_mode = '<a href="' . $switch_mode . '">' . $switch_mode_text . '</a>';
 
-        $s_hidden_fields = '<input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '">';
+        $s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '">';
 
         $template->assign_vars(array(
                 'FORUM_NAME' => $forum_name,

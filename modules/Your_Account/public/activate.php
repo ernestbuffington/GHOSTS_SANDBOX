@@ -37,22 +37,22 @@ if (!defined('CNBYA')) {
 
     if ($ya_config['expiring']!=0) {
         $past = time()-$ya_config['expiring'];
-        $res = $db->sql_query("SELECT user_id FROM ".$user_prefix."_users_temp WHERE time < '$past'");
-        while (list($uid) = $db->sql_fetchrow($res)) {
+        $res = $nuke_db->sql_query("SELECT user_id FROM ".$nuke_user_prefix."_users_temp WHERE time < '$past'");
+        while (list($uid) = $nuke_db->sql_fetchrow($res)) {
                   $uid = intval($uid);
-          $db->sql_query("DELETE FROM ".$user_prefix."_users_temp WHERE user_id = $uid");
-          $db->sql_query("DELETE FROM ".$user_prefix."_cnbya_value_temp WHERE uid = '$uid'");
+          $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_users_temp WHERE user_id = $uid");
+          $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_cnbya_value_temp WHERE uid = '$uid'");
         }
         
-        $db->sql_query("OPTIMIZE TABLE ".$user_prefix."_cnbya_value_temp");
-        $db->sql_query("OPTIMIZE TABLE ".$user_prefix."_users_temp");
+        $nuke_db->sql_query("OPTIMIZE TABLE ".$nuke_user_prefix."_cnbya_value_temp");
+        $nuke_db->sql_query("OPTIMIZE TABLE ".$nuke_user_prefix."_users_temp");
     }
 
     $username  = trim(check_html($username, 'nohtml'));
     $check_num = trim(check_html($check_num, 'nohtml'));
-    $result    = $db->sql_query("SELECT * FROM ".$user_prefix."_users_temp WHERE username='$username' AND check_num='$check_num'");
-    if ($db->sql_numrows($result) == 1) {
-        $row_act = $db->sql_fetchrow($result);
+    $result    = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users_temp WHERE username='$username' AND check_num='$check_num'");
+    if ($nuke_db->sql_numrows($result) == 1) {
+        $row_act = $nuke_db->sql_fetchrow($result);
     $ya_username = $row_act['username'];
     $ya_realname = $row_act['realname'];
     $ya_useremail = $row_act['user_email'];

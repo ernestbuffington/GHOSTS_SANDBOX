@@ -24,24 +24,24 @@
 
 <!-- BEGIN num_of_deleted_user_topics -->
    <tr>
-	  <td align="center"  class="row2" valign="middle" height="28"><span class="genmed">{num_of_deleted_user_topics.L_NUM_OF_DELETED_TOPICS}:</span></td>
-	  <td align="center"  class="row2" valign="middle" height="28"><span class="genmed"> <strong>{num_of_deleted_user_topics.NUM_OF_DELETED_TOPICS}</strong></span></td>
+	  <td align="center"  class="row2" valign="middle" height="28"><span class="genmed">{num_of_deleted_user_topics.L_NUM_OF_NUKE_DELETED_TOPICS}:</span></td>
+	  <td align="center"  class="row2" valign="middle" height="28"><span class="genmed"> <strong>{num_of_deleted_user_topics.NUM_OF_NUKE_DELETED_TOPICS}</strong></span></td>
 	</tr>
 <!-- END num_of_deleted_user_topics -->
 
 
 <!-- BEGIN deleted_posts_in_user_topics -->
    <tr>
-	  <td align="center"  class="row2" valign="middle" height="28"><span class="genmed">{deleted_posts_in_user_topics.L_DELETED_POSTS_IN_U_TOPICS}:</span></td>
-	  <td align="center"  class="row2" valign="middle" height="28"><span class="genmed">{deleted_posts_in_user_topics.DELETED_POSTS_IN_U_TOPICS}</span></td>
+	  <td align="center"  class="row2" valign="middle" height="28"><span class="genmed">{deleted_posts_in_user_topics.L_NUKE_DELETED_POSTS_IN_U_TOPICS}:</span></td>
+	  <td align="center"  class="row2" valign="middle" height="28"><span class="genmed">{deleted_posts_in_user_topics.NUKE_DELETED_POSTS_IN_U_TOPICS}</span></td>
 	</tr>
 <!-- END deleted_posts_in_user_topics -->
 
 
 <!-- BEGIN num_deleted_posts_in_usertopics -->
    <tr>
-	  <td align="center"  class="row2" valign="middle" height="28"><span class="genmed">{num_deleted_posts_in_usertopics.L_NUM_DELETED_POSTS_IN_U_TOPICS}:</span></td>
-	  <td align="center"  class="row2" valign="middle" height="28"><span class="genmed"><strong>{num_deleted_posts_in_usertopics.NUM_DELETED_POSTS_IN_U_TOPICS}</strong></span></td>
+	  <td align="center"  class="row2" valign="middle" height="28"><span class="genmed">{num_deleted_posts_in_usertopics.L_NUM_NUKE_DELETED_POSTS_IN_U_TOPICS}:</span></td>
+	  <td align="center"  class="row2" valign="middle" height="28"><span class="genmed"><strong>{num_deleted_posts_in_usertopics.NUM_NUKE_DELETED_POSTS_IN_U_TOPICS}</strong></span></td>
 	</tr>
 <!-- END num_deleted_posts_in_usertopics -->
 
@@ -73,27 +73,27 @@
 
 <!-- BEGIN topics_where_only_this_user_posts -->
   	<tr>
-	  <td class="catHead" height="28" align="center" colspan="2"><span class="cattitle">{topics_where_only_this_user_posts.L_DELETED_TOPICS2}</span></td>
+	  <td class="catHead" height="28" align="center" colspan="2"><span class="cattitle">{topics_where_only_this_user_posts.L_NUKE_DELETED_TOPICS2}</span></td>
 	</tr>
 
 	<tr>
-	  <td align="center" class="row2" valign="middle" height="28"><span class="genmed">{topics_where_only_this_user_posts.L_DELETED_TOPICS2}:</span></td>
-	  <td align="center" class="row2" valign="middle" height="28"><span class="genmed"><strong>{topics_where_only_this_user_posts.LIST_DELETED_TOPICS2}</strong><br></span></td>
+	  <td align="center" class="row2" valign="middle" height="28"><span class="genmed">{topics_where_only_this_user_posts.L_NUKE_DELETED_TOPICS2}:</span></td>
+	  <td align="center" class="row2" valign="middle" height="28"><span class="genmed"><strong>{topics_where_only_this_user_posts.LIST_NUKE_DELETED_TOPICS2}</strong><br></span></td>
 	</tr>
 
  	<tr>
 	  	<td align="center" class="row2" valign="middle" height="28"><span class="genmed">{topics_where_only_this_user_posts.L_TOTAL}: </span></td>
-	  	<td align="center" class="row2" valign="middle" height="28"><span class="genmed"><strong>{topics_where_only_this_user_posts.TOTAL_DELETED_TOPICS2}</strong></span></td>
+	  	<td align="center" class="row2" valign="middle" height="28"><span class="genmed"><strong>{topics_where_only_this_user_posts.TOTAL_NUKE_DELETED_TOPICS2}</strong></span></td>
 	</tr>
 	
  	<tr>
-	  	<td align="center" class="row2" valign="middle" height="28"><span class="genmed">{topics_where_only_this_user_posts.L_DELETED_POSTS_IN_U_TOPICS2}:</span></td>
-	  	<td align="center" class="row2" valign="middle" height="28"><span class="genmed">{topics_where_only_this_user_posts.LIST_DELETED_POSTS_IN_U_TOPICS2}</span></td>
+	  	<td align="center" class="row2" valign="middle" height="28"><span class="genmed">{topics_where_only_this_user_posts.L_NUKE_DELETED_POSTS_IN_U_TOPICS2}:</span></td>
+	  	<td align="center" class="row2" valign="middle" height="28"><span class="genmed">{topics_where_only_this_user_posts.LIST_NUKE_DELETED_POSTS_IN_U_TOPICS2}</span></td>
 	</tr>
 	
 	 <tr>
 	  	<td align="center" class="row2" valign="middle" height="28"><span class="genmed">{topics_where_only_this_user_posts.L_TOTAL}:</span></td>
-	  	<td align="center" class="row2" valign="middle" height="28"><span class="genmed"><strong>{topics_where_only_this_user_posts.TOTAL_DELETED_POSTS_IN_U_TOPICS2}</strong></span></td>
+	  	<td align="center" class="row2" valign="middle" height="28"><span class="genmed"><strong>{topics_where_only_this_user_posts.TOTAL_NUKE_DELETED_POSTS_IN_U_TOPICS2}</strong></span></td>
 	</tr>
 <!-- END topics_where_only_this_user_posts -->
 
@@ -118,7 +118,7 @@
 	</tr>
 	<tr>
 	  	<td align="center" class="row2" valign="middle" height="28"><span class="genmed">{all_other_user_posts_in_other_topics.L_OTHER_POSTS}:</span></td>
-	  	<td align="center" class="row2" valign="middle" height="28"><span class="genmed">{all_other_user_posts_in_other_topics.LIST_DELETED_OTHER_POSTS}</span></td>
+	  	<td align="center" class="row2" valign="middle" height="28"><span class="genmed">{all_other_user_posts_in_other_topics.LIST_NUKE_DELETED_OTHER_POSTS}</span></td>
 	</tr>
 
 <br>

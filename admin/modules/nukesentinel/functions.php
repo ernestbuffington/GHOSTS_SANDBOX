@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -16,12 +16,12 @@ if (!defined('NUKESENTINEL_ADMIN')) {
 }
 
 function abget_country($tempip){
-  global $prefix, $db;
+  global $prefix, $nuke_db;
   $tempip = str_replace(".*", ".0", $tempip);
   $tempip = sprintf("%u", ip2long($tempip));
-  $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_ip2country` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip' LIMIT 0,1");
-  $countryinfo = $db->sql_fetchrow($result);
-  $db->sql_freeresult($result);
+  $result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_ip2country` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip' LIMIT 0,1");
+  $countryinfo = $nuke_db->sql_fetchrow($result);
+  $nuke_db->sql_freeresult($result);
   $ctitle = abget_countrytitle($countryinfo['c2c']);
   $countryinfo['country'] = $ctitle['country'];
   if(!$countryinfo) {
@@ -34,10 +34,10 @@ function abget_country($tempip){
 }
 
 function abget_countrytitle($c2c){
-  global $prefix, $db;
-  $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_countries` WHERE `c2c`='$c2c' LIMIT 0,1");
-  $countrytitleinfo = $db->sql_fetchrow($result);
-  $db->sql_freeresult($result);
+  global $prefix, $nuke_db;
+  $result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_countries` WHERE `c2c`='$c2c' LIMIT 0,1");
+  $countrytitleinfo = $nuke_db->sql_fetchrow($result);
+  $nuke_db->sql_freeresult($result);
   if(!$countrytitleinfo) {
     $countrytitleinfo['c2c'] = "00";
     $countrytitleinfo['country'] = _AB_UNKNOWN;
@@ -48,16 +48,16 @@ function abget_countrytitle($c2c){
 }
 
 function absave_config($config_name, $config_value){
-  global $prefix, $db, $cache;
+  global $prefix, $nuke_db, $cache;
   if(!get_magic_quotes_runtime()) {
     $config_name = addslashes($config_name);
     $config_value = addslashes($config_value);
   }
-  $resultnum = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_config` WHERE `config_name`='$config_name' LIMIT 0,1"));
+  $resultnum = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_config` WHERE `config_name`='$config_name' LIMIT 0,1"));
   if($resultnum < 1) {
-    $db->sql_query("INSERT INTO `".$prefix."_nsnst_config` (`config_name`, `config_value`) VALUES ('$config_name', '$config_value')");
+    $nuke_db->sql_query("INSERT INTO `".$prefix."_nsnst_config` (`config_name`, `config_value`) VALUES ('$config_name', '$config_value')");
   } else {
-    $db->sql_query("UPDATE `".$prefix."_nsnst_config` SET `config_value`='$config_value' WHERE `config_name`='$config_name'");
+    $nuke_db->sql_query("UPDATE `".$prefix."_nsnst_config` SET `config_value`='$config_value' WHERE `config_name`='$config_name'");
   }
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -75,10 +75,10 @@ function blankmenu() {
 
 function mastermenu() 
 {
-  global $ab_config, $getAdmin, $prefix, $db, $op, $admin, $admin_file;
+  global $ab_config, $getAdmin, $prefix, $nuke_db, $op, $admin, $admin_file;
 
   $sapi_name = strtolower(php_sapi_name());
-  $checkrow = $db->sql_numrows($db->sql_query("SELECT * FROM ".$prefix."_nsnst_ip2country"));
+  $checkrow = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$prefix."_nsnst_ip2country"));
   
   if($checkrow > 0) 
   { 
@@ -361,9 +361,9 @@ function trackedmenu() {
 }
 
 function flag_img($c2c) {
-  global $prefix, $db;
+  global $prefix, $nuke_db;
   $c2c = strtolower($c2c);
-  list($xcountry) = $db->sql_fetchrow($db->sql_query("SELECT `country` FROM `".$prefix."_nsnst_countries` WHERE `c2c`='$c2c' LIMIT 0,1"));
+  list($xcountry) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `country` FROM `".$prefix."_nsnst_countries` WHERE `c2c`='$c2c' LIMIT 0,1"));
   if(!file_exists("images/nukesentinel/countries/".$c2c.".png")) {
     return '<img src="images/nukesentinel/countries/00.png" border="0" height="15" width="25" alt="('.$c2c.') '.$xcountry.'" title="('.$c2c.') '.$xcountry.'" />';
   } else {
@@ -444,7 +444,7 @@ function templatemenu($template="") {
 }
 
 function abview_template($template="") {
-  global $nuke_config, $ab_config, $nsnst_const, $db, $prefix, $ip;
+  global $nuke_config, $ab_config, $nsnst_const, $nuke_db, $prefix, $ip;
   if(empty($template)) { $template = "abuse_default.tpl"; }
   $sitename = $nuke_config['sitename'];
   $adminmail = $nuke_config['adminmail'];
@@ -474,7 +474,7 @@ function abview_template($template="") {
 }
 
 function OpenMenu($adsection="") {
-  global $bgcolor1, $bgcolor2, $textcolor1, $ab_config, $getAdmin, $prefix, $db, $op, $admin;
+  global $bgcolor1, $bgcolor2, $textcolor1, $ab_config, $getAdmin, $prefix, $nuke_db, $op, $admin;
   echo '<script type="text/javascript" src="includes/nukesentinel/nukesentinel1.js"><!-- overLIB (c) Erik Bosrup --></script>'."\n";
   echo '<script type="text/javascript" src="includes/nukesentinel/nukesentinel2.js"><!-- overLIB_hideform (c) Erik Bosrup --></script>'."\n";
   echo '<script type="text/javascript" src="includes/nukesentinel/nukesentinel3.js"><!-- overLIB_centerpopup (c) Erik Bosrup --></script>'."\n";

@@ -38,7 +38,7 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 // function Show_CNBYA_menu(){ [added by menelaos dot hetnet dot nl']
 /*************************************************************************************/
 function Show_CNBYA_menu(){
-    global $stop, $module_name, $redirect, $mode, $t, $f, $ya_config;
+    global $stop, $module_name, $nuke_redirect, $mode, $t, $f, $ya_config;
     OpenTable();
     if ($stop) {
         echo "<center><span class=\"title\"><strong>"._LOGININCOR."</strong></span></center>\n";
@@ -57,7 +57,7 @@ function Show_CNBYA_menu(){
 }
 
 function ya_userCheck($username){
-    global $stop, $user_prefix, $db, $ya_config, $prefix;
+    global $stop, $nuke_user_prefix, $nuke_db, $ya_config, $prefix;
 	
 	// Remove any whitespace
 	$username = trim($username);
@@ -69,8 +69,8 @@ function ya_userCheck($username){
     if (strlen($username) > $ya_config['nick_max']) $stop = "<center>"._YA_NICKLENGTH."</center>";
     if (strlen($username) < $ya_config['nick_min']) $stop = "<center>"._YA_NICKLENGTH."</center>";
 	
-    $result = $db->sql_query("SELECT disallow_username FROM ". $prefix ."_bbdisallow");
-    $disallowed = $db->sql_fetchrowset($result);
+    $result = $nuke_db->sql_query("SELECT disallow_username FROM ". $prefix ."_bbdisallow");
+    $disallowed = $nuke_db->sql_fetchrowset($result);
 	
 	if (is_array($disallowed)){
         foreach($disallowed as $bad_nick){
@@ -92,8 +92,8 @@ function ya_userCheck($username){
 	}
 	
     if (strrpos($username,' ') > 0) $stop = "<center>"._NICKNOSPACES."</center>";
-    if ($db->sql_numrows($db->sql_query("SELECT username FROM ".$user_prefix."_users WHERE username='$username'")) > 0) $stop = "<center>"._NICKTAKEN."</center><br />";
-    if ($db->sql_numrows($db->sql_query("SELECT username FROM ".$user_prefix."_users_temp WHERE username='$username'")) > 0) $stop = "<center>"._NICKTAKEN."</center><br />";
+    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT username FROM ".$nuke_user_prefix."_users WHERE username='$username'")) > 0) $stop = "<center>"._NICKTAKEN."</center><br />";
+    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT username FROM ".$nuke_user_prefix."_users_temp WHERE username='$username'")) > 0) $stop = "<center>"._NICKTAKEN."</center><br />";
 	
     return ($stop);
 }
@@ -107,7 +107,7 @@ global $ya_config, $adminmail;
 }
 
 function ya_mailCheck($user_email) {
-    global $stop, $user_prefix, $db, $ya_config;
+    global $stop, $nuke_user_prefix, $nuke_db, $ya_config;
 	
     $user_email = strtolower($user_email);
 	
@@ -125,9 +125,9 @@ function ya_mailCheck($user_email) {
     }
 	
     if (strrpos($user_email,' ') > 0) $stop = "<center>"._ERROREMAILSPACES."</center><br />";
-    if ($db->sql_numrows($db->sql_query("SELECT user_email FROM ".$user_prefix."_users WHERE user_email='$user_email'")) > 0) $stop = "<center>"._EMAILREGISTERED."</center><br />";
-    if ($db->sql_numrows($db->sql_query("SELECT user_email FROM ".$user_prefix."_users WHERE user_email='".md5($user_email)."'")) > 0) $stop = "<center>"._EMAILNOTUSABLE."</center><br />";
-    if ($db->sql_numrows($db->sql_query("SELECT user_email FROM ".$user_prefix."_users_temp WHERE user_email='$user_email'")) > 0) $stop = "<center>"._EMAILREGISTERED."</center><br />";
+    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT user_email FROM ".$nuke_user_prefix."_users WHERE user_email='$user_email'")) > 0) $stop = "<center>"._EMAILREGISTERED."</center><br />";
+    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT user_email FROM ".$nuke_user_prefix."_users WHERE user_email='".md5($user_email)."'")) > 0) $stop = "<center>"._EMAILNOTUSABLE."</center><br />";
+    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT user_email FROM ".$nuke_user_prefix."_users_temp WHERE user_email='$user_email'")) > 0) $stop = "<center>"._EMAILREGISTERED."</center><br />";
     
 	return ($stop);
 }
@@ -148,26 +148,26 @@ function ya_fixtext($ya_fixtext) {
 
 // function improved by Peter
 function ya_save_config($config_name, $config_value, $config_param=""){
-    global $prefix, $db, $cache;
+    global $prefix, $nuke_db, $cache;
     Fix_Quotes($config_value);
     if($config_param == 'html') {
         $config_name = check_html($config_name, 'nohtml');
         $config_value = check_html($config_value, 'html');
-        $db -> sql_query("UPDATE ".$prefix."_cnbya_config SET config_value='$config_value' WHERE config_name='$config_name'");
+        $nuke_db -> sql_query("UPDATE ".$prefix."_cnbya_config SET config_value='$config_value' WHERE config_name='$config_name'");
     }
     if($config_param == 'nohtml') {
         $config_name = check_html($config_name, 'nohtml');
         $config_value = ya_fixtext(check_html($config_value, 'nohtml'));
-        $db -> sql_query("UPDATE ".$prefix."_cnbya_config SET config_value='$config_value' WHERE config_name='$config_name'");
+        $nuke_db -> sql_query("UPDATE ".$prefix."_cnbya_config SET config_value='$config_value' WHERE config_name='$config_name'");
     } else {
         $config_name=check_html($config_name, 'nohtml');
         $config_value = intval($config_value);
-        $db -> sql_query("UPDATE ".$prefix."_cnbya_config SET config_value='$config_value' WHERE config_name='$config_name'");
+        $nuke_db -> sql_query("UPDATE ".$prefix."_cnbya_config SET config_value='$config_value' WHERE config_name='$config_name'");
     }
 }
 
 function ya_get_configs(){
-    global $prefix, $db, $cache;
+    global $prefix, $nuke_db, $cache;
     static $ya_config;
     if(isset($ya_config)) return $ya_config;
 /*****['BEGIN']****************************************
@@ -177,11 +177,11 @@ function ya_get_configs(){
 /*****['END']******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-      $configresult = $db->sql_query("SELECT config_name, config_value FROM ".$prefix."_cnbya_config");
-      while (list($config_name, $config_value) = $db->sql_fetchrow($configresult)) {
+      $configresult = $nuke_db->sql_query("SELECT config_name, config_value FROM ".$prefix."_cnbya_config");
+      while (list($config_name, $config_value) = $nuke_db->sql_fetchrow($configresult)) {
           $ya_config[$config_name] = $config_value;
       }
-      $db->sql_freeresult($configresult);
+      $nuke_db->sql_freeresult($configresult);
 /*****['BEGIN']****************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -194,9 +194,9 @@ function ya_get_configs(){
 }
 
 function yacookie($setuid, $setusername, $setpass, $setstorynum, $setumode, $setuorder, $setthold, $setnoscore, $setublockon, $settheme, $setcommentmax) {
-    global $ya_config, $db, $prefix, $identify;
+    global $ya_config, $nuke_db, $prefix, $identify;
     $ip = $identify->get_ip();
-    $result = $db->sql_query("SELECT time FROM ".$prefix."_session WHERE uname='$setusername'");
+    $result = $nuke_db->sql_query("SELECT time FROM ".$prefix."_session WHERE uname='$setusername'");
     $ctime = time();
 
     $guest = 1;
@@ -209,13 +209,13 @@ function yacookie($setuid, $setusername, $setpass, $setstorynum, $setumode, $set
 
     if (!empty($setusername)) {
         $uname = substr($setusername, 0,25);
-        if ($row = $db->sql_fetchrow($result)) {
-            $db->sql_query("UPDATE ".$prefix."_session SET uname='$setusername', time='$ctime', host_addr='$ip', guest='$guest' WHERE uname='$uname'");
+        if ($row = $nuke_db->sql_fetchrow($result)) {
+            $nuke_db->sql_query("UPDATE ".$prefix."_session SET uname='$setusername', time='$ctime', host_addr='$ip', guest='$guest' WHERE uname='$uname'");
         } else {
-            $db->sql_query("INSERT INTO ".$prefix."_session (uname, time, host_addr, guest) VALUES ('$uname', '$ctime', '$ip', '$guest')");
+            $nuke_db->sql_query("INSERT INTO ".$prefix."_session (uname, time, host_addr, guest) VALUES ('$uname', '$ctime', '$ip', '$guest')");
         }
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     $info = base64_encode("$setuid:$setusername:$setpass:$setstorynum:$setumode:$setuorder:$setthold:$setnoscore:$setublockon:$settheme:$setcommentmax");
     if ($ya_config['cookietimelife'] != '-') {
@@ -258,15 +258,15 @@ function YA_MakePass() {
 }
 
 function amain() {
-    global $ya_config, $module_name, $db, $user_prefix, $bgcolor2, $bgcolor1, $textcolor1, $find, $what, $match, $query, $admin_file;
+    global $ya_config, $module_name, $nuke_db, $nuke_user_prefix, $bgcolor2, $bgcolor1, $textcolor1, $find, $what, $match, $query, $admin_file;
     $cnbyaversion = $ya_config['version'];
 
     OpenTable();
-    $act = $db->sql_numrows($db->sql_query("SELECT * FROM ".$user_prefix."_users WHERE user_level>'0' AND user_id>'1'"));
-    $sus = $db->sql_numrows($db->sql_query("SELECT * FROM ".$user_prefix."_users WHERE user_level='0' AND user_id>'1'"));
-    $del = $db->sql_numrows($db->sql_query("SELECT * FROM ".$user_prefix."_users WHERE user_level='-1' AND user_id>'1'"));
-    $nor = $db->sql_numrows($db->sql_query("SELECT * FROM ".$user_prefix."_users WHERE user_id>'1'"));
-    $pen = $db->sql_numrows($db->sql_query("SELECT * FROM ".$user_prefix."_users_temp"));
+    $act = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE user_level>'0' AND user_id>'1'"));
+    $sus = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE user_level='0' AND user_id>'1'"));
+    $del = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE user_level='-1' AND user_id>'1'"));
+    $nor = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE user_id>'1'"));
+    $pen = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users_temp"));
 
     echo "<table align='center' cellpadding='2' cellspacing='2' border='0' width='100%'>\n";
 
@@ -310,7 +310,7 @@ function amain() {
 }
 
 function asearch() {
-    global $module_name, $bgcolor2, $bgcolor1, $textcolor1, $find, $what, $match, $query, $db, $user_prefix;
+    global $module_name, $bgcolor2, $bgcolor1, $textcolor1, $find, $what, $match, $query, $nuke_db, $nuke_user_prefix;
     OpenTable();
     echo "<table style='margin:auto' cellpadding='2' cellspacing='2' border='0'>\n";
     echo "<form method='post' action='modules.php?name=$module_name&amp;file=admin'>\n";
@@ -328,8 +328,8 @@ function asearch() {
     echo "</select></td>\n";
 
     echo "<td align='center'><select name='what'>\n";
-    $result = $db->sql_query("DESCRIBE " . $user_prefix . "_users");
-    while($row = $db->sql_fetchrow($result)){
+    $result = $nuke_db->sql_query("DESCRIBE " . $nuke_user_prefix . "_users");
+    while($row = $nuke_db->sql_fetchrow($result)){
         if($row[0] != "user_password") {
             echo "<option value='" . $row[0]."' " . ((($what == $row[0]) || (empty($what) && $row[0] == "username") )? "selected" : "") . ">" . ucwords(str_replace("_", " ", $row[0])) . "</option>\n";
         }
@@ -349,7 +349,7 @@ function asearch() {
 }
 
 function mmain($user) {
-    global $stop, $module_name, $redirect, $mode, $t, $f, $ya_config, $user, $p;
+    global $stop, $module_name, $nuke_redirect, $mode, $t, $f, $ya_config, $user, $p;
     if(!is_user()) {
         include_once(NUKE_BASE_DIR.'header.php');
         mt_srand ((double)microtime()*1000000);
@@ -387,7 +387,7 @@ function mmain($user) {
 
 		echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
 		
-        echo "<input type=\"hidden\" name=\"redirect\" value=\"". $redirect ."\">\n"; 
+        echo "<input type=\"hidden\" name=\"nuke_redirect\" value=\"". $nuke_redirect ."\">\n"; 
         echo "<input type=\"hidden\" name=\"mode\" value=\"".$mode."\">\n";
         echo "<input type=\"hidden\" name=\"f\" value=\"".$f."\">\n";
         echo "<input type=\"hidden\" name=\"t\" value=\"".$t."\">\n";
@@ -418,7 +418,7 @@ function mmain($user) {
         include_once(NUKE_BASE_DIR.'footer.php');
     } elseif (is_user()) {
         global $cookie;
-        redirect("modules.php?name=$module_name&op=userinfo&username=$cookie[1]");
+        nuke_redirect("modules.php?name=$module_name&op=userinfo&username=$cookie[1]");
     }
 }
 

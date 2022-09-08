@@ -77,7 +77,7 @@ class tmhOAuth {
         // to allow PHP to determine the value for this setting itself.
         'curl_sslversion'            => false,
 
-        'curl_followlocation'        => false, // whether to follow redirects or not
+        'curl_followlocation'        => false, // whether to follow nuke_redirects or not
 
         // support for proxy servers
         'curl_proxy'                 => false, // really you don't want to use this if you are using streaming

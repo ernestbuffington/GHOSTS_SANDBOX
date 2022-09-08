@@ -31,7 +31,7 @@
        Smilies in Topic Titles Toggle           v1.0.0       09/10/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -133,7 +133,7 @@ class StatisticsCORE
  ******************************************************/
 
     // Init Module
-    function start_module($db_cache_on = false)
+    function start_module($nuke_db_cache_on = false)
     {
         global $stats_template, $theme, $stat_db;
 
@@ -146,7 +146,7 @@ class StatisticsCORE
 
         $stat_db->begin_cached_query();
 
-        if ((!$db_cache_on) || ($this->do_not_use_cache))
+        if ((!$nuke_db_cache_on) || ($this->do_not_use_cache))
         {
             return;
         }
@@ -467,7 +467,7 @@ class StatisticsCORE
     }
 
     /* $stat_functions->forum_auth()
-    function forum_auth($userdata, $auth = AUTH_VIEW)
+    function forum_auth($userdata, $auth = NUKE_AUTH_VIEW)
     {
         global $stat_functions;
 
@@ -481,13 +481,13 @@ class StatisticsCORE
     // $stat_db->sql_query()
     function sql_query($sql_statement, $error_message, $transaction = FALSE)
     {
-        global $stat_db, $db;
+        global $stat_db, $nuke_db;
 
         $result = $stat_db->sql_query($sql_statement, $transaction);
 
         if (!$result)
         {
-            $error = $db->sql_error();
+            $error = $nuke_db->sql_error();
             $this->error_handler($error_message, $error['message'] . '<br />SQL Statement: ' . $sql_statement);
         }
         return $result;
@@ -529,7 +529,7 @@ $content_values = '';
 
 function init_core()
 {
-    global $stats_config, $core, $stat_db, $stat_functions, $db, $userdata;
+    global $stats_config, $core, $stat_db, $stat_functions, $nuke_db, $userdata;
 
     $core = new StatisticsCORE;
 
@@ -541,13 +541,13 @@ function init_core()
     // Get Module Variables
     $sql = "SELECT module_id, config_name, config_value, config_type FROM " . MODULE_ADMIN_TABLE;
 
-    if (!$result = $db->sql_query($sql))
+    if (!$result = $nuke_db->sql_query($sql))
     {
-        message_die(GENERAL_ERROR, 'Could not find Module Admin Table', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not find Module Admin Table', '', __LINE__, __FILE__, $sql);
     }
 
-    $rows = $db->sql_fetchrowset($result);
-    $num_rows = $db->sql_numrows($result);
+    $rows = $nuke_db->sql_fetchrowset($result);
+    $num_rows = $nuke_db->sql_numrows($result);
 
     for ($i = 0; $i < $num_rows; $i++)
     {

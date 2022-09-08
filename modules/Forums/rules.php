@@ -32,7 +32,7 @@ if (!defined('MODULE_FILE')) {
 }
 
 $phpbb2_root_path = NUKE_PHPBB2_DIR;
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 include("includes/bbcode.php");
@@ -40,7 +40,7 @@ include(NUKE_BASE_DIR."header.php");
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_FAQ);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_FAQ);
 init_userprefs($userdata);
 //
 // End session management

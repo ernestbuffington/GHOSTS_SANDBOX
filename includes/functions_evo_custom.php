@@ -796,14 +796,14 @@ function stripslashes_deep( $string )
  *
  * @since 2.0.9e
  *
- * @global db $db Evolution Xtreme database abstraction object.
+ * @global db $nuke_db Evolution Xtreme database abstraction object.
  *
  * @param string|array $data Unescaped data
  * @return string|array Escaped data
  */
 function esc_sql( $data ) {
-	global $db;
-	return $db->sql_escapestring( $data );
+	global $nuke_db;
+	return $nuke_db->sql_escapestring( $data );
 }
 
 /**
@@ -830,12 +830,12 @@ function url_shorten( $url, $length = 35 ) {
  *
  * @since 2.0.9e
  *
- * @global db $db Evolution Xtreme database abstraction object.
+ * @global db $nuke_db Evolution Xtreme database abstraction object.
  * @global board_config $board_config Forum configuration variable.
  * @global userinfo $userinfo Get the logged in users account information.
  */
 function get_user_avatar($user_id) {
-	global $db, $board_config, $userinfo;
+	global $nuke_db, $board_config, $userinfo;
 	static $avatarData;
 
 	if(is_array($avatarData[$user_id]) && !empty($avatarData[$user_id])) { return $avatarData[$user_id]; }
@@ -845,28 +845,28 @@ function get_user_avatar($user_id) {
 		 $user_avatar_allow = $userinfo['user_allowavatar'];
 		 $user_avatar_show  = $userinfo['user_showavatars'];
 	} else {
-		list($user_avatar, $user_avatar_type, $user_avatar_allow, $user_avatar_show) = $db->sql_ufetchrow("SELECT user_avatar, user_avatar_type, user_allowavatar, user_showavatars FROM ".USERS_TABLE." WHERE user_id = '" . $user_id . "' LIMIT 1");
+		list($user_avatar, $user_avatar_type, $user_avatar_allow, $user_avatar_show) = $nuke_db->sql_ufetchrow("SELECT user_avatar, user_avatar_type, user_allowavatar, user_showavatars FROM ".NUKE_USERS_TABLE." WHERE user_id = '" . $user_id . "' LIMIT 1");
 	}
 	$poster_avatar = '';
-	if ( $user_avatar_type && $user_id != ANONYMOUS && $user_avatar_allow && $user_avatar_show && !empty($user_avatar)) {
+	if ( $user_avatar_type && $user_id != NUKE_ANONYMOUS && $user_avatar_allow && $user_avatar_show && !empty($user_avatar)) {
 		switch( $user_avatar_type ) {
-			case USER_AVATAR_UPLOAD:
+			case NUKE_USER_AVATAR_UPLOAD:
 				$poster_avatar = ( $board_config['allow_avatar_upload'] ) ? avatar_resize($board_config['avatar_path'] . '/' . $user_avatar) : '';
 				break;
-			case USER_AVATAR_REMOTE:
+			case NUKE_USER_AVATAR_REMOTE:
 				$poster_avatar = avatar_resize($user_avatar);
 				break;
-			case USER_AVATAR_GALLERY:
+			case NUKE_USER_AVATAR_GALLERY:
 				$poster_avatar = ( $board_config['allow_avatar_local'] ) ? avatar_resize($board_config['avatar_gallery_path'] . '/' . $user_avatar) : '';
 				break;
 		}
 	}
 	$default_member_avatar = evo_image('avatar_member.png', 'Forums');
 	$default_guest_avatar  = evo_image('avatar_guest.png', 'Forums');
-	if ( empty($poster_avatar) && $user_id != ANONYMOUS) {
+	if ( empty($poster_avatar) && $user_id != NUKE_ANONYMOUS) {
 		$poster_avatar = '<img src="'.  $default_member_avatar .'" alt="" border="0" />';
 	}
-	if ( $user_id == ANONYMOUS ) {
+	if ( $user_id == NUKE_ANONYMOUS ) {
 		$poster_avatar = '<img src="'.  $default_guest_avatar .'" alt="" border="0" />';
 	}
 	$avatarData[$user_id] = $poser_avatar;

@@ -26,7 +26,7 @@
 
 global $directory_mode;
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 //
 // Let's set the root dir for phpBB
@@ -62,14 +62,14 @@ include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 
 $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
 }
 
 $stats_config = array();
 
-while ($row = $db->sql_fetchrow($result))
+while ($row = $nuke_db->sql_fetchrow($result))
 {
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
@@ -92,12 +92,12 @@ if ($cancel)
     if (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')))
     {
         header('Refresh: 0; URL=' . $url);
-        echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><meta http-equiv="refresh" content="0; url=' . $url . '"><title>Redirect</title></head><body><div align="center">If your browser does not support meta redirection please click <a href="' . $url . '">HERE</a> to be redirected</div></body></html>';
+        echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><meta http-equiv="refresh" content="0; url=' . $url . '"><title>Redirect</title></head><body><div align="center">If your browser does not support meta nuke_redirection please click <a href="' . $url . '">HERE</a> to be nuke_redirected</div></body></html>';
         exit;
     }
 
     // Behave as per HTTP/1.1 spec for others
-    redirect($url);
+    nuke_redirect($url);
     exit;
 }
 
@@ -113,7 +113,7 @@ if ($mode == 'import_new_lang' && $submit)
         
         if (!($fp = fopen($filename, 'r')) )
         {
-            message_die(GENERAL_ERROR, 'Unable to open ' . $filename);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to open ' . $filename);
         }
 
         read_lang_pak_header($fp);
@@ -143,7 +143,7 @@ if ($mode == 'import_new_lang' && $submit)
 
         if (count($inst_langs) == 0)
         {
-            message_die(GENERAL_ERROR, 'All Languages enclosed within this Language Pack are already installed.');
+            message_die(NUKE_GENERAL_ERROR, 'All Languages enclosed within this Language Pack are already installed.');
         }
 
         $lang_array = $inst_langs;
@@ -155,7 +155,7 @@ if ($mode == 'import_new_lang' && $submit)
             add_new_language_predefined($key, $modules);
         }
         
-        message_die(GENERAL_MESSAGE, $lang['Language_pak_installed']);
+        message_die(NUKE_GENERAL_MESSAGE, $lang['Language_pak_installed']);
     }
 
     if ( isset($HTTP_POST_VARS['fileselect']) )
@@ -169,14 +169,14 @@ if ($mode == 'import_new_lang' && $submit)
         // check php upload-size
         if ( ($filename == 'none') || ($filename == '') )
         {
-            message_die(GENERAL_ERROR, 'Unable to upload file, please use the pak file selector');
+            message_die(NUKE_GENERAL_ERROR, 'Unable to upload file, please use the pak file selector');
         }
 
         $contents = @implode('', @file($filename));
 
         if ($contents == '')
         {
-            message_die(GENERAL_ERROR, 'Unable to upload file, please use the pak file selector');
+            message_die(NUKE_GENERAL_ERROR, 'Unable to upload file, please use the pak file selector');
         }
 
         if (!file_exists($phpbb2_root_path . 'modules/cache'))
@@ -187,7 +187,7 @@ if ($mode == 'import_new_lang' && $submit)
         
         if (!($fp = fopen($phpbb2_root_path . 'modules/cache/temp.pak', 'wt')))
         {
-            message_die(GENERAL_ERROR, 'Unable to write temp file');
+            message_die(NUKE_GENERAL_ERROR, 'Unable to write temp file');
         }
 
         fwrite($fp, $contents, strlen($contents));
@@ -197,12 +197,12 @@ if ($mode == 'import_new_lang' && $submit)
     }
     else
     {
-        message_die(GENERAL_ERROR, 'Unable to find Module Package');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to find Module Package');
     }
 
     if (!($fp = fopen($filename, 'r')) )
     {
-        message_die(GENERAL_ERROR, 'Unable to open ' . $filename);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to open ' . $filename);
     }
     
     read_lang_pak_header($fp);
@@ -229,7 +229,7 @@ if ($mode == 'import_new_lang' && $submit)
 
     if (count($inst_langs) == 0)
     {
-        message_die(GENERAL_ERROR, 'All Languages enclosed within this Language Pack are already installed.');
+        message_die(NUKE_GENERAL_ERROR, 'All Languages enclosed within this Language Pack are already installed.');
     }
 
     $lang_array = $inst_langs;

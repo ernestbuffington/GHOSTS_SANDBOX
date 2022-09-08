@@ -40,7 +40,7 @@ define('_HONEYPOT_INSTALLCHECK','Nuke HoneyPot - Install Checker');
 define('_HONEYPOT_INSTALLCHECKFAIL','Please Delete The installer For Security Purpose!');
 define('_HONEYPOT_SAVE','Save Info');
 define('_HONEYPOT_CHECKALL','Check All');
-define('_HONEYPOT_DELETEALL_ANCHOR','Are you sure you want to delete ALL the caught bots?');
+define('_HONEYPOT_DELETEALL_ANCHOR','Are you sure you want to delete all the caught bots?');
 define('_HONEYPOT_DELETESELECTED_ANCHOR','Are you sure you want to delete the selected bots?');
 define('_HONEYPOT_TRYAGAIN','Try again!');
 define('_HONEYPOT_START','Let us start it!');

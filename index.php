@@ -2,7 +2,7 @@
 /*======================================================================= 
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
-
+## LAST EDIT 09/08/2022 Ernest Allen Buffington 6:23AM
 /************************************************************************/
 /* PHP-NUKE: Advanced Content Management System                         */
 /* ============================================                         */
@@ -18,7 +18,6 @@
 /* Additional security checking code 2003 by chatserv                   */
 /* http://www.nukefixes.com -- http://www.nukeresources.com             */
 /************************************************************************/
-
 /*****[CHANGES]**********************************************************
 -=[Base]=-
       Nuke Patched                             v3.1.0       06/26/2005
@@ -29,9 +28,8 @@
 	  Arcade                                   v3.0.2       05/29/2009
       Lock Modules                             v1.0.0       08/04/2005
       Portal Banner Ads                        v3.0.0       04/15/2021
-      Network Banner Ads                       v3.0.0       04/15/2021
+      Network Banner Ads                       v3.0.0       03/19/2021
  ************************************************************************/
-
 define('HOME_FILE', true);
 define('MODULE_FILE', true);
 $_SERVER['PHP_SELF'] = 'modules.php';
@@ -41,14 +39,14 @@ require_once(dirname(__FILE__).'/mainfile.php');
 /*****[BEGIN]******************************************
  [ Mod:    Banner Ads                          v1.0.0 ]
  ******************************************************/
-global $prefix, $db, $admin_file, $httpref, $httprefmax;
+global $prefix, $nuke_db, $admin_file, $httpref, $httprefmax;
 if (isset($_GET['op'])):
 	if($_GET['op'] == 'ad_click' && isset($_GET['bid'])):
         $bid = intval($_GET['bid']);
-        list($clickurl) = $db->sql_ufetchrow("SELECT `clickurl` FROM `".$prefix."_banner` WHERE `bid`='$bid'", SQL_NUM);
+        list($clickurl) = $nuke_db->sql_ufetchrow("SELECT `clickurl` FROM `".$prefix."_banner` WHERE `bid`='$bid'", SQL_NUM);
         if(!is_admin())
-        $db->sql_query("UPDATE `".$prefix."_banner` SET `clicks`=clicks+1 WHERE `bid`='$bid'");
-        redirect($clickurl);
+        $nuke_db->sql_query("UPDATE `".$prefix."_banner` SET `clicks`=clicks+1 WHERE `bid`='$bid'");
+        nuke_redirect($clickurl);
 	else: 
         exit('Illegal Operation');
     endif;
@@ -58,28 +56,30 @@ endif;
  ******************************************************/
 
 /*****[BEGIN]**************************************************
- [ Mod:    Network Banner Ads                          v1.0.0 ]#### 3/19/2021
+ [ Mod:    Network Banner Ads                          v3.0.0 ]#### 3/19/2021 Ernest Allen Buffington 2:24AM
  **************************************************************/
-global $network_prefix, $db2;
-if (isset($_GET['op'])):
+if ( defined('network') ): ### Check To See if Network Access is enabled before you do this ## Ernest Allen Buffington 09/08/2022 6:27AM
+global $network_prefix, $network_db;
+ if (isset($_GET['op'])):
     if($_GET['op'] == 'ad_network_click' && isset($_GET['bid'])):
         $bid = intval($_GET['bid']);
-        list($clickurl) = $db2->sql_ufetchrow("SELECT `clickurl` FROM `".$network_prefix."_banner` WHERE `bid`='$bid'", SQL_NUM);
+        list($clickurl) = $network_db->sql_ufetchrow("SELECT `clickurl` FROM `".$network_prefix."_banner` WHERE `bid`='$bid'", SQL_NUM);
         if(!is_admin())
-        $db2->sql_query("UPDATE `".$network_prefix."_banner` SET `clicks`=clicks+1 WHERE `bid`='$bid'");
-        redirect($clickurl);
+        $network_db->sql_query("UPDATE `".$network_prefix."_banner` SET `clicks`=clicks+1 WHERE `bid`='$bid'");
+        nuke_redirect($clickurl);
 	else: 
         exit('Illegal Operation');
     endif;
+ endif;
 endif;
 /*****[END]****************************************************
- [ Mod:    Network Banner Ads                          v1.0.0 ]#### 3/19/2021
+ [ Mod:    Network Banner Ads                          v3.0.0 ]######## 3/19/2021 Ernest Allen Buffington 2:24AM
  **************************************************************/
   
 /*****[BEGIN]******************************************
  [ Mod:     Arcade                             v3.0.2 ]
  ******************************************************/
-// Arcade MOD - IBProSupport
+# Arcade NUKE_MOD - IBProSupport
 $arcade = get_query_var('act', 'get');
 $newscore = get_query_var('do', 'get');
 
@@ -88,8 +88,8 @@ if($arcade == 'Arcade' && $newscore='newscore'):
      $gamename = preg_replace(array('#&(?!(\#[0-9]+;))#', '#<#', '#>#'), array('&amp;', '&lt;', '&gt;'),$gamename);
      $gamescore = intval($HTTP_POST_VARS['gscore']);
 
-      //Get Game ID
-      $row = $db->sql_ufetchrow("SELECT game_id FROM ".$prefix."_bbgames WHERE game_scorevar='$gamename'");
+      # Get Game ID
+      $row = $nuke_db->sql_ufetchrow("SELECT game_id FROM ".$prefix."_bbgames WHERE game_scorevar='$gamename'");
       $gid = intval($row['game_id']);
 
       $ThemeSel = get_theme();
@@ -111,7 +111,7 @@ endif;
  ******************************************************/
  
 if (isset($_GET['url']) && is_admin())
-redirect($_GET['url']);
+nuke_redirect($_GET['url']);
 
 $module_name = main_module();
 
@@ -142,7 +142,7 @@ if (stristr($file,"..") || stristr($mod_file,"..") || stristr($mop,"..")):
  ******************************************************/
     die("You are so cool...");
 else:
-    $module = $db->sql_ufetchrow('SELECT `blocks` FROM `'.$prefix.'_modules` WHERE `title`="'.$module_name.'"');
+    $module = $nuke_db->sql_ufetchrow('SELECT `blocks` FROM `'.$prefix.'_modules` WHERE `title`="'.$module_name.'"');
 	$modpath = NUKE_MODULES_DIR.$module_name."/$file.php";
 	if (file_exists($modpath)):
 		$showblocks = $module['blocks'];

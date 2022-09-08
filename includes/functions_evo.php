@@ -38,7 +38,7 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 // but for actual page we can make the informations static
 function get_user_field($field_name, $user, $is_name = false) 
 {
-    global $db, $identify;
+    global $nuke_db, $identify;
     static $actual_user;
     if (!$user) return NULL;
 
@@ -55,23 +55,23 @@ function get_user_field($field_name, $user, $is_name = false)
     
 	if (!isset($actual_user[$user])) 
 	{
-        $sql = "SELECT * FROM ".USERS_TABLE." WHERE $where";
-        $actual_user[$user] = $db->sql_ufetchrow($sql);
+        $sql = "SELECT * FROM ".NUKE_USERS_TABLE." WHERE $where";
+        $actual_user[$user] = $nuke_db->sql_ufetchrow($sql);
         // We also put the groups data in the array.
-        $result = $db->sql_query('SELECT g.group_id, 
+        $result = $nuke_db->sql_query('SELECT g.group_id, 
 		                               g.group_name, 
 								g.group_single_user 
 								  
-								  FROM ('.GROUPS_TABLE.' AS g 
-								  INNER JOIN '.USER_GROUP_TABLE.' 
+								  FROM ('.NUKE_GROUPS_TABLE.' AS g 
+								  INNER JOIN '.NUKE_USER_GROUP_TABLE.' 
 								  AS ug ON (ug.group_id=g.group_id AND ug.user_id="'.$actual_user[$user]['user_id'].'" 
 								  AND ug.user_pending=0))', true);
 								  
-        while(list($g_id, $g_name, $single) = $db->sql_fetchrow($result)) 
+        while(list($g_id, $g_name, $single) = $nuke_db->sql_fetchrow($result)) 
 		{
             $actual_user[$user]['groups'][$g_id] = ($single) ? '' : $g_name;
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
     }
     if($field_name == '*') 
 	{
@@ -101,14 +101,14 @@ function get_user_field($field_name, $user, $is_name = false)
  */
 function get_admin_field($field_name, $admin) 
 {
-    global $db, $debugger;
+    global $nuke_db, $debugger;
     static $fields = array();
     if (!$admin) {
         return array();
     }
 
     if(!isset($fields[$admin]) || !is_array($fields[$admin])) {
-        $fields[$admin] = $db->sql_ufetchrow("SELECT * FROM "._AUTHOR_TABLE." WHERE `aid` = '" .  str_replace("\'", "''", $admin) . "'");
+        $fields[$admin] = $nuke_db->sql_ufetchrow("SELECT * FROM "._AUTHOR_TABLE." WHERE `aid` = '" .  str_replace("\'", "''", $admin) . "'");
     }
 
     if($field_name == '*') {
@@ -136,7 +136,7 @@ function get_admin_field($field_name, $admin)
 function is_mod_admin($module_name='super') 
 {
 
-    global $db, $aid, $admin;
+    global $nuke_db, $aid, $admin;
     static $auth = array();
 
     if(!is_admin()) return 0;
@@ -154,7 +154,7 @@ function is_mod_admin($module_name='super')
     $admdata = get_admin_field('*', $aid);
     $auth_user = 0;
     if($module_name != 'super') {
-        list($admins) = $db->sql_ufetchrow("SELECT `admins` FROM "._MODULES_TABLE." WHERE `title`='$module_name'");
+        list($admins) = $nuke_db->sql_ufetchrow("SELECT `admins` FROM "._MODULES_TABLE." WHERE `title`='$module_name'");
         $adminarray = explode(",", $admins);
         for ($i=0, $maxi=count($adminarray); $i < $maxi; $i++) {
             if ($admdata['aid'] == $adminarray[$i] && !empty($admins)) {
@@ -181,7 +181,7 @@ function is_mod_admin($module_name='super')
 function get_mod_admins($module_name='super', $all='') 
 {
 
-    global $db;
+    global $nuke_db;
     static $admins = array();
 
     if ( $all =='') {
@@ -189,22 +189,22 @@ function get_mod_admins($module_name='super', $all='')
     }
 
     if($module_name == 'super' || $all != '') {
-        $result1 = $db->sql_query("SELECT `aid`, `email` FROM `"._AUTHOR_TABLE."` WHERE `radminsuper`='1'");
+        $result1 = $nuke_db->sql_query("SELECT `aid`, `email` FROM `"._AUTHOR_TABLE."` WHERE `radminsuper`='1'");
         $num = 0;
-        while (list($admin, $email) = $db->sql_fetchrow($result1)) {
+        while (list($admin, $email) = $nuke_db->sql_fetchrow($result1)) {
             $admins[$module_name][$num]['aid'] = $admin;
             $admins[$module_name][$num]['email'] = $email;
             $num++;
         }
-        $db->sql_freeresult($result1);
+        $nuke_db->sql_freeresult($result1);
     }
 
     if($module_name != 'super') {
-        list($admin) = $db->sql_ufetchrow("SELECT `admins` FROM `"._MODULES_TABLE."` WHERE `title`='".$module_name."'");
+        list($admin) = $nuke_db->sql_ufetchrow("SELECT `admins` FROM `"._MODULES_TABLE."` WHERE `title`='".$module_name."'");
         $adminarray = explode(",", $admin);
         $num = ($all !='') ? $num : 0;
         for ($i=0, $maxi=count($adminarray); $i < $maxi; $i++) {
-            $row = $db->sql_fetchrow($db->sql_query("SELECT `aid`, `email` FROM `"._AUTHOR_TABLE."` WHERE `aid`='".$adminarray[$i]."'"));
+            $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `aid`, `email` FROM `"._AUTHOR_TABLE."` WHERE `aid`='".$adminarray[$i]."'"));
             if (!empty($row['aid'])) {
                 $admins[$module_name][$num]['aid'] = $row['aid'];
                 $admins[$module_name][$num]['email'] = $row['email'];
@@ -224,24 +224,24 @@ function get_mod_admins($module_name='super', $all='')
  */
 function load_nukeconfig() 
 {
-    global $db, $cache, $debugger;
+    global $nuke_db, $cache, $debugger;
     // $nukeconfig is only called once -> mainfile.php
     // mainfile.php is only loaded once. So static makes no sense
     // static $nukeconfig;
     // if(isset($nukeconfig) && is_array($nukeconfig)) { return $nukeconfig; }
     if ((($nukeconfig = $cache->load('nukeconfig', 'config')) === false) || empty($nukeconfig)) {
-        $nukeconfig = $db->sql_ufetchrow('SELECT * FROM '._NUKE_CONFIG_TABLE, SQL_ASSOC);
+        $nukeconfig = $nuke_db->sql_ufetchrow('SELECT * FROM '._NUKE_CONFIG_TABLE, SQL_ASSOC);
         if (!$nukeconfig) {
             if ($prefix != 'nuke') {
-                $nukeconfig = $db->sql_ufetchrow('SELECT * FROM '._NUKE_CONFIG_TABLE, SQL_ASSOC);
+                $nukeconfig = $nuke_db->sql_ufetchrow('SELECT * FROM '._NUKE_CONFIG_TABLE, SQL_ASSOC);
                 if(is_array($nukeconfig)) {
-                    die('Please change your $prefix in config.php to \'nuke\'.  You might have to do the same for the $user_prefix');
+                    die('Please change your $prefix in config.php to \'nuke\'.  You might have to do the same for the $nuke_user_prefix');
                 }
             }
         }
         $nukeconfig = str_replace('\\"', '"', $nukeconfig);
         $cache->save('nukeconfig', 'config', $nukeconfig);
-        $db->sql_freeresult($nukeconfig);
+        $nuke_db->sql_freeresult($nukeconfig);
     }
     if(is_array($nukeconfig)) {
         return $nukeconfig;
@@ -261,7 +261,7 @@ function load_nukeconfig()
  */
 function load_board_config() 
 {
-    global $db, $debugger, $currentlang, $cache;
+    global $nuke_db, $debugger, $currentlang, $cache;
     // load_board_config is only called once -> mainfile.php
     // mainfile.php is only loaded once. So static makes no sense
     //static $board_config;
@@ -269,14 +269,14 @@ function load_board_config()
     if ((($board_config = $cache->load('board_config', 'config')) === false) || empty($board_config)) {
         $board_config = array();
 
-        $sql = "SELECT * FROM " . CONFIG_TABLE;
-        if( !($result = $db->sql_query($sql, true)) ) {
+        $sql = "SELECT * FROM " . NUKE_CONFIG_TABLE;
+        if( !($result = $nuke_db->sql_query($sql, true)) ) {
             $debugger->handle_error("Could not query phpbb config information", 'Error');
         }
-        while ( $row = $db->sql_fetchrow($result) ) {
+        while ( $row = $nuke_db->sql_fetchrow($result) ) {
             $board_config[$row['config_name']] = $row['config_value'];
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         $cache->save('board_config', 'config', $board_config);
     }
     if(is_array($board_config)) {
@@ -297,36 +297,36 @@ function load_board_config()
  */
 function load_evoconfig() 
 {
-    global $db, $cache, $debugger;
+    global $nuke_db, $cache, $debugger;
     // load_evoconfig is only called once -> mainfile.php
     // mainfile.php is only loaded once. So static makes no sense
     //static $evoconfig;
     //if(isset($evoconfig) && is_array($evoconfig)) { return $evoconfig; }
     if ((($evoconfig = $cache->load('evoconfig', 'config')) === false) || empty($evoconfig)) {
         $evoconfig = array();
-        $result = $db->sql_query('SELECT `evo_field`, `evo_value` FROM '._EVOCONFIG_TABLE.' WHERE `evo_field` != "cache_data"');
-        while(list($evo_field, $evo_value) = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query('SELECT `evo_field`, `evo_value` FROM '._EVOCONFIG_TABLE.' WHERE `evo_field` != "cache_data"');
+        while(list($evo_field, $evo_value) = $nuke_db->sql_fetchrow($result)) {
             if($evo_field != 'cache_data') {
                 $evoconfig[$evo_field] = $evo_value;
             }
         }
         $sql = "SELECT `config_value` FROM " . _CNBYA_CONFIG_TABLE . " WHERE `config_name` = 'allowusertheme'";
-        if( !($resultcnbya = $db->sql_query($sql))) {
+        if( !($resultcnbya = $nuke_db->sql_query($sql))) {
             $debugger->handle_error("Could not query cnbya config information", 'Error');
         }
-        $row = $db->sql_fetchrow($resultcnbya, SQL_NUM);
+        $row = $nuke_db->sql_fetchrow($resultcnbya, SQL_NUM);
         $evoconfig['allowusertheme'] = $row['config_value'];
-        $sql = 'SELECT `word`, `replacement` FROM `'.WORDS_TABLE.'`';
-        if( !($resultwords = $db->sql_query($sql))) {
+        $sql = 'SELECT `word`, `replacement` FROM `'.NUKE_WORDS_TABLE.'`';
+        if( !($resultwords = $nuke_db->sql_query($sql))) {
             $debugger->handle_error("Could not query bad words information", 'Error');
         }
-        while(list($word, $replacement) = $db->sql_fetchrow($resultwords)) {
+        while(list($word, $replacement) = $nuke_db->sql_fetchrow($resultwords)) {
             $wordrow[$word] = $replacement;
         }
         $evoconfig['censor_words'] = $wordrow;
 
         $cache->save('evoconfig', 'config', $evoconfig);
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
     }
     if(is_array($evoconfig)) {
         return $evoconfig;
@@ -340,11 +340,11 @@ function load_evoconfig()
 // main_module function by Quake
 function main_module() 
 {
-  global $db, $cache;
+  global $nuke_db, $cache;
   static $main_module;
   if (isset($main_module)) { return $main_module; }
     if((($main_module = $cache->load('main_module', 'config')) === false) || empty($main_module)) {
-        list($main_module) = $db->sql_ufetchrow('SELECT main_module FROM '._MAIN_TABLE, SQL_NUM);
+        list($main_module) = $nuke_db->sql_ufetchrow('SELECT main_module FROM '._MAIN_TABLE, SQL_NUM);
       $cache->save('main_module', 'config', $main_module);
   }
   return $main_module;
@@ -354,17 +354,17 @@ function main_module()
 function update_modules() 
 {
     // New function to add new modules and delete old ones
-    global $db, $cache;
+    global $nuke_db, $cache;
     static $updated;
     if(isset($updated)) { return $updated; }
     //Here we will pull all currently installed modules from the database
-    $result = $db->sql_query("SELECT title FROM "._MODULES_TABLE, true);
-    while(list($mtitle) = $db->sql_fetchrow($result, SQL_NUM)) {
+    $result = $nuke_db->sql_query("SELECT title FROM "._MODULES_TABLE, true);
+    while(list($mtitle) = $nuke_db->sql_fetchrow($result, SQL_NUM)) {
         if(substr($mtitle,0,3) != '~l~') {
             $modules[] = $mtitle;
         }
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     sort($modules);
 
     //Here we will get all current modules uploaded
@@ -383,7 +383,7 @@ function update_modules()
         $module = $modlist[$i];
         if (!in_array($module, $modules))
         {
-            $db->sql_uquery("INSERT INTO `"._MODULES_TABLE."` (`mid`, 
+            $nuke_db->sql_uquery("INSERT INTO `"._MODULES_TABLE."` (`mid`, 
 			                                                 `title`, 
 													  `custom_title`, 
 													        `active`, 
@@ -402,20 +402,20 @@ function update_modules()
         $module = $modules[$i];
         if (!in_array($module, $modlist))
         {
-            $db->sql_uquery("DELETE FROM `"._MODULES_TABLE."` WHERE `title`= '$module'");
-            $result = $db->sql_uquery("OPTIMIZE TABLE `"._MODULES_TABLE."`");
-            $db->sql_freeresult($result);
+            $nuke_db->sql_uquery("DELETE FROM `"._MODULES_TABLE."` WHERE `title`= '$module'");
+            $result = $nuke_db->sql_uquery("OPTIMIZE TABLE `"._MODULES_TABLE."`");
+            $nuke_db->sql_freeresult($result);
             $cache->delete('active_modules');
         }
     }
 
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     return $updated = true;
 }
 
 function UpdateCookie() 
 {
-    global $db, $prefix, $userinfo, $cache, $cookie, $identify;
+    global $nuke_db, $prefix, $userinfo, $cache, $cookie, $identify;
 
     $ip = $identify->get_ip();
     $uid = $userinfo['user_id'];
@@ -442,13 +442,13 @@ function UpdateCookie()
         /*****[END]********************************************
         [ Base:    Caching System                     v3.0.0 ]
         ******************************************************/
-        $configresult = $db->sql_query("SELECT config_name, config_value FROM ".$prefix."_cnbya_config", true);
-        while (list($config_name, $config_value) = $db->sql_fetchrow($configresult, SQL_NUM)) 
+        $configresult = $nuke_db->sql_query("SELECT config_name, config_value FROM ".$prefix."_cnbya_config", true);
+        while (list($config_name, $config_value) = $nuke_db->sql_fetchrow($configresult, SQL_NUM)) 
         {
             // if (!get_magic_quotes_gpc()) { $config_value = stripslashes($config_value); }
             $ya_config[$config_name] = $config_value;
         }
-        $db->sql_freeresult($configresult);
+        $nuke_db->sql_freeresult($configresult);
         /*****[BEGIN]******************************************
         [ Base:    Caching System                     v3.0.0 ]
         ******************************************************/
@@ -458,17 +458,17 @@ function UpdateCookie()
         ******************************************************/
     }
 
-    $result = $db->sql_query("SELECT time FROM ".$prefix."_session WHERE uname='$username'", true);
+    $result = $nuke_db->sql_query("SELECT time FROM ".$prefix."_session WHERE uname='$username'", true);
     $ctime = time();
     if (!empty($username)) {
         $uname = substr($username, 0,25);
-        if ($row = $db->sql_fetchrow($result)) {
-            $db->sql_query("UPDATE ".$prefix."_session SET uname='$username', time='$ctime', host_addr='$ip', guest='$guest' WHERE uname='$uname'");
+        if ($row = $nuke_db->sql_fetchrow($result)) {
+            $nuke_db->sql_query("UPDATE ".$prefix."_session SET uname='$username', time='$ctime', host_addr='$ip', guest='$guest' WHERE uname='$uname'");
         } else {
-            $db->sql_query("INSERT INTO ".$prefix."_session (uname, time, starttime, host_addr, guest) VALUES ('$uname', '$ctime', '$ctime', '$ip', '$guest')");
+            $nuke_db->sql_query("INSERT INTO ".$prefix."_session (uname, time, starttime, host_addr, guest) VALUES ('$uname', '$ctime', '$ctime', '$ip', '$guest')");
         }
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     $cookiedata = base64_encode("$uid:$username:$pass:$storynum:$umode:$uorder:$thold:$noscore:$ublockon:$theme:$commentmax");
     if ($ya_config['cookietimelife'] != '-') {
@@ -486,20 +486,20 @@ function UpdateCookie()
 // called by several files - so it makes sense to cache it (ReOrGaNiSaTiOn)
 function GetColorGroups($in_admin = false) 
 {
-    global $db, $cache;
+    global $nuke_db, $cache;
     static $ColorGroupsCache;
 
     if((($ColorGroupsCache = $cache->load('ColorGroups', 'config')) === false) || empty($ColorGroupsCache)) 
 	{
         $ColorGroupsCache = '';
-        $result = $db->sql_query("SELECT `group_id`, `group_name`, `group_color`, `group_weight` FROM `".AUC_TABLE."` WHERE `group_id`>'0' ORDER BY `group_weight` ASC");
+        $result = $nuke_db->sql_query("SELECT `group_id`, `group_name`, `group_color`, `group_weight` FROM `".NUKE_AUC_TABLE."` WHERE `group_id`>'0' ORDER BY `group_weight` ASC");
         $back = ($in_admin) ? '&amp;menu=1' : '';
     
-	    while (list($group_id, $group_name, $group_color, $group_weight) = $db->sql_fetchrow($result)) 
+	    while (list($group_id, $group_name, $group_color, $group_weight) = $nuke_db->sql_fetchrow($result)) 
 		{
             $ColorGroupsCache .= '&nbsp;[&nbsp;<strong><a href="'. append_sid('auc_listing.php?id='. $group_id.$back) .'"><span class="genmed" style="color:#'. $group_color .';">'. $group_name .'</span></a></strong>&nbsp;]&nbsp;';
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         $cache->save('ColorGroups', 'config', $ColorGroupsCache);
     }
     return $ColorGroupsCache;
@@ -755,10 +755,10 @@ function group_selectbox($fieldname, $current=0, $mvanon=false, $all=true)
     static $groups;
     if (!isset($groups)):
 
-        global $db, $prefix, $customlang;
+        global $nuke_db, $prefix, $customlang;
         
-        $result = $db->sql_query('SELECT `group_id`, `group_name` FROM `'.GROUPS_TABLE.'` WHERE `group_single_user` = 0', true);
-        while (list($group_ID, $group_name) = $db->sql_fetchrow($result)):
+        $result = $nuke_db->sql_query('SELECT `group_id`, `group_name` FROM `'.NUKE_GROUPS_TABLE.'` WHERE `group_single_user` = 0', true);
+        while (list($group_ID, $group_name) = $nuke_db->sql_fetchrow($result)):
             $forum_groups[($group_ID+3)] = $group_name;
         endwhile;
 
@@ -892,8 +892,8 @@ function confirm_msg($link, $msg) {
 // DisplayError function by Technocrat
 function DisplayError($msg, $special=0) 
 {
-    if (defined('FORUM_ADMIN') || defined('IN_PHPBB') && function_exists('message_die') && !$special) {
-        message_die(GENERAL_ERROR, $msg);
+    if (defined('FORUM_ADMIN') || defined('IN_PHPBB2') && function_exists('message_die') && !$special) {
+        message_die(NUKE_GENERAL_ERROR, $msg);
     } else {
         include_once(NUKE_BASE_DIR.'header.php');
         if(defined('ADMIN_FILE') && is_admin() && !$special) {
@@ -1100,12 +1100,12 @@ function compare_ips($username)
 
 function GetRank($user_id) 
 {
-    global $db, $prefix, $user_prefix;
+    global $nuke_db, $prefix, $nuke_user_prefix;
     static $rankData = array();
     if(is_array($rankData[$user_id])) { return $rankData[$user_id]; }
 
-    list($user_rank, $user_posts) = $db->sql_ufetchrow("SELECT user_rank, user_posts FROM " . $user_prefix . "_users WHERE user_id = '" . $user_id . "'", SQL_NUM);
-    $ranks = $db->sql_ufetchrowset("SELECT * FROM " . $prefix . "_bbranks ORDER BY rank_special, rank_min", SQL_ASSOC);
+    list($user_rank, $user_posts) = $nuke_db->sql_ufetchrow("SELECT user_rank, user_posts FROM " . $nuke_user_prefix . "_users WHERE user_id = '" . $user_id . "'", SQL_NUM);
+    $ranks = $nuke_db->sql_ufetchrowset("SELECT * FROM " . $prefix . "_bbranks ORDER BY rank_special, rank_min", SQL_ASSOC);
 
     $rankData[$user_id] = array();
     for($i=0, $maxi=count($ranks);$i<$maxi;$i++) {
@@ -1125,12 +1125,12 @@ function GetRank($user_id)
     return array();
 }
 
-// redirect function by Quake
-function redirect($url, $refresh = 0) 
+// nuke_redirect function by Quake
+function nuke_redirect($url, $refresh = 0) 
 {
-    global $db, $cache;
+    global $nuke_db, $cache;
     if(is_object($cache)) $cache->resync();
-    if(is_object($db)) $db->sql_close();
+    if(is_object($nuke_db)) $nuke_db->sql_close();
     $type = preg_match('/IIS|Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ? 'Refresh: '.$refresh.'; URL=' : 'Location: ';
 	$url = str_replace('&amp;', "&", $url);
     header($type . $url);
@@ -1156,7 +1156,7 @@ function evo_img_tag_to_resize($text)
 
 function referer() 
 {
-    global $db, $prefix,  $nukeurl, $httpref, $httprefmax, $_GETVAR;
+    global $nuke_db, $prefix,  $nukeurl, $httpref, $httprefmax, $_GETVAR;
 
     if ($httpref == 1 && isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
         $referer = check_html($_SERVER['HTTP_REFERER'], 'nohtml');
@@ -1170,12 +1170,12 @@ function referer()
         if($referer_request == '/GET/') $referer_request = '/';
         $referer_request = $_GETVAR->fixQuotes($referer_request);
         if (stristr($referer, '://') && !stristr($referer, $nukeurl) && !stristr($referer, $no_www)) {
-            if (!$db->sql_query('UPDATE IGNORE '.$prefix."_referer SET lasttime=".time().", link='".$referer_request."' WHERE url='".$referer."'") || !$db->sql_affectedrows()) {
-                $db->sql_query('INSERT IGNORE INTO '.$prefix."_referer VALUES ('".$referer."', ".time().",'".$referer_request."')");
+            if (!$nuke_db->sql_query('UPDATE IGNORE '.$prefix."_referer SET lasttime=".time().", link='".$referer_request."' WHERE url='".$referer."'") || !$nuke_db->sql_affectedrows()) {
+                $nuke_db->sql_query('INSERT IGNORE INTO '.$prefix."_referer VALUES ('".$referer."', ".time().",'".$referer_request."')");
             }
-            list($numrows) = $db->sql_ufetchrow('SELECT COUNT(*) FROM '.$prefix.'_referer');
+            list($numrows) = $nuke_db->sql_ufetchrow('SELECT COUNT(*) FROM '.$prefix.'_referer');
             if ($numrows >= $httprefmax) {
-                $db->sql_query('DELETE FROM '.$prefix.'_referer ORDER BY lasttime LIMIT '.($numrows-($httprefmax/2)));
+                $nuke_db->sql_query('DELETE FROM '.$prefix.'_referer ORDER BY lasttime LIMIT '.($numrows-($httprefmax/2)));
             }
         }
     }
@@ -1197,25 +1197,25 @@ function ord_crypt_decode($data)
 
 function add_group_attributes($user_id, $group_id) 
 {
-    global $prefix, $db, $board_config, $cache;
+    global $prefix, $nuke_db, $board_config, $cache;
 
     if ($user_id <= 2) return true;
 
     $sql_color = "SELECT `group_color` FROM `" . $prefix . "_bbgroups` WHERE `group_id` = '$group_id'";
-    $result_color = $db->sql_query($sql_color);
-    $row_color = $db->sql_fetchrow($result_color);
-    $db->sql_freeresult($result_color);
+    $result_color = $nuke_db->sql_query($sql_color);
+    $row_color = $nuke_db->sql_fetchrow($result_color);
+    $nuke_db->sql_freeresult($result_color);
     $color = $row_color['group_color'];
     if (!empty($color)) {
         $sql_color = "SELECT `group_color`, `group_id` FROM `" . $prefix . "_bbadvanced_username_color` WHERE `group_id` = '$color'";
-        $result_color = $db->sql_query($sql_color);
-        $row_color = $db->sql_fetchrow($result_color);
-        $db->sql_freeresult($result_color);
+        $result_color = $nuke_db->sql_query($sql_color);
+        $row_color = $nuke_db->sql_fetchrow($result_color);
+        $nuke_db->sql_freeresult($result_color);
     }
     $sql_rank = "SELECT `group_rank` FROM `" . $prefix . "_bbgroups` WHERE `group_id` = '$group_id'";
-    $result_rank = $db->sql_query($sql_rank);
-    $row_rank = $db->sql_fetchrow($result_rank);
-    $db->sql_freeresult($result_rank);
+    $result_rank = $nuke_db->sql_query($sql_rank);
+    $row_rank = $nuke_db->sql_fetchrow($result_rank);
+    $nuke_db->sql_freeresult($result_rank);
     if(isset($row_rank['group_rank']) && !isset($row_color['group_color'])) {
         $sql = "`user_rank` = '".$row_rank['group_rank']."'";
     }elseif(isset($row_color['group_color']) && !isset($row_rank['group_rank'])) {
@@ -1233,7 +1233,7 @@ function add_group_attributes($user_id, $group_id)
         $sql = "UPDATE `" . $prefix . "_users`
             SET " . $sql . "
             WHERE user_id = " . $user_id;
-        if ( !$db->sql_query($sql) )
+        if ( !$nuke_db->sql_query($sql) )
         {
             return false;
         }
@@ -1250,11 +1250,11 @@ function add_group_attributes($user_id, $group_id)
 
 function remove_group_attributes($user_id, $group_id) 
 {
-    global $prefix, $db, $board_config, $cache;
+    global $prefix, $nuke_db, $board_config, $cache;
     if (empty($user_id) && !empty($group_id) && $group_id != 0) {
         $sql = "SELECT `user_id` FROM `".$prefix."_bbuser_group` WHERE `group_id`=".$group_id;
-        $result = $db->sql_query($sql);
-        while ($row = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query($sql);
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             remove_group_attributes($row['user_id'], '');
         }
         $cache->delete('UserColors', 'config');
@@ -1264,7 +1264,7 @@ function remove_group_attributes($user_id, $group_id)
                 `user_color_gi`  = '',
                 `user_rank` = 0
                 WHERE `user_id` = ".$user_id;
-        $db->sql_query($sql);
+        $nuke_db->sql_query($sql);
     }
 
 }

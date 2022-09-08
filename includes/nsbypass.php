@@ -5,7 +5,7 @@
 /* By: NukeScripts Network (webmaster@nukescripts.net)  */
 /* http://nukescripts.86it.us                           */
 /* Copyright © 2000-2007 by NukeScripts Network         */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 error_reporting(E_ALL^E_NOTICE);
@@ -13,9 +13,9 @@ error_reporting(E_ALL^E_NOTICE);
 chdir("../");
 @require_once("mainfile.php");
 $tid = intval($tid);
-$tum = $db->sql_numrows($db->sql_query("SELECT * FROM ".$prefix."_nsnst_tracked_ips WHERE `tid`='$tid'"));
+$tum = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$prefix."_nsnst_tracked_ips WHERE `tid`='$tid'"));
 if(is_admin() AND $tum > 0) {
-  $row = $db->sql_fetchrow($db->sql_query("SELECT * FROM ".$prefix."_nsnst_tracked_ips WHERE `tid`='$tid'"));
+  $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM ".$prefix."_nsnst_tracked_ips WHERE `tid`='$tid'"));
   $row['refered_from'] = html_entity_decode($row['refered_from'], ENT_QUOTES);
   header("Location: ".$row['refered_from']);
 } else {

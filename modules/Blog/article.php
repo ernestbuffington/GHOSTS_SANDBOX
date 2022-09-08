@@ -49,10 +49,10 @@ else
 $sid = ""; 
 
 if (stristr($_SERVER['REQUEST_URI'],"mainfile")) 
-redirect("modules.php?name=$module_name&file=article&sid=$sid");
+nuke_redirect("modules.php?name=$module_name&file=article&sid=$sid");
 else
 if (empty($sid) && !isset($tid)) 
-redirect("index.php");
+nuke_redirect("index.php");
 
 if(is_user()) 
 {
@@ -65,7 +65,7 @@ if(is_user())
 	if(!isset($thold)) 
 	$thold = $userinfo['thold']; 
     
-	$db->sql_query("UPDATE ".$user_prefix."_users SET umode='$mode', uorder='$order', thold='$thold' where user_id=".intval($cookie[0]));
+	$nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET umode='$mode', uorder='$order', thold='$thold' where user_id=".intval($cookie[0]));
 }
 
 if ($op == "Reply") 
@@ -81,18 +81,18 @@ if ($op == "Reply")
 	if(isset($thold)) 
 	$display .= "&thold=".$thold; 
     
-	redirect("modules.php?name=$module_name&file=comments&op=Reply&pid=0&sid=".$sid.$display);
+	nuke_redirect("modules.php?name=$module_name&file=comments&op=Reply&pid=0&sid=".$sid.$display);
 }
 
-$result = $db->sql_query("select catid, aid, datePublished, dateModified, title, counter, hometext, bodytext, topic, informant, notes, acomm, haspoll, pollID, score, ratings, ticon FROM ".$prefix."_stories where sid='$sid'");
+$result = $nuke_db->sql_query("select catid, aid, datePublished, dateModified, title, counter, hometext, bodytext, topic, informant, notes, acomm, haspoll, pollID, score, ratings, ticon FROM ".$prefix."_stories where sid='$sid'");
 
-$numrows = $db->sql_numrows($result);
+$numrows = $nuke_db->sql_numrows($result);
 
 if (!empty($sid) && $numrows != 1) 
-redirect("index.php");
+nuke_redirect("index.php");
 
-$row = $db->sql_fetchrow($result);
-$db->sql_freeresult($result);
+$row = $nuke_db->sql_fetchrow($result);
+$nuke_db->sql_freeresult($result);
 $aaid = stripslashes($row['aid']);
 $catid = intval($row["catid"]);
 
@@ -124,9 +124,9 @@ $ratings = intval($row["ratings"]);
 $topic_icon = intval($row["ticon"]);
 
 if (empty($aaid)) 
-redirect("modules.php?name=".$module_name);
+nuke_redirect("modules.php?name=".$module_name);
 
-$db->sql_query("UPDATE ".$prefix."_stories SET counter=counter+1 where sid='$sid'");
+$nuke_db->sql_query("UPDATE ".$prefix."_stories SET counter=counter+1 where sid='$sid'");
 
 $artpage = 1;
 
@@ -160,7 +160,7 @@ $informant = $anonymous;
 getTopics($sid);
 
 if ($catid != 0) {
-    $row2 = $db->sql_fetchrow($db->sql_query("select title from ".$prefix."_stories_cat where catid='$catid'"));
+    $row2 = $nuke_db->sql_fetchrow($nuke_db->sql_query("select title from ".$prefix."_stories_cat where catid='$catid'"));
     $title1 = stripslashes(check_html($row2["title"], "nohtml"));
     $title = "<a href=\"modules.php?name=$module_name&amp;file=categories&amp;op=newindex&amp;catid=$catid\"><font class=\"storycat\">$title1</font></a>: $title";
 }
@@ -191,7 +191,7 @@ if ($haspoll == 1)
     $boxContent = "<form action=\"modules.php?name=Surveys\" method=\"post\">";
     $boxContent .= "<input type=\"hidden\" name=\"pollID\" value=\"".$pollID."\">";
     $boxContent .= "<input type=\"hidden\" name=\"forwarder\" value=\"".$url."\">";
-    $row3 = $db->sql_fetchrow($db->sql_query("SELECT pollTitle, voters FROM ".$prefix."_poll_desc WHERE pollID='$pollID'"));
+    $row3 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT pollTitle, voters FROM ".$prefix."_poll_desc WHERE pollID='$pollID'"));
     $pollTitle = stripslashes(check_html($row3["pollTitle"], "nohtml"));
     $voters = $row3["voters"];
     $boxTitle = _ARTICLEPOLL;
@@ -200,10 +200,10 @@ if ($haspoll == 1)
 
     for($i = 1; $i <= 12; $i++) 
 	{
-      $result4 = $db->sql_query("SELECT pollID, optionText, optionCount, voteID FROM ".$prefix."_poll_data WHERE (pollID='$pollID') AND (voteID='$i')");
-      $row4 = $db->sql_fetchrow($result4);
-      $numrows = $db->sql_numrows($result4);
-      $db->sql_freeresult($result4);
+      $result4 = $nuke_db->sql_query("SELECT pollID, optionText, optionCount, voteID FROM ".$prefix."_poll_data WHERE (pollID='$pollID') AND (voteID='$i')");
+      $row4 = $nuke_db->sql_fetchrow($result4);
+      $numrows = $nuke_db->sql_numrows($result4);
+      $nuke_db->sql_freeresult($result4);
       
 	  if($numrows != 0) 
 	  {
@@ -217,7 +217,7 @@ if ($haspoll == 1)
     
 	for($i = 0; $i < 12; $i++) 
 	{
-      $row5 = $db->sql_fetchrow($db->sql_query("SELECT optionCount FROM ".$prefix."_poll_data WHERE (pollID='$pollID') AND (voteID='$i')"));
+      $row5 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT optionCount FROM ".$prefix."_poll_data WHERE (pollID='$pollID') AND (voteID='$i')"));
       $optionCount = $row5["optionCount"];
       $sum = (int)$sum+$optionCount;
     }
@@ -225,9 +225,9 @@ if ($haspoll == 1)
 
     if ($pollcomm) 
 	{
-      $result6 = $db->sql_query("select * from ".$prefix."_pollcomments where pollID='$pollID'");
-      $numcom = $db->sql_numrows($result6);
-      $db->sql_freeresult($result6);
+      $result6 = $nuke_db->sql_query("select * from ".$prefix."_pollcomments where pollID='$pollID'");
+      $numcom = $nuke_db->sql_numrows($result6);
+      $nuke_db->sql_freeresult($result6);
       $boxContent .= "<br />"._VOTES.": <strong>$sum</strong><br />"._PCOMMENTS." <strong>$numcom</strong>\n\n";
     } 
 	else 
@@ -241,16 +241,16 @@ if ($haspoll == 1)
 $boxtitle = ""._RELATED."";
 $boxstuff = "<span class=\"content\"><br />";
 
-$url_result = $db->sql_query("select name, url from ".$prefix."_related where tid='$topic'");
+$url_result = $nuke_db->sql_query("select name, url from ".$prefix."_related where tid='$topic'");
 
-while ($row_eight = $db->sql_fetchrow($url_result)) 
+while ($row_eight = $nuke_db->sql_fetchrow($url_result)) 
 {
     $name = stripslashes($row_eight["name"]);
     $url = stripslashes($row_eight["url"]);
     $boxstuff .= "<strong><big>&middot;</big></strong>&nbsp;<a href=\"".$url."\" target=\"new\">".$name."</a><br />\n";
 }
 
-$db->sql_freeresult($url_result);
+$nuke_db->sql_freeresult($url_result);
 
 $boxstuff .= "<hr noshade width=\"95%\" size=\"1\"><div align=\"center\"><strong>"._MOREABOUT."<strong><br /><a href=\"modules.php?name=Search&amp;topic=$topic\">[ $topictext ]</a><br />\n";
 $boxstuff .= "<hr noshade width=\"95%\" size=\"1\">"._NEWSBY."<br /><a href=\"modules.php?name=Search&amp;author=$aaid\">[ $aaid ]</a></div>\n";
@@ -264,7 +264,7 @@ $querylang = "AND (alanguage='$currentlang' OR alanguage='')"; /* the OR is need
 else 
 $querylang = "";
 
-$row9 = $db->sql_fetchrow($db->sql_query("select sid, title from ".$prefix."_stories where topic='$topic' $querylang order by counter desc limit 0,1"));
+$row9 = $nuke_db->sql_fetchrow($nuke_db->sql_query("select sid, title from ".$prefix."_stories where topic='$topic' $querylang order by counter desc limit 0,1"));
 $topstory = intval($row9["sid"]);
 $ttitle = stripslashes(check_html($row9["title"], "nohtml")); 
 

@@ -10,7 +10,7 @@
     Notes         : N/A
 ************************************************************************/
 
-define('_USERS_TABLE', $user_prefix.'_users');
+define('_USERS_TABLE', $nuke_user_prefix.'_users');
 define('_IMAGE_REPOSITORY_SETTINGS', $prefix.'_image_repository_settings');
 define('_IMAGE_REPOSITORY_UPLOADS', $prefix.'_image_repository_uploads');
 define('_IMAGE_REPOSITORY_USERS', $prefix.'_image_repository_users');
@@ -38,9 +38,9 @@ define('_IREPOSITORY_THUMBWIDTH','240');
 // define('_ENABLE_LYTEBOX', true);
 // define('_ENABLE_HIGHSLIDE', true);
 
-$imagecount = $db->sql_numrows($db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$userinfo['user_id']."'"));
-$mysettings	= $db->sql_fetchrow($db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$userinfo['user_id']."'"));
-$myimages	= $db->sql_numrows($db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$userinfo['user_id']."'"));
+$imagecount = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$userinfo['user_id']."'"));
+$mysettings	= $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$userinfo['user_id']."'"));
+$myimages	= $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$userinfo['user_id']."'"));
 $quotainfo 	= _quota_percentages($userinfo['user_id']);
 
 
@@ -152,25 +152,25 @@ function formatTimestamp_to_date($format, $gmepoch, $tz)
 
 function image_repo_settings_variables()
 {
-	global $db, $module_name, $cache;
+	global $nuke_db, $module_name, $cache;
 	static $settings;
 	
    	if(isset($settings) && is_array($settings)) 
 	{ 
 		return $settings; 
 	}
-	$result = $db->sql_query('SELECT `config_value`, `config_name` FROM `'._IMAGE_REPOSITORY_SETTINGS.'`');
-	while ($row = $db->sql_fetchrow($result)) 
+	$result = $nuke_db->sql_query('SELECT `config_value`, `config_name` FROM `'._IMAGE_REPOSITORY_SETTINGS.'`');
+	while ($row = $nuke_db->sql_fetchrow($result)) 
 	{
 		$settings[$row['config_name']] = $row['config_value'];
 	}
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
    	return $settings;
 }
 
 function image_repo_users_preferences()
 {
-	global $db, $module_name, $userinfo, $settings;
+	global $nuke_db, $module_name, $userinfo, $settings;
 	$create_directories[] = _IREPOSITORY_DIR;
 	$create_directories[] = _IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER;
 	$create_directories[] = _IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER_THUMBS;
@@ -179,13 +179,13 @@ function image_repo_users_preferences()
 		@mkdir($directory,0755);
 		@copy('images/index.html', $directory.'/index.html');
 	}
-	$checktable = $db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$userinfo['user_id']."'");
-	$user_exists = $db->sql_numrows($checktable);
+	$checktable = $nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$userinfo['user_id']."'");
+	$user_exists = $nuke_db->sql_numrows($checktable);
 	if($user_exists == 0)
 	{
 		if($userinfo['user_id'] > 1)
 		{
-			$db->sql_query("INSERT INTO `"._IMAGE_REPOSITORY_USERS."` (`uid`, `background_color`, `border_color`, `folder`, `percent_color`, `quota`, `quota_request`) VALUES (".$userinfo['user_id'].", 'white', 'black', '"._IREPOSITORY_USER_FOLDER."', 'darkorchid', '".$settings['quota']."', 0)");
+			$nuke_db->sql_query("INSERT INTO `"._IMAGE_REPOSITORY_USERS."` (`uid`, `background_color`, `border_color`, `folder`, `percent_color`, `quota`, `quota_request`) VALUES (".$userinfo['user_id'].", 'white', 'black', '"._IREPOSITORY_USER_FOLDER."', 'darkorchid', '".$settings['quota']."', 0)");
 		}
 	}
 }
@@ -338,7 +338,7 @@ function tablecss($width=FALSE,$align=FALSE,$class=FALSE,$colspan=FALSE,$text_al
 
 function _alphabetlist()
 {
-	global $db, $admin_file, $module_name;	
+	global $nuke_db, $admin_file, $module_name;	
 	$alpha_range = array();
 	$alpha_letters = array();
 	$alpha_letters = range('A','Z');
@@ -352,8 +352,8 @@ function _alphabetlist()
 		if($alpha_range[$i] <> 'All') {
 			$alpha_where = ( $alpha_range[$i] == '#' ) ? " WHERE u.user_id = s.uid AND u.`username` NOT RLIKE '^[A-Z]' AND u.`user_id` > 1" : " WHERE u.user_id = s.uid AND u.`username` LIKE '".$alpha_range[$i]."%' AND u.`user_id` > 1";
 		}
-		$result1     = $db->sql_query("SELECT * FROM ("._IMAGE_REPOSITORY_USERS." s, "._USERS_TABLE." u)".$alpha_where." ORDER BY u.`username` ASC");
-		$total       = $db->sql_numrows($resultl);
+		$result1     = $nuke_db->sql_query("SELECT * FROM ("._IMAGE_REPOSITORY_USERS." s, "._USERS_TABLE." u)".$alpha_where." ORDER BY u.`username` ASC");
+		$total       = $nuke_db->sql_numrows($resultl);
 		
 		if ($alpha_range[$i] != 'All') {
 			$temp = ($alpha_range[$i] != '#') ? strtolower($alpha_range[$i]) : 'num';
@@ -411,7 +411,7 @@ function _copyright_modal()
 	// echo '    <td'.tablecss(FALSE,'center','catBottom font-family',2).'>'.$lang_new[$module_name]['COPYRIGHT_INFORMATION'].'</td>'."\n";
 	// echo '  </tr>'."\n";
 	// echo '  </tr>'."\n".'<tr>'."\n";
-	// echo '	  <td'.tablecss(FALSE,'center','row1 font-family',2).'>'.$lang_new[$module_name]['MODULE_NAME'].' '.$lang_new[$module_name]['COPYRIGHT_FOR'].' '.((function_exists('redirect')) ? $lang_new[$module_name]['COPYRIGHT_EVOLUTION_XTREME'] : $lang_new[$module_name]['COPYRIGHT_RAVEN_CMS']).'</td>'."\n";
+	// echo '	  <td'.tablecss(FALSE,'center','row1 font-family',2).'>'.$lang_new[$module_name]['MODULE_NAME'].' '.$lang_new[$module_name]['COPYRIGHT_FOR'].' '.((function_exists('nuke_redirect')) ? $lang_new[$module_name]['COPYRIGHT_EVOLUTION_XTREME'] : $lang_new[$module_name]['COPYRIGHT_RAVEN_CMS']).'</td>'."\n";
 	// echo '  </tr>'."\n".'<tr>'."\n";
 	// echo '    <td'.tablecss(FALSE,'center','catBottom',2).'>&nbsp;</td>'."\n";
 	// echo '  </tr>'."\n".'<tr>'."\n";
@@ -559,9 +559,9 @@ function _kill_function()
 
 function _quota_percentages($user=FALSE)
 {
-	global $db, $userinfo;		
-	list ($quota)      = $db->sql_fetchrow($db->sql_query("SELECT `quota` FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$user."'"));
-	list ($total_size) = $db->sql_fetchrow($db->sql_query("SELECT SUM(size) as total_size FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$user."'"));	
+	global $nuke_db, $userinfo;		
+	list ($quota)      = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `quota` FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$user."'"));
+	list ($total_size) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT SUM(size) as total_size FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$user."'"));	
 	if($total_size > 0) {
 		$PercentageResult = ($total_size*100)/$quota;
 		$PercentageResult = round($PercentageResult,1);
@@ -588,12 +588,12 @@ function _random_string($length=10)
     return $randomString;
 }
 
-function _redirect($redirect)
+function _nuke_redirect($nuke_redirect)
 {
-	if(function_exists('redirect'))
-		redirect($redirect);
+	if(function_exists('nuke_redirect'))
+		nuke_redirect($nuke_redirect);
 	else
-		Header('Location:'.$redirect);
+		Header('Location:'.$nuke_redirect);
 }
 
 function _string_to_upper($string)
@@ -604,8 +604,8 @@ function _string_to_upper($string)
 
 function _submitter($uid)
 {
-	global $db;
-	list($username) = $db->sql_fetchrow($db->sql_query("SELECT `username` FROM `"._USERS_TABLE."` WHERE `user_id`='".$uid."'"));
+	global $nuke_db;
+	list($username) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `username` FROM `"._USERS_TABLE."` WHERE `user_id`='".$uid."'"));
 	return (function_exists('UsernameColor')) ? UsernameColor($username) : $username;
 }
 

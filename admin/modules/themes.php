@@ -22,7 +22,7 @@
  ************************************************************************/
 if (!defined('ADMIN_FILE')) die ("Illegal File Access");
 
-global $prefix, $db;
+global $prefix, $nuke_db;
 
 require_once(NUKE_CLASSES_DIR.'class.paginator.php');
 
@@ -69,7 +69,7 @@ function ThemeError($error_message){
 }
 
 function InstallTheme(){
-	global $admin_file, $db, $prefix, $module_name, $userinfo, $HTTP_POST_FILES, $HTTP_POST_VARS;
+	global $admin_file, $nuke_db, $prefix, $module_name, $userinfo, $HTTP_POST_FILES, $HTTP_POST_VARS;
 	
 	$filename   = $HTTP_POST_FILES['file']['name'];
 	$path_parts = pathinfo($filename);
@@ -109,7 +109,7 @@ function InstallTheme(){
 					if ($valid == true){
 						@unlink('themes/'.$HTTP_POST_FILES['file']['name']);			
 						$theme = substr($filename, 0, -4);
-						redirect($admin_file.'.php?op=theme_quickinstall&amp;theme='.$theme);
+						nuke_redirect($admin_file.'.php?op=theme_quickinstall&amp;theme='.$theme);
 					}		
 				}
 			} else {
@@ -125,7 +125,7 @@ function InstallTheme(){
 
 function downloadTheme($theme)
 {
-	global $admin_file, $aid, $db, $prefix, $module_name, $userinfo, $admin, $directory_mode;
+	global $admin_file, $aid, $nuke_db, $prefix, $module_name, $userinfo, $admin, $directory_mode;
 	
 	function RandomNumber($length=10){
 		$random = "";
@@ -159,9 +159,9 @@ function downloadTheme($theme)
 		}
 		
 		//  This is where the code goes to download the archive.
-		redirect('includes/saved_themes/'.$theme.'-'.$random.'.zip');
+		nuke_redirect('includes/saved_themes/'.$theme.'-'.$random.'.zip');
 	} else {
-		redirect($admin_file.'.php?op=themes');
+		nuke_redirect($admin_file.'.php?op=themes');
 	}
 }
 
@@ -170,17 +170,17 @@ function theme_footer(){
 }
 
 function display_main(){
-    global $admin_file, $aid, $db, $prefix, $bgcolor2, $bgcolor1, $bgcolor3;
+    global $admin_file, $aid, $nuke_db, $prefix, $bgcolor2, $bgcolor1, $bgcolor3;
 	
     $installed_themes = get_themes('all');
     $uninstalled_themes = get_themes('uninstalled');
 
     function make_a_row($theme){
-        global $admin_file, $bgcolor2, $bgcolor1, $bgcolor3, $db, $prefix, $user_prefix, $admin;
+        global $admin_file, $bgcolor2, $bgcolor1, $bgcolor3, $nuke_db, $prefix, $nuke_user_prefix, $admin;
 
         if (preg_match('/'._THEMES_THEME_MISSING.'/i',  ThemeGetStatus($theme['theme_name'], $theme['active']))){
-            if ($db->sql_query("DELETE FROM " . $prefix . "_themes WHERE theme_name = '".$theme['theme_name']."'")){
-                $db->sql_query("UPDATE " . $user_prefix . "_users SET theme = '" . get_default() . "' WHERE theme = '".$theme['theme_name']."'");
+            if ($nuke_db->sql_query("DELETE FROM " . $prefix . "_themes WHERE theme_name = '".$theme['theme_name']."'")){
+                $nuke_db->sql_query("UPDATE " . $nuke_user_prefix . "_users SET theme = '" . get_default() . "' WHERE theme = '".$theme['theme_name']."'");
             }
 			
             return;
@@ -307,9 +307,9 @@ function display_main(){
 }
 
 function theme_edit($theme_name){
-    global $prefix, $db, $admin_file, $admlang;
+    global $prefix, $nuke_db, $admin_file, $admlang;
 	
-    $theme_info = $db->sql_ufetchrow("SELECT * FROM " . $prefix . "_themes WHERE theme_name = '$theme_name'");
+    $theme_info = $nuke_db->sql_ufetchrow("SELECT * FROM " . $prefix . "_themes WHERE theme_name = '$theme_name'");
 	
 	$selected1 = ($theme_info['permissions'] == 1) ? ' selected="selected"' : "";
     $selected2 = ($theme_info['permissions'] == 2) ? ' selected="selected"' : "";
@@ -380,9 +380,9 @@ function theme_edit($theme_name){
     echo "        <span class='tiny'>"._WHATGRDESC."</span><br />\n";
     echo "        <select name='groups[]' multiple='multiple' size='5'>\n";
     $ingroups = explode("-",$theme_info['groups']);
-    $groupsResult = $db->sql_query("SELECT group_id, group_name FROM ".$prefix."_bbgroups WHERE group_description <> 'Personal User'");
+    $groupsResult = $nuke_db->sql_query("SELECT group_id, group_name FROM ".$prefix."_bbgroups WHERE group_description <> 'Personal User'");
 	
-    while(list($gid, $gname) = $db->sql_fetchrow($groupsResult)){
+    while(list($gid, $gname) = $nuke_db->sql_fetchrow($groupsResult)){
         $sel = in_array($gid,$ingroups) ? ' selected="selected"' : "";
         echo "            <option value='$gid'$sel>$gname</option>\n";
     }
@@ -442,7 +442,7 @@ function theme_edit($theme_name){
 }
 
 function theme_install($theme_name){
-    global $prefix, $db, $admin_file, $admlang;
+    global $prefix, $nuke_db, $admin_file, $admlang;
 
     OpenTable();
 	
@@ -477,9 +477,9 @@ function theme_install($theme_name){
 	echo "        <span class='tiny'>"._WHATGRDESC."</span><br />\n";
 	echo "        <select name='groups[]' multiple='multiple' size='5'>";
 	$ingroups = explode("-",$theme_info['groups']);
-	$groupsResult = $db->sql_query("select group_id, group_name from ".$prefix."_bbgroups WHERE group_description <> 'Personal User'");
+	$groupsResult = $nuke_db->sql_query("select group_id, group_name from ".$prefix."_bbgroups WHERE group_description <> 'Personal User'");
 	
-	while(list($gid, $gname) = $db->sql_fetchrow($groupsResult)){
+	while(list($gid, $gname) = $nuke_db->sql_fetchrow($groupsResult)){
 		$sel = in_array($gid,$ingroups) ? " selected='selected'" : "";
 		echo "            <option value='$gid'$sel>$gname</option>";
 	}
@@ -536,7 +536,7 @@ function theme_install($theme_name){
 }
 
 function update_theme($post){
-    global $db, $prefix, $user_prefix, $admin_file, $cache;
+    global $nuke_db, $prefix, $nuke_user_prefix, $admin_file, $cache;
 	
     $error = false;
 	
@@ -567,12 +567,12 @@ function update_theme($post){
     $sql[] = "UPDATE " . $prefix . "_themes SET theme_info = '" . $theme_info . "' WHERE theme_name = '" . $post['theme_name'] . "'";
 	
     if (($post['permissions'] > 1) || ($post['active'] != 1)){
-        $sql[] = "UPDATE " . $user_prefix . "_users SET theme = '" . get_default() . "' WHERE theme = '" . $post['theme_name'] . "'";
+        $sql[] = "UPDATE " . $nuke_user_prefix . "_users SET theme = '" . get_default() . "' WHERE theme = '" . $post['theme_name'] . "'";
     }
 	
     $sql[] = "UPDATE " . $prefix . "_themes SET groups = '" . $post['groups'] . "' WHERE theme_name = '" . $post['theme_name'] . "'";
     foreach($sql as $query){
-        if (!$db->sql_query($query)){
+        if (!$nuke_db->sql_query($query)){
             $error = true;
         }
     }
@@ -601,7 +601,7 @@ function update_theme($post){
 }
 
 function install_save($post){
-    global $db, $prefix, $admin_file;
+    global $nuke_db, $prefix, $admin_file;
 	
     $post['groups'] = (is_array($post['groups'])) ? implode('-', $post['groups']) : '';
 
@@ -624,7 +624,7 @@ function install_save($post){
 
     $sql = "INSERT INTO " . $prefix . "_themes VALUES('" . $post['theme_name'] . "', '" . $post['groups'] . "', '" . $post['permissions'] . "', '" . $post['custom_name'] . "', '" . $post['active'] . "', '" . $theme_info . "')";
 	
-    if ($db->sql_query($sql)){
+    if ($nuke_db->sql_query($sql)){
         OpenTable();
 		
 		echo "<div align='center'>\n";
@@ -646,7 +646,7 @@ function install_save($post){
 }
 
 function uninstall_theme($theme){
-    global $db, $prefix, $user_prefix, $admin_file, $HTTP_POST_VARS;
+    global $nuke_db, $prefix, $nuke_user_prefix, $admin_file, $HTTP_POST_VARS;
 
     function uninstall_success(){
         global $admin_file;
@@ -694,8 +694,8 @@ function uninstall_theme($theme){
 		return false;
     } else {
         if (!is_default($theme)){
-            if ($db->sql_query("DELETE FROM " . $prefix . "_themes WHERE theme_name = '$theme'")){
-                $db->sql_query("UPDATE " . $user_prefix . "_users SET theme = '" . get_default() . "' WHERE theme = '$theme'");
+            if ($nuke_db->sql_query("DELETE FROM " . $prefix . "_themes WHERE theme_name = '$theme'")){
+                $nuke_db->sql_query("UPDATE " . $nuke_user_prefix . "_users SET theme = '" . get_default() . "' WHERE theme = '$theme'");
                 uninstall_success();
 				return true;
             }
@@ -710,11 +710,11 @@ function uninstall_theme($theme){
 }
 
 function theme_makedefault($theme){
-    global $db, $prefix, $admin_file, $cache;
+    global $nuke_db, $prefix, $admin_file, $cache;
 	
     if (!theme_installed($theme)){
         $sql = "INSERT INTO " . $prefix . "_themes VALUES('$theme', '', '1', '$theme', '1', '')";
-        $db->sql_query($sql);
+        $nuke_db->sql_query($sql);
     }
 	
     $sql = array();
@@ -723,15 +723,15 @@ function theme_makedefault($theme){
     $sql[] = "UPDATE " . $prefix . "_themes SET permissions = '1' WHERE theme_name = '$theme'";
 	
     foreach($sql as $query){
-        $db->sql_query($query);
+        $nuke_db->sql_query($query);
     }
 	
     $cache->delete('nukeconfig', 'config');
-    redirect($admin_file . '.php?op=themes');
+    nuke_redirect($admin_file . '.php?op=themes');
 }
 
 function theme_deactivate($theme){
-    global $db, $prefix, $user_prefix, $admin_file, $HTTP_POST_VARS;
+    global $nuke_db, $prefix, $nuke_user_prefix, $admin_file, $HTTP_POST_VARS;
 
     function deactivate_success(){
         global $admin_file;
@@ -778,8 +778,8 @@ function theme_deactivate($theme){
 		return false;
     } else {
         if (!is_default($theme)){
-            if ($db->sql_query("UPDATE " . $prefix . "_themes SET active='0' WHERE theme_name = '$theme'")){
-                if ($db->sql_query("UPDATE " . $user_prefix . "_users SET theme = '" . get_default() . "' WHERE theme = '$theme'")){
+            if ($nuke_db->sql_query("UPDATE " . $prefix . "_themes SET active='0' WHERE theme_name = '$theme'")){
+                if ($nuke_db->sql_query("UPDATE " . $nuke_user_prefix . "_users SET theme = '" . get_default() . "' WHERE theme = '$theme'")){
 					deactivate_success();
 					return true;
                 }
@@ -792,13 +792,13 @@ function theme_deactivate($theme){
 }
 
 function theme_options($mode, $post){
-    global $prefix, $db, $admin_file, $user_prefix, $admlang;
+    global $prefix, $nuke_db, $admin_file, $nuke_user_prefix, $admlang;
 	
     if (!$mode) $mode = 'main';
 	
     switch($mode){
         case 'main':
-            list($usrthemeselect) = $db->sql_fetchrow($db->sql_query("SELECT config_value FROM " . $prefix . "_cnbya_config WHERE config_name = 'allowusertheme'"));
+            list($usrthemeselect) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT config_value FROM " . $prefix . "_cnbya_config WHERE config_name = 'allowusertheme'"));
             $thmselect_selected_yes = ($usrthemeselect == 0) ? ' selected="selected"' : "";
             $thmselect_selected_no  = ($usrthemeselect == 1) ? ' selected="selected"' : "";
 			
@@ -830,7 +830,7 @@ function theme_options($mode, $post){
             CloseTable();
         break;
         case 'save':
-            $db->sql_query("UPDATE " . $prefix . "_cnbya_config SET config_value = '" . $post['allowusertheme'] . "' WHERE config_name = 'allowusertheme'");
+            $nuke_db->sql_query("UPDATE " . $prefix . "_cnbya_config SET config_value = '" . $post['allowusertheme'] . "' WHERE config_name = 'allowusertheme'");
 			
             OpenTable();
 			
@@ -845,7 +845,7 @@ function theme_options($mode, $post){
 }
 
 function theme_transfer(){
-    global $prefix, $db, $admin_file, $user_prefix, $HTTP_POST_VARS, $admlang;
+    global $prefix, $nuke_db, $admin_file, $nuke_user_prefix, $HTTP_POST_VARS, $admlang;
 	
     if (!$HTTP_POST_VARS['transfer']){
         $from_themes = get_themes('dir');
@@ -893,8 +893,8 @@ function theme_transfer(){
     } else {
         $where  = ($_POST['from'] == 'all') ? "WHERE user_id <> '1'" : "WHERE theme='" . $_POST['from'] . "' AND user_id <> '1'";
         $to     = ($_POST['to'] == 'default') ? "" : $_POST['to'];
-        $result = $db->sql_query("UPDATE " . $user_prefix . "_users SET theme = '" . $to . "' $where");
-        $count  = intval($db->sql_affectedrows($result));
+        $result = $nuke_db->sql_query("UPDATE " . $nuke_user_prefix . "_users SET theme = '" . $to . "' $where");
+        $count  = intval($nuke_db->sql_affectedrows($result));
 		
         OpenTable();
 		
@@ -908,7 +908,7 @@ function theme_transfer(){
 }
 
 function users_themes(){
-	global $db, $user_prefix, $admin_file, $HTTP_GET_VARS, $admlang;
+	global $nuke_db, $nuke_user_prefix, $admin_file, $HTTP_GET_VARS, $admlang;
 
     OpenTable();
 	
@@ -933,7 +933,7 @@ function users_themes(){
 /*****[BEGIN]******************************************
  [ Base:    Pagination System                  v1.0.0 ]
  ******************************************************/
-    $num_rows = $db->sql_numrows($db->sql_query("SELECT * FROM ".$user_prefix."_users"));
+    $num_rows = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users"));
     $pagination = new Paginator($HTTP_GET_VARS['page'],$num_rows);
     $pagination->set_Limit(15);
     $pagination->set_Links(3);
@@ -942,9 +942,9 @@ function users_themes(){
 /*****[END]********************************************
  [ Base:    Pagination System                  v1.0.0 ]
  ******************************************************/
-    $result = $db->sql_query("SELECT * FROM ".$user_prefix."_users WHERE user_id != '1' ORDER BY user_id LIMIT $limit1, $limit2");
+    $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE user_id != '1' ORDER BY user_id LIMIT $limit1, $limit2");
 	
-    while($row = $db->sql_fetchrow($result)){
+    while($row = $nuke_db->sql_fetchrow($result)){
         $user_id   = intval($row['user_id']);
         $username  = Fix_Quotes($row['username']);
         $useremail = Fix_Quotes($row['user_email']);
@@ -1027,16 +1027,16 @@ function users_themes(){
 }
 
 function theme_users_reset($user_id, $username, $theme){
-    global $db,$user_prefix, $admin_file;
+    global $nuke_db,$nuke_user_prefix, $admin_file;
 	
     $user_id = intval($user_id);
     $username = Fix_Quotes($username);
-    $result = $db->sql_query("UPDATE " . $user_prefix . "_users SET theme = '" . get_default() . "' WHERE user_id = '$user_id' AND username = '$username'");
-    redirect($admin_file . '.php?op=themes');
+    $result = $nuke_db->sql_query("UPDATE " . $nuke_user_prefix . "_users SET theme = '" . get_default() . "' WHERE user_id = '$user_id' AND username = '$username'");
+    nuke_redirect($admin_file . '.php?op=themes');
 }
 
 function theme_users_modify($user_id, $username, $theme){
-    global $db, $user_prefix, $admin_file, $HTTP_POST_VARS;
+    global $nuke_db, $nuke_user_prefix, $admin_file, $HTTP_POST_VARS;
 	
     if (empty($theme) && !empty($user_id)){
         OpenTable();
@@ -1046,9 +1046,9 @@ function theme_users_modify($user_id, $username, $theme){
 		echo "    <th width='16%' align='center'><span class=\"content\" style=\"font-weight: bold\">" . _THEMES_USERNAME . "</span></th>\n";
 		echo "    <th width='16%' align='center'><span class=\"content\" style=\"font-weight: bold\">" . _THEMES_USER_SELECT. "</span></th>\n";
 		echo "  </tr>";
-        $result = $db->sql_query("SELECT * FROM ".$user_prefix."_users WHERE user_id =".$user_id);
+        $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE user_id =".$user_id);
 		
-        if ($row = $db->sql_fetchrow($result)){
+        if ($row = $nuke_db->sql_fetchrow($result)){
             $user_id = intval($row['user_id']);
             $username = Fix_Quotes($row['username']);
 			
@@ -1075,8 +1075,8 @@ function theme_users_modify($user_id, $username, $theme){
 		
         CloseTable();
     } elseif (isset($HTTP_POST_VARS['user_id']) && !empty($HTTP_POST_VARS['user_id'])){
-        $db->sql_query("UPDATE " . $user_prefix . "_users SET theme = '" . $theme . "' WHERE user_id = '".$HTTP_POST_VARS['user_id']."'");
-        redirect($admin_file.".php?op=theme_users");
+        $nuke_db->sql_query("UPDATE " . $nuke_user_prefix . "_users SET theme = '" . $theme . "' WHERE user_id = '".$HTTP_POST_VARS['user_id']."'");
+        nuke_redirect($admin_file.".php?op=theme_users");
     }
 }
 
@@ -1105,7 +1105,7 @@ if (is_admin()){
         case 'theme_activate':
             if (!is_default($theme)) {
                 $sql = "UPDATE " . $prefix . "_themes SET active='1' WHERE theme_name = '$theme'";
-                $db->sql_query($sql);
+                $nuke_db->sql_query($sql);
             }
             theme_header();
             display_main();
@@ -1124,7 +1124,7 @@ if (is_admin()){
         case 'theme_quickinstall':
             if(!theme_installed($theme)) {
                 $sql = "INSERT INTO " . $prefix . "_themes VALUES('$theme', '', '1', '$theme', '1', '')";
-                $db->sql_query($sql);
+                $nuke_db->sql_query($sql);
             }
             theme_header();
             display_main();

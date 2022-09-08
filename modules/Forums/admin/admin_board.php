@@ -47,7 +47,7 @@
       Cookie Check                             v1.0.0       08/04/2005
  ************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -80,10 +80,10 @@ if ( !file_exists(@phpbb_realpath($phpbb2_root_path . 'language/lang_' . $board_
 // Pull all config data
 //
 $sql = "SELECT *
-    FROM " . CONFIG_TABLE;
-if(!$result = $db->sql_query($sql))
+    FROM " . NUKE_CONFIG_TABLE;
+if(!$result = $nuke_db->sql_query($sql))
 {
-    message_die(CRITICAL_ERROR, "Could not query config information in admin_board", "", __LINE__, __FILE__, $sql);
+    message_die(NUKE_CRITICAL_ERROR, "Could not query config information in admin_board", "", __LINE__, __FILE__, $sql);
 }
 else
 {
@@ -129,7 +129,7 @@ else
 /*****[END]********************************************
  [ Other:  URL Check                           v1.0.0 ]
  ******************************************************/
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
         $config_name = $row['config_name'];
         $config_value = $row['config_value'];
@@ -175,17 +175,17 @@ else
             if ($config_name == "default_Theme") {
                 $sql = "UPDATE " . $prefix . "_config SET
                      default_Theme = '" . str_replace("\'", "''", $new[$config_name]) . "'";
-                 if( !$db->sql_query($sql) )
+                 if( !$nuke_db->sql_query($sql) )
                 {
-                    message_die(GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
                 }
             } else {
-                $sql = "UPDATE " . CONFIG_TABLE . " SET
+                $sql = "UPDATE " . NUKE_CONFIG_TABLE . " SET
                     config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
                     WHERE config_name = '$config_name'";
-                if( !$db->sql_query($sql) )
+                if( !$nuke_db->sql_query($sql) )
                 {
-                    message_die(GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
                 }
             }
 /*****[BEGIN]******************************************
@@ -203,7 +203,7 @@ else
     {
         $message = $lang['Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_config'], "<a href=\"" . append_sid("admin_board.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
     }
 }
 

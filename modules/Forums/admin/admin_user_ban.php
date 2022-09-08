@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if ( !empty($setmodules) )
 {
@@ -56,7 +56,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
                 $this_userdata = get_userdata($HTTP_POST_VARS['username'], true);
                 if( !$this_userdata )
                 {
-                        message_die(GENERAL_MESSAGE, $lang['No_user_id_specified'] );
+                        message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_id_specified'] );
                 }
 
                 $user_list[] = $this_userdata['user_id'];
@@ -167,14 +167,14 @@ if ( isset($HTTP_POST_VARS['submit']) )
         }
 
         $sql = "SELECT *
-                FROM " . BANLIST_TABLE;
-        if ( !($result = $db->sql_query($sql)) )
+                FROM " . NUKE_BANLIST_TABLE;
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, "Couldn't obtain banlist information", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't obtain banlist information", "", __LINE__, __FILE__, $sql);
         }
 
-        $current_banlist = $db->sql_fetchrowset($result);
-        $db->sql_freeresult($result);
+        $current_banlist = $nuke_db->sql_fetchrowset($result);
+        $nuke_db->sql_freeresult($result);
 
         $kill_session_sql = '';
         for($i = 0; $i < count($user_list); $i++)
@@ -192,11 +192,11 @@ if ( isset($HTTP_POST_VARS['submit']) )
                 {
                         $kill_session_sql .= ( ( $kill_session_sql != '' ) ? ' OR ' : '' ) . "session_user_id = " . $user_list[$i];
 
-                        $sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid)
+                        $sql = "INSERT INTO " . NUKE_BANLIST_TABLE . " (ban_userid)
                                 VALUES (" . $user_list[$i] . ")";
-                        if ( !$db->sql_query($sql) )
+                        if ( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, "Couldn't insert ban_userid info into database", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't insert ban_userid info into database", "", __LINE__, __FILE__, $sql);
                         }
                 }
         }
@@ -225,11 +225,11 @@ if ( isset($HTTP_POST_VARS['submit']) )
 
                         $kill_session_sql .= ( ( $kill_session_sql != '' ) ? ' OR ' : '' ) . $kill_ip_sql;
 
-                        $sql = "INSERT INTO " . BANLIST_TABLE . " (ban_ip)
+                        $sql = "INSERT INTO " . NUKE_BANLIST_TABLE . " (ban_ip)
                                 VALUES ('" . $ip_list[$i] . "')";
-                        if ( !$db->sql_query($sql) )
+                        if ( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, "Couldn't insert ban_ip info into database", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't insert ban_ip info into database", "", __LINE__, __FILE__, $sql);
                         }
                 }
         }
@@ -241,11 +241,11 @@ if ( isset($HTTP_POST_VARS['submit']) )
         //
         if ( $kill_session_sql != '' )
         {
-                $sql = "DELETE FROM " . SESSIONS_TABLE . "
+                $sql = "DELETE FROM " . NUKE_BB_SESSIONS_TABLE . "
                         WHERE $kill_session_sql";
-                if ( !$db->sql_query($sql) )
+                if ( !$nuke_db->sql_query($sql) )
                 {
-                        message_die(GENERAL_ERROR, "Couldn't delete banned sessions from database", "", __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, "Couldn't delete banned sessions from database", "", __LINE__, __FILE__, $sql);
                 }
         }
 
@@ -262,11 +262,11 @@ if ( isset($HTTP_POST_VARS['submit']) )
 
                 if ( !$in_banlist )
                 {
-                        $sql = "INSERT INTO " . BANLIST_TABLE . " (ban_email)
+                        $sql = "INSERT INTO " . NUKE_BANLIST_TABLE . " (ban_email)
                                 VALUES ('" . str_replace("\'", "''", $email_list[$i]) . "')";
-                        if ( !$db->sql_query($sql) )
+                        if ( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, "Couldn't insert ban_email info into database", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't insert ban_email info into database", "", __LINE__, __FILE__, $sql);
                         }
                 }
         }
@@ -314,17 +314,17 @@ if ( isset($HTTP_POST_VARS['submit']) )
 
         if ( $where_sql != '' )
         {
-                $sql = "DELETE FROM " . BANLIST_TABLE . "
+                $sql = "DELETE FROM " . NUKE_BANLIST_TABLE . "
                         WHERE ban_id IN ($where_sql)";
-                if ( !$db->sql_query($sql) )
+                if ( !$nuke_db->sql_query($sql) )
                 {
-                        message_die(GENERAL_ERROR, "Couldn't delete ban info from database", "", __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, "Couldn't delete ban info from database", "", __LINE__, __FILE__, $sql);
                 }
         }
 
         $message = $lang['Ban_update_sucessful'] . '<br /><br />' . sprintf($lang['Click_return_banadmin'], '<a href="' . append_sid("admin_user_ban.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
 
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
 
 }
 else
@@ -359,18 +359,18 @@ else
         $emailban_count = 0;
 
         $sql = "SELECT b.ban_id, u.user_id, u.username
-                FROM " . BANLIST_TABLE . " b, " . USERS_TABLE . " u
+                FROM " . NUKE_BANLIST_TABLE . " b, " . NUKE_USERS_TABLE . " u
                 WHERE u.user_id = b.ban_userid
                         AND b.ban_userid <> 0
-                        AND u.user_id <> " . ANONYMOUS . "
+                        AND u.user_id <> " . NUKE_ANONYMOUS . "
                 ORDER BY u.user_id ASC";
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Could not select current user_id ban list', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not select current user_id ban list', '', __LINE__, __FILE__, $sql);
         }
 
-        $user_list = $db->sql_fetchrowset($result);
-        $db->sql_freeresult($result);
+        $user_list = $nuke_db->sql_fetchrowset($result);
+        $nuke_db->sql_freeresult($result);
 
         $select_userlist = '';
         for($i = 0; $i < count($user_list); $i++)
@@ -387,14 +387,14 @@ else
         $select_userlist = '<select name="unban_user[]" multiple="multiple" size="5">' . $select_userlist . '</select>';
 
         $sql = "SELECT ban_id, ban_ip, ban_email
-                FROM " . BANLIST_TABLE;
-        if ( !($result = $db->sql_query($sql)) )
+                FROM " . NUKE_BANLIST_TABLE;
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Could not select current ip ban list', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not select current ip ban list', '', __LINE__, __FILE__, $sql);
         }
 
-        $banlist = $db->sql_fetchrowset($result);
-        $db->sql_freeresult($result);
+        $banlist = $nuke_db->sql_fetchrowset($result);
+        $nuke_db->sql_freeresult($result);
 
         $select_iplist = '';
         $select_emaillist = '';

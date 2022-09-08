@@ -9,7 +9,7 @@
 /* By: NukeScripts Network (webmaster@nukescripts.net)  */
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2008 by NukeScripts Network       */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n";
@@ -22,7 +22,7 @@ echo "<LINK REL='StyleSheet' HREF='themes/$theme_Sel/style/style.css' TYPE='text
 echo "</head><body>\n";
 if (!isset($modfilter)) $modfilter='';
 echo "<h1 align='center'>$pagetitle</h1>\n";
-$totalselected = $db->sql_numrows($db->sql_query("SELECT `username`, `ip_addr`, `ip_long`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` GROUP BY 1,2,3"));
+$totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT `username`, `ip_addr`, `ip_long`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` GROUP BY 1,2,3"));
 if($totalselected > 0) {
   echo "<table summary='' align='center' cellpadding='2' cellspacing='2' border='2'>\n";
   echo "<tr>\n";
@@ -32,8 +32,8 @@ if($totalselected > 0) {
   echo "<td align='center'><strong>"._AB_HOSTNAME."</strong></td>\n";
   echo "<td align='center'><strong>"._AB_LASTVIEWED."</strong></td>\n";
   echo "<td align='center'><strong>"._AB_HITS."</strong></td>\n";
-  $result = $db->sql_query("SELECT `user_id`, `username`, `ip_addr`, `ip_long`, MAX(`date`), COUNT(*), MIN(`tid`), `c2c` FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 2,3,4 ORDER BY `ip_addr`");
-  while(list($userid,$username,$ipaddr,$ip_long,$lastview,$hits,$tid,$c2c) = $db->sql_fetchrow($result)){
+  $result = $nuke_db->sql_query("SELECT `user_id`, `username`, `ip_addr`, `ip_long`, MAX(`date`), COUNT(*), MIN(`tid`), `c2c` FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 2,3,4 ORDER BY `ip_addr`");
+  while(list($userid,$username,$ipaddr,$ip_long,$lastview,$hits,$tid,$c2c) = $nuke_db->sql_fetchrow($result)){
     echo "<tr>";
       $username = UsernameColor($username);
     if($userid != 1) {
@@ -49,7 +49,7 @@ if($totalselected > 0) {
     echo "<td align='center'>$hits</td>";
     echo "</tr>";
   }
-  $db->sql_freeresult($result);
+  $nuke_db->sql_freeresult($result);
   // End IP Stats
   echo "</table>";
 } else {

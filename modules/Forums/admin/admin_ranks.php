@@ -31,7 +31,7 @@ if( !empty($setmodules) )
 	return;
 }
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 //
 // Let's set the root dir for phpBB
@@ -43,7 +43,7 @@ $no_page_header = $cancel;
 require('./pagestart.' . $phpEx);
 if ($cancel)
 {
-	redirect(append_sid("admin_ranks.$phpEx", true));
+	nuke_redirect(append_sid("admin_ranks.$phpEx", true));
 }
 
 if( isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']) )
@@ -86,17 +86,17 @@ if( $mode != "" )
                 {
                         if( empty($rank_id) )
                         {
-                                message_die(GENERAL_MESSAGE, $lang['Must_select_rank']);
+                                message_die(NUKE_GENERAL_MESSAGE, $lang['Must_select_rank']);
                         }
 
-                        $sql = "SELECT * FROM " . RANKS_TABLE . "
+                        $sql = "SELECT * FROM " . NUKE_RANKS_TABLE . "
                                 WHERE rank_id = $rank_id";
-                        if(!$result = $db->sql_query($sql))
+                        if(!$result = $nuke_db->sql_query($sql))
                         {
-                                message_die(GENERAL_ERROR, "Couldn't obtain rank data", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't obtain rank data", "", __LINE__, __FILE__, $sql);
                         }
 
-                        $rank_info = $db->sql_fetchrow($result);
+                        $rank_info = $nuke_db->sql_fetchrow($result);
                         $s_hidden_fields .= '<input type="hidden" name="id" value="' . $rank_id . '" />';
 
                 }
@@ -241,7 +241,7 @@ if( $mode != "" )
 
                 if( empty($rank_title) )
                 {
-                        message_die(GENERAL_MESSAGE, $lang['Must_select_rank']);
+                        message_die(NUKE_GENERAL_MESSAGE, $lang['Must_select_rank']);
                 }
 
 /*****[BEGIN]******************************************
@@ -277,16 +277,16 @@ if( $mode != "" )
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
                         {
-                                $sql = "UPDATE " . USERS_TABLE . "
+                                $sql = "UPDATE " . NUKE_USERS_TABLE . "
                                         SET user_rank = 0
                                         WHERE user_rank = $rank_id";
 
-                                if( !$result = $db->sql_query($sql) )
+                                if( !$result = $nuke_db->sql_query($sql) )
                                 {
-                                        message_die(GENERAL_ERROR, $lang['No_update_ranks'], "", __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, $lang['No_update_ranks'], "", __LINE__, __FILE__, $sql);
                                 }
                         }
-                        $sql = "UPDATE " . RANKS_TABLE . "
+                        $sql = "UPDATE " . NUKE_RANKS_TABLE . "
                                 SET rank_title = '" . str_replace("\'", "''", $rank_title) . "', rank_special = $special_rank, rank_min = $min_posts, rank_image = '" . str_replace("\'", "''", $rank_image) . "'
                                 WHERE rank_id = $rank_id";
 
@@ -294,20 +294,20 @@ if( $mode != "" )
                 }
                 else
                 {
-                        $sql = "INSERT INTO " . RANKS_TABLE . " (rank_title, rank_special, rank_min, rank_image)
+                        $sql = "INSERT INTO " . NUKE_RANKS_TABLE . " (rank_title, rank_special, rank_min, rank_image)
                                 VALUES ('" . str_replace("\'", "''", $rank_title) . "', $special_rank, $min_posts, '" . str_replace("\'", "''", $rank_image) . "')";
 
                         $message = $lang['Rank_added'];
                 }
 
-                if( !$result = $db->sql_query($sql) )
+                if( !$result = $nuke_db->sql_query($sql) )
                 {
-                        message_die(GENERAL_ERROR, "Couldn't update/insert into ranks table", "", __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, "Couldn't update/insert into ranks table", "", __LINE__, __FILE__, $sql);
                 }
 
                 $message .= "<br /><br />" . sprintf($lang['Click_return_rankadmin'], "<a href=\"" . append_sid("admin_ranks.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-                message_die(GENERAL_MESSAGE, $message);
+                message_die(NUKE_GENERAL_MESSAGE, $message);
 
         }
         else if( $mode == "delete" )
@@ -327,26 +327,26 @@ if( $mode != "" )
                 $confirm = isset($HTTP_POST_VARS['confirm']);
                 if( $rank_id && $confirm )
                 {
-                        $sql = "DELETE FROM " . RANKS_TABLE . "
+                        $sql = "DELETE FROM " . NUKE_RANKS_TABLE . "
                                 WHERE rank_id = $rank_id";
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, "Couldn't delete rank data", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't delete rank data", "", __LINE__, __FILE__, $sql);
                         }
 
-                        $sql = "UPDATE " . USERS_TABLE . "
+                        $sql = "UPDATE " . NUKE_USERS_TABLE . "
                                 SET user_rank = 0
                                 WHERE user_rank = $rank_id";
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, $lang['No_update_ranks'], "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, $lang['No_update_ranks'], "", __LINE__, __FILE__, $sql);
                         }
 
                         $message = $lang['Rank_removed'] . "<br /><br />" . sprintf($lang['Click_return_rankadmin'], "<a href=\"" . append_sid("admin_ranks.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
 
   		}
  		elseif( $rank_id && !$confirm)
@@ -371,7 +371,7 @@ if( $mode != "" )
  		}
  		else
  		{
- 			message_die(GENERAL_MESSAGE, $lang['Must_select_rank']);
+ 			message_die(NUKE_GENERAL_MESSAGE, $lang['Must_select_rank']);
  		}
  	}
 
@@ -387,15 +387,15 @@ if( $mode != "" )
  	"body" => "admin/ranks_list_body.tpl")
  );
 
- $sql = "SELECT * FROM " . RANKS_TABLE . "
+ $sql = "SELECT * FROM " . NUKE_RANKS_TABLE . "
  	ORDER BY rank_min ASC, rank_special ASC";
- if( !$result = $db->sql_query($sql) )
+ if( !$result = $nuke_db->sql_query($sql) )
  {
- 	message_die(GENERAL_ERROR, "Couldn't obtain ranks data", "", __LINE__, __FILE__, $sql);
+ 	message_die(NUKE_GENERAL_ERROR, "Couldn't obtain ranks data", "", __LINE__, __FILE__, $sql);
  }
- $rank_count = $db->sql_numrows($result);
+ $rank_count = $nuke_db->sql_numrows($result);
 
- $rank_rows = $db->sql_fetchrowset($result);
+ $rank_rows = $nuke_db->sql_fetchrowset($result);
 
  $template->assign_vars(array(
  	"L_RANKS_TITLE" => $lang['Ranks_title'],

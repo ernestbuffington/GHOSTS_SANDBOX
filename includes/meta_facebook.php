@@ -17,7 +17,7 @@
 /************************************************************************/
 if (!defined('NUKE_EVO')) { die("You can't access this file directly..."); }
 
-  global $db, $prefix, $cache;
+  global $nuke_db, $prefix, $cache;
 
 //Load dynamic meta tags from database           
 if(($facebookmetatags = $cache->load('metatagsfacebook', 'config')) === false) 
@@ -25,10 +25,10 @@ if(($facebookmetatags = $cache->load('metatagsfacebook', 'config')) === false)
   //Caching System v3.0.0
   $facebookmetatags = array();
   $sql = 'SELECT meta_name, meta_content FROM '.$prefix.'_meta_facebook';
-  $result = $db->sql_query($sql, true);
+  $result = $nuke_db->sql_query($sql, true);
   $i=0;
 
-  while(list($facebook_meta_name, $facebook_meta_content) = $db->sql_fetchrow($result, SQL_NUM)) 
+  while(list($facebook_meta_name, $facebook_meta_content) = $nuke_db->sql_fetchrow($result, SQL_NUM)) 
   {
       $facebookmetatags[$i] = array();
       $facebookmetatags[$i]['meta_name'] = $facebook_meta_name;
@@ -36,7 +36,7 @@ if(($facebookmetatags = $cache->load('metatagsfacebook', 'config')) === false)
       $i++;
   }
   unset($i);
-  $db->sql_freeresult($result);
+  $nuke_db->sql_freeresult($result);
 
  //Caching System v3.0.0
   $cache->save('metatagsfacebook', 'config', $facebookmetatags);

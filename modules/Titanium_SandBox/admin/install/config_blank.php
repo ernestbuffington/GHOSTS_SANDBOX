@@ -25,35 +25,35 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 | management system based on PHP-Nuke                     |
 ---------------------------------------------------------*/
 
-/*----[ $dbhost ] ----------------------------------------
+/*----[ $nuke_dbhost ] ---------------------------------------
 | Your database host, normally 'localhost'                |
 |                                                         |
 | Default: localhost                                      |
 ---------------------------------------------------------*/
-$dbhost = '%dbhost%';
-/*----[ $dbname ] ----------------------------------------
+$nuke_dbhost = '%dbhost%';
+/*----[ $nuke_dbname ] ---------------------------------------
 | The name of your database that will hold Evo's tables   |
 |                                                         |
 | Default: xxx_evo                                        |
 ---------------------------------------------------------*/
-$dbname = '%dbname%';
+$nuke_dbname = '%dbname%';
 
-/*----[ $dbuname ] ---------------------------------------
+/*----[ $nuke_dbuname ] --------------------------------------
 | The username linked to your database, must have correct |
 | permissions                                             |
 |                                                         |
 | Default: xxx_evo                                        |
 ---------------------------------------------------------*/
-$dbuname = '%dbuname%';
+$nuke_dbuname = '%dbuname%';
 
-/*----[ $dbpass ] ----------------------------------------
+/*----[ $nuke_dbpass ] ----------------------------------------
 | The password associated with your db usersname          |
 |                                                         |
 | Default: null                                           |
 ---------------------------------------------------------*/
-$dbpass = '%dbpass%';
+$nuke_dbpass = '%dbpass%';
 
-/*----[ $dbtype ] ----------------------------------------
+/*----[ $nuke_dbtype ] ----------------------------------------
 | The type of SQL server you prefer to use                |
 |                                                         |
 | Choose from the following (case-sensitive):             |
@@ -62,7 +62,7 @@ $dbpass = '%dbpass%';
 |                                                         |
 | Default: mysql                                          |
 ---------------------------------------------------------*/
-$dbtype = '%dbtype%';
+$nuke_dbtype_a = '%dbtype%';
 
 /*----[ $prefix ] ----------------------------------------
 | The prefix for your Nuke-Evolution tables               |
@@ -71,13 +71,13 @@ $dbtype = '%dbtype%';
 ---------------------------------------------------------*/
 $prefix = '%prefix%';
 
-/*----[ $user_prefix ] -----------------------------------
+/*----[ $nuke_user_prefix ] -----------------------------------
 | The prefix for your Nuke-Evolution user-related tables  |
 | Do not change this unless it is really needed           |
 |                                                         |
 | Default: nuke                                           |
 ---------------------------------------------------------*/
-$user_prefix = '%user_prefix%';
+$nuke_user_prefix = '%user_prefix%';
 
 /*----[ $admin_file ] ------------------------------------
 | The filename of your Admin File                         |

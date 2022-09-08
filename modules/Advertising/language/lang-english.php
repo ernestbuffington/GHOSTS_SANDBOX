@@ -35,7 +35,7 @@ define("_VIEWSYEAR","Average pages views per year:");
 define("_VIEWSMONTH","Average pages views per month:");
 define("_VIEWSDAY","Average pages views per day:");
 define("_VIEWSHOUR","Average pages views per hour:");
-define("_CURREGUSERS","Current registered users:");
+define("_CURREGUSERS","Current registered members:");
 define("_GOOGLERANK","This site Google's Page Rank:");
 define("_LISTPLANS","The following list shows our advertising plans, prices and a direct link to buy your ads:");
 define("_PLANNAME","Plan Name");

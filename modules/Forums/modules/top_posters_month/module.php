@@ -18,7 +18,7 @@
       Advanced Username Color                  v1.0.5       08/08/2005
 ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -80,8 +80,8 @@ $core->assign_defined_view('align_rows', array(
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
 $sql = "SELECT u.user_id, u.user_color_gc, u.username, count(u.user_id) as user_posts
-FROM " . USERS_TABLE . " u, " . POSTS_TABLE . " p
-WHERE (u.user_id = p.poster_id) AND (p.post_time > '" . intval($time_thismonth) . "') AND (u.user_id <> " . ANONYMOUS . ")
+FROM " . NUKE_USERS_TABLE . " u, " . NUKE_POSTS_TABLE . " p
+WHERE (u.user_id = p.poster_id) AND (p.post_time > '" . intval($time_thismonth) . "') AND (u.user_id <> " . NUKE_ANONYMOUS . ")
 GROUP BY user_id, username
 ORDER BY user_posts DESC
 LIMIT " . $core->return_limit;

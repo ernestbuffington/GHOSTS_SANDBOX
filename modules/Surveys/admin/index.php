@@ -35,7 +35,7 @@ if (!defined('ADMIN_FILE')) {
    die('Access Denied');
 }
 
-global $prefix, $db, $admdata, $evoconfig;
+global $prefix, $nuke_db, $admdata, $evoconfig;
 $module_name = basename(dirname(dirname(__FILE__)));
 if(is_mod_admin($module_name)) {
 
@@ -124,7 +124,7 @@ if(is_mod_admin($module_name)) {
     }
 
     function poll_options() {
-      global $admin_file, $db, $prefix, $evoconfig;
+      global $admin_file, $nuke_db, $prefix, $evoconfig;
 
       // Fetch random poll
       $make_random = intval($evoconfig['poll_random']);
@@ -198,8 +198,8 @@ if(is_mod_admin($module_name)) {
     }
 
     function SelectCategory($cat) {
-        global $prefix, $db, $admin_file;
-        $selcat = $db->sql_query("SELECT catid, title FROM ".$prefix."_stories_cat ORDER BY title");
+        global $prefix, $nuke_db, $admin_file;
+        $selcat = $nuke_db->sql_query("SELECT catid, title FROM ".$prefix."_stories_cat ORDER BY title");
         $a = 1;
         echo "<strong>"._CATEGORY."</strong> ";
         echo "<select name=\"catid\">";
@@ -209,7 +209,7 @@ if(is_mod_admin($module_name)) {
             $sel = "";
         }
         echo "<option name=\"catid\" value=\"0\" $sel>"._ARTICLES."</option>";
-        while(list($catid, $title) = $db->sql_fetchrow($selcat)) {
+        while(list($catid, $title) = $nuke_db->sql_fetchrow($selcat)) {
             $catid = intval($catid);
             if ($catid == $cat) {
                 $sel = "selected";
@@ -223,7 +223,7 @@ if(is_mod_admin($module_name)) {
     }
 
     function poll_createPoll() {
-        global $language, $admin, $multilingual, $prefix, $db, $admin_file;
+        global $language, $admin, $multilingual, $prefix, $nuke_db, $admin_file;
         include_once(NUKE_BASE_DIR.'header.php');
         LoadJS();
         OpenTable();
@@ -295,9 +295,9 @@ if(is_mod_admin($module_name)) {
         echo "<br />";
         puthome($ihome, $acomm);
         echo "<strong>" . _TOPIC . "</strong> <select name=\"topic\">";
-        $toplist = $db->sql_query("SELECT topicid, topictext FROM " . $prefix . "_topics ORDER BY topictext");
+        $toplist = $nuke_db->sql_query("SELECT topicid, topictext FROM " . $prefix . "_topics ORDER BY topictext");
         echo "<option value=\"\">" . _SELECTTOPIC . "</option>\n";
-        while ($row = $db->sql_fetchrow($toplist)) {
+        while ($row = $nuke_db->sql_fetchrow($toplist)) {
             $topicid = intval($row['topicid']);
             $topics = $row['topictext'];
             echo "<option value=\"$topicid\">$topics</option>\n";
@@ -332,21 +332,21 @@ if(is_mod_admin($module_name)) {
  [ Mod:    Display Topic Icon                  v1.0.0 ]
  [ Mod:    Display Writes                      v1.0.0 ]
  ******************************************************/
-        global $prefix, $db, $aid, $admin_file;
+        global $prefix, $nuke_db, $aid, $admin_file;
         $SurveyStory = intval($SurveyStory);
         $timeStamp = time();
         $pollTitle = Fix_Quotes($pollTitle);
-        if(!$db->sql_query("INSERT INTO ".$prefix."_poll_desc VALUES (NULL, '$pollTitle', '$timeStamp', '0', '$planguage', '0')")) {
+        if(!$nuke_db->sql_query("INSERT INTO ".$prefix."_poll_desc VALUES (NULL, '$pollTitle', '$timeStamp', '0', '$planguage', '0')")) {
             return;
         }
-        $object = $db->sql_fetchrow($db->sql_query("SELECT pollID FROM ".$prefix."_poll_desc WHERE pollTitle='$pollTitle'"));
+        $object = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT pollID FROM ".$prefix."_poll_desc WHERE pollTitle='$pollTitle'"));
         $id = $object['pollID'];
         $id = intval($id);
         for($i = 1, $maxi = count($optionText); $i <= $maxi; $i++) {
             if(!empty($optionText[$i])) {
                 $optionText[$i] = Fix_Quotes($optionText[$i]);
             }
-            if(!$db->sql_query("INSERT INTO ".$prefix."_poll_data (pollID, optionText, optionCount, voteID) VALUES ('$id', '$optionText[$i]', '0', '$i')")) {
+            if(!$nuke_db->sql_query("INSERT INTO ".$prefix."_poll_data (pollID, optionText, optionCount, voteID) VALUES ('$id', '$optionText[$i]', '0', '$i')")) {
                 return;
             }
         }
@@ -360,7 +360,7 @@ if(is_mod_admin($module_name)) {
  ******************************************************/
             $topic_icon = intval($topic_icon);
             $writes = intval($writes);
-            $result = $db->sql_query("INSERT INTO ".$prefix."_stories VALUES (NULL, 
+            $result = $nuke_db->sql_query("INSERT INTO ".$prefix."_stories VALUES (NULL, 
 			                                                              '$catid', 
 																		    '$aid', 
 																		  '$title', 
@@ -388,11 +388,11 @@ if(is_mod_admin($module_name)) {
  [ Mod:    Display Writes                      v1.0.0 ]
  ******************************************************/
         }
-        redirect($admin_file.".php?op=Surveys");
+        nuke_redirect($admin_file.".php?op=Surveys");
     }
 
     function poll_removePoll() {
-        global $prefix, $db, $admin_file, $multilingual;
+        global $prefix, $nuke_db, $admin_file, $multilingual;
 
         include_once(NUKE_BASE_DIR.'header.php');
         OpenTable();
@@ -409,13 +409,13 @@ if(is_mod_admin($module_name)) {
         ."<i>" . _CHOOSEPOLL . "</i><br /><br />"
         ."<form action=\"".$admin_file.".php\" method=\"post\">"
         ."<input type=\"hidden\" name=\"op\" value=\"RemovePosted\">";
-        $result = $db->sql_query("SELECT pollID, pollTitle, timeStamp, planguage FROM ".$prefix."_poll_desc ORDER BY timeStamp");
+        $result = $nuke_db->sql_query("SELECT pollID, pollTitle, timeStamp, planguage FROM ".$prefix."_poll_desc ORDER BY timeStamp");
         if(!$result) {
             return;
         }
         /* cycle through the descriptions until everyone has been fetched */
         echo "<select name=\"id\">";
-        while($object = $db->sql_fetchrow($result)) {
+        while($object = $nuke_db->sql_fetchrow($result)) {
         $object['pollID'] = intval($object['pollID']);
             echo "<option value=\"".$object['pollID']."\">".$object['pollTitle'];
             if($multilingual == 1 && !empty($object['planguage'])) echo " - (".$object['planguage'].")";
@@ -429,16 +429,16 @@ if(is_mod_admin($module_name)) {
     }
 
     function poll_removePosted() {
-        global $id, $prefix, $db, $admin_file;
+        global $id, $prefix, $nuke_db, $admin_file;
 
         $id = intval($id);
-        $db->sql_query("DELETE FROM ".$prefix."_poll_desc WHERE pollID='$id'");
-        $db->sql_query("DELETE FROM ".$prefix."_poll_data WHERE pollID='$id'");
-        redirect($admin_file.".php?op=Surveys");
+        $nuke_db->sql_query("DELETE FROM ".$prefix."_poll_desc WHERE pollID='$id'");
+        $nuke_db->sql_query("DELETE FROM ".$prefix."_poll_data WHERE pollID='$id'");
+        nuke_redirect($admin_file.".php?op=Surveys");
     }
 
     function polledit_select() {
-        global $prefix, $db, $admin_file, $multilingual;
+        global $prefix, $nuke_db, $admin_file, $multilingual;
         include_once(NUKE_BASE_DIR.'header.php');
         OpenTable();
 	    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Surveys\">" . _POLL_ADMIN_HEADER . "</a></div>\n";
@@ -453,13 +453,13 @@ if(is_mod_admin($module_name)) {
         ."" . _CHOOSEPOLLEDIT . "<br />"
         ."<form action=\"".$admin_file.".php\" method=\"post\">"
         ."<input type=\"hidden\" name=\"op\" value=\"PollEdit\">";
-        $result = $db->sql_query("SELECT pollID, pollTitle, timeStamp, planguage FROM ".$prefix."_poll_desc ORDER BY timeStamp");
+        $result = $nuke_db->sql_query("SELECT pollID, pollTitle, timeStamp, planguage FROM ".$prefix."_poll_desc ORDER BY timeStamp");
         if(!$result) {
             return;
         }
         /* cycle through the descriptions until everyone has been fetched */
         echo "<select name=\"pollID\">";
-        while($object = $db->sql_fetchrow($result)) {
+        while($object = $nuke_db->sql_fetchrow($result)) {
         $object['pollID'] = intval($object['pollID']);
             echo "<option value=\"".$object['pollID']."\">".$object['pollTitle'];
             if($multilingual == 1) echo " - (".$object['planguage'].")";
@@ -474,7 +474,7 @@ if(is_mod_admin($module_name)) {
     }
 
     function polledit($pollID) {
-        global $prefix, $db, $multilingual, $admin_file;
+        global $prefix, $nuke_db, $multilingual, $admin_file;
 
         include_once(NUKE_BASE_DIR.'header.php');
         OpenTable();
@@ -485,7 +485,7 @@ if(is_mod_admin($module_name)) {
 	    echo "<br />";
         poll_index();
         $pollID = intval($pollID);
-        $row = $db->sql_fetchrow($db->sql_query("SELECT pollTitle, planguage FROM ".$prefix."_poll_desc WHERE pollID='$pollID'"));
+        $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT pollTitle, planguage FROM ".$prefix."_poll_desc WHERE pollID='$pollID'"));
         $pollTitle = $row['pollTitle'];
         $planguage = $row['planguage'];
         echo "<br />";
@@ -509,14 +509,14 @@ if(is_mod_admin($module_name)) {
         } else {
             echo "<input type=\"hidden\" name=\"planguage\" value=\"$planguage\"><br /><br />";
         }
-        $result2 = $db->sql_query("SELECT optionText, optionCount, voteID FROM ".$prefix."_poll_data WHERE pollID='$pollID' ORDER BY voteID");
-        while ($row2 = $db->sql_fetchrow($result2)) {
+        $result2 = $nuke_db->sql_query("SELECT optionText, optionCount, voteID FROM ".$prefix."_poll_data WHERE pollID='$pollID' ORDER BY voteID");
+        while ($row2 = $nuke_db->sql_fetchrow($result2)) {
             $optionText = $row2['optionText'];
             $optionCount = intval($row2['optionCount']);
             $voteID = intval($row2['voteID']);
             echo "<tr><td align=\"right\"><strong>" . _OPTION . " $voteID:</strong></td><td><input type=\"text\" name=\"optiontext$voteID\" value=\"$optionText\" size=\"40\" maxlength=\"50\"></td><td align=\"right\">$optionCount "._VOTES."</td></tr>";
         }
-        $db->sql_freeresult($result2);
+        $nuke_db->sql_freeresult($result2);
         echo "</table><center><input type=\"hidden\" name=\"pollID\" value=\"$pollID\"><input type=\"hidden\" name=\"op\" value=\"SavePoll\">"
         ."<strong>" . _CLEARVOTES . "</strong>&nbsp;<input type='radio' name='ClearVotes' value='1' />" . _YES . " &nbsp;"
         ."<input type='radio' name='ClearVotes' value='0' checked=\"checked\" />" . _NO . "<br />"
@@ -526,18 +526,18 @@ if(is_mod_admin($module_name)) {
     }
 
     function savepoll($pollID, $pollTitle, $planguage, $optiontext1, $optiontext2, $optiontext3, $optiontext4, $optiontext5, $optiontext6, $optiontext7, $optiontext8, $optiontext9, $optiontext10, $optiontext11, $optiontext12, $ClearVotes) {
-        global $prefix, $db, $admin_file;
+        global $prefix, $nuke_db, $admin_file;
         $ClearVotes = intval($ClearVotes);
         $pollID = intval($pollID);
-        $db->sql_query("UPDATE ".$prefix."_poll_desc SET pollTitle='$pollTitle', planguage='$planguage' WHERE pollID='$pollID'");
+        $nuke_db->sql_query("UPDATE ".$prefix."_poll_desc SET pollTitle='$pollTitle', planguage='$planguage' WHERE pollID='$pollID'");
         for($i=1;$i<13;$i++) {
             $var = "optiontext$i";
-            $db->sql_query("UPDATE ".$prefix."_poll_data SET optionText='".$$var."' WHERE voteID='$i' AND pollID='$pollID'");
+            $nuke_db->sql_query("UPDATE ".$prefix."_poll_data SET optionText='".$$var."' WHERE voteID='$i' AND pollID='$pollID'");
             if($ClearVotes) {
-                $db->sql_query("UPDATE ".$prefix."_poll_data SET optionCount='0' WHERE voteID='$i' AND pollID='$pollID'");
+                $nuke_db->sql_query("UPDATE ".$prefix."_poll_data SET optionCount='0' WHERE voteID='$i' AND pollID='$pollID'");
             }
         }
-        redirect($admin_file.".php?op=Surveys");
+        nuke_redirect($admin_file.".php?op=Surveys");
     }
 
     switch($op) {
@@ -598,8 +598,8 @@ if(is_mod_admin($module_name)) {
         case "PollOptionsSave":
             $xmake_random = intval($xmake_random);
             $xnumber_of_days = intval($xnumber_of_days);
-            $db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='".$xmake_random."' WHERE evo_field='poll_random'");
-            $db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='".$xnumber_of_days."' WHERE evo_field='poll_days'");
+            $nuke_db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='".$xmake_random."' WHERE evo_field='poll_random'");
+            $nuke_db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='".$xnumber_of_days."' WHERE evo_field='poll_days'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -608,7 +608,7 @@ if(is_mod_admin($module_name)) {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-            redirect($admin_file.".php?op=Surveys");
+            nuke_redirect($admin_file.".php?op=Surveys");
         break;
 
     }

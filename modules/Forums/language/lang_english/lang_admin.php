@@ -258,8 +258,8 @@ $lang['Hidden'] = 'Hidden';
 $lang['Forum_ALL'] = 'ALL';
 $lang['Forum_REG'] = 'REG';
 $lang['Forum_PRIVATE'] = 'PRIVATE';
-$lang['Forum_MOD'] = 'MOD';
-$lang['Forum_ADMIN'] = 'ADMIN';
+$lang['Forum_MOD'] = 'NUKE_MOD';
+$lang['Forum_ADMIN'] = 'NUKE_ADMIN';
 
 $lang['View'] = 'View';
 $lang['Read'] = 'Read';
@@ -894,7 +894,7 @@ $lang['sig_explain'] = 'This is where you control what divides the user\'s signa
  [ Mod:     Default avatar                     v1.1.0 ]
  ******************************************************/
 $lang['Default_avatar'] = 'Set a default avatar';
-$lang['Default_avatar_explain'] = 'This gives users that haven\'t yet selected an avatar, a default one. Set the default avatar for guests and users, and then select whether you want the avatar to be displayed for registered users, guests, both or none.<br />The path is \'modules/Forums/images/avatars/gallery\'';
+$lang['Default_avatar_explain'] = 'This gives users that haven\'t yet selected an avatar, a default one. Set the default avatar for guests and users, and then select whether you want the avatar to be displayed for registered members, guests, both or none.<br />The path is \'modules/Forums/images/avatars/gallery\'';
 $lang['Default_avatar_guests'] = 'Guests';
 $lang['Default_avatar_users'] = 'Users';
 $lang['Default_avatar_both'] = 'Both';
@@ -970,11 +970,11 @@ $lang['Date'] = 'Date';
 $lang['See_topic'] = 'See the post';
 $lang['Log_delete'] = 'Log deleted successfully.';
 $lang['Click_return_admin_log'] = 'Click %sHere%s to return to the Log Actions';
-$lang['Log_Config_updated'] = 'Configuration of Log Actions MOD successfull';
-$lang['Click_return_admin_log_config'] = 'Click %sHere%s to return to the Log Actions MOD Configuration';
+$lang['Log_Config_updated'] = 'Configuration of Log Actions NUKE_MOD successfull';
+$lang['Click_return_admin_log_config'] = 'Click %sHere%s to return to the Log Actions NUKE_MOD Configuration';
 $lang['Log_Config'] = 'Configuration of the Log';
-$lang['Log_Config_explain'] = 'Here, you will be able to configure some options of the Log Actions MOD.';
-$lang['General_Config_Log'] = 'General Configuration of Log Actions MOD';
+$lang['Log_Config_explain'] = 'Here, you will be able to configure some options of the Log Actions NUKE_MOD.';
+$lang['General_Config_Log'] = 'General Configuration of Log Actions NUKE_MOD';
 $lang['Allow_all_admin'] = 'Allow other Admins to see the Log Actions ?';
 $lang['Allow_all_admin_explain'] = 'This option will allow you to choose if only the first admin of the board will be able to see the Log';
 $lang['Admin_not_authorized'] = 'Sorry, you\'re not allowed to view this page. Only the main Admin has permission.';
@@ -1206,7 +1206,7 @@ $lang['override_max'] = "Override Main Board Setting";
  ******************************************************/
 
 $lang['Login_page'] = 'Loginpage';
-$lang['Login_page_explain'] = 'After Login, User is redirected to his Profile (Yes) or to Forum Index page (No)';
+$lang['Login_page_explain'] = 'After Login, User is nuke_redirected to his Profile (Yes) or to Forum Index page (No)';
 
 /*****[BEGIN]******************************************
  [ Mod:    Auto Group                          v1.2.2 ]

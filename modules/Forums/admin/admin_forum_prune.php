@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 if ( !empty($setmodules) )
 {
@@ -46,9 +46,9 @@ require("../../../includes/functions_admin.php");
 //
 // Get the forum ID for pruning
 //
-if( isset($HTTP_GET_VARS[POST_FORUM_URL]) || isset($HTTP_POST_VARS[POST_FORUM_URL]) )
+if( isset($HTTP_GET_VARS[NUKE_POST_FORUM_URL]) || isset($HTTP_POST_VARS[NUKE_POST_FORUM_URL]) )
 {
-        $forum_id = ( isset($HTTP_POST_VARS[POST_FORUM_URL]) ) ? $HTTP_POST_VARS[POST_FORUM_URL] : $HTTP_GET_VARS[POST_FORUM_URL];
+        $forum_id = ( isset($HTTP_POST_VARS[NUKE_POST_FORUM_URL]) ) ? $HTTP_POST_VARS[NUKE_POST_FORUM_URL] : $HTTP_GET_VARS[NUKE_POST_FORUM_URL];
 
         if( $forum_id == -1 )
         {
@@ -69,17 +69,17 @@ else
 // Get a list of forum's or the data for the forum that we are pruning.
 //
 $sql = "SELECT f.*
-        FROM " . FORUMS_TABLE . " f, " . CATEGORIES_TABLE . " c
+        FROM " . NUKE_FORUMS_TABLE . " f, " . NUKE_CATEGORIES_TABLE . " c
         WHERE c.cat_id = f.cat_id
         $forum_sql
         ORDER BY c.cat_order ASC, f.forum_order ASC";
-if( !($result = $db->sql_query($sql)) )
+if( !($result = $nuke_db->sql_query($sql)) )
 {
-        message_die(GENERAL_ERROR, 'Could not obtain list of forums for pruning', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not obtain list of forums for pruning', '', __LINE__, __FILE__, $sql);
 }
 
 $forum_rows = array();
-while( $row = $db->sql_fetchrow($result) )
+while( $row = $nuke_db->sql_fetchrow($result) )
 {
         $forum_rows[] = $row;
 }
@@ -129,7 +129,7 @@ else
         // If they haven't selected a forum for pruning yet then
         // display a select box to use for pruning.
         //
-        if( empty($HTTP_POST_VARS[POST_FORUM_URL]) )
+        if( empty($HTTP_POST_VARS[NUKE_POST_FORUM_URL]) )
         {
                 //
                 // Output a selection table if no forum id has been specified.
@@ -138,7 +138,7 @@ else
                         'body' => 'admin/forum_prune_select_body.tpl')
                 );
 
-                $select_list = '<select name="' . POST_FORUM_URL . '">';
+                $select_list = '<select name="' . NUKE_POST_FORUM_URL . '">';
                 $select_list .= '<option value="-1">' . $lang['All_Forums'] . '</option>';
 
                 for($i = 0; $i < count($forum_rows); $i++)
@@ -161,7 +161,7 @@ else
         }
         else
         {
-                $forum_id = intval($HTTP_POST_VARS[POST_FORUM_URL]);
+                $forum_id = intval($HTTP_POST_VARS[NUKE_POST_FORUM_URL]);
 
                 //
                 // Output the form to retrieve Prune information.
@@ -175,7 +175,7 @@ else
                 $prune_data = $lang['Prune_topics_not_posted'] . " ";
                 $prune_data .= '<input class="post" type="text" name="prunedays" size="4"> ' . $lang['Days'];
 
-                $hidden_input = '<input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '">';
+                $hidden_input = '<input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '">';
 
                 //
                 // Assign the template variables.

@@ -70,7 +70,7 @@
       Advanced Username Color                  v1.0.5       06/13/2005
  ************************************************************************/  
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -98,17 +98,17 @@ else
 }
 
 // Select all avatars and usernames that have an uploaded avatar currently
-$sql = "SELECT user_id, username, user_avatar FROM " . USERS_TABLE . "
-    WHERE user_avatar_type = " . USER_AVATAR_UPLOAD . " AND user_avatar IS NOT NULL";
+$sql = "SELECT user_id, username, user_avatar FROM " . NUKE_USERS_TABLE . "
+    WHERE user_avatar_type = " . NUKE_USER_AVATAR_UPLOAD . " AND user_avatar IS NOT NULL";
 
-if(!$result = $db->sql_query($sql))
+if(!$result = $nuke_db->sql_query($sql))
 {
-    $error = $db->sql_error();
+    $error = $nuke_db->sql_error();
     die("Could not get avatar information! $error[code] : $error[message]");
 }
 
 // Create a hash to keep track of all the user that is using the uploaded avatar
-while ($avatar_rowset = $db->sql_fetchrow($result))
+while ($avatar_rowset = $nuke_db->sql_fetchrow($result))
 {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
@@ -184,14 +184,14 @@ switch( $mode )
                     {
                         // Since we need to supply a link with a valid sid later in html, let's build it now
                         $av_id = $avatar_usage[$file];
-                        $sql = "SELECT user_id FROM " . USERS_TABLE . "
+                        $sql = "SELECT user_id FROM " . NUKE_USERS_TABLE . "
                             WHERE username = '$av_id'";
-                        if(!$result = $db->sql_query($sql))
+                        if(!$result = $nuke_db->sql_query($sql))
                         {
-                            $error = $db->sql_error();
+                            $error = $nuke_db->sql_error();
                             die("Could not get user information! $error[code] : $error[message]");
                         }
-                        $av_uid = $db->sql_fetchrow($result);
+                        $av_uid = $nuke_db->sql_fetchrow($result);
                         $avatar_uid = $av_uid['user_id'];
                         $edit_url = append_sid("./admin_users.php?mode=edit&u=$avatar_uid");
                         // Bingo, someone is using this avatar

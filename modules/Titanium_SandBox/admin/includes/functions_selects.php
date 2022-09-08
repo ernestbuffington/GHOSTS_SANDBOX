@@ -75,7 +75,7 @@
 	  Birthdays                                v3.0.0
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -221,21 +221,21 @@ global $lang;
  ******************************************************/
 function auc_colors_select($default, $select_name = "color_groups", $value = "group_id")
 {
-global $db, $prefix;
+global $nuke_db, $prefix;
 
     $g_select = '<select class="form-control" name="' . $select_name . '" id="' . $select_name . '">';
     $sql = "SELECT * FROM " . $prefix . "_bbadvanced_username_color  ORDER BY group_name ASC";
-    if (!$result = $db->sql_query($sql)) {
+    if (!$result = $nuke_db->sql_query($sql)) {
         die(mysql_error());
     }
     $selected = (!$defualt) ? "selected=\"selected\"" : "";
     $g_select .= '<option value="0" '.$selected.'>None</option>';
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
         $selected = ( $row['group_id'] == $default ) ? ' selected="selected"' : '';
         $g_select .= '<option value="' . $row[$value] . '"' . $selected . '>' . $row['group_name'] . '</option>';
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     $g_select .= '</select>';
 
@@ -244,21 +244,21 @@ global $db, $prefix;
 
 function ranks_select($default, $select_name = "ranks", $value = "rank_id")
 {
-    global $db, $prefix;
+    global $nuke_db, $prefix;
 
     $g_select = '<select class="form-control" name="' . $select_name . '" id="' . $select_name . '">';
-    $sql = "SELECT * FROM " . RANKS_TABLE . " WHERE rank_special = 1 ORDER BY rank_title ASC";
-    if (!$result = $db->sql_query($sql)) {
+    $sql = "SELECT * FROM " . NUKE_RANKS_TABLE . " WHERE rank_special = 1 ORDER BY rank_title ASC";
+    if (!$result = $nuke_db->sql_query($sql)) {
         die(mysql_error());
     }
     $selected = (!$defualt) ? "selected=\"selected\"" : "";
     $g_select .= '<option value="0" '.$selected.'>None</option>';
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
         $selected = ( $row['rank_id'] == $default ) ? ' selected="selected"' : '';
         $g_select .= '<option value="' . $row[$value] . '"' . $selected . '>' . $row['rank_title'] . '</option>';
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     $g_select .= '</select>';
 

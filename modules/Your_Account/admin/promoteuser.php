@@ -41,7 +41,7 @@ if (!defined('CNBYA')) {
 
     if (is_mod_admin('super')) {
 
-    list($uname, $rname, $email, $site, $upass) = $db->sql_fetchrow($db->sql_query("SELECT username, name, user_email, user_website, user_password FROM ".$user_prefix."_users WHERE user_id='$chng_uid'"));
+    list($uname, $rname, $email, $site, $upass) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT username, name, user_email, user_website, user_password FROM ".$nuke_user_prefix."_users WHERE user_id='$chng_uid'"));
     $pagetitle = ": "._USERADMIN." - "._PROMOTEUSER;
     include_once(NUKE_BASE_DIR.'header.php');
     title(_USERADMIN." - "._PROMOTEUSER);
@@ -62,8 +62,8 @@ if ($Version_Num >= 7.5) {
     echo "<tr><td bgcolor='$bgcolor2'>"._URL.":</td><td colspan='3'><input type='text' name='add_url' size='30' maxlength='60' value='$site'></td></tr>";
     //[vecino398(curt)]  www.vecino398.com -Modification- 
     echo "<tr><td bgcolor='$bgcolor2' valign='top'>" . _PERMISSIONS . ":</td>"; 
-    $result = $db->sql_query("SELECT mid, title FROM ".$prefix."_modules ORDER BY title ASC"); 
-    while ($row = $db->sql_fetchrow($result)) { 
+    $result = $nuke_db->sql_query("SELECT mid, title FROM ".$prefix."_modules ORDER BY title ASC"); 
+    while ($row = $nuke_db->sql_fetchrow($result)) { 
         $title = str_replace("_", " ", $row['title']); 
         if (file_exists("modules/$row[title]/admin/index.php") AND file_exists("modules/$row[title]/admin/links.php") AND file_exists("modules/$row[title]/admin/case.php")) { 
             echo "<td><input type=\"checkbox\" name=\"auth_modules[]\" value=\"$row[mid]\"> $title</td>"; 
@@ -224,7 +224,7 @@ if (isset($min)) { echo "<input type='hidden' name='min' value='$min'>\n"; }
     include_once(NUKE_BASE_DIR.'footer.php');
 
 } else {
-    redirect("../../../index.php");
+    nuke_redirect("../../../index.php");
     die ();
 }
 

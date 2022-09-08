@@ -19,24 +19,24 @@ function modadmin_title()
 
 function modadmin_get_modules ($mid = '') 
 {
-    global $prefix, $db, $admlang;
+    global $prefix, $nuke_db, $admlang;
 
     $mid = (!empty($mid)) ? 'WHERE mid='.$mid : '';
 
-    if(!$result = $db->sql_query("SELECT `mid`, `title`, `custom_title`, `active`, `view`, `inmenu`, `blocks`, `groups` FROM `".$prefix."_modules` $mid ORDER BY `mid` ASC")) 
+    if(!$result = $nuke_db->sql_query("SELECT `mid`, `title`, `custom_title`, `active`, `view`, `inmenu`, `blocks`, `groups` FROM `".$prefix."_modules` $mid ORDER BY `mid` ASC")) 
     DisplayError($admlang['modblock']['no_values']);
 
-    if (!$out = $db->sql_fetchrowset($result)) 
+    if (!$out = $nuke_db->sql_fetchrowset($result)) 
     DisplayError($admlang['modblock']['no_values']);
 
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     return $out;
 }
 
 function modadmin_usergroup_whoview($module)
 {
-   global $db, $prefix, $admlang;
+   global $nuke_db, $prefix, $admlang;
 
    $who_view = '';
 
@@ -60,7 +60,7 @@ function modadmin_usergroup_whoview($module)
       {
          if (!empty($group)) 
          {
-            $row = $db->sql_ufetchrow("SELECT group_name FROM ".$prefix.'_bbgroups WHERE group_id='.$group, SQL_NUM);
+            $row = $nuke_db->sql_ufetchrow("SELECT group_name FROM ".$prefix.'_bbgroups WHERE group_id='.$group, SQL_NUM);
    
             if (!empty($row['group_name'])) 
             {
@@ -80,7 +80,7 @@ function modadmin_usergroup_whoview($module)
 
 function modadmin_dispaly_modules($modadmin_modules) 
 {
-   global $prefix, $db, $admin_file, $bgcolor, $bgcolor2,$bgcolor3, $bgcolor4, $admlang;
+   global $prefix, $nuke_db, $admin_file, $bgcolor, $bgcolor2,$bgcolor3, $bgcolor4, $admlang;
    
    if(!is_array($modadmin_modules)) 
    DisplayError($admlang['modblock']['no_values']);
@@ -202,7 +202,7 @@ function modadmin_dispaly_modules($modadmin_modules)
 
 function modadmin_edit_module($module) 
 {
-   global $prefix, $db, $admin_file, $admlang;
+   global $prefix, $nuke_db, $admin_file, $admlang;
    
    $main_module = main_module();
    
@@ -263,9 +263,9 @@ function modadmin_edit_module($module)
 
          echo "<span class='tiny'>"._WHATGRDESC."</span><br /><br /><strong>"._WHATGROUPS."</strong><br /> <select name='add_groups[]' style=\"cursor: pointer; font-size: 11px !important; font-family: Verdana,Geneva,Arial,Helvetica,sans-serif; letter-spacing: 1px; margin: 0px 1px 1px; padding: 5px;\" multiple size='5'>\n";
             
-			$groupsResult = $db->sql_query("select group_id, group_name from ".$prefix."_bbgroups where group_description <> 'Personal User'");
+			$groupsResult = $nuke_db->sql_query("select group_id, group_name from ".$prefix."_bbgroups where group_description <> 'Personal User'");
             
-			while(list($gid, $gname) = $db->sql_fetchrow($groupsResult)) 
+			while(list($gid, $gname) = $nuke_db->sql_fetchrow($groupsResult)) 
 			{
                 if(in_array($gid,$ingroups) AND $module['view'] == 5) 
 				{ 
@@ -322,18 +322,18 @@ function modadmin_edit_module($module)
 
 function modadmin_activate($module) 
 {
-   global $prefix, $db, $cache, $debugger;
+   global $prefix, $nuke_db, $cache, $debugger;
    
-   $result = $db->sql_query('SELECT active FROM '.$prefix."_modules WHERE mid=$module");
+   $result = $nuke_db->sql_query('SELECT active FROM '.$prefix."_modules WHERE mid=$module");
    
-   if($db->sql_numrows($result) > 0) 
+   if($nuke_db->sql_numrows($result) > 0) 
    {
-      list($active) = $db->sql_fetchrow($result);
+      list($active) = $nuke_db->sql_fetchrow($result);
       
 	  if(is_numeric($active)) 
       {
          $active = intval(!$active);
-         $db->sql_query('UPDATE '.$prefix."_modules SET active='$active' WHERE mid=$module");
+         $nuke_db->sql_query('UPDATE '.$prefix."_modules SET active='$active' WHERE mid=$module");
       }
    }
    
@@ -343,28 +343,28 @@ function modadmin_activate($module)
 
 function modadmin_activate_all($type) 
 {
-   global $prefix, $db, $cache;
+   global $prefix, $nuke_db, $cache;
    
    $active = ($type == 'all') ? '1;' : "0 WHERE `title` <> 'Your_Account' AND `title` <> 'Profile';";
    $sql = "UPDATE `".$prefix."_modules` SET `active`=".$active;
-   $db->sql_query($sql);
+   $nuke_db->sql_query($sql);
    $cache->delete('active_modules');
    $cache->resync();
 }
 
 function modadmin_home($mid) 
 {
-   global $prefix, $db, $cache;
+   global $prefix, $nuke_db, $cache;
    
-   list($title) = $db->sql_ufetchrow("SELECT title FROM ".$prefix."_modules WHERE mid='$mid'",SQL_NUM);
+   list($title) = $nuke_db->sql_ufetchrow("SELECT title FROM ".$prefix."_modules WHERE mid='$mid'",SQL_NUM);
    
    if ($title == '' || $title == 'Evo_UserBlock') 
    {
       return false;
    }
    
-   $db->sql_query("UPDATE ".$prefix."_main SET main_module='$title'");
-   $db->sql_query("UPDATE ".$prefix."_modules SET active=1, view=0 WHERE mid='$mid'");
+   $nuke_db->sql_query("UPDATE ".$prefix."_main SET main_module='$title'");
+   $nuke_db->sql_query("UPDATE ".$prefix."_modules SET active=1, view=0 WHERE mid='$mid'");
    $cache->delete('main_module');
    $cache->delete('active_modules');
    $cache->resync();
@@ -372,7 +372,7 @@ function modadmin_home($mid)
 
 function modadmin_edit_save($mid) 
 {
-   global $prefix, $db, $admin_file, $cache;
+   global $prefix, $nuke_db, $admin_file, $cache;
    
    $ingroups = array();
    
@@ -392,7 +392,7 @@ function modadmin_edit_save($mid)
       $view = intval($_POST['view']);
       $title = '~l~'.Fix_Quotes($_POST['title']);
       $custom_title = Fix_Quotes($_POST['custom_title']);
-      $db->sql_query("UPDATE `".$prefix."_modules` SET `custom_title`='$custom_title', `title`='$title', `view`=$view, `groups`='$ingroups' WHERE `mid`=$mid");
+      $nuke_db->sql_query("UPDATE `".$prefix."_modules` SET `custom_title`='$custom_title', `title`='$title', `view`=$view, `groups`='$ingroups' WHERE `mid`=$mid");
    } 
    else 
    {
@@ -400,7 +400,7 @@ function modadmin_edit_save($mid)
       $inmenu = intval($_POST['inmenu']);
       $blocks = intval($_POST['blocks']);
       $custom_title = Fix_Quotes($_POST['custom_title']);
-      $db->sql_query("UPDATE `".$prefix."_modules` SET `custom_title`='$custom_title', `view`=$view, `inmenu`=$inmenu, `blocks`=$blocks, `groups`='$ingroups' $title WHERE `mid`=$mid");
+      $nuke_db->sql_query("UPDATE `".$prefix."_modules` SET `custom_title`='$custom_title', `view`=$view, `inmenu`=$inmenu, `blocks`=$blocks, `groups`='$ingroups' $title WHERE `mid`=$mid");
    }
 }
 
@@ -409,14 +409,14 @@ function modadmin_edit_save($mid)
 //---------------------
 function modadmin_get_inactive () 
 {
-    global $prefix, $db, $cache, $admlang;
+    global $prefix, $nuke_db, $cache, $admlang;
 
-    if(!$result = $db->sql_query("SELECT `mid`, `title`, `custom_title`, `active`, `view`, `inmenu`, `blocks` FROM `".$prefix."_modules` WHERE `cat_id`=0 AND `inmenu`<>0 ORDER BY `pos` ASC"))     {
+    if(!$result = $nuke_db->sql_query("SELECT `mid`, `title`, `custom_title`, `active`, `view`, `inmenu`, `blocks` FROM `".$prefix."_modules` WHERE `cat_id`=0 AND `inmenu`<>0 ORDER BY `pos` ASC"))     {
         DisplayError($admlang['modblock']['no_values']);
     }
     
-	$out = $db->sql_fetchrowset($result);
-    $db->sql_freeresult($result);
+	$out = $nuke_db->sql_fetchrowset($result);
+    $nuke_db->sql_freeresult($result);
     return $out;
 }
 
@@ -524,7 +524,7 @@ function modadmin_block ()
 	//Active
     if(is_array($modadmin_module_cats)) 
     {
-        global $db, $prefix;
+        global $nuke_db, $prefix;
     
 	    $i = 0;
     
@@ -554,9 +554,9 @@ function modadmin_block ()
             echo "<span style=\"font-weight: bold; text-align: 'center';\">".$cat['name']."&nbsp;&nbsp;<a href=\"".$admin_file.".php?op=modules&amp;editcat=".$cat['cid']."\">".get_evo_icon('evo-sprite edit', $admlang['modblock']['edit'])."</a>&nbsp;<a href=\"".$admin_file.".php?op=modules&amp;deletecat=".$cat['cid']."\">".get_evo_icon('evo-sprite trash-2', $admlang['modblock']['delete'])."</a>&nbsp;".$updown."</span>";
             echo "<ul id=\"ul".$cat['cid']."\" class=\"sortable boxy\">\n";
             $sql = 'SELECT * FROM `'.$prefix.'_modules` WHERE cat_id='.$cat['cid'].' AND `inmenu`<>0 ORDER BY `pos` ASC';
-            $result = $db->sql_query($sql);
+            $result = $nuke_db->sql_query($sql);
             
-			while ($row = $db->sql_fetchrow($result)) 
+			while ($row = $nuke_db->sql_fetchrow($result)) 
             {
               echo '<li class="'.(($row['active'] == 1) ? "active" : "inactive").'" id="mod'.$row['mid'].'" ondblclick="change_status('.$row['mid'].')">'
                   .'<table class="col-12">'
@@ -568,7 +568,7 @@ function modadmin_block ()
                   .'</li>';
             }
             
-			$db->sql_freeresult($result);
+			$nuke_db->sql_freeresult($result);
             echo "</ul>\n";
         }
     }
@@ -633,7 +633,7 @@ function modadmin_block ()
 
 function modadmin_get_module_cats () 
 {
-    global $modadmin_module_cats, $prefix, $db, $cache;
+    global $modadmin_module_cats, $prefix, $nuke_db, $cache;
 
     static $cats;
 
@@ -641,17 +641,17 @@ function modadmin_get_module_cats ()
 
     if((($cats = $cache->load('module_cats', 'config')) === false) || !isset($cats)) 
 	{
-        if(!$result = $db->sql_query("SELECT `cid`, `name`, `image`, `pos`, `link_type`, `link` FROM `".$prefix."_modules_cat` WHERE `name`<>'Home' ORDER BY `pos` ASC")) 
+        if(!$result = $nuke_db->sql_query("SELECT `cid`, `name`, `image`, `pos`, `link_type`, `link` FROM `".$prefix."_modules_cat` WHERE `name`<>'Home' ORDER BY `pos` ASC")) 
 		{
             DisplayError($admlang['modblock']['no_values']);
         }
         
-		if (!$cats = $db->sql_fetchrowset($result)) 
+		if (!$cats = $nuke_db->sql_fetchrowset($result)) 
 		{
             DisplayError($admlang['modblock']['no_values']);
         }
         
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
         $cache->save('module_cats', 'config', $cats);
     }
     
@@ -686,7 +686,7 @@ function modadmin_parse_data($data)
 
 function modadmin_write_cats ($data) 
 {
-    global $db, $prefix, $cache;
+    global $nuke_db, $prefix, $cache;
 
     if(is_array($data)) 
 	{
@@ -698,7 +698,7 @@ function modadmin_write_cats ($data)
 			{
                 $key = ($key == 'left_col') ? '0' : $key;
                 $sql = 'UPDATE `'.$prefix.'_modules` SET `cat_id`='.$key.', `pos`='.$i.' WHERE `mid`="'.$id.'"';
-                $db->sql_query($sql);
+                $nuke_db->sql_query($sql);
                 $i++;
             }
         }
@@ -710,49 +710,49 @@ function modadmin_write_cats ($data)
 
 function modadmin_new_cat ($name, $image) 
 {
-    global $db, $prefix, $cache;
+    global $nuke_db, $prefix, $cache;
 
-    $result = $db->sql_query('SELECT COUNT(*) FROM `'.$prefix.'_modules_cat`');
-    $num = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $result = $nuke_db->sql_query('SELECT COUNT(*) FROM `'.$prefix.'_modules_cat`');
+    $num = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
     $name = Fix_Quotes($name);
     $image = Fix_Quotes($image);
     $sql = 'INSERT INTO `'.$prefix.'_modules_cat` VALUES ("","'.$name.'","'.$image.'",'.($num[0]+1).', 0, "")';
-    $result = $db->sql_query($sql);
+    $result = $nuke_db->sql_query($sql);
     $cache->delete('module_cats');
     $cache->resync();
 }
 
 function modadmin_delete_cat ($cid) 
 {
-    global $db, $prefix, $cache;
+    global $nuke_db, $prefix, $cache;
 
     $sql = 'DELETE FROM `'.$prefix.'_modules_cat` WHERE `cid`='.$cid;
-    $db->sql_query($sql);
+    $nuke_db->sql_query($sql);
     $sql = 'UPDATE `'.$prefix.'_modules` SET `cat_id`=0 WHERE `cat_id`='.$cid;
-    $db->sql_query($sql);
+    $nuke_db->sql_query($sql);
     $cache->delete('module_cats');
     $cache->resync();
 }
 
 function modadmin_move_cat ($pos, $up) 
 {
-    global $db, $prefix, $cache;
+    global $nuke_db, $prefix, $cache;
 
     $where = ($up) ? ($pos - 1) : ($pos + 1);
     $sql = "UPDATE `".$prefix."_modules_cat` SET `pos`=127 WHERE `pos`=".$where;
-    $db->sql_query($sql);
+    $nuke_db->sql_query($sql);
     $sql = "UPDATE `".$prefix."_modules_cat` SET `pos`=".$where." WHERE `pos`=".$pos;
-    $db->sql_query($sql);
+    $nuke_db->sql_query($sql);
     $sql = "UPDATE `".$prefix."_modules_cat` SET `pos`=".$pos." WHERE `pos`=127";
-    $db->sql_query($sql);
+    $nuke_db->sql_query($sql);
     $cache->delete('module_cats');
     $cache->resync();
 }
 
 function modadmin_edit_cat($cat) 
 {
-    global $prefix, $db, $admin_file, $cache, $admlang;
+    global $prefix, $nuke_db, $admin_file, $cache, $admlang;
 
     $cat = Fix_Quotes($cat);
 
@@ -760,9 +760,9 @@ function modadmin_edit_cat($cat)
 	{
         DisplayError($admlang['modblock']['not_found']);
     }
-    $result = $db->sql_query('SELECT name, image FROM `'.$prefix.'_modules_cat` WHERE `cid` = '.$cat);
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $result = $nuke_db->sql_query('SELECT name, image FROM `'.$prefix.'_modules_cat` WHERE `cid` = '.$cat);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     if(!isset($row[0]) || empty($row[0])) 
 	{
@@ -787,7 +787,7 @@ function modadmin_edit_cat($cat)
 
 function modadmin_edit_cat_save($cat, $name, $image) 
 {
-    global $prefix, $db, $admin_file, $cache, $admlang;
+    global $prefix, $nuke_db, $admin_file, $cache, $admlang;
 
     $name = Fix_Quotes($name);
     $image = Fix_Quotes($image);
@@ -799,13 +799,13 @@ function modadmin_edit_cat_save($cat, $name, $image)
     }
 
     $sql = "UPDATE `".$prefix."_modules_cat` SET `name`=\"".$name."\", `image`=\"".$image."\" WHERE `cid`=".$cat;
-    $db->sql_query($sql);
+    $nuke_db->sql_query($sql);
     $cache->delete('module_cats');
 }
 
 function modadmin_new_link ($title, $link) 
 {
-    global $db, $prefix, $cache, $admlang;
+    global $nuke_db, $prefix, $cache, $admlang;
 
     if(empty($title) || empty($link)) DisplayError($admlang['modblock']['link_title_error']);
 
@@ -813,17 +813,17 @@ function modadmin_new_link ($title, $link)
     $link = Fix_Quotes($link);
     Validate($link, 'url', 'modules');
     $sql = 'INSERT INTO `'.$prefix.'_modules` VALUES (NULL,"~l~'.$title.'","'.$link.'",0,0,1,0,0,1,"","")';
-    $db->sql_query($sql);
+    $nuke_db->sql_query($sql);
     $cache->delete('module_links');
     $cache->resync();
 }
 
 function modadmin_delete_link ($mid) 
 {
-    global $db, $prefix, $cache;
+    global $nuke_db, $prefix, $cache;
 
     $sql = 'DELETE FROM `'.$prefix.'_modules` WHERE `mid`='.$mid.' AND `title` LIKE "~l~%"';
-    $db->sql_query($sql);
+    $nuke_db->sql_query($sql);
     $cache->delete('module_links');
     $cache->resync();
 }
@@ -904,33 +904,33 @@ if (isset($_POST['order']))
 {
    $data = modadmin_parse_data($_POST['order']);
    modadmin_write_cats($data);
-   // redirect so refresh doesnt reset order to last save
-   redirect($admin_file.".php?op=modules&area=block");
+   // nuke_redirect so refresh doesnt reset order to last save
+   nuke_redirect($admin_file.".php?op=modules&area=block");
 }
 
 if(isset($_GET['delete'])) 
 {
    modadmin_delete_link($_GET['delete']);
-   redirect($admin_file.".php?op=modules&area=block");
+   nuke_redirect($admin_file.".php?op=modules&area=block");
 }
 
 if(isset($_GET['deletecat'])) 
 {
    modadmin_delete_cat($_GET['deletecat']);
-   redirect($admin_file.".php?op=modules&area=block");
+   nuke_redirect($admin_file.".php?op=modules&area=block");
 }
 
 if(isset($_GET['upcat']) || isset($_GET['downcat'])) 
 {
    $up = (isset($_GET['upcat'])) ? 1 : 0;
    modadmin_move_cat((isset($_GET['upcat'])) ? $_GET['upcat'] : $_GET['downcat'], $up);
-   redirect($admin_file.".php?op=modules&area=block");
+   nuke_redirect($admin_file.".php?op=modules&area=block");
 }
 
 if(isset($_POST['collapse']) && is_int(intval($_POST['collapse']))) 
 {
-   global $db, $prefix, $module_collapse, $cache;
-   $db->sql_query('UPDATE `'.$prefix.'_evolution` SET `evo_value`="'.intval($_POST['collapse']).'" WHERE `evo_field`= "module_collapse"');
+   global $nuke_db, $prefix, $module_collapse, $cache;
+   $nuke_db->sql_query('UPDATE `'.$prefix.'_evolution` SET `evo_value`="'.intval($_POST['collapse']).'" WHERE `evo_field`= "module_collapse"');
    $module_collapse = intval($_POST['collapse']);
    $cache->delete('evoconfig');
    $cache->resync();
@@ -946,7 +946,7 @@ if(isset($_GET['editcat']))
 if(isset($_POST['catsave'])) 
 {
    modadmin_edit_cat_save($_POST['catsave'], $_POST['cattitle'], $_POST['catimage']);
-   redirect($admin_file.".php?op=modules&area=block");
+   nuke_redirect($admin_file.".php?op=modules&area=block");
 }
 
 switch ($area) 

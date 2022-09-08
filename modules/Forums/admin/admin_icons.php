@@ -18,7 +18,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 if( !empty($setmodules) )
 {
@@ -38,10 +38,10 @@ require('./pagestart.' . $phpEx);
 // constants
 //
 $auths = array(
-	AUTH_ALL	=> $lang['Forum_ALL'],
-	AUTH_REG	=> $lang['Forum_REG'],
-	AUTH_MOD	=> $lang['Forum_MOD'],
-	AUTH_ADMIN	=> $lang['Forum_ADMIN'],
+	NUKE_AUTH_ALL	=> $lang['Forum_ALL'],
+	NUKE_AUTH_REG	=> $lang['Forum_REG'],
+	NUKE_AUTH_MOD	=> $lang['Forum_MOD'],
+	NUKE_AUTH_ADMIN	=> $lang['Forum_ADMIN'],
 );
 
 if (!isset($nav_separator)) $nav_separator = '&nbsp;->&nbsp;';
@@ -89,17 +89,17 @@ function icons_write()
 		$auth = "''";
 		switch ($icones[$i]['auth'])
 		{
-			case AUTH_REG:
-				$auth = 'AUTH_REG';
+			case NUKE_AUTH_REG:
+				$auth = 'NUKE_AUTH_REG';
 				break;
-			case AUTH_MOD:
-				$auth = 'AUTH_MOD';
+			case NUKE_AUTH_MOD:
+				$auth = 'NUKE_AUTH_MOD';
 				break;
-			case AUTH_ADMIN:
-				$auth = 'AUTH_ADMIN';
+			case NUKE_AUTH_ADMIN:
+				$auth = 'NUKE_AUTH_ADMIN';
 				break;
 			default:
-				$auth = 'AUTH_ALL';
+				$auth = 'NUKE_AUTH_ALL';
 				break;
 		}
 		$template->assign_block_vars('_outfile_icon', array(
@@ -227,12 +227,12 @@ if ($mode == 'del')
 			if (isset($map_icon[$replace_icon]))
 			{
 				// replace post icons
-				$sql = "UPDATE " . POSTS_TABLE . " SET post_icon=$replace_icon WHERE post_icon=$icon";
-				if (!$db->sql_query($sql)) message_die(GENERAL_ERROR, 'unable to update icon on posts', '', __LINE__, __FILE__, $sql);
+				$sql = "UPDATE " . NUKE_POSTS_TABLE . " SET post_icon=$replace_icon WHERE post_icon=$icon";
+				if (!$nuke_db->sql_query($sql)) message_die(NUKE_GENERAL_ERROR, 'unable to update icon on posts', '', __LINE__, __FILE__, $sql);
 
 				// replace topic icons
-				$sql = "UPDATE " . TOPICS_TABLE . " SET topic_icon=$replace_icon WHERE topic_icon=$icon";
-				if (!$db->sql_query($sql)) message_die(GENERAL_ERROR, 'unable to update icon on topics', '', __LINE__, __FILE__, $sql);
+				$sql = "UPDATE " . NUKE_BB_TOPICS_TABLE . " SET topic_icon=$replace_icon WHERE topic_icon=$icon";
+				if (!$nuke_db->sql_query($sql)) message_die(NUKE_GENERAL_ERROR, 'unable to update icon on topics', '', __LINE__, __FILE__, $sql);
 			}
 		}
 
@@ -254,17 +254,17 @@ if ($mode == 'del')
 			// check if posts are using this icon
 			if (!$used)
 			{
-				$sql = "SELECT * FROM " . POSTS_TABLE . " WHERE post_icon=$icon LIMIT 0, 1";
-				if (!$result = $db->sql_query($sql)) message_die(GENERAL_ERROR, 'unable to access posts', '', __LINE__, __FILE__, $sql);
-				$used = ($row = $db->sql_fetchrow($result));
+				$sql = "SELECT * FROM " . NUKE_POSTS_TABLE . " WHERE post_icon=$icon LIMIT 0, 1";
+				if (!$result = $nuke_db->sql_query($sql)) message_die(NUKE_GENERAL_ERROR, 'unable to access posts', '', __LINE__, __FILE__, $sql);
+				$used = ($row = $nuke_db->sql_fetchrow($result));
 			}
 
 			// check if topics are using this icon
 			if (!$used)
 			{
-				$sql = "SELECT * FROM " . TOPICS_TABLE . " WHERE topic_icon=$icon LIMIT 0, 1";
-				if (!$result = $db->sql_query($sql)) message_die(GENERAL_ERROR, 'unable to access topics', '', __LINE__, __FILE__, $sql);
-				$used = ($row = $db->sql_fetchrow($result));
+				$sql = "SELECT * FROM " . NUKE_BB_TOPICS_TABLE . " WHERE topic_icon=$icon LIMIT 0, 1";
+				if (!$result = $nuke_db->sql_query($sql)) message_die(NUKE_GENERAL_ERROR, 'unable to access topics', '', __LINE__, __FILE__, $sql);
+				$used = ($row = $nuke_db->sql_fetchrow($result));
 			}
 
 			// some prevent check
@@ -281,7 +281,7 @@ if ($mode == 'del')
 			// send error messages
 			if ($error)
 			{
-				message_die(GENERAL_MESSAGE, '<br /><br />' . $error_msg . '<br /><br /><br />');
+				message_die(NUKE_GENERAL_MESSAGE, '<br /><br />' . $error_msg . '<br /><br /><br />');
 			}
 
 			// send the confirm or replace template
@@ -456,7 +456,7 @@ if ($mode == 'edit')
 		// error found, send message
 		if ($error)
 		{
-			message_die(GENERAL_MESSAGE, '<br /><br />' . $error_msg . '<br /><br /><br />');
+			message_die(NUKE_GENERAL_MESSAGE, '<br /><br />' . $error_msg . '<br /><br /><br />');
 		}
 
 		// creation : get a new indice
@@ -641,12 +641,12 @@ if ($mode == 'edit')
 if ($mode == '')
 {
 	// get the icons usage
-	$sql = "SELECT post_icon, count(*) as count FROM " . POSTS_TABLE . " 
+	$sql = "SELECT post_icon, count(*) as count FROM " . NUKE_POSTS_TABLE . " 
 			GROUP BY post_icon 
 			ORDER BY post_icon";
-	if (!$result = $db->sql_query($sql)) message_die(GENERAL_ERROR, 'unable to count icons on posts', '', __LINE__, __FILE__, $sql);
+	if (!$result = $nuke_db->sql_query($sql)) message_die(NUKE_GENERAL_ERROR, 'unable to count icons on posts', '', __LINE__, __FILE__, $sql);
 	$total_posts = 0;
-	while ($row = $db->sql_fetchrow($result))
+	while ($row = $nuke_db->sql_fetchrow($result))
 	{
 		$total_posts = $total_posts + $row['count'];
 		$row['post_icon'] = intval($row['post_icon']);

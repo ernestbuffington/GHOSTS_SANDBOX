@@ -1,9 +1,9 @@
 <table width="100%" cellspacing="0" cellpadding="4" border="0" align="center">
    <tr>
       <td width="100%" colspan="2" valign="top">
-      <!-- MOD GLANCE BEGIN -->
+      <!-- NUKE_MOD GLANCE BEGIN -->
       {GLANCE_OUTPUT}
-      <!-- MOD GLANCE END -->
+      <!-- NUKE_MOD GLANCE END -->
    </tr>
 </table>
 <script language="Javascript" type="text/javascript">
@@ -63,11 +63,11 @@
             </tr>
             <tr>
                 <td colspan="2" height="100%" valign="top"><span class="postbody">{postrow.MESSAGE}</span>{postrow.ATTACHMENTS}<span class="postbody"></span></td>
-                <!-- Start add - Bottom aligned signature MOD -->
+                <!-- Start add - Bottom aligned signature NUKE_MOD -->
                 </tr> 
                 <tr> 
                         <td colspan="2"><SPAN CLASS="postbody">{postrow.SIGNATURE}</SPAN><SPAN CLASS="gensmall">{postrow.EDITED_MESSAGE}</SPAN></td> 
-                <!-- End add - Bottom aligned signature MOD -->
+                <!-- End add - Bottom aligned signature NUKE_MOD -->
             </tr>
         </table></td>
     </tr>

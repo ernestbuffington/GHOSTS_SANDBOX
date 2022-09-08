@@ -32,19 +32,19 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-if (defined('IN_PHPBB'))
+if (defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
     exit;
 }
 
-if (defined('IN_PHPBB'))
+if (defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
     exit;
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.' . $phpEx);
@@ -112,7 +112,7 @@ else
 
 if ($allowed == FALSE)
 {
-    message_die(GENERAL_MESSAGE, $lang['Denied_Message']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['Denied_Message']);
 }
 
 // Delete the following line, to uncomment this block
@@ -124,7 +124,7 @@ $thumbnail = get_var('thumb', 0);
 // Send file to browser
 function send_file_to_browser($attachment, $upload_dir)
 {
-    global $_SERVER, $HTTP_USER_AGENT, $HTTP_SERVER_VARS, $lang, $db, $attach_config;
+    global $_SERVER, $HTTP_USER_AGENT, $HTTP_SERVER_VARS, $lang, $nuke_db, $attach_config;
 
     $filename = ($upload_dir == '') ? $attachment['physical_filename'] : $upload_dir . '/' . $attachment['physical_filename'];
 
@@ -134,7 +134,7 @@ function send_file_to_browser($attachment, $upload_dir)
     {
         if (@!file_exists(@amod_realpath($filename)))
         {
-            message_die(GENERAL_ERROR, $lang['Error_no_attachment'] . "<br /><br /><strong>404 File Not Found:</strong> The File <i>" . $filename . "</i> does not exist.");
+            message_die(NUKE_GENERAL_ERROR, $lang['Error_no_attachment'] . "<br /><br /><strong>404 File Not Found:</strong> The File <i>" . $filename . "</i> does not exist.");
         }
         else
         {
@@ -255,7 +255,7 @@ function send_file_to_browser($attachment, $upload_dir)
 
         if (!$result)
         {
-            message_die(GENERAL_ERROR, $lang['Error_no_attachment'] . "<br /><br /><strong>404 File Not Found:</strong> The File <i>" . $filename . "</i> does not exist.");
+            message_die(NUKE_GENERAL_ERROR, $lang['Error_no_attachment'] . "<br /><br /><strong>404 File Not Found:</strong> The File <i>" . $filename . "</i> does not exist.");
         }
 
         @ftp_quit($conn_id);
@@ -270,7 +270,7 @@ function send_file_to_browser($attachment, $upload_dir)
     }
     else
     {
-        message_die(GENERAL_ERROR, $lang['Error_no_attachment'] . "<br /><br /><strong>404 File Not Found:</strong> The File <i>" . $filename . "</i> does not exist.");
+        message_die(NUKE_GENERAL_ERROR, $lang['Error_no_attachment'] . "<br /><br /><strong>404 File Not Found:</strong> The File <i>" . $filename . "</i> does not exist.");
     }
 
     exit;
@@ -282,36 +282,36 @@ function send_file_to_browser($attachment, $upload_dir)
 //
 // Start Session Management
 //
-$userdata = session_pagestart($user_ip, PAGE_INDEX);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
 init_userprefs($userdata);
 
 if (!$download_id)
 {
-    message_die(GENERAL_ERROR, $lang['No_attachment_selected']);
+    message_die(NUKE_GENERAL_ERROR, $lang['No_attachment_selected']);
 }
 
-if ($attach_config['disable_mod'] && $userdata['user_level'] != ADMIN)
+if ($attach_config['disable_mod'] && $userdata['user_level'] != NUKE_ADMIN)
 {
-    message_die(GENERAL_MESSAGE, $lang['Attachment_feature_disabled']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['Attachment_feature_disabled']);
 }
 
 $sql = 'SELECT *
     FROM ' . ATTACHMENTS_DESC_TABLE . '
     WHERE attach_id = ' . (int) $download_id;
 
-if (!($result = $db->sql_query($sql)))
+if (!($result = $nuke_db->sql_query($sql)))
 {
-    message_die(GENERAL_ERROR, 'Could not query attachment informations', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query attachment informations', '', __LINE__, __FILE__, $sql);
 }
 
-if (!($attachment = $db->sql_fetchrow($result)))
+if (!($attachment = $nuke_db->sql_fetchrow($result)))
 {
-    message_die(GENERAL_MESSAGE, $lang['Error_no_attachment']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['Error_no_attachment']);
 }
 
 $attachment['physical_filename'] = basename($attachment['physical_filename']);
 
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 
 // get forum_id for attachment authorization or private message authorization
 $authorised = false;
@@ -320,13 +320,13 @@ $sql = 'SELECT *
     FROM ' . ATTACHMENTS_TABLE . '
     WHERE attach_id = ' . (int) $attachment['attach_id'];
 
-if (!($result = $db->sql_query($sql)))
+if (!($result = $nuke_db->sql_query($sql)))
 {
-    message_die(GENERAL_ERROR, 'Could not query attachment informations', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query attachment informations', '', __LINE__, __FILE__, $sql);
 }
 
-$auth_pages = $db->sql_fetchrowset($result);
-$num_auth_pages = $db->sql_numrows($result);
+$auth_pages = $nuke_db->sql_fetchrowset($result);
+$num_auth_pages = $nuke_db->sql_numrows($result);
 
 for ($i = 0; $i < $num_auth_pages && $authorised == false; $i++)
 {
@@ -335,20 +335,20 @@ for ($i = 0; $i < $num_auth_pages && $authorised == false; $i++)
     if ($auth_pages[$i]['post_id'] != 0)
     {
         $sql = 'SELECT forum_id
-            FROM ' . POSTS_TABLE . '
+            FROM ' . NUKE_POSTS_TABLE . '
             WHERE post_id = ' . (int) $auth_pages[$i]['post_id'];
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Could not query post information', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not query post information', '', __LINE__, __FILE__, $sql);
         }
 
-        $row = $db->sql_fetchrow($result);
+        $row = $nuke_db->sql_fetchrow($result);
 
         $forum_id = $row['forum_id'];
 
         $is_auth = array();
-        $is_auth = auth(AUTH_ALL, $forum_id, $userdata);
+        $is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata);
 
         if ($is_auth['auth_download'])
         {
@@ -357,7 +357,7 @@ for ($i = 0; $i < $num_auth_pages && $authorised == false; $i++)
     }
     else
     {
-        if ( (intval($attach_config['allow_pm_attach'])) && ( ($userdata['user_id'] == $auth_pages[$i]['user_id_2']) || ($userdata['user_id'] == $auth_pages[$i]['user_id_1']) ) || ($userdata['user_level'] == ADMIN) )
+        if ( (intval($attach_config['allow_pm_attach'])) && ( ($userdata['user_id'] == $auth_pages[$i]['user_id_2']) || ($userdata['user_id'] == $auth_pages[$i]['user_id_1']) ) || ($userdata['user_level'] == NUKE_ADMIN) )
         {
             $authorised = TRUE;
         }
@@ -365,7 +365,7 @@ for ($i = 0; $i < $num_auth_pages && $authorised == false; $i++)
 }
 if (!$authorised)
 {
-    message_die(GENERAL_MESSAGE, $lang['Sorry_auth_view_attach']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['Sorry_auth_view_attach']);
 }
 
 //
@@ -375,13 +375,13 @@ $sql = "SELECT e.extension, g.download_mode
 	FROM " . EXTENSION_GROUPS_TABLE . " g, " . EXTENSIONS_TABLE . " e
     WHERE (g.allow_group = 1) AND (g.group_id = e.group_id)";
 
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'Could not query Allowed Extensions.', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query Allowed Extensions.', '', __LINE__, __FILE__, $sql);
 }
 
-$rows = $db->sql_ufetchrowset($sql);
-$num_rows = $db->sql_numrows($result);
+$rows = $nuke_db->sql_ufetchrowset($sql);
+$num_rows = $nuke_db->sql_numrows($result);
 
 for ($i = 0; $i < $num_rows; $i++)
 {
@@ -391,9 +391,9 @@ for ($i = 0; $i < $num_rows; $i++)
 }
 
 // disallowed ?
-if (!in_array($attachment['extension'], $allowed_extensions) && $userdata['user_level'] != ADMIN)
+if (!in_array($attachment['extension'], $allowed_extensions) && $userdata['user_level'] != NUKE_ADMIN)
 {
-    message_die(GENERAL_MESSAGE, sprintf($lang['Extension_disabled_after_posting'], $attachment['extension']));
+    message_die(NUKE_GENERAL_MESSAGE, sprintf($lang['Extension_disabled_after_posting'], $attachment['extension']));
 }
 
 $download_mode = intval($download_mode[$attachment['extension']]);
@@ -410,9 +410,9 @@ if (!$thumbnail)
     SET download_count = download_count + 1
     WHERE attach_id = ' . (int) $attachment['attach_id'];
 
-    if (!$db->sql_query($sql))
+    if (!$nuke_db->sql_query($sql))
     {
-        message_die(GENERAL_ERROR, 'Couldn\'t update attachment download count', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t update attachment download count', '', __LINE__, __FILE__, $sql);
     }
 }
 
@@ -433,29 +433,29 @@ if ($download_mode == PHYSICAL_LINK)
     {
         if (trim($attach_config['download_path']) == '')
         {
-            message_die(GENERAL_ERROR, 'Physical Download not possible with the current Attachment Setting');
+            message_die(NUKE_GENERAL_ERROR, 'Physical Download not possible with the current Attachment Setting');
         }
 
         $url = trim($attach_config['download_path']) . '/' . $attachment['physical_filename'];
-        $redirect_path = $url;
+        $nuke_redirect_path = $url;
     }
     else
     {
         $url = $upload_dir . '/' . $attachment['physical_filename'];
 //        $url = preg_replace('/^\/?(.*?\/)?$/', '\1', trim($url));
-        $redirect_path = $server_protocol . $server_name . $server_port . $script_name . $url;
+        $nuke_redirect_path = $server_protocol . $server_name . $server_port . $script_name . $url;
     }
 
     // Redirect via an HTML form for PITA webservers
     if (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')))
     {
-        header('Refresh: 0; URL=' . $redirect_path);
-        echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><meta http-equiv="refresh" content="0; url=' . $redirect_path . '"><title>Redirect</title></head><body><div align="center">If your browser does not support meta redirection please click <a href="' . $redirect_path . '">HERE</a> to be redirected</div></body></html>';
+        header('Refresh: 0; URL=' . $nuke_redirect_path);
+        echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><meta http-equiv="refresh" content="0; url=' . $nuke_redirect_path . '"><title>Redirect</title></head><body><div align="center">If your browser does not support meta nuke_redirection please click <a href="' . $nuke_redirect_path . '">HERE</a> to be nuke_redirected</div></body></html>';
         exit;
     }
 
     // Behave as per HTTP/1.1 spec for others
-    redirect($redirect_path);
+    nuke_redirect($nuke_redirect_path);
     exit;
 }
 else

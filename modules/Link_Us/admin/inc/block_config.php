@@ -31,7 +31,7 @@
 
 LinkusAdminMain();
 
-$config = $db->sql_ufetchrow("SELECT * FROM ".$prefix."_link_us_config LIMIT 0,1");
+$config = $nuke_db->sql_ufetchrow("SELECT * FROM ".$prefix."_link_us_config LIMIT 0,1");
 
 OpenTable();
 

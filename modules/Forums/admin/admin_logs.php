@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -61,22 +61,22 @@ else
 
 if ( file_exists($phpbb2_root_path . 'log_actions_db_update.' . $phpEx) )
 {
-    message_die(GENERAL_MESSAGE, $lang['File_not_deleted']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['File_not_deleted']);
 }
 
 $sql = "SELECT config_value AS all_admin
-FROM " . LOGS_CONFIG_TABLE . "
+FROM " . NUKE_BB_LOGS_CONFIG_TABLE . "
 WHERE config_name = 'all_admin' ";
 
-if(!$result = $db->sql_query($sql)) 
+if(!$result = $nuke_db->sql_query($sql)) 
 { 
-   message_die(CRITICAL_ERROR, "Could not query log config informations", "", __LINE__, __FILE__, $sql); 
+   message_die(NUKE_CRITICAL_ERROR, "Could not query log config informations", "", __LINE__, __FILE__, $sql); 
 }
-$row = $db->sql_fetchrow($result);
+$row = $nuke_db->sql_fetchrow($result);
 $all_admin_authorized = $row['all_admin'];
 if ( $all_admin_authorized == '0' && $userdata['user_id'] <> '2' && !is_mod_admin($module_name) && $userdata['user_view_log'] <> '1' )
 {
-    message_die(GENERAL_MESSAGE, $lang['Admin_not_authorized']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['Admin_not_authorized']);
 }
 
 //
@@ -158,14 +158,14 @@ else
 }
 
 $sql = "SELECT * 
-    FROM " . LOGS_TABLE . "
+    FROM " . NUKE_BB_LOGS_TABLE . "
     ORDER BY $order_by "; 
-    if(!$result = $db->sql_query($sql)) 
+    if(!$result = $nuke_db->sql_query($sql)) 
     { 
-       message_die(CRITICAL_ERROR, "Could not query log informations", "", __LINE__, __FILE__, $sql); 
+       message_die(NUKE_CRITICAL_ERROR, "Could not query log informations", "", __LINE__, __FILE__, $sql); 
     } 
-    $rows = $db->sql_fetchrowset($result); 
-    $numrows = $db->sql_numrows($result); 
+    $rows = $nuke_db->sql_fetchrowset($result); 
+    $numrows = $nuke_db->sql_numrows($result); 
     for ($i = 0; $i < $numrows; $i++) 
     {
         $id_log = $rows[$i]['log_id'];
@@ -177,13 +177,13 @@ $sql = "SELECT *
         $date = $rows[$i]['time']; 
 
         $sql = "SELECT topic_title 
-            FROM " . TOPICS_TABLE . "
+            FROM " . NUKE_BB_TOPICS_TABLE . "
             WHERE topic_id = '$topic'";
-        if(!$result = $db->sql_query($sql)) 
+        if(!$result = $nuke_db->sql_query($sql)) 
         { 
-           message_die(CRITICAL_ERROR, "Could not query topic_title informations", "", __LINE__, __FILE__, $sql); 
+           message_die(NUKE_CRITICAL_ERROR, "Could not query topic_title informations", "", __LINE__, __FILE__, $sql); 
         }
-        $topic_title = $db->sql_fetchrow($result);
+        $topic_title = $nuke_db->sql_fetchrow($result);
         $temp_url = append_sid('admin_users.'.$phpEx.'?mode=edit&u=' . $user_id); 
         $temp2_url = ('./../../../modules.php?name=Forums&file=viewtopic&t=' . $topic);
 
@@ -195,14 +195,14 @@ $sql = "SELECT *
         }        
         
         $sql = "SELECT user_level
-            FROM " . USERS_TABLE . "
+            FROM " . NUKE_USERS_TABLE . "
             WHERE user_id = $user_id";
         
-        if(!$result = $db->sql_query($sql)) 
+        if(!$result = $nuke_db->sql_query($sql)) 
         { 
-           message_die(CRITICAL_ERROR, "Could not query user_level informations", "", __LINE__, __FILE__, $sql); 
+           message_die(NUKE_CRITICAL_ERROR, "Could not query user_level informations", "", __LINE__, __FILE__, $sql); 
         } 
-        $row = $db->sql_fetchrow($result);
+        $row = $nuke_db->sql_fetchrow($result);
         $level = $row['user_level'];
 
          $template->assign_block_vars('record_row', array( 
@@ -216,7 +216,7 @@ $sql = "SELECT *
             'DATE' => create_date($board_config['default_dateformat'], $date, $board_config['board_timezone'])) 
          );
     }
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 $log_list = ( isset($HTTP_POST_VARS['log_list']) ) ?  $HTTP_POST_VARS['log_list'] : array();
 $delete = ( isset($HTTP_POST_VARS['delete']) ) ?  TRUE : FALSE ;
 
@@ -227,32 +227,32 @@ if ( $log_list_sql != '' )
     if ( $delete )
     {
         $sql = "DELETE 
-        FROM " . LOGS_TABLE . " 
+        FROM " . NUKE_BB_LOGS_TABLE . " 
         WHERE log_id IN (" . $log_list_sql . ")";
 
-        if( !$result = $db->sql_query($sql) )
+        if( !$result = $nuke_db->sql_query($sql) )
         {
-            message_die(GENERAL_ERROR, 'Could not delete Logs', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not delete Logs', '', __LINE__, __FILE__, $sql);
         }
         else
         {
-            $redirect_page = append_sid("admin_logs.$phpEx");
-            $l_redirect = sprintf($lang['Click_return_admin_log'], '<a href="' . $redirect_page . '">', '</a>');
+            $nuke_redirect_page = append_sid("admin_logs.$phpEx");
+            $l_nuke_redirect = sprintf($lang['Click_return_admin_log'], '<a href="' . $nuke_redirect_page . '">', '</a>');
 
-            message_die(GENERAL_MESSAGE, $lang['Log_delete'] . '<br /><br />' . $l_redirect);
+            message_die(NUKE_GENERAL_MESSAGE, $lang['Log_delete'] . '<br /><br />' . $l_nuke_redirect);
         }
     }
 }
 if ( $board_config['topics_per_page'] > 10 )
 {
     $sql = "SELECT count(*) AS total
-        FROM " . LOGS_TABLE;
-        if ( !($result = $db->sql_query($sql)) ) 
+        FROM " . NUKE_BB_LOGS_TABLE;
+        if ( !($result = $nuke_db->sql_query($sql)) ) 
        { 
-          message_die(GENERAL_ERROR, 'Error getting total informations for logs', '', __LINE__, __FILE__, $sql); 
+          message_die(NUKE_GENERAL_ERROR, 'Error getting total informations for logs', '', __LINE__, __FILE__, $sql); 
        }
 
-       if ( $total = $db->sql_fetchrow($result) ) 
+       if ( $total = $nuke_db->sql_fetchrow($result) ) 
        { 
           $total_records = $total['total']; 
     

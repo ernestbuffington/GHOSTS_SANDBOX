@@ -34,7 +34,7 @@ define("_YA_LMTOPTIONS","Limits Options");
 define("_YA_SERVERMAILNOTE","(Only if server can send mail)");
 define("_YA_","");
 
-define("_ACCDELETED","Account has been Deactivated");
+define("_ACCNUKE_DELETED","Account has been Deactivated");
 define("_ACCESSTO", "Access to");
 define("_ACCOUNTCREATED","New User Account Created!");
 define("_ACCOUNTRESERVED","New User Account Reserved!");
@@ -222,7 +222,7 @@ define("_MEMADD","Member Added");
 define("_MEMAPL","Member Applied");
 define("_MEMBERGROUPS","Group Memberships");
 define("_MEMDEL","Member Deactivated");
-define("_NAMEDEL","<strong>DELETED</strong>");
+define("_NAMEDEL","<strong>NUKE_DELETED</strong>");
 define("_MESSAGEACTIVATE","Activate Broadcast Public Messages?");
 define("_MESSAGES","Messages");
 define("_MODIFY","Modify");

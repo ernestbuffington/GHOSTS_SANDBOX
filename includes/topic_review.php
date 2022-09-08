@@ -36,14 +36,14 @@
 	  Post Icons                               v1.0.1
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
 
 function topic_review($topic_id, $is_inline_review)
 {
-        global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb2_root_path, $userdata, $user_ip, $orig_word, $replacement_word, $starttime;
+        global $nuke_db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb2_root_path, $userdata, $user_ip, $orig_word, $replacement_word, $starttime;
 /*****[BEGIN]******************************************
  [ Mod:     Post Icons                         v1.0.1 ]
  ******************************************************/
@@ -56,14 +56,14 @@ function topic_review($topic_id, $is_inline_review)
         {
             if ( !isset($topic_id) || !$topic_id)
             {
-                message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+                message_die(NUKE_GENERAL_MESSAGE, 'Topic_post_not_exist');
             }
 
                 //
                 // Get topic info ...
                 //
                 $sql = "SELECT t.topic_title, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments
-                        FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
+                        FROM " . NUKE_BB_TOPICS_TABLE . " t, " . NUKE_FORUMS_TABLE . " f
                         WHERE t.topic_id = '$topic_id'
                                 AND f.forum_id = t.forum_id";
 /*****[BEGIN]******************************************
@@ -74,16 +74,16 @@ function topic_review($topic_id, $is_inline_review)
 /*****[END]********************************************
  [ Mod:    Attachment Mod                      v2.4.1 ]
  ******************************************************/
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
                 }
 
-                if ( !($forum_row = $db->sql_fetchrow($result)) )
+                if ( !($forum_row = $nuke_db->sql_fetchrow($result)) )
                 {
-                        message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+                        message_die(NUKE_GENERAL_MESSAGE, 'Topic_post_not_exist');
                 }
-                $db->sql_freeresult($result);
+                $nuke_db->sql_freeresult($result);
 
                 $forum_id = $forum_row['forum_id'];
                 $topic_title = $forum_row['topic_title'];
@@ -98,11 +98,11 @@ function topic_review($topic_id, $is_inline_review)
                 //
 
                 $is_auth = array();
-                $is_auth = auth(AUTH_ALL, $forum_id, $userdata, $forum_row);
+                $is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata, $forum_row);
 
                 if ( !$is_auth['auth_read'] )
                 {
-                        message_die(GENERAL_MESSAGE, sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']));
+                        message_die(NUKE_GENERAL_MESSAGE, sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']));
                 }
         }
 
@@ -143,15 +143,15 @@ function topic_review($topic_id, $is_inline_review)
         // Go ahead and pull all data for this topic
         //
         $sql = "SELECT u.username, u.user_id, p.*,  pt.post_text, pt.post_subject, pt.bbcode_uid
-                FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt
+                FROM " . NUKE_POSTS_TABLE . " p, " . NUKE_USERS_TABLE . " u, " . NUKE_POSTS_TEXT_TABLE . " pt
                 WHERE p.topic_id = '$topic_id'
                         AND p.poster_id = u.user_id
                         AND p.post_id = pt.post_id
                 ORDER BY p.post_time DESC
                 LIMIT " . $board_config['posts_per_page'];
-        if ( !($result = $db->sql_query($sql,false)) )
+        if ( !($result = $nuke_db->sql_query($sql,false)) )
         {
-                message_die(GENERAL_ERROR, 'Could not obtain post/user information', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not obtain post/user information', '', __LINE__, __FILE__, $sql);
         }
 
         /*--FNA #1--*/
@@ -161,7 +161,7 @@ function topic_review($topic_id, $is_inline_review)
         // and it goes like this ...
         //
         
-        $row = $db->sql_fetchrow($result,SQL_BOTH);
+        $row = $nuke_db->sql_fetchrow($result,SQL_BOTH);
         if ( $row )
         {
 /*****[BEGIN]******************************************
@@ -171,11 +171,11 @@ function topic_review($topic_id, $is_inline_review)
 				if( $userdata['session_logged_in'] ) 
 				{
 					$sql = "SELECT p.poster_id, p.topic_id
-						FROM " . POSTS_TABLE . " p
+						FROM " . NUKE_POSTS_TABLE . " p
 						WHERE p.topic_id = $topic_id
 						AND p.poster_id = " . $userdata['user_id'];
-					$resultat = $db->sql_query($sql);
-					$valid = $db->sql_numrows($resultat) ? TRUE : FALSE;
+					$resultat = $nuke_db->sql_query($sql);
+					$valid = $nuke_db->sql_numrows($resultat) ? TRUE : FALSE;
 				}
 /*****[END]********************************************
  [ Mod:    Hide Mod                            v1.2.0 ]
@@ -204,12 +204,12 @@ function topic_review($topic_id, $is_inline_review)
                         //
                         // Handle anon users posting with usernames
                         //
-                        if( $poster_id == ANONYMOUS && $row['post_username'] != '' )
+                        if( $poster_id == NUKE_ANONYMOUS && $row['post_username'] != '' )
                         {
                                 $poster = $row['post_username'];
                                 $poster_rank = $lang['Guest'];
                         }
-                        elseif ( $poster_id == ANONYMOUS )
+                        elseif ( $poster_id == NUKE_ANONYMOUS )
                         {
                                 $poster = $lang['Guest'];
                                 $poster_rank = '';
@@ -350,13 +350,13 @@ function topic_review($topic_id, $is_inline_review)
 
                         $i++;
                 }
-                while ( $row = $db->sql_fetchrow($result) );
+                while ( $row = $nuke_db->sql_fetchrow($result) );
         }
         else
         {
-                message_die(GENERAL_MESSAGE, 'Topic_post_not_exist', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_MESSAGE, 'Topic_post_not_exist', '', __LINE__, __FILE__, $sql);
         }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
         $template->assign_vars(array(
                 'L_AUTHOR' => $lang['Author'],

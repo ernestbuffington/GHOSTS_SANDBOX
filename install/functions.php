@@ -20,7 +20,7 @@
                        for Nuke-Evolution and/or Xtreme
 ************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 $data_file = 'install/data.txt';
 
 if (!$open_data = @fopen($data_file, 'r')){
@@ -99,11 +99,12 @@ function generate_config(){
     $contents = @fread ($handle, filesize ($filename));
     @fclose ($handle);
 
-    $contents = str_replace("%dbhost%", $_SESSION['dbhost'], $contents);
-    $contents = str_replace("%dbname%", $_SESSION['dbname'], $contents);
-    $contents = str_replace("%dbuname%", $_SESSION['dbuser'], $contents);
-    $contents = str_replace("%dbpass%", $_SESSION['dbpass'], $contents);
-    $contents = str_replace("%prefix%", $_SESSION['prefix'], $contents);
+    $contents = str_replace("%dbhost%", $_SESSION['dbhost_a'], $contents);
+    $contents = str_replace("%dbname%", $_SESSION['dbname_a'], $contents);
+    $contents = str_replace("%dbuname%", $_SESSION['dbuser_a'], $contents);
+    $contents = str_replace("%dbpass%", $_SESSION['dbpass_a'], $contents);
+    
+	$contents = str_replace("%prefix%", $_SESSION['prefix'], $contents);
     $contents = str_replace("%user_prefix%", $_SESSION['user_prefix'], $contents);
     $contents = str_replace("%dbtype%", $_SESSION['dbtype'], $contents);
 
@@ -217,19 +218,22 @@ function validate_data($post){
 
 	$error = '';
     $message = '';
-    $dbhost = (isset($_POST['dbhost'])) ? $_POST['dbhost'] : $error .= '<font color="red">'.$install_lang['dbhost_error'].'</font><br />';
-    $dbname = (isset($_POST['dbname'])) ? $_POST['dbname'] : $error .= '<font color="red">'.$install_lang['dbname_error'].'</font><br />';
-    $dbuser = (isset($_POST['dbuser'])) ? $_POST['dbuser'] : $error .= '<font color="red">'.$install_lang['dbuser_error'].'</font>br />';
-    $dbpass = (isset($_POST['dbpass'])) ? $_POST['dbpass'] : '';
-    $prefix = (isset($_POST['prefix'])) ? $_POST['prefix'] : $error .= '<font color="red">'.$install_lang['prefix_error'].'</font><br />';
-    $user_prefix = (isset($_POST['user_prefix'])) ? $_POST['user_prefix'] : $error .= '<font color="red">'.$install_lang['uprefix_error'].'</font><br />';
-    $dbtype = (isset($_POST['dbtype'])) ? $_POST['dbtype'] : $error .= '<font color="red">'.$install_lang['dbtype_error'].'</font><br />';
+    
+	$nuke_dbhost = (isset($_POST['dbhost_a'])) ? $_POST['dbhost_a'] : $error .= '<font color="red">'.$install_lang['dbhost_error'].'</font><br />';
+    $nuke_dbname = (isset($_POST['dbname_a'])) ? $_POST['dbname_a'] : $error .= '<font color="red">'.$install_lang['dbname_error'].'</font><br />';
+    $nuke_dbuser_a = (isset($_POST['dbuser_a'])) ? $_POST['dbuser_a'] : $error .= '<font color="red">'.$install_lang['dbuser_error'].'</font>br />';
+    $nuke_dbpass = (isset($_POST['dbpass_a'])) ? $_POST['dbpass_a'] : '';
+    
+	$prefix = (isset($_POST['prefix'])) ? $_POST['prefix'] : $error .= '<font color="red">'.$install_lang['prefix_error'].'</font><br />';
+    
+	$nuke_user_prefix = (isset($_POST['user_prefix'])) ? $_POST['user_prefix'] : $error .= '<font color="red">'.$install_lang['uprefix_error'].'</font><br />';
+    $nuke_dbtype = (isset($_POST['dbtype'])) ? $_POST['dbtype'] : $error .= '<font color="red">'.$install_lang['dbtype_error'].'</font><br />';
     if (!empty($error)){
         $error .= '<center><input type="hidden" name="step" value="'.$next_step.'" /><input type="submit" class="button" name="submit" value="'.$install_lang['continue'].' '.$next_step.'" disabled="disabled" /></center>';
         return $error;
     }
 
-    if (!($server_check = @mysqli_connect($dbhost, $dbuser, $dbpass, $dbname))){
+    if (!($server_check = @mysqli_connect($nuke_dbhost, $nuke_dbuser_a, $nuke_dbpass, $nuke_dbname))){
         $error .= '<font color="red">'.$install_lang['connection_failed'].'</font><br />';
     }
 
@@ -238,13 +242,14 @@ function validate_data($post){
         return $error;
     }
 
-    $_SESSION['dbhost'] = $dbhost;
-    $_SESSION['dbname'] = $dbname;
-    $_SESSION['dbuser'] = $dbuser;
-    $_SESSION['dbpass'] = $dbpass;
-    $_SESSION['prefix'] = $prefix;
-    $_SESSION['user_prefix'] = $user_prefix;
-    $_SESSION['dbtype'] = $dbtype;
+    $_SESSION['dbhost_a'] = $nuke_dbhost;
+    $_SESSION['dbname_a'] = $nuke_dbname;
+    $_SESSION['dbuser_a'] = $nuke_dbuser_a;
+    $_SESSION['dbpass_a'] = $nuke_dbpass;
+    
+	$_SESSION['prefix'] = $prefix;
+    $_SESSION['user_prefix'] = $nuke_user_prefix;
+    $_SESSION['dbtype'] = $nuke_dbtype;
 
     if (generate_config()){
         $message .= '<font color="green">'.$install_lang['config_success'].'</font><br />';
@@ -257,7 +262,7 @@ function validate_data($post){
 }
 
 function do_sql($install_file){
-    global $nuke_name, $next_step, $step, $install_lang, $prefix, $user_prefix, $server_check;
+    global $nuke_name, $next_step, $step, $install_lang, $prefix, $nuke_user_prefix, $server_check;
 
     if(!$handle = @fopen($install_file, 'r')){
         $message = $install_lang['cant_open'].' '.$install_file;
@@ -312,8 +317,8 @@ function do_sql($install_file){
             $inside_quote = 1;
             $quote_inside = $current_char;
         } elseif (!$inside_quote && $current_char == ';'){
-            if ($user_prefix != "nuke" && !empty($user_prefix)){
-                $data_buffer = str_replace("`nuke_users`", "`" . $user_prefix . "_users`", $data_buffer);
+            if ($nuke_user_prefix != "nuke" && !empty($nuke_user_prefix)){
+                $data_buffer = str_replace("`nuke_users`", "`" . $nuke_user_prefix . "_users`", $data_buffer);
             }
             if($prefix != "nuke" && !empty($prefix)) {
                 $data_buffer = str_replace("`nuke_", "`".$prefix."_", $data_buffer);

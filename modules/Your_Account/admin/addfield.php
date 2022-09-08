@@ -41,7 +41,7 @@ if (!defined('CNBYA')) {
 
 if(is_mod_admin($module_name)) {
 
-redirect("modules/Forums/admin/admin_xdata_fields.php?mode=add");
+nuke_redirect("modules/Forums/admin/admin_xdata_fields.php?mode=add");
 
    /* $pagetitle = ": "._USERADMIN." - "._ADDFILED;
     include_once(NUKE_BASE_DIR.'header.php');
@@ -59,8 +59,8 @@ redirect("modules/Forums/admin/admin_xdata_fields.php?mode=add");
     echo "<center><table border='0'>\n";
     echo "<form action='modules.php?name=$module_name&amp;file=admin' method='post'>\n";
     echo "<tr><td bgcolor='$bgcolor2'>ID</td><td bgcolor='$bgcolor2'>"._FIELDNAME."*</td><td bgcolor='$bgcolor2'>"._FIELDVALUE."**</td><td bgcolor='$bgcolor2'>"._FIELDSIZE."</td><td bgcolor='$bgcolor2'>"._FIELDNEED."</td><td bgcolor='$bgcolor2'>"._FIELDVPOS."</td><td bgcolor='$bgcolor2'>"._YA_PUBLIC."</td><td bgcolor='$bgcolor2'>"._FIELDDEL."</td></tr>\n";
-    $result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field ORDER BY pos");
-    while ($sqlvalue = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field ORDER BY pos");
+    while ($sqlvalue = $nuke_db->sql_fetchrow($result)) {
     $t = $sqlvalue[fid];
     echo "<tr><td bgcolor='$bgcolor2'>$sqlvalue[fid]</td><td bgcolor='$bgcolor2'><input type='text' name='field_name[$t]' value='$sqlvalue[name]' size='20' maxlength='20'></td><td bgcolor='$bgcolor2'><input type='text' name='field_value[$t]' value='$sqlvalue[value]' size='20' maxlength=$sqlvalue[size]></td><td bgcolor='$bgcolor2'><input type='text' name='field_size[$t]' value='$sqlvalue[size]' size='4' maxlength='4'></td><td bgcolor='$bgcolor2'>";
     echo "<select name='field_need[$t]'>\n";

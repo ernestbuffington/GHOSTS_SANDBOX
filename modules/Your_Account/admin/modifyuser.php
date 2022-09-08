@@ -52,13 +52,13 @@ echo "<br />";
 title(_USERADMIN." - "._USERUPDATE);
 amain();
 echo "<br />\n";
-$result = $db->sql_query("SELECT * FROM ".$user_prefix."_users WHERE user_id='$chng_uid' OR username='$chng_uid'");
-if($db->sql_numrows($result) > 0) {
-    $chnginfo = $db->sql_fetchrow($result);
+$result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE user_id='$chng_uid' OR username='$chng_uid'");
+if($nuke_db->sql_numrows($result) > 0) {
+    $chnginfo = $nuke_db->sql_fetchrow($result);
 
-    $result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field");
-    while ($sqlvalue = $db->sql_fetchrow($result)) {
-        list($value) = $db->sql_fetchrow( $db->sql_query("SELECT value FROM ".$user_prefix."_cnbya_value WHERE fid ='$sqlvalue[fid]' AND uid = '$chnginfo[user_id]'"));
+    $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field");
+    while ($sqlvalue = $nuke_db->sql_fetchrow($result)) {
+        list($value) = $nuke_db->sql_fetchrow( $nuke_db->sql_query("SELECT value FROM ".$nuke_user_prefix."_cnbya_value WHERE fid ='$sqlvalue[fid]' AND uid = '$chnginfo[user_id]'"));
         $chnginfo[$sqlvalue[name]] = $value;
     }
 
@@ -72,8 +72,8 @@ if($db->sql_numrows($result) > 0) {
     echo "<tr><td bgcolor='$bgcolor2'>"._EMAIL.":</td><td><input type='text' name='chng_email' value='".$chnginfo['user_email']."' size='45' maxlength='60'> <span class='tiny'>"._REQUIRED."</span></td></tr>\n";
     echo "<tr><td bgcolor='$bgcolor2'>"._FAKEEMAIL.":</td><td><input type='text' name='chng_femail' value='".$chnginfo['femail']."' size='45' maxlength='60'></td></tr>\n";
 
-        $result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field WHERE need <> '0' ORDER BY pos");
-        while ($sqlvalue = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field WHERE need <> '0' ORDER BY pos");
+        while ($sqlvalue = $nuke_db->sql_fetchrow($result)) {
           $t = $sqlvalue['fid'];
           $value2 = explode("::", $sqlvalue[value]);
           if (substr($sqlvalue['name'],0,1)=='_') eval( "\$name_exit = $sqlvalue[name];"); else $name_exit = $sqlvalue['name'];

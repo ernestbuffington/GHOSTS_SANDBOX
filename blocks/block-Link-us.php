@@ -21,7 +21,7 @@
  ************************************************************************/
 if(!defined('NUKE_EVO')) exit;
 
-global $prefix, $db, $sitename, $nukeurl;
+global $prefix, $nuke_db, $sitename, $nukeurl;
 
 $config = dburow("SELECT * FROM ".$prefix."_link_us_config LIMIT 1");
 	

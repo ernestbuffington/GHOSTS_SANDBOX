@@ -13,7 +13,7 @@ if(!defined('SUPPORT_NETWORK'))
    die("Illegal Access Detected!!!"); 
 }
 
-global $network_prefix, $db2;
+global $network_prefix, $network_db;
 
 $pagetitle = "::: "._NETWORK_TITLE." ".$pj_config['version_number']." ::: "._NETWORK_PROJECTLIST." ::: ";
 
@@ -42,9 +42,9 @@ echo "<td align='center' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_PRIORITY."
 echo "<td align='center' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_MEMBERS."</strong></nobr></td>\n";
 echo "<td align='center' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_PROGRESSBAR."</strong></nobr></td>\n";
 echo "</tr>\n";
-$projectresult = $db2->sql_query("SELECT `project_id` FROM `".$network_prefix."_projects` ORDER BY `weight`");
+$projectresult = $network_db->sql_query("SELECT `project_id` FROM `".$network_prefix."_projects` ORDER BY `weight`");
 
-while(list($project_id) = $db2->sql_fetchrow($projectresult)) 
+while(list($project_id) = $network_db->sql_fetchrow($projectresult)) 
 {
   $project = pjprojectpercent_info($project_id);
   
@@ -52,21 +52,21 @@ while(list($project_id) = $db2->sql_fetchrow($projectresult))
   
   $projectpriority = pjprojectpriority_info($project['priority_id']);
   
-  $memberresult = $db2->sql_query("SELECT `member_id` FROM `".$network_prefix."_projects_members` WHERE `project_id`='$project_id' ORDER BY `member_id`");
+  $memberresult = $network_db->sql_query("SELECT `member_id` FROM `".$network_prefix."_projects_members` WHERE `project_id`='$project_id' ORDER BY `member_id`");
   
-  $member_total = $db2->sql_numrows($memberresult);
+  $member_total = $network_db->sql_numrows($memberresult);
   
-  $taskresult = $db2->sql_query("SELECT `task_id`, `status_id` FROM `".$network_prefix."_tasks` WHERE `project_id`='$project_id' ORDER BY `task_name`");
+  $taskresult = $network_db->sql_query("SELECT `task_id`, `status_id` FROM `".$network_prefix."_tasks` WHERE `project_id`='$project_id' ORDER BY `task_name`");
   
-  $taskrows = $db2->sql_numrows($taskresult);
+  $taskrows = $network_db->sql_numrows($taskresult);
   
-  $reportresult = $db2->sql_query("SELECT `report_id` FROM `".$network_prefix."_reports` WHERE `project_id`='$project_id'");
+  $reportresult = $network_db->sql_query("SELECT `report_id` FROM `".$network_prefix."_reports` WHERE `project_id`='$project_id'");
   
-  $report_total = $db2->sql_numrows($reportresult);
+  $report_total = $network_db->sql_numrows($reportresult);
   
-  $requestresult = $db2->sql_query("SELECT `request_id` FROM `".$network_prefix."_requests` WHERE `project_id`='$project_id'");
+  $requestresult = $network_db->sql_query("SELECT `request_id` FROM `".$network_prefix."_requests` WHERE `project_id`='$project_id'");
   
-  $request_total = $db2->sql_numrows($requestresult);
+  $request_total = $network_db->sql_numrows($requestresult);
   
   echo "<tr>\n";
 

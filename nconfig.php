@@ -2,7 +2,7 @@
 /*=======================================================================
   86it Network Config File
  =======================================================================*/
-
+## LAST EDIT 09/08/2022 6:31AM Ernest Allen Buffington
 /************************************************************************/
 /* PHP-NUKE: Advanced Content Management System                         */
 /* ============================================                         */
@@ -16,13 +16,13 @@
 /************************************************************************/
 if(realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) exit('Access Denied');
 
-global $dbhost2, $dbname2, $dbuname2, $db2, $network_prefix; 
-//define('network', 'enabled');
+global $network_dbhost, $network_dbname, $network_dbuname, $network_db, $network_prefix; 
+define('network', 'enabled');
 if ( defined('network') ):
-$dbhost2 = 'localhost';
-$dbname2 = 'hub_db';
-$dbuname2 = 'hub_user';
-$dbpass2 = '';
+$network_dbhost       = 'localhost';
+$network_dbname       = 'hub_db';
+$network_dbuname      = 'hub_barebones';
+$network_dbpass       = 'xwdNPADv86bb';
 $network_prefix = 'network';
 endif;
 ?>

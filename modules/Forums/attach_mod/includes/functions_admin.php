@@ -22,7 +22,7 @@
 */
 function process_quota_settings($mode, $id, $quota_type, $quota_limit_id = 0)
 {
-    global $db;
+    global $nuke_db;
 
     $id = (int) $id;
     $quota_type = (int) $quota_type;
@@ -44,12 +44,12 @@ function process_quota_settings($mode, $id, $quota_type, $quota_limit_id = 0)
                 WHERE user_id = $id
                     AND quota_type = $quota_type";
 
-            if (!($result = $db->sql_query($sql)))
+            if (!($result = $nuke_db->sql_query($sql)))
             {
-                message_die(GENERAL_ERROR, 'Could not get Entry', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not get Entry', '', __LINE__, __FILE__, $sql);
             }
 
-            if ($db->sql_numrows($result) == 0)
+            if ($nuke_db->sql_numrows($result) == 0)
             {
                 $sql_ary = array(
                     'user_id'        => (int) $id,
@@ -67,12 +67,12 @@ function process_quota_settings($mode, $id, $quota_type, $quota_limit_id = 0)
                     WHERE user_id = $id
                         AND quota_type = $quota_type";
             }
-            $db->sql_freeresult($result);
+            $nuke_db->sql_freeresult($result);
         }
     
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Unable to update quota Settings', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to update quota Settings', '', __LINE__, __FILE__, $sql);
         }
         
     }
@@ -84,9 +84,9 @@ function process_quota_settings($mode, $id, $quota_type, $quota_limit_id = 0)
                 WHERE group_id = $id 
                     AND quota_type = $quota_type";
 
-            if (!($result = $db->sql_query($sql)))
+            if (!($result = $nuke_db->sql_query($sql)))
             {
-                message_die(GENERAL_ERROR, 'Unable to delete quota Settings', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Unable to delete quota Settings', '', __LINE__, __FILE__, $sql);
             }
         }
         else
@@ -97,12 +97,12 @@ function process_quota_settings($mode, $id, $quota_type, $quota_limit_id = 0)
                 WHERE group_id = $id 
                     AND quota_type = $quota_type";
 
-            if (!($result = $db->sql_query($sql)))
+            if (!($result = $nuke_db->sql_query($sql)))
             {
-                message_die(GENERAL_ERROR, 'Could not get Entry', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not get Entry', '', __LINE__, __FILE__, $sql);
             }
 
-            if ($db->sql_numrows($result) == 0)
+            if ($nuke_db->sql_numrows($result) == 0)
             {
                 $sql = 'INSERT INTO ' . QUOTA_TABLE . " (user_id, group_id, quota_type, quota_limit_id) 
                     VALUES (0, $id, $quota_type, $quota_limit_id)";
@@ -113,9 +113,9 @@ function process_quota_settings($mode, $id, $quota_type, $quota_limit_id = 0)
                     WHERE group_id = $id AND quota_type = $quota_type";
             }
     
-            if (!$db->sql_query($sql))
+            if (!$nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, 'Unable to update quota Settings', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Unable to update quota Settings', '', __LINE__, __FILE__, $sql);
             }
         }
     }
@@ -179,7 +179,7 @@ function sort_multi_array ($sort_array, $key, $sort_order, $pre_string_sort = 0)
 */
 function entry_exists($attach_id)
 {
-    global $db;
+    global $nuke_db;
 
     $attach_id = (int) $attach_id;
 
@@ -192,16 +192,16 @@ function entry_exists($attach_id)
         FROM ' . ATTACHMENTS_TABLE . "
         WHERE attach_id = $attach_id";
 
-	$result = $db->sql_query($sql);
+	$result = $nuke_db->sql_query($sql);
 
 	if (!$result)
     {
-        message_die(GENERAL_ERROR, 'Could not get Entry', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get Entry', '', __LINE__, __FILE__, $sql);
     }
 
-    $ids = $db->sql_fetchrowset($result);
-    $num_ids = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $ids = $nuke_db->sql_fetchrowset($result);
+    $num_ids = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     $exists = false;
     
@@ -210,25 +210,25 @@ function entry_exists($attach_id)
         if (intval($ids[$i]['post_id']) != 0)
         {
             $sql = 'SELECT post_id
-                FROM ' . POSTS_TABLE . '
+                FROM ' . NUKE_POSTS_TABLE . '
                 WHERE post_id = ' . intval($ids[$i]['post_id']);
         }
         else if (intval($ids[$i]['privmsgs_id']) != 0)
         {
             $sql = 'SELECT privmsgs_id
-                FROM ' . PRIVMSGS_TABLE . '
+                FROM ' . NUKE_PRIVMSGS_TABLE . '
                 WHERE privmsgs_id = ' . intval($ids[$i]['privmsgs_id']);
         }
 
-		$result = $db->sql_query($sql);
+		$result = $nuke_db->sql_query($sql);
 
 		if (!$result)
         {
-            message_die(GENERAL_ERROR, 'Could not get Entry', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not get Entry', '', __LINE__, __FILE__, $sql);
         }
     
-		$num_rows = $db->sql_numrows($result);
-		$db->sql_freeresult($result);
+		$num_rows = $nuke_db->sql_numrows($result);
+		$nuke_db->sql_freeresult($result);
 
 		if ($num_rows > 0)
         {
@@ -265,7 +265,7 @@ function collect_attachments()
         }
         else
         {
-            message_die(GENERAL_ERROR, 'Is Safe Mode Restriction in effect? The Attachment Mod seems to be unable to collect the Attachments within the upload Directory. Try to use FTP Upload to circumvent this error. Another reason could be that the directory ' . $upload_dir . ' does not exist.');
+            message_die(NUKE_GENERAL_ERROR, 'Is Safe Mode Restriction in effect? The Attachment Mod seems to be unable to collect the Attachments within the upload Directory. Try to use FTP Upload to circumvent this error. Another reason could be that the directory ' . $upload_dir . ' does not exist.');
         }
     }
     else
@@ -276,7 +276,7 @@ function collect_attachments()
 
         if (!$file_listing)
         {
-            message_die(GENERAL_ERROR, 'Unable to get Raw File Listing. Please be sure the LIST command is enabled at your FTP Server.');
+            message_die(NUKE_GENERAL_ERROR, 'Unable to get Raw File Listing. Please be sure the LIST command is enabled at your FTP Server.');
         }
 
 		for ($i = 0; $i < sizeof($file_listing); $i++)
@@ -391,7 +391,7 @@ function get_formatted_dirsize()
 */
 function search_attachments($order_by, &$total_rows)
 {
-    global $db, $HTTP_POST_VARS, $HTTP_GET_VARS, $lang;
+    global $nuke_db, $HTTP_POST_VARS, $HTTP_GET_VARS, $lang;
     
     $where_sql = array();
 
@@ -415,28 +415,28 @@ function search_attachments($order_by, &$total_rows)
 
         // We need the post_id's, because we want to query the Attachment Table
         $sql = 'SELECT user_id
-            FROM ' . USERS_TABLE . "
+            FROM ' . NUKE_USERS_TABLE . "
             WHERE username LIKE '$search_author'";
 
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Couldn\'t obtain list of matching users (searching for: ' . $search_author . ')', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Couldn\'t obtain list of matching users (searching for: ' . $search_author . ')', '', __LINE__, __FILE__, $sql);
         }
 
         $matching_userids = '';
-        if ($row = $db->sql_fetchrow($result))
+        if ($row = $nuke_db->sql_fetchrow($result))
         {
             do
             {
                 $matching_userids .= (($matching_userids != '') ? ', ' : '') . intval($row['user_id']);
             }
-            while ($row = $db->sql_fetchrow($result));
+            while ($row = $nuke_db->sql_fetchrow($result));
             
-            $db->sql_freeresult($result);
+            $nuke_db->sql_freeresult($result);
         }
         else
         {
-            message_die(GENERAL_MESSAGE, $lang['No_attach_search_match']);
+            message_die(NUKE_GENERAL_MESSAGE, $lang['No_attach_search_match']);
         }
 
         $where_sql[] = ' (t.user_id_1 IN (' . $matching_userids . ')) ';
@@ -496,7 +496,7 @@ function search_attachments($order_by, &$total_rows)
     // Search Cat... nope... sorry :(
 
     $sql = 'SELECT a.*, t.post_id, p.post_time, p.topic_id
-        FROM ' . ATTACHMENTS_TABLE . ' t, ' . ATTACHMENTS_DESC_TABLE . ' a, ' . POSTS_TABLE . ' p WHERE ';
+        FROM ' . ATTACHMENTS_TABLE . ' t, ' . ATTACHMENTS_DESC_TABLE . ' a, ' . NUKE_POSTS_TABLE . ' p WHERE ';
     
 	if (sizeof($where_sql) > 0)
     {
@@ -509,27 +509,27 @@ function search_attachments($order_by, &$total_rows)
 
     $sql .= $order_by; 
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
     }
 
-    $attachments = $db->sql_fetchrowset($result);
-    $num_attach = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $attachments = $nuke_db->sql_fetchrowset($result);
+    $num_attach = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     if ($num_attach == 0)
     {
-        message_die(GENERAL_MESSAGE, $lang['No_attach_search_match']);
+        message_die(NUKE_GENERAL_MESSAGE, $lang['No_attach_search_match']);
     }
 
-    if (!($result = $db->sql_query($total_rows_sql)))
+    if (!($result = $nuke_db->sql_query($total_rows_sql)))
     {
-        message_die(GENERAL_ERROR, 'Could not query attachments', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query attachments', '', __LINE__, __FILE__, $sql);
     }
 
-    $total_rows = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $total_rows = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     return $attachments;
 }

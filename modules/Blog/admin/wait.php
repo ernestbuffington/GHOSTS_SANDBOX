@@ -32,7 +32,7 @@
  ************************************************************************/
 if(!defined('NUKE_EVO')) exit;
 
-global $admin_file, $db, $prefix, $cache;
+global $admin_file, $nuke_db, $prefix, $cache;
 
 if(is_active('Submit_Blog')) 
 {
@@ -40,7 +40,7 @@ if(is_active('Submit_Blog'))
 
     if(($numwaits = $cache->load('numwaits', 'submissions')) === false) 
 	{
-        list($numwaits) = $db->sql_fetchrow($db->sql_query("SELECT COUNT(*) FROM ".$prefix."_queue"), SQL_NUM);
+        list($numwaits) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT COUNT(*) FROM ".$prefix."_queue"), SQL_NUM);
         $cache->save('numwaits', 'submissions', $numwaits);
     }
     

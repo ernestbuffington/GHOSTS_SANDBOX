@@ -69,7 +69,7 @@
       Custom mass PM                           v1.4.7       07/04/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -145,7 +145,7 @@ class emailer
 
                 if (trim($template_file) == '')
                 {
-                        message_die(GENERAL_ERROR, 'No template file set', '', __LINE__, __FILE__);
+                        message_die(NUKE_GENERAL_ERROR, 'No template file set', '', __LINE__, __FILE__);
                 }
 
                 if (trim($template_lang) == '')
@@ -163,13 +163,13 @@ class emailer
 
                                 if (!@file_exists(@phpbb_realpath($tpl_file)))
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not find email template file :: ' . $template_file, '', __LINE__, __FILE__);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not find email template file :: ' . $template_file, '', __LINE__, __FILE__);
                                 }
                         }
 
                         if (!($fd = @fopen($tpl_file, 'r')))
                         {
-                                message_die(GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_file, '', __LINE__, __FILE__);
+                                message_die(NUKE_GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_file, '', __LINE__, __FILE__);
                         }
 
                         $this->tpl_msg[$template_lang . $template_file] = fread($fd, filesize($tpl_file));
@@ -196,7 +196,7 @@ class emailer
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
         {
-                global $board_config, $lang, $phpEx, $phpbb2_root_path, $db, $cache;
+                global $board_config, $lang, $phpEx, $phpbb2_root_path, $nuke_db, $cache;
 
             // Escape all quotes, else the eval will fail.
                 $this->msg = str_replace ("'", "\'", $this->msg);
@@ -282,12 +282,12 @@ class emailer
                         {
                                 $to = ' ';
 
-                                $sql = "UPDATE " . CONFIG_TABLE . "
+                                $sql = "UPDATE " . NUKE_CONFIG_TABLE . "
                                         SET config_value = '1'
                                         WHERE config_name = 'sendmail_fix'";
-                                if (!$db->sql_query($sql))
+                                if (!$nuke_db->sql_query($sql))
                                 {
-                                        message_die(GENERAL_ERROR, 'Unable to update config table', '', __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Unable to update config table', '', __LINE__, __FILE__, $sql);
                                 }
 /*****['BEGIN']******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -310,7 +310,7 @@ class emailer
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
                 {
-                        message_die(GENERAL_ERROR, 'Failed sending email :: ' . (($this->use_smtp) ? 'SMTP' : 'PHP') . ' :: ' . $result, '', __LINE__, __FILE__);
+                        message_die(NUKE_GENERAL_ERROR, 'Failed sending email :: ' . (($this->use_smtp) ? 'SMTP' : 'PHP') . ' :: ' . $result, '', __LINE__, __FILE__);
                 }
 
 /*****[BEGIN]******************************************

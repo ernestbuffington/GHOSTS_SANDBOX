@@ -15,7 +15,7 @@
 -=[Mod]=-
       Advanced Username Color                  v1.0.5       09/20/2005
  ************************************************************************/
-if (!defined('IN_PHPBB')) die('Hacking attempt');
+if (!defined('IN_PHPBB2')) die('Hacking attempt');
 
 if (!function_exists('get_arcade_categories')) 
 include('includes/functions_arcade.'.$phpEx);
@@ -39,13 +39,13 @@ $sql = "SELECT u.username,
 			 u.user_level, 
 	user_allow_viewonline, 
 	          g.game_name, 
-			    g.game_id FROM ".GAMEHASH_TABLE." gh 
+			    g.game_id FROM ".NUKE_GAMEHASH_TABLE." gh 
 				
-				LEFT JOIN ".SESSIONS_TABLE." s 
+				LEFT JOIN ".NUKE_BB_SESSIONS_TABLE." s 
 				ON gh.user_id = s.session_user_id 
-				LEFT JOIN ".USERS_TABLE." u 
+				LEFT JOIN ".NUKE_USERS_TABLE." u 
 				ON gh.user_id = u.user_id 
-				LEFT JOIN ".GAMES_TABLE." g 
+				LEFT JOIN ".NUKE_GAMES_TABLE." g 
 				ON gh.game_id = g.game_id 
 				WHERE gh.hash_date >= s.session_time 
 				AND (".time()."- gh.hash_date <= 300) 
@@ -53,10 +53,10 @@ $sql = "SELECT u.username,
 				IN ($liste_cat_auth) 
 				ORDER BY gh.hash_date DESC";
 
-if(!($result = $db->sql_query($sql))) 
-message_die(CRITICAL_ERROR, "Could not query games information", "", __LINE__, __FILE__, $sql);
+if(!($result = $nuke_db->sql_query($sql))) 
+message_die(NUKE_CRITICAL_ERROR, "Could not query games information", "", __LINE__, __FILE__, $sql);
 
-while($row = $db->sql_fetchrow($result)):
+while($row = $nuke_db->sql_fetchrow($result)):
 $players[] = $row;
 endwhile;
 
@@ -75,12 +75,12 @@ for($i=0 ; $i<$nbplayers ; $i++):
      $listeid[ $players[$i]['user_id'] ] = true ;
      $style_color = '';
                                 /*
-     if ($players[$i]['user_level'] == ADMIN) 
+     if ($players[$i]['user_level'] == NUKE_ADMIN) 
 	 {
        $players[$i]['username'] = '<strong>' . $players[$i]['username'] . '</strong>';
        $style_color = 'style="color:#' . $theme['fontcolor3'] . '"';
      } 
-	 elseif($players[$i]['user_level'] == MOD) 
+	 elseif($players[$i]['user_level'] == NUKE_MOD) 
 	 {
         $players[$i]['username'] = '<strong>' . $players[$i]['username'] . '</strong>';
         $style_color = 'style="color:#' . $theme['fontcolor2'] . '"';
@@ -91,11 +91,11 @@ for($i=0 ; $i<$nbplayers ; $i++):
      # Mod: Advanced Username Color v1.0.5 END
 
      if ($players[$i]['user_allow_viewonline']) 
-         $player_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=".$players[$i]['user_id']).'"'.$style_color.'>'.$players[$i]['username'].'</a>';
+         $player_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$players[$i]['user_id']).'"'.$style_color.'>'.$players[$i]['username'].'</a>';
 	 else 
-         $player_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=
+         $player_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=
 		 ".$players[$i]['user_id']).'"'.$style_color.'><i>'.$players[$i]['username'].'</i></a>';
-         if ($players[$i]['user_allow_viewonline'] || $userdata['user_level'] == ADMIN): 
+         if ($players[$i]['user_allow_viewonline'] || $userdata['user_level'] == NUKE_ADMIN): 
             if (!isset($games_names[ $players[$i]['game_id'] ])): 
                 $games_names[ $players[$i]['game_id'] ] = $players[$i]['game_name'] ;
                 $games_players[ $players[$i]['game_id'] ] = $player_link ;

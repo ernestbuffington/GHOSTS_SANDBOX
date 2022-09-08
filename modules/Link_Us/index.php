@@ -36,7 +36,7 @@ die ('You can\'t access this file directly...');
 
 
 $module_name = basename(dirname(__FILE__));
-global $db, $currentlang, $_GETVAR, $admin_file;
+global $nuke_db, $currentlang, $_GETVAR, $admin_file;
 
 $lang_path = NUKE_MODULES_DIR . $module_name . '/language/';
 
@@ -52,7 +52,7 @@ $pagetitle = "- ".$module_name."";
 include(NUKE_BASE_DIR.'header.php');
 include(NUKE_MODULES_DIR.$module_name.'/admin/inc/functions.php');
 
-$config = $db->sql_ufetchrow('SELECT * FROM `'.$prefix.'_link_us_config` LIMIT 0,1');
+$config = $nuke_db->sql_ufetchrow('SELECT * FROM `'.$prefix.'_link_us_config` LIMIT 0,1');
 
 $op = $_GETVAR->get('op', '_REQUEST', 'string');
 

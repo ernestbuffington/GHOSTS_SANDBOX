@@ -27,7 +27,7 @@
 -=[Mod]=-
       Forum Admin Style Selection              v1.0.0       10/01/2005
  ************************************************************************/
-if (!defined('IN_PHPBB')) die('Hacking attempt');
+if (!defined('IN_PHPBB2')) die('Hacking attempt');
 
 define('HEADER_INC', true);
 

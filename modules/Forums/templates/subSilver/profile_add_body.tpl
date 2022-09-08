@@ -262,7 +262,7 @@
         <input type="radio" name="notifypm" value="0" {NOTIFY_PM_NO} />
         <span class="gen">{L_NO}</span></td>
     </tr>
-    <!-- Start add - Custom mass PM MOD -->
+    <!-- Start add - Custom mass PM NUKE_MOD -->
     <!-- BEGIN switch_can_disable_mass_pm -->
     <tr>
         <td class="row1"><span class="gen">{L_ENABLE_MASS_PM}:</span><br />
@@ -288,7 +288,7 @@
         <span class="gen">{L_NO}</span></td>
     </tr>
     <!-- END switch_can_not_disable_mass_pm -->
-    <!-- End add - Custom mass PM MOD -->
+    <!-- End add - Custom mass PM NUKE_MOD -->
     <tr>
       <td class="row1"><span class="gen">{L_POPUP_ON_PRIVMSG}:</span><br /><span class="gensmall">{L_POPUP_ON_PRIVMSG_EXPLAIN}</span></td>
       <td class="row2">
@@ -367,7 +367,7 @@
       <td class="row1"><span class="gen">{L_BOARD_STYLE}:</span></td>
       <td class="row2"><span class="gensmall">{STYLE_SELECT}</span></td>
     </tr>
-        <!-- Start replacement - Advanced time management MOD -->
+        <!-- Start replacement - Advanced time management NUKE_MOD -->
     <tr>
         <td class="row1"><span class="gen">{L_TIME_MODE}:</span><br />
             <span class="gensmall">{L_TIME_MODE_TEXT}</span></td>
@@ -385,7 +385,7 @@
         <span class="gen">&nbsp;&nbsp;{L_TIME_MODE_DST_TIME_LAG}: </span><input type="text" name="dst_time_lag" value="{DST_TIME_LAG}" maxlength="3" size="3" class="post" /><span class="gen">{L_TIME_MODE_DST_MN}</span><br />
         <span class="gen">&nbsp;&nbsp;{L_TIME_MODE_TIMEZONE}: </span><span class="gensmall">{TIMEZONE_SELECT}</span></td>
     </tr>
-        <!-- End replacement - Advanced time management MOD -->
+        <!-- End replacement - Advanced time management NUKE_MOD -->
     <tr>
       <td class="row1"><span class="gen">{L_DATE_FORMAT}:</span><br />
         <span class="gensmall">{L_DATE_FORMAT_EXPLAIN}</span></td>

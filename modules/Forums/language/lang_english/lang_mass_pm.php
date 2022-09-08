@@ -6,8 +6,8 @@
 
 /**************************************************************
 *
-*  MOD Title:   Custom mass PM
-*  MOD Version: 1.4.5
+*  NUKE_MOD Title:   Custom mass PM
+*  NUKE_MOD Version: 1.4.5
 *  Translation: English
 *  Rev date:    09/12/2003
 *

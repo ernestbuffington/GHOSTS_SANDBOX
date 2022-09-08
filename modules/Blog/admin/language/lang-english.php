@@ -81,7 +81,7 @@ define("_ASELECTCATEGORY","Select Blog Post Category");
 define("_CATEGORYNAME","Blog Post Category Name");
 define("_DELETECATEGORY","Delete Blog Post Category");
 define("_SELECTCATDEL","Select a Blog Post Category to Delete");
-define("_CATDELETED","Blog Post Category Deleted!");
+define("_CATNUKE_DELETED","Blog Post Category Deleted!");
 define("_WARNING","Warning");
 define("_THECATEGORY","The Category");
 define("_HAS","has");

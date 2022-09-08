@@ -45,14 +45,14 @@ if ($popup != "1")
     {
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
     }
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_INDEX);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
 init_userprefs($userdata);
 
 // global pgm options
@@ -90,7 +90,7 @@ function get_rank_title($rank_title)
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_INDEX);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
 init_userprefs($userdata);
 //
 // End session management
@@ -99,16 +99,16 @@ init_userprefs($userdata);
 // only registered members have access if desired
 if ( $auth_rank_only_logged && !$userdata['session_logged_in'] )
 {
-    redirect(append_sid('login.' . $phpEx . '?redirect=ranks.' . $phpEx, true));
+    nuke_redirect(append_sid('login.' . $phpEx . '?nuke_redirect=ranks.' . $phpEx, true));
     exit;
 }
 
 //
 // special ranks
 $spe_ranks = array();
-$sql = "SELECT * FROM " . RANKS_TABLE . " WHERE rank_special = 1 ORDER BY rank_title";
-if ( !($result = $db->sql_query($sql)) ) message_die(GENERAL_ERROR, 'Couldn\'t read special ranks', '', __LINE__, __FILE__, $sql);
-while ($row = $db->sql_fetchrow($result) ) $spe_ranks[] = $row;
+$sql = "SELECT * FROM " . NUKE_RANKS_TABLE . " WHERE rank_special = 1 ORDER BY rank_title";
+if ( !($result = $nuke_db->sql_query($sql)) ) message_die(NUKE_GENERAL_ERROR, 'Couldn\'t read special ranks', '', __LINE__, __FILE__, $sql);
+while ($row = $nuke_db->sql_fetchrow($result) ) $spe_ranks[] = $row;
 for ($i=0; $i < count($spe_ranks); $i++ )
 {
     $rank = $spe_ranks[$i]['rank_id'];
@@ -117,22 +117,22 @@ for ($i=0; $i < count($spe_ranks); $i++ )
     $spe_ranks[$i]['users_list'] = '';
 
     // base sql request
-    // $sql_base = "SELECT * FROM " . USERS_TABLE . " WHERE user_active = 1 AND user_rank = $rank ORDER BY username";
-    $sql_base = "SELECT * FROM " . USERS_TABLE . " WHERE user_active = 1 AND user_rank = $rank OR user_rank2 = $rank OR user_rank3 = $rank OR user_rank4 = $rank OR user_rank5 = $rank ORDER BY username";
+    // $sql_base = "SELECT * FROM " . NUKE_USERS_TABLE . " WHERE user_active = 1 AND user_rank = $rank ORDER BY username";
+    $sql_base = "SELECT * FROM " . NUKE_USERS_TABLE . " WHERE user_active = 1 AND user_rank = $rank OR user_rank2 = $rank OR user_rank3 = $rank OR user_rank4 = $rank OR user_rank5 = $rank ORDER BY username";
 
     // get the number of users having this rank
     $sql = $sql_base;
-    if ( !($result = $db->sql_query($sql)) ) message_die(GENERAL_ERROR, 'Couldn\'t read users', '', __LINE__, __FILE__, $sql);
-    $spe_ranks[$i]['user_number'] = $db->sql_numrows($result);
+    if ( !($result = $nuke_db->sql_query($sql)) ) message_die(NUKE_GENERAL_ERROR, 'Couldn\'t read users', '', __LINE__, __FILE__, $sql);
+    $spe_ranks[$i]['user_number'] = $nuke_db->sql_numrows($result);
 
     // get the user list
     if ( $spe_rank_max_users != 0 )
     {
         $sql = $sql_base;
         if ( $spe_rank_max_users > 0 ) $sql .= " LIMIT 0, " . ($spe_rank_max_users + 1);
-        if ( !($result = $db->sql_query($sql)) ) message_die(GENERAL_ERROR, 'Couldn\'t read users', '', __LINE__, __FILE__, $sql);
+        if ( !($result = $nuke_db->sql_query($sql)) ) message_die(NUKE_GENERAL_ERROR, 'Couldn\'t read users', '', __LINE__, __FILE__, $sql);
         $j = 0;
-        while ( $row = $db->sql_fetchrow($result) )
+        while ( $row = $nuke_db->sql_fetchrow($result) )
         {
             $j++;
             if ( ($spe_rank_max_users <= 0) || ( $j <= $spe_rank_max_users ) )
@@ -141,7 +141,7 @@ for ($i=0; $i < count($spe_ranks); $i++ )
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $spe_ranks[$i]['users_list'] .= '<a href="' . "modules.php?name=Profile&amp;mode=viewprofile&amp;" . POST_USERS_URL . "=" . $row['user_id']  . '">' . UsernameColor($row['username']) . '</a>';
+                $spe_ranks[$i]['users_list'] .= '<a href="' . "modules.php?name=Profile&amp;mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']  . '">' . UsernameColor($row['username']) . '</a>';
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -159,9 +159,9 @@ for ($i=0; $i < count($spe_ranks); $i++ )
 //
 // standard ranks
 $ranks = array();
-$sql = "SELECT * FROM " . RANKS_TABLE . " WHERE rank_special <> 1 ORDER BY rank_min";
-if ( !($result = $db->sql_query($sql)) ) message_die(GENERAL_ERROR, 'Couldn\'t read standard ranks', '', __LINE__, __FILE__, $sql);
-while ($row = $db->sql_fetchrow($result) ) $ranks[] = $row;
+$sql = "SELECT * FROM " . NUKE_RANKS_TABLE . " WHERE rank_special <> 1 ORDER BY rank_min";
+if ( !($result = $nuke_db->sql_query($sql)) ) message_die(NUKE_GENERAL_ERROR, 'Couldn\'t read standard ranks', '', __LINE__, __FILE__, $sql);
+while ($row = $nuke_db->sql_fetchrow($result) ) $ranks[] = $row;
 
 $rank_max = 99999999;
 for ($i=count($ranks)-1; $i >=0; $i--)
@@ -171,22 +171,22 @@ for ($i=count($ranks)-1; $i >=0; $i--)
     $rank_min = $ranks[$i]['rank_min'];
 
     // count users
-    // $sql_base = "SELECT * FROM " . USERS_TABLE . " WHERE user_active = 1 AND (user_rank = 0 OR user_rank IS NULL) AND user_posts >= $rank_min" . (($rank_max < 99999999)  ? " AND user_posts < $rank_max" : "" );
-    $sql_base = "SELECT * FROM " . USERS_TABLE . " WHERE user_active = 1 AND (user_rank = 0 OR user_rank IS NULL OR user_rank2 = 0 OR user_rank2 IS NULL OR user_rank3 = 0 OR user_rank3 IS NULL OR user_rank4 = 0 OR user_rank4 IS NULL OR user_rank5 = 0 OR user_rank5 IS NULL) AND user_posts >= $rank_min" . (($rank_max < 99999999)  ? " AND user_posts < $rank_max" : "" );
+    // $sql_base = "SELECT * FROM " . NUKE_USERS_TABLE . " WHERE user_active = 1 AND (user_rank = 0 OR user_rank IS NULL) AND user_posts >= $rank_min" . (($rank_max < 99999999)  ? " AND user_posts < $rank_max" : "" );
+    $sql_base = "SELECT * FROM " . NUKE_USERS_TABLE . " WHERE user_active = 1 AND (user_rank = 0 OR user_rank IS NULL OR user_rank2 = 0 OR user_rank2 IS NULL OR user_rank3 = 0 OR user_rank3 IS NULL OR user_rank4 = 0 OR user_rank4 IS NULL OR user_rank5 = 0 OR user_rank5 IS NULL) AND user_posts >= $rank_min" . (($rank_max < 99999999)  ? " AND user_posts < $rank_max" : "" );
 
     // get the number of users having this rank
     $sql = $sql_base;
-    if ( !($result = $db->sql_query($sql)) ) message_die(GENERAL_ERROR, 'Couldn\'t read users', '', __LINE__, __FILE__, $sql);
-    $ranks[$i]['user_number'] = $db->sql_numrows($result);
+    if ( !($result = $nuke_db->sql_query($sql)) ) message_die(NUKE_GENERAL_ERROR, 'Couldn\'t read users', '', __LINE__, __FILE__, $sql);
+    $ranks[$i]['user_number'] = $nuke_db->sql_numrows($result);
 
     // get the user list
     if ( $std_rank_max_users != 0 )
     {
         $sql = $sql_base;
         if ( $std_rank_max_users > 0 ) $sql .= " LIMIT 0, " . ($std_rank_max_users + 1);
-        if ( !($result = $db->sql_query($sql)) ) message_die(GENERAL_ERROR, 'Couldn\'t read users', '', __LINE__, __FILE__, $sql);
+        if ( !($result = $nuke_db->sql_query($sql)) ) message_die(NUKE_GENERAL_ERROR, 'Couldn\'t read users', '', __LINE__, __FILE__, $sql);
         $j = 0;
-        while ( $row = $db->sql_fetchrow($result) )
+        while ( $row = $nuke_db->sql_fetchrow($result) )
         {
             $j++;
             if ( ($std_rank_max_users <= 0) || ( $j <= $std_rank_max_users ) )
@@ -195,7 +195,7 @@ for ($i=count($ranks)-1; $i >=0; $i--)
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $ranks[$i]['users_list'] .= '<a href="' . "modules.php?name=Profile&amp;mode=viewprofile&amp;" . POST_USERS_URL . "=" . $row['user_id'] . '">' . UsernameColor($row['username']) . '</a>';
+                $ranks[$i]['users_list'] .= '<a href="' . "modules.php?name=Profile&amp;mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id'] . '">' . UsernameColor($row['username']) . '</a>';
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/

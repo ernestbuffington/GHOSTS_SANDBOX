@@ -1,7 +1,7 @@
 <?php
 function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid) 
 {
-    global $currentlang, $cache, $top_content, $mid_content, $bottom_content, $ShoutMarqueeheight, $nsnst_const, $userinfo, $prefix, $db, $top_out, $board_config;
+    global $currentlang, $cache, $top_content, $mid_content, $bottom_content, $ShoutMarqueeheight, $nsnst_const, $userinfo, $prefix, $nuke_db, $top_out, $board_config;
 	
     if (!empty($currentlang)) 
     include_once(NUKE_MODULES_DIR.'Shout_Box/lang-block/lang-'.$currentlang.'.php');
@@ -17,38 +17,38 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
     if ((($conf = $cache->load('conf', 'shoutbox')) == false) || empty($conf)) 
 	{
         $sql = "SELECT * FROM `".$prefix."_shoutbox_conf`";
-        $result = $db->sql_query($sql);
-        $conf = $db->sql_fetchrow($result);
+        $result = $nuke_db->sql_query($sql);
+        $conf = $nuke_db->sql_fetchrow($result);
         $cache->save('conf', 'shoutbox', $conf);
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
     }
 
     if ((($nameblock = $cache->load('nameblock', 'shoutbox')) == false) || empty($nameblock)) 
 	{
         $sql = "SELECT `name` FROM ".$prefix."_shoutbox_nameblock";
-        $nameresult = $db->sql_query($sql);
-        while ($row = $db->sql_fetchrow($nameresult)) {
+        $nameresult = $nuke_db->sql_query($sql);
+        while ($row = $nuke_db->sql_fetchrow($nameresult)) {
             $nameblock[] = $row;
         }
         $cache->save('nameblock', 'shoutbox', $nameblock);
-        $db->sql_freeresult($nameresult);
+        $nuke_db->sql_freeresult($nameresult);
     }
 
     if ((($censor = $cache->load('censor', 'shoutbox')) == false) || empty($censor)) 
 	{
         $sql = "SELECT * FROM ".$prefix."_shoutbox_censor";
-        $result = $db->sql_query($sql);
-        while ($row = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query($sql);
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             $censor[] = $row;
         }
         $cache->save('censor', 'shoutbox', $censor);
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
     }
 
     // Check if block is in center position
     $sql = "SELECT `bposition` FROM `".$prefix."_blocks` WHERE `blockfile`='block-Shout_Box.php'";
-    $SBpos = $db->sql_query($sql);
-    $SBpos = $db->sql_fetchrow($SBpos);
+    $SBpos = $nuke_db->sql_query($sql);
+    $SBpos = $nuke_db->sql_fetchrow($SBpos);
     
 	if ($SBpos['bposition'] == 'c' || $SBpos['bposition'] == 'd') 
 	{
@@ -60,7 +60,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
         $SBpos = 'side';
         $SBborder = 0;
     }
-    $db->sql_freeresult($SBpos);
+    $nuke_db->sql_freeresult($SBpos);
 
     if (isset($nsnst_const['remote_ip']) && !empty($nsnst_const['remote_ip'])) 
 	{
@@ -75,9 +75,9 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
     if($conf['ipblock']== 'yes') 
 	{
         $sql = "SELECT `name` FROM `".$prefix."_shoutbox_ipblock`";
-        $ipresult = $db->sql_query($sql);
+        $ipresult = $nuke_db->sql_query($sql);
     
-	    while ($badips = $db->sql_fetchrow($ipresult)) 
+	    while ($badips = $nuke_db->sql_fetchrow($ipresult)) 
 		{
             if (preg_match("/\[\*\]/i", $badips['name'])) 
 			{ // Allow for Subnet bans like 123.456.*
@@ -108,9 +108,9 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
                 }
             }
         }
-        $db->sql_freeresult($ipresult);
+        $nuke_db->sql_freeresult($ipresult);
     }
-    //do name test then ban if on list (only applies to registered users)
+    //do name test then ban if on list (only applies to registered members)
     if ($conf['nameblock']== 'yes'  && $BannedShouter != "yes") 
 	{
         if (is_array($nameblock)) 
@@ -352,8 +352,8 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 			$ShoutArrayReplace = explode(" ",$ShoutComment);
 			$ShoutArrayScan = $ShoutArrayReplace;
 			$sql = "SELECT `text`, `image` FROM `".$prefix."_shoutbox_emoticons`";
-			$eresult = $db->sql_query($sql);
-			while ($emoticons = $db->sql_fetchrow($eresult)) {
+			$eresult = $nuke_db->sql_query($sql);
+			while ($emoticons = $nuke_db->sql_fetchrow($eresult)) {
 				$i = 0;
 				if (is_array($ShoutArrayScan)) {
 					foreach($ShoutArrayScan as $ShoutPart) {
@@ -362,7 +362,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 					}
 				}
 			}
-			$db->sql_freeresult($eresult);
+			$nuke_db->sql_freeresult($eresult);
 			$ShoutComment = implode(" ",$ShoutArrayReplace);
 
 			//do name test then error if on list
@@ -376,14 +376,14 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 				}
 			}
 
-			// check for anonymous users cloning/ghosting registered users' nicknames
+			// check for anonymous users cloning/ghosting registered members' nicknames
 			if (!is_user() && !empty($username) && $username != "Anonymous") {
 				$sql = "SELECT `username` FROM `".$prefix."_users` WHERE `username`='$username'";
-				$nameresult = $db->sql_query($sql);
-				if ($row = $db->sql_fetchrow($nameresult)) {
+				$nameresult = $nuke_db->sql_query($sql);
+				if ($row = $nuke_db->sql_fetchrow($nameresult)) {
 					$ShoutError = _NOCLONINGNICKS;
 				}
-				$db->sql_freeresult($nameresult);
+				$nuke_db->sql_freeresult($nameresult);
 			}
 
 			//look for bad words, then censor them.
@@ -424,13 +424,13 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 
 			// duplicate posting checker. stops repeated spam attacks
 			$sql = "SELECT `comment` FROM `".$prefix."_shoutbox_shouts` ORDER BY `id` DESC LIMIT 5";
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result)) {
+			$result = $nuke_db->sql_query($sql);
+			while ($row = $nuke_db->sql_fetchrow($result)) {
 				if ($row['comment'] == $ShoutComment) {
 					$ShoutError = _DUPLICATESHOUT;
 				}
 			}
-			$db->sql_freeresult($result);
+			$nuke_db->sql_freeresult($result);
 
 			if ($conf['anonymouspost'] == 'no' && $username == 'Anonymous') {
 					$ShoutError = _ONLYREGISTERED2;
@@ -449,7 +449,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 				$currentTime = time();
 
 				$sql = "INSERT INTO ".$prefix."_shoutbox_shouts (id,name,comment,date,time,ip,timestamp) VALUES ('0','$username','$ShoutComment','$day','$time','$uip','$currentTime')";
-				$db->sql_query($sql);
+				$nuke_db->sql_query($sql);
 
 				$PreviousShoutComment = '';
 				$PreviousComment = '';
@@ -470,9 +470,9 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 
         $ThemeSel = get_theme();
         $sql = "SELECT * FROM `".$prefix."_shoutbox_theme_images` WHERE `themeName`='$ThemeSel'";
-        $result = $db->sql_query($sql);
-        $themeRow = $db->sql_fetchrow($result);
-        $db->sql_freeresult($result);
+        $result = $nuke_db->sql_query($sql);
+        $themeRow = $nuke_db->sql_fetchrow($result);
+        $nuke_db->sql_freeresult($result);
 
         if (!empty($themeRow['blockBackgroundImage']) && file_exists(NUKE_MODULES_DIR.'Shout_Box/images/background/'.$themeRow['blockBackgroundImage'])) {
             $showBackground = 'yes';
@@ -503,7 +503,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
         }
 
         $sql = "SELECT * FROM `".$prefix."_shoutbox_shouts` ORDER BY `id` DESC LIMIT $conf[number]";
-        $result = $db->sql_query($sql);
+        $result = $nuke_db->sql_query($sql);
 
 
         // Top half
@@ -532,19 +532,19 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
         $flag = 1;
         $ThemeSel = get_theme();
         $sql = "SELECT `blockColor1`, `blockColor2` FROM `".$prefix."_shoutbox_themes` WHERE `themeName`='$ThemeSel'";
-        $resultT = $db->sql_query($sql);
-        $rowColor = $db->sql_fetchrow($resultT);
-        $db->sql_freeresult($resultT);
+        $resultT = $nuke_db->sql_query($sql);
+        $rowColor = $nuke_db->sql_fetchrow($resultT);
+        $nuke_db->sql_freeresult($resultT);
 
         // Sticky shouts
         $sql = "SELECT `comment`, `timestamp` FROM `".$prefix."_shoutbox_sticky` WHERE `stickySlot`=0";
-        $stickyResult = $db->sql_query($sql);
-        $stickyRow0 = $db->sql_fetchrow($stickyResult);
-        $db->sql_freeresult($stickyResult);
+        $stickyResult = $nuke_db->sql_query($sql);
+        $stickyRow0 = $nuke_db->sql_fetchrow($stickyResult);
+        $nuke_db->sql_freeresult($stickyResult);
         $sql = "SELECT `comment`, `timestamp` FROM `".$prefix."_shoutbox_sticky` WHERE `stickySlot`=1";
-        $stickyResult = $db->sql_query($sql);
-        $stickyRow1 = $db->sql_fetchrow($stickyResult);
-        $db->sql_freeresult($stickyResult);
+        $stickyResult = $nuke_db->sql_query($sql);
+        $stickyRow1 = $nuke_db->sql_fetchrow($stickyResult);
+        $nuke_db->sql_freeresult($stickyResult);
 
         if ($stickyRow0) {
             if ($showBackground == 'yes') {
@@ -589,7 +589,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
         // end sticky shouts
 
         $i = 0;
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             if ($flag == 1) { $bgcolor = $rowColor['blockColor1']; }
             if ($flag == 2) { $bgcolor = $rowColor['blockColor2']; }
             if ($showBackground == 'yes') {
@@ -630,9 +630,9 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 			{
                 // check to see if nickname is a user in the DB
                 $sqlN = "SELECT * FROM `".$prefix."_users` WHERE `username`='".$row['name']."'";
-                $nameresultN = $db->sql_query($sqlN);
-                $rowN = $db->sql_fetchrow($nameresultN);
-                $db->sql_freeresult($nameresultN);
+                $nameresultN = $nuke_db->sql_query($sqlN);
+                $rowN = $nuke_db->sql_fetchrow($nameresultN);
+                $nuke_db->sql_freeresult($nameresultN);
                 
 				if ($rowN && ($row['name'] != "Anonymous")) 
 				{
@@ -817,15 +817,15 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 			}
 
             $sql = "SELECT distinct image FROM `".$prefix."_shoutbox_emoticons`";
-            $nameresult1 = $db->sql_query($sql);
+            $nameresult1 = $nuke_db->sql_query($sql);
             $flag = 1;
             
-			while ($return = $db->sql_fetchrow($nameresult1)) 
+			while ($return = $nuke_db->sql_fetchrow($nameresult1)) 
 			{
                 $sql = "SELECT * FROM `".$prefix."_shoutbox_emoticons` WHERE `image`='$return[0]' LIMIT 1";
-                $nameresult = $db->sql_query($sql);
+                $nameresult = $nuke_db->sql_query($sql);
             
-			    while ($emoticons = $db->sql_fetchrow($nameresult)) 
+			    while ($emoticons = $nuke_db->sql_fetchrow($nameresult)) 
 				{
                     $emoticons[3] = str_replace('>', '', $emoticons['image']);
                     $emoticons[3] = str_replace('src=', 'src="', $emoticons[3]);
@@ -838,9 +838,9 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
                     }
                     $flag++;
                 }
-                $db->sql_freeresult($nameresult);
+                $nuke_db->sql_freeresult($nameresult);
             }
-            $db->sql_freeresult($nameresult1);
+            $nuke_db->sql_freeresult($nameresult1);
             $bottom_content .= "</div></div></td></tr>\n";
 
             $bottom_content .= "</table><br/></form>\n";

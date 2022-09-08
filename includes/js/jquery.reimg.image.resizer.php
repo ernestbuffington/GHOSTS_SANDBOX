@@ -12,7 +12,7 @@
 // if(!defined('NUKE_FILE')) die('Access forbbiden');
 
 //---------------------------------------------------------------------
-//  JQUERY FLOATING ADMIN MENU
+//  JQUERY FLOATING NUKE_ADMIN MENU
 //---------------------------------------------------------------------
 global $ThemeSel, $img_resize, $ThemeSel;
 if ($img_resize) 
@@ -20,7 +20,7 @@ if ($img_resize)
 	global $img_width, $img_height, $board_config;
 	$JStoBody  = '<script type="text/javascript">'.PHP_EOL;
 
-	if (!defined('IN_PHPBB'))
+	if (!defined('IN_PHPBB2'))
 		$JStoBody .= '  var reimg_maxWidth          = '.$img_width.', reimg_maxHeight = '.$img_height.', reimg_relWidth = 0;'.PHP_EOL;
 	else
 		$JStoBody .= '  var reimg_maxWidth          = '.$board_config['image_resize_width'].', reimg_maxHeight = '.$board_config['image_resize_height'].', reimg_relWidth = 0;'.PHP_EOL;

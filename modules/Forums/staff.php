@@ -25,11 +25,11 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
-$userdata = session_pagestart($user_ip, PAGE_STAFF, $session_length);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_STAFF, $session_length);
 init_userprefs($userdata);
 
 $page_title = $lang['Staff'];
@@ -42,10 +42,10 @@ $uid = (isset($userdata['user_id']) && !empty($userdata['user_id'])) ? $userdata
 
 // forums
  $sql = "SELECT ug.user_id, f.forum_id, f.forum_name
-           FROM (" . USER_GROUP_TABLE . " ug
-           LEFT JOIN  " . USER_GROUP_TABLE . " ug2  ON ug2.user_id = " . $uid . "
-           LEFT JOIN  " . AUTH_ACCESS_TABLE . " aa2 ON aa2.group_id = ug2.group_id AND aa2.auth_view = " . TRUE . ",
-           " . FORUMS_TABLE . " f, " . AUTH_ACCESS_TABLE . " aa)
+           FROM (" . NUKE_USER_GROUP_TABLE . " ug
+           LEFT JOIN  " . NUKE_USER_GROUP_TABLE . " ug2  ON ug2.user_id = " . $uid . "
+           LEFT JOIN  " . NUKE_AUTH_ACCESS_TABLE . " aa2 ON aa2.group_id = ug2.group_id AND aa2.auth_view = " . TRUE . ",
+           " . NUKE_FORUMS_TABLE . " f, " . NUKE_AUTH_ACCESS_TABLE . " aa)
            WHERE aa.auth_mod = " . TRUE . "
                       AND ug.group_id = aa.group_id
                       AND f.forum_id = aa.forum_id
@@ -53,48 +53,48 @@ $uid = (isset($userdata['user_id']) && !empty($userdata['user_id'])) ? $userdata
                       OR aa2.auth_view = " . TRUE . ")
            ";
 /*$sql = "SELECT ug.user_id, f.forum_id, f.forum_name
-           FROM ".AUTH_ACCESS_TABLE." aa, ".USER_GROUP_TABLE." ug, ".FORUMS_TABLE." f
+           FROM ".NUKE_AUTH_ACCESS_TABLE." aa, ".NUKE_USER_GROUP_TABLE." ug, ".NUKE_FORUMS_TABLE." f
            WHERE aa.auth_mod = " . TRUE . "
                     AND ug.group_id = aa.group_id
                       AND f.forum_id = aa.forum_id";*/
-if ( !$result = $db->sql_query($sql) )
+if ( !$result = $nuke_db->sql_query($sql) )
 {
-        message_die(GENERAL_ERROR, 'Could not query forums.', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query forums.', '', __LINE__, __FILE__, $sql);
 }
-while( $row = $db->sql_fetchrow($result) )
+while( $row = $nuke_db->sql_fetchrow($result) )
 {
         $forum_id = $row['forum_id'];
         $staff2[$row['user_id']][$row['forum_id']] = '<a href='.append_sid("viewforum.$phpEx?f=$forum_id").' class=genmed>'.$row['forum_name'].'</a><br />';
 }
 
 //main
-$sql = "SELECT * FROM ".USERS_TABLE."
+$sql = "SELECT * FROM ".NUKE_USERS_TABLE."
            WHERE user_level >= 2
            AND user_active = ".TRUE."
            ORDER BY user_level = 3, user_level = 4";
-if ( !($results = $db->sql_query($sql)) )
+if ( !($results = $nuke_db->sql_query($sql)) )
 {
-        message_die(GENERAL_ERROR, 'Could not obtain user information.', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not obtain user information.', '', __LINE__, __FILE__, $sql);
 }
-while($staff = $db->sql_fetchrow($results))
+while($staff = $nuke_db->sql_fetchrow($results))
 {
         if ( $staff['user_avatar'] )
         {
                 switch( $staff['user_avatar_type'] )
                 {
-                     case USER_AVATAR_UPLOAD:
+                     case NUKE_USER_AVATAR_UPLOAD:
                      $avatar = ( $board_config['allow_avatar_upload'] ) ? '<img class="rounded-corners-forum" width="200" src="' . $board_config['avatar_path'] . '/' . $staff['user_avatar'] . '" border="0" />' : '';
                      break;
                     /*****[BEGIN]******************************************
                      [ Mod:     Remote Avatar Resize               v2.0.0 ]
                      ******************************************************/
-                     case USER_AVATAR_REMOTE:
+                     case NUKE_USER_AVATAR_REMOTE:
                      $avatar = resize_avatar($staff['user_avatar']);
                      break;
                     /*****[END]********************************************
                      [ Mod:     Remote Avatar Resize               v2.0.0 ]
                      ******************************************************/
-                     case USER_AVATAR_GALLERY:
+                     case NUKE_USER_AVATAR_GALLERY:
                      $avatar = ( $board_config['allow_avatar_local'] ) 
 					 ? '<img class="rounded-corners-forum" width="200" src="' . $board_config['avatar_gallery_path'] . '/' . $staff['user_avatar'] . '" alt="" border="0" />' : '';
                      break;
@@ -106,20 +106,20 @@ while($staff = $db->sql_fetchrow($results))
         }
 
         $lvl = $staff['user_level']-1;
-        $result = $db->sql_query('SELECT group_name FROM '. AUC_TABLE .' WHERE group_id='.$lvl);
-        list($group_name) = $db->sql_fetchrow($result);
+        $result = $nuke_db->sql_query('SELECT group_name FROM '. NUKE_AUC_TABLE .' WHERE group_id='.$lvl);
+        list($group_name) = $nuke_db->sql_fetchrow($result);
         $level = GroupColor($group_name);
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 
         $level .= "<br />\n<hr>\n";
 
         //Groups
-        $result = $db->sql_query("SELECT group_name FROM " . GROUPS_TABLE . " g LEFT JOIN " . USER_GROUP_TABLE . " ug on ug.group_id=g.group_id WHERE ug.user_id='".$staff['user_id']."' and g.group_description != 'Personal User'");
-	    if ($db->sql_numrows($result) != 0) {
-	        while(list($group_name) = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query("SELECT group_name FROM " . NUKE_GROUPS_TABLE . " g LEFT JOIN " . NUKE_USER_GROUP_TABLE . " ug on ug.group_id=g.group_id WHERE ug.user_id='".$staff['user_id']."' and g.group_description != 'Personal User'");
+	    if ($nuke_db->sql_numrows($result) != 0) {
+	        while(list($group_name) = $nuke_db->sql_fetchrow($result)) {
 	            $level .= GroupColor($group_name). "<br />";
 	        }
-	        $db->sql_freeresult($result);
+	        $nuke_db->sql_freeresult($result);
 	    }
 
 
@@ -143,18 +143,18 @@ while($staff = $db->sql_fetchrow($results))
                 $percentage = 0;
         }
         $user_id = $staff['user_id'];
-        $sql = "SELECT post_time, post_id FROM ".POSTS_TABLE." WHERE poster_id = " . $user_id . " ORDER BY post_time DESC LIMIT 1";
-        if ( !($result = $db->sql_query($sql)) )
+        $sql = "SELECT post_time, post_id FROM ".NUKE_POSTS_TABLE." WHERE poster_id = " . $user_id . " ORDER BY post_time DESC LIMIT 1";
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Error getting user last post time', '', __LINE__, __FILE__, $post_time_sql);
+                message_die(NUKE_GENERAL_ERROR, 'Error getting user last post time', '', __LINE__, __FILE__, $post_time_sql);
         }
-        $row = $db->sql_fetchrow($result);
-        $last_post = ( isset($row['post_time']) ) ? '<a href="'.append_sid("viewtopic.$phpEx?" . POST_POST_URL . "=$row[post_id]#$row[post_id]").'" class=gensmall>'.create_date($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']).'</a>' : $lang['None'];
+        $row = $nuke_db->sql_fetchrow($result);
+        $last_post = ( isset($row['post_time']) ) ? '<a href="'.append_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . "=$row[post_id]#$row[post_id]").'" class=gensmall>'.create_date($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']).'</a>' : $lang['None'];
 
-        $mailto = ( $board_config['board_email_form'] ) ? "modules.php?name=Profile&mode=email&amp;" . POST_USERS_URL .'=' . $staff['user_id'] : 'mailto:' . $staff['user_email'];
+        $mailto = ( $board_config['board_email_form'] ) ? "modules.php?name=Profile&mode=email&amp;" . NUKE_POST_USERS_URL .'=' . $staff['user_id'] : 'mailto:' . $staff['user_email'];
         $mail = ( $staff['user_email'] ) ? '<a href="' . $mailto . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" border="0" /></a>' : '';
 
-        $pmto = append_sid("privmsg.$phpEx?mode=post&amp;" . POST_USERS_URL . "=$staff[user_id]");
+        $pmto = append_sid("privmsg.$phpEx?mode=post&amp;" . NUKE_POST_USERS_URL . "=$staff[user_id]");
         $pm = '<a href="' . $pmto . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" border="0" /></a>';
 
         $msn = ( $staff['user_msnm'] ) ? '<a href="mailto: '.$staff['user_msnm'].'"><img src="' . $images['icon_msnm'] . '" alt="' . $lang['MSNM'] . '" title="' . $lang['MSNM'] . '" border="0" /></a>' : '';
@@ -164,17 +164,17 @@ while($staff = $db->sql_fetchrow($results))
 
         $www = ( $staff['user_website'] ) ? '<a href="' . $staff['user_website'] . '" target="_userwww"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" border="0" /></a>' : '';
 
-        $sql = "SELECT * FROM " . RANKS_TABLE . " ORDER BY rank_special, rank_min";
-        if ( !($result = $db->sql_query($sql)) )
+        $sql = "SELECT * FROM " . NUKE_RANKS_TABLE . " ORDER BY rank_special, rank_min";
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, "Could not obtain ranks information.", '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, "Could not obtain ranks information.", '', __LINE__, __FILE__, $sql);
         }
         $ranksrow = array();
-        while ( $row = $db->sql_fetchrow($result) )
+        while ( $row = $nuke_db->sql_fetchrow($result) )
         {
                 $ranksrow[] = $row;
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 
         $rank = '';
         $rank_image = '';
@@ -205,7 +205,7 @@ while($staff = $db->sql_fetchrow($results))
                 'AVATAR' => $avatar,
                 'RANK' => $rank,
                 'RANK_IMAGE' => $rank_image,
-                'U_NAME' => "modules.php?name=Profile&amp;mode=viewprofile&amp;" . POST_USERS_URL . "=$staff[user_id]",
+                'U_NAME' => "modules.php?name=Profile&amp;mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$staff[user_id]",
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/

@@ -52,13 +52,13 @@ if(is_mod_admin($module_name)) {
     title(""._USERADMIN." - "._DETUSER.": <i>$chng_uid</i>");
     amain();
     echo "<br />\n";
-    $sql = "SELECT * FROM ".$user_prefix."_users WHERE user_id='$chng_uid'";
-    if($db->sql_numrows($db->sql_query($sql)) > 0) {
-        $chnginfo = $db->sql_fetchrow($db->sql_query($sql));
+    $sql = "SELECT * FROM ".$nuke_user_prefix."_users WHERE user_id='$chng_uid'";
+    if($nuke_db->sql_numrows($nuke_db->sql_query($sql)) > 0) {
+        $chnginfo = $nuke_db->sql_fetchrow($nuke_db->sql_query($sql));
         
-    $result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field");
-    while ($sqlvalue = $db->sql_fetchrow($result)) {
-    list($value) = $db->sql_fetchrow( $db->sql_query("SELECT value FROM ".$user_prefix."_cnbya_value WHERE fid ='$sqlvalue[fid]' AND uid = '$chnginfo[user_id]'"));
+    $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field");
+    while ($sqlvalue = $nuke_db->sql_fetchrow($result)) {
+    list($value) = $nuke_db->sql_fetchrow( $nuke_db->sql_query("SELECT value FROM ".$nuke_user_prefix."_cnbya_value WHERE fid ='$sqlvalue[fid]' AND uid = '$chnginfo[user_id]'"));
     $chnginfo[$sqlvalue[name]] = $value;
     }
         
@@ -72,8 +72,8 @@ if(is_mod_admin($module_name)) {
     echo "<tr><td bgcolor='$bgcolor2'>"._REGDATE.":</td><td><strong>".$chnginfo['user_regdate']."</strong></td></tr>\n";
     echo "<tr><td bgcolor='$bgcolor2'>"._FAKEEMAIL.":</td><td><strong>".$chnginfo['femail']."</strong></td></tr>\n";
         
-        $result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field ORDER BY pos");
-            while ($sqlvalue = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field ORDER BY pos");
+            while ($sqlvalue = $nuke_db->sql_fetchrow($result)) {
               if (substr($sqlvalue[name],0,1)=='_') eval( "\$name_exit = $sqlvalue[name];"); else $name_exit = $sqlvalue[name];
               echo "<tr><td bgcolor='$bgcolor2'>$name_exit</td><td><strong>".$chnginfo[$sqlvalue[name]]."</strong></td></tr>\n";
             }

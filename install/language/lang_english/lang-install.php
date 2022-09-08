@@ -110,10 +110,12 @@ $install_lang['cookie_domain'] = "Cookie Domain:";
 $install_lang['config_failed'] = "Config.php generation failed.";
 $install_lang['installer_heading'] = "Installer :: Step";
 $install_lang['installer_heading2'] = "of";
-$install_lang['dbhost'] = "DB Host:";
-$install_lang['dbname'] = "DB Name:";
-$install_lang['dbuser'] = "DB User:";
-$install_lang['dbpass'] = "DB Password:";
+
+$install_lang['dbhost_a'] = "DB Host:";
+$install_lang['dbname_a'] = "DB Name:";
+$install_lang['dbuser_a'] = "DB User:";
+$install_lang['dbpass_a'] = "DB Password:";
+
 $install_lang['dbtype'] = "DB Type:";
 $install_lang['dbhost_error'] = "You must enter a database host (default is \"localhost\")";
 $install_lang['dbname_error'] = "You must enter a database name.";

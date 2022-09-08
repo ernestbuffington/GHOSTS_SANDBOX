@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -42,7 +42,7 @@ if(!get_magic_quotes_runtime()) {
   $xnotes = addslashes($xnotes);
   $xusername = addslashes($xusername);
 }
-$result = $db->sql_query("UPDATE `".$prefix."_nsnst_blocked_ips` SET `ip_addr`='$xIPs', `ip_long`='$xIPl', `user_id`='$xuser_id', `username`='$xusername', `user_agent`='$xuser_agent', `date`='$xdate', `notes`='$xnotes', `reason`='$xreason', `expires`='$xexpires', `c2c`='$xc2c' WHERE `ip_addr`='$old_xIPs'");
+$result = $nuke_db->sql_query("UPDATE `".$prefix."_nsnst_blocked_ips` SET `ip_addr`='$xIPs', `ip_long`='$xIPl', `user_id`='$xuser_id', `username`='$xusername', `user_agent`='$xuser_agent', `date`='$xdate', `notes`='$xnotes', `reason`='$xreason', `expires`='$xexpires', `c2c`='$xc2c' WHERE `ip_addr`='$old_xIPs'");
 if(!$result) { die("DB Error"); }
 $i = 1;
 while($i <= 3) {

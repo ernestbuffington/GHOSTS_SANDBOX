@@ -27,13 +27,13 @@ else
   $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', true); 
+define('IN_PHPBB2', true); 
 include($phpbb2_root_path . 'extension.inc'); 
 include($phpbb2_root_path . 'common.'.$phpEx); 
 include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_auc.' . $phpEx);
 
 # Start session management 
-$userdata = session_pagestart($user_ip, PAGE_INDEX); 
+$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX); 
 init_userprefs($userdata); 
 # End session management 
 
@@ -46,10 +46,10 @@ if($exist):
 
   if($exist == "admins"): 
      $group_name = str_replace("%s", "", $lang['Admin_online_color']);        
-     $g = ADMIN;
+     $g = NUKE_ADMIN;
   elseif($exist == "mods"): 
      $group_name = str_replace("%s", "", $lang['Mod_online_color']);
-     $g = MOD;
+     $g = NUKE_MOD;
   elseif($exist == "less_admins"): 
      $group_name = str_replace("%s", "", $lang['Super_Mod_online_color']);    
      $g = LESS_ADMIN;
@@ -63,13 +63,13 @@ if($exist):
              
   $i = 1;
                                                                     
-  $q = "SELECT * FROM ".USERS_TABLE." 
+  $q = "SELECT * FROM ".NUKE_USERS_TABLE." 
                  WHERE user_level = '".$g."' 
                  ORDER BY user_id ASC"; 
   
-  $r = $db->sql_query($q);
+  $r = $nuke_db->sql_query($q);
      
-  while($row1 = $db->sql_fetchrow($r)):
+  while($row1 = $nuke_db->sql_fetchrow($r)):
   
      $row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2']; 
      $row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2']; 
@@ -77,14 +77,14 @@ if($exist):
      $www = ($row1['user_website']) ? '<a href="'.$row1['user_website'].'" target="_userwww"><img src="'.$images['icon_www'].'" alt="'.$lang['Visit_website'].'" title="'
 	 .$lang['Visit_website'].'" border="0" /></a>' : '';
         
-	 $mailto = ($board_config['board_email_form']) ? append_sid("profile.$phpEx?mode=email&amp;".POST_USERS_URL.'='.$row1['user_id']) : 'mailto:'.$row1['user_email'];            
+	 $mailto = ($board_config['board_email_form']) ? append_sid("profile.$phpEx?mode=email&amp;".NUKE_POST_USERS_URL.'='.$row1['user_id']) : 'mailto:'.$row1['user_email'];            
      
 	 $mail = ($row1['user_email']) ? '<a href="'.$mailto.'"><img src="'.$images['icon_email'].'" alt="'.$lang['Send_email'].'" title="'.$lang['Send_email']
 	 .'" border="0" /></a>' : '';
         
-	 $pmto = append_sid("privmsg.$phpEx?mode=post&amp;". POST_USERS_URL ."=$row1[user_id]");
+	 $pmto = append_sid("privmsg.$phpEx?mode=post&amp;". NUKE_POST_USERS_URL ."=$row1[user_id]");
      $pm = '<a href="'.$pmto.'"><img src="'.$images['icon_pm'] .'" alt="'.$lang['Send_private_message'].'" title="'.$lang['Send_private_message'].'" border="0" /></a>';
-     $pro = append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=$row1[user_id]");
+     $pro = append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$row1[user_id]");
      $profile = '<a href="'.$pro.'"><img src="'.$images['icon_profile'].'" alt="'.$lang['Profile'].'" title="'.$lang['Profile'].'" border="0" /></a>';        
         
      $info = $profile." ".$pm;
@@ -95,15 +95,15 @@ if($exist):
 	 if($mail)    
 	 $info .= " ".$mail;
         
-     if ($row1['user_level'] == ADMIN)
+     if ($row1['user_level'] == NUKE_ADMIN)
      $style_color = '#'.$theme['fontcolor3'];
-     elseif ($row1['user_level'] == MOD)
+     elseif ($row1['user_level'] == NUKE_MOD)
      $style_color = '#'.$theme['fontcolor2'];
      elseif ($row['user_level'] == LESS_ADMIN)
      $style_color = '#'.$theme['fontcolor4'];
                     
      $template->assign_block_vars("colors", array(
-      "USER"         => "<font color='".$style_color."'>".$row1['username']."</font>", 
+      "NUKE_USER"         => "<font color='".$style_color."'>".$row1['username']."</font>", 
       "ROW_CLASS"    => $row_class,
       "INFO_LINE"    => $info)
       ); 
@@ -115,20 +115,20 @@ elseif($group):
    $sql = "SELECT * FROM ".$prefix."_bbadvanced_username_color
                     WHERE group_id = '".$group."' "; 
 					
-   if(!$result = $db->sql_query($sql)) 
-   message_die(GENERAL_ERROR, "Error Selecting Group Name.", "", __LINE__, __FILE__, $sql); 
+   if(!$result = $nuke_db->sql_query($sql)) 
+   message_die(NUKE_GENERAL_ERROR, "Error Selecting Group Name.", "", __LINE__, __FILE__, $sql); 
    
-   $row = $db->sql_fetchrow($result);
+   $row = $nuke_db->sql_fetchrow($result);
              
    $i = 1;
                                                                     
-   $q = "SELECT * FROM ".USERS_TABLE." 
+   $q = "SELECT * FROM ".NUKE_USERS_TABLE." 
                   WHERE user_color_gi <> '' 
                   AND user_allow_viewonline = 1
 				  ORDER BY username ASC"; 
    
-   $r = $db->sql_query($q);
-   $row1 = $db->sql_fetchrowset($r);
+   $r = $nuke_db->sql_query($q);
+   $row1 = $nuke_db->sql_fetchrowset($r);
             
    for($a = 0; $a < count($row1); $a++):
      if(!$row1[$a]['user_id']) 
@@ -141,14 +141,14 @@ elseif($group):
        $www = ($row1[$a]['user_website']) ? '<a href="'.$row1[$a]['user_website'].'" target="_userwww"><img src="'.$images['icon_www'].'" alt="'.$lang['Visit_website'] 
 	   .'" title="'.$lang['Visit_website'].'" border="0" /></a>' : '';
 	   
-       $mailto = ($board_config['board_email_form']) ? append_sid("profile.$phpEx?mode=email&amp;".POST_USERS_URL.'='.$row1[$a]['user_id']) : 'mailto:'.$row1[$a]['user_email'];            
+       $mailto = ($board_config['board_email_form']) ? append_sid("profile.$phpEx?mode=email&amp;".NUKE_POST_USERS_URL.'='.$row1[$a]['user_id']) : 'mailto:'.$row1[$a]['user_email'];            
        $mail = ($row1[$a]['user_email']) ? '<a href="'.$mailto.'"><img src="'.$images['icon_email'].'" alt="'.$lang['Send_email'].'" title="'.$lang['Send_email'] 
 	   .'" border="0" /></a>' : '';
        
-	   $pmto = append_sid("privmsg.$phpEx?mode=post&amp;".POST_USERS_URL."=".$row1[$a]['user_id']);
+	   $pmto = append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=".$row1[$a]['user_id']);
        $pm = '<a href="'.$pmto.'"><img src="'.$images['icon_pm'].'" alt="'.$lang['Send_private_message'].'" title="'.$lang['Send_private_message'].'" border="0" /></a>';
 	   
-       $pro = append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=".$row1[$a]['user_id']);
+       $pro = append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row1[$a]['user_id']);
 	   
        $profile = '<a href="'.$pro.'"><img src="'.$images['icon_profile'].'" alt="'.$lang['Profile'].'" title="'.$lang['Profile'].'" border="0" /></a>';
 	                   
@@ -162,7 +162,7 @@ elseif($group):
        $i++;
                         
        $template->assign_block_vars('colors', array(
-       'USER' => UsernameColor($row1[$a]['username']), 
+       'NUKE_USER' => UsernameColor($row1[$a]['username']), 
        'ROW_CLASS' => $row_class,
        'INFO_LINE' => $info)
         ); 
@@ -170,11 +170,11 @@ elseif($group):
    endfor;
 
 else:
-   redirect('index.'. $phpEx, TRUE); 
+   nuke_redirect('index.'. $phpEx, TRUE); 
 endif;        
    
    if($i == 1)
-   message_die(GENERAL_MESSAGE, sprintf($lang['listing_none'], '<strong>'. $row['group_name'] .'</strong>'));
+   message_die(NUKE_GENERAL_MESSAGE, sprintf($lang['listing_none'], '<strong>'. $row['group_name'] .'</strong>'));
                 
    $template->assign_vars(array(
    "T_L" => $lang['listing_left'], 

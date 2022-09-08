@@ -104,7 +104,7 @@
       <td class="row1">{L_INTERESTS}</td>
       <td class="row2"><input class="post" type="text" name="interests" size="35" maxlength="150" value="{INTERESTS}" /></td>
     </tr>
-<!-- Start add - Gender MOD -->
+<!-- Start add - Gender NUKE_MOD -->
     <tr> 
       <td class="row1">{L_GENDER}</td> 
       <td class="row2"> 
@@ -112,7 +112,7 @@
       <input type="radio" name="gender" value="1" {GENDER_MALE_CHECKED}/> {L_GENDER_MALE}&nbsp;&nbsp; 
       <input type="radio" name="gender" value="2" {GENDER_FEMALE_CHECKED}/> {L_GENDER_FEMALE}</td> 
     </tr>
-<!-- End add - Gender MOD -->
+<!-- End add - Gender NUKE_MOD -->
 <!-- END switch_is_interests -->
 <!-- BEGIN switch_is_signature -->
 	<!-- BEGIN birthday_optional -->
@@ -203,10 +203,10 @@
 	  <td class="row1">{L_BIRTHDAY_DISPLAY}
 	  <td class="row2">
 	    <select name="birthday_display">
-	      <option value="{BIRTHDAY_ALL}"{BIRTHDAY_ALL_SELECTED}>{L_BIRTHDAY_ALL}</option>
-	      <option value="{BIRTHDAY_DATE}"{BIRTHDAY_DATE_SELECTED}>{L_BIRTHDAY_YEAR}</option>
-	      <option value="{BIRTHDAY_AGE}"{BIRTHDAY_AGE_SELECTED}>{L_BIRTHDAY_AGE}</option>
-	      <option value="{BIRTHDAY_NONE}"{BIRTHDAY_NONE_SELECTED}>{L_BIRTHDAY_NONE}</option>
+	      <option value="{NUKE_BIRTHDAY_ALL}"{BIRTHDAY_ALL_SELECTED}>{L_BIRTHDAY_ALL}</option>
+	      <option value="{NUKE_BIRTHDAY_DATE}"{BIRTHDAY_DATE_SELECTED}>{L_BIRTHDAY_YEAR}</option>
+	      <option value="{NUKE_BIRTHDAY_AGE}"{BIRTHDAY_AGE_SELECTED}>{L_BIRTHDAY_AGE}</option>
+	      <option value="{NUKE_BIRTHDAY_NONE}"{BIRTHDAY_NONE_SELECTED}>{L_BIRTHDAY_NONE}</option>
 	    </select>
 	  </td>
 	</tr>
@@ -301,7 +301,7 @@
       <td class="row1">{L_BOARD_STYLE}</td>
       <td class="row2">{STYLE_SELECT}</td>
     </tr>
-    <!-- Start replacement - Advanced time management MOD -->
+    <!-- Start replacement - Advanced time management NUKE_MOD -->
     <tr>
         <td class="row1">
           <span style="display: inline-block; float: left; margin-top: 2px;">{L_TIME_MODE}</span>
@@ -321,7 +321,7 @@
             <input type="text" name="dst_time_lag" value="{DST_TIME_LAG}" maxlength="3" size="3" class="post" />{L_TIME_MODE_DST_MN}<br />
             {L_TIME_MODE_TIMEZONE} {TIMEZONE_SELECT}</td>
     </tr>
-        <!-- End replacement - Advanced time management MOD -->
+        <!-- End replacement - Advanced time management NUKE_MOD -->
     <tr>
       <td class="row1">
          <span style="display: inline-block; float: left; margin-top: 2px;">{L_DATE_FORMAT}</span>

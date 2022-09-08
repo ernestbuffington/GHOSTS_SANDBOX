@@ -230,7 +230,7 @@ $lang['Registered_users'] = 'Registered Portal Members:';
 /*****[BEGIN]******************************************
  [ Mod:     Users of the day                   v2.1.0 ]
  ******************************************************/
-$lang['day_userlist_users'] = '%d registered users have visited us in the last %d hours:';
+$lang['day_userlist_users'] = '%d registered members have visited us in the last %d hours:';
 /*****[END]********************************************
  [ Mod:     Users of the day                   v2.1.0 ]
  ******************************************************/
@@ -292,9 +292,9 @@ $lang['Moderators'] = 'Mod Groups:';
 $lang['Posted_articles_zero_total'] = 'Our members have posted a total of 0 articles'; // Number of posts
 $lang['Posted_articles_total'] = 'Our members have posted a total of %d articles'; // Number of posts
 $lang['Posted_article_total'] = 'Our members have posted a total of %d article'; // Number of posts
-$lang['Registered_users_zero_total'] = 'We have 0 registered members'; // # registered users
-$lang['Registered_users_total'] = 'We have %d registered members'; // # registered users
-$lang['Registered_user_total'] = 'We have %d registered member'; // # registered users
+$lang['Registered_users_zero_total'] = 'We have 0 registered members'; // # registered members
+$lang['Registered_users_total'] = 'We have %d registered members'; // # registered members
+$lang['Registered_user_total'] = 'We have %d registered member'; // # registered members
 $lang['Newest_user'] = 'The newest registered member is %s%s%s'; // a href, username, /a
 
 $lang['No_new_posts_last_visit'] = 'No new posts since your last visit';
@@ -405,7 +405,7 @@ $lang['Code'] = 'Code'; // comes before bbcode code output.
 /*****[BEGIN]******************************************
  [ Mod:     PHP Syntax Highlighter BBCode      v3.0.7 ]
  ******************************************************/
-$lang['PHPCode'] = 'PHP'; // PHP MOD
+$lang['PHPCode'] = 'PHP'; // PHP NUKE_MOD
 /*****[END]********************************************
  [ Mod:     PHP Syntax Highlighter BBCode      v3.0.7 ]
  ******************************************************/
@@ -648,7 +648,7 @@ $lang['User_post_pct_stats'] = '%.2f%% of total posts'; // 1.25% of total
 $lang['User_post_day_stats'] = '%.2f per day'; // 1.5 posts per day
 $lang['Search_user_posts'] = 'Find all posts by %s'; // Find all posts by username
 
-$lang['No_user_id_specified'] = 'The user you are looking for is in Ghost Mode!<br />- THIS USER DOES NOT WANT TO BE FOUND -';
+$lang['No_user_id_specified'] = 'The user you are looking for is in Ghost Mode!<br />- THIS NUKE_USER DOES NOT WANT TO BE FOUND -';
 $lang['Wrong_Profile'] = 'You cannot modify a profile that is not your own.';
 
 $lang['Only_one_avatar'] = 'Only one type of avatar can be specified';
@@ -1744,7 +1744,7 @@ $lang['thank_no_exist'] = 'Forum thank information doesn\'t exists';
  ******************************************************/
 
 /*****[BEGIN]******************************************
- [ Mod:    DHTML Collapsible Forum Index MOD     v1.1.1]
+ [ Mod:    DHTML Collapsible Forum Index NUKE_MOD     v1.1.1]
  ******************************************************/
 $lang['CFI_options'] = "C.F.I.";
 $lang['CFI_options_ex'] = "Collapsible Forum Index Options";
@@ -1755,7 +1755,7 @@ $lang['CFI_save'] = "Save State";
 $lang['CFI_Expand_all'] = "Expand All";
 $lang['CFI_Collapse_all'] = "Collapse All";
 /*****[END]********************************************
- [ Mod:    DHTML Collapsible Forum Index MOD     v1.1.1]
+ [ Mod:    DHTML Collapsible Forum Index NUKE_MOD     v1.1.1]
  ******************************************************/
 //
 // Password-protected forums

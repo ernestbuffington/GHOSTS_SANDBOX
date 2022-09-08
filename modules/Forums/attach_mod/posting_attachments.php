@@ -13,7 +13,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -75,7 +75,7 @@ class attach_parent
     */
     function get_quota_limits($userdata_quota, $user_id = 0)
     {
-        global $attach_config, $db;
+        global $attach_config, $nuke_db;
 
         //
         // Define Filesize Limits (Prepare Quota Settings)
@@ -91,14 +91,14 @@ class attach_parent
 //        $priority = 'group;user';
         $priority = 'user;group';
 
-        if ($userdata_quota['user_level'] == ADMIN)
+        if ($userdata_quota['user_level'] == NUKE_ADMIN)
         {
             $attach_config['pm_filesize_limit'] = 0; // Unlimited
             $attach_config['upload_filesize_limit'] = 0; // Unlimited
             return;
         }
 
-        if ($this->page == PAGE_PRIVMSGS)
+        if ($this->page == NUKE_PAGE_PRIVMSGS)
         {
             $quota_type = QUOTA_PM_LIMIT;
             $limit_type = 'pm_filesize_limit';
@@ -125,20 +125,20 @@ class attach_parent
             {
                 // Get Group Quota, if we find one, we have our quota
                 $sql = 'SELECT u.group_id
-					FROM ' . USER_GROUP_TABLE . ' u, ' . GROUPS_TABLE . ' g 
+					FROM ' . NUKE_USER_GROUP_TABLE . ' u, ' . NUKE_GROUPS_TABLE . ' g 
                     WHERE g.group_single_user = 0
 						AND u.user_pending = 0
                         AND u.group_id = g.group_id
                         AND u.user_id = ' . $user_id;
 
-                if (!($result = $db->sql_query($sql)))
+                if (!($result = $nuke_db->sql_query($sql)))
                 {
-                    message_die(GENERAL_ERROR, 'Could not get User Group', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Could not get User Group', '', __LINE__, __FILE__, $sql);
                 }
 
-                $rows = $db->sql_fetchrowset($result);
-                $num_rows = $db->sql_numrows($result);
-                $db->sql_freeresult($result);
+                $rows = $nuke_db->sql_fetchrowset($result);
+                $num_rows = $nuke_db->sql_numrows($result);
+                $nuke_db->sql_freeresult($result);
 
                 if ($num_rows > 0)
                 {
@@ -158,18 +158,18 @@ class attach_parent
                         ORDER BY l.quota_limit DESC
                         LIMIT 1';
 
-                    if (!($result = $db->sql_query($sql)))
+                    if (!($result = $nuke_db->sql_query($sql)))
                     {
-                        message_die(GENERAL_ERROR, 'Could not get Group Quota', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not get Group Quota', '', __LINE__, __FILE__, $sql);
                     }
 
-                    if ($db->sql_numrows($result) > 0)
+                    if ($nuke_db->sql_numrows($result) > 0)
                     {
-                        $row = $db->sql_fetchrow($result);
+                        $row = $nuke_db->sql_fetchrow($result);
                         $attach_config[$limit_type] = $row['quota_limit'];
                         $found = TRUE;
                     }
-                    $db->sql_freeresult($result);
+                    $nuke_db->sql_freeresult($result);
                 }
             }
 
@@ -184,18 +184,18 @@ class attach_parent
                         AND q.quota_limit_id = l.quota_limit_id
                     LIMIT 1';
 
-                if (!($result = $db->sql_query($sql)))
+                if (!($result = $nuke_db->sql_query($sql)))
                 {
-                    message_die(GENERAL_ERROR, 'Could not get User Quota', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Could not get User Quota', '', __LINE__, __FILE__, $sql);
                 }
 
-                if ($db->sql_numrows($result) > 0)
+                if ($nuke_db->sql_numrows($result) > 0)
                 {
-                    $row = $db->sql_fetchrow($result);
+                    $row = $nuke_db->sql_fetchrow($result);
                     $attach_config[$limit_type] = $row['quota_limit'];
                     $found = TRUE;
                 }
-                $db->sql_freeresult($result);
+                $nuke_db->sql_freeresult($result);
             }
         }
 
@@ -215,21 +215,21 @@ class attach_parent
                     WHERE quota_limit_id = ' . (int) $quota_id . '
                     LIMIT 1';
 
-                if (!($result = $db->sql_query($sql)))
+                if (!($result = $nuke_db->sql_query($sql)))
                 {
-                    message_die(GENERAL_ERROR, 'Could not get Default Quota Limit', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Could not get Default Quota Limit', '', __LINE__, __FILE__, $sql);
                 }
 
-                if ($db->sql_numrows($result) > 0)
+                if ($nuke_db->sql_numrows($result) > 0)
                 {
-                    $row = $db->sql_fetchrow($result);
+                    $row = $nuke_db->sql_fetchrow($result);
                     $attach_config[$limit_type] = $row['quota_limit'];
                 }
                 else
                 {
                     $attach_config[$limit_type] = $attach_config[$default];
                 }
-                $db->sql_freeresult($result);
+                $nuke_db->sql_freeresult($result);
             }
         }
 
@@ -249,14 +249,14 @@ class attach_parent
     */
     function handle_attachments($mode)
     {
-        global $is_auth, $attach_config, $refresh, $HTTP_POST_VARS, $post_id, $submit, $preview, $error, $error_msg, $lang, $template, $userdata, $db;
+        global $is_auth, $attach_config, $refresh, $HTTP_POST_VARS, $post_id, $submit, $preview, $error, $error_msg, $lang, $template, $userdata, $nuke_db;
 
         //
         // ok, what shall we do ;)
         //
 
         // Some adjustments for PM's
-        if ($this->page == PAGE_PRIVMSGS)
+        if ($this->page == NUKE_PAGE_PRIVMSGS)
         {
             global $privmsg_id;
 
@@ -271,7 +271,7 @@ class attach_parent
                 $mode = 'editpost';
             }
 
-            if ($userdata['user_level'] == ADMIN)
+            if ($userdata['user_level'] == NUKE_ADMIN)
             {
                 $is_auth['auth_attachments'] = 1;
                 $max_attachments = ADMIN_MAX_ATTACHMENTS;
@@ -285,7 +285,7 @@ class attach_parent
         }
         else
         {
-            if ($userdata['user_level'] == ADMIN)
+            if ($userdata['user_level'] == NUKE_ADMIN)
             {
                 $max_attachments = ADMIN_MAX_ATTACHMENTS;
             }
@@ -309,18 +309,18 @@ class attach_parent
 			$sql = 'SELECT attach_id
 				FROM ' . ATTACHMENTS_TABLE . '
 				WHERE ' . $sql_id . ' = ' . $post_id;
-			$result = $db->sql_query($sql);
+			$result = $nuke_db->sql_query($sql);
 
 			if (!$result)
 			{
-				message_die(GENERAL_ERROR, 'Unable to get attachment information.', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Unable to get attachment information.', '', __LINE__, __FILE__, $sql);
 			}
 
-			while ($_row = $db->sql_fetchrow($result))
+			while ($_row = $nuke_db->sql_fetchrow($result))
 			{
 				$allowed_attach_ids[] = $_row['attach_id'];
 			}
-			$db->sql_freeresult($result);
+			$nuke_db->sql_freeresult($result);
 		}
 
 		// Check the submitted variables - do not allow wrong values
@@ -333,7 +333,7 @@ class attach_parent
 			{
 				if (!in_array($actual_id_list[$i], $allowed_attach_ids))
 				{
-					message_die(CRITICAL_ERROR, 'You tried to change an attachment you do not have access to', '');
+					message_die(NUKE_CRITICAL_ERROR, 'You tried to change an attachment you do not have access to', '');
 				}
 			}
 			else
@@ -341,7 +341,7 @@ class attach_parent
 				// Really new attachment? If so, the filename should be unique...
 				if (physical_filename_already_stored($actual_list[$i]))
 				{
-					message_die(CRITICAL_ERROR, 'You tried to change an attachment you do not have access to', '');
+					message_die(NUKE_CRITICAL_ERROR, 'You tried to change an attachment you do not have access to', '');
 				}
 			}
 		}
@@ -362,7 +362,7 @@ class attach_parent
         }
 
         // Get Attachments
-        if ($this->page == PAGE_PRIVMSGS)
+        if ($this->page == NUKE_PAGE_PRIVMSGS)
         {
             $attachments = get_attachments_from_pm($post_id);
         }
@@ -371,9 +371,9 @@ class attach_parent
             $attachments = get_attachments_from_post($post_id);
         }
 
-        if ($this->page == PAGE_PRIVMSGS)
+        if ($this->page == NUKE_PAGE_PRIVMSGS)
         {
-            if ($userdata['user_level'] == ADMIN)
+            if ($userdata['user_level'] == NUKE_ADMIN)
             {
                 $auth = TRUE;
             }
@@ -455,7 +455,7 @@ class attach_parent
                             // but we are assigning an id of 0 here, we have to reset the post_attach variable to FALSE.
                             //
                             // This is very relevant, because it could happen that the post got not submitted, but we do not
-                            // know this circumstance here. We could be at the posting page or we could be redirected to the entered
+                            // know this circumstance here. We could be at the posting page or we could be nuke_redirected to the entered
                             // post. :)
                             $this->post_attach = FALSE;
                         }
@@ -588,9 +588,9 @@ class attach_parent
                                     SET thumbnail = 0
                                     WHERE attach_id = ' . (int) $actual_id_list[$i];
 
-                                if (!($db->sql_query($sql)))
+                                if (!($nuke_db->sql_query($sql)))
                                 {
-                                    message_die(GENERAL_ERROR, 'Unable to update ' . ATTACHMENTS_DESC_TABLE . ' Table.', '', __LINE__, __FILE__, $sql);
+                                    message_die(NUKE_GENERAL_ERROR, 'Unable to update ' . ATTACHMENTS_DESC_TABLE . ' Table.', '', __LINE__, __FILE__, $sql);
                                 }
                             }
                         }
@@ -647,12 +647,12 @@ class attach_parent
                             FROM ' . ATTACHMENTS_DESC_TABLE . '
                             WHERE attach_id = ' . (int) $attachment_id;
 
-                        if (!($result = $db->sql_query($sql)))
+                        if (!($result = $nuke_db->sql_query($sql)))
                         {
-                            message_die(GENERAL_ERROR, 'Unable to select old Attachment Entry.', '', __LINE__, __FILE__, $sql);
+                            message_die(NUKE_GENERAL_ERROR, 'Unable to select old Attachment Entry.', '', __LINE__, __FILE__, $sql);
                         }
 
-                        if ($db->sql_numrows($result) != 1)
+                        if ($nuke_db->sql_numrows($result) != 1)
                         {
                             $error = TRUE;
                             if(!empty($error_msg))
@@ -662,8 +662,8 @@ class attach_parent
                             $error_msg .= $lang['Error_missing_old_entry'];
                         }
 
-                        $row = $db->sql_fetchrow($result);
-                        $db->sql_freeresult($result);
+                        $row = $nuke_db->sql_fetchrow($result);
+                        $nuke_db->sql_freeresult($result);
 
                         $comment = (trim($this->file_comment) == '') ? trim($row['comment']) : trim($this->file_comment);
 
@@ -682,9 +682,9 @@ class attach_parent
                         $sql = 'UPDATE ' . ATTACHMENTS_DESC_TABLE . ' SET ' . attach_mod_sql_build_array('UPDATE', $sql_ary) . '
                             WHERE attach_id = ' . (int) $attachment_id;
 
-                        if (!($db->sql_query($sql)))
+                        if (!($nuke_db->sql_query($sql)))
                         {
-                            message_die(GENERAL_ERROR, 'Unable to update the Attachment.', '', __LINE__, __FILE__, $sql);
+                            message_die(NUKE_GENERAL_ERROR, 'Unable to update the Attachment.', '', __LINE__, __FILE__, $sql);
                         }
 
                         // Delete the Old Attachment
@@ -751,7 +751,7 @@ class attach_parent
     */
     function do_insert_attachment($mode, $message_type, $message_id)
     {
-        global $db, $upload_dir;
+        global $nuke_db, $upload_dir;
 
         if (intval($message_id) < 0)
         {
@@ -795,27 +795,27 @@ class attach_parent
 						FROM ' . ATTACHMENTS_TABLE . '
 						WHERE ' . $sql_id . ' = ' . $$sql_id . '
 							AND attach_id = ' . $this->attachment_id_list[$i];
-					$result = $db->sql_query($sql);
+					$result = $nuke_db->sql_query($sql);
 
 					if (!$result)
 					{
-						message_die(GENERAL_ERROR, 'Unable to get attachment information.', '', __LINE__, __FILE__, $sql);
+						message_die(NUKE_GENERAL_ERROR, 'Unable to get attachment information.', '', __LINE__, __FILE__, $sql);
 					}
 
-					$row = $db->sql_fetchrow($result);
-					$db->sql_freeresult($result);
+					$row = $nuke_db->sql_fetchrow($result);
+					$nuke_db->sql_freeresult($result);
 
 					if (!$row)
 					{
-						message_die(GENERAL_ERROR, 'Tried to update an attachment you are not allowed to access', '');
+						message_die(NUKE_GENERAL_ERROR, 'Tried to update an attachment you are not allowed to access', '');
 					}
                     $sql = 'UPDATE ' . ATTACHMENTS_DESC_TABLE . "
                         SET comment = '" . attach_mod_sql_escape($this->attachment_comment_list[$i]) . "'
                         WHERE attach_id = " . $this->attachment_id_list[$i];
 
-                    if (!($db->sql_query($sql)))
+                    if (!($nuke_db->sql_query($sql)))
                     {
-                        message_die(GENERAL_ERROR, 'Unable to update the File Comment.', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Unable to update the File Comment.', '', __LINE__, __FILE__, $sql);
                     }
                 }
                 else
@@ -834,12 +834,12 @@ class attach_parent
 
                     $sql = 'INSERT INTO ' . ATTACHMENTS_DESC_TABLE . ' ' . attach_mod_sql_build_array('INSERT', $sql_ary);
 
-                    if (!($db->sql_query($sql)))
+                    if (!($nuke_db->sql_query($sql)))
                     {
-                        message_die(GENERAL_ERROR, 'Couldn\'t store Attachment.<br />Your ' . $message_type . ' has been stored.', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t store Attachment.<br />Your ' . $message_type . ' has been stored.', '', __LINE__, __FILE__, $sql);
                     }
 
-                    $attach_id = $db->sql_nextid();
+                    $attach_id = $nuke_db->sql_nextid();
 
                     $sql_ary = array(
                         'attach_id'        => (int) $attach_id,
@@ -851,9 +851,9 @@ class attach_parent
 
                     $sql = 'INSERT INTO ' . ATTACHMENTS_TABLE . ' ' . attach_mod_sql_build_array('INSERT', $sql_ary);
 
-                    if (!($db->sql_query($sql)))
+                    if (!($nuke_db->sql_query($sql)))
                     {
-                        message_die(GENERAL_ERROR, 'Couldn\'t store Attachment.<br />Your ' . $message_type . ' has been stored.', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t store Attachment.<br />Your ' . $message_type . ' has been stored.', '', __LINE__, __FILE__, $sql);
                     }
                 }
             }
@@ -880,12 +880,12 @@ class attach_parent
                 $sql = 'INSERT INTO ' . ATTACHMENTS_DESC_TABLE . ' ' . attach_mod_sql_build_array('INSERT', $sql_ary);
 
                 // Inform the user that his post has been created, but nothing is attached
-                if (!($db->sql_query($sql)))
+                if (!($nuke_db->sql_query($sql)))
                 {
-                    message_die(GENERAL_ERROR, 'Couldn\'t store Attachment.<br />Your ' . $message_type . ' has been stored.', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Couldn\'t store Attachment.<br />Your ' . $message_type . ' has been stored.', '', __LINE__, __FILE__, $sql);
                 }
 
-                $attach_id = $db->sql_nextid();
+                $attach_id = $nuke_db->sql_nextid();
 
                 $sql_ary = array(
                     'attach_id'        => (int) $attach_id,
@@ -897,9 +897,9 @@ class attach_parent
 
                 $sql = 'INSERT INTO ' . ATTACHMENTS_TABLE . ' ' . attach_mod_sql_build_array('INSERT', $sql_ary);
 
-                if (!($db->sql_query($sql)))
+                if (!($nuke_db->sql_query($sql)))
                 {
-                    message_die(GENERAL_ERROR, 'Couldn\'t store Attachment.<br />Your ' . $message_type . ' has been stored.', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Couldn\'t store Attachment.<br />Your ' . $message_type . ' has been stored.', '', __LINE__, __FILE__, $sql);
                 }
             }
         }
@@ -911,7 +911,7 @@ class attach_parent
     */
     function display_attachment_bodies()
     {
-        global $attach_config, $db, $is_auth, $lang, $mode, $phpEx, $template, $upload_dir, $userdata, $HTTP_POST_VARS, $forum_id;
+        global $attach_config, $nuke_db, $is_auth, $lang, $mode, $phpEx, $template, $upload_dir, $userdata, $HTTP_POST_VARS, $forum_id;
         global $phpbb2_root_path;
 
         // Choose what to display
@@ -955,7 +955,7 @@ class attach_parent
         $s_hidden = '<input type="hidden" name="add_attachment_body" value="' . $value_add . '" />';
         $s_hidden .= '<input type="hidden" name="posted_attachments_body" value="' . $value_posted . '" />';
 
-        if ($this->page == PAGE_PRIVMSGS)
+        if ($this->page == NUKE_PAGE_PRIVMSGS)
         {
             $u_rules_id = 0;
         }
@@ -1062,7 +1062,7 @@ class attach_parent
                 );
 
                 // Thumbnail there ? And is the User Admin or Mod ? Then present the 'Delete Thumbnail' Button
-                if (intval($this->attachment_thumbnail_list[$i]) == 1 && ((isset($is_auth['auth_mod']) && $is_auth['auth_mod']) || $userdata['user_level'] == ADMIN))
+                if (intval($this->attachment_thumbnail_list[$i]) == 1 && ((isset($is_auth['auth_mod']) && $is_auth['auth_mod']) || $userdata['user_level'] == NUKE_ADMIN))
                 {
                     $template->assign_block_vars('attach_row.switch_thumbnail', array());
                 }
@@ -1082,7 +1082,7 @@ class attach_parent
     */
     function upload_attachment()
     {
-        global $HTTP_POST_FILES, $db, $HTTP_POST_VARS, $error, $error_msg, $lang, $attach_config, $userdata, $upload_dir, $forum_id;
+        global $HTTP_POST_FILES, $nuke_db, $HTTP_POST_VARS, $error, $error_msg, $lang, $attach_config, $userdata, $upload_dir, $forum_id;
 
         $this->post_attach = ($this->filename != '') ? TRUE : FALSE;
 
@@ -1094,7 +1094,7 @@ class attach_parent
 
             if (isset($HTTP_POST_FILES['fileupload']['size']) && $HTTP_POST_FILES['fileupload']['size'] == 0)
             {
-                message_die(GENERAL_ERROR, 'Tried to upload empty file');
+                message_die(NUKE_GENERAL_ERROR, 'Tried to upload empty file');
             }
 
             // Opera add the name to the mime type
@@ -1111,13 +1111,13 @@ class attach_parent
                     AND e.extension = '" . attach_mod_sql_escape($this->extension) . "'
                 LIMIT 1";
 
-            if (!($result = $db->sql_query($sql)))
+            if (!($result = $nuke_db->sql_query($sql)))
             {
-                message_die(GENERAL_ERROR, 'Could not query Extensions.', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not query Extensions.', '', __LINE__, __FILE__, $sql);
             }
 
-            $row = $db->sql_fetchrow($result);
-            $db->sql_freeresult($result);
+            $row = $nuke_db->sql_fetchrow($result);
+            $nuke_db->sql_freeresult($result);
 
             $allowed_filesize = ($row['max_filesize']) ? $row['max_filesize'] : $attach_config['max_filesize'];
             $cat_id = intval($row['cat_id']);
@@ -1168,7 +1168,7 @@ class attach_parent
             }
 
             // Check Forum Permissions
-            if (!$error && $this->page != PAGE_PRIVMSGS && $userdata['user_level'] != ADMIN && !is_forum_authed($auth_cache, $forum_id) && trim($auth_cache) != '')
+            if (!$error && $this->page != NUKE_PAGE_PRIVMSGS && $userdata['user_level'] != NUKE_ADMIN && !is_forum_authed($auth_cache, $forum_id) && trim($auth_cache) != '')
             {
                 $error = TRUE;
                 if(!empty($error_msg))
@@ -1212,7 +1212,7 @@ class attach_parent
 
                     if (!$new_filename)
                     {
-                        $u_id = (intval($userdata['user_id']) == ANONYMOUS) ? 0 : intval($userdata['user_id']);
+                        $u_id = (intval($userdata['user_id']) == NUKE_ANONYMOUS) ? 0 : intval($userdata['user_id']);
                         $new_filename = $u_id . '_' . $this->filetime . '.' . $this->extension;
                     }
 
@@ -1226,7 +1226,7 @@ class attach_parent
                 }
                 else
                 {
-                    $u_id = (intval($userdata['user_id']) == ANONYMOUS) ? 0 : intval($userdata['user_id']);
+                    $u_id = (intval($userdata['user_id']) == NUKE_ANONYMOUS) ? 0 : intval($userdata['user_id']);
                     $this->attach_filename = $u_id . '_' . $this->filetime . '.' . $this->extension;
                 }
 
@@ -1352,7 +1352,7 @@ class attach_parent
 					}
 				}
 			}
-            if (!$error && $userdata['user_level'] != ADMIN && $cat_id == IMAGE_CAT)
+            if (!$error && $userdata['user_level'] != NUKE_ADMIN && $cat_id == IMAGE_CAT)
             {
                 list($width, $height) = image_getdimension($upload_dir . '/' . $this->attach_filename);
 
@@ -1371,7 +1371,7 @@ class attach_parent
             }
 
             // check Filesize
-            if (!$error && $allowed_filesize != 0 && $this->filesize > $allowed_filesize && $userdata['user_level'] != ADMIN)
+            if (!$error && $allowed_filesize != 0 && $this->filesize > $allowed_filesize && $userdata['user_level'] != NUKE_ADMIN)
             {
                 $size_lang = ($allowed_filesize >= 1048576) ? $lang['MB'] : ( ($allowed_filesize >= 1024) ? $lang['KB'] : $lang['Bytes'] );
 
@@ -1397,13 +1397,13 @@ class attach_parent
             {
                 $sql = 'SELECT sum(filesize) as total FROM ' . ATTACHMENTS_DESC_TABLE;
 
-                if (!($result = $db->sql_query($sql)))
+                if (!($result = $nuke_db->sql_query($sql)))
                 {
-                    message_die(GENERAL_ERROR, 'Could not query total filesize', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Could not query total filesize', '', __LINE__, __FILE__, $sql);
                 }
 
-                $row = $db->sql_fetchrow($result);
-                $db->sql_freeresult($result);
+                $row = $nuke_db->sql_fetchrow($result);
+                $nuke_db->sql_freeresult($result);
 
                 $total_filesize = $row['total'];
 
@@ -1422,7 +1422,7 @@ class attach_parent
             $this->get_quota_limits($userdata);
 
             // Check our user quota
-            if ($this->page != PAGE_PRIVMSGS)
+            if ($this->page != NUKE_PAGE_PRIVMSGS)
             {
                 if ($attach_config['upload_filesize_limit'])
                 {
@@ -1432,14 +1432,14 @@ class attach_parent
                             AND privmsgs_id = 0
                         GROUP BY attach_id';
 
-                    if (!($result = $db->sql_query($sql)))
+                    if (!($result = $nuke_db->sql_query($sql)))
                     {
-                        message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
                     }
 
-                    $attach_ids = $db->sql_fetchrowset($result);
-                    $num_attach_ids = $db->sql_numrows($result);
-                    $db->sql_freeresult($result);
+                    $attach_ids = $nuke_db->sql_fetchrowset($result);
+                    $num_attach_ids = $nuke_db->sql_numrows($result);
+                    $nuke_db->sql_freeresult($result);
 
                     $attach_id = array();
 
@@ -1455,13 +1455,13 @@ class attach_parent
                             FROM ' . ATTACHMENTS_DESC_TABLE . '
                             WHERE attach_id IN (' . implode(', ', $attach_id) . ')';
 
-                        if (!($result = $db->sql_query($sql)))
+                        if (!($result = $nuke_db->sql_query($sql)))
                         {
-                            message_die(GENERAL_ERROR, 'Could not query total filesize', '', __LINE__, __FILE__, $sql);
+                            message_die(NUKE_GENERAL_ERROR, 'Could not query total filesize', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $row = $db->sql_fetchrow($result);
-                        $db->sql_freeresult($result);
+                        $row = $nuke_db->sql_fetchrow($result);
+                        $nuke_db->sql_freeresult($result);
                         $total_filesize = $row['total'];
                     }
                     else
@@ -1494,7 +1494,7 @@ class attach_parent
             }
 
             // If we are at Private Messaging, check our PM Quota
-            if ($this->page == PAGE_PRIVMSGS)
+            if ($this->page == NUKE_PAGE_PRIVMSGS)
             {
                 if ($attach_config['pm_filesize_limit'])
                 {
@@ -1514,7 +1514,7 @@ class attach_parent
                 $to_user = (isset($HTTP_POST_VARS['username']) ) ? $HTTP_POST_VARS['username'] : '';
 
                 // Check Receivers PM Quota
-                if (!empty($to_user) && $userdata['user_level'] != ADMIN)
+                if (!empty($to_user) && $userdata['user_level'] != NUKE_ADMIN)
                 {
                     $u_data = get_userdata($to_user, true);
 
@@ -1554,7 +1554,7 @@ class attach_parent
 
         if (!is_uploaded_file($file))
         {
-            message_die(GENERAL_ERROR, 'Unable to upload file. The given source has not been uploaded.', __LINE__, __FILE__);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to upload file. The given source has not been uploaded.', __LINE__, __FILE__);
         }
 
         switch ($upload_mode)
@@ -1667,7 +1667,7 @@ class attach_posting extends attach_parent
     */
     function insert_attachment($post_id)
     {
-        global $db, $is_auth, $mode, $userdata, $error, $error_msg;
+        global $nuke_db, $is_auth, $mode, $userdata, $error, $error_msg;
 
         // Insert Attachment ?
         if (!empty($post_id) && ($mode == 'newtopic' || $mode == 'reply' || $mode == 'editpost') && $is_auth['auth_attachments'])
@@ -1677,34 +1677,34 @@ class attach_posting extends attach_parent
 
 			if ((sizeof($this->attachment_list) > 0 || $this->post_attach) && !isset($HTTP_POST_VARS['update_attachment']))
             {
-                $sql = 'UPDATE ' . POSTS_TABLE . '
+                $sql = 'UPDATE ' . NUKE_POSTS_TABLE . '
                     SET post_attachment = 1
                     WHERE post_id = ' . (int) $post_id;
 
-                if (!($db->sql_query($sql)))
+                if (!($nuke_db->sql_query($sql)))
                 {
-                    message_die(GENERAL_ERROR, 'Unable to update Posts Table.', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Unable to update Posts Table.', '', __LINE__, __FILE__, $sql);
                 }
 
                 $sql = 'SELECT topic_id
-                    FROM ' . POSTS_TABLE . '
+                    FROM ' . NUKE_POSTS_TABLE . '
                     WHERE post_id = ' . (int) $post_id;
 
-                if (!($result = $db->sql_query($sql)))
+                if (!($result = $nuke_db->sql_query($sql)))
                 {
-                    message_die(GENERAL_ERROR, 'Unable to select Posts Table.', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Unable to select Posts Table.', '', __LINE__, __FILE__, $sql);
                 }
 
-                $row = $db->sql_fetchrow($result);
-                $db->sql_freeresult($result);
+                $row = $nuke_db->sql_fetchrow($result);
+                $nuke_db->sql_freeresult($result);
 
-                $sql = 'UPDATE ' . TOPICS_TABLE . '
+                $sql = 'UPDATE ' . NUKE_BB_TOPICS_TABLE . '
                     SET topic_attachment = 1
                     WHERE topic_id = ' . (int) $row['topic_id'];
 
-                if (!($db->sql_query($sql)))
+                if (!($nuke_db->sql_query($sql)))
                 {
-                    message_die(GENERAL_ERROR, 'Unable to update Topics Table.', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Unable to update Topics Table.', '', __LINE__, __FILE__, $sql);
                 }
             }
         }

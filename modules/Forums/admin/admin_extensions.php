@@ -13,7 +13,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 if( !empty($setmodules) )
 {
@@ -76,16 +76,16 @@ $attach_config = array();
 $sql = 'SELECT *
     FROM ' . ATTACH_CONFIG_TABLE;
 
-if (!($result = $db->sql_query($sql)))
+if (!($result = $nuke_db->sql_query($sql)))
 {
-    message_die(GENERAL_ERROR, 'Could not query attachment information', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query attachment information', '', __LINE__, __FILE__, $sql);
 }
 
-while ($row = $db->sql_fetchrow($result))
+while ($row = $nuke_db->sql_fetchrow($result))
 {
     $attach_config[$row['config_name']] = trim($row['config_value']);
 }
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 
 // Extension Management
 if ($submit && $mode == 'extensions')
@@ -108,14 +108,14 @@ if ($submit && $mode == 'extensions')
         FROM ' . EXTENSIONS_TABLE . '
         ORDER BY ext_id';
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Couldn\'t get Extension Informations.', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t get Extension Informations.', '', __LINE__, __FILE__, $sql);
     }
 
-    $num_rows = $db->sql_numrows($result);
-    $extension_row = $db->sql_fetchrowset($result);
-    $db->sql_freeresult($result);
+    $num_rows = $nuke_db->sql_numrows($result);
+    $extension_row = $nuke_db->sql_fetchrowset($result);
+    $nuke_db->sql_freeresult($result);
 
     if ($num_rows > 0)
     {
@@ -131,9 +131,9 @@ if ($submit && $mode == 'extensions')
                 $sql = 'UPDATE ' . EXTENSIONS_TABLE . ' SET ' . attach_mod_sql_build_array('UPDATE', $sql_ary) . '
                     WHERE ext_id = ' . (int) $extension_row[$i]['ext_id'];
 
-                if (!$db->sql_query($sql))
+                if (!$nuke_db->sql_query($sql))
                 {
-                    message_die(GENERAL_ERROR, 'Couldn\'t update Extension Informations', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Couldn\'t update Extension Informations', '', __LINE__, __FILE__, $sql);
                 }
             }
         }
@@ -150,9 +150,9 @@ if ($submit && $mode == 'extensions')
             FROM ' . EXTENSIONS_TABLE . '
             WHERE ext_id IN (' . $extension_id_sql . ')';
 
-        if (!$result = $db->sql_query($sql))
+        if (!$result = $nuke_db->sql_query($sql))
         {
-            message_die(GENERAL_ERROR, 'Could not delete Extensions', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not delete Extensions', '', __LINE__, __FILE__, $sql);
         }
     }
 
@@ -175,14 +175,14 @@ if ($submit && $mode == 'extensions')
             $sql = 'SELECT extension
                 FROM ' . EXTENSIONS_TABLE;
 
-            if (!($result = $db->sql_query($sql)))
+            if (!($result = $nuke_db->sql_query($sql)))
             {
-                message_die(GENERAL_ERROR, 'Could not query Extensions', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not query Extensions', '', __LINE__, __FILE__, $sql);
             }
 
-            $row = $db->sql_fetchrowset($result);
-            $num_rows = $db->sql_numrows($result);
-            $db->sql_freeresult($result);
+            $row = $nuke_db->sql_fetchrowset($result);
+            $num_rows = $nuke_db->sql_numrows($result);
+            $nuke_db->sql_freeresult($result);
 
             if ($num_rows > 0)
             {
@@ -206,14 +206,14 @@ if ($submit && $mode == 'extensions')
                 $sql = 'SELECT extension
                     FROM ' . FORBIDDEN_EXTENSIONS_TABLE;
 
-                if (!($result = $db->sql_query($sql)))
+                if (!($result = $nuke_db->sql_query($sql)))
                 {
-                    message_die(GENERAL_ERROR, 'Could not query Extensions', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Could not query Extensions', '', __LINE__, __FILE__, $sql);
                 }
 
-                $row = $db->sql_fetchrowset($result);
-                $num_rows = $db->sql_numrows($result);
-                $db->sql_freeresult($result);
+                $row = $nuke_db->sql_fetchrowset($result);
+                $num_rows = $nuke_db->sql_numrows($result);
+                $nuke_db->sql_freeresult($result);
 
                 if ($num_rows > 0)
                 {
@@ -243,9 +243,9 @@ if ($submit && $mode == 'extensions')
 
                 $sql = 'INSERT INTO ' . EXTENSIONS_TABLE . ' ' . attach_mod_sql_build_array('INSERT', $sql_ary);
 
-                if (!$db->sql_query($sql))
+                if (!$nuke_db->sql_query($sql))
                 {
-                    message_die(GENERAL_ERROR, 'Could not add Extension', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Could not add Extension', '', __LINE__, __FILE__, $sql);
                 }
 
             }
@@ -256,7 +256,7 @@ if ($submit && $mode == 'extensions')
     {
         $message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid("admin_extensions.$phpEx?mode=extensions") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
 
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
     }
 }
 
@@ -300,14 +300,14 @@ if ($mode == 'extensions')
         FROM ' . EXTENSIONS_TABLE . '
         ORDER BY group_id';
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Couldn\'t get Extension informations', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t get Extension informations', '', __LINE__, __FILE__, $sql);
     }
 
-    $extension_row = $db->sql_fetchrowset($result);
-    $num_extension_row = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $extension_row = $nuke_db->sql_fetchrowset($result);
+    $num_extension_row = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     if ($num_extension_row > 0)
     {
@@ -382,9 +382,9 @@ if ($submit && $mode == 'groups')
         $sql = 'UPDATE ' . EXTENSION_GROUPS_TABLE . ' SET ' . attach_mod_sql_build_array('UPDATE', $sql_ary) . '
             WHERE group_id = ' . (int) $group_change_list[$i];
 
-        if (!($db->sql_query($sql)))
+        if (!($nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Couldn\'t update Extension Groups Informations', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Couldn\'t update Extension Groups Informations', '', __LINE__, __FILE__, $sql);
         }
     }
 
@@ -399,9 +399,9 @@ if ($submit && $mode == 'groups')
             FROM ' . EXTENSION_GROUPS_TABLE . '
             WHERE group_id IN (' . $group_id_sql . ')';
 
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Could not delete Extension Groups', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not delete Extension Groups', '', __LINE__, __FILE__, $sql);
         }
 
         // Set corresponding Extensions to a pending Group
@@ -409,9 +409,9 @@ if ($submit && $mode == 'groups')
             SET group_id = 0
             WHERE group_id IN (' . $group_id_sql . ')';
 
-        if (!$result = $db->sql_query($sql))
+        if (!$result = $nuke_db->sql_query($sql))
         {
-            message_die(GENERAL_ERROR, 'Could not assign Extensions to Pending Group.', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not assign Extensions to Pending Group.', '', __LINE__, __FILE__, $sql);
         }
     }
 
@@ -432,14 +432,14 @@ if ($submit && $mode == 'groups')
         $sql = 'SELECT group_name
             FROM ' . EXTENSION_GROUPS_TABLE;
 
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Could not query Extension Groups Table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not query Extension Groups Table', '', __LINE__, __FILE__, $sql);
         }
 
-        $row = $db->sql_fetchrowset($result);
-        $num_rows = $db->sql_numrows($result);
-        $db->sql_freeresult($result);
+        $row = $nuke_db->sql_fetchrowset($result);
+        $num_rows = $nuke_db->sql_numrows($result);
+        $nuke_db->sql_freeresult($result);
 
         if ($num_rows > 0)
         {
@@ -473,9 +473,9 @@ if ($submit && $mode == 'groups')
 
             $sql = 'INSERT INTO ' . EXTENSION_GROUPS_TABLE . ' ' . attach_mod_sql_build_array('INSERT', $sql_ary);
 
-            if (!($db->sql_query($sql)))
+            if (!($nuke_db->sql_query($sql)))
             {
-                message_die(GENERAL_ERROR, 'Could not add Extension Group', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not add Extension Group', '', __LINE__, __FILE__, $sql);
             }
         }
     }
@@ -484,7 +484,7 @@ if ($submit && $mode == 'groups')
     {
         $message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid("admin_extensions.$phpEx?mode=groups") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
 
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
     }
 }
 
@@ -511,7 +511,7 @@ if ($mode == 'groups')
         $max_add_filesize = round($max_add_filesize / 1024 * 100) / 100;
     }
 
-    $viewgroup = get_var(POST_GROUPS_URL, 0);
+    $viewgroup = get_var(NUKE_POST_GROUPS_URL, 0);
 
     $template->assign_vars(array(
         'L_EXTENSION_GROUPS_TITLE'        => $lang['Manage_extension_groups'],
@@ -542,14 +542,14 @@ if ($mode == 'groups')
     $sql = 'SELECT *
         FROM ' . EXTENSION_GROUPS_TABLE;
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Couldn\'t get Extension Group informations', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t get Extension Group informations', '', __LINE__, __FILE__, $sql);
     }
 
-    $extension_group = $db->sql_fetchrowset($result);
-    $num_extension_group = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $extension_group = $nuke_db->sql_fetchrowset($result);
+    $num_extension_group = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     for ($i = 0; $i < $num_extension_group; $i++)
     {
@@ -584,7 +584,7 @@ if ($mode == 'groups')
 
             'MAX_FILESIZE'        => $extension_group[$i]['max_filesize'],
             'CAT_BOX'            => ($viewgroup == $extension_group[$i]['group_id']) ? $lang['Decollapse'] : $lang['Collapse'],
-            'U_VIEWGROUP'        => ($viewgroup == $extension_group[$i]['group_id']) ? append_sid("admin_extensions.$phpEx?mode=groups") : append_sid("admin_extensions.$phpEx?mode=groups&amp;" . POST_GROUPS_URL . "=" . $extension_group[$i]['group_id']),
+            'U_VIEWGROUP'        => ($viewgroup == $extension_group[$i]['group_id']) ? append_sid("admin_extensions.$phpEx?mode=groups") : append_sid("admin_extensions.$phpEx?mode=groups&amp;" . NUKE_POST_GROUPS_URL . "=" . $extension_group[$i]['group_id']),
             'U_FORUM_PERMISSIONS'    => append_sid("admin_extensions.$phpEx?mode=$mode&amp;e_mode=perm&amp;e_group=" . $extension_group[$i]['group_id']))
         );
 
@@ -594,14 +594,14 @@ if ($mode == 'groups')
                 FROM ' . EXTENSIONS_TABLE . '
                 WHERE group_id = ' . (int) $viewgroup;
 
-            if (!$result = $db->sql_query($sql))
+            if (!$result = $nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, 'Couldn\'t get Extension informations', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Couldn\'t get Extension informations', '', __LINE__, __FILE__, $sql);
             }
 
-            $extension = $db->sql_fetchrowset($result);
-            $num_extension = $db->sql_numrows($result);
-            $db->sql_freeresult($result);
+            $extension = $nuke_db->sql_fetchrowset($result);
+            $num_extension = $nuke_db->sql_numrows($result);
+            $nuke_db->sql_freeresult($result);
 
             for ($j = 0; $j < $num_extension; $j++)
             {
@@ -628,9 +628,9 @@ if ($submit && $mode == 'forbidden')
             FROM ' . FORBIDDEN_EXTENSIONS_TABLE . '
             WHERE ext_id IN (' . $extension_id_sql . ')';
 
-        if (!$result = $db->sql_query($sql))
+        if (!$result = $nuke_db->sql_query($sql))
         {
-            message_die(GENERAL_ERROR, 'Could not delete forbidden extensions', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not delete forbidden extensions', '', __LINE__, __FILE__, $sql);
         }
     }
 
@@ -643,14 +643,14 @@ if ($submit && $mode == 'forbidden')
         $sql = 'SELECT extension
             FROM ' . FORBIDDEN_EXTENSIONS_TABLE;
 
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Could not query forbidden extensions', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not query forbidden extensions', '', __LINE__, __FILE__, $sql);
         }
 
-        $row = $db->sql_fetchrowset($result);
-        $num_rows = $db->sql_numrows($result);
-        $db->sql_freeresult($result);
+        $row = $nuke_db->sql_fetchrowset($result);
+        $num_rows = $nuke_db->sql_numrows($result);
+        $nuke_db->sql_freeresult($result);
 
         if ($num_rows > 0)
         {
@@ -674,14 +674,14 @@ if ($submit && $mode == 'forbidden')
             $sql = 'SELECT extension
                 FROM ' . EXTENSIONS_TABLE;
 
-            if (!($result = $db->sql_query($sql)))
+            if (!($result = $nuke_db->sql_query($sql)))
             {
-                message_die(GENERAL_ERROR, 'Could not query extensions', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not query extensions', '', __LINE__, __FILE__, $sql);
             }
 
-            $row = $db->sql_fetchrowset($result);
-            $num_rows = $db->sql_numrows($result);
-            $db->sql_freeresult($result);
+            $row = $nuke_db->sql_fetchrowset($result);
+            $num_rows = $nuke_db->sql_numrows($result);
+            $nuke_db->sql_freeresult($result);
 
             if ($num_rows > 0)
             {
@@ -705,9 +705,9 @@ if ($submit && $mode == 'forbidden')
             $sql = 'INSERT INTO ' . FORBIDDEN_EXTENSIONS_TABLE . " (extension)
                 VALUES ('" . attach_mod_sql_escape(strtolower($extension)) . "')";
 
-            if (!($db->sql_query($sql)))
+            if (!($nuke_db->sql_query($sql)))
             {
-                message_die(GENERAL_ERROR, 'Could not add forbidden extension', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not add forbidden extension', '', __LINE__, __FILE__, $sql);
             }
 
         }
@@ -717,7 +717,7 @@ if ($submit && $mode == 'forbidden')
     {
         $message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid("admin_extensions.$phpEx?mode=forbidden") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
 
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
     }
 
 }
@@ -743,14 +743,14 @@ if ($mode == 'forbidden')
         FROM ' . FORBIDDEN_EXTENSIONS_TABLE . '
         ORDER BY extension';
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Could not get forbidden extension informations', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get forbidden extension informations', '', __LINE__, __FILE__, $sql);
     }
 
-    $extensionrow = $db->sql_fetchrowset($result);
-    $num_extensionrow = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $extensionrow = $nuke_db->sql_fetchrowset($result);
+    $num_extensionrow = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     if ($num_extensionrow > 0)
     {
@@ -795,9 +795,9 @@ if ($add_forum && $e_mode == 'perm' && $group)
     if ($add_all_forums)
     {
         $sql = 'UPDATE ' . EXTENSION_GROUPS_TABLE . " SET forum_permissions = '' WHERE group_id = " . (int) $group;
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Could not update Permissions', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not update Permissions', '', __LINE__, __FILE__, $sql);
         }
     }
 
@@ -809,13 +809,13 @@ if ($add_forum && $e_mode == 'perm' && $group)
             WHERE group_id = ' . intval($group) . '
             LIMIT 1';
 
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Could not get Group Permissions from ' . EXTENSION_GROUPS_TABLE, '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not get Group Permissions from ' . EXTENSION_GROUPS_TABLE, '', __LINE__, __FILE__, $sql);
         }
 
-        $row = $db->sql_fetchrow($result);
-        $db->sql_freeresult($result);
+        $row = $nuke_db->sql_fetchrow($result);
+        $nuke_db->sql_freeresult($result);
 
         if (trim($row['forum_permissions']) == '')
         {
@@ -839,9 +839,9 @@ if ($add_forum && $e_mode == 'perm' && $group)
 
         $sql = 'UPDATE ' . EXTENSION_GROUPS_TABLE . " SET forum_permissions = '" . attach_mod_sql_escape($auth_bitstream) . "' WHERE group_id = " . (int) $group;
 
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Could not update Permissions', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not update Permissions', '', __LINE__, __FILE__, $sql);
         }
     }
 
@@ -858,13 +858,13 @@ if ($delete_forum && $e_mode == 'perm' && $group)
         WHERE group_id = ' . intval($group) . '
         LIMIT 1';
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Could not get Group Permissions from ' . EXTENSION_GROUPS_TABLE, '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get Group Permissions from ' . EXTENSION_GROUPS_TABLE, '', __LINE__, __FILE__, $sql);
     }
 
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     $auth_p2 = auth_unpack(trim($row['forum_permissions']));
     $auth_p = array();
@@ -882,9 +882,9 @@ if ($delete_forum && $e_mode == 'perm' && $group)
 
     $sql = 'UPDATE ' . EXTENSION_GROUPS_TABLE . " SET forum_permissions = '" . attach_mod_sql_escape($auth_bitstream) . "' WHERE group_id = " . (int) $group;
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Could not update Permissions', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not update Permissions', '', __LINE__, __FILE__, $sql);
     }
 }
 
@@ -900,13 +900,13 @@ if ($e_mode == 'perm' && $group)
         WHERE group_id = ' . intval($group) . '
         LIMIT 1';
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Could not get Group Name from ' . EXTENSION_GROUPS_TABLE, '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get Group Name from ' . EXTENSION_GROUPS_TABLE, '', __LINE__, __FILE__, $sql);
     }
 
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     $group_name = $row['group_name'];
     $allowed_forums = trim($row['forum_permissions']);
@@ -924,13 +924,13 @@ if ($e_mode == 'perm' && $group)
         $act_id = 0;
         $forum_p = auth_unpack($allowed_forums);
 
-        $sql = "SELECT forum_id, forum_name FROM " . FORUMS_TABLE . " WHERE forum_id IN (" . implode(', ', $forum_p) . ")";
-        if (!($result = $db->sql_query($sql)))
+        $sql = "SELECT forum_id, forum_name FROM " . NUKE_FORUMS_TABLE . " WHERE forum_id IN (" . implode(', ', $forum_p) . ")";
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Could not get Forum Names', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not get Forum Names', '', __LINE__, __FILE__, $sql);
         }
 
-        while ($row = $db->sql_fetchrow($result))
+        while ($row = $nuke_db->sql_fetchrow($result))
         {
             $forum_perm[$act_id]['forum_id'] = $row['forum_id'];
             $forum_perm[$act_id]['forum_name'] = $row['forum_name'];
@@ -959,18 +959,18 @@ if ($e_mode == 'perm' && $group)
 
     $forum_option_values = array(GPERM_ALL => $lang['Perm_all_forums']);
 
-    $sql = "SELECT forum_id, forum_name FROM " . FORUMS_TABLE;
+    $sql = "SELECT forum_id, forum_name FROM " . NUKE_FORUMS_TABLE;
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Could not get Forums', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get Forums', '', __LINE__, __FILE__, $sql);
     }
 
-    while ($row = $db->sql_fetchrow($result))
+    while ($row = $nuke_db->sql_fetchrow($result))
     {
         $forum_option_values[intval($row['forum_id'])] = $row['forum_name'];
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     foreach ($forum_option_values as $value => $option)
     {
@@ -983,14 +983,14 @@ if ($e_mode == 'perm' && $group)
     $template->assign_var_from_handle('GROUP_PERMISSIONS_BOX', 'perm_box');
 
     $empty_perm_forums = array();
-    $sql = "SELECT forum_id, forum_name FROM " . FORUMS_TABLE . " WHERE auth_attachments < " . AUTH_ADMIN;
+    $sql = "SELECT forum_id, forum_name FROM " . NUKE_FORUMS_TABLE . " WHERE auth_attachments < " . NUKE_AUTH_ADMIN;
 
-    if (!($f_result = $db->sql_query($sql)))
+    if (!($f_result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Could not get Forums.', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get Forums.', '', __LINE__, __FILE__, $sql);
     }
 
-    while ($row = $db->sql_fetchrow($f_result))
+    while ($row = $nuke_db->sql_fetchrow($f_result))
     {
         $forum_id = $row['forum_id'];
 
@@ -999,14 +999,14 @@ if ($e_mode == 'perm' && $group)
             WHERE allow_group = 1
             ORDER BY group_name ASC";
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Could not query Extension Groups.', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not query Extension Groups.', '', __LINE__, __FILE__, $sql);
         }
 
-        $rows = $db->sql_fetchrowset($result);
-        $num_rows = $db->sql_numrows($result);
-        $db->sql_freeresult($result);
+        $rows = $nuke_db->sql_fetchrowset($result);
+        $num_rows = $nuke_db->sql_numrows($result);
+        $nuke_db->sql_freeresult($result);
 
         $found_forum = FALSE;
 
@@ -1025,7 +1025,7 @@ if ($e_mode == 'perm' && $group)
             $empty_perm_forums[$forum_id] = $row['forum_name'];
         }
     }
-    $db->sql_freeresult($f_result);
+    $nuke_db->sql_freeresult($f_result);
 
     $message = '';
 

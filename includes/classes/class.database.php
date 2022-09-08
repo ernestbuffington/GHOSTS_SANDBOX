@@ -91,13 +91,13 @@ class DB {
     // Returns a string containing the CREATE statement on success
     function get_table_struct($database, $table, $crlf, $drop)
     {
-        global $db;
+        global $nuke_db;
         $schema_create = '';
         if ($drop) { $schema_create .= "DROP TABLE IF EXISTS $table;$crlf"; }
         $schema_create .= "CREATE TABLE $table ($crlf";
 
-        $result = $db->sql_query("SHOW FIELDS FROM $database.$table");
-        while ($row = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query("SHOW FIELDS FROM $database.$table");
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             $schema_create .= "   $row[Field] $row[Type]";
             if (isset($row['Default']) && (!empty($row['Default']) || $row['Default'] == '0'))
                 $schema_create .= " DEFAULT '$row[Default]'";
@@ -105,12 +105,12 @@ class DB {
             if ($row['Extra'] != '') $schema_create .= " $row[Extra]";
             $schema_create .= ",$crlf";
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         $schema_create = preg_replace("/,$crlf/".'$', '', $schema_create);
         
-        $result = $db->sql_query("SHOW KEYS FROM $table");
+        $result = $nuke_db->sql_query("SHOW KEYS FROM $table");
         $index = array();
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             $kname=$row['Key_name'];
 			if (($kname != "PRIMARY") && ($row['Non_unique'] == 0))
 			$kname="UNIQUE|$kname";
@@ -120,7 +120,7 @@ class DB {
                      $index[$kname] = array();
                  $index[$kname][] = $row['Column_name'];
             }
-            $db->sql_freeresult($result);
+            $nuke_db->sql_freeresult($result);
         while(list($x, $columns) = @each($index)) {
                  $schema_create .= ",$crlf";
                  if($x == "PRIMARY")
@@ -140,18 +140,18 @@ class DB {
     // Get the content of $table as a series of INSERT statements.
     function get_table_content($database, $table, $crlf, $complete=false, $echo=false, $compress=false)
     {
-        global $db;
+        global $nuke_db;
         $str = $fields = '';
-        $result = $db->sql_query("SELECT * FROM $database.$table");
-        $fieldcount = $db->sql_numfields($result);
+        $result = $nuke_db->sql_query("SELECT * FROM $database.$table");
+        $fieldcount = $nuke_db->sql_numfields($result);
         if ($complete) {
             $fields = array();
             for ($j=0; $j<$fieldcount;$j++) {
-                $fields[] = $db->sql_fieldname($j, $result);
+                $fields[] = $nuke_db->sql_fieldname($j, $result);
             }
             $fields = '('.implode(', ', $fields).') ';
         }
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             $str .= "INSERT INTO $table $fields VALUES (";
             for ($j=0; $j<$fieldcount;$j++) {
                 if ($j>0) $str .= ', ';
@@ -166,7 +166,7 @@ class DB {
                 $str = '';
             }
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         return $str;
     }
 
@@ -214,7 +214,7 @@ class DB {
             $error = 'There are no queries in '.$file['name'];
             return false;
         }
-        global $db, $prefix;
+        global $nuke_db, $prefix;
         set_time_limit(0);
         foreach($queries AS $query) {
             if (!$replace_prefix) {
@@ -230,7 +230,7 @@ class DB {
             {
                 $query .= ' ENGINE=MyISAM';
             }
-            $db->sql_query($query);
+            $nuke_db->sql_query($query);
         }
         return true;
     }

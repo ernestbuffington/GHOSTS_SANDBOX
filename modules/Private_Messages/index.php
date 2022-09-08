@@ -61,18 +61,18 @@ if (isset($privmsg_id))
 
 if (!empty($pm_uname)) 
 {
-    $sql = "SELECT user_id from ".$user_prefix."_users WHERE username='$pm_uname'";
-    $result = $db->sql_query($sql);
-    $row = $db->sql_fetchrow($result);
+    $sql = "SELECT user_id from ".$nuke_user_prefix."_users WHERE username='$pm_uname'";
+    $result = $nuke_db->sql_query($sql);
+    $row = $nuke_db->sql_fetchrow($result);
     $u = intval($row['user_id']);
     $mode = 'post';
-    redirect("modules.php?name=Private_Messages&mode=$mode&u=$u");
+    nuke_redirect("modules.php?name=Private_Messages&mode=$mode&u=$u");
     exit;
 }
 
 $sql_title = "SELECT custom_title from ".$prefix."_modules where title='$name'";
-$result_title = $db->sql_query($sql_title);
-$row_title = $db->sql_fetchrow($result_title);
+$result_title = $nuke_db->sql_query($sql_title);
+$row_title = $nuke_db->sql_fetchrow($result_title);
 
 if (empty($row_title['custom_title'])) 
     $mod_name = str_replace("_", " ", $name);
@@ -94,7 +94,7 @@ if (!(isset($popup)) || ($popup != "1")) {
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
     $nuke_file_path = 'modules.php?name=Forums&file=';
 }
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 include(NUKE_INCLUDE_DIR.'bbcode.php');
@@ -105,7 +105,7 @@ include(NUKE_INCLUDE_DIR.'functions_post.php');
 //
 if ( !empty($board_config['privmsg_disable']) )
 {
-    message_die(GENERAL_MESSAGE, 'PM_disabled');
+    message_die(NUKE_GENERAL_MESSAGE, 'PM_disabled');
 }
 
 $html_entities_match = array('#&(?!(\#[0-9]+;))#', '#<#', '#>#', '#"#');
@@ -151,7 +151,7 @@ else
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_PRIVMSGS);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_PRIVMSGS);
 init_userprefs($userdata);
 //
 // End session management
@@ -163,17 +163,17 @@ init_userprefs($userdata);
 $welcome_pm = ( isset($_POST['w_pm']) ) ? TRUE : 0;
 if(!empty($welcome_pm) && !empty($submit)) {
     if(empty($_POST['subject'])) {
-        message_die(GENERAL_ERROR,$lang['Welcome_PM_Subject']);
+        message_die(NUKE_GENERAL_ERROR,$lang['Welcome_PM_Subject']);
     }
-    if($db->sql_numrows($db->sql_query("SELECT * FROM ".$prefix."_welcome_pm")) != 0) {
+    if($nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$prefix."_welcome_pm")) != 0) {
         $sql_w_pm = "UPDATE ".$prefix."_welcome_pm SET subject='".$_POST['subject']."', msg='".$_POST['message']."'";
     } else {
         $sql_w_pm = "INSERT INTO ".$prefix."_welcome_pm VALUES('".$_POST['subject']."', '".$_POST['message']."')";
     }
-    $db->sql_query($sql_w_pm);
+    $nuke_db->sql_query($sql_w_pm);
     $msg = $lang['Welcome_PM_Set'] . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid("privmsg.$phpEx?folder=inbox") . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
 
-    message_die(GENERAL_MESSAGE, $msg);
+    message_die(NUKE_GENERAL_MESSAGE, $msg);
 }
 /*****[END]********************************************
  [ Mod:     Welcome PM                         v2.0.0 ]
@@ -183,12 +183,12 @@ if(!empty($welcome_pm) && !empty($submit)) {
  [ Mod:     PM threshold                       v1.0.0 ]
  ******************************************************/
 $pm_allow_threshold = isset($board_config['pm_allow_threshold']) ? $board_config['pm_allow_threshold'] : 1;
-if ( ($userdata['user_posts'] < $pm_allow_threshold) && $userdata['user_level'] != ADMIN)
+if ( ($userdata['user_posts'] < $pm_allow_threshold) && $userdata['user_level'] != NUKE_ADMIN)
 {
-    message_die(GENERAL_MESSAGE, 'Not_Authorised');
+    message_die(NUKE_GENERAL_MESSAGE, 'Not_Authorised');
 }
 if(!$userdata['session_logged_in']) {
-    redirect('modules.php?name=Your_Account&redirect=privmsg&folder=inbox');
+    nuke_redirect('modules.php?name=Your_Account&nuke_redirect=privmsg&folder=inbox');
     exit;
 }
 /*****[END]********************************************
@@ -200,9 +200,9 @@ if(!$userdata['session_logged_in']) {
 //
 if ( $cancel )
 {
-    // not needed anymore due to function redirect()
+    // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
-    redirect(append_sid("privmsg.$phpEx?folder=$folder", true));
+    nuke_redirect(append_sid("privmsg.$phpEx?folder=$folder", true));
     exit;
 }
 
@@ -236,9 +236,9 @@ else:
 
 endif;
 
-if ( isset($_POST[POST_POST_URL]) || isset($_GET[POST_POST_URL]) )
+if ( isset($_POST[NUKE_POST_POST_URL]) || isset($_GET[NUKE_POST_POST_URL]) )
 {
-    $privmsg_id = ( isset($_POST[POST_POST_URL]) ) ? intval($_POST[POST_POST_URL]) : intval($_GET[POST_POST_URL]);
+    $privmsg_id = ( isset($_POST[NUKE_POST_POST_URL]) ) ? intval($_POST[NUKE_POST_POST_URL]) : intval($_GET[NUKE_POST_POST_URL]);
 }
 else
 {
@@ -288,9 +288,9 @@ $savebox_title = $lang['Savebox'];
 
 if ( $folder == 'inbox' ) 
 {
-    $max_boxsize_sql = "SELECT ug.group_id, g.max_inbox, g.override_max_inbox FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g WHERE ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ORDER BY override_max_inbox DESC, max_inbox DESC";
-    $max_boxsize_result = $db->sql_query($max_boxsize_sql);
-    $max_boxsize_row = $db->sql_fetchrow($max_boxsize_result);
+    $max_boxsize_sql = "SELECT ug.group_id, g.max_inbox, g.override_max_inbox FROM " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g WHERE ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ORDER BY override_max_inbox DESC, max_inbox DESC";
+    $max_boxsize_result = $nuke_db->sql_query($max_boxsize_sql);
+    $max_boxsize_row = $nuke_db->sql_fetchrow($max_boxsize_result);
     $max_boxsize = $board_config['max_inbox_privmsgs'];
     if ( $max_boxsize_row['override_max_inbox'] == 1 ) 
     {
@@ -299,9 +299,9 @@ if ( $folder == 'inbox' )
 }
 else if ( $folder == 'savebox' ) 
 {
-    $max_boxsize_sql = "SELECT ug.group_id, g.max_savebox, g.override_max_savebox FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g WHERE ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ORDER BY override_max_savebox DESC, max_savebox DESC";
-    $max_boxsize_result = $db->sql_query($max_boxsize_sql);
-    $max_boxsize_row = $db->sql_fetchrow($max_boxsize_result);
+    $max_boxsize_sql = "SELECT ug.group_id, g.max_savebox, g.override_max_savebox FROM " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g WHERE ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ORDER BY override_max_savebox DESC, max_savebox DESC";
+    $max_boxsize_result = $nuke_db->sql_query($max_boxsize_sql);
+    $max_boxsize_row = $nuke_db->sql_fetchrow($max_boxsize_result);
     $max_boxsize = $board_config['max_savebox_privmsgs'];
     if ( $max_boxsize_row['override_max_savebox'] == 1 ) 
     {
@@ -310,9 +310,9 @@ else if ( $folder == 'savebox' )
 }
 else if ( $folder == 'sentbox' )
 {
-    $max_boxsize_sql = "SELECT ug.group_id, g.max_sentbox, g.override_max_sentbox FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g WHERE ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ORDER BY override_max_sentbox DESC, max_sentbox DESC";
-    $max_boxsize_result = $db->sql_query($max_boxsize_sql);
-    $max_boxsize_row = $db->sql_fetchrow($max_boxsize_result);
+    $max_boxsize_sql = "SELECT ug.group_id, g.max_sentbox, g.override_max_sentbox FROM " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g WHERE ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ORDER BY override_max_sentbox DESC, max_sentbox DESC";
+    $max_boxsize_result = $nuke_db->sql_query($max_boxsize_sql);
+    $max_boxsize_row = $nuke_db->sql_fetchrow($max_boxsize_result);
     $max_boxsize = $board_config['max_sentbox_privmsgs'];
     if ( $max_boxsize_row['override_max_sentbox'] == 1 ) 
     {
@@ -380,21 +380,21 @@ if ( $mode == 'newpm' )
 }
 else if ( $mode == 'read' )
 {
-        if ( !empty($_GET[POST_POST_URL]) )
+        if ( !empty($_GET[NUKE_POST_POST_URL]) )
         {
-                $privmsgs_id = intval($_GET[POST_POST_URL]);
+                $privmsgs_id = intval($_GET[NUKE_POST_POST_URL]);
         }
         else
         {
-                message_die(GENERAL_ERROR, $lang['No_post_id']);
+                message_die(NUKE_GENERAL_ERROR, $lang['No_post_id']);
         }
 
         if ( !$userdata['session_logged_in'] )
         {
-                // not needed anymore due to function redirect()
+                // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
-                redirect("modules.php?name=Your_Account&redirect=privmsg&folder=$folder&mode=$mode&" . POST_POST_URL . "=$privmsgs_id");
-                //redirect(append_sid("login.$phpEx?redirect=privmsg.$phpEx&folder=$folder&mode=$mode&" . POST_POST_URL . "=$privmsgs_id", true));
+                nuke_redirect("modules.php?name=Your_Account&nuke_redirect=privmsg&folder=$folder&mode=$mode&" . NUKE_POST_POST_URL . "=$privmsgs_id");
+                //nuke_redirect(append_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=$folder&mode=$mode&" . NUKE_POST_POST_URL . "=$privmsgs_id", true));
                 exit;
         }
 
@@ -407,31 +407,31 @@ else if ( $mode == 'read' )
                 case 'inbox':
                         $l_box_name = $lang['Inbox'];
                         $pm_sql_user = "AND pm.privmsgs_to_userid = " . $userdata['user_id'] . "
-                                AND ( pm.privmsgs_type = " . PRIVMSGS_READ_MAIL . "
-                                        OR pm.privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
-                                        OR pm.privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )";
+                                AND ( pm.privmsgs_type = " . NUKE_PRIVMSGS_READ_MAIL . "
+                                        OR pm.privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . "
+                                        OR pm.privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )";
                         break;
                 case 'outbox':
                         $l_box_name = $lang['Outbox'];
                         $pm_sql_user = "AND pm.privmsgs_from_userid =  " . $userdata['user_id'] . "
-                                AND ( pm.privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
-                                        OR pm.privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " ) ";
+                                AND ( pm.privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . "
+                                        OR pm.privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " ) ";
                         break;
                 case 'sentbox':
                         $l_box_name = $lang['Sentbox'];
                         $pm_sql_user = "AND pm.privmsgs_from_userid =  " . $userdata['user_id'] . "
-                                AND pm.privmsgs_type = " . PRIVMSGS_SENT_MAIL;
+                                AND pm.privmsgs_type = " . NUKE_PRIVMSGS_SENT_MAIL;
                         break;
                 case 'savebox':
                         $l_box_name = $lang['Savebox'];
                         $pm_sql_user = "AND ( ( pm.privmsgs_to_userid = " . $userdata['user_id'] . "
-                                        AND pm.privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . " )
+                                        AND pm.privmsgs_type = " . NUKE_PRIVMSGS_SAVED_IN_MAIL . " )
                                 OR ( pm.privmsgs_from_userid = " . $userdata['user_id'] . "
-                                        AND pm.privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . " )
+                                        AND pm.privmsgs_type = " . NUKE_PRIVMSGS_SAVED_OUT_MAIL . " )
                                 )";
                         break;
                 default:
-                        message_die(GENERAL_ERROR, $lang['No_such_folder']);
+                        message_die(NUKE_GENERAL_ERROR, $lang['No_such_folder']);
                         break;
         }
 
@@ -443,7 +443,7 @@ else if ( $mode == 'read' )
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
         $sql = "SELECT u.username AS username_1, u.user_id AS user_id_1, u2.username AS username_2, u2.user_id AS user_id_2, u.user_sig_bbcode_uid, u.user_posts, u.user_from, u.user_website, u.user_birthday, u.birthday_display, u.user_email, u.user_regdate, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allow_viewonline AS user_allow_viewonline_1, u2.user_allow_viewonline AS user_allow_viewonline_2, u.user_session_time AS user_session_time_1, u2.user_session_time AS user_session_time_2, pm.*, pmt.privmsgs_bbcode_uid, pmt.privmsgs_text
-                FROM " . PRIVMSGS_TABLE . " pm, " . PRIVMSGS_TEXT_TABLE . " pmt, " . USERS_TABLE . " u, " . USERS_TABLE . " u2
+                FROM " . NUKE_PRIVMSGS_TABLE . " pm, " . NUKE_PRIVMSGS_TEXT_TABLE . " pmt, " . NUKE_USERS_TABLE . " u, " . NUKE_USERS_TABLE . " u2
                 WHERE pm.privmsgs_id = '$privmsgs_id'
                         AND pmt.privmsgs_text_id = pm.privmsgs_id
                         $pm_sql_user
@@ -453,17 +453,17 @@ else if ( $mode == 'read' )
  [ Mod:    Birthdays                           v3.0.0 ]
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Could not query private message post information', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not query private message post information', '', __LINE__, __FILE__, $sql);
         }
 
         //
         // Did the query return any data?
         //
-        if ( !($privmsg = $db->sql_fetchrow($result)) )
+        if ( !($privmsg = $nuke_db->sql_fetchrow($result)) )
         {
-                redirect(append_sid("privmsg.$phpEx?folder=$folder", true));
+                nuke_redirect(append_sid("privmsg.$phpEx?folder=$folder", true));
                 exit;
         }
 
@@ -473,74 +473,74 @@ else if ( $mode == 'read' )
         // Is this a new message in the inbox? If it is then save
         // a copy in the posters sent box
         //
-        if (($privmsg['privmsgs_type'] == PRIVMSGS_NEW_MAIL || $privmsg['privmsgs_type'] == PRIVMSGS_UNREAD_MAIL) && $folder == 'inbox')
+        if (($privmsg['privmsgs_type'] == NUKE_PRIVMSGS_NEW_MAIL || $privmsg['privmsgs_type'] == NUKE_PRIVMSGS_UNREAD_MAIL) && $folder == 'inbox')
         {
                 // Update appropriate counter
                 switch ($privmsg['privmsgs_type'])
                 {
-                        case PRIVMSGS_NEW_MAIL:
+                        case NUKE_PRIVMSGS_NEW_MAIL:
                                 $sql = "user_new_privmsg = user_new_privmsg - 1";
                                 break;
-                        case PRIVMSGS_UNREAD_MAIL:
+                        case NUKE_PRIVMSGS_UNREAD_MAIL:
                                 $sql = "user_unread_privmsg = user_unread_privmsg - 1";
                                 break;
                 }
 
-                $sql = "UPDATE " . USERS_TABLE . "
+                $sql = "UPDATE " . NUKE_USERS_TABLE . "
                         SET $sql
                         WHERE user_id = " . $userdata['user_id'];
-                if ( !$db->sql_query($sql) )
+                if ( !$nuke_db->sql_query($sql) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not update private message read status for user', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not update private message read status for user', '', __LINE__, __FILE__, $sql);
                 }
 
-                $sql = "UPDATE " . PRIVMSGS_TABLE . "
-                        SET privmsgs_type = " . PRIVMSGS_READ_MAIL . "
+                $sql = "UPDATE " . NUKE_PRIVMSGS_TABLE . "
+                        SET privmsgs_type = " . NUKE_PRIVMSGS_READ_MAIL . "
                         WHERE privmsgs_id = " . $privmsg['privmsgs_id'];
-                if ( !$db->sql_query($sql) )
+                if ( !$nuke_db->sql_query($sql) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not update private message read status', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not update private message read status', '', __LINE__, __FILE__, $sql);
                 }
 
                 // Check to see if the poster has a 'full' sent box
                 $sql = "SELECT COUNT(privmsgs_id) AS sent_items, MIN(privmsgs_date) AS oldest_post_time
-                        FROM " . PRIVMSGS_TABLE . "
-                        WHERE privmsgs_type = " . PRIVMSGS_SENT_MAIL . "
+                        FROM " . NUKE_PRIVMSGS_TABLE . "
+                        WHERE privmsgs_type = " . NUKE_PRIVMSGS_SENT_MAIL . "
                                 AND privmsgs_from_userid = " . $privmsg['privmsgs_from_userid'];
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not obtain sent message info for sendee', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not obtain sent message info for sendee', '', __LINE__, __FILE__, $sql);
                 }
 
                 $sql_priority = ( SQL_LAYER == 'mysql' || SQL_LAYER == 'mysqli') ? 'LOW_PRIORITY' : '';
 
-                if ( $sent_info = $db->sql_fetchrow($result) )
+                if ( $sent_info = $nuke_db->sql_fetchrow($result) )
                 {
                         if ($board_config['max_sentbox_privmsgs'] && $sent_info['sent_items'] >= $board_config['max_sentbox_privmsgs'])
                         {
-                                $sql = "SELECT privmsgs_id FROM " . PRIVMSGS_TABLE . "
-                                        WHERE privmsgs_type = " . PRIVMSGS_SENT_MAIL . "
+                                $sql = "SELECT privmsgs_id FROM " . NUKE_PRIVMSGS_TABLE . "
+                                        WHERE privmsgs_type = " . NUKE_PRIVMSGS_SENT_MAIL . "
                                                 AND privmsgs_date = " . $sent_info['oldest_post_time'] . "
                                                 AND privmsgs_from_userid = " . $privmsg['privmsgs_from_userid'];
-                                if ( !$result = $db->sql_query($sql) )
+                                if ( !$result = $nuke_db->sql_query($sql) )
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not find oldest privmsgs', '', __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not find oldest privmsgs', '', __LINE__, __FILE__, $sql);
                                 }
-                                $old_privmsgs_id = $db->sql_fetchrow($result);
+                                $old_privmsgs_id = $nuke_db->sql_fetchrow($result);
                                 $old_privmsgs_id = $old_privmsgs_id['privmsgs_id'];
 
-                                $sql = "DELETE $sql_priority FROM " . PRIVMSGS_TABLE . "
+                                $sql = "DELETE $sql_priority FROM " . NUKE_PRIVMSGS_TABLE . "
                                         WHERE privmsgs_id = '$old_privmsgs_id'";
-                                if ( !$db->sql_query($sql) )
+                                if ( !$nuke_db->sql_query($sql) )
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (sent)', '', __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not delete oldest privmsgs (sent)', '', __LINE__, __FILE__, $sql);
                                 }
 
-                                $sql = "DELETE $sql_priority FROM " . PRIVMSGS_TEXT_TABLE . "
+                                $sql = "DELETE $sql_priority FROM " . NUKE_PRIVMSGS_TEXT_TABLE . "
                                         WHERE privmsgs_text_id = '$old_privmsgs_id'";
-                                if ( !$db->sql_query($sql) )
+                                if ( !$nuke_db->sql_query($sql) )
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs text (sent)', '', __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not delete oldest privmsgs text (sent)', '', __LINE__, __FILE__, $sql);
                                 }
                         }
                 }
@@ -550,20 +550,20 @@ else if ( $mode == 'read' )
                 // not the most DB friendly way but a lot easier to manage, besides the admin will be able to
                 // set limits on numbers of storable posts for users ... hopefully!
                 //
-                $sql = "INSERT $sql_priority INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig)
-                        VALUES (" . PRIVMSGS_SENT_MAIL . ", '" . str_replace("\'", "''", addslashes($privmsg['privmsgs_subject'])) . "', " . $privmsg['privmsgs_from_userid'] . ", " . $privmsg['privmsgs_to_userid'] . ", " . $privmsg['privmsgs_date'] . ", '" . $privmsg['privmsgs_ip'] . "', " . $privmsg['privmsgs_enable_html'] . ", " . $privmsg['privmsgs_enable_bbcode'] . ", " . $privmsg['privmsgs_enable_smilies'] . ", " .  $privmsg['privmsgs_attach_sig'] . ")";
-                if ( !$db->sql_query($sql) )
+                $sql = "INSERT $sql_priority INTO " . NUKE_PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig)
+                        VALUES (" . NUKE_PRIVMSGS_SENT_MAIL . ", '" . str_replace("\'", "''", addslashes($privmsg['privmsgs_subject'])) . "', " . $privmsg['privmsgs_from_userid'] . ", " . $privmsg['privmsgs_to_userid'] . ", " . $privmsg['privmsgs_date'] . ", '" . $privmsg['privmsgs_ip'] . "', " . $privmsg['privmsgs_enable_html'] . ", " . $privmsg['privmsgs_enable_bbcode'] . ", " . $privmsg['privmsgs_enable_smilies'] . ", " .  $privmsg['privmsgs_attach_sig'] . ")";
+                if ( !$nuke_db->sql_query($sql) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not insert private message sent info', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not insert private message sent info', '', __LINE__, __FILE__, $sql);
                 }
 
-                $privmsg_sent_id = $db->sql_nextid();
+                $privmsg_sent_id = $nuke_db->sql_nextid();
 
-                $sql = "INSERT $sql_priority INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_bbcode_uid, privmsgs_text)
+                $sql = "INSERT $sql_priority INTO " . NUKE_PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_bbcode_uid, privmsgs_text)
                         VALUES ('$privmsg_sent_id', '" . $privmsg['privmsgs_bbcode_uid'] . "', '" . str_replace("\'", "''", addslashes($privmsg['privmsgs_text'])) . "')";
-                if ( !$db->sql_query($sql) )
+                if ( !$nuke_db->sql_query($sql) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not insert private message sent text', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not insert private message sent text', '', __LINE__, __FILE__, $sql);
                 }
         }
 
@@ -580,9 +580,9 @@ else if ( $mode == 'read' )
         //
         $post_urls = array(
                 'post' => append_sid("privmsg.$phpEx?mode=post"),
-                'reply' => append_sid("privmsg.$phpEx?mode=reply&amp;" . POST_POST_URL . "=$privmsg_id"),
-                'quote' => append_sid("privmsg.$phpEx?mode=quote&amp;" . POST_POST_URL . "=$privmsg_id"),
-                'edit' => append_sid("privmsg.$phpEx?mode=edit&amp;" . POST_POST_URL . "=$privmsg_id")
+                'reply' => append_sid("privmsg.$phpEx?mode=reply&amp;" . NUKE_POST_POST_URL . "=$privmsg_id"),
+                'quote' => append_sid("privmsg.$phpEx?mode=quote&amp;" . NUKE_POST_POST_URL . "=$privmsg_id"),
+                'edit' => append_sid("privmsg.$phpEx?mode=edit&amp;" . NUKE_POST_POST_URL . "=$privmsg_id")
         );
         $post_icons = array(
                 'post_img' => '<a href="' . $post_urls['post'] . '"><img src="' . $images['pm_postmsg'] . '" alt="' . $lang['Post_new_pm'] . '" border="0"></a>',
@@ -644,7 +644,7 @@ else if ( $mode == 'read' )
         }
         else if ( $folder == 'savebox' )
         {
-                if ( $privmsg['privmsgs_type'] == PRIVMSGS_SAVED_IN_MAIL )
+                if ( $privmsg['privmsgs_type'] == NUKE_PRIVMSGS_SAVED_IN_MAIL )
                 {
                         $post_img = $post_icons['post_img'];
                         $reply_img = $post_icons['reply_img'];
@@ -736,18 +736,18 @@ else if ( $mode == 'read' )
         switch( $privmsg['user_avatar_type'] ):
 	
 			# user_allowavatar = 1
-			case USER_AVATAR_UPLOAD:
+			case NUKE_USER_AVATAR_UPLOAD:
 				$poster_avatar = ( $board_config['allow_avatar_upload'] ) ? '<img class="priv-msgs-avatar" style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="' . $board_config['avatar_path'] . '/' . $privmsg['user_avatar'] . '" alt="" border="0" />' : '';
 				break;
 
 			# user_allowavatar = 2
-			case USER_AVATAR_REMOTE:
+			case NUKE_USER_AVATAR_REMOTE:
 				// $evouserinfo_avatar .= avatar_resize($userinfo['user_avatar']);
 				$poster_avatar = '<img class="priv-msgs-avatar" style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="'.avatar_resize($privmsg['user_avatar']).'" alt="" border="0" />';
 				break;
 
 			# user_allowavatar = 3
-			case USER_AVATAR_GALLERY:
+			case NUKE_USER_AVATAR_GALLERY:
 				$poster_avatar = ( $board_config['allow_avatar_local'] ) ? '<img class="priv-msgs-avatar" style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="' . $board_config['avatar_gallery_path'] . '/' . (($privmsg['user_avatar'] == 'blank.gif' || $privmsg['user_avatar'] == 'gallery/blank.gif') ? 'blank.png' : $privmsg['user_avatar']) . '" alt="" border="0" />' : '';
 				break;
 		
@@ -757,7 +757,7 @@ else if ( $mode == 'read' )
         		'MODULE_NAME' => $mod_name,
         		'MODULE_URI' => append_sid("privmsg.$phpEx"),
         		'SENDER_AVATAR' => $poster_avatar,
-        		'SENDER_PROIFLE_URI' => "modules.php?name=Profile&mode=viewprofile&amp;" . POST_USERS_URL . '=' . $user_id_from,
+        		'SENDER_PROIFLE_URI' => "modules.php?name=Profile&mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $user_id_from,
         		'MESSAGE_INBOX_URI' => 'modules.php?name=Private_Messages&file=index&folder=inbox&mode=read&p=' . $privmsgs_id,
 
                 'INBOX_IMG' => $inbox_img,
@@ -819,17 +819,17 @@ else if ( $mode == 'read' )
 
         $post_date = create_date($board_config['default_dateformat'], $privmsg['privmsgs_date'], $board_config['board_timezone']);
 
-        $temp_url = "modules.php?name=Profile&mode=viewprofile&amp;" . POST_USERS_URL . '=' . $user_id_from;
+        $temp_url = "modules.php?name=Profile&mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $user_id_from;
         $profile_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" border="0" /></a>';
         $profile = '<a href="' . $temp_url . '">' . $lang['Read_profile'] . '</a>';
 
-        $temp_url = append_sid("privmsg.$phpEx?mode=post&amp;" . POST_USERS_URL . "=$user_id_from");
+        $temp_url = append_sid("privmsg.$phpEx?mode=post&amp;" . NUKE_POST_USERS_URL . "=$user_id_from");
         $pm_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" border="0" /></a>';
         $pm = '<a href="' . $temp_url . '">' . $lang['Send_private_message'] . '</a>';
 
-        if ( !empty($privmsg['user_viewemail']) || $userdata['user_level'] == ADMIN )
+        if ( !empty($privmsg['user_viewemail']) || $userdata['user_level'] == NUKE_ADMIN )
         {
-                $email_uri = ( $board_config['board_email_form'] ) ? "modules.php?name=Profile&mode=email&amp;" . POST_USERS_URL .'=' . $user_id_from : 'mailto:' . $privmsg['user_email'];
+                $email_uri = ( $board_config['board_email_form'] ) ? "modules.php?name=Profile&mode=email&amp;" . NUKE_POST_USERS_URL .'=' . $user_id_from : 'mailto:' . $privmsg['user_email'];
 
                 $email_img = '<a href="' . $email_uri . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" border="0" /></a>';
                 $email = '<a href="' . $email_uri . '">' . $lang['Send_email'] . '</a>';
@@ -847,14 +847,14 @@ else if ( $mode == 'read' )
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
 		$bday_month_day = floor($privmsg['user_birthday'] / 10000);
-		$bday_year_age = ( $privmsg['birthday_display'] != BIRTHDAY_NONE && $privmsg['birthday_display'] != BIRTHDAY_DATE ) ? $privmsg['user_birthday'] - 10000*$bday_month_day : 0;
+		$bday_year_age = ( $privmsg['birthday_display'] != NUKE_BIRTHDAY_NONE && $privmsg['birthday_display'] != NUKE_BIRTHDAY_DATE ) ? $privmsg['user_birthday'] - 10000*$bday_month_day : 0;
 		$fudge = ( gmdate('md') < $bday_month_day ) ? 1 : 0;
 		$age = ( $bday_year_age ) ? gmdate('Y')-$bday_year_age-$fudge : false;
 /*****[END]********************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
 
-        $temp_url = "modules.php?name=Profile&mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id_from";
+        $temp_url = "modules.php?name=Profile&mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$user_id_from";
 
         $temp_url = "modules.php?name=Forums&amp;file=search&amp;search_author=" . urlencode($username_from) . "&amp;showresults=posts";
         $search_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $username_from) . '" title="' . sprintf($lang['Search_user_posts'], $username_from) . '" border="0" /></a>';
@@ -869,7 +869,7 @@ else if ( $mode == 'read' )
                 $online_status_img = '<a href="' . append_sid("viewonline.$phpEx") . '"><img src="' . $images['icon_online'] . '" alt="' . sprintf($lang['is_online'], $username_from) . '" title="' . sprintf($lang['is_online'], $username_from) . '" /></a>&nbsp;';
                 $online_status = '&nbsp;(<strong><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_online'], $username_from) . '"' . $online_color . '>' . $lang['Online'] . '</a></strong>)';
             }
-            else if ($userdata['user_level'] == ADMIN || $userdata['user_id'] == $user_id_from)
+            else if ($userdata['user_level'] == NUKE_ADMIN || $userdata['user_id'] == $user_id_from)
             {
                 $online_status_img = '<a href="' . append_sid("viewonline.$phpEx") . '"><img src="' . $images['icon_hidden'] . '" alt="' . sprintf($lang['is_hidden'], $username_from) . '" title="' . sprintf($lang['is_hidden'], $username_from) . '" /></a>&nbsp;';
                 $online_status = '&nbsp;(<strong><em><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_hidden'], $username_from) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em></strong>)';
@@ -892,7 +892,7 @@ else if ( $mode == 'read' )
             {
                 $online_status_2 = '&nbsp;(<strong><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_online'], $username_to) . '"' . $online_color . '>' . $lang['Online'] . '</a></strong>)';
             }
-            else if ($userdata['user_level'] == ADMIN || $userdata['user_id'] == $user_id_to)
+            else if ($userdata['user_level'] == NUKE_ADMIN || $userdata['user_id'] == $user_id_to)
             {
                 $online_status_2 = '&nbsp;(<strong><em><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_hidden'], $username_to) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em></strong>)';
             }
@@ -1072,10 +1072,10 @@ else if ( ( $delete && $mark_list ) || $delete_all )
 {
         if ( !$userdata['session_logged_in'] )
         {
-                // not needed anymore due to function redirect()
+                // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
-                redirect("modules.php?name=Your_Account&redirect=privmsg&folder=inbox");
-                //redirect(append_sid("login.$phpEx?redirect=privmsg.$phpEx&folder=inbox", true));
+                nuke_redirect("modules.php?name=Your_Account&nuke_redirect=privmsg&folder=inbox");
+                //nuke_redirect(append_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=inbox", true));
                 exit;
         }
 
@@ -1125,7 +1125,7 @@ else if ( ( $delete && $mark_list ) || $delete_all )
 				// session id check
 				// if ($sid == '' || $sid != $userdata['session_id'])
 				// {
-				// 	message_die(GENERAL_ERROR, $lang['Session_invalid']);
+				// 	message_die(NUKE_GENERAL_ERROR, $lang['Session_invalid']);
 				// }
 
                 $delete_sql_id = '';
@@ -1143,36 +1143,36 @@ else if ( ( $delete && $mark_list ) || $delete_all )
                 {
                    case 'inbox':
                       $delete_type = "privmsgs_to_userid = " . $userdata['user_id'] . " AND (
-                      privmsgs_type = " . PRIVMSGS_READ_MAIL . " OR privmsgs_type = " . PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )";
+                      privmsgs_type = " . NUKE_PRIVMSGS_READ_MAIL . " OR privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )";
                       break;
 
                    case 'outbox':
-                      $delete_type = "privmsgs_from_userid = " . $userdata['user_id'] . " AND ( privmsgs_type = " . PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )";
+                      $delete_type = "privmsgs_from_userid = " . $userdata['user_id'] . " AND ( privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )";
                       break;
 
                    case 'sentbox':
-                      $delete_type = "privmsgs_from_userid = " . $userdata['user_id'] . " AND privmsgs_type = " . PRIVMSGS_SENT_MAIL;
+                      $delete_type = "privmsgs_from_userid = " . $userdata['user_id'] . " AND privmsgs_type = " . NUKE_PRIVMSGS_SENT_MAIL;
                       break;
 
                    case 'savebox':
                       $delete_type = "( ( privmsgs_from_userid = " . $userdata['user_id'] . "
-                      AND privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . " )
+                      AND privmsgs_type = " . NUKE_PRIVMSGS_SAVED_OUT_MAIL . " )
                       OR ( privmsgs_to_userid = " . $userdata['user_id'] . "
-                      AND privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . " ) )";
+                      AND privmsgs_type = " . NUKE_PRIVMSGS_SAVED_IN_MAIL . " ) )";
                       break;
                 }
 
                 $sql = "SELECT privmsgs_id
-                   FROM " . PRIVMSGS_TABLE . "
+                   FROM " . NUKE_PRIVMSGS_TABLE . "
                    WHERE $delete_type $delete_sql_id";
 
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                   message_die(GENERAL_ERROR, 'Could not obtain id list to delete messages', '', __LINE__, __FILE__, $sql);
+                   message_die(NUKE_GENERAL_ERROR, 'Could not obtain id list to delete messages', '', __LINE__, __FILE__, $sql);
                 }
 
                 $mark_list = array();
-                while ( $row = $db->sql_fetchrow($result) )
+                while ( $row = $nuke_db->sql_fetchrow($result) )
                 {
                    $mark_list[] = $row['privmsgs_id'];
                 }
@@ -1210,16 +1210,16 @@ else if ( ( $delete && $mark_list ) || $delete_all )
                                 // Get information relevant to new or unread mail
                                 // so we can adjust users counters appropriately
                                 $sql = "SELECT privmsgs_to_userid, privmsgs_type
-                                        FROM " . PRIVMSGS_TABLE . "
+                                        FROM " . NUKE_PRIVMSGS_TABLE . "
                                         WHERE privmsgs_id IN ($delete_sql_id)
                                                 AND $sql
-                                                AND privmsgs_type IN (" . PRIVMSGS_NEW_MAIL . ", " . PRIVMSGS_UNREAD_MAIL . ")";
-                                if ( !($result = $db->sql_query($sql)) )
+                                                AND privmsgs_type IN (" . NUKE_PRIVMSGS_NEW_MAIL . ", " . NUKE_PRIVMSGS_UNREAD_MAIL . ")";
+                                if ( !($result = $nuke_db->sql_query($sql)) )
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not obtain user id list for outbox messages', '', __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not obtain user id list for outbox messages', '', __LINE__, __FILE__, $sql);
                                 }
 
-                                if ( $row = $db->sql_fetchrow($result))
+                                if ( $row = $nuke_db->sql_fetchrow($result))
                                 {
                                         $update_users = $update_list = array();
 
@@ -1227,16 +1227,16 @@ else if ( ( $delete && $mark_list ) || $delete_all )
                                         {
                                                 switch ($row['privmsgs_type'])
                                                 {
-                                                        case PRIVMSGS_NEW_MAIL:
+                                                        case NUKE_PRIVMSGS_NEW_MAIL:
                                                                 $update_users['new'][$row['privmsgs_to_userid']]++;
                                                                 break;
 
-                                                        case PRIVMSGS_UNREAD_MAIL:
+                                                        case NUKE_PRIVMSGS_UNREAD_MAIL:
                                                                 $update_users['unread'][$row['privmsgs_to_userid']]++;
                                                                 break;
                                                 }
                                         }
-                                        while ($row = $db->sql_fetchrow($result));
+                                        while ($row = $nuke_db->sql_fetchrow($result));
 
                                         if (count($update_users))
                                         {
@@ -1266,25 +1266,25 @@ else if ( ( $delete && $mark_list ) || $delete_all )
                                                         {
                                                                 $user_ids = implode(', ', $user_ary);
 
-                                                                $sql = "UPDATE " . USERS_TABLE . "
+                                                                $sql = "UPDATE " . NUKE_USERS_TABLE . "
                                                                         SET $type = $type - $dec
                                                                         WHERE user_id IN ($user_ids)";
-                                                                if ( !$db->sql_query($sql) )
+                                                                if ( !$nuke_db->sql_query($sql) )
                                                                 {
-                                                                        message_die(GENERAL_ERROR, 'Could not update user pm counters', '', __LINE__, __FILE__, $sql);
+                                                                        message_die(NUKE_GENERAL_ERROR, 'Could not update user pm counters', '', __LINE__, __FILE__, $sql);
                                                                 }
                                                         }
                                                 }
                                                 unset($update_list);
                                         }
                                 }
-                                $db->sql_freeresult($result);
+                                $nuke_db->sql_freeresult($result);
                         }
 
                         // Delete the messages
-                        $delete_text_sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
+                        $delete_text_sql = "DELETE FROM " . NUKE_PRIVMSGS_TEXT_TABLE . "
                                 WHERE privmsgs_text_id IN ($delete_sql_id)";
-                        $delete_sql = "DELETE FROM " . PRIVMSGS_TABLE . "
+                        $delete_sql = "DELETE FROM " . NUKE_PRIVMSGS_TABLE . "
                                 WHERE privmsgs_id IN ($delete_sql_id)
                                         AND ";
 
@@ -1292,34 +1292,34 @@ else if ( ( $delete && $mark_list ) || $delete_all )
                         {
                                 case 'inbox':
                                         $delete_sql .= "privmsgs_to_userid = " . $userdata['user_id'] . " AND (
-                                                privmsgs_type = " . PRIVMSGS_READ_MAIL . " OR privmsgs_type = " . PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )";
+                                                privmsgs_type = " . NUKE_PRIVMSGS_READ_MAIL . " OR privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )";
                                         break;
 
                                 case 'outbox':
                                         $delete_sql .= "privmsgs_from_userid = " . $userdata['user_id'] . " AND (
-                                                privmsgs_type = " . PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )";
+                                                privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )";
                                         break;
 
                                 case 'sentbox':
-                                        $delete_sql .= "privmsgs_from_userid = " . $userdata['user_id'] . " AND privmsgs_type = " . PRIVMSGS_SENT_MAIL;
+                                        $delete_sql .= "privmsgs_from_userid = " . $userdata['user_id'] . " AND privmsgs_type = " . NUKE_PRIVMSGS_SENT_MAIL;
                                         break;
 
                                 case 'savebox':
                                         $delete_sql .= "( ( privmsgs_from_userid = " . $userdata['user_id'] . "
-                                                AND privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . " )
+                                                AND privmsgs_type = " . NUKE_PRIVMSGS_SAVED_OUT_MAIL . " )
                                         OR ( privmsgs_to_userid = " . $userdata['user_id'] . "
-                                                AND privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . " ) )";
+                                                AND privmsgs_type = " . NUKE_PRIVMSGS_SAVED_IN_MAIL . " ) )";
                                         break;
                         }
 
-                        if ( !$db->sql_query($delete_sql) )
+                        if ( !$nuke_db->sql_query($delete_sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not delete private message info', '', __LINE__, __FILE__, $delete_sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not delete private message info', '', __LINE__, __FILE__, $delete_sql);
                         }
 
-                        if ( !$db->sql_query($delete_text_sql) )
+                        if ( !$nuke_db->sql_query($delete_text_sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not delete private message text', '', __LINE__, __FILE__, $delete_text_sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not delete private message text', '', __LINE__, __FILE__, $delete_text_sql);
                         }
                 }
         }
@@ -1328,10 +1328,10 @@ else if ( $save && $mark_list && $folder != 'savebox' && $folder != 'outbox' )
 {
         if ( !$userdata['session_logged_in'] )
         {
-                // not needed anymore due to function redirect()
+                // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
-                redirect("modules.php?name=Your_Account&redirect=privmsg&folder=inbox");
-                //redirect(append_sid("login.$phpEx?redirect=privmsg.$phpEx&folder=inbox", true));
+                nuke_redirect("modules.php?name=Your_Account&nuke_redirect=privmsg&folder=inbox");
+                //nuke_redirect(append_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=inbox", true));
                 exit;
         }
 
@@ -1339,47 +1339,47 @@ else if ( $save && $mark_list && $folder != 'savebox' && $folder != 'outbox' )
         {
                 // See if recipient is at their savebox limit
                 $sql = "SELECT COUNT(privmsgs_id) AS savebox_items, MIN(privmsgs_date) AS oldest_post_time
-                        FROM " . PRIVMSGS_TABLE . "
+                        FROM " . NUKE_PRIVMSGS_TABLE . "
                         WHERE ( ( privmsgs_to_userid = " . $userdata['user_id'] . "
-                                        AND privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . " )
+                                        AND privmsgs_type = " . NUKE_PRIVMSGS_SAVED_IN_MAIL . " )
                                 OR ( privmsgs_from_userid = " . $userdata['user_id'] . "
-                                        AND privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . ") )";
-                if ( !($result = $db->sql_query($sql)) )
+                                        AND privmsgs_type = " . NUKE_PRIVMSGS_SAVED_OUT_MAIL . ") )";
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not obtain sent message info for sendee', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not obtain sent message info for sendee', '', __LINE__, __FILE__, $sql);
                 }
 
                 $sql_priority = ( SQL_LAYER == 'mysql' || SQL_LAYER == 'mysqli') ? 'LOW_PRIORITY' : '';
 
-                if ( $saved_info = $db->sql_fetchrow($result) )
+                if ( $saved_info = $nuke_db->sql_fetchrow($result) )
                 {
                         if ($board_config['max_savebox_privmsgs'] && $saved_info['savebox_items'] >= $board_config['max_savebox_privmsgs'] )
                         {
-                                $sql = "SELECT privmsgs_id FROM " . PRIVMSGS_TABLE . "
+                                $sql = "SELECT privmsgs_id FROM " . NUKE_PRIVMSGS_TABLE . "
                                         WHERE ( ( privmsgs_to_userid = " . $userdata['user_id'] . "
-                                                                AND privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . " )
+                                                                AND privmsgs_type = " . NUKE_PRIVMSGS_SAVED_IN_MAIL . " )
                                                         OR ( privmsgs_from_userid = " . $userdata['user_id'] . "
-                                                                AND privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . ") )
+                                                                AND privmsgs_type = " . NUKE_PRIVMSGS_SAVED_OUT_MAIL . ") )
                                                 AND privmsgs_date = " . $saved_info['oldest_post_time'];
-                                if ( !$result = $db->sql_query($sql) )
+                                if ( !$result = $nuke_db->sql_query($sql) )
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not find oldest privmsgs (save)', '', __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not find oldest privmsgs (save)', '', __LINE__, __FILE__, $sql);
                                 }
-                                $old_privmsgs_id = $db->sql_fetchrow($result);
+                                $old_privmsgs_id = $nuke_db->sql_fetchrow($result);
                                 $old_privmsgs_id = $old_privmsgs_id['privmsgs_id'];
 
-                                $sql = "DELETE $sql_priority FROM " . PRIVMSGS_TABLE . "
+                                $sql = "DELETE $sql_priority FROM " . NUKE_PRIVMSGS_TABLE . "
                                         WHERE privmsgs_id = '$old_privmsgs_id'";
-                                if ( !$db->sql_query($sql) )
+                                if ( !$nuke_db->sql_query($sql) )
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (save)', '', __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not delete oldest privmsgs (save)', '', __LINE__, __FILE__, $sql);
                                 }
 
-                                $sql = "DELETE $sql_priority FROM " . PRIVMSGS_TEXT_TABLE . "
+                                $sql = "DELETE $sql_priority FROM " . NUKE_PRIVMSGS_TEXT_TABLE . "
                                         WHERE privmsgs_text_id = '$old_privmsgs_id'";
-                                if ( !$db->sql_query($sql) )
+                                if ( !$nuke_db->sql_query($sql) )
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs text (save)', '', __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not delete oldest privmsgs text (save)', '', __LINE__, __FILE__, $sql);
                                 }
                         }
                 }
@@ -1391,7 +1391,7 @@ else if ( $save && $mark_list && $folder != 'savebox' && $folder != 'outbox' )
                 }
 
                 // Process request
-                $saved_sql = "UPDATE " . PRIVMSGS_TABLE;
+                $saved_sql = "UPDATE " . NUKE_PRIVMSGS_TABLE;
 
                 // Decrement read/new counters if appropriate
                 if ($folder == 'inbox' || $folder == 'outbox')
@@ -1409,16 +1409,16 @@ else if ( $save && $mark_list && $folder != 'savebox' && $folder != 'outbox' )
                         // Get information relevant to new or unread mail
                         // so we can adjust users counters appropriately
                         $sql = "SELECT privmsgs_to_userid, privmsgs_type
-                                FROM " . PRIVMSGS_TABLE . "
+                                FROM " . NUKE_PRIVMSGS_TABLE . "
                                 WHERE privmsgs_id IN ($saved_sql_id)
                                         AND $sql
-                                        AND privmsgs_type IN (" . PRIVMSGS_NEW_MAIL . ", " . PRIVMSGS_UNREAD_MAIL . ")";
-                        if ( !($result = $db->sql_query($sql)) )
+                                        AND privmsgs_type IN (" . NUKE_PRIVMSGS_NEW_MAIL . ", " . NUKE_PRIVMSGS_UNREAD_MAIL . ")";
+                        if ( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not obtain user id list for outbox messages', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not obtain user id list for outbox messages', '', __LINE__, __FILE__, $sql);
                         }
 
-                        if ( $row = $db->sql_fetchrow($result))
+                        if ( $row = $nuke_db->sql_fetchrow($result))
                         {
                                 $update_users = $update_list = array();
 
@@ -1426,16 +1426,16 @@ else if ( $save && $mark_list && $folder != 'savebox' && $folder != 'outbox' )
                                 {
                                         switch ($row['privmsgs_type'])
                                         {
-                                                case PRIVMSGS_NEW_MAIL:
+                                                case NUKE_PRIVMSGS_NEW_MAIL:
                                                         $update_users['new'][$row['privmsgs_to_userid']]++;
                                                         break;
 
-                                                case PRIVMSGS_UNREAD_MAIL:
+                                                case NUKE_PRIVMSGS_UNREAD_MAIL:
                                                         $update_users['unread'][$row['privmsgs_to_userid']]++;
                                                         break;
                                         }
                                 }
-                                while ($row = $db->sql_fetchrow($result));
+                                while ($row = $nuke_db->sql_fetchrow($result));
 
                                 if (count($update_users))
                                 {
@@ -1465,54 +1465,54 @@ else if ( $save && $mark_list && $folder != 'savebox' && $folder != 'outbox' )
                                                 {
                                                         $user_ids = implode(', ', $user_ary);
 
-                                                        $sql = "UPDATE " . USERS_TABLE . "
+                                                        $sql = "UPDATE " . NUKE_USERS_TABLE . "
                                                                 SET $type = $type - $dec
                                                                 WHERE user_id IN ($user_ids)";
-                                                        if ( !$db->sql_query($sql) )
+                                                        if ( !$nuke_db->sql_query($sql) )
                                                         {
-                                                                message_die(GENERAL_ERROR, 'Could not update user pm counters', '', __LINE__, __FILE__, $sql);
+                                                                message_die(NUKE_GENERAL_ERROR, 'Could not update user pm counters', '', __LINE__, __FILE__, $sql);
                                                         }
                                                 }
                                         }
                                         unset($update_list);
                                 }
                         }
-                        $db->sql_freeresult($result);
+                        $nuke_db->sql_freeresult($result);
                 }
 
                 switch ($folder)
                 {
                         case 'inbox':
-                                $saved_sql .= " SET privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . "
+                                $saved_sql .= " SET privmsgs_type = " . NUKE_PRIVMSGS_SAVED_IN_MAIL . "
                                         WHERE privmsgs_to_userid = " . $userdata['user_id'] . "
-                                                AND ( privmsgs_type = " . PRIVMSGS_READ_MAIL . "
-                                                        OR privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
-                                                        OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
+                                                AND ( privmsgs_type = " . NUKE_PRIVMSGS_READ_MAIL . "
+                                                        OR privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . "
+                                                        OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . ")";
                                 break;
 
                         case 'outbox':
-                                $saved_sql .= " SET privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . "
+                                $saved_sql .= " SET privmsgs_type = " . NUKE_PRIVMSGS_SAVED_OUT_MAIL . "
                                         WHERE privmsgs_from_userid = " . $userdata['user_id'] . "
-                                                AND ( privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
-                                                        OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " ) ";
+                                                AND ( privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . "
+                                                        OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " ) ";
                                 break;
 
                         case 'sentbox':
-                                $saved_sql .= " SET privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . "
+                                $saved_sql .= " SET privmsgs_type = " . NUKE_PRIVMSGS_SAVED_OUT_MAIL . "
                                         WHERE privmsgs_from_userid = " . $userdata['user_id'] . "
-                                                AND privmsgs_type = " . PRIVMSGS_SENT_MAIL;
+                                                AND privmsgs_type = " . NUKE_PRIVMSGS_SENT_MAIL;
                                 break;
                 }
 
                 $saved_sql .= " AND privmsgs_id IN ($saved_sql_id)";
 
-                if ( !$db->sql_query($saved_sql) )
+                if ( !$nuke_db->sql_query($saved_sql) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not save private messages', '', __LINE__, __FILE__, $saved_sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not save private messages', '', __LINE__, __FILE__, $saved_sql);
                 }
-                // not needed anymore due to function redirect()
+                // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
-                redirect(append_sid("privmsg.$phpEx?folder=savebox", true));
+                nuke_redirect(append_sid("privmsg.$phpEx?folder=savebox", true));
                 exit;
         }
 }
@@ -1520,11 +1520,11 @@ else if ( $submit || $refresh || !empty($mode) )
 {
         if ( !$userdata['session_logged_in'] )
         {
-                $user_id = ( isset($_GET[POST_USERS_URL]) ) ? '&' . POST_USERS_URL . '=' . intval($_GET[POST_USERS_URL]) : '';
-                // not needed anymore due to function redirect()
+                $user_id = ( isset($_GET[NUKE_POST_USERS_URL]) ) ? '&' . NUKE_POST_USERS_URL . '=' . intval($_GET[NUKE_POST_USERS_URL]) : '';
+                // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
-                redirect("modules.php?name=Your_Account&redirect=privmsg&folder=$folder&mode=$mode" . $user_id);
-                //redirect(append_sid("login.$phpEx?redirect=privmsg.$phpEx&folder=$folder&mode=$mode" . $user_id, true));
+                nuke_redirect("modules.php?name=Your_Account&nuke_redirect=privmsg&folder=$folder&mode=$mode" . $user_id);
+                //nuke_redirect(append_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=$folder&mode=$mode" . $user_id, true));
                 exit;
         }
 
@@ -1567,18 +1567,18 @@ else if ( $submit || $refresh || !empty($mode) )
                 // Flood control
                 //
                 $sql = "SELECT MAX(privmsgs_date) AS last_post_time
-                        FROM " . PRIVMSGS_TABLE . "
+                        FROM " . NUKE_PRIVMSGS_TABLE . "
                         WHERE privmsgs_from_userid = " . $userdata['user_id'];
-                if ( $result = $db->sql_query($sql) )
+                if ( $result = $nuke_db->sql_query($sql) )
                 {
-                        $db_row = $db->sql_fetchrow($result);
+                        $nuke_db_row = $nuke_db->sql_fetchrow($result);
 
-                        $last_post_time = $db_row['last_post_time'];
+                        $last_post_time = $nuke_db_row['last_post_time'];
                         $current_time = time();
 
                         if ( ( $current_time - $last_post_time ) < $board_config['flood_interval'])
                         {
-                                message_die(GENERAL_MESSAGE, $lang['Flood_Error']);
+                                message_die(NUKE_GENERAL_MESSAGE, $lang['Flood_Error']);
                         }
                 }
                 //
@@ -1589,20 +1589,20 @@ else if ( $submit || $refresh || !empty($mode) )
     if ($submit && $mode == 'edit')
     {
         $sql = 'SELECT privmsgs_from_userid
-            FROM ' . PRIVMSGS_TABLE . '
+            FROM ' . NUKE_PRIVMSGS_TABLE . '
             WHERE privmsgs_id = ' . (int) $privmsg_id . '
                 AND privmsgs_from_userid = ' . $userdata['user_id'];
 
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, "Could not obtain message details", "", __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, "Could not obtain message details", "", __LINE__, __FILE__, $sql);
         }
 
-        if (!($row = $db->sql_fetchrow($result)))
+        if (!($row = $nuke_db->sql_fetchrow($result)))
         {
-            message_die(GENERAL_MESSAGE, $lang['No_such_post']);
+            message_die(NUKE_GENERAL_MESSAGE, $lang['No_such_post']);
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 
         unset($row);
     }
@@ -1627,15 +1627,15 @@ else if ( $submit || $refresh || !empty($mode) )
                         $to_usernames[strlen($to_usernames)-1]=" ";
 
                         $sql = "SELECT user_id, username, user_notify_pm, user_email, user_lang, user_active
-                                FROM " . USERS_TABLE . "
+                                FROM " . NUKE_USERS_TABLE . "
                                 WHERE username IN ($to_usernames)
-                                        AND user_id <> " . ANONYMOUS . " ORDER BY username ASC";
+                                        AND user_id <> " . NUKE_ANONYMOUS . " ORDER BY username ASC";
 
-                        if( !($result2 = $db->sql_query($sql)) )
+                        if( !($result2 = $nuke_db->sql_query($sql)) )
                         {
-                            message_die(GENERAL_ERROR, 'Could not obtain users PM information', '', __LINE__, __FILE__, $sql);
+                            message_die(NUKE_GENERAL_ERROR, 'Could not obtain users PM information', '', __LINE__, __FILE__, $sql);
                         }
-                        $to_users = $db->sql_fetchrowset($result2);
+                        $to_users = $nuke_db->sql_fetchrowset($result2);
                         $n=0;
                         while ($to_username_array[$n] && !$error)
                         {
@@ -1707,7 +1707,7 @@ else if ( $submit || $refresh || !empty($mode) )
                 if ( !$userdata['user_allow_pm'] )
                 {
                         $message = $lang['Cannot_send_privmsg'];
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
                 }
 
 /*****[BEGIN]******************************************
@@ -1727,19 +1727,19 @@ else if ( $submit || $refresh || !empty($mode) )
                         // See if recipient is at their inbox limit
                         //
                         $sql = "SELECT COUNT(privmsgs_id) AS inbox_items, MIN(privmsgs_date) AS oldest_post_time
-                                FROM " . PRIVMSGS_TABLE . "
-                                WHERE ( privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
-                                                OR privmsgs_type = " . PRIVMSGS_READ_MAIL . "
-                                                OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )
+                                FROM " . NUKE_PRIVMSGS_TABLE . "
+                                WHERE ( privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . "
+                                                OR privmsgs_type = " . NUKE_PRIVMSGS_READ_MAIL . "
+                                                OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )
                                         AND privmsgs_to_userid = " . $to_userdata['user_id'];
-                        if ( !($result = $db->sql_query($sql)) )
+                        if ( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+                                message_die(NUKE_GENERAL_MESSAGE, $lang['No_such_user']);
                         }
 
                         $sql_priority = ( SQL_LAYER == 'mysql' || SQL_LAYER == 'mysqli') ? 'LOW_PRIORITY' : '';
 
-                        if ( $inbox_info = $db->sql_fetchrow($result) )
+                        if ( $inbox_info = $nuke_db->sql_fetchrow($result) )
                         {
 /*****[BEGIN]******************************************
  [ Mod:     Enhanced BBGroups                  v1.0.0 ]
@@ -1755,67 +1755,67 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
  ******************************************************/
                                 if ($board_config['max_inbox_privmsgs'] && $inbox_info['inbox_items'] >= $board_config['max_inbox_privmsgs'])
                                 {
-                                        $sql = "SELECT privmsgs_id FROM " . PRIVMSGS_TABLE . "
-                                                WHERE ( privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
-                                                                OR privmsgs_type = " . PRIVMSGS_READ_MAIL . "
-                                                                OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . "  )
+                                        $sql = "SELECT privmsgs_id FROM " . NUKE_PRIVMSGS_TABLE . "
+                                                WHERE ( privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . "
+                                                                OR privmsgs_type = " . NUKE_PRIVMSGS_READ_MAIL . "
+                                                                OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . "  )
                                                         AND privmsgs_date = " . $inbox_info['oldest_post_time'] . "
                                                         AND privmsgs_to_userid = " . $to_userdata['user_id'];
-                                        if ( !$result = $db->sql_query($sql) )
+                                        if ( !$result = $nuke_db->sql_query($sql) )
                                         {
-                                                message_die(GENERAL_ERROR, 'Could not find oldest privmsgs (inbox)', '', __LINE__, __FILE__, $sql);
+                                                message_die(NUKE_GENERAL_ERROR, 'Could not find oldest privmsgs (inbox)', '', __LINE__, __FILE__, $sql);
                                         }
-                                        $old_privmsgs_id = $db->sql_fetchrow($result);
+                                        $old_privmsgs_id = $nuke_db->sql_fetchrow($result);
                                         $old_privmsgs_id = $old_privmsgs_id['privmsgs_id'];
 
-                                        $sql = "DELETE $sql_priority FROM " . PRIVMSGS_TABLE . "
+                                        $sql = "DELETE $sql_priority FROM " . NUKE_PRIVMSGS_TABLE . "
                                                 WHERE privmsgs_id = '$old_privmsgs_id'";
-                                        if ( !$db->sql_query($sql) )
+                                        if ( !$nuke_db->sql_query($sql) )
                                         {
-                                                message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (inbox)'.$sql, '', __LINE__, __FILE__, $sql);
+                                                message_die(NUKE_GENERAL_ERROR, 'Could not delete oldest privmsgs (inbox)'.$sql, '', __LINE__, __FILE__, $sql);
                                         }
 
-                                        $sql = "DELETE $sql_priority FROM " . PRIVMSGS_TEXT_TABLE . "
+                                        $sql = "DELETE $sql_priority FROM " . NUKE_PRIVMSGS_TEXT_TABLE . "
                                                 WHERE privmsgs_text_id = '$old_privmsgs_id'";
-                                        if ( !$db->sql_query($sql) )
+                                        if ( !$nuke_db->sql_query($sql) )
                                         {
-                                                message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs text (inbox)', '', __LINE__, __FILE__, $sql);
+                                                message_die(NUKE_GENERAL_ERROR, 'Could not delete oldest privmsgs text (inbox)', '', __LINE__, __FILE__, $sql);
                                         }
                                 }
                         }
 
-                        $sql_info = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig)
-                                VALUES (" . PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", $privmsg_subject) . "', " . $userdata['user_id'] . ", " . $to_userdata['user_id'] . ", $msg_time, '$user_ip', '$html_on', '$bbcode_on', '$smilies_on', '$attach_sig')";
+                        $sql_info = "INSERT INTO " . NUKE_PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig)
+                                VALUES (" . NUKE_PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", $privmsg_subject) . "', " . $userdata['user_id'] . ", " . $to_userdata['user_id'] . ", $msg_time, '$user_ip', '$html_on', '$bbcode_on', '$smilies_on', '$attach_sig')";
                 }
                 else
                 {
-                        $sql_info = "UPDATE " . PRIVMSGS_TABLE . "
-                                SET privmsgs_type = " . PRIVMSGS_NEW_MAIL . ", privmsgs_subject = '" . str_replace("\'", "''", $privmsg_subject) . "', privmsgs_from_userid = " . $userdata['user_id'] . ", privmsgs_to_userid = " . $to_userdata['user_id'] . ", privmsgs_date = '$msg_time', privmsgs_ip = '$user_ip', privmsgs_enable_html = '$html_on', privmsgs_enable_bbcode = '$bbcode_on', privmsgs_enable_smilies = '$smilies_on', privmsgs_attach_sig = '$attach_sig'
+                        $sql_info = "UPDATE " . NUKE_PRIVMSGS_TABLE . "
+                                SET privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . ", privmsgs_subject = '" . str_replace("\'", "''", $privmsg_subject) . "', privmsgs_from_userid = " . $userdata['user_id'] . ", privmsgs_to_userid = " . $to_userdata['user_id'] . ", privmsgs_date = '$msg_time', privmsgs_ip = '$user_ip', privmsgs_enable_html = '$html_on', privmsgs_enable_bbcode = '$bbcode_on', privmsgs_enable_smilies = '$smilies_on', privmsgs_attach_sig = '$attach_sig'
                                 WHERE privmsgs_id = '$privmsg_id'";
                 }
 
-                if ( !($result = $db->sql_query($sql_info)) )
+                if ( !($result = $nuke_db->sql_query($sql_info)) )
                 {
-                        message_die(GENERAL_ERROR, "Could not insert/update private message sent info.", "", __LINE__, __FILE__, $sql_info);
+                        message_die(NUKE_GENERAL_ERROR, "Could not insert/update private message sent info.", "", __LINE__, __FILE__, $sql_info);
                 }
 
                 if ( $mode != 'edit' )
                 {
-                        $privmsg_sent_id = $db->sql_nextid();
+                        $privmsg_sent_id = $nuke_db->sql_nextid();
 
-                        $sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_bbcode_uid, privmsgs_text)
+                        $sql = "INSERT INTO " . NUKE_PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_bbcode_uid, privmsgs_text)
                                 VALUES ('$privmsg_sent_id', '" . $bbcode_uid . "', '" . str_replace("\'", "''", $privmsg_message) . "')";
                 }
                 else
                 {
-                        $sql = "UPDATE " . PRIVMSGS_TEXT_TABLE . "
+                        $sql = "UPDATE " . NUKE_PRIVMSGS_TEXT_TABLE . "
                                 SET privmsgs_text = '" . str_replace("\'", "''", $privmsg_message) . "', privmsgs_bbcode_uid = '$bbcode_uid'
                                 WHERE privmsgs_text_id = '$privmsg_id'";
                 }
 
-                if ( !$db->sql_query($sql) )
+                if ( !$nuke_db->sql_query($sql) )
                 {
-                        message_die(GENERAL_ERROR, "Could not insert/update private message sent text.", "", __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, "Could not insert/update private message sent text.", "", __LINE__, __FILE__, $sql);
                 }
 
 /*****[BEGIN]******************************************
@@ -1831,12 +1831,12 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
                         //
                         // Add to the users new pm counter
                         //
-                        $sql = "UPDATE " . USERS_TABLE . "
+                        $sql = "UPDATE " . NUKE_USERS_TABLE . "
                                 SET user_new_privmsg = user_new_privmsg + 1, user_last_privmsg = " . time() . "
                                 WHERE user_id = " . $to_userdata['user_id'];
-                        if ( !$status = $db->sql_query($sql) )
+                        if ( !$status = $nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not update private message new/read status for user', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not update private message new/read status for user', '', __LINE__, __FILE__, $sql);
                         }
 
                         if ( $to_userdata['user_notify_pm'] && !empty($to_userdata['user_email']) && $to_userdata['user_active'] )
@@ -1869,7 +1869,7 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
 
                 $msg = $lang['Message_sent'] . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid("privmsg.$phpEx?folder=inbox") . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
 
-                message_die(GENERAL_MESSAGE, $msg);
+                message_die(NUKE_GENERAL_MESSAGE, $msg);
         }
         else if ( $preview || $refresh || $error )
         {
@@ -1910,19 +1910,19 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
                         $page_title = $lang['Edit_pm'];
 
                         $sql = "SELECT u.user_id, u.user_sig
-                                FROM " . PRIVMSGS_TABLE . " pm, " . USERS_TABLE . " u
+                                FROM " . NUKE_PRIVMSGS_TABLE . " pm, " . NUKE_USERS_TABLE . " u
                                 WHERE pm.privmsgs_id = '$privmsg_id'
                                         AND u.user_id = pm.privmsgs_from_userid";
-                        if ( !($result = $db->sql_query($sql)) )
+                        if ( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_ERROR, "Could not obtain post and post text", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Could not obtain post and post text", "", __LINE__, __FILE__, $sql);
                         }
 
-                        if ( $postrow = $db->sql_fetchrow($result) )
+                        if ( $postrow = $nuke_db->sql_fetchrow($result) )
                         {
                                 if ( $userdata['user_id'] != $postrow['user_id'] )
                                 {
-                                        message_die(GENERAL_MESSAGE, $lang['Edit_own_posts']);
+                                        message_die(NUKE_GENERAL_MESSAGE, $lang['Edit_own_posts']);
                                 }
 
                                 $user_sig = ( !empty($postrow['user_sig']) && $board_config['allow_sig'] ) ? $postrow['user_sig'] : '';
@@ -1933,24 +1933,24 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
         {
                 if ( !$privmsg_id && ( $mode == 'reply' || $mode == 'edit' || $mode == 'quote' ) )
                 {
-                        message_die(GENERAL_ERROR, $lang['No_post_id']);
+                        message_die(NUKE_GENERAL_ERROR, $lang['No_post_id']);
                 }
 
-                if ( !empty($_GET[POST_USERS_URL]) )
+                if ( !empty($_GET[NUKE_POST_USERS_URL]) )
                 {
-                        $user_id = intval($_GET[POST_USERS_URL]);
+                        $user_id = intval($_GET[NUKE_POST_USERS_URL]);
 
                         $sql = "SELECT username
-                                FROM " . USERS_TABLE . "
+                                FROM " . NUKE_USERS_TABLE . "
                                 WHERE user_id = '$user_id'
-                                        AND user_id <> " . ANONYMOUS;
-                        if ( !($result = $db->sql_query($sql)) )
+                                        AND user_id <> " . NUKE_ANONYMOUS;
+                        if ( !($result = $nuke_db->sql_query($sql)) )
                         {
                                 $error = TRUE;
                                 $error_msg = $lang['No_such_user'];
                         }
 
-                        if ( $row = $db->sql_fetchrow($result) )
+                        if ( $row = $nuke_db->sql_fetchrow($result) )
                         {
                                 $to_username = $row['username'];
                         }
@@ -1958,23 +1958,23 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
                 else if ( $mode == 'edit' )
                 {
                         $sql = "SELECT pm.*, pmt.privmsgs_bbcode_uid, pmt.privmsgs_text, u.username, u.user_id, u.user_sig
-                                FROM " . PRIVMSGS_TABLE . " pm, " . PRIVMSGS_TEXT_TABLE . " pmt, " . USERS_TABLE . " u
+                                FROM " . NUKE_PRIVMSGS_TABLE . " pm, " . NUKE_PRIVMSGS_TEXT_TABLE . " pmt, " . NUKE_USERS_TABLE . " u
                                 WHERE pm.privmsgs_id = '$privmsg_id'
                                         AND pmt.privmsgs_text_id = pm.privmsgs_id
                                         AND pm.privmsgs_from_userid = " . $userdata['user_id'] . "
-                                        AND ( pm.privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
-                                                OR pm.privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )
+                                        AND ( pm.privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . "
+                                                OR pm.privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )
                                         AND u.user_id = pm.privmsgs_to_userid";
-                        if ( !($result = $db->sql_query($sql)) )
+                        if ( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not obtain private message for editing', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not obtain private message for editing', '', __LINE__, __FILE__, $sql);
                         }
 
-                        if ( !($privmsg = $db->sql_fetchrow($result)) )
+                        if ( !($privmsg = $nuke_db->sql_fetchrow($result)) )
                         {
-                                // not needed anymore due to function redirect()
+                                // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
-                                redirect(append_sid("privmsg.$phpEx?folder=$folder", true));
+                                nuke_redirect(append_sid("privmsg.$phpEx?folder=$folder", true));
                                 exit;
                         }
 
@@ -1991,7 +1991,7 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
                         $privmsg_message = str_replace('<br />', "\n", $privmsg_message);
                         //$privmsg_message = preg_replace('#</textarea>#si', '&lt;/textarea&gt;', $privmsg_message);
 
-                        $user_sig = ( $board_config['allow_sig'] ) ? (($privmsg['privmsgs_type'] == PRIVMSGS_NEW_MAIL) ? $user_sig : $privmsg['user_sig']) : '';
+                        $user_sig = ( $board_config['allow_sig'] ) ? (($privmsg['privmsgs_type'] == NUKE_PRIVMSGS_NEW_MAIL) ? $user_sig : $privmsg['user_sig']) : '';
 
                         $to_username = $privmsg['username'];
                         $to_userid = $privmsg['user_id'];
@@ -2001,21 +2001,21 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
                 {
 
                         $sql = "SELECT pm.privmsgs_subject, pm.privmsgs_date, pmt.privmsgs_bbcode_uid, pmt.privmsgs_text, u.username, u.user_id
-                                FROM " . PRIVMSGS_TABLE . " pm, " . PRIVMSGS_TEXT_TABLE . " pmt, " . USERS_TABLE . " u
+                                FROM " . NUKE_PRIVMSGS_TABLE . " pm, " . NUKE_PRIVMSGS_TEXT_TABLE . " pmt, " . NUKE_USERS_TABLE . " u
                                 WHERE pm.privmsgs_id = '$privmsg_id'
                                         AND pmt.privmsgs_text_id = pm.privmsgs_id
                                         AND pm.privmsgs_to_userid = " . $userdata['user_id'] . "
                                         AND u.user_id = pm.privmsgs_from_userid";
-                        if ( !($result = $db->sql_query($sql)) )
+                        if ( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not obtain private message for editing', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not obtain private message for editing', '', __LINE__, __FILE__, $sql);
                         }
 
-                        if ( !($privmsg = $db->sql_fetchrow($result)) )
+                        if ( !($privmsg = $nuke_db->sql_fetchrow($result)) )
                         {
-                                // not needed anymore due to function redirect()
+                                // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
-                                redirect(append_sid("privmsg.$phpEx?folder=$folder", true));
+                                nuke_redirect(append_sid("privmsg.$phpEx?folder=$folder", true));
                                 exit;
                         }
              			$orig_word = $replacement_word = array();
@@ -2055,7 +2055,7 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
         if ( !$userdata['user_allow_pm'] && $mode != 'edit' )
         {
                 $message = $lang['Cannot_send_privmsg'];
-                message_die(GENERAL_MESSAGE, $message);
+                message_die(NUKE_GENERAL_MESSAGE, $message);
         }
 
         //
@@ -2152,7 +2152,7 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
 
                 if ( isset($privmsg_id) )
                 {
-                        $s_hidden_fields .= '<input type="hidden" name="' . POST_POST_URL . '" value="' . $privmsg_id . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="' . NUKE_POST_POST_URL . '" value="' . $privmsg_id . '" />';
                 }
 
                 $template->set_filenames(array(
@@ -2291,12 +2291,12 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
         $s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
         if ( $mode == 'edit' )
         {
-                $s_hidden_fields .= '<input type="hidden" name="' . POST_POST_URL . '" value="' . $privmsg_id . '" />';
+                $s_hidden_fields .= '<input type="hidden" name="' . NUKE_POST_POST_URL . '" value="' . $privmsg_id . '" />';
         }
 /*****[BEGIN]******************************************
  [ Mod:     Welcome PM                         v2.0.0 ]
  ******************************************************/
-        if ( $userdata['user_level'] == ADMIN ) {
+        if ( $userdata['user_level'] == NUKE_ADMIN ) {
                 $template->assign_block_vars('switch_Welcome_PM', array());
         }
 /*****[END]********************************************
@@ -2306,7 +2306,7 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
         //
         // Send smilies to template
         //
-        generate_smilies('inline', PAGE_PRIVMSGS);
+        generate_smilies('inline', NUKE_PAGE_PRIVMSGS);
 
         $template->assign_vars(array(
                 'SUBJECT' => $privmsg_subject,
@@ -2431,28 +2431,28 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
 //
 if ( !$userdata['session_logged_in'] )
 {
-    redirect("modules.php?name=Your_Account&redirect=privmsg&folder=inbox");
+    nuke_redirect("modules.php?name=Your_Account&nuke_redirect=privmsg&folder=inbox");
     exit;
 }
 
 //
 // Update unread status
 //
-$sql = "UPDATE " . USERS_TABLE . "
+$sql = "UPDATE " . NUKE_USERS_TABLE . "
         SET user_unread_privmsg = user_unread_privmsg + user_new_privmsg, user_new_privmsg = '0', user_last_privmsg = " . $userdata['session_start'] . "
         WHERE user_id = " . $userdata['user_id'];
-if ( !$db->sql_query($sql) )
+if ( !$nuke_db->sql_query($sql) )
 {
-        message_die(GENERAL_ERROR, 'Could not update private message new/read status for user', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not update private message new/read status for user', '', __LINE__, __FILE__, $sql);
 }
 
-$sql = "UPDATE " . PRIVMSGS_TABLE . "
-        SET privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . "
-        WHERE privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
+$sql = "UPDATE " . NUKE_PRIVMSGS_TABLE . "
+        SET privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . "
+        WHERE privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . "
                 AND privmsgs_to_userid = " . $userdata['user_id'];
-if ( !$db->sql_query($sql) )
+if ( !$nuke_db->sql_query($sql) )
 {
-        message_die(GENERAL_ERROR, 'Could not update private message new/read status (2) for user', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not update private message new/read status (2) for user', '', __LINE__, __FILE__, $sql);
 }
 
 //
@@ -2495,60 +2495,60 @@ $post_new_mesg_url = '<a href="' . append_sid("privmsg.$phpEx?mode=post") . '"><
 //
 
 $sql_tot = "SELECT COUNT(privmsgs_id) AS total
-        FROM " . PRIVMSGS_TABLE . " ";
+        FROM " . NUKE_PRIVMSGS_TABLE . " ";
 $sql = "SELECT pm.privmsgs_type, pm.privmsgs_id, pm.privmsgs_date, pm.privmsgs_subject, pm.privmsgs_from_userid, u.user_id, u.username
-        FROM " . PRIVMSGS_TABLE . " pm, " . USERS_TABLE . " u ";
+        FROM " . NUKE_PRIVMSGS_TABLE . " pm, " . NUKE_USERS_TABLE . " u ";
 
 switch( $folder )
 {
         case 'inbox':
                 $sql_tot .= "WHERE privmsgs_to_userid = " . $userdata['user_id'] . "
-                        AND ( privmsgs_type =  " . PRIVMSGS_NEW_MAIL . "
-                                OR privmsgs_type = " . PRIVMSGS_READ_MAIL . "
-                                OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )";
+                        AND ( privmsgs_type =  " . NUKE_PRIVMSGS_NEW_MAIL . "
+                                OR privmsgs_type = " . NUKE_PRIVMSGS_READ_MAIL . "
+                                OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )";
 
                 $sql .= "WHERE pm.privmsgs_to_userid = " . $userdata['user_id'] . "
                         AND u.user_id = pm.privmsgs_from_userid
-                        AND ( pm.privmsgs_type =  " . PRIVMSGS_NEW_MAIL . "
-                                OR pm.privmsgs_type = " . PRIVMSGS_READ_MAIL . "
-                                OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )";
+                        AND ( pm.privmsgs_type =  " . NUKE_PRIVMSGS_NEW_MAIL . "
+                                OR pm.privmsgs_type = " . NUKE_PRIVMSGS_READ_MAIL . "
+                                OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )";
                 break;
 
         case 'outbox':
                 $sql_tot .= "WHERE privmsgs_from_userid = " . $userdata['user_id'] . "
-                        AND ( privmsgs_type =  " . PRIVMSGS_NEW_MAIL . "
-                                OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )";
+                        AND ( privmsgs_type =  " . NUKE_PRIVMSGS_NEW_MAIL . "
+                                OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )";
 
                 $sql .= "WHERE pm.privmsgs_from_userid = " . $userdata['user_id'] . "
                         AND u.user_id = pm.privmsgs_to_userid
-                        AND ( pm.privmsgs_type =  " . PRIVMSGS_NEW_MAIL . "
-                                OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )";
+                        AND ( pm.privmsgs_type =  " . NUKE_PRIVMSGS_NEW_MAIL . "
+                                OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )";
                 break;
 
         case 'sentbox':
                 $sql_tot .= "WHERE privmsgs_from_userid = " . $userdata['user_id'] . "
-                        AND privmsgs_type =  " . PRIVMSGS_SENT_MAIL;
+                        AND privmsgs_type =  " . NUKE_PRIVMSGS_SENT_MAIL;
 
                 $sql .= "WHERE pm.privmsgs_from_userid = " . $userdata['user_id'] . "
                         AND u.user_id = pm.privmsgs_to_userid
-                        AND pm.privmsgs_type =  " . PRIVMSGS_SENT_MAIL;
+                        AND pm.privmsgs_type =  " . NUKE_PRIVMSGS_SENT_MAIL;
                 break;
 
         case 'savebox':
                 $sql_tot .= "WHERE ( ( privmsgs_to_userid = " . $userdata['user_id'] . "
-                                AND privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . " )
+                                AND privmsgs_type = " . NUKE_PRIVMSGS_SAVED_IN_MAIL . " )
                         OR ( privmsgs_from_userid = " . $userdata['user_id'] . "
-                                AND privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . ") )";
+                                AND privmsgs_type = " . NUKE_PRIVMSGS_SAVED_OUT_MAIL . ") )";
 
                 $sql .= "WHERE u.user_id = pm.privmsgs_from_userid
                         AND ( ( pm.privmsgs_to_userid = " . $userdata['user_id'] . "
-                                AND pm.privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . " )
+                                AND pm.privmsgs_type = " . NUKE_PRIVMSGS_SAVED_IN_MAIL . " )
                         OR ( pm.privmsgs_from_userid = " . $userdata['user_id'] . "
-                                AND pm.privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . " ) )";
+                                AND pm.privmsgs_type = " . NUKE_PRIVMSGS_SAVED_OUT_MAIL . " ) )";
                 break;
 
         default:
-                message_die(GENERAL_MESSAGE, $lang['No_such_folder']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['No_such_folder']);
                 break;
 }
 
@@ -2592,25 +2592,25 @@ for ($i = 1; $i < 5; $i++)
     $sql2 = 'sql_'.$i;
     $tot  = 'tot_'.$i;
 
-    $$sql1 = "SELECT COUNT(privmsgs_id) AS $tot FROM " . PRIVMSGS_TABLE . " ";
+    $$sql1 = "SELECT COUNT(privmsgs_id) AS $tot FROM " . NUKE_PRIVMSGS_TABLE . " ";
 
     // inbox (1)
-    $sql_1 .= "WHERE privmsgs_to_userid = " . $userdata['user_id'] . " AND ( privmsgs_type =  " . PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . PRIVMSGS_READ_MAIL . " OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )";
+    $sql_1 .= "WHERE privmsgs_to_userid = " . $userdata['user_id'] . " AND ( privmsgs_type =  " . NUKE_PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . NUKE_PRIVMSGS_READ_MAIL . " OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )";
 
     // sentbox (2)
-    $sql_2 .= "WHERE privmsgs_from_userid = " . $userdata['user_id'] . " AND privmsgs_type =  " . PRIVMSGS_SENT_MAIL;
+    $sql_2 .= "WHERE privmsgs_from_userid = " . $userdata['user_id'] . " AND privmsgs_type =  " . NUKE_PRIVMSGS_SENT_MAIL;
 
     // outbox (3)
-    $sql_3 .= "WHERE privmsgs_from_userid = " . $userdata['user_id'] . " AND ( privmsgs_type =  " . PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )";
+    $sql_3 .= "WHERE privmsgs_from_userid = " . $userdata['user_id'] . " AND ( privmsgs_type =  " . NUKE_PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )";
 
     // savebox (4)
-    $sql_4 .= "WHERE ( ( privmsgs_to_userid = " . $userdata['user_id'] . " AND privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . " ) OR ( privmsgs_from_userid = " . $userdata['user_id'] . " AND privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . ") )";
+    $sql_4 .= "WHERE ( ( privmsgs_to_userid = " . $userdata['user_id'] . " AND privmsgs_type = " . NUKE_PRIVMSGS_SAVED_IN_MAIL . " ) OR ( privmsgs_from_userid = " . $userdata['user_id'] . " AND privmsgs_type = " . NUKE_PRIVMSGS_SAVED_OUT_MAIL . ") )";
 
-    if ( !($result1 = $db->sql_query($$sql2)) )
+    if ( !($result1 = $nuke_db->sql_query($$sql2)) )
     {
-        message_die(GENERAL_ERROR, 'Could not query forum PM information', '', __LINE__, __FILE__, $sql_tot_pm_savebox);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query forum PM information', '', __LINE__, __FILE__, $sql_tot_pm_savebox);
     }
-    while ($row1 = $db->sql_fetchrow($result1))
+    while ($row1 = $nuke_db->sql_fetchrow($result1))
     {
         $total_inbox .= $row1['tot_1'];
         $total_sentbox .= $row1['tot_2'];
@@ -2626,19 +2626,19 @@ for ($i = 1; $i < 5; $i++)
 //
 // Get messages
 //
-if ( !($result = $db->sql_query($sql_tot)) )
+if ( !($result = $nuke_db->sql_query($sql_tot)) )
 {
-        message_die(GENERAL_ERROR, 'Could not query private message information', '', __LINE__, __FILE__, $sql_tot);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query private message information', '', __LINE__, __FILE__, $sql_tot);
 }
 
-$pm_total = ( $row = $db->sql_fetchrow($result) ) ? $row['total'] : 0;
+$pm_total = ( $row = $nuke_db->sql_fetchrow($result) ) ? $row['total'] : 0;
 
-if ( !($result = $db->sql_query($sql_all_tot)) )
+if ( !($result = $nuke_db->sql_query($sql_all_tot)) )
 {
-        message_die(GENERAL_ERROR, 'Could not query private message information', '', __LINE__, __FILE__, $sql_tot);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query private message information', '', __LINE__, __FILE__, $sql_tot);
 }
 
-$pm_all_total = ( $row = $db->sql_fetchrow($result) ) ? $row['total'] : 0;
+$pm_all_total = ( $row = $nuke_db->sql_fetchrow($result) ) ? $row['total'] : 0;
 
 //
 // Build select box
@@ -2687,7 +2687,7 @@ $post_pm_img = '<a href="' . $post_pm . '"><img src="' . $images['pm_postmsg'] .
 include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_mass_pm.' . $phpEx);
 $mass_pm_url = append_sid("groupmsg.$phpEx");
 $mass_pm_allowed = false;
-if ( $userdata['user_level'] == ADMIN )
+if ( $userdata['user_level'] == NUKE_ADMIN )
 {
     $mass_pm_img = '<a href="' . append_sid("groupmsg.$phpEx") . '"><img src="' . $images['mass_pm'] . '" border="0" alt="' . $lang['Mass_pm'] . '" /></a>';
     /**
@@ -2700,18 +2700,18 @@ if ( $userdata['user_level'] == ADMIN )
 } else
 {
     $sql_g = "SELECT DISTINCT g.group_id
-    FROM ".GROUPS_TABLE . " g, ".USER_GROUP_TABLE . " ug
+    FROM ".NUKE_GROUPS_TABLE . " g, ".NUKE_USER_GROUP_TABLE . " ug
     WHERE g.group_single_user <> 1
         AND (
-            (g.group_allow_pm='".AUTH_MOD."' AND g.group_moderator = '" . $userdata['user_id']."') OR
-            (g.group_allow_pm='".AUTH_ACL."' AND ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ) OR
-            (g.group_allow_pm='".AUTH_REG."')
+            (g.group_allow_pm='".NUKE_AUTH_MOD."' AND g.group_moderator = '" . $userdata['user_id']."') OR
+            (g.group_allow_pm='".NUKE_AUTH_ACL."' AND ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ) OR
+            (g.group_allow_pm='".NUKE_AUTH_REG."')
         )" ;
-    if( !$g_result = $db->sql_query($sql_g) )
+    if( !$g_result = $nuke_db->sql_query($sql_g) )
     {
-        message_die(GENERAL_ERROR, "Could not select group names!", __LINE__, __FILE__, $sql_g);
+        message_die(NUKE_GENERAL_ERROR, "Could not select group names!", __LINE__, __FILE__, $sql_g);
     }
-    if( $db->sql_numrows($g_result))
+    if( $nuke_db->sql_numrows($g_result))
     {
         $mass_pm_img = '<a href="' . append_sid("groupmsg.$phpEx") . '"><img src="' . $images['mass_pm'] . '" border="0" alt="' . $lang['Mass_pm'] . '" /></a>';
         $mass_pm_allowed = true;
@@ -2875,12 +2875,12 @@ $template->assign_vars(array(
 //
 // Okay, let's build the correct folder
 //
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-        message_die(GENERAL_ERROR, 'Could not query private messages', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query private messages', '', __LINE__, __FILE__, $sql);
 }
 
-if ( $row = $db->sql_fetchrow($result) )
+if ( $row = $nuke_db->sql_fetchrow($result) )
 {
     $i = 0;
     do
@@ -2889,10 +2889,10 @@ if ( $row = $db->sql_fetchrow($result) )
 
                 $flag = $row['privmsgs_type'];
 
-                $icon_flag = ( $flag == PRIVMSGS_NEW_MAIL || $flag == PRIVMSGS_UNREAD_MAIL ) ? $images['pm_unreadmsg'] : $images['pm_readmsg'];
-                $icon_flag_alt = ( $flag == PRIVMSGS_NEW_MAIL || $flag == PRIVMSGS_UNREAD_MAIL ) ? $lang['Unread_message'] : $lang['Read_message'];
+                $icon_flag = ( $flag == NUKE_PRIVMSGS_NEW_MAIL || $flag == NUKE_PRIVMSGS_UNREAD_MAIL ) ? $images['pm_unreadmsg'] : $images['pm_readmsg'];
+                $icon_flag_alt = ( $flag == NUKE_PRIVMSGS_NEW_MAIL || $flag == NUKE_PRIVMSGS_UNREAD_MAIL ) ? $lang['Unread_message'] : $lang['Read_message'];
 
-                $pm_status_flag = ( $flag == PRIVMSGS_NEW_MAIL || $flag == PRIVMSGS_UNREAD_MAIL ) ? true : false;
+                $pm_status_flag = ( $flag == NUKE_PRIVMSGS_NEW_MAIL || $flag == NUKE_PRIVMSGS_UNREAD_MAIL ) ? true : false;
 
                 $msg_userid = $row['user_id'];
 /*****[BEGIN]******************************************
@@ -2903,7 +2903,7 @@ if ( $row = $db->sql_fetchrow($result) )
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
 
-                $u_from_user_profile = "modules.php?name=Profile&amp;mode=viewprofile&amp;" . POST_USERS_URL . "=$msg_userid";
+                $u_from_user_profile = "modules.php?name=Profile&amp;mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$msg_userid";
 
 /*****[BEGIN]******************************************
  [ Mod:     Smilies in Topic Titles            v1.0.0 ]
@@ -2920,11 +2920,11 @@ if ( $row = $db->sql_fetchrow($result) )
                         $msg_subject = preg_replace($orig_word, $replacement_word, $msg_subject);
                 }
 
-                $u_subject = append_sid("privmsg.$phpEx?folder=$folder&amp;mode=read&amp;" . POST_POST_URL . "=$privmsg_id");
+                $u_subject = append_sid("privmsg.$phpEx?folder=$folder&amp;mode=read&amp;" . NUKE_POST_POST_URL . "=$privmsg_id");
 
                 $msg_date = create_date($board_config['default_dateformat'], $row['privmsgs_date'], $board_config['board_timezone']);
 
-                if ( $flag == PRIVMSGS_NEW_MAIL && $folder == 'inbox' )
+                if ( $flag == NUKE_PRIVMSGS_NEW_MAIL && $folder == 'inbox' )
                 {
                         $msg_subject = '<strong>' . $msg_subject . '</strong>';
                         $msg_date = '<strong>' . $msg_date . '</strong>';
@@ -2956,7 +2956,7 @@ if ( $row = $db->sql_fetchrow($result) )
                         'U_FROM_USER_PROFILE' => $u_from_user_profile)
                 );
         }
-        while( $row = $db->sql_fetchrow($result) );
+        while( $row = $nuke_db->sql_fetchrow($result) );
 
         $pagination_variables = array(
             'url' => append_sid('privmsg.'.$phpEx.'?folder='.$folder), 

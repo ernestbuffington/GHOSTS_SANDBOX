@@ -64,7 +64,7 @@ if ( !$result ) { //Bad SQL call
 
 } else { //Successful SQL call
 
-		while (	$row = $db->sql_fetchrow( $result ) ) { 
+		while (	$row = $nuke_db->sql_fetchrow( $result ) ) { 
 
 			$msnl_asRec['bid']				= intval( $row['bid'] );
 			$msnl_asRec['imageurl']		= stripslashes( $row['imageurl'] );

@@ -24,14 +24,14 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
 
 function log_action($action, $new_topic_id, $topic_id, $user_id, $forum_id, $new_forum_id)
 {
-    global $db;
+    global $nuke_db;
     if (!isset($user_id) || empty($user_id)) {
         return;
     }
@@ -75,15 +75,15 @@ function log_action($action, $new_topic_id, $topic_id, $user_id, $forum_id, $new
     // if ( $topic_id || $new_topic_id ):
     $last_post_id = 0;
 
-    $sql = "SELECT topic_last_post_id FROM ". TOPICS_TABLE ." $where";
-    if ( !($result = $db->sql_query($sql)) )
+    $sql = "SELECT topic_last_post_id FROM ". NUKE_BB_TOPICS_TABLE ." $where";
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not get topic_last_post_id', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get topic_last_post_id', '', __LINE__, __FILE__, $sql);
     }
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
     if ( $row['topic_last_post_id'] )
     	$last_post_id = $row['topic_last_post_id'];
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     // else:
     //     $last_post_id = 0;
@@ -91,72 +91,72 @@ function log_action($action, $new_topic_id, $topic_id, $user_id, $forum_id, $new
 
 
     $sql = "SELECT session_ip
-        FROM " . SESSIONS_TABLE . "
+        FROM " . NUKE_BB_SESSIONS_TABLE . "
         WHERE session_user_id = $user_id ";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not select session_ip', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not select session_ip', '', __LINE__, __FILE__, $sql);
     }
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
     $user_ip = $row['session_ip'];
 
     $sql = "SELECT username
-        FROM " . USERS_TABLE . "
+        FROM " . NUKE_USERS_TABLE . "
         WHERE user_id = $user_id ";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not select username', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not select username', '', __LINE__, __FILE__, $sql);
     }
-    $row2 = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $row2 = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
     $username = $row2['username'];
     $username = addslashes($username);
 
     $time = time();
 
-    $sql = "INSERT INTO " . LOGS_TABLE . " (mode, topic_id, user_id, username, user_ip, time, new_topic_id, forum_id, new_forum_id, last_post_id)
+    $sql = "INSERT INTO " . NUKE_BB_LOGS_TABLE . " (mode, topic_id, user_id, username, user_ip, time, new_topic_id, forum_id, new_forum_id, last_post_id)
         VALUES ('$action', '$topic_id', '$user_id', '$username', '$user_ip', '$time', '$new_topic_id', '$forum_id', '$new_forum_id', '$last_post_id')";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not insert data into logs table', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not insert data into logs table', '', __LINE__, __FILE__, $sql);
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 }
 
 function prune_logs($prune_days)
 {
-    global $db;
+    global $nuke_db;
 
     $prune = time() - ( $prune_days * 86400 );
 
     $sql = "SELECT log_id
-        FROM " . LOGS_TABLE . "
+        FROM " . NUKE_BB_LOGS_TABLE . "
         WHERE time < $prune ";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not obtain list of logs to prune', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not obtain list of logs to prune', '', __LINE__, __FILE__, $sql);
     }
 
     $logs = '';
-    while ( $row = $db->sql_fetchrow($result) )
+    while ( $row = $nuke_db->sql_fetchrow($result) )
     {
         $logs .= ( ( $logs != '' ) ? ', ' : '' ) . $row['log_id'];
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     if ( $logs != '' )
     {
-        $sql = "DELETE FROM " . LOGS_TABLE . "
+        $sql = "DELETE FROM " . NUKE_BB_LOGS_TABLE . "
             WHERE log_id IN ($logs)";
 
-        if ( !$db->sql_query($sql) )
+        if ( !$nuke_db->sql_query($sql) )
         {
-            message_die(GENERAL_ERROR, 'Could not delete logs', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not delete logs', '', __LINE__, __FILE__, $sql);
         }
 
         return TRUE;
@@ -165,7 +165,7 @@ function prune_logs($prune_days)
 
 function auto_prune_logs()
 {
-    global $db;
+    global $nuke_db;
 
     // To do
 }

@@ -13,7 +13,7 @@
 
 if(!defined('NUKE_EVO')) exit;
 
-global $prefix, $db;
+global $prefix, $nuke_db;
 
 # Number of reviews to display
 $number_of_reviews = 5;
@@ -22,9 +22,9 @@ $image_width = 100;
 
 $sql = "SELECT id, title, text, cover, date FROM ".$prefix."_reviews ORDER BY id DESC LIMIT 0,$number_of_reviews ";
 
-$result = $db->sql_query($sql);
+$result = $nuke_db->sql_query($sql);
 
-while (list($id, $title, $text, $cover, $date) = $db->sql_fetchrow($result)) {
+while (list($id, $title, $text, $cover, $date) = $nuke_db->sql_fetchrow($result)) {
     $id = intval($id);
     $title = stripslashes($title);
     $cover = wordwrap($cover);
@@ -33,5 +33,5 @@ while (list($id, $title, $text, $cover, $date) = $db->sql_fetchrow($result)) {
     $content .= "<table width=\"100%\" border=\"0\"><a href=\"modules.php?name=Reviews&amp;rop=showcontent&amp;id=$id\">";
     $content .= "<img src=\"images/reviews/$cover\" width=\"$image_width\" height=\"$image_height\" /></a></td></tr></table>";
 }
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 ?>

@@ -17,7 +17,7 @@ function confirm_donation () {
     $_GETVAR->unsetVariables();
 
     if (!isset($_SERVER['HTTP_REFERER']) || empty($_SERVER['HTTP_REFERER'])) {
-        redirect('modules.php?name='.$module_name.'&op=make');
+        nuke_redirect('modules.php?name='.$module_name.'&op=make');
     }
 
     if (!isset($_SESSION)) { session_start(); }

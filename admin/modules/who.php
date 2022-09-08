@@ -47,7 +47,7 @@ if (!defined('ADMIN_FILE')) {
    die ("Illegal File Access");
 }
 
-global $prefix, $db, $bgcolor2, $sitename, $bgcolor1, $prefix, $language, $multilingual, $user, $admin, $bgcolor, $admin_file, $user_prefix, $admdata, $nsnst_const;
+global $prefix, $nuke_db, $bgcolor2, $sitename, $bgcolor1, $prefix, $language, $multilingual, $user, $admin, $bgcolor, $admin_file, $nuke_user_prefix, $admdata, $nsnst_const;
 
 if (is_mod_admin()) {
 
@@ -61,8 +61,8 @@ echo ("<br />");
     OpenTable();
 echo ("<center><img src=\"images/4nwho/info.gif\" valign=\"middle\" border=\"0\" alt=\"" . _4nwho13 . "\">&nbsp;=&nbsp;" . _4nwho13 . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"images/4nwho/edit.gif\" valign=\"middle\" border=\"0\" alt=\"" . _4nwho08 . "\">&nbsp;=&nbsp;" . _4nwho08 . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"images/4nwho/delete.gif\" valign=\"middle\" border=\"0\" alt=\"" . _4nwho20 . "\">&nbsp;=&nbsp;" . _4nwho20 . "</center>");
 echo ("<br /><table width=\"100%\" border=\"1\" cellspacing=\"2\" cellpadding=\"2\"><tr><td><strong>" . _4nwho04 . "</strong></td><td><strong>" . _4nwho05 . "</strong></td><td><strong>" . _4nwho06 . "</strong></td><td><strong>" . _4nwho10 . "</strong></td><td><strong>" . _4nwho07 . "</strong></td></tr>");
-$result3 = $db->sql_query("SELECT uname, host_addr, starttime, guest FROM " . $prefix . "_session");
-while (list($uname, $host_addr, $time, $guest) = $db->sql_fetchrow($result3)) {
+$result3 = $nuke_db->sql_query("SELECT uname, host_addr, starttime, guest FROM " . $prefix . "_session");
+while (list($uname, $host_addr, $time, $guest) = $nuke_db->sql_fetchrow($result3)) {
 if($guest == 0 || $guest == 2) {
 
 /*****[BEGIN]******************************************
@@ -409,32 +409,32 @@ if($guest == 0 || $guest == 2) {
   }
 }
 echo ("</tr></table><br />");
-$resultws = $db->sql_query("SELECT uname, guest FROM " . $prefix . "_session WHERE guest=1 OR guest=3");
-$guest_online_count = $db->sql_numrows($resultws);
-$result4thd = $db->sql_query("SELECT uname, guest FROM " . $prefix . "_session WHERE guest=0 OR guest=2");
-$member_online_count = $db->sql_numrows($result4thd);
+$resultws = $nuke_db->sql_query("SELECT uname, guest FROM " . $prefix . "_session WHERE guest=1 OR guest=3");
+$guest_online_count = $nuke_db->sql_numrows($resultws);
+$result4thd = $nuke_db->sql_query("SELECT uname, guest FROM " . $prefix . "_session WHERE guest=0 OR guest=2");
+$member_online_count = $nuke_db->sql_numrows($result4thd);
 $DataOnlineWho .= "<img src=\"images/4nwho/group-1.gif\" height=\"14\" width=\"17\" alt=\"" . _4nwho03 . "\">&nbsp;&nbsp;" . _4nwho17 . "&nbsp;<strong>$guest_online_count</strong>&nbsp;" . _4nwho18 . "&nbsp;<strong>$member_online_count</strong>&nbsp;" . _4nwho19 . "";
     if (is_user()) {
-        list($user_id) = $db->sql_fetchrow($db->sql_query("SELECT user_id FROM " . $user_prefix . "_users WHERE username='$uname'"));
+        list($user_id) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_id FROM " . $nuke_user_prefix . "_users WHERE username='$uname'"));
         }
-$result2 = $db->sql_query("SELECT uname FROM " . $prefix . "_session WHERE guest='0' OR guest='2' ORDER BY uname ASC");
-$member_online_count = $db->sql_numrows($result2);
+$result2 = $nuke_db->sql_query("SELECT uname FROM " . $prefix . "_session WHERE guest='0' OR guest='2' ORDER BY uname ASC");
+$member_online_count = $nuke_db->sql_numrows($result2);
     if (is_user()) {
-       list($user_id) = $db->sql_fetchrow($db->sql_query("SELECT user_id FROM " . $user_prefix . "_users WHERE username='$uname'"));
+       list($user_id) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_id FROM " . $nuke_user_prefix . "_users WHERE username='$uname'"));
      } else {
-$result2 = $db->sql_query("SELECT uname FROM " . $prefix . "_session WHERE guest='0' OR guest='2' ORDER BY uname ASC");
-$member_online_count = $db->sql_numrows($result2);
+$result2 = $nuke_db->sql_query("SELECT uname FROM " . $prefix . "_session WHERE guest='0' OR guest='2' ORDER BY uname ASC");
+$member_online_count = $nuke_db->sql_numrows($result2);
      }
     if ($numUsersOnline>0) {
-    while($row = $db->sql_fetchrow($unameResult)) {
+    while($row = $nuke_db->sql_fetchrow($unameResult)) {
       $uname = $row["uname"];
            }
         }
 echo ("<center>[&nbsp;<a href=\"" . $admin_file . ".php?op=who\">" . _4nwho09 . "</a>&nbsp;]</center>\n");
     CloseTable();
 echo ("<br />\n");
-list($lastuser) = $db->sql_fetchrow($db->sql_query("SELECT username FROM " . $user_prefix . "_users ORDER BY user_id DESC limit 0,1"));
-$totalmembers = $db->sql_numrows($db->sql_query("SELECT * FROM " . $user_prefix . "_users"));
+list($lastuser) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT username FROM " . $nuke_user_prefix . "_users ORDER BY user_id DESC limit 0,1"));
+$totalmembers = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM " . $nuke_user_prefix . "_users"));
 $totalmem = number_format($totalmembers, 0);
   OpenTable();
   echo ("<center>$DataOnlineWho</center>\n");

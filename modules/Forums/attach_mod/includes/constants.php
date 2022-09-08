@@ -8,11 +8,11 @@
 * @copyright (c) 2002 Meik Sievertsen
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
-if (!defined('IN_PHPBB')) die('Hacking attempt');
+if (!defined('IN_PHPBB2')) die('Hacking attempt');
 // Attachment Debug Mode
-define('ATTACH_DEBUG', 0);        // Attachment Mod Debugging off
-//define('ATTACH_DEBUG', 1);    // Attachment Mod Debugging on
-//define('ATTACH_QUERY_DEBUG', 1);
+define('ATTACH_NUKE_DEBUG', 0);        // Attachment Mod Debugging off
+//define('ATTACH_NUKE_DEBUG', 1);    // Attachment Mod Debugging on
+//define('ATTACH_QUERY_NUKE_DEBUG', 1);
 // Auth
 define('AUTH_DOWNLOAD', 20);
 // Download Modes

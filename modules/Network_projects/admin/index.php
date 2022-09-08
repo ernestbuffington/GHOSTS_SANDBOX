@@ -12,7 +12,7 @@
 -=[Base]=-
       Nuke Patched                             v3.1.0       10/25/2005
  ************************************************************************/
-global $prefix, $db2;
+global $prefix, $network_db;
 if (!defined('ADMIN_FILE')) {
    die('Access Denied');
 }
@@ -21,8 +21,8 @@ $module_name = basename(dirname(dirname(__FILE__)));
 define('NETWORK_SUPPORT_ADMIN', true);
 define('INDEX_FILE', true);
 $aid = substr($aid, 0,125);
-$row = $db2->sql_fetchrow($db2->sql_query("SELECT `title`, `admins` FROM `".$prefix."_modules` WHERE `title`='$module_name'"));
-$row2 = $db2->sql_fetchrow($db2->sql_query("SELECT `name`, `radminsuper` FROM `".$prefix."_authors` WHERE `aid`='$aid'"));
+$row = $network_db->sql_fetchrow($network_db->sql_query("SELECT `title`, `admins` FROM `".$prefix."_modules` WHERE `title`='$module_name'"));
+$row2 = $network_db->sql_fetchrow($network_db->sql_query("SELECT `name`, `radminsuper` FROM `".$prefix."_authors` WHERE `aid`='$aid'"));
 $admins = explode(",", $row['admins']);
 $auth_user = 0;
 for ($i=0; $i < sizeof($admins); $i++) {

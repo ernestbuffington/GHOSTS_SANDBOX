@@ -23,7 +23,7 @@ global $evouserinfo_addons, $evouserinfo_online;
 
 function evouserinfo_get_members_online() 
 {
-    global $prefix, $db, $lang_evo_userblock, $evouserinfo_addons, $user_prefix, $userinfo, $board_config, $Default_Theme;
+    global $prefix, $nuke_db, $lang_evo_userblock, $evouserinfo_addons, $nuke_user_prefix, $userinfo, $board_config, $Default_Theme;
 
     $sql = "SELECT w.uname, 
 	              w.module, 
@@ -44,7 +44,7 @@ function evouserinfo_get_members_online()
 			  u.user_posts, 
 			       u.theme FROM ".$prefix."_session 
 				   
-				   AS w LEFT JOIN ".$user_prefix."_users AS u 
+				   AS w LEFT JOIN ".$nuke_user_prefix."_users AS u 
 				   ON u.username = w.uname 
 				   WHERE w.guest = '0' 
 				   OR w.guest = '2' 
@@ -53,13 +53,13 @@ function evouserinfo_get_members_online()
 				   
 				   DESC, u.user_rank DESC, u.username";
     
-	$result = $db->sql_query($sql);
+	$result = $nuke_db->sql_query($sql);
     $i = 1;
     $hidden = 0;
     $out = array();
     $out['text'] = '';
     
-	while ($session = $db->sql_fetchrow($result)) 
+	while ($session = $nuke_db->sql_fetchrow($result)) 
     {                                   # spacer
         $num 			= ($i < 10) ? ''.'0'.$i : $i;
 		$uname 			= $session['uname'];
@@ -81,14 +81,14 @@ function evouserinfo_get_members_online()
 
         switch( $session['user_avatar_type'] ):
         
-            case USER_AVATAR_UPLOAD:
+            case NUKE_USER_AVATAR_UPLOAD:
             $poster_avatar = ( $board_config['allow_avatar_upload'] ) 
 			? '<img src="'.$board_config['avatar_path'].'/'.$session['user_avatar'].'" alt="" border="0" />' : '';
             break;
-            case USER_AVATAR_REMOTE:
+            case NUKE_USER_AVATAR_REMOTE:
             $poster_avatar = '<img src="'.$session['user_avatar'].'" style="width: '.$board_config['avatar_max_width'].'; height: '.$board_config['avatar_max_height'].';" alt="" border="0" />';
             break;
-            case USER_AVATAR_GALLERY:
+            case NUKE_USER_AVATAR_GALLERY:
             $poster_avatar = ( $board_config['allow_avatar_local'] ) 
 			? '<img src="'.$board_config['avatar_gallery_path'].'/'.$session['user_avatar'].'" alt="" border="0" />' : '';
             break;
@@ -192,18 +192,18 @@ function evouserinfo_get_members_online()
     $out['hidden'] = $hidden;
     $out['total'] = $i;
     $out['visible'] = $i-$hidden;
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     return $out;
 }
 
 function evouserinfo_get_guests_online($start) 
 {
-    global $prefix, $db, $lang_evo_userblock, $identify;
-    $result = $db->sql_query("SELECT uname, url, module, host_addr FROM ".$prefix."_session WHERE guest='1' OR guest='3'");
-    $out['total'] = $db->sql_numrows($result);
+    global $prefix, $nuke_db, $lang_evo_userblock, $identify;
+    $result = $nuke_db->sql_query("SELECT uname, url, module, host_addr FROM ".$prefix."_session WHERE guest='1' OR guest='3'");
+    $out['total'] = $nuke_db->sql_numrows($result);
     $out['text'] = '';
     $i = $start;
-    while ($session = $db->sql_fetchrow($result)):
+    while ($session = $nuke_db->sql_fetchrow($result)):
 
         $num = ($i < 10) ? '0'.$i : $i;
         
@@ -232,7 +232,7 @@ function evouserinfo_get_guests_online($start)
         $i++;
     
     endwhile;
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     return $out;
 }
 

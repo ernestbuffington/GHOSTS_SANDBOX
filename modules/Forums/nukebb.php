@@ -10,7 +10,7 @@ if (!defined('MODULE_FILE')) {
    die ("You can't access this file directly...");
 }
 
-global $db, $prefix, $phpbb2_root_path, $nuke_root_path, $nuke_file_path, $phpbb_root_dir, $module_name, $name, $file;
+global $nuke_db, $prefix, $phpbb2_root_path, $nuke_root_path, $nuke_file_path, $phpbb_root_dir, $module_name, $name, $file;
 $module_name = basename(dirname(__FILE__));
 $phpbb2_root_path = NUKE_PHPBB2_DIR;
 get_lang($module_name);

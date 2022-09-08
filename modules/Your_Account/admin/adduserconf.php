@@ -95,25 +95,25 @@ if(is_mod_admin($module_name)) {
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
         $user_regdate = date("M d, Y");
-        list($newest_uid) = $db->sql_fetchrow($db->sql_query("SELECT max(user_id) AS newest_uid FROM ".$user_prefix."_users"));
+        list($newest_uid) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT max(user_id) AS newest_uid FROM ".$nuke_user_prefix."_users"));
         if ($newest_uid == "-1") { $new_uid = 1; } else { $new_uid = $newest_uid+1; }
-        $sql = "INSERT INTO ".$user_prefix."_users ";
+        $sql = "INSERT INTO ".$nuke_user_prefix."_users ";
         $sql .= "(user_id, name, username, user_email, femail, user_website, user_regdate, user_from, user_occ, user_interests, user_viewemail, user_avatar, user_avatar_type, user_sig, user_password, newsletter, broadcast, popmeson";
         //if ($Version_Num > 6.9) { $sql .= ", points"; }
         $sql .= ") ";
         $sql .= "VALUES ('$new_uid', '$add_name', '$add_uname', '$add_email', '$add_femail', '$add_url', '$user_regdate', '$add_user_from', '$add_user_occ', '$add_user_intrest', '$add_user_viewemail', 'gallery/blank.gif', '3', '$add_user_sig', '$add_pass', '$add_newsletter', '1', '0'";
         //if ($Version_Num > 6.9) { $sql .= ", '$add_points'"; }
         $sql .= ")";
-        $result = $db->sql_query($sql);
+        $result = $nuke_db->sql_query($sql);
         if (count($nfield) > 0) {
          foreach ($nfield as $key => $var) {
          $nfield[$key] = ya_fixtext($nfield[$key]);
-           if (($db->sql_numrows($db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_value WHERE fid='$key' AND uid = '$new_uid'"))) == 0) {
-          $sql = "INSERT INTO ".$user_prefix."_cnbya_value (uid, fid, value) VALUES ('$new_uid', '$key','$nfield[$key]')";
-          $db->sql_query($sql);
+           if (($nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_value WHERE fid='$key' AND uid = '$new_uid'"))) == 0) {
+          $sql = "INSERT INTO ".$nuke_user_prefix."_cnbya_value (uid, fid, value) VALUES ('$new_uid', '$key','$nfield[$key]')";
+          $nuke_db->sql_query($sql);
           }
           else {
-            $db->sql_query("UPDATE ".$user_prefix."_cnbya_value SET value='$nfield[$key]' WHERE fid='$key' AND uid = '$new_uid'");
+            $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_cnbya_value SET value='$nfield[$key]' WHERE fid='$key' AND uid = '$new_uid'");
           }
          }
         }
@@ -159,7 +159,7 @@ if(is_mod_admin($module_name)) {
             }
             if (isset($min)) { $xmin = "&min=$min"; }
             if (isset($xop)) { $xxop = "&op=$xop"; }
-            redirect("modules.php?name=$module_name&file=admin"."$xxop"."$xmin");
+            nuke_redirect("modules.php?name=$module_name&file=admin"."$xxop"."$xmin");
         }
     } else {
         $pagetitle = ": "._USERADMIN;

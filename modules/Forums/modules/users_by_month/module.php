@@ -13,7 +13,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -73,7 +73,7 @@ if (!defined('IN_PHPBB'))
             $month = '12';
         break;    
         default:
-            message_die(GENERAL_ERROR, 'Cound Not Convert '. $month .' To A Numeric Conversion.', 'Error');
+            message_die(NUKE_GENERAL_ERROR, 'Cound Not Convert '. $month .' To A Numeric Conversion.', 'Error');
         break;
     }
     
@@ -89,8 +89,8 @@ $core->start_module(true);
 $core->set_content('values');
 
 $sql = "SELECT SUBSTRING_INDEX(user_regdate,' ',-1) as year_regdate, SUBSTRING_INDEX(user_regdate,' ',1) as month_regdate, COUNT(*) AS num_user
-FROM " . USERS_TABLE . "
-WHERE (user_id <> " . ANONYMOUS . " )
+FROM " . NUKE_USERS_TABLE . "
+WHERE (user_id <> " . NUKE_ANONYMOUS . " )
 AND SUBSTRING_INDEX(user_regdate, ' ',1) <> 'Non'
 GROUP BY SUBSTRING_INDEX(user_regdate,' ',-1), SUBSTRING_INDEX(user_regdate,' ',1)";
 

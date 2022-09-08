@@ -31,7 +31,7 @@
  
 LinkusAdminMain();
 
-$row = $db->sql_ufetchrow("SELECT * FROM `".$prefix."_link_us` where `id`='$id' LIMIT 0,1");
+$row = $nuke_db->sql_ufetchrow("SELECT * FROM `".$prefix."_link_us` where `id`='$id' LIMIT 0,1");
 		
 if($row['site_status'] == 0){ $inactive = "checked"; }
 if($row['site_status'] == 1){ $active = "checked"; }

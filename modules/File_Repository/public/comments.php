@@ -14,15 +14,15 @@ if (!defined('MODULE_FILE'))
 
 function _file_repository_comments()
 {
-	global $db, $admin_file, $lang_new, $module_name, $settings, $themes, $userinfo, $admin, $user;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $themes, $userinfo, $admin, $user;
 	OpenTable();
 	_index_navigation_header();
 	$did 		= _escape_string($_GET['did']);
 	$iteminfo 	= _collect_iteminfo($did);
 
 	$sql 	= "SELECT * FROM `"._FILE_REPOSITORY_COMMENTS."` WHERE `did` = '".$did."' AND `uid` = '".$userinfo['user_id']."'";
-	$result = $db->sql_query($sql);
-	$count 	= $db->sql_numrows($result);
+	$result = $nuke_db->sql_query($sql);
+	$count 	= $nuke_db->sql_numrows($result);
 
 	if (_check_users_permissions($iteminfo['groups']) == true && is_user($user))
 	{
@@ -96,7 +96,7 @@ function _file_repository_comments()
 
 function _file_repository_save_my_comment()
 {
-	global $db, $admin_file, $lang_new, $module_name, $settings, $themes, $userinfo, $admin, $user, $tnsl_bUseShortLinks;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $themes, $userinfo, $admin, $user, $tnsl_bUseShortLinks;
 	$comment  	= (!empty($_POST['comment'])) ? _escape_string($_POST['comment']) : '';
 	$did      	= (!empty($_POST['did'])) ? intval($_POST['did']) : '';
 	$iteminfo 	= _collect_iteminfo($did);
@@ -123,14 +123,14 @@ function _file_repository_save_my_comment()
 	else
 	{
 		$sql = "INSERT INTO `"._FILE_REPOSITORY_COMMENTS."` (`cid`, `did`, `comment`, `date`, `rating`, `uid`, `user`) VALUES (NULL, '".$did."', '".$comment."', now(), '".$rating."', '".$userinfo['user_id']."', '".$userinfo['username']."')";
-		$db->sql_query($sql);
+		$nuke_db->sql_query($sql);
 		if($tnsl_bUseShortLinks == true)
 		{
-			_redirect('file-repository-item-'.$did.'.html');
+			_nuke_redirect('file-repository-item-'.$did.'.html');
 		}
 		else
 		{
-			_redirect('modules.php?name='.$module_name.'&action=view&did='.$did);
+			_nuke_redirect('modules.php?name='.$module_name.'&action=view&did='.$did);
 		}
 	}
 }

@@ -69,7 +69,7 @@ if ( !defined( 'MSNL_LOADED' ) and !defined( 'BLOCK_FILE' ) and !defined( 'NUKE_
 
 function msnl_fGetModCfg() {
 
-	global $prefix, $db;
+	global $prefix, $nuke_db;
 	
 	$asModCfg	= array();
 
@@ -83,7 +83,7 @@ function msnl_fGetModCfg() {
 
 	} else { //DB Call was successful
 
-		while ( list( $cfg_nm, $cfg_val ) = $db->sql_fetchrow( $result ) ) {
+		while ( list( $cfg_nm, $cfg_val ) = $nuke_db->sql_fetchrow( $result ) ) {
 
 			$asModCfg[$cfg_nm] 		= $cfg_val;
 
@@ -105,9 +105,9 @@ function msnl_fGetModCfg() {
 
 function msnl_fSQLCall( $sql ) {
 
-	global $msnl_gasModCfg, $db;
+	global $msnl_gasModCfg, $nuke_db;
 	
-	$result = $db->sql_query( $sql );
+	$result = $nuke_db->sql_query( $sql );
 	
 	if ( $result ) {
 
@@ -119,7 +119,7 @@ function msnl_fSQLCall( $sql ) {
 
 		if ( $msnl_gasModCfg['debug_mode'] != MSNL_OFF )	{
 
-			$sql_error = $db->sql_error();
+			$sql_error = $nuke_db->sql_error();
 
 			echo "<p><b>"._MSNL_COM_ERR_SQL.": </b>".$sql_error['message']."</p>\n";
 			echo "<p><b>"._MSNL_COM_LAB_SQL." = </b>".$sql."</p>\n";

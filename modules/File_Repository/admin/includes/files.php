@@ -15,9 +15,9 @@ if (!defined('IN_FILE_REPOSITORY'))
 
 function _file_repository_files()
 {
-	global $db, $admin_file, $lang_new, $module_name, $settings;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings;
 	_admin_navigation_menu();
-	$count_downloads = $db->sql_numrows($db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."`"));
+	$count_downloads = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."`"));
 //-------------------------------------------------------------------------------------
 //	THIS IS THE DEFAULT PAGINATION CLASS THAT COMES WITH EVOLUTION XTREME.
 //-------------------------------------------------------------------------------------
@@ -41,15 +41,15 @@ function _file_repository_files()
 	echo '    <td'._tdcss('20%','center',_sh()).'>'._suh($lang_new[$module_name]['DOWNLOADS_PERMISSIONS']).'</td>'."\n";
 	echo '  </tr>'."\n";
 	# add the comment in to this query, so like if comment.did = file.did and what not, turn two queries into one.
-	$result = $db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isnew` = 0 && `isapproved` = 1$search_cid ORDER BY `title` ASC LIMIT ".$limit1.", ".$limit2);
-	echo '  <tr'._bgColor(1).(($db->sql_numrows($result) == 0 ) ? '' : ' style="display:none;"').'>';
+	$result = $nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isnew` = 0 && `isapproved` = 1$search_cid ORDER BY `title` ASC LIMIT ".$limit1.", ".$limit2);
+	echo '  <tr'._bgColor(1).(($nuke_db->sql_numrows($result) == 0 ) ? '' : ' style="display:none;"').'>';
 	echo '    <td'._tdcss(FALSE,'center',_sc(),5).'>'._sut($lang_new[$module_name]['FILE_NONE']).'</td>';
 	echo '  </tr>';
-	while($download = $db->sql_fetchrow($result))
+	while($download = $nuke_db->sql_fetchrow($result))
 	{
 		if($download['title'])
 		{
-			$count_comments = $db->sql_numrows($db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_COMMENTS."` WHERE `did`='".$download['did']."'"));
+			$count_comments = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_COMMENTS."` WHERE `did`='".$download['did']."'"));
 			echo '  <tr'._bgColor(1).'>'."\n";
 			echo '    <td'._tdcss('5%','center',_sc()).'>'._sut((($download['isactive'] == 1) ? $lang_new[$module_name]['Y'] : $lang_new[$module_name]['N'])).'</td>'."\n";
 			echo '    <td'._tdcss('55%',FALSE,_sc()).'>'."\n";
@@ -70,7 +70,7 @@ function _file_repository_files()
 		}
 		
 	}
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 	echo '  <tr'._bgColor(2).'>'."\n";
 	echo '    <td'._tdcss(false,'right',_sf(),5).'>'."\n";
 	if($count_downloads > $settings['most_popular'])
@@ -106,14 +106,14 @@ function _file_repository_files()
 
 function _file_repository_broken_files()
 {
-	global $db, $admin_file, $lang_new, $module_name, $settings;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings;
 	_admin_navigation_menu();
-	$count_broken_downloads = $db->sql_ufetchrow("SELECT count(isbroken) as isbroken FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isbroken`=1");
+	$count_broken_downloads = $nuke_db->sql_ufetchrow("SELECT count(isbroken) as isbroken FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isbroken`=1");
 	echo '<table style="width: 100%;" border="0" cellpadding="4" cellspacing="1" class="forumline">'."\n";
 	echo '  <tr'._bgColor(2).'>'."\n";
 	echo '    <td'._tdcss(FALSE,'center',_sh(),3).'>'._suh($lang_new[$module_name]['BROKEN_ITEMS']).'</td>'."\n";
 	echo '  </tr>'."\n";
-	$result = $db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isbroken`=1 ORDER BY `title`");
+	$result = $nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isbroken`=1 ORDER BY `title`");
 	if($count_broken_downloads['isbroken'] > 0):
 
 		$isbroken = 1;
@@ -122,7 +122,7 @@ function _file_repository_broken_files()
 		echo '    <td'._tdcss('70%',FALSE,_sh()).'>'.$lang_new[$module_name]['FILE_TITLE'].'</td>'."\n";
 		echo '    <td'._tdcss('20%','center',_sh()).'>'.$lang_new[$module_name]['FILE_OPTIONS'].'</td>'."\n";
 		echo '  </tr>'."\n";
-		while($broken = $db->sql_fetchrow($result)):
+		while($broken = $nuke_db->sql_fetchrow($result)):
 
 			echo '  <tr'._bgColor(2).'>'."\n";
 			echo '    <td'._tdcss('10%','center',_sc()).'>'.$isbroken.'</td>'."\n";
@@ -150,7 +150,7 @@ function _file_repository_broken_files()
 //------------------
 function _file_repository_attach_file()
 {
-	global $db, $admin_file, $userinfo;
+	global $nuke_db, $admin_file, $userinfo;
 //-------------------------------------------------------------------------------
 //	ON UPLOAD GIVE THE FILE A RANDOM NAME TO PREVENT DOUBLING OF FILES
 //-------------------------------------------------------------------------------
@@ -161,39 +161,39 @@ function _file_repository_attach_file()
 	$file_extension    	= substr($filename, strrpos($filename, '.'));
 	$newfilename       	= strtolower($title).'-'.$s.$file_extension;
 	@rename(NUKE_BASE_DIR._FILE_REPOSITORY_DIR.$_POST['name'], NUKE_BASE_DIR._FILE_REPOSITORY_DIR.$newfilename);
-	$db->sql_query("INSERT INTO `"._FILE_REPOSITORY_FILES."` (`fid`, `did`, `ftitle`, `filename`, `filesize`) VALUES (NULL, '".$_POST['did']."', '".$title."', '".$newfilename."', '".$_POST['size']."')");
-	die(json_encode(array('file' => $newfilename, 'size' => _convertsize($_POST['size']), 'fid' => $db->sql_nextid(), 'title' => $title)));
+	$nuke_db->sql_query("INSERT INTO `"._FILE_REPOSITORY_FILES."` (`fid`, `did`, `ftitle`, `filename`, `filesize`) VALUES (NULL, '".$_POST['did']."', '".$title."', '".$newfilename."', '".$_POST['size']."')");
+	die(json_encode(array('file' => $newfilename, 'size' => _convertsize($_POST['size']), 'fid' => $nuke_db->sql_nextid(), 'title' => $title)));
 }
 //------------------
 
 function _file_repository_add_file()
 {
-	global $db, $admin_file, $userinfo;
-	$result = $db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_CATEGORIES."`");
-	if($db->sql_numrows($result) > 0)
+	global $nuke_db, $admin_file, $userinfo;
+	$result = $nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_CATEGORIES."`");
+	if($nuke_db->sql_numrows($result) > 0)
 	{
 //-----------------------------------------------------------------------------------------------------------------
 // INSERT A NEW ITEM INTO THE DATABASE, THIS FUNCTION IS NEEDED FOR THE NEW JQUERY FILE AND SCREENSHOT UPLOADER
 //-----------------------------------------------------------------------------------------------------------------
-		$db->sql_query("INSERT INTO `"._FILE_REPOSITORY_ITEMS."` (`date`, `isnew`, `isapproved`, `semail`, `sname`) VALUES (now(), '1', '1', '".$userinfo['user_email']."', '".$userinfo['username']."')");
-		$did = $db->sql_nextid();
-		_redirect($admin_file.'.php?op='._MODNAME.'&action=newfile&did='.$did);
+		$nuke_db->sql_query("INSERT INTO `"._FILE_REPOSITORY_ITEMS."` (`date`, `isnew`, `isapproved`, `semail`, `sname`) VALUES (now(), '1', '1', '".$userinfo['user_email']."', '".$userinfo['username']."')");
+		$did = $nuke_db->sql_nextid();
+		_nuke_redirect($admin_file.'.php?op='._MODNAME.'&action=newfile&did='.$did);
 //-----------------------------------------------------------------------------------------------------------------
 	} else {
 //---------------------------------------------------------------------
 // 	IF NO CATEGORIES EXISTS, REDIRECT SO THEY HAVE TO MAKE ONE
 //---------------------------------------------------------------------
-		_redirect($admin_file.'.php?op='._MODNAME.'&action=newcat');
+		_nuke_redirect($admin_file.'.php?op='._MODNAME.'&action=newcat');
 //---------------------------------------------------------------------
 	}
 }
 
 function _file_repository_new_file()
 {
-	global $db, $admin_file, $lang_new, $module_name, $settings;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings;
 	_admin_navigation_menu();
 	$max_post_size_bytes = _convert2bytes(ini_get('post_max_size'));
-	$row = $db->sql_fetchrow($db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `did`='".$_GET['did']."'"));
+	$row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `did`='".$_GET['did']."'"));
 	$row['isactive'] = ($_GET['action'] == 'newfile') ? 1 : $row['isactive'];
 	echo '<form action="'.$admin_file.'.php?op=file_repository&amp;action=savefile" method="post" id="adding_new_download">'."\n";
 	echo _input('hidden','did',false,$row['did']);
@@ -248,7 +248,7 @@ function _file_repository_new_file()
 	$i=0;
 	while (false !== ($filename = readdir($dh))) 
 	{
-		$count = $db->sql_numrows($db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_FILES."` WHERE `filename`='".$filename."'"));
+		$count = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_FILES."` WHERE `filename`='".$filename."'"));
 		if($filename != '.' && $filename != '..' && $filename != '.htaccess' && $filename != 'index.html' && $filename != 'screenshots' && $count != 1)
 		{
 			$filesize = filesize(_FILE_REPOSITORY_DIR.$filename);
@@ -276,10 +276,10 @@ function _file_repository_new_file()
 	echo '          <td'._tdcss('20%','center').'>'._sut($lang_new[$module_name]['FILE_SIZE']).'</td>'."\n";
 	echo '          <td'._tdcss('10%','center').'>'._sut($lang_new[$module_name]['FILE_OPTIONS']).'</td>'."\n";
 	echo '        </tr>'."\n";
-	$result = $db->sql_query("SELECT `fid`, `ftitle`, `filename`, `filesize` FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$_GET['did']."'");
-	if($db->sql_numrows($result) > 0)
+	$result = $nuke_db->sql_query("SELECT `fid`, `ftitle`, `filename`, `filesize` FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$_GET['did']."'");
+	if($nuke_db->sql_numrows($result) > 0)
 	{
-		while($file = $db->sql_fetchrow($result))
+		while($file = $nuke_db->sql_fetchrow($result))
 		{
 			$filename = '<a'._ls().' href="'.$admin_file.'.php?op=file_repository&amp;action=downloadfile&amp;filename='.$file['filename'].'&amp;filesize='.$file['filesize'].'">'.$file['filename'].'</a>';
 			echo '        <tr id="file-'.$file['fid'].'">'."\n";
@@ -290,7 +290,7 @@ function _file_repository_new_file()
 			echo '        </tr>'."\n";
 		}
 	}			
-	$db->sql_freeresult($result);	
+	$nuke_db->sql_freeresult($result);	
 	echo '        <tr id="fileupload_submit">'."\n";
 	echo '          <td'._tdcss('25%').'>&nbsp;'._input('text','ftitle','94%','').'</td>'."\n";
 	echo '          <td'._tdcss('45%').'>&nbsp;'._input('file','fupload','85%','').'</td>'."\n";
@@ -312,10 +312,10 @@ function _file_repository_new_file()
 	echo '          <td'._tdcss('20%','center').'>'._sut($lang_new[$module_name]['FILE_SIZE']).'</td>'."\n";
 	echo '          <td'._tdcss('10%','center').'>'._sut($lang_new[$module_name]['FILE_OPTIONS']).'</td>'."\n";
 	echo '        </tr>'."\n";
-	$result = $db->sql_query("SELECT `pid`, `filename`, `size`, `title` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$_GET['did']."' AND `active`=1");
-	if($db->sql_numrows($result) > 0)
+	$result = $nuke_db->sql_query("SELECT `pid`, `filename`, `size`, `title` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$_GET['did']."' AND `active`=1");
+	if($nuke_db->sql_numrows($result) > 0)
 	{
-		while($screen = $db->sql_fetchrow($result))
+		while($screen = $nuke_db->sql_fetchrow($result))
 		{
 			echo '        <tr id="screen-'.$screen['pid'].'">'."\n";
 			echo '          <td'._tdcss('25%',FALSE,FALSE,FALSE,TRUE).'>'.$screen['title'].'</td>'."\n";
@@ -325,7 +325,7 @@ function _file_repository_new_file()
 			echo '        </tr>'."\n";
 		}
 	}			
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 	echo '        <tr id="imageupload_submit">'."\n";
 	echo '          <td'._tdcss('25%').'>&nbsp;'._input('text','stitle','94%','').'</td>'."\n";
 	echo '          <td'._tdcss('45%').'>&nbsp;'._input('file','supload','85%','').'</td>'."\n";
@@ -425,7 +425,7 @@ function _file_repository_new_file()
 
 function _file_repository_save_file()
 {
-	global $db, $admin_file, $module_name, $userinfo, $settings;
+	global $nuke_db, $admin_file, $module_name, $userinfo, $settings;
 	$author      		= (!empty($_POST['author'])) ? _escape_string($_POST['author']) : '';
 	$author_email      	= (!empty($_POST['author_email'])) ? $_POST['author_email'] : '';
 	$author_website     = (!empty($_POST['author_website'])) ? $_POST['author_website'] : '';
@@ -448,7 +448,7 @@ function _file_repository_save_file()
 	$sname      		= (!empty($_POST['sname'])) ? _escape_string($_POST['sname']) : '';
 	$title      		= (!empty($_POST['title'])) ? _escape_string(trim($_POST['title'])) : '';
 	$version      		= (!empty($_POST['version'])) ? $_POST['version'] : '';
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_ITEMS."` SET 
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_ITEMS."` SET 
 		`author` = '".$author."',
 		`author_email` = '".$author_email."',
 		`author_website` = '".$author_website."',
@@ -474,14 +474,14 @@ function _file_repository_save_file()
 
 	if($isupdated == 1)
 	{
-		$db->sql_query("UPDATE `"._FILE_REPOSITORY_ITEMS."` SET `isupdated` = now() WHERE `did` = '".$did."'");
+		$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_ITEMS."` SET `isupdated` = now() WHERE `did` = '".$did."'");
 	}
-	_redirect($admin_file.'.php?op=file_repository&action=files');
+	_nuke_redirect($admin_file.'.php?op=file_repository&action=files');
 }
 
 function _file_repository_upload_files()
 {
-	global $db, $lang_new, $module_name, $userinfo;
+	global $nuke_db, $lang_new, $module_name, $userinfo;
 //-------------------------------------------------------------------------------
 //	IF THIS FUNCTION IS NOT USED VIA XMLHttpRequest THEN KILL THE FUNCTION
 //-------------------------------------------------------------------------------
@@ -500,52 +500,52 @@ function _file_repository_upload_files()
 	$size              	= $_FILES['fupload']['size'];
 	if(@move_uploaded_file($_FILES['fupload']['tmp_name'], NUKE_BASE_DIR.$_POST['uploaddir'].$newfilename))
 	{
-		$db->sql_query("INSERT INTO `"._FILE_REPOSITORY_FILES."` (`fid`, `did`, `ftitle`, `filename`, `filesize`) VALUES (NULL, '".$_POST['did']."', '".$_POST['title']."', '".$newfilename."', '".$size."')");
+		$nuke_db->sql_query("INSERT INTO `"._FILE_REPOSITORY_FILES."` (`fid`, `did`, `ftitle`, `filename`, `filesize`) VALUES (NULL, '".$_POST['did']."', '".$_POST['title']."', '".$newfilename."', '".$size."')");
 //-------------------------------------------------------------------------------
 //	Return a JSON array with all the information
 //-------------------------------------------------------------------------------
-		die(json_encode(array('file' => $newfilename, 'size' => _convertsize($size), 'fid' => $db->sql_nextid(), 'title' => $_POST['title'])));
+		die(json_encode(array('file' => $newfilename, 'size' => _convertsize($size), 'fid' => $nuke_db->sql_nextid(), 'title' => $_POST['title'])));
 //-------------------------------------------------------------------------------
 	}
 }
 
 function _file_repository_delete_item()
 {
-	global $db, $admin_file, $lang_new, $module_name, $settings;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings;
 	// merge this query into one.
 
 	$did = ($_GET['did']) ? $_GET['did'] : $_POST['did'];
 
-	$row  = $db->sql_fetchrow($db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `did`='".$did."'"));
-	$rowf = $db->sql_fetchrow($db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$row['did']."'"));
+	$row  = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `did`='".$did."'"));
+	$rowf = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$row['did']."'"));
 
 	# I MAY RE-ADD THIS IN A LATER UPDATE.
-	// $db->sql_query("DELETE FROM `"._DOWNLOAD_REPOSITORY_HISTORY."` WHERE `fid`='".$rowf['fid']."'");
-	// $db->sql_query("DELETE FROM `"._DOWNLOAD_REPOSITORY_RATINGS."` WHERE `did`='".$row['did']."'");
-	$db->sql_query("DELETE FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `did`='".$row['did']."'");
-	$db->sql_query("DELETE FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$row['did']."'");
+	// $nuke_db->sql_query("DELETE FROM `"._DOWNLOAD_REPOSITORY_HISTORY."` WHERE `fid`='".$rowf['fid']."'");
+	// $nuke_db->sql_query("DELETE FROM `"._DOWNLOAD_REPOSITORY_RATINGS."` WHERE `did`='".$row['did']."'");
+	$nuke_db->sql_query("DELETE FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `did`='".$row['did']."'");
+	$nuke_db->sql_query("DELETE FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$row['did']."'");
 
-	$result = $db->sql_query("SELECT `pid`, `filename` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$row['did']."'");
-	$countShots = $db->sql_numrows($result);
+	$result = $nuke_db->sql_query("SELECT `pid`, `filename` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$row['did']."'");
+	$countShots = $nuke_db->sql_numrows($result);
 	if($countShots > 0)
 	{
-		while ($row2 = $db->sql_fetchrow($result))
+		while ($row2 = $nuke_db->sql_fetchrow($result))
 		{
 			@unlink(_FILE_REPOSITORY_SCREENS.'thumbs/thumb_100x100_'.$row2['filename']);
 			@unlink(_FILE_REPOSITORY_SCREENS.'thumbs/thumb_190x120_'.$row2['filename']);
 			@unlink(_FILE_REPOSITORY_SCREENS.$row2['filename']);
-			$db->sql_query("DELETE FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `pid`='".$row2['pid']."'");
+			$nuke_db->sql_query("DELETE FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `pid`='".$row2['pid']."'");
 		}
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
 	}
 	@unlink(_FILE_REPOSITORY_DIR.$rowf['filename']);
 
 	if(!$_SERVER['HTTP_X_REQUESTED_WITH']):
 
 		if($_GET['area'] == 'clientuploads'):
-			_redirect($admin_file.'.php?op='._MODNAME.'&action=clientuploads');
+			_nuke_redirect($admin_file.'.php?op='._MODNAME.'&action=clientuploads');
 		else:
-			_redirect($admin_file.'.php?op='._MODNAME.'&action=files');
+			_nuke_redirect($admin_file.'.php?op='._MODNAME.'&action=files');
 		endif;
 
 	endif;
@@ -553,9 +553,9 @@ function _file_repository_delete_item()
 
 function _file_repository_delete_files()
 {
-	global $db;
-	$result 		= $db->sql_query("SELECT `filename` FROM `"._FILE_REPOSITORY_FILES."` WHERE `fid`='".$_POST['fid']."'");
-	list($filename) = $db->sql_fetchrow($result);
+	global $nuke_db;
+	$result 		= $nuke_db->sql_query("SELECT `filename` FROM `"._FILE_REPOSITORY_FILES."` WHERE `fid`='".$_POST['fid']."'");
+	list($filename) = $nuke_db->sql_fetchrow($result);
 //---------------------------------------------------------------------
 //	DELETE THE FILE FROM THE UPLOAD DIRECTORY 
 //---------------------------------------------------------------------
@@ -565,15 +565,15 @@ function _file_repository_delete_files()
 //---------------------------------------------------------------------
 //	ONCE THE FILE HAS BEEN REMOVE, DELETE FROM THE DATABASE
 //---------------------------------------------------------------------
-	$db->sql_query("DELETE FROM `"._FILE_REPOSITORY_FILES."` WHERE `fid`='".$_POST['fid']."'");
-	$db->sql_optimize(_FILE_REPOSITORY_FILES);
+	$nuke_db->sql_query("DELETE FROM `"._FILE_REPOSITORY_FILES."` WHERE `fid`='".$_POST['fid']."'");
+	$nuke_db->sql_optimize(_FILE_REPOSITORY_FILES);
 //---------------------------------------------------------------------
 }
 
 // _FILE_REPOSITORY_SCREENS
 function _file_repository_upload_screens()
 {
-	global $db, $lang_new, $module_name, $userinfo;
+	global $nuke_db, $lang_new, $module_name, $userinfo;
 //-------------------------------------------------------------------------------
 //	If this function is not used via XMLHttpRequest then kill the function
 //-------------------------------------------------------------------------------
@@ -611,8 +611,8 @@ function _file_repository_upload_screens()
 		_create_thumb_from_image(NUKE_BASE_DIR.$_POST['screendir'].$newfilename, NUKE_BASE_DIR.$_POST['screendir'].'thumbs/thumb_100x100_'.$newfilename, array('width'=>'100','height'=>'100','aspect_ratio'=>true));
 		_create_thumb_from_image(NUKE_BASE_DIR.$_POST['screendir'].$newfilename, NUKE_BASE_DIR.$_POST['screendir'].'thumbs/thumb_190x120_'.$newfilename, array('width'=>'190','height'=>'120','aspect_ratio'=>true));
 //-------------------------------------------------------------------------------
-		$db->sql_query("INSERT INTO `"._FILE_REPOSITORY_SCREENSHOTS."` (`pid`, `did`, `active`, `filename`, `size`, `submitter`, `title`) VALUES (NULL, '".$_POST['did']."', 1, '".$newfilename."', '".$size."', '".$userinfo['username']."', '".$_POST['title']."')");
-		$pid = $db->sql_nextid();
+		$nuke_db->sql_query("INSERT INTO `"._FILE_REPOSITORY_SCREENSHOTS."` (`pid`, `did`, `active`, `filename`, `size`, `submitter`, `title`) VALUES (NULL, '".$_POST['did']."', 1, '".$newfilename."', '".$size."', '".$userinfo['username']."', '".$_POST['title']."')");
+		$pid = $nuke_db->sql_nextid();
 //-------------------------------------------------------------------------------
 //	Return a JSON array with all the information
 //-------------------------------------------------------------------------------
@@ -623,25 +623,25 @@ function _file_repository_upload_screens()
 
 function _file_repository_delete_screens()
 {
-	global $db;
-	$result 			= $db->sql_query("SELECT `filename` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `pid`='".$_POST['pid']."'");
-	list($screenshot) 	= $db->sql_fetchrow($result);
+	global $nuke_db;
+	$result 			= $nuke_db->sql_query("SELECT `filename` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `pid`='".$_POST['pid']."'");
+	list($screenshot) 	= $nuke_db->sql_fetchrow($result);
 	if(file_exists(_FILE_REPOSITORY_SCREENS.$screenshot))
 	{
 		@unlink(_FILE_REPOSITORY_SCREENS.'thumbs/thumb_100x100_'.$screenshot);
 		@unlink(_FILE_REPOSITORY_SCREENS.'thumbs/thumb_190x120_'.$screenshot);
 		@unlink(_FILE_REPOSITORY_SCREENS.$screenshot);
 	}
-	$db->sql_query("DELETE FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `pid`='".$_POST['pid']."'");
-	$db->sql_optimize(_FILE_REPOSITORY_SCREENSHOTS);
+	$nuke_db->sql_query("DELETE FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `pid`='".$_POST['pid']."'");
+	$nuke_db->sql_optimize(_FILE_REPOSITORY_SCREENSHOTS);
 }
 
 function _file_repository_client_uploads()
 {
-	global $db, $admin_file, $lang_new, $module_name, $settings;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings;
 	_admin_navigation_menu();
-	$result = $db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isapproved` = 0 ORDER BY `date` ASC");
-	$num_client_uploads = $db->sql_numrows($result);
+	$result = $nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isapproved` = 0 ORDER BY `date` ASC");
+	$num_client_uploads = $nuke_db->sql_numrows($result);
 
 	echo '<table style="width: 100%;" border="0" cellpadding="4" cellspacing="1" class="forumline">'."\n";
 	echo '  <tr'._bgColor(2).'>'."\n";
@@ -658,7 +658,7 @@ function _file_repository_client_uploads()
 	if ( $num_client_uploads > 0 ):
 
 		$submissions = 1;
-		while($submitted = $db->sql_fetchrow($result)):
+		while($submitted = $nuke_db->sql_fetchrow($result)):
 
 			echo '  <tr'._bgColor(1).'>'."\n";
 			echo '    <td'._tdcss('5%','center',_sc()).'>'.$submissions.'</td>'."\n";

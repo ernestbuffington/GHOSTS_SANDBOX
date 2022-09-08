@@ -33,7 +33,7 @@ LinkusAdminMain();
 
 	OpenTable();
 
-		$row = $db->sql_ufetchrow("SELECT * FROM `".$prefix."_link_us_config` LIMIT 0,1");
+		$row = $nuke_db->sql_ufetchrow("SELECT * FROM `".$prefix."_link_us_config` LIMIT 0,1");
 	
 		if($row['button_method'] == 1){$button_i = "checked";}
 	elseif($row['button_method'] == 0){$button_u = "checked";}

@@ -4,7 +4,7 @@
 <tr>
 <td align="center">
 
-<!--MOD GLANCE BEGIN -->{GLANCE_OUTPUT}<!-- MOD GLANCE END -->
+<!--NUKE_MOD GLANCE BEGIN -->{GLANCE_OUTPUT}<!-- NUKE_MOD GLANCE END -->
 <!-- BEGIN show_global_marquee -->
 <table style="width: 100%;" cellpadding="3" cellspacing="1" border="0" class="forumline"> 
   <tr> 

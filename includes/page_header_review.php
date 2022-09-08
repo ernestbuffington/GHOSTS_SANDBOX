@@ -42,7 +42,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -67,12 +67,12 @@ $template->set_filenames(array(
 //
 if ( $userdata['session_logged_in'] )
 {
-        $u_login_logout = 'modules.php?name=Your_Account&op=logout&redirect=Forums';
+        $u_login_logout = 'modules.php?name=Your_Account&op=logout&nuke_redirect=Forums';
         $l_login_logout = $lang['Logout'] . ' [ ' . $userdata['username'] . ' ]';
 }
 else
 {
-        $u_login_logout = 'modules.php?name=Your_Account&redirect=index';
+        $u_login_logout = 'modules.php?name=Your_Account&nuke_redirect=index';
         $l_login_logout = $lang['Login'];
 }
 
@@ -84,14 +84,14 @@ $s_last_visit = ( $userdata['session_logged_in'] ) ? create_date($board_config['
 //
 $user_forum_sql = ( !empty($forum_id) ) ? "AND s.session_page = " . intval($forum_id) : '';
 $sql = "SELECT u.username, u.user_id, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_ip
-    FROM ".USERS_TABLE." u, ".SESSIONS_TABLE." s
+    FROM ".NUKE_USERS_TABLE." u, ".NUKE_BB_SESSIONS_TABLE." s
     WHERE u.user_id = s.session_user_id
         AND s.session_time >= ".( time() - 300 ) . "
         $user_forum_sql
     ORDER BY u.username ASC, s.session_ip ASC";
-if( !($result = $db->sql_query($sql)) )
+if( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'Could not obtain user/online information', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain user/online information', '', __LINE__, __FILE__, $sql);
 }
 
 $userlist_ary = array();
@@ -105,7 +105,7 @@ $online_userlist = '';
 $prev_user_id = 0;
 $prev_user_ip = '';
 
-while( $row = $db->sql_fetchrow($result) )
+while( $row = $nuke_db->sql_fetchrow($result) )
 {
     // User is logged in and therefor not a guest
     if ( $row['session_logged_in'] )
@@ -114,12 +114,12 @@ while( $row = $db->sql_fetchrow($result) )
         if ( $row['user_id'] != $prev_user_id )
         {
             $style_color = '';
-            if ( $row['user_level'] == ADMIN )
+            if ( $row['user_level'] == NUKE_ADMIN )
             {
                 $row['username'] = '<strong>' . $row['username'] . '</strong>';
                 $style_color = 'style="color:#' . $theme['fontcolor3'] . '"';
             }
-            else if ( $row['user_level'] == MOD )
+            else if ( $row['user_level'] == NUKE_MOD )
             {
                 $row['username'] = '<strong>' . $row['username'] . '</strong>';
                 $style_color = 'style="color:#' . $theme['fontcolor2'] . '"';
@@ -127,16 +127,16 @@ while( $row = $db->sql_fetchrow($result) )
 
             if ( $row['user_allow_viewonline'] )
             {
-                $user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'>' . $row['username'] . '</a>';
+                $user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'>' . $row['username'] . '</a>';
                 $logged_visible_online++;
             }
             else
             {
-                $user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'><i>' . $row['username'] . '</i></a>';
+                $user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'><i>' . $row['username'] . '</i></a>';
                 $logged_hidden_online++;
             }
 
-            if ( $row['user_allow_viewonline'] || $userdata['user_level'] == ADMIN )
+            if ( $row['user_allow_viewonline'] || $userdata['user_level'] == NUKE_ADMIN )
             {
                 $online_userlist .= ( $online_userlist != '' ) ? ', ' . $user_online_link : $user_online_link;
             }
@@ -169,20 +169,20 @@ if ( $total_online_users > $board_config['record_online_users'])
     $board_config['record_online_users'] = $total_online_users;
     $board_config['record_online_date'] = time();
 
-    $sql = "UPDATE " . CONFIG_TABLE . "
+    $sql = "UPDATE " . NUKE_CONFIG_TABLE . "
         SET config_value = '$total_online_users'
         WHERE config_name = 'record_online_users'";
-    if ( !$db->sql_query($sql) )
+    if ( !$nuke_db->sql_query($sql) )
     {
-        message_die(GENERAL_ERROR, 'Could not update online user record (nr of users)', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not update online user record (nr of users)', '', __LINE__, __FILE__, $sql);
     }
 
-    $sql = "UPDATE " . CONFIG_TABLE . "
+    $sql = "UPDATE " . NUKE_CONFIG_TABLE . "
         SET config_value = '" . $board_config['record_online_date'] . "'
         WHERE config_name = 'record_online_date'";
-    if ( !$db->sql_query($sql) )
+    if ( !$nuke_db->sql_query($sql) )
     {
-        message_die(GENERAL_ERROR, 'Could not update online user record (date)', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not update online user record (date)', '', __LINE__, __FILE__, $sql);
     }
 /*****['BEGIN']******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -264,12 +264,12 @@ if ( $userdata['session_logged_in'] )
 
         if ( $userdata['user_last_privmsg'] > $userdata['user_lastvisit'] )
         {
-            $sql = "UPDATE " . USERS_TABLE . "
+            $sql = "UPDATE " . NUKE_USERS_TABLE . "
                 SET user_last_privmsg = " . $userdata['user_lastvisit'] . "
                 WHERE user_id = " . $userdata['user_id'];
-            if ( !$db->sql_query($sql) )
+            if ( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, 'Could not update private message new/read time for user', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not update private message new/read time for user', '', __LINE__, __FILE__, $sql);
             }
 
             $s_privmsg_new = 1;

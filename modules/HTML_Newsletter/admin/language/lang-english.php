@@ -259,7 +259,7 @@ define("_MSNL_ADM_LAB_WHOSNDTO",					"Who do you want the Newsletter to be sent 
 define("_MSNL_ADM_LAB_CHOOSESENDTO",			"Choose recipient(s) option");
 
 define("_MSNL_ADM_LAB_WHOSNDTONLSUBS",		"Newsletter subscribers only");
-define("_MSNL_ADM_LAB_WHOSNDTOALLREG",		"ALL registered users");
+define("_MSNL_ADM_LAB_WHOSNDTOALLREG",		"ALL registered members");
 define("_MSNL_ADM_LAB_WHOSNDTOPAID",			"Paid subscribers only");
 define("_MSNL_ADM_LAB_WHOSNDTOANONY",			"ALL site visitors - NO email is sent, but "
 	."any visitor can view the newsletter"
@@ -278,7 +278,7 @@ define("_MSNL_ADM_HLP_WHOSNDTONLSUBS",		"Choosing this option will send the news
 	."account preferences."
 	);
 define("_MSNL_ADM_HLP_WHOSNDTOALLREG",		"Choosing this option will send the newsletter "
-	."to all of your registered users.  Be careful using this option as your users may not "
+	."to all of your registered members.  Be careful using this option as your users may not "
 	."appreciate having a newsletter sent to them for which they did not ask for."
 	);
 define("_MSNL_ADM_HLP_WHOSNDTOPAID",			"Choosing this option will send the newsletter "
@@ -412,21 +412,21 @@ define("_MSNL_CFG_LAB_MAINCFG",						"Main Module Configuration");
 //Module Options
 
 define("_MSNL_CFG_LAB_MODULEOPT",					"Module Options");
-define("_MSNL_CFG_LAB_DEBUGMODE",					"Debug Mode");
-define("_MSNL_CFG_LAB_DEBUGMODE_OFF",			"OFF");
-define("_MSNL_CFG_LAB_DEBUGMODE_ERR",			"ERROR");
-define("_MSNL_CFG_LAB_DEBUGMODE_VER",			"VERBOSE");
-define("_MSNL_CFG_LAB_DEBUGOUTPUT",				"Debug Output");
-define("_MSNL_CFG_LAB_DEBUGOUTPUT_DIS",		"DISPLAY");
-define("_MSNL_CFG_LAB_DEBUGOUTPUT_LOG",		"LOG FILE");
-define("_MSNL_CFG_LAB_DEBUGOUTPUT_BTH",		"BOTH");
+define("_MSNL_CFG_LAB_NUKE_DEBUGMODE",					"Debug Mode");
+define("_MSNL_CFG_LAB_NUKE_DEBUGMODE_OFF",			"OFF");
+define("_MSNL_CFG_LAB_NUKE_DEBUGMODE_ERR",			"ERROR");
+define("_MSNL_CFG_LAB_NUKE_DEBUGMODE_VER",			"VERBOSE");
+define("_MSNL_CFG_LAB_NUKE_DEBUGOUTPUT",				"Debug Output");
+define("_MSNL_CFG_LAB_NUKE_DEBUGOUTPUT_DIS",		"DISPLAY");
+define("_MSNL_CFG_LAB_NUKE_DEBUGOUTPUT_LOG",		"LOG FILE");
+define("_MSNL_CFG_LAB_NUKE_DEBUGOUTPUT_BTH",		"BOTH");
 define("_MSNL_CFG_LAB_SHOWBLOCKS",				"Show Right Blocks");
 define("_MSNL_CFG_LAB_NSNGRPS",						"Use NSN Groups");
 define("_MSNL_CFG_LAB_DLMODULE",					"Download Module's Name");
 define("_MSNL_CFG_LAB_WYSIWYGON",					"Use WYSIWYG Editor");
 define("_MSNL_CFG_LAB_WYSIWYGROWS",				"Content Rows");
 
-define("_MSNL_CFG_HLP_DEBUGMODE",					"This allows the module admin to set various levels of "
+define("_MSNL_CFG_HLP_NUKE_DEBUGMODE",					"This allows the module admin to set various levels of "
 	."debug messaging as follows:<br /><strong>OFF</strong> = Only application level error "
 	."messages, with no details will be displayed.<br /><strong>ERROR</strong> = Application "
 	."errors will be displayed, along with useful debug message text.  SQL errors will also "
@@ -436,7 +436,7 @@ define("_MSNL_CFG_HLP_DEBUGMODE",					"This allows the module admin to set vario
 	."web site as it could provide alot of useful information to a hacker!). <b>NOTE: emails "
 	."will NOT be sent using this option</b> - very useful for debugging purposes."
 	);
-define("_MSNL_CFG_HLP_DEBUGOUTPUT",				"This option is not used at this time.  In the future "
+define("_MSNL_CFG_HLP_NUKE_DEBUGOUTPUT",				"This option is not used at this time.  In the future "
 	."will provide ability to display the above debug messages to either the browser, a log "
 	."file, or both."
 	);
@@ -517,10 +517,10 @@ define("_MSNL_CFG_HLP_SCROLLDELAY",				"Sets the scroll delay on the scrolling, 
 
 define("_MSNL_CFG_APPLY_ERR_DBFAILED",		"Update of configuration information failed");
 
-define("_MSNL_CFG_APPLY_VAL_DEBUGMODE",		"Invalid Debug Mode was provided - might have "
+define("_MSNL_CFG_APPLY_VAL_NUKE_DEBUGMODE",		"Invalid Debug Mode was provided - might have "
 	."problem with module installation"
 	);
-define("_MSNL_CFG_APPLY_VAL_DEBUGOUTPUT",	"Invalid Debug Output was provided - might have "
+define("_MSNL_CFG_APPLY_VAL_NUKE_DEBUGOUTPUT",	"Invalid Debug Output was provided - might have "
 	."problem with module installation"
 	);
 
@@ -650,7 +650,7 @@ define("_MSNL_NLS_CHG_HLP_DATESENT", 			"Currently, the date must be entered in 
 define("_MSNL_NLS_CHG_HLP_WHOVIEW", 			"This field is system assigned - be careful in "
 	."changing it!  Valid values are:"
 	."<br /><strong>0</strong> = anonymous - all can view"
-	."<br /><strong>1</strong> = all registered users"
+	."<br /><strong>1</strong> = all registered members"
 	."<br /><strong>2</strong> = newsletter subscribers only"
 	."<br /><strong>3</strong> = site paid members only"
 	."<br /><strong>4</strong> = selected NSN Groups only"

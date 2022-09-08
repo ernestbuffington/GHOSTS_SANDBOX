@@ -35,7 +35,7 @@ get_lang($module_name);
 
 $pagetitle = "- "._SHOUTHISTORY;
 
-global $db, $user, $prefix, $username, $nsnst_const, $userinfo, $cache;
+global $nuke_db, $user, $prefix, $username, $nsnst_const, $userinfo, $cache;
 
 global $username;
 
@@ -49,10 +49,10 @@ global $conf;
 
 if ((($conf = $cache->load('conf', 'shoutbox')) == false) || empty($conf)) {
     $sql = "SELECT * FROM `".$prefix."_shoutbox_conf`";
-    $result = $db->sql_query($sql);
-    $conf = $db->sql_fetchrow($result);
+    $result = $nuke_db->sql_query($sql);
+    $conf = $nuke_db->sql_fetchrow($result);
     $cache->save('conf', 'shoutbox', $conf);
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 }
 
 $Action = (isset($_REQUEST['Action'])) ? $_REQUEST['Action'] : '';
@@ -69,8 +69,8 @@ $uip = $nsnst_const['remote_ip'];
  ******************************************************/
 if($conf['ipblock'] == "yes") {
     $sql = "SELECT * FROM ".$prefix."_shoutbox_ipblock";
-    $ipresult = $db->sql_query($sql);
-    while ($badips = $db->sql_fetchrow($ipresult)) {
+    $ipresult = $nuke_db->sql_query($sql);
+    while ($badips = $nuke_db->sql_fetchrow($ipresult)) {
         if (preg_match("/\*/i", $badips['name'])) { // Allow for Subnet bans like 123.456.*
             $badipsArray = explode(".",$badips['name']);
             $uipArray = explode(".",$uip);
@@ -86,18 +86,18 @@ if($conf['ipblock'] == "yes") {
     }
 }
 
-//do name test then ban if on list (only applies to registered users)
+//do name test then ban if on list (only applies to registered members)
 if($conf['nameblock'] == "yes" && $Action != "UserBanned") {
     $sql = "SELECT * FROM ".$prefix."_shoutbox_nameblock";
-    $nameresult = $db->sql_query($sql);
-    while ($badname = $db->sql_fetchrow($nameresult)) {
+    $nameresult = $nuke_db->sql_query($sql);
+    while ($badname = $nuke_db->sql_fetchrow($nameresult)) {
         if($username == $badname['name']) { $Action = "UserBanned"; break; }
     }
 }
 
 function searchHistory($where, $sbsearchtext, $results, $style, $order, $page) 
 {
-	global $db, $prefix, $username, $userinfo, $board_config;
+	global $nuke_db, $prefix, $username, $userinfo, $board_config;
     include_once(NUKE_BASE_DIR.'header.php');
 
     $sbsearchtext = htmlspecialchars($sbsearchtext, ENT_QUOTES);
@@ -190,19 +190,19 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page)
     else { $sql .= " ORDER BY `id` ASC"; }
     $sql .= " LIMIT $results";
     // end building SQL query
-    $result = $db->sql_query($sql);
-    $numrows = $db->sql_numrows($result);
+    $result = $nuke_db->sql_query($sql);
+    $numrows = $nuke_db->sql_numrows($result);
     if ($numrows > 0) {
         global $conf;
         $flag = 1;
 
         $ThemeSel = get_theme();
         $sql = "SELECT `menuColor1`, `menuColor2` FROM `".$prefix."_shoutbox_themes` WHERE `themeName`='$ThemeSel'";
-        $resultT = $db->sql_query($sql);
-        $rowColor = $db->sql_fetchrow($resultT);
-        $db->sql_freeresult($resultT);
+        $resultT = $nuke_db->sql_query($sql);
+        $rowColor = $nuke_db->sql_fetchrow($resultT);
+        $nuke_db->sql_freeresult($resultT);
 
-        while ($row = $db->sql_fetchrow($result)) 
+        while ($row = $nuke_db->sql_fetchrow($result)) 
 		{
             if ($flag == 1) 
 			$bgcolor = $rowColor['menuColor1']; 
@@ -230,9 +230,9 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page)
             }
 
             $sqlN = "SELECT `user_avatar`, `username` FROM `".$prefix."_users` WHERE `username`='".$row['name']."'";
-            $nameresultN = $db->sql_query($sqlN);
-            $rowN = $db->sql_fetchrow($nameresultN);
-            $db->sql_freeresult($nameresultN);
+            $nameresultN = $nuke_db->sql_query($sqlN);
+            $rowN = $nuke_db->sql_fetchrow($nameresultN);
+            $nuke_db->sql_freeresult($nameresultN);
 
             // Disallow Anonymous users from seeing links to users' accounts
             if ($username == "Anonymous") 
@@ -352,7 +352,7 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page)
                                 echo '&nbsp;'.$row['date']."&nbsp;".$row['time'];
                             }
                         }
-						// registered users edit/delete posts
+						// registered members edit/delete posts
                         if (($conf['delyourlastpost'] == "yes") && ($username == $row['name'])) {
                             echo " &#91; <a title=\""._EDIT."\" href=\"modules.php?name=Shout_Box&amp;Action=Edit&amp;shoutID=".$row['id']."&amp;page=$page\">"._EDIT."</a> | <a title=\""._DELETE."\" href=\"modules.php?name=Shout_Box&amp;Action=Delete&amp;shoutID=".$row['id']."&amp;page=$page\">"._DELETE."</a> &#93;";
                         }
@@ -393,7 +393,7 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page)
                                 echo $row['date']."&nbsp;".$row['time'];
                             }
                         }
-                        // registered users edit/delete posts
+                        // registered members edit/delete posts
                         if (($conf['delyourlastpost'] == "yes") && ($username == $row['name'])) 
 						{
                             echo " &#91; <a title=\""._EDIT."\" href=\"modules.php?name=Shout_Box&amp;Action=Edit&amp;shoutID=".$row['id']."&amp;page=$page\">"._EDIT."</a> | <a title=\""._DELETE."\" href=\"modules.php?name=Shout_Box&amp;Action=Delete&amp;shoutID=".$row['id']."&amp;page=$page\">"._DELETE."</a> &#93;";
@@ -441,7 +441,7 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page)
 			endif;
         }
         
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
     } 
 	else 
 	{
@@ -503,15 +503,15 @@ function showSearchBox($sbsearchtext, $where, $style, $results, $order)
 }
 
 function shoutDelete($page, $shoutID) {
-    global $db, $username, $prefix, $conf;
+    global $nuke_db, $username, $prefix, $conf;
     if ($conf['delyourlastpost'] == "yes" && !empty($shoutID)) {
         $sql = "SELECT `name` FROM `".$prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
-        $nameresult = $db->sql_query($sql);
-        $row = $db->sql_fetchrow($nameresult);
-        $db->sql_freeresult($nameresult);
+        $nameresult = $nuke_db->sql_query($sql);
+        $row = $nuke_db->sql_fetchrow($nameresult);
+        $nuke_db->sql_freeresult($nameresult);
         if ($row['name'] == $username) {
             $sqlD = "DELETE FROM `".$prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
-            $db->sql_query($sqlD);
+            $nuke_db->sql_query($sqlD);
         }
     }
     header("Location: modules.php?name=Shout_Box&page=$page");
@@ -519,14 +519,14 @@ function shoutDelete($page, $shoutID) {
 }
 
 function shoutEdit($page, $shoutID, $ShoutError) {
-    global $db, $prefix, $conf, $username;
+    global $nuke_db, $prefix, $conf, $username;
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
     if ($conf['delyourlastpost'] == "yes" && !empty($shoutID)) {
         $sql = "SELECT `name`, `comment` FROM `".$prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
-        $nameresult = $db->sql_query($sql);
-        $row = $db->sql_fetchrow($nameresult);
-        $db->sql_freeresult($nameresult);
+        $nameresult = $nuke_db->sql_query($sql);
+        $row = $nuke_db->sql_fetchrow($nameresult);
+        $nuke_db->sql_freeresult($nameresult);
         if ($row['name'] == $username) {
             // strip out link code here (added back in later if saved)
             $ShoutComment = $row['comment'];
@@ -566,11 +566,11 @@ function shoutEdit($page, $shoutID, $ShoutError) {
 
             // strip smilies code here (added back in later if saved)
             $sql = "SELECT * FROM `".$prefix."_shoutbox_emoticons`";
-            $eresult = $db->sql_query($sql);
-            while ($emoticons = $db->sql_fetchrow($eresult)) {
+            $eresult = $nuke_db->sql_query($sql);
+            while ($emoticons = $nuke_db->sql_fetchrow($eresult)) {
                 $ShoutComment = str_replace($emoticons['image'],$emoticons['text'],$ShoutComment);
             }
-            $db->sql_freeresult($eresult);
+            $nuke_db->sql_freeresult($eresult);
 
             echo "<form name=\"shoutedit\" method=\"post\" action=\"\" style=\"margin-bottom: 0px;\">\n";
             echo "<table cellpadding=\"3\" cellspacing=\"0\" width=\"90%\" border=\"0\" align=\"center\">\n";
@@ -593,12 +593,12 @@ function shoutEdit($page, $shoutID, $ShoutError) {
 }
 
 function shoutSave($page, $shoutID, $ShoutComment) {
-    global $db, $username, $prefix, $conf;
+    global $nuke_db, $username, $prefix, $conf;
     if ($conf['delyourlastpost'] == "yes" && !empty($shoutID)) {
         $sql = "SELECT `name` FROM `".$prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
-        $nameresult = $db->sql_query($sql);
-        $row = $db->sql_fetchrow($nameresult);
-        $db->sql_freeresult($nameresult);
+        $nameresult = $nuke_db->sql_query($sql);
+        $row = $nuke_db->sql_fetchrow($nameresult);
+        $nuke_db->sql_freeresult($nameresult);
         if ($row['name'] == $username) {
             $ShoutComment = trim($ShoutComment); // remove whitespace off ends of shout
             $ShoutComment = preg_replace('/\s+/', ' ', $ShoutComment); // convert double spaces in middle of shout to single space
@@ -721,8 +721,8 @@ function shoutSave($page, $shoutID, $ShoutComment) {
             $ShoutArrayReplace = explode(" ",$ShoutComment);
             $ShoutArrayScan = $ShoutArrayReplace;
             $sql = "SELECT * FROM `".$prefix."_shoutbox_emoticons`";
-            $eresult = $db->sql_query($sql);
-            while ($emoticons = $db->sql_fetchrow($eresult)) {
+            $eresult = $nuke_db->sql_query($sql);
+            while ($emoticons = $nuke_db->sql_fetchrow($eresult)) {
                 $i = 0;
                 foreach($ShoutArrayScan as $ShoutPart) {
                     if ($ShoutPart == $emoticons['text']) { $ShoutArrayReplace[$i] = $emoticons['image']; }
@@ -736,8 +736,8 @@ function shoutSave($page, $shoutID, $ShoutComment) {
                 $ShoutArrayReplace = explode(" ",$ShoutComment);
                 $ShoutArrayScan = $ShoutArrayReplace;
                 $sql = "SELECT * FROM `".$prefix."_shoutbox_censor`";
-                $cresult = $db->sql_query($sql);
-                while ($censor = $db->sql_fetchrow($cresult)) {
+                $cresult = $nuke_db->sql_query($sql);
+                while ($censor = $nuke_db->sql_fetchrow($cresult)) {
                     $i = 0;
                     foreach($ShoutArrayScan as $ShoutPart) {
                         $ShoutPart = strtolower($ShoutPart);
@@ -751,8 +751,8 @@ function shoutSave($page, $shoutID, $ShoutComment) {
                 /*
                 // Phrase censor - Needs work before implementing
                 $sql = "SELECT * FROM ".$prefix."_shoutbox_emoticons";
-                $eresult = $db->sql_query($sql);
-                while ($emoticons = $db->sql_fetchrow($eresult)) {
+                $eresult = $nuke_db->sql_query($sql);
+                while ($emoticons = $nuke_db->sql_fetchrow($eresult)) {
                     $ShoutComment = str_replace($emoticons[1],$emoticons[2],$ShoutComment);
                 }
                 */
@@ -760,7 +760,7 @@ function shoutSave($page, $shoutID, $ShoutComment) {
 
             if (!$ShoutError) {
                 $sqlU = "UPDATE `".$prefix."_shoutbox_shouts` set `comment`='$ShoutComment' WHERE `id`='$shoutID'";
-                $db->sql_query($sqlU);
+                $nuke_db->sql_query($sqlU);
             } else {
                 header("Location: modules.php?name=Shout_Box&Action=Edit&shoutID=$shoutID&page=$page&ShoutError=$ShoutError");
                 exit;
@@ -773,20 +773,20 @@ function shoutSave($page, $shoutID, $ShoutComment) {
 
 function findAvatar($row_avatar) 
 {
-    global $db, $prefix;
+    global $nuke_db, $prefix;
 
     // Find avatar path
     // modules/Forums/images/avatars/gallery
     $sql = "SELECT * FROM `".$prefix."_bbconfig` WHERE `config_name`='avatar_gallery_path'";
-    $result = $db->sql_query($sql);
-    $avatar_gallery_path = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $result = $nuke_db->sql_query($sql);
+    $avatar_gallery_path = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     // modules/Forums/images/avatars
     $sql = "SELECT * FROM ".$prefix."_bbconfig WHERE config_name='avatar_path'";
-    $result = $db->sql_query($sql);
-    $avatar_path = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $result = $nuke_db->sql_query($sql);
+    $avatar_path = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     if (preg_match('#http://#i',$row_avatar) == TRUE) 
 	{
@@ -816,15 +816,15 @@ function findAvatar($row_avatar)
 
 function showHistory($page) 
 {
-    global $db, $prefix, $username, $userinfo, $board_config;
+    global $nuke_db, $prefix, $username, $userinfo, $board_config;
     include_once(NUKE_BASE_DIR.'header.php');
     global $conf;
 
     // count number of shouts in DB
     $sql = "SELECT id FROM ".$prefix."_shoutbox_shouts";
-    $result = $db->sql_query($sql);
-    $numrows = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $result = $nuke_db->sql_query($sql);
+    $numrows = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
     $shout_pages = 1;
     $shoutsViewed = $conf['shoutsperpage'];
     while ($numrows >= $shoutsViewed) {
@@ -856,10 +856,10 @@ function showHistory($page)
 
     $ThemeSel = get_theme();
     $sql = "SELECT `menuColor1`, `menuColor2` FROM `".$prefix."_shoutbox_themes` WHERE `themeName`='$ThemeSel'";
-    $result = $db->sql_query($sql);
-    $rowColor = $db->sql_fetchrow($result);
+    $result = $nuke_db->sql_query($sql);
+    $rowColor = $nuke_db->sql_fetchrow($result);
 
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     echo "<form name=\"shoutform2\" method=\"post\" action=\"\" style=\"margin-bottom: 0px;\">\n";
     echo "<table cellpadding=\"3\" cellspacing=\"0\" width=\"90%\" border=\"0\" align=\"center\">\n";
@@ -869,8 +869,8 @@ function showHistory($page)
 	 
 	$sql = "SELECT * FROM `".$prefix."_shoutbox_shouts` ORDER BY `id` DESC LIMIT ".$offset1.",$shoutsViewed";
 
-    $resultt = $db->sql_query($sql);
-	while ($row = $db->sql_fetchrow($resultt)) 
+    $resultt = $nuke_db->sql_query($sql);
+	while ($row = $nuke_db->sql_fetchrow($resultt)) 
 	{
         if ($flag == 1) { $bgcolor = $rowColor['menuColor1']; }
         if ($flag == 2) { $bgcolor = $rowColor['menuColor2']; }
@@ -895,9 +895,9 @@ function showHistory($page)
         }
 
         $sqlN = "SELECT `user_avatar`, `username` FROM `".$prefix."_users` WHERE username='$row[name]'";
-        $nameresultN = $db->sql_query($sqlN);
-        $rowN = $db->sql_fetchrow($nameresultN);
-        $db->sql_freeresult($nameresultN);
+        $nameresultN = $nuke_db->sql_query($sqlN);
+        $rowN = $nuke_db->sql_fetchrow($nameresultN);
+        $nuke_db->sql_freeresult($nameresultN);
 
         // Disallow Anonymous users from seeing links to users' accounts
         if ($username == "Anonymous") 
@@ -994,7 +994,7 @@ function showHistory($page)
                             echo '&nbsp;'.$row['date']."&nbsp;".$row['time'];
                         }
                     }
-                    // registered users edit/delete posts
+                    // registered members edit/delete posts
                     if (($conf['delyourlastpost'] == "yes") && ($username == $row['name'])) {
                         echo " &#91; <a title=\""._EDIT."\" href=\"modules.php?name=Shout_Box&amp;Action=Edit&amp;shoutID=".$row['id']."&amp;page=$page\">"._EDIT."</a> | <a title=\""._DELETE."\" href=\"modules.php?name=Shout_Box&amp;Action=Delete&amp;shoutID=".$row['id']."&amp;page=$page\">"._DELETE."</a> &#93;";
                     }
@@ -1025,7 +1025,7 @@ function showHistory($page)
                             echo "$row[date]&nbsp;$row[time]";
                         }
                     }
-                    // registered users edit/delete posts
+                    // registered members edit/delete posts
                     if (($conf['delyourlastpost'] == "yes") && ($username == $row['name'])) {
                         echo " &#91; <a title=\""._EDIT."\" href=\"modules.php?name=Shout_Box&amp;Action=Edit&amp;shoutID=".$row['id']."&amp;page=$page\">"._EDIT."</a> | <a title=\""._DELETE."\" href=\"modules.php?name=Shout_Box&amp;Action=Delete&amp;shoutID=".$row['id']."&amp;page=$page\">"._DELETE."</a> &#93;";
                     }

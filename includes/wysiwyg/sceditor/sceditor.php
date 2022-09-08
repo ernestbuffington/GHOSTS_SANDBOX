@@ -41,7 +41,7 @@ class sceditor
 		$this->first = false;
 
 		$modheader .= '<script type="text/javascript">'.PHP_EOL;
-		if (!defined('IN_PHPBB'))
+		if (!defined('IN_PHPBB2'))
 			$modheader .= '  var reimg_maxWidth = '.$img_width.', reimg_maxHeight = '.$img_height.', reimg_relWidth = 0, reimg_img_viewer = "'.$img_viewer.'";'.PHP_EOL;
 		else
 			$modheader .= '  var reimg_maxWidth = '.$board_config['image_resize_width'].', reimg_maxHeight = '.$board_config['image_resize_height'].', reimg_relWidth = 0, reimg_img_viewer = "'.$img_viewer.'";'.PHP_EOL;
@@ -55,7 +55,7 @@ class sceditor
 	
 	function getHtml($name)
 	{
-		global $board_config, $db, $prefix, $lang, $userinfo;
+		global $board_config, $nuke_db, $prefix, $lang, $userinfo;
 		$allowed = true;
 		if($_GET['name'] == 'Profile')
 			$allowed = false;
@@ -80,11 +80,11 @@ class sceditor
 			$JStoHTML .= '		emoticonsRoot: "'.$board_config['smilies_path'].'/",'.PHP_EOL;
 			$JStoHTML .= '		emoticons: {'.PHP_EOL;
 			$sql = "SELECT emoticon, code, smile_url FROM ".$prefix."_bbsmilies ORDER BY smilies_id";
-			if ($result = $db->sql_query($sql))
+			if ($result = $nuke_db->sql_query($sql))
 			{
 				$i = 0;
 				$rowset = array();
-				while ($row = $db->sql_fetchrow($result))
+				while ($row = $nuke_db->sql_fetchrow($result))
 				{
 					if (empty($rowset[$row['smile_url']]))
 					{
@@ -98,7 +98,7 @@ class sceditor
 						$i++;
 					}
 				}
-	        	$db->sql_freeresult($result);
+	        	$nuke_db->sql_freeresult($result);
 			}
 			$JStoHTML .= '			dropdown: {'.PHP_EOL;
 			$JStoHTML .= '            '.$dropdownsmilies;
@@ -109,7 +109,7 @@ class sceditor
 			$JStoHTML .= '		}'.PHP_EOL;
 		}
 		$JStoHTML .= '	});'.PHP_EOL;
-		# PUT THE BBCODE EDITOR IN SOURCE MODE - USER BASED SETTING
+		# PUT THE BBCODE EDITOR IN SOURCE MODE - NUKE_USER BASED SETTING
 		if($userinfo['sceditor_in_source'] == TRUE)
 			$JStoHTML .= '	$("#'.$name.'").sceditor("instance").sourceMode(true);';
 

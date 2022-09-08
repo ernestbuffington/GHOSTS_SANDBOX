@@ -276,7 +276,7 @@ class Zend_Cache_Frontend_Page extends Zend_Cache_Core
                 }
             }
             if ($this->_specificOptions['debug_header']) {
-                echo 'DEBUG HEADER : This is a cached page !';
+                echo 'NUKE_DEBUG HEADER : This is a cached page !';
             }
             echo $data;
             if ($doNotDie) {

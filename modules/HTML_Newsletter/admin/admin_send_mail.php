@@ -253,7 +253,7 @@ if ( sizeof( $msnl_asERR ) != 0 ) { //Had validation errors so display them
 	* Build recipient email SQL string.
 	************************************************************************/
 
-	if ( $msnl_iView == 1 ) {  //All registered users
+	if ( $msnl_iView == 1 ) {  //All registered members
 
 			$sql = "SELECT `user_id`, `user_email` FROM `".$prefix."_users` WHERE `user_email` > ''";
 

@@ -16,7 +16,7 @@ function postThank(method)
 // });
 </script>
 
-<!-- Start add - Advanced time management MOD -->
+<!-- Start add - Advanced time management NUKE_MOD -->
 <!-- BEGIN switch_send_pc_dateTime -->
 <script type="text/javascript">
 //<![CDATA[
@@ -53,7 +53,7 @@ function send_pc_dateTime() {
 //]]>
 </script>
 <!-- END switch_send_pc_dateTime -->
-<!-- End add - Advanced time management MOD -->
+<!-- End add - Advanced time management NUKE_MOD -->
 <a name="top"></a><!-- BEGIN boarddisabled -->
   <br /><div align="center"><span class="gen"><strong>{L_BOARD_CURRENTLY_DISABLED}</strong></span></div><br />
 <!-- END boarddisabled -->

@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -18,7 +18,7 @@ if (!defined('NUKESENTINEL_ADMIN')) {
 if(is_god($admin)) {
   include_once(NUKE_BASE_DIR.'header.php');
   OpenTable();
-  OpenMenu(_AB_DBREPAIR." - ".$dbname);
+  OpenMenu(_AB_DBREPAIR." - ".$nuke_dbname);
   mastermenu();
   CarryMenu();
   databasemenu();
@@ -35,14 +35,14 @@ if(is_god($admin)) {
   echo '<td align="right" width="15%"><strong>'._AB_SIZE.'</strong></td>'."\n";
   echo '</tr>'."\n";
   $tot_data = $tot_idx = $tot_all = $tot_records = 0;
-  $result = $db->sql_query("SHOW TABLE STATUS FROM `".$dbname."`");
-  $tables = $db ->sql_numrows($result);
+  $result = $nuke_db->sql_query("SHOW TABLE STATUS FROM `".$nuke_dbname."`");
+  $tables = $nuke_db ->sql_numrows($result);
   if($tables > 0) {
     $total_total = 0;
-    while($row = $db->sql_fetchrow($result)) {
-      $checkrow = $db->sql_fetchrow($db->sql_query("CHECK TABLE $row[0]"));
+    while($row = $nuke_db->sql_fetchrow($result)) {
+      $checkrow = $nuke_db->sql_fetchrow($nuke_db->sql_query("CHECK TABLE $row[0]"));
       if($checkrow['Msg_text'] != "OK") {
-        $repairrow = $db->sql_fetchrow($db->sql_query("REPAIR TABLE $row[Table] EXTENDED"));
+        $repairrow = $nuke_db->sql_fetchrow($nuke_db->sql_query("REPAIR TABLE $row[Table] EXTENDED"));
         $status = $repairrow['Msg_text'];
       } else {
         $status = $checkrow['Msg_text'];

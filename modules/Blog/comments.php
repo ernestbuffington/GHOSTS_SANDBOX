@@ -106,24 +106,24 @@ function nocomm() {
 
 function navbar($sid, $title, $thold, $mode, $order) 
 {
-    global $user, $bgcolor1, $bgcolor2, $textcolor1, $textcolor2, $anonpost, $prefix, $db, $module_name;
+    global $user, $bgcolor1, $bgcolor2, $textcolor1, $textcolor2, $anonpost, $prefix, $nuke_db, $module_name;
 
-    $query = $db->sql_query("SELECT * FROM ".$prefix."_comments WHERE sid='$sid'");
+    $query = $nuke_db->sql_query("SELECT * FROM ".$prefix."_comments WHERE sid='$sid'");
 
     if(!$query) {
         $count = 0;
     } else {
-        $count = $db->sql_numrows($query);
+        $count = $nuke_db->sql_numrows($query);
     }
-    $db->sql_freeresult($query);
+    $nuke_db->sql_freeresult($query);
 
     $sid = intval($sid);
 
-    $query = $db->sql_query("SELECT title FROM ".$prefix."_stories WHERE sid='$sid'");
+    $query = $nuke_db->sql_query("SELECT title FROM ".$prefix."_stories WHERE sid='$sid'");
 
-    list($un_title) = $db->sql_fetchrow($query);
+    list($un_title) = $nuke_db->sql_fetchrow($query);
 
-    $db->sql_freeresult($query);
+    $nuke_db->sql_freeresult($query);
 
     if(!isset($thold)) 
 	{
@@ -171,7 +171,7 @@ function navbar($sid, $title, $thold, $mode, $order)
 
 function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblwidth=99) {
     
-	global $datetime, $user, $cookie, $bgcolor1, $reasons, $anonymous, $anonpost, $commentlimit, $prefix, $textcolor2, $db, $module_name, $user_prefix, $userinfo;
+	global $datetime, $user, $cookie, $bgcolor1, $reasons, $anonymous, $anonpost, $commentlimit, $prefix, $textcolor2, $nuke_db, $module_name, $nuke_user_prefix, $userinfo;
     
 	$comments = 0;
     
@@ -179,7 +179,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
 	{
         $mode = $userinfo['umode'];
     }
-                         $result = $db->sql_query("SELECT `tid`, 
+                         $result = $nuke_db->sql_query("SELECT `tid`, 
 	                                                      `pid`, 
 														  `sid`, 
 												`datePublished`, 
@@ -200,7 +200,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
 	{
     /* without the tblwidth variable, the tables run of the screen with netscape */
     /* in nested mode in long threads so the text can't be read. */
-    while ($row = $db->sql_fetchrow($result)) 
+    while ($row = $nuke_db->sql_fetchrow($result)) 
 	{
         $r_tid = intval($row["tid"]);
         $r_pid = intval($row["pid"]);
@@ -255,11 +255,11 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
             echo "<br />"._BY." $r_name "._ON." $r_date";
         }
         if ($r_name != $anonymous) {
-            $row3 = $db->sql_fetchrow($db->sql_query("SELECT user_id FROM ".$user_prefix."_users WHERE username='$r_name'"));
+            $row3 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_id FROM ".$nuke_user_prefix."_users WHERE username='$r_name'"));
             $$ruid = intval($row3['user_id']);
             echo "<br />(<a href=\"modules.php?name=Your_Account&amp;op=userinfo&amp;username=$r_name\">"._USERINFO."</a> | <a href=\"modules.php?name=Private_Messages&amp;mode=post&amp;u=$ruid\">"._SENDAMSG."</a>) ";
         }
-        $row_url = $db->sql_fetchrow($db->sql_query("SELECT user_website FROM ".$user_prefix."_users WHERE username='$r_name'"));
+        $row_url = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_website FROM ".$nuke_user_prefix."_users WHERE username='$r_name'"));
         $url = stripslashes($row_url["user_website"]);
         if ($url != "http://" AND $url != "" AND preg_match("#http://#i", $url)) { echo "<a href=\"$url\" target=\"new\">$url</a> "; }
         echo "</font></td></tr><tr><td>";
@@ -276,7 +276,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
         }
     }
     } elseif ($mode == 'flat') {
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $nuke_db->sql_fetchrow($result)) {
         $r_tid = intval($row["tid"]);
         $r_pid = intval($row["pid"]);
         $r_sid = intval($row["sid"]);
@@ -318,11 +318,11 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
             echo "<br />"._BY." $r_name "._ON." $r_date";
             }
             if ($r_name != $anonymous) {
-            $row3 = $db->sql_fetchrow($db->sql_query("SELECT user_id FROM ".$user_prefix."_users WHERE username='$r_name'"));
+            $row3 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_id FROM ".$nuke_user_prefix."_users WHERE username='$r_name'"));
             $ruid = intval($row3["user_id"]);
             echo "<br />(<a href=\"modules.php?name=Your_Account&amp;op=userinfo&amp;username=$r_name\">"._USERINFO."</a> | <a href=\"modules.php?name=Private_Messages&amp;mode=post&amp;u=$ruid\">"._SENDAMSG."</a>) ";
             }
-            $row_url2 = $db->sql_fetchrow($db->sql_query("SELECT user_website FROM ".$user_prefix."_users WHERE username='$r_name'"));
+            $row_url2 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_website FROM ".$nuke_user_prefix."_users WHERE username='$r_name'"));
             $url = stripslashes($row_url2["user_website"]);
             if ($url != "http://" AND $url != "" AND preg_match("#http://#i", $url)) { echo "<a href=\"$url\" target=\"new\">$url</a> "; }
             echo "</font></td></tr><tr><td>";
@@ -339,7 +339,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
         }
         }
     } else {
-       while ($row = $db->sql_fetchrow($result)) {
+       while ($row = $nuke_db->sql_fetchrow($result)) {
         $r_tid = intval($row["tid"]);
         $r_pid = intval($row["pid"]);
         $r_sid = intval($row["sid"]);
@@ -379,9 +379,9 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
 }
 
 function DisplayBabies ($tid, $level=0, $dummy=0) {
-    global $datetime, $anonymous, $prefix, $db, $module_name;
+    global $datetime, $anonymous, $prefix, $nuke_db, $module_name;
     $comments = 0;
-                         $result = $db->sql_query("SELECT `tid`, 
+                         $result = $nuke_db->sql_query("SELECT `tid`, 
 	                                                      `pid`, 
 														  `sid`, 
 												`datePublished`, 
@@ -395,7 +395,7 @@ function DisplayBabies ($tid, $level=0, $dummy=0) {
 													    `score`, 
 													   `reason` FROM ".$prefix."_comments WHERE pid='$tid' ORDER BY date, tid");
 	
-	while ($row = $db->sql_fetchrow($result)) {
+	while ($row = $nuke_db->sql_fetchrow($result)) {
         $r_tid = intval($row["tid"]);
         $r_pid = intval($row["pid"]);
         $r_sid = intval($row["sid"]);
@@ -426,7 +426,7 @@ function DisplayBabies ($tid, $level=0, $dummy=0) {
 	echo "<a href=\"modules.php?name=$module_name&amp;file=comments&amp;op=showreply&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">$r_subject</a></font><font class=\"content\"> "._BY." $r_name "._ON." $r_date<br />";
     DisplayBabies($r_tid, $level+1, $dummy+1);
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     if ($level && $comments) {
         echo "</ul>";
     }
@@ -437,7 +437,7 @@ function DisplayTopic ($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0,
     
 	global $hr, $user, $datetime, $cookie, $mainfile, $admin, $commentlimit, 
 	$anonymous, $reasons, $anonpost, $foot1, $foot2, $foot3, $foot4, $prefix, 
-	$acomm, $articlecomm, $db, $module_name, $nukeurl, $admin_file, $user_prefix, $userinfo, $cookie;
+	$acomm, $articlecomm, $nuke_db, $module_name, $nukeurl, $admin_file, $nuke_user_prefix, $userinfo, $cookie;
     
 	if(defined('NUKE_FILE')) 
 	{
@@ -484,8 +484,8 @@ function DisplayTopic ($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0,
     
 	if ($order==2) $q .= " ORDER BY score DESC";
     
-	$something = $db->sql_query($q);
-    $num_tid = $db->sql_numrows($something);
+	$something = $nuke_db->sql_query($q);
+    $num_tid = $nuke_db->sql_numrows($something);
     
 	if ($acomm == 1) 
 	{
@@ -502,7 +502,7 @@ function DisplayTopic ($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0,
     //echo "<br />";
     OpenTable();
     
-	$row_q = $db->sql_fetchrow($something);
+	$row_q = $nuke_db->sql_fetchrow($something);
     
 	$tid = intval($row_q["tid"]);
     $pid = intval($row_q["pid"]);
@@ -549,7 +549,7 @@ function DisplayTopic ($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0,
     /* with this you can see who is flaming you...*/
 
     if (is_active("Journal")) {
-        $row = $db->sql_fetchrow($db->sql_query("SELECT jid FROM ".$prefix."_journal WHERE aid='$c_name' AND status='yes' ORDER BY pdate,jid DESC LIMIT 0,1"));
+        $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT jid FROM ".$prefix."_journal WHERE aid='$c_name' AND status='yes' ORDER BY pdate,jid DESC LIMIT 0,1"));
         $jid = intval($row["jid"]);
         if ($jid != "" AND isset($jid)) {
         $journal = " | <a href=\"modules.php?name=Journal&amp;file=display&amp;jid=$jid\">"._JOURNAL."</a>";
@@ -558,16 +558,16 @@ function DisplayTopic ($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0,
         }
     }
     if ($c_name != $anonymous) {
-        $row2 = $db->sql_fetchrow($db->sql_query("SELECT user_id FROM ".$user_prefix."_users WHERE username='$c_name'"));
+        $row2 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_id FROM ".$nuke_user_prefix."_users WHERE username='$c_name'"));
         $r_uid = intval($row2["user_id"]);
         echo "<br />(<a href=\"modules.php?name=Your_Account&amp;op=userinfo&amp;username=$c_name\">"._USERINFO."</a> | <a href=\"modules.php?name=Private_Messages&amp;mode=post&amp;u=$r_uid\">"._SENDAMSG."</a>$journal) ";
     }
-    $row_url = $db->sql_fetchrow($db->sql_query("SELECT user_website FROM ".$user_prefix."_users WHERE username='$c_name'"));
+    $row_url = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_website FROM ".$nuke_user_prefix."_users WHERE username='$c_name'"));
     $url = stripslashes($row_url["user_website"]);
     if ($url != "http://" AND $url != "" AND preg_match("#http://#i", $url)) { echo "<a href=\"$url\" target=\"new\">$url</a> "; }
 
     if(is_mod_admin($module_name)) {
-        $row3 = $db->sql_fetchrow($db->sql_query("SELECT host_name FROM ".$prefix."_comments WHERE tid='$tid'"));
+        $row3 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT host_name FROM ".$prefix."_comments WHERE tid='$tid'"));
         $host_name = $row3["host_name"];
         echo "<br /><strong>(IP: $host_name)</strong>";
     }
@@ -580,7 +580,7 @@ function DisplayTopic ($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0,
         echo "<font class=\"content\"> [ <a href=\"modules.php?name=$module_name&amp;file=comments&amp;op=Reply&amp;pid=$tid&amp;sid=$sid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._REPLY."</a>";
     }
     if ($pid != 0) {
-        $row4 = $db->sql_fetchrow($db->sql_query("SELECT pid FROM ".$prefix."_comments WHERE tid='$pid'"));
+        $row4 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT pid FROM ".$prefix."_comments WHERE tid='$pid'"));
         $erin = intval($row4["pid"]);
         echo " | <a href=\"modules.php?name=$module_name&amp;file=comments&amp;sid=$sid&amp;pid=$erin&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._PARENT."</a>";
     }
@@ -598,7 +598,7 @@ function DisplayTopic ($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0,
     $count_times += 1;
     CloseTable();
     }
-    $db->sql_freeresult($something);
+    $nuke_db->sql_freeresult($something);
     modthree($sid, $mode, $order, $thold);
     if ($pid==0) 
 	{
@@ -613,11 +613,11 @@ function DisplayTopic ($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0,
 
 function singlecomment($tid, $sid, $mode, $order, $thold) 
 {
-    global $module_name, $user, $cookie, $datetime, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $admin, $anonpost, $prefix, $textcolor2, $db;
+    global $module_name, $user, $cookie, $datetime, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $admin, $anonpost, $prefix, $textcolor2, $nuke_db;
 
     include_once(NUKE_BASE_DIR."header.php");
 
-    $row = $db->sql_fetchrow($db->sql_query("SELECT datePublished, dateModified, name, email, subject, comment, score, reason FROM ".$prefix."_comments WHERE tid='$tid' AND sid='$sid'"));
+    $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT datePublished, dateModified, name, email, subject, comment, score, reason FROM ".$prefix."_comments WHERE tid='$tid' AND sid='$sid'"));
 
     $date = $row["datePublished"];
 	$modified = $row["dateModified"];
@@ -655,7 +655,7 @@ function reply($pid, $sid, $mode, $order, $thold)
 {
     include_once(NUKE_BASE_DIR."header.php");
 
-    global $module_name, $user, $cookie, $bgcolor1, $bgcolor2, $bgcolor3, $db, $anonpost, $anonymous, $admin, $AllowableHTML;
+    global $module_name, $user, $cookie, $bgcolor1, $bgcolor2, $bgcolor3, $nuke_db, $anonpost, $anonymous, $admin, $AllowableHTML;
 
     if ($anonpost == 0 AND !is_user() AND !is_mod_admin($module_name)) {
 
@@ -671,7 +671,7 @@ function reply($pid, $sid, $mode, $order, $thold)
 	{
     if ($pid != 0) 
 	{
-        $row = $db->sql_fetchrow($db->sql_query("SELECT datePublished, dateModified, name, email, subject, comment, score FROM ".$prefix."_comments WHERE tid='$pid'"));
+        $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT datePublished, dateModified, name, email, subject, comment, score FROM ".$prefix."_comments WHERE tid='$pid'"));
     
 	    $date = $row["datePublished"];
         $modified = $row["dateModified"];
@@ -684,7 +684,7 @@ function reply($pid, $sid, $mode, $order, $thold)
     } 
 	else 
 	{
-        $row2 = $db->sql_fetchrow($db->sql_query("SELECT datePublished, dateModified, title, hometext, bodytext, informant, notes FROM ".$prefix."_stories WHERE sid='$sid'"));
+        $row2 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT datePublished, dateModified, title, hometext, bodytext, informant, notes FROM ".$prefix."_stories WHERE sid='$sid'"));
         
 		$date = $row2["datePublished"];
 		$modified = $row2["dateModified"];
@@ -737,10 +737,10 @@ function reply($pid, $sid, $mode, $order, $thold)
     }
     if (!isset($pid) || !isset($sid)) { echo "Something is not right. This message is just to keep things from messing up down the road"; exit(); }
     if ($pid == 0) {
-        $row3 = $db->sql_fetchrow($db->sql_query("SELECT title FROM ".$prefix."_stories WHERE sid='$sid'"));
+        $row3 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT title FROM ".$prefix."_stories WHERE sid='$sid'"));
         $subject = stripslashes(check_html($row3["title"], "nohtml"));
     } else {
-        $row4 = $db->sql_fetchrow($db->sql_query("SELECT subject FROM ".$prefix."_comments WHERE tid='$pid'"));
+        $row4 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT subject FROM ".$prefix."_comments WHERE tid='$pid'"));
         $subject = stripslashes(check_html($row4["subject"], "nohtml"));
     }
     CloseTable();
@@ -863,7 +863,7 @@ function replyPreview ($pid, $sid, $subject, $comment, $xanonpost, $mode, $order
 function CreateTopic ($xanonpost, $subject, $comment, $pid, $sid, $host_name, $mode, $order, $thold, $posttype) 
 {
     
-	global $module_name, $user, $userinfo, $EditedMessage, $cookie, $AllowableHTML, $ultramode, $prefix, $anonpost, $articlecomm, $db;
+	global $module_name, $user, $userinfo, $EditedMessage, $cookie, $AllowableHTML, $ultramode, $prefix, $anonpost, $articlecomm, $nuke_db;
     
 	$author = Fix_Quotes($author);
     
@@ -896,13 +896,13 @@ function CreateTopic ($xanonpost, $subject, $comment, $pid, $sid, $host_name, $m
         $score = 0;
     }
     $ip = identify::get_ip();
-    $fakeresult = $db->sql_query("SELECT acomm FROM ".$prefix."_stories WHERE sid='$sid'");
-    $fake = $db->sql_numrows($fakeresult);
+    $fakeresult = $nuke_db->sql_query("SELECT acomm FROM ".$prefix."_stories WHERE sid='$sid'");
+    $fake = $nuke_db->sql_numrows($fakeresult);
     $comment = trim($comment);
     
 	if (($fake == 1) AND ($articlecomm == 1)) 
 	{
-      $fakerow = $db->sql_fetchrow($fakeresult);
+      $fakerow = $nuke_db->sql_fetchrow($fakeresult);
       $acomm = intval($fakerow["acomm"]);
     
 	if (((($anonpost == 0) AND (is_user())) OR ($anonpost == 1)) AND ($acomm == 0)) 
@@ -923,7 +923,7 @@ function CreateTopic ($xanonpost, $subject, $comment, $pid, $sid, $host_name, $m
 	  if(empty($score))
 	  $score = 1;
 	  
-	  $db->sql_query("INSERT INTO `".$prefix."_comments` (`tid`, 
+	  $nuke_db->sql_query("INSERT INTO `".$prefix."_comments` (`tid`, 
 	                                                      `pid`, 
 														  `sid`, 
 												`datePublished`, 
@@ -951,7 +951,7 @@ function CreateTopic ($xanonpost, $subject, $comment, $pid, $sid, $host_name, $m
 													   '$score', 
 															'0')");
 
-	  $db->sql_query("UPDATE ".$prefix."_stories SET comments=comments+1 WHERE sid='$sid'");
+	  $nuke_db->sql_query("UPDATE ".$prefix."_stories SET comments=comments+1 WHERE sid='$sid'");
     
 	  if ($ultramode) 
 	  {
@@ -973,11 +973,11 @@ function CreateTopic ($xanonpost, $subject, $comment, $pid, $sid, $host_name, $m
     @include_once("footer.php");
     exit;
     }
-    $db->sql_freeresult($fakeresult);
+    $nuke_db->sql_freeresult($fakeresult);
     if (isset($cookie[4])) { $options .= "&mode=$cookie[4]"; } else { $options .= "&mode=thread"; }
     if (isset($cookie[5])) { $options .= "&order=$cookie[5]"; } else { $options .= "&order=0"; }
     if (isset($cookie[6])) { $options .= "&thold=$cookie[6]"; } else { $options .= "&thold=0"; }
-    redirect("modules.php?name=$module_name&file=article&sid=$sid$options");
+    nuke_redirect("modules.php?name=$module_name&file=article&sid=$sid$options");
 }
 
 switch($op) {
@@ -1021,13 +1021,13 @@ switch($op) {
             } elseif (($emp[0] == -1) || ($emp[0] == 5)) {
                 $q .= " reason=$emp[1] where tid='$tdw'";
             }
-            if(strlen($q) > 20) $db->sql_query($q);
+            if(strlen($q) > 20) $nuke_db->sql_query($q);
             }
         }
         }
     }
 
-    redirect("modules.php?name=$module_name&file=article&sid=$sid&mode=$mode&order=$order&thold=$thold");
+    nuke_redirect("modules.php?name=$module_name&file=article&sid=$sid&mode=$mode&order=$order&thold=$thold");
     break;
 
     case "showreply":

@@ -49,7 +49,7 @@ if (!defined('CNBYA')) {
 
         if (GDSUPPORT AND $code != $gfx_check AND ($ya_config['usegfxcheck'] == 3 OR $ya_config['usegfxcheck'] == 4 OR $ya_config['usegfxcheck'] == 6)) {
 
-            redirect("modules.php?name=$module_name");
+            nuke_redirect("modules.php?name=$module_name");
             exit;
         }
         mt_srand ((double)microtime()*1000000);
@@ -67,15 +67,15 @@ if (!defined('CNBYA')) {
         $ya_username = check_html($ya_username, 'nohtml');
         $ya_realname = check_html($ya_realname, 'nohtml');
         $ya_user_email = check_html($ya_user_email, 'nohtml');
-        list($newest_uid)    = $db->sql_fetchrow($db->sql_query("SELECT max(user_id) AS newest_uid FROM ".$user_prefix."_users_temp"));
+        list($newest_uid)    = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT max(user_id) AS newest_uid FROM ".$nuke_user_prefix."_users_temp"));
         if ($newest_uid == "-1") { $new_uid = 1; } else { $new_uid = $newest_uid+1; }
-        $result = $db->sql_query("INSERT INTO ".$user_prefix."_users_temp (user_id, username, realname, user_email, user_password, user_regdate, check_num, time) VALUES ($new_uid, '$ya_username', '$ya_realname', '$ya_user_email', '$new_password', '$user_regdate', '$check_num', '$time')");
+        $result = $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_users_temp (user_id, username, realname, user_email, user_password, user_regdate, check_num, time) VALUES ($new_uid, '$ya_username', '$ya_realname', '$ya_user_email', '$new_password', '$user_regdate', '$check_num', '$time')");
 
         if ( is_array($nfield) ):
 
             if ((count($nfield) > 0) AND ($result)) {
                 foreach ($nfield as $key => $var) {
-                $db->sql_query("INSERT INTO ".$user_prefix."_cnbya_value_temp (uid, fid, value) VALUES ('$new_uid', '$key','$nfield[$key]')");
+                $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_cnbya_value_temp (uid, fid, value) VALUES ('$new_uid', '$key','$nfield[$key]')");
                 }
             }
 

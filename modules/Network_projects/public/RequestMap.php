@@ -8,18 +8,18 @@
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2005 by NukeScripts Network       */
 /********************************************************/
-global $db2;
+global $network_db;
 if(!defined('SUPPORT_NETWORK')) { die("Illegal Access Detected!!!"); }
 $pagetitle = "::: "._NETWORK_TITLE." ".$pj_config['version_number']." ::: "._NETWORK_REQUESTMAP." ::: ";
 include_once(NUKE_BASE_DIR.'header.php');
-$projectresult = $db2->sql_query("SELECT `project_id` FROM `".$network_prefix."_projects` ORDER BY `weight`");
-while(list($project_id) = $db2->sql_fetchrow($projectresult)) {
+$projectresult = $network_db->sql_query("SELECT `project_id` FROM `".$network_prefix."_projects` ORDER BY `weight`");
+while(list($project_id) = $network_db->sql_fetchrow($projectresult)) {
   $project = pjproject_info($project_id);
   $projectstatus = pjprojectstatus_info($project['status_id']);
   $projectpriority = pjprojectpriority_info($project['priority_id']);
   if($project['allowrequests'] > 0) {
-    $requestresult = $db2->sql_query("SELECT `request_id`, `request_name`, `status_id`, `type_id` FROM `".$network_prefix."_requests` WHERE `project_id`='$project_id' ORDER BY `request_name`");
-    $request_total = $db2->sql_numrows($requestresult);
+    $requestresult = $network_db->sql_query("SELECT `request_id`, `request_name`, `status_id`, `type_id` FROM `".$network_prefix."_requests` WHERE `project_id`='$project_id' ORDER BY `request_name`");
+    $request_total = $network_db->sql_numrows($requestresult);
     OpenTable();
     echo '<div align="center"><strong>'._NETWORK_TITLE." v".$pj_config['version_number']." ::: "._NETWORK_REQUESTMAP." ::: ".'</strong></div>';
     echo '<div align="center">';
@@ -53,7 +53,7 @@ while(list($project_id) = $db2->sql_fetchrow($projectresult)) {
     echo "<td align='center'><nobr>".$projectpriority['priority_name']."</nobr></td>\n";
     echo "<td align='center'><nobr>$request_total</nobr></td>\n";
     if($request_total > 0){
-      list($last_date) = $db2->sql_fetchrow($db2->sql_query("SELECT `date_submitted` FROM `".$network_prefix."_requests` WHERE `project_id`='$project_id' ORDER BY `date_submitted` desc"));
+      list($last_date) = $network_db->sql_fetchrow($network_db->sql_query("SELECT `date_submitted` FROM `".$network_prefix."_requests` WHERE `project_id`='$project_id' ORDER BY `date_submitted` desc"));
       $last_date = date($pj_config['request_date_format'], $last_date);
     } else {
      $last_date = _NETWORK_NA;
@@ -65,9 +65,9 @@ while(list($project_id) = $db2->sql_fetchrow($projectresult)) {
     echo "<td align='center' bgcolor='$bgcolor2'><strong>"._NETWORK_COMMENTS."</strong></td>\n";
     echo "<td align='center' bgcolor='$bgcolor2'><strong>"._NETWORK_LASTSUBMISSION."</strong></td>\n</tr>\n";
     if($request_total != 0){
-      while(list($request_id, $request_name, $status_id, $type_id) = $db2->sql_fetchrow($requestresult)) {
-        $requestcommentresult = $db2->sql_query("SELECT `request_id` FROM `".$network_prefix."_requests_comments` WHERE `request_id`='$request_id'");
-        $requestcomment_total = $db2->sql_numrows($requestcommentresult);
+      while(list($request_id, $request_name, $status_id, $type_id) = $network_db->sql_fetchrow($requestresult)) {
+        $requestcommentresult = $network_db->sql_query("SELECT `request_id` FROM `".$network_prefix."_requests_comments` WHERE `request_id`='$request_id'");
+        $requestcomment_total = $network_db->sql_numrows($requestcommentresult);
         $requeststatus = pjrequeststatus_info($status_id);
         $requesttype = pjrequesttype_info($type_id);
         if(empty($request_name)) { $request_name = "----------"; }
@@ -80,7 +80,7 @@ while(list($project_id) = $db2->sql_fetchrow($projectresult)) {
         echo "<td align='center'><nobr>".$requestpriority['priority_name']."</nobr></td>\n";
         echo "<td align='center'><nobr>$requestcomment_total</nobr></td>\n";
         if($requestcomment_total > 0){
-          list($last_date) = $db2->sql_fetchrow($db2->sql_query("SELECT `date_commented` FROM `".$network_prefix."_requests_comments` WHERE `request_id`='$request_id' ORDER BY `date_commented` desc"));
+          list($last_date) = $network_db->sql_fetchrow($network_db->sql_query("SELECT `date_commented` FROM `".$network_prefix."_requests_comments` WHERE `request_id`='$request_id' ORDER BY `date_commented` desc"));
           $last_date = date($pj_config['request_date_format'], $last_date);
         } else {
           $last_date = _NETWORK_NA;

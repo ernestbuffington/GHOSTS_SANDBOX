@@ -31,7 +31,7 @@ if( !empty($setmodules) )
         return;
 }
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 //
 // Load default header
@@ -43,7 +43,7 @@ $no_page_header = $cancel;
 require('./pagestart.' . $phpEx);
 if ($cancel)
 {
-	redirect(append_sid("admin_words.$phpEx", true));
+	nuke_redirect(append_sid("admin_words.$phpEx", true));
 }
 
 
@@ -92,19 +92,19 @@ if( $mode != "" )
                         if( $word_id )
                         {
                                 $sql = "SELECT *
-                                        FROM " . WORDS_TABLE . "
+                                        FROM " . NUKE_WORDS_TABLE . "
                                         WHERE word_id = $word_id";
-                                if(!$result = $db->sql_query($sql))
+                                if(!$result = $nuke_db->sql_query($sql))
                                 {
-                                        message_die(GENERAL_ERROR, "Could not query words table", "Error", __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, "Could not query words table", "Error", __LINE__, __FILE__, $sql);
                                 }
 
-                                $word_info = $db->sql_fetchrow($result);
+                                $word_info = $nuke_db->sql_fetchrow($result);
                                 $s_hidden_fields .= '<input type="hidden" name="id" value="' . $word_id . '" />';
                         }
                         else
                         {
-                                message_die(GENERAL_MESSAGE, $lang['No_word_selected']);
+                                message_die(NUKE_GENERAL_MESSAGE, $lang['No_word_selected']);
                         }
                 }
 
@@ -135,31 +135,31 @@ if( $mode != "" )
 
                 if(empty($word) || empty($replacement))
                 {
-                        message_die(GENERAL_MESSAGE, $lang['Must_enter_word']);
+                        message_die(NUKE_GENERAL_MESSAGE, $lang['Must_enter_word']);
                 }
 
                 if( $word_id )
                 {
-                        $sql = "UPDATE " . WORDS_TABLE . "
+                        $sql = "UPDATE " . NUKE_WORDS_TABLE . "
                                 SET word = '" . str_replace("\'", "''", $word) . "', replacement = '" . str_replace("\'", "''", $replacement) . "'
                                 WHERE word_id = $word_id";
                         $message = $lang['Word_updated'];
                 }
                 else
                 {
-                        $sql = "INSERT INTO " . WORDS_TABLE . " (word, replacement)
+                        $sql = "INSERT INTO " . NUKE_WORDS_TABLE . " (word, replacement)
                                 VALUES ('" . str_replace("\'", "''", $word) . "', '" . str_replace("\'", "''", $replacement) . "')";
                         $message = $lang['Word_added'];
                 }
 
-                if(!$result = $db->sql_query($sql))
+                if(!$result = $nuke_db->sql_query($sql))
                 {
-                        message_die(GENERAL_ERROR, "Could not insert data into words table", $lang['Error'], __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, "Could not insert data into words table", $lang['Error'], __LINE__, __FILE__, $sql);
                 }
 
                 $message .= "<br /><br />" . sprintf($lang['Click_return_wordadmin'], "<a href=\"" . append_sid("admin_words.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-                message_die(GENERAL_MESSAGE, $message);
+                message_die(NUKE_GENERAL_MESSAGE, $message);
         }
         else if( $mode == "delete" )
         {
@@ -175,17 +175,17 @@ if( $mode != "" )
                 $confirm = isset($HTTP_POST_VARS['confirm']);
                 if( $word_id && $confirm )
                 {
-                        $sql = "DELETE FROM " . WORDS_TABLE . "
+                        $sql = "DELETE FROM " . NUKE_WORDS_TABLE . "
                                 WHERE word_id = $word_id";
 
-                        if(!$result = $db->sql_query($sql))
+                        if(!$result = $nuke_db->sql_query($sql))
                         {
-                                message_die(GENERAL_ERROR, "Could not remove data from words table", $lang['Error'], __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Could not remove data from words table", $lang['Error'], __LINE__, __FILE__, $sql);
                         }
 
                         $message = $lang['Word_removed'] . "<br /><br />" . sprintf($lang['Click_return_wordadmin'], "<a href=\"" . append_sid("admin_words.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
                 }
                 elseif( $word_id && !$confirm)
          		{
@@ -209,7 +209,7 @@ if( $mode != "" )
          		}
                 else
                 {
-                        message_die(GENERAL_MESSAGE, $lang['No_word_selected']);
+                        message_die(NUKE_GENERAL_MESSAGE, $lang['No_word_selected']);
                 }
         }
 }
@@ -220,15 +220,15 @@ else
         );
 
         $sql = "SELECT *
-                FROM " . WORDS_TABLE . "
+                FROM " . NUKE_WORDS_TABLE . "
                 ORDER BY word";
-        if( !$result = $db->sql_query($sql) )
+        if( !$result = $nuke_db->sql_query($sql) )
         {
-                message_die(GENERAL_ERROR, "Could not query words table", $lang['Error'], __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Could not query words table", $lang['Error'], __LINE__, __FILE__, $sql);
         }
 
-        $word_rows = $db->sql_fetchrowset($result);
-        $db->sql_freeresult($result);
+        $word_rows = $nuke_db->sql_fetchrowset($result);
+        $nuke_db->sql_freeresult($result);
         $word_count = count($word_rows);
 
         $template->assign_vars(array(

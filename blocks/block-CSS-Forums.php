@@ -1,6 +1,6 @@
 <?php
 
-global $blockslang, $admin, $db, $userinfo;
+global $blockslang, $admin, $nuke_db, $userinfo;
 
 /**
  *	Choose whether or not when clicking the topic title, it shoudl take you to first post or last.
@@ -285,7 +285,7 @@ if (!$topic_data = cache_load('TopicData', 'home')):
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
 	$topic_data = array();
-	$result = dbquery("SELECT t.topic_id, t.topic_type, t.topic_attachment, f.forum_name, f.forum_color, f.forum_id, t.topic_last_post_id, t.topic_first_post_id, t.topic_title, t.topic_poster, t.topic_views, t.topic_replies, t.topic_status, p.post_time, p.poster_id, pu.username as postername, u.username, u.user_id FROM `".TOPICS_TABLE."` t, `".FORUMS_TABLE."` f, `".POSTS_TABLE."` p, `".USERS_TABLE."` u, `".USERS_TABLE."` pu WHERE t.forum_id=f.forum_id AND p.post_id=t.topic_last_post_id AND u.user_id=t.topic_poster AND pu.user_id=p.poster_id AND t.topic_moved_id = '0' ORDER BY topic_last_post_id DESC LIMIT $last_new_topics");
+	$result = dbquery("SELECT t.topic_id, t.topic_type, t.topic_attachment, f.forum_name, f.forum_color, f.forum_id, t.topic_last_post_id, t.topic_first_post_id, t.topic_title, t.topic_poster, t.topic_views, t.topic_replies, t.topic_status, p.post_time, p.poster_id, pu.username as postername, u.username, u.user_id FROM `".NUKE_BB_TOPICS_TABLE."` t, `".NUKE_FORUMS_TABLE."` f, `".NUKE_POSTS_TABLE."` p, `".NUKE_USERS_TABLE."` u, `".NUKE_USERS_TABLE."` pu WHERE t.forum_id=f.forum_id AND p.post_id=t.topic_last_post_id AND u.user_id=t.topic_poster AND pu.user_id=p.poster_id AND t.topic_moved_id = '0' ORDER BY topic_last_post_id DESC LIMIT $last_new_topics");
 
 	while ( list( $topic_id, $topic_type, $topic_attachment, $forum_name, $forum_color, $forum_id, $topic_last_post_id, $topic_first_post_id, $topic_title, $topic_poster, $topic_views, $topic_replies, $topic_status, $post_time, $poster_id, $poster_name, $username, $user_id ) = dbrow( $result)) 
 	{

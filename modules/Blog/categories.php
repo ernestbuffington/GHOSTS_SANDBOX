@@ -32,7 +32,7 @@
  ************************************************************************/
 if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 
-global $storyhome, $topicname, $topicimage, $topictext, $datetime, $user, $cookie, $prefix, $multilingual, $currentlang, $db, $articlecomm, $module_name, $userinfo;
+global $storyhome, $topicname, $topicimage, $topictext, $datetime, $user, $cookie, $prefix, $multilingual, $currentlang, $nuke_db, $articlecomm, $module_name, $userinfo;
 
 $module_name = basename(dirname(__FILE__));
 
@@ -49,7 +49,7 @@ $categories = 1;
 automated_news();
 
 if ($catid == 0 OR empty($catid)) 
-redirect("modules.php?name=$module_name"); 
+nuke_redirect("modules.php?name=$module_name"); 
 
 switch ($op) 
 {
@@ -94,18 +94,18 @@ switch ($op)
             echo "</script>\n";
         }
 
-        $db->sql_query("update ".$prefix."_stories_cat set counter=counter+1 where catid='$catid'");
-        $result = $db->sql_query("SELECT * FROM ".$prefix."_stories WHERE catid='$catid' $querylang");
-        $totalarticles = $db->sql_numrows($result);
-        $db->sql_freeresult($result);
-        $result = $db->sql_query("SELECT * FROM ".$prefix."_stories WHERE catid='$catid' $querylang ORDER BY sid DESC LIMIT $min,$storynum");
+        $nuke_db->sql_query("update ".$prefix."_stories_cat set counter=counter+1 where catid='$catid'");
+        $result = $nuke_db->sql_query("SELECT * FROM ".$prefix."_stories WHERE catid='$catid' $querylang");
+        $totalarticles = $nuke_db->sql_numrows($result);
+        $nuke_db->sql_freeresult($result);
+        $result = $nuke_db->sql_query("SELECT * FROM ".$prefix."_stories WHERE catid='$catid' $querylang ORDER BY sid DESC LIMIT $min,$storynum");
         
 		if($neconfig["columns"] == 1) // DUAL
         echo "<table border='0' cellpadding='0' cellspacing='0' width='100%'>\n";
         
 		$a = 0;
 
-        while ($artinfo = $db->sql_fetchrow($result)) 
+        while ($artinfo = $nuke_db->sql_fetchrow($result)) 
 		{
             formatTimestamp($artinfo["time"]);
             $subject = stripslashes(check_html($subject, "nohtml"));
@@ -229,8 +229,8 @@ switch ($op)
 
             if ($artinfo["catid"] != 0) 
 			{
-                $result3 = $db->sql_query("SELECT title FROM ".$prefix."_stories_cat WHERE catid='".$artinfo["catid"]."'");
-                $catinfo = $db->sql_fetchrow($result3);
+                $result3 = $nuke_db->sql_query("SELECT title FROM ".$prefix."_stories_cat WHERE catid='".$artinfo["catid"]."'");
+                $catinfo = $nuke_db->sql_fetchrow($result3);
                 $morelink .= " | <a href='modules.php?name=$module_name&amp;file=categories&amp;op=newindex&amp;catid=".$artinfo["catid"]."'>".$catinfo["title"]."</a>";
             }
             
@@ -268,7 +268,7 @@ switch ($op)
 			else // SINGLE 
             themeindex($artinfo["aid"], $informant, $datetime, $modified, $artinfo["title"], $artinfo["counter"], $artinfo["topic"], $artinfo["hometext"], $artinfo["notes"], $morelink, $topicname, $topicimage, $topictext);
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         
 		if($neconfig["columns"] == 1) // DUAL
 		{ 

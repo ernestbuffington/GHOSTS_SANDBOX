@@ -28,7 +28,7 @@
 *        This file will be used for modifying the smiley settings for a board.
 **************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 //
 // First we do the setmodules stuff for the admin cp.
@@ -58,7 +58,7 @@ if ((!empty($HTTP_GET_VARS['export_pack']) && $HTTP_GET_VARS['export_pack'] == '
 require('./pagestart.' . $phpEx);
 if ($cancel)
 {
-	redirect(append_sid("admin_smilies.$phpEx", true));
+	nuke_redirect(append_sid("admin_smilies.$phpEx", true));
 }
 $smilie_tmp = $board_config['smilies_path'];
 $board_config['smilies_path'] = str_replace("modules/Forums/", "", "$smilie_tmp");
@@ -121,22 +121,22 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
                 if( !empty($clear_current)  )
                 {
                         $sql = "DELETE
-                                FROM " . SMILIES_TABLE;
-                        if( !$result = $db->sql_query($sql) )
+                                FROM " . NUKE_SMILIES_TABLE;
+                        if( !$result = $nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, "Couldn't delete current smilies", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't delete current smilies", "", __LINE__, __FILE__, $sql);
                         }
                 }
                 else
                 {
                         $sql = "SELECT code
-                                FROM ". SMILIES_TABLE;
-                        if( !$result = $db->sql_query($sql) )
+                                FROM ". NUKE_SMILIES_TABLE;
+                        if( !$result = $nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, "Couldn't get current smilies", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't get current smilies", "", __LINE__, __FILE__, $sql);
                         }
 
-                        $cur_smilies = $db->sql_fetchrowset($result);
+                        $cur_smilies = $nuke_db->sql_fetchrowset($result);
 
                         for( $i = 0; $i < count($cur_smilies); $i++ )
                         {
@@ -149,7 +149,7 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
 
                 if( empty($fcontents) )
                 {
-                        message_die(GENERAL_ERROR, "Couldn't read smiley pak file", "", __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, "Couldn't read smiley pak file", "", __LINE__, __FILE__, $sql);
                 }
 
                 for( $i = 0; $i < count($fcontents); $i++ )
@@ -169,7 +169,7 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
                                 {
                                         if( !empty($replace_existing) )
                                         {
-                                                $sql = "UPDATE " . SMILIES_TABLE . "
+                                                $sql = "UPDATE " . NUKE_SMILIES_TABLE . "
                                                         SET smile_url = '" . str_replace("\'", "''", $smile_data[0]) . "', emoticon = '" . str_replace("\'", "''", $smile_data[1]) . "'
                                                         WHERE code = '" . str_replace("\'", "''", $smile_data[$j]) . "'";
                                         }
@@ -180,16 +180,16 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
                                 }
                                 else
                                 {
-                                        $sql = "INSERT INTO " . SMILIES_TABLE . " (code, smile_url, emoticon)
+                                        $sql = "INSERT INTO " . NUKE_SMILIES_TABLE . " (code, smile_url, emoticon)
                                                 VALUES('" . str_replace("\'", "''", $smile_data[$j]) . "', '" . str_replace("\'", "''", $smile_data[0]) . "', '" . str_replace("\'", "''", $smile_data[1]) . "')";
                                 }
 
                                 if( $sql != '' )
                                 {
-                                        $result = $db->sql_query($sql);
+                                        $result = $nuke_db->sql_query($sql);
                                         if( !$result )
                                         {
-                                                message_die(GENERAL_ERROR, "Couldn't update smilies!", "", __LINE__, __FILE__, $sql);
+                                                message_die(NUKE_GENERAL_ERROR, "Couldn't update smilies!", "", __LINE__, __FILE__, $sql);
                                         }
                                 }
                         }
@@ -197,7 +197,7 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
 
                 $message = $lang['smiley_import_success'] . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-                message_die(GENERAL_MESSAGE, $message);
+                message_die(NUKE_GENERAL_MESSAGE, $message);
 
         }
         else
@@ -248,13 +248,13 @@ else if( isset($HTTP_POST_VARS['export_pack']) || isset($HTTP_GET_VARS['export_p
         if ( $HTTP_GET_VARS['export_pack'] == "send" )
         {
                 $sql = "SELECT *
-                        FROM " . SMILIES_TABLE;
-                if( !$result = $db->sql_query($sql) )
+                        FROM " . NUKE_SMILIES_TABLE;
+                if( !$result = $nuke_db->sql_query($sql) )
                 {
-                        message_die(GENERAL_ERROR, "Could not get smiley list", "", __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, "Could not get smiley list", "", __LINE__, __FILE__, $sql);
                 }
 
-                $resultset = $db->sql_fetchrowset($result);
+                $resultset = $nuke_db->sql_fetchrowset($result);
 
                 $smile_pak = "";
                 for($i = 0; $i < count($resultset); $i++ )
@@ -274,7 +274,7 @@ else if( isset($HTTP_POST_VARS['export_pack']) || isset($HTTP_GET_VARS['export_p
 
         $message = sprintf($lang['export_smiles'], "<a href=\"" . append_sid("admin_smilies.$phpEx?export_pack=send", true) . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
 
 }
 else if( isset($HTTP_POST_VARS['add']) || isset($HTTP_GET_VARS['add']) )
@@ -331,17 +331,17 @@ else if ( $mode != "" )
 
      			if( $confirm )
       			{
-     				$sql = "DELETE FROM " . SMILIES_TABLE . "
+     				$sql = "DELETE FROM " . NUKE_SMILIES_TABLE . "
      					WHERE smilies_id = " . $smiley_id;
-     				$result = $db->sql_query($sql);
+     				$result = $nuke_db->sql_query($sql);
      				if( !$result )
      				{
-     					message_die(GENERAL_ERROR, "Couldn't delete smiley", "", __LINE__, __FILE__, $sql);
+     					message_die(NUKE_GENERAL_ERROR, "Couldn't delete smiley", "", __LINE__, __FILE__, $sql);
      				}
 
      				$message = $lang['smiley_del_success'] . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-     				message_die(GENERAL_MESSAGE, $message);
+     				message_die(NUKE_GENERAL_MESSAGE, $message);
      			}
      			else
      			{
@@ -374,14 +374,14 @@ else if ( $mode != "" )
                         $smiley_id = ( !empty($HTTP_POST_VARS['id']) ) ? $HTTP_POST_VARS['id'] : $HTTP_GET_VARS['id'];
                         $smiley_id = intval($smiley_id);
                         $sql = "SELECT *
-                                FROM " . SMILIES_TABLE . "
+                                FROM " . NUKE_SMILIES_TABLE . "
                                 WHERE smilies_id = " . $smiley_id;
-                        $result = $db->sql_query($sql);
+                        $result = $nuke_db->sql_query($sql);
                         if( !$result )
                         {
-                                message_die(GENERAL_ERROR, 'Could not obtain emoticon information', "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not obtain emoticon information', "", __LINE__, __FILE__, $sql);
                         }
-                        $smile_data = $db->sql_fetchrow($result);
+                        $smile_data = $nuke_db->sql_fetchrow($result);
 
                         $filename_list = "";
                         for( $i = 0; $i < count($smiley_images); $i++ )
@@ -449,7 +449,7 @@ else if ( $mode != "" )
                         // If no code was entered complain ...
                         if ($smile_code == '' || $smile_url == '')
                         {
-                                message_die(GENERAL_MESSAGE, $lang['Fields_empty']);
+                                message_die(NUKE_GENERAL_MESSAGE, $lang['Fields_empty']);
                         }
 
                         //
@@ -461,17 +461,17 @@ else if ( $mode != "" )
                         //
                         // Proceed with updating the smiley table.
                         //
-                        $sql = "UPDATE " . SMILIES_TABLE . "
+                        $sql = "UPDATE " . NUKE_SMILIES_TABLE . "
                                 SET code = '" . str_replace("\'", "''", $smile_code) . "', smile_url = '" . str_replace("\'", "''", $smile_url) . "', emoticon = '" . str_replace("\'", "''", $smile_emotion) . "'
                                 WHERE smilies_id = $smile_id";
-                        if( !($result = $db->sql_query($sql)) )
+                        if( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_ERROR, "Couldn't update smilies info", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't update smilies info", "", __LINE__, __FILE__, $sql);
                         }
 
                         $message = $lang['smiley_edit_success'] . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
                         break;
 
                 case "savenew":
@@ -493,7 +493,7 @@ else if ( $mode != "" )
                         // If no code was entered complain ...
                         if ($smile_code == '' || $smile_url == '')
                         {
-                                message_die(GENERAL_MESSAGE, $lang['Fields_empty']);
+                                message_die(NUKE_GENERAL_MESSAGE, $lang['Fields_empty']);
                         }
 
                         //
@@ -505,17 +505,17 @@ else if ( $mode != "" )
                         //
                         // Save the data to the smiley table.
                         //
-                        $sql = "INSERT INTO " . SMILIES_TABLE . " (code, smile_url, emoticon)
+                        $sql = "INSERT INTO " . NUKE_SMILIES_TABLE . " (code, smile_url, emoticon)
                                 VALUES ('" . str_replace("\'", "''", $smile_code) . "', '" . str_replace("\'", "''", $smile_url) . "', '" . str_replace("\'", "''", $smile_emotion) . "')";
-                        $result = $db->sql_query($sql);
+                        $result = $nuke_db->sql_query($sql);
                         if( !$result )
                         {
-                                message_die(GENERAL_ERROR, "Couldn't insert new smiley", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't insert new smiley", "", __LINE__, __FILE__, $sql);
                         }
 
                         $message = $lang['smiley_add_success'] . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
                         break;
         }
 }
@@ -527,14 +527,14 @@ else
         // any options.
         //
         $sql = "SELECT *
-                FROM " . SMILIES_TABLE;
-        $result = $db->sql_query($sql);
+                FROM " . NUKE_SMILIES_TABLE;
+        $result = $nuke_db->sql_query($sql);
         if( !$result )
         {
-                message_die(GENERAL_ERROR, "Couldn't obtain smileys from database", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't obtain smileys from database", "", __LINE__, __FILE__, $sql);
         }
 
-        $smilies = $db->sql_fetchrowset($result);
+        $smilies = $nuke_db->sql_fetchrowset($result);
 
         $template->set_filenames(array(
                 "body" => "admin/smile_list_body.tpl")

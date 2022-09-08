@@ -18,25 +18,25 @@
  ***************************************************************************/
 function query_ranks()
 {
-	global $db;
+	global $nuke_db;
 
-	$sql = "SELECT ban_userid FROM ".BANLIST_TABLE." ORDER BY ban_userid ASC";
-	if(!($result = $db->sql_query($sql)))
-	message_die(GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
+	$sql = "SELECT ban_userid FROM ".NUKE_BANLIST_TABLE." ORDER BY ban_userid ASC";
+	if(!($result = $nuke_db->sql_query($sql)))
+	message_die(NUKE_GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
 	
 	$ranks_sql = array();
-	$ranks_sql['bannedrow'][] = $db->sql_fetchrowset($result);
-	$db->sql_freeresult($result);
+	$ranks_sql['bannedrow'][] = $nuke_db->sql_fetchrowset($result);
+	$nuke_db->sql_freeresult($result);
 
-	$sql = "SELECT * FROM ".RANKS_TABLE." ORDER BY rank_special ASC, rank_min ASC";
+	$sql = "SELECT * FROM ".NUKE_RANKS_TABLE." ORDER BY rank_special ASC, rank_min ASC";
 
-	if(!($result = $db->sql_query($sql)))
-	message_die(GENERAL_ERROR, "Could not obtain ranks information.", '', __LINE__, __FILE__, $sql);
+	if(!($result = $nuke_db->sql_query($sql)))
+	message_die(NUKE_GENERAL_ERROR, "Could not obtain ranks information.", '', __LINE__, __FILE__, $sql);
 
-	while($row = $db->sql_fetchrow($result)):
+	while($row = $nuke_db->sql_fetchrow($result)):
 	$ranks_sql['ranksrow'][] = $row;
 	endwhile;
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 
 	return $ranks_sql;
 }

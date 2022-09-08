@@ -167,7 +167,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin
         
         if ($this->_username)
         {
-          $this->_command(sprintf("USER %s\r\n", $this->_username));
+          $this->_command(sprintf("NUKE_USER %s\r\n", $this->_username));
           $this->_command(sprintf("PASS %s\r\n", $this->_password));
         }
       }

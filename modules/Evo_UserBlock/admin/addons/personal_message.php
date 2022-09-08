@@ -25,15 +25,15 @@ if(!empty($_POST['message'])) {
     evouserinfo_write_addon('personal_message', $values);
     include_once(NUKE_BASE_DIR.'header.php');
 	OpenTable();
-    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=evo-userinfo\">" .$lang_evo_userblock['ADMIN']['ADMIN_HEADER']. "</a></div>\n";
+    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=evo-userinfo\">" .$lang_evo_userblock['NUKE_ADMIN']['ADMIN_HEADER']. "</a></div>\n";
     echo "<br /><br />";
-    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" .$lang_evo_userblock['ADMIN']['ADMIN_RETURN']. "</a> ]</div>\n";
+    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" .$lang_evo_userblock['NUKE_ADMIN']['ADMIN_RETURN']. "</a> ]</div>\n";
     CloseTable();
     echo "<br />";
     title(_EVO_USERINFO. "&nbsp;-&nbsp;" .$lang_evo_userblock['PERSONAL_MESSAGE']['PERSONAL_MESSAGE']);
     OpenTable();
     echo "<div align=\"center\">\n";
-    echo $lang_evo_userblock['ADMIN']['MSG_SAVED'];
+    echo $lang_evo_userblock['NUKE_ADMIN']['MSG_SAVED'];
     echo "</div>";
     CloseTable();
     global $admin_file;
@@ -42,15 +42,15 @@ if(!empty($_POST['message'])) {
 } else {
     include_once(NUKE_BASE_DIR.'header.php');
 	OpenTable();
-    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=evo-userinfo\">" .$lang_evo_userblock['ADMIN']['ADMIN_HEADER']. "</a></div>\n";
+    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=evo-userinfo\">" .$lang_evo_userblock['NUKE_ADMIN']['ADMIN_HEADER']. "</a></div>\n";
     echo "<br /><br />";
-    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" .$lang_evo_userblock['ADMIN']['ADMIN_RETURN']. "</a> ]</div>\n";
+    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" .$lang_evo_userblock['NUKE_ADMIN']['ADMIN_RETURN']. "</a> ]</div>\n";
     CloseTable();
     echo "<br />";
     title(_EVO_USERINFO. "&nbsp;-&nbsp;" .$lang_evo_userblock['PERSONAL_MESSAGE']['PERSONAL_MESSAGE']);
     OpenTable();
     echo "<div align=\"center\">\n";
-    echo "<span style=\"font-size: large; font-weight: bold;\">".$lang_evo_userblock['ADMIN']['HELP']."</span>\n<br /><br />\n";
+    echo "<span style=\"font-size: large; font-weight: bold;\">".$lang_evo_userblock['NUKE_ADMIN']['HELP']."</span>\n<br /><br />\n";
     echo $lang_evo_userblock['PERSONAL_MESSAGE']['HELP'];
     echo "</div>";
     CloseTable();
@@ -61,7 +61,7 @@ if(!empty($_POST['message'])) {
     echo "<div align=\"center\">\n";
     echo "<form name=\"good_afternoon\" method=\"post\" action=\"".$admin_file.".php?op=evo-userinfo&amp;file=personal_message\">";
     echo evouserinfo_text_area('message', $evouserinfo_addons['personal_message_message']);
-    echo "<br /><input type=\"submit\" value=\"".$lang_evo_userblock['ADMIN']['SAVE']."\">";
+    echo "<br /><input type=\"submit\" value=\"".$lang_evo_userblock['NUKE_ADMIN']['SAVE']."\">";
     echo "</form>";
     echo "</div>";
     CloseTable();

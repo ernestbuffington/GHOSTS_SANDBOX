@@ -30,43 +30,43 @@ if (is_admin())
         $phpbb2_root_path = 'modules/Forums/';
     }
 
-    define('IN_PHPBB', true);
+    define('IN_PHPBB2', true);
     include($phpbb2_root_path . 'extension.inc');
     include($phpbb2_root_path . 'common.'.$phpEx);
     include('includes/functions_search.'.$phpEx);
 
     // Start session management
-    $userdata = session_pagestart($user_ip, PAGE_SEARCH);
+    $userdata = session_pagestart($user_ip, NUKE_PAGE_SEARCH);
     init_userprefs($userdata);
     // End session management
 
     //*****  check users and user groups ****//
 
     $sql = "SELECT user_id, username
-        FROM " . USERS_TABLE ."
+        FROM " . NUKE_USERS_TABLE ."
         WHERE user_id > 0";
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not obtain user list', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not obtain user list', '', __LINE__, __FILE__, $sql);
     }
 
     $liste ='';
-    while ( $row = $db->sql_fetchrow($result) )
+    while ( $row = $nuke_db->sql_fetchrow($result) )
     {
        $username = $row['username'];
        $user_id = $row['user_id'];
        $usergroup = '';
         
        $sql1 = "SELECT ug.group_id
-              FROM " . USER_GROUP_TABLE ." ug, ". GROUPS_TABLE. " g
+              FROM " . NUKE_USER_GROUP_TABLE ." ug, ". NUKE_GROUPS_TABLE. " g
               WHERE ug.user_id = $user_id
                 AND ug.group_id = g.group_id
                 AND g.group_single_user  = 1
                 ";
                   
-       if ( ($result1 = $db->sql_query($sql1)) )
+       if ( ($result1 = $nuke_db->sql_query($sql1)) )
        {
-           $row1 = $db->sql_fetchrow($result1);
+           $row1 = $nuke_db->sql_fetchrow($result1);
               $usergroup =( ( $row1['group_id'] != '' ) ? $row1['group_id'] : 'User has no user group'.$row1 );
               
        }
@@ -75,31 +75,31 @@ if (is_admin())
               {
                   
              $sql2 = "SELECT MAX(group_id) AS total
-                FROM " . GROUPS_TABLE;
-             if ( !($result2 = $db->sql_query($sql2)) )
+                FROM " . NUKE_GROUPS_TABLE;
+             if ( !($result2 = $nuke_db->sql_query($sql2)) )
              {
-                message_die(GENERAL_ERROR, 'Could not obtain next group_id information', '', __LINE__, __FILE__, $sq2l);
+                message_die(NUKE_GENERAL_ERROR, 'Could not obtain next group_id information', '', __LINE__, __FILE__, $sq2l);
              }
 
-             if ( !($row2 = $db->sql_fetchrow($result2)) )
+             if ( !($row2 = $nuke_db->sql_fetchrow($result2)) )
              {
-                message_die(GENERAL_ERROR, 'Could not obtain next group_id information', '', __LINE__, __FILE__, $sql2);
+                message_die(NUKE_GENERAL_ERROR, 'Could not obtain next group_id information', '', __LINE__, __FILE__, $sql2);
              }
              $group_id = $row2['total'] + 1;
               
               
-             $sql3 = "INSERT INTO " . GROUPS_TABLE . " (group_id, group_name, group_description, group_single_user, group_moderator)
+             $sql3 = "INSERT INTO " . NUKE_GROUPS_TABLE . " (group_id, group_name, group_description, group_single_user, group_moderator)
                 VALUES ($group_id, '', 'Personal User', 1, 0)";
-             if ( !($result3 = $db->sql_query($sql3)) )
+             if ( !($result3 = $nuke_db->sql_query($sql3)) )
              {
-                message_die(GENERAL_ERROR, 'Could not insert data into groups table', '', __LINE__, __FILE__, $sql3);
+                message_die(NUKE_GENERAL_ERROR, 'Could not insert data into groups table', '', __LINE__, __FILE__, $sql3);
              }
 
-             $sql4 = "INSERT INTO " . USER_GROUP_TABLE . " (user_id, group_id, user_pending)
+             $sql4 = "INSERT INTO " . NUKE_USER_GROUP_TABLE . " (user_id, group_id, user_pending)
                 VALUES ($user_id, $group_id, 0)";
-             if( !($result4 = $db->sql_query($sql4)) )
+             if( !($result4 = $nuke_db->sql_query($sql4)) )
              { 
-                message_die(GENERAL_ERROR, 'Could not insert data into user_group table', '', __LINE__, __FILE__, $sql4);
+                message_die(NUKE_GENERAL_ERROR, 'Could not insert data into user_group table', '', __LINE__, __FILE__, $sql4);
              }
 
                   
@@ -110,11 +110,11 @@ if (is_admin())
        $liste .= ( ( $liste != '' ) ? '<br /> ' : '' ) . $username.' <b>'.$usergroup.'</b>';
     }
 
-    message_die(GENERAL_MESSAGE,'Users:<br />'.$liste);
+    message_die(NUKE_GENERAL_MESSAGE,'Users:<br />'.$liste);
 }
 else
 {
-    redirect('index.php');
+    nuke_redirect('index.php');
 }
 
 ?>

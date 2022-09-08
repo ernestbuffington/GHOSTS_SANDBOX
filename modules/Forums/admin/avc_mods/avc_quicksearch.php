@@ -10,10 +10,10 @@
  *   This file contains config data for Advanced Version Check. AVC will read
  *   this file to add a version checker to the Version Check system.
  *   
- *   This file is provided as a template for MOD Authors in the mod-authors/
+ *   This file is provided as a template for NUKE_MOD Authors in the mod-authors/
  *   directory in the Advanced Version Check zip download. Instructions are
  *   provided in mod-authors/mod_authors_guide.txt on how fill in the
- *   configuration options in this file for use with their MOD.
+ *   configuration options in this file for use with their NUKE_MOD.
  *
  ****************************************************************************/
 
@@ -26,7 +26,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -36,9 +36,9 @@ if (!defined('IN_PHPBB'))
 //
 $file = basename(__FILE__); 
 
-/* MOD Info: (enter your details here if you want)
-MOD Name: Quick Search
-MOD Author: Fountain of Apples
+/* NUKE_MOD Info: (enter your details here if you want)
+NUKE_MOD Name: Quick Search
+NUKE_MOD Author: Fountain of Apples
 Website: http://mods.webmacster87.info
 */
 

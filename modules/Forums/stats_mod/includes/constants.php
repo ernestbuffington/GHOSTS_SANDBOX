@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -40,9 +40,9 @@ define('SMILIE_INDEX_TABLE', $prefix . '_bbstats_smilies_index');
 define('SMILIE_INFO_TABLE', $prefix . '_bbstats_smilies_info');
 
 if(is_admin()):
-    define('STATS_DEBUG', true); // Debug Mode
+    define('STATS_NUKE_DEBUG', true); // Debug Mode
 else:
-	define('STATS_DEBUG',false);
+	define('STATS_NUKE_DEBUG',false);
 endif;
 
 // Cache Defines

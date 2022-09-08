@@ -41,7 +41,7 @@ if (!defined('CNBYA')) {
 
 if(is_mod_admin($module_name)) {
 
-    list($email) = $db->sql_fetchrow($db->sql_query("SELECT user_email FROM ".$user_prefix."_users_temp WHERE user_id='$dny_uid'"));
+    list($email) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_email FROM ".$nuke_user_prefix."_users_temp WHERE user_id='$dny_uid'"));
     if ($ya_config['servermail'] == 0) {
         $message = _SORRYTO." $sitename "._HASDENY;
         if ($denyreason > "") {
@@ -58,10 +58,10 @@ if(is_mod_admin($module_name)) {
         );
         evo_phpmailer( $email, $subject, $message, $headers );
     }
-    $db->sql_query("DELETE FROM ".$user_prefix."_users_temp WHERE user_id='$dny_uid'");
-    $db->sql_query("DELETE FROM ".$user_prefix."_cnbya_value_temp WHERE uid='$dny_uid'");
-    $db->sql_query("OPTIMIZE TABLE ".$user_prefix."_users_temp");
-    $db->sql_query("OPTIMIZE TABLE ".$user_prefix."_cnbya_value_temp");
+    $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_users_temp WHERE user_id='$dny_uid'");
+    $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_cnbya_value_temp WHERE uid='$dny_uid'");
+    $nuke_db->sql_query("OPTIMIZE TABLE ".$nuke_user_prefix."_users_temp");
+    $nuke_db->sql_query("OPTIMIZE TABLE ".$nuke_user_prefix."_cnbya_value_temp");
     $pagetitle = ": "._USERADMIN." - "._ACCTDENY;
     include_once(NUKE_BASE_DIR.'header.php');
 	OpenTable();

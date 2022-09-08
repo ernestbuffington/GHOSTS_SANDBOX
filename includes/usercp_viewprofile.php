@@ -42,34 +42,34 @@
 	  Arcade                                   v3.0.2       05/29/2009
 	  Admin delete users & posts               v1.0.5       05/29/2009
  ************************************************************************/
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 exit('Hacking attempt');
 
-if(empty($HTTP_GET_VARS[POST_USERS_URL]) || $HTTP_GET_VARS[POST_USERS_URL] == ANONYMOUS)
-message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+if(empty($HTTP_GET_VARS[NUKE_POST_USERS_URL]) || $HTTP_GET_VARS[NUKE_POST_USERS_URL] == NUKE_ANONYMOUS)
+message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_id_specified']);
 
-$profiledata = get_userdata($HTTP_GET_VARS[POST_USERS_URL]);
+$profiledata = get_userdata($HTTP_GET_VARS[NUKE_POST_USERS_URL]);
 /*****[BEGIN]******************************************
  [ Mod:     Show Groups                        v1.0.1 ]
  ******************************************************/
 if(isset($profiledata['user_id']) && !empty($profiledata['user_id'])): 
     $sql = "SELECT group_name 
-	        FROM ".GROUPS_TABLE." 
-			LEFT JOIN ".USER_GROUP_TABLE." on ".USER_GROUP_TABLE.".group_id=".GROUPS_TABLE.".group_id 
-			WHERE ".USER_GROUP_TABLE.".user_id=".$profiledata['user_id'];
+	        FROM ".NUKE_GROUPS_TABLE." 
+			LEFT JOIN ".NUKE_USER_GROUP_TABLE." on ".NUKE_USER_GROUP_TABLE.".group_id=".NUKE_GROUPS_TABLE.".group_id 
+			WHERE ".NUKE_USER_GROUP_TABLE.".user_id=".$profiledata['user_id'];
 			
-    if(!($result = $db->sql_query($sql))):
+    if(!($result = $nuke_db->sql_query($sql))):
     $groups = "SQL Failed to obtain last visit";
     else: 
-        if($db->sql_numrows($result) == 0):
+        if($nuke_db->sql_numrows($result) == 0):
         $groups = "None";
          
 		else: 
-            while($row = $db->sql_fetchrow($result)):
+            while($row = $nuke_db->sql_fetchrow($result)):
                 $groups .= $row['group_name'] . "<br />";
             endwhile;
         endif;
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
     endif;
 endif;
 /*****[END]********************************************
@@ -77,7 +77,7 @@ endif;
  ******************************************************/
 
 if(!$profiledata)
-message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_id_specified']);
 
 /*****[BEGIN]******************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
@@ -124,15 +124,15 @@ else
 $avatar_img = '';
 if($profiledata['user_avatar_type'] && $profiledata['user_allowavatar']):
     switch( $profiledata['user_avatar_type']):
-        case USER_AVATAR_UPLOAD:
+        case NUKE_USER_AVATAR_UPLOAD:
             $avatar_img = ($board_config['allow_avatar_upload']) ? '<img class="rounded-corners-profile" style="max-height: 200px; 
 			max-width: 200px;" src="'.$board_config['avatar_path']. '/'. $profiledata['user_avatar'] . '" alt="" border="0" />' : '';
             break;
-        case USER_AVATAR_REMOTE:
+        case NUKE_USER_AVATAR_REMOTE:
             $avatar_img = '<img style="max-height: 200px; max-width: 200px;" s
 			rc="' . resize_avatar($profiledata['user_avatar']) . '" alt="" border="0" />';
             break;
-        case USER_AVATAR_GALLERY:
+        case NUKE_USER_AVATAR_GALLERY:
             $avatar_img = ( $board_config['allow_avatar_local'] ) ? '<img style="max-height: 200px; max-width: 
 			200px;" src="' . $board_config['avatar_gallery_path'] . '/' 
 			. (($profiledata['user_avatar'] == 'blank.gif' || $profiledata['user_avatar'] == 'gallery/blank.gif') ? 'blank.png' : $profiledata['user_avatar']) 
@@ -167,7 +167,7 @@ endif;
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
 
-$temp_url = append_sid("privmsg.$phpEx?mode=post&amp;" . POST_USERS_URL . "=" . $profiledata['user_id']);
+$temp_url = append_sid("privmsg.$phpEx?mode=post&amp;" . NUKE_POST_USERS_URL . "=" . $profiledata['user_id']);
 
 if(is_active("Private_Messages")) 
 {
@@ -185,9 +185,9 @@ $location .= ($profiledata['user_from']) ? $profiledata['user_from'] : '';
  [ Mod:     Member Country Flags               v2.0.7 ]
  ******************************************************/
 
-if (!empty($profiledata['user_viewemail']) || ($profiledata['username'] == $userdata['username']) || $userdata['user_level'] == ADMIN)
+if (!empty($profiledata['user_viewemail']) || ($profiledata['username'] == $userdata['username']) || $userdata['user_level'] == NUKE_ADMIN)
 {
-    $email_uri = ( $board_config['board_email_form'] ) ? append_sid("profile.$phpEx?mode=email&amp;".POST_USERS_URL
+    $email_uri = ( $board_config['board_email_form'] ) ? append_sid("profile.$phpEx?mode=email&amp;".NUKE_POST_USERS_URL
 	.'='.$profiledata['user_id']) : 'mailto:' .$profiledata['user_email'];
     $email_img = '<a href="' . $email_uri . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" border="0" /></a>';
     $email = '<a href="' . $email_uri . '">' . sprintf($lang['Send_email'], $profiledata['username']) . '</a>';
@@ -216,13 +216,13 @@ $www = ( $profiledata['user_website'] ) ? '<a href="' . $profiledata['user_websi
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
 $birthday = '&nbsp;';
-//if ( !empty($profiledata['user_birthday']) && $profiledata['birthday_display'] != BIRTHDAY_AGE && $profiledata['birthday_display'] != BIRTHDAY_NONE )
+//if ( !empty($profiledata['user_birthday']) && $profiledata['birthday_display'] != NUKE_BIRTHDAY_AGE && $profiledata['birthday_display'] != NUKE_BIRTHDAY_NONE )
 if ( !empty($profiledata['user_birthday']) && $profiledata['birthday_display'] <> 2 && $profiledata['birthday_display'] <> 3 ) // 
 {
 	preg_match('/(..)(..)(....)/', sprintf('%08d',$profiledata['user_birthday']), $bday_parts);
 	$bday_month = $bday_parts[1];
 	$bday_day = $bday_parts[2];
-	//$bday_year = ( $profiledata['birthday_display'] != BIRTHDAY_DATE ) ? $bday_parts[3] : 0;
+	//$bday_year = ( $profiledata['birthday_display'] != NUKE_BIRTHDAY_DATE ) ? $bday_parts[3] : 0;
 	$bday_year = ( $profiledata['birthday_display'] <> 1 ) ? $bday_parts[3] : 0;
 	$birthday_format = ($bday_year != 0) ? str_replace(array('y','Y'), array($bday_year % 100,$bday_year), $lang['DATE_FORMAT']) : preg_replace('#[^djFmMnYy]*[Yy]#','',$lang['DATE_FORMAT']);
 	$birthday = create_date($birthday_format, gmmktime(12,0,0,$bday_month,$bday_day,2000), 0);
@@ -230,7 +230,7 @@ if ( !empty($profiledata['user_birthday']) && $profiledata['birthday_display'] <
 elseif( $profiledata['birthday_display'] == 2 )
 {
 	$bday_month_day = floor($profiledata['user_birthday'] / 10000);
-	$bday_year_age = ( $profiledata['birthday_display'] != BIRTHDAY_NONE && $profiledata['birthday_display'] != BIRTHDAY_DATE ) ? $profiledata['user_birthday'] - 10000*$bday_month_day : 0;
+	$bday_year_age = ( $profiledata['birthday_display'] != NUKE_BIRTHDAY_NONE && $profiledata['birthday_display'] != NUKE_BIRTHDAY_DATE ) ? $profiledata['user_birthday'] - 10000*$bday_month_day : 0;
 	$fudge = ( gmdate('md') < $bday_month_day ) ? 1 : 0;
 	$birthday = ( $bday_year_age ) ? gmdate('Y')-$bday_year_age-$fudge : false;
 }
@@ -276,7 +276,7 @@ else
 /*****[BEGIN]******************************************
  [ Mod:    User Administration Link on Profile v1.0.0 ]
  ******************************************************/
-if($userdata['user_level'] == ADMIN)
+if($userdata['user_level'] == NUKE_ADMIN)
 {
     $template->assign_vars(array(
         "L_USER_ADMIN_FOR" => $lang['User_admin_for'],
@@ -296,7 +296,7 @@ if ($profiledata['user_session_time'] >= (time()-$board_config['online_time'])):
 
     if ($profiledata['user_allow_viewonline']):
         $online_status = '<a href="'.append_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_online'], $profiledata['username']).'"'.$online_color.'>'.$lang['Online'].'</a>';
-    elseif ( $userdata['user_level'] == ADMIN || $userdata['user_id'] == $profiledata['user_id'] ):
+    elseif ( $userdata['user_level'] == NUKE_ADMIN || $userdata['user_id'] == $profiledata['user_id'] ):
         $online_status = '<em><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_hidden'], $profiledata['username']) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em>';
     else:
         $online_status = '<span title="' . sprintf($lang['is_offline'], $profiledata['username']) . '"' . $offline_color . '>' . $lang['Offline'] . '</span>';
@@ -369,17 +369,17 @@ if ($rep_config['rep_disable'] == 0)
     }
   }
   $sql = "SELECT COUNT(user_id) AS count_reps
-      FROM " . REPUTATION_TABLE . " AS r
+      FROM " . NUKE_REPUTATION_TABLE . " AS r
       WHERE r.user_id = " . $profiledata['user_id'] . "
       GROUP BY user_id";
-  if ( !($result = $db->sql_query($sql)) )
+  if ( !($result = $nuke_db->sql_query($sql)) )
   {
-    message_die(GENERAL_ERROR, "Could not obtain reputation stats for this user", '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, "Could not obtain reputation stats for this user", '', __LINE__, __FILE__, $sql);
   }
-  $row_rep = $db->sql_fetchrow($result);
+  $row_rep = $nuke_db->sql_fetchrow($result);
   if ($row_rep)
   {
-    $reputation .= " <br />(<a href=\""  . append_sid("reputation.$phpEx?a=stats&amp;" . POST_USERS_URL . "=" . $profiledata['user_id']) . "\" target=\"_blank\" onClick=\"popupWin = window.open(this.href, '" . $lang['Reputation'] . "', 'location,width=700,height=400,top=0,scrollbars=yes'); popupWin.focus(); return false;\">" . $lang['Votes'] . "</a>: " . $row_rep['count_reps'] . ")";
+    $reputation .= " <br />(<a href=\""  . append_sid("reputation.$phpEx?a=stats&amp;" . NUKE_POST_USERS_URL . "=" . $profiledata['user_id']) . "\" target=\"_blank\" onClick=\"popupWin = window.open(this.href, '" . $lang['Reputation'] . "', 'location,width=700,height=400,top=0,scrollbars=yes'); popupWin.focus(); return false;\">" . $lang['Votes'] . "</a>: " . $row_rep['count_reps'] . ")";
   }
 }
 /*****[END]********************************************
@@ -656,7 +656,7 @@ $template->assign_vars(array(
 include_once('includes/bbcode.'.$phpEx);
 
 $xd_meta = get_xd_metadata();
-$xdata = get_user_xdata($HTTP_GET_VARS[POST_USERS_URL]);
+$xdata = get_user_xdata($HTTP_GET_VARS[NUKE_POST_USERS_URL]);
 while ( list($code_name, $info) = each($xd_meta) )
 {
     $value = isset($xdata[$code_name]) ? $xdata[$code_name] : null;
@@ -692,7 +692,7 @@ while ( list($code_name, $info) = each($xd_meta) )
 
     $value = str_replace("\n", "\n<br />\n", $value);
 
-    if ( $info['display_viewprofile'] == XD_DISPLAY_NORMAL )
+    if ( $info['display_viewprofile'] == NUKE_XD_DISPLAY_NORMAL )
     {
         if ( isset($xdata[$code_name]) )
         {
@@ -703,7 +703,7 @@ while ( list($code_name, $info) = each($xd_meta) )
             );
         }
     }
-    elseif ( $info['display_viewprofile'] == XD_DISPLAY_ROOT )
+    elseif ( $info['display_viewprofile'] == NUKE_XD_DISPLAY_ROOT )
     {
         if ( isset($xdata[$code_name]) )
         {
@@ -738,7 +738,7 @@ while ( list($code_name, $info) = each($xd_meta) )
 /*****[BEGIN]******************************************
  [ Mod:    Admin User Notes                    v1.0.0 ]
  ******************************************************/
-if ( $userdata['user_level'] == ADMIN )
+if ( $userdata['user_level'] == NUKE_ADMIN )
 {
   $template->assign_block_vars('switch_admin_notes', array());
 }

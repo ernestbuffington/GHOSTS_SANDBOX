@@ -41,31 +41,31 @@ get_lang($module_name);
 $sid = (int) $sid;
 
 if (stristr($REQUEST_URI,"mainfile")) 
-redirect("modules.php?name=$module_name&file=read_article&sid=$sid");
+nuke_redirect("modules.php?name=$module_name&file=read_article&sid=$sid");
 else
 if (!isset($sid) && !isset($tid)) 
-redirect("index.php");
+nuke_redirect("index.php");
 
 if ($save AND is_user()) 
 {
-    $db->sql_query("UPDATE ".$user_prefix."_users SET umode='$mode', uorder='$order', thold='$thold' where uid='$cookie[0]'");
+    $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET umode='$mode', uorder='$order', thold='$thold' where uid='$cookie[0]'");
     $info = base64_encode("$userinfo[user_id]:$userinfo[username]:$userinfo[user_password]:$userinfo[storynum]:$userinfo[umode]:$userinfo[uorder]:$userinfo[thold]:$userinfo[noscore]");
     setcookie("user","$info",time()+$cookieusrtime);
 }
 
 if ($op == "Reply") 
-redirect("modules.php?name=$module_name&file=comments&op=Reply&pid=0&sid=$sid&mode=$mode&order=$order&thold=$thold");
+nuke_redirect("modules.php?name=$module_name&file=comments&op=Reply&pid=0&sid=$sid&mode=$mode&order=$order&thold=$thold");
 
 $sql = "select catid, aid, datePublished, dateModified, title, counter, hometext, bodytext, topic, informant, notes, acomm, haspoll, pollID, score, ratings FROM ".$prefix."_stories where sid='$sid'";
-$result = $db->sql_query($sql);
+$result = $nuke_db->sql_query($sql);
 
-if ($numrows = $db->sql_numrows($result) != 1) 
+if ($numrows = $nuke_db->sql_numrows($result) != 1) 
 {
-    redirect("index.php");
+    nuke_redirect("index.php");
     exit;
 }
 
-$row = $db->sql_fetchrow($result);
+$row = $nuke_db->sql_fetchrow($result);
 
 $catid = $row["catid"];
 
@@ -104,9 +104,9 @@ $score = $row["score"];
 $ratings = $row["ratings"];
 
 if (empty($aid['name'])) 
-redirect("modules.php?name=$module_name"); 
+nuke_redirect("modules.php?name=$module_name"); 
 
-$db->sql_query("UPDATE ".$prefix."_stories SET counter=counter+1 where sid=$sid");
+$nuke_db->sql_query("UPDATE ".$prefix."_stories SET counter=counter+1 where sid=$sid");
 
 $artpage = 1;
 
@@ -154,8 +154,8 @@ getTopics($sid);
 if($catid != 0) 
 {
     $sql = "select title from ".$prefix."_stories_cat where catid='$catid'";
-    $result = $db->sql_query($sql);
-    $row = $db->sql_fetchrow($result);
+    $result = $nuke_db->sql_query($sql);
+    $row = $nuke_db->sql_fetchrow($result);
     $title1 = $row["title"];
     $title = "<a href=\"modules.php?name=$module_name&amp;file=categories&amp;op=newindex&amp;catid=$catid\"><font class=\"storycat\">$title1</font></a>: $title";
 }

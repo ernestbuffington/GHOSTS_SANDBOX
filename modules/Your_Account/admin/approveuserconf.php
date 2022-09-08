@@ -53,7 +53,7 @@ include_once(NUKE_INCLUDE_DIR. 'constants.php');
 
 if(is_mod_admin($module_name)) {
 
-    list($username, $email, $check_num) = $db->sql_fetchrow($db->sql_query("SELECT username, user_email, check_num FROM ".$user_prefix."_users_temp WHERE user_id='$apr_uid'"));
+    list($username, $email, $check_num) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT username, user_email, check_num FROM ".$nuke_user_prefix."_users_temp WHERE user_id='$apr_uid'"));
     if ($ya_config['servermail'] == 0) {
         $time     = time();
         $finishlink     = "$nukeurl/modules.php?name=$module_name&op=activate&username=$username&check_num=$check_num";
@@ -70,7 +70,7 @@ if(is_mod_admin($module_name)) {
         );
         evo_phpmailer( $email, $subject, $message, $headers );
     }
-    $db->sql_query("UPDATE ".$user_prefix."_users_temp SET time='$time' WHERE user_id='$apr_uid'");
+    $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users_temp SET time='$time' WHERE user_id='$apr_uid'");
 /*****[BEGIN]******************************************
  [ Mod:     Welcome PM                         v2.0.0 ]
  [ Mod:     Initial Usergroup                  v1.0.1 ]

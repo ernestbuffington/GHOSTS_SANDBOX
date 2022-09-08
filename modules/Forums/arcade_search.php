@@ -33,7 +33,7 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 $phpbb2_root_path = NUKE_PHPBB2_DIR;
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
@@ -43,7 +43,7 @@ include('includes/constants.'. $phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_ARCADES, $nukeuser);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_ARCADES, $nukeuser);
 init_userprefs($userdata);
 //
 // End session management
@@ -121,15 +121,15 @@ $template->assign_vars(array(
         'L_ARCADE' => $lang['lib_arcade'])
 );
 
-$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . GAMES_TABLE . " g LEFT JOIN " . USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . SCORES_TABLE . " s ON s.game_id = g.game_id AND s.user_id = " . $userdata['user_id'] . " ORDER BY $order_by";
+$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . NUKE_GAMES_TABLE . " g LEFT JOIN " . NUKE_USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . NUKE_SCORES_TABLE . " s ON s.game_id = g.game_id AND s.user_id = " . $userdata['user_id'] . " ORDER BY $order_by";
 
-if( !($result = $db->sql_query($sql)) ) {
-        message_die(GENERAL_ERROR, "Unable to retrieve game AND score data", '', __LINE__, __FILE__, $sql);
+if( !($result = $nuke_db->sql_query($sql)) ) {
+        message_die(NUKE_GENERAL_ERROR, "Unable to retrieve game AND score data", '', __LINE__, __FILE__, $sql);
 }
 
 $total_match_count = 0;
 
-while( $row = $db->sql_fetchrow($result) ) {
+while( $row = $nuke_db->sql_fetchrow($result) ) {
         //Displays ON the games that you have no score/haven't played
         if($row['score_game'] == 0)
          {
@@ -228,13 +228,13 @@ $template->assign_vars(array(
         'L_ARCADE' => $lang['lib_arcade'])
 );
 
-$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . GAMES_TABLE . " g LEFT JOIN " . USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . SCORES_TABLE . " s ON s.game_id = g.game_id AND s.user_id = " . $userdata['user_id'] . " ORDER BY g.game_order DESC LIMIT 0, $total_match_count";
+$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . NUKE_GAMES_TABLE . " g LEFT JOIN " . NUKE_USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . NUKE_SCORES_TABLE . " s ON s.game_id = g.game_id AND s.user_id = " . $userdata['user_id'] . " ORDER BY g.game_order DESC LIMIT 0, $total_match_count";
 
-if( !($result = $db->sql_query($sql)) ) {
-        message_die(GENERAL_ERROR, "Unable to retrieve game AND score data", '', __LINE__, __FILE__, $sql);
+if( !($result = $nuke_db->sql_query($sql)) ) {
+        message_die(NUKE_GENERAL_ERROR, "Unable to retrieve game AND score data", '', __LINE__, __FILE__, $sql);
 }
 
-while( $row = $db->sql_fetchrow($result) ) {
+while( $row = $nuke_db->sql_fetchrow($result) ) {
         //Displays ON the games that you have no score/haven't played
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
@@ -326,14 +326,14 @@ $arcade_config = array();
 $arcade_config = read_arcade_config();
 
 //Gets total games from you search results AND set the number of total search results.
-$sql = "SELECT COUNT(*) as total_games FROM " . GAMES_TABLE . " $where_search";
+$sql = "SELECT COUNT(*) as total_games FROM " . NUKE_GAMES_TABLE . " $where_search";
 
-        if( !($result = $db->sql_query($sql)) ) {
-                message_die(GENERAL_ERROR, "Unable to retrieve data from game table", '', __LINE__, __FILE__, $sql);
+        if( !($result = $nuke_db->sql_query($sql)) ) {
+                message_die(NUKE_GENERAL_ERROR, "Unable to retrieve data from game table", '', __LINE__, __FILE__, $sql);
         }
 
 
-        $row = $db->sql_fetchrow($result);
+        $row = $nuke_db->sql_fetchrow($result);
         $total_match_count = $row['total_games'];
         $l_search_matches = ( $total_match_count == 1 ) ? sprintf($lang['Found_search_match'], $total_match_count) : sprintf($lang['Found_search_matches'], $total_match_count);
 
@@ -390,13 +390,13 @@ $template->assign_vars(array(
         'L_ARCADE' => $lang['lib_arcade'])
 );
 
-$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . GAMES_TABLE . " g LEFT JOIN " . USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . SCORES_TABLE . " s ON s.game_id = g.game_id AND s.user_id = " . $userdata['user_id'] . " $where_search ORDER BY $order_by";
+$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . NUKE_GAMES_TABLE . " g LEFT JOIN " . NUKE_USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . NUKE_SCORES_TABLE . " s ON s.game_id = g.game_id AND s.user_id = " . $userdata['user_id'] . " $where_search ORDER BY $order_by";
 
-if( !($result = $db->sql_query($sql)) ) {
-        message_die(GENERAL_ERROR, "Could not read from the games/users table", '', __LINE__, __FILE__, $sql);
+if( !($result = $nuke_db->sql_query($sql)) ) {
+        message_die(NUKE_GENERAL_ERROR, "Could not read from the games/users table", '', __LINE__, __FILE__, $sql);
 }
 
-while( $row = $db->sql_fetchrow($result) ) {
+while( $row = $nuke_db->sql_fetchrow($result) ) {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/

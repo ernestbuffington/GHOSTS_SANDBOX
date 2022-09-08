@@ -43,7 +43,7 @@
     to this source
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -121,7 +121,7 @@ class Stats_template {
         {
             if (empty($filename))
             {
-                message_die(GENERAL_ERROR, "Template error - Empty filename specified for $handle");
+                message_die(NUKE_GENERAL_ERROR, "Template error - Empty filename specified for $handle");
             }
 
             $this->filename[$handle] = $filename;
@@ -157,12 +157,12 @@ class Stats_template {
         // If we don't have a file assigned to this handle, die.
         if (!isset($this->files[$handle]))
         {
-            message_die(GENERAL_ERROR, "Statistics Template->loadfile(): No file specified for handle $handle");
+            message_die(NUKE_GENERAL_ERROR, "Statistics Template->loadfile(): No file specified for handle $handle");
         }
 
         if (!($fp = @fopen($this->files[$handle], 'r')))
         {
-            message_die(GENERAL_ERROR, "Statistics Template->loadfile(): Error - file " . $this->files[$handle] . " does not exist or is empty");
+            message_die(NUKE_GENERAL_ERROR, "Statistics Template->loadfile(): Error - file " . $this->files[$handle] . " does not exist or is empty");
         }
 
         $str = '';
@@ -202,7 +202,7 @@ class Stats_template {
         {
             if (!$this->loadfile($handle))
             {
-                message_die(GENERAL_ERROR, "Statistics Template->display(): Couldn't load template file for handle $handle");
+                message_die(NUKE_GENERAL_ERROR, "Statistics Template->display(): Couldn't load template file for handle $handle");
             }
 
             // Actually compile the code now.
@@ -238,7 +238,7 @@ class Stats_template {
         {
             if (!$this->loadfile($handle))
             {
-                message_die(GENERAL_ERROR, "Statistics Template->display(): Couldn't load template file for handle $handle");
+                message_die(NUKE_GENERAL_ERROR, "Statistics Template->display(): Couldn't load template file for handle $handle");
             }
 
             $code = $this->compile($this->uncompiled_code[$handle], true, '_str');
@@ -266,7 +266,7 @@ class Stats_template {
         {
             if (!$this->loadfile($handle))
             {
-                message_die(GENERAL_ERROR, "Statistics Template->display(): Couldn't load template file for handle $handle");
+                message_die(NUKE_GENERAL_ERROR, "Statistics Template->display(): Couldn't load template file for handle $handle");
             }
 
             $this->compiled_code[$handle] = $this->compile($this->uncompiled_code[$handle]);

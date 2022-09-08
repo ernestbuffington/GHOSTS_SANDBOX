@@ -96,7 +96,7 @@ else:
  $phpbb2_root_path = NUKE_PHPBB2_DIR;
 endif;
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
@@ -113,8 +113,8 @@ include('includes/bbcode.' .$phpEx);
 # Mod: Smilies in Topic Titles v1.0.0 END
 
 # Start initial var setup
-if(isset($HTTP_GET_VARS[POST_FORUM_URL]) || isset($HTTP_POST_VARS[POST_FORUM_URL]))
-$forum_id = intval(isset($HTTP_GET_VARS[POST_FORUM_URL]) ? $HTTP_GET_VARS[POST_FORUM_URL] : $HTTP_POST_VARS[POST_FORUM_URL]);
+if(isset($HTTP_GET_VARS[NUKE_POST_FORUM_URL]) || isset($HTTP_POST_VARS[NUKE_POST_FORUM_URL]))
+$forum_id = intval(isset($HTTP_GET_VARS[NUKE_POST_FORUM_URL]) ? $HTTP_GET_VARS[NUKE_POST_FORUM_URL] : $HTTP_POST_VARS[NUKE_POST_FORUM_URL]);
 else
 $forum_id = '';
 
@@ -131,19 +131,19 @@ $mark_read = '';
 # If not give them a nice error page.
 if(!empty($forum_id)):
         $sql = "SELECT *
-                FROM ".FORUMS_TABLE."
+                FROM ".NUKE_FORUMS_TABLE."
                 WHERE forum_id = '$forum_id'";
-        if(!($result = $db->sql_query($sql))):
-          message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
+        if(!($result = $nuke_db->sql_query($sql))):
+          message_die(NUKE_GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
         endif;
 else:
-  message_die(GENERAL_MESSAGE, 'Forum_not_exist');
+  message_die(NUKE_GENERAL_MESSAGE, 'Forum_not_exist');
 endif;
 
 # If the query doesn't return any rows this isn't a valid forum. Inform
 # the user.
-if(!($forum_row = $db->sql_fetchrow($result)))
-message_die(GENERAL_MESSAGE, 'Forum_not_exist');
+if(!($forum_row = $nuke_db->sql_fetchrow($result)))
+message_die(NUKE_GENERAL_MESSAGE, 'Forum_not_exist');
 
 # Start session management
 $userdata = session_pagestart($user_ip, $forum_id);
@@ -152,31 +152,31 @@ init_userprefs($userdata);
 
 # Start auth check
 $is_auth = array();
-$is_auth = auth(AUTH_ALL, $forum_id, $userdata, $forum_row);
+$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata, $forum_row);
 
 if(!$is_auth['auth_read'] || !$is_auth['auth_view']):
         if (!$userdata['session_logged_in']):
-                $redirect = POST_FORUM_URL . "=$forum_id" . ( ( isset($start) ) ? "&start=$start" : '' );
-                redirect(append_sid("login.$phpEx?redirect=viewforum.$phpEx&$redirect", true));
+                $nuke_redirect = NUKE_POST_FORUM_URL . "=$forum_id" . ( ( isset($start) ) ? "&start=$start" : '' );
+                nuke_redirect(append_sid("login.$phpEx?nuke_redirect=viewforum.$phpEx&$nuke_redirect", true));
         endif;
         # The user is not authed to read this forum ...
         $message = ( !$is_auth['auth_view'] ) ? $lang['Forum_not_exist'] : sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']);
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
 endif;
 # End of auth check
 
 # Password check
-if(!$is_auth['auth_mod'] && $userdata['user_level'] != ADMIN):
-	$redirect = str_replace("&amp;", "&", preg_replace('#.*?([a-z]+?\.' . $phpEx . '.*?)$#i', '\1', htmlspecialchars($HTTP_SERVER_VARS['REQUEST_URI'])));
+if(!$is_auth['auth_mod'] && $userdata['user_level'] != NUKE_ADMIN):
+	$nuke_redirect = str_replace("&amp;", "&", preg_replace('#.*?([a-z]+?\.' . $phpEx . '.*?)$#i', '\1', htmlspecialchars($HTTP_SERVER_VARS['REQUEST_URI'])));
 	if($HTTP_POST_VARS['cancel']):
-		redirect(append_sid("index.$phpEx"));
+		nuke_redirect(append_sid("index.$phpEx"));
 	elseif($HTTP_POST_VARS['pass_login']):
 		if($forum_row['forum_password'] != '')
-		password_check('forum', $forum_id, $HTTP_POST_VARS['password'], $redirect);
+		password_check('forum', $forum_id, $HTTP_POST_VARS['password'], $nuke_redirect);
 	endif;
 	$passdata = (isset($HTTP_COOKIE_VARS[$board_config['cookie_name'].'_fpass'])) ? unserialize(stripslashes($HTTP_COOKIE_VARS[$board_config['cookie_name'].'_fpass'])) : '';
 	if($forum_row['forum_password'] != '' && ($passdata[$forum_id] != md5($forum_row['forum_password'])))
-	password_box('forum', $redirect);
+	password_box('forum', $nuke_redirect);
 endif;
 # END: Password check
 
@@ -190,14 +190,14 @@ if($mark_read == 'topics'):
 
         if($userdata['session_logged_in']):
                 $sql = "SELECT p.post_time AS last_post
-                        FROM (" . POSTS_TABLE . " p, " . TOPICS_TABLE . " t)
+                        FROM (" . NUKE_POSTS_TABLE . " p, " . NUKE_BB_TOPICS_TABLE . " t)
                         WHERE t.forum_id = $forum_id
                         AND t.topic_last_post_id = p.post_id
                         ORDER BY t.topic_last_post_id DESC LIMIT 1";
-                if( !($result = $db->sql_query($sql)))
-                message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
+                if( !($result = $nuke_db->sql_query($sql)))
+                message_die(NUKE_GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
 
-                if($row = $db->sql_fetchrow($result)):
+                if($row = $nuke_db->sql_fetchrow($result)):
                         $tracking_forums = ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f']) ) ? unserialize($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f']) : array();
                         $tracking_topics = ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_t']) ) ? unserialize($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_t']) : array();
 
@@ -226,12 +226,12 @@ if($mark_read == 'topics'):
                 # Mod: Simple Subforums v1.0.1 END
 
                 $template->assign_vars(array(
-                        'META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewforum.$phpEx?".POST_FORUM_URL."=$forum_id").'">')
+                        'META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id").'">')
                 );
         endif;
 
-        $message = $lang['Topics_marked_read'].'<br /><br />'.sprintf($lang['Click_return_forum'],'<a href="'.append_sid("viewforum.$phpEx?".POST_FORUM_URL."=$forum_id").'">','</a>');
-        message_die(GENERAL_MESSAGE, $message);
+        $message = $lang['Topics_marked_read'].'<br /><br />'.sprintf($lang['Click_return_forum'],'<a href="'.append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id").'">','</a>');
+        message_die(NUKE_GENERAL_MESSAGE, $message);
 endif;
 # End handle marking posts
 
@@ -251,7 +251,7 @@ endif;
 # Obtain list of moderators of each forum
 # First users, then groups ... broken into two queries
 $sql = "SELECT u.user_id, u.username
-        FROM (" . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g, " . USERS_TABLE . " u)
+        FROM (" . NUKE_AUTH_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g, " . NUKE_USERS_TABLE . " u)
         WHERE aa.forum_id = '$forum_id'
                 AND aa.auth_mod = " . TRUE . "
                 AND g.group_single_user = '1'
@@ -261,35 +261,35 @@ $sql = "SELECT u.user_id, u.username
         GROUP BY u.user_id, u.username
         ORDER BY u.user_id";
 
-if(!($result = $db->sql_query($sql)))
+if(!($result = $nuke_db->sql_query($sql)))
 {
-  message_die(GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
+  message_die(NUKE_GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
 }
 
 $moderators = array();
 
-while($row = $db->sql_fetchrow($result)):
+while($row = $nuke_db->sql_fetchrow($result)):
     # Mod: Advanced Username Color v1.0.5 START
-    $moderators[] = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
+    $moderators[] = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
     # Mod: Advanced Username Color v1.0.5 START
 endwhile;
 
 $sql = "SELECT g.group_id, g.group_name
-        FROM (".AUTH_ACCESS_TABLE." aa, ".USER_GROUP_TABLE." ug, ".GROUPS_TABLE." g)
+        FROM (".NUKE_AUTH_ACCESS_TABLE." aa, ".NUKE_USER_GROUP_TABLE." ug, ".NUKE_GROUPS_TABLE." g)
         WHERE aa.forum_id = '$forum_id'
                 AND aa.auth_mod = ".TRUE."
                 AND g.group_single_user = '0'
-                AND g.group_type <> ".GROUP_HIDDEN."
+                AND g.group_type <> ".NUKE_GROUP_HIDDEN."
                 AND ug.group_id = aa.group_id
                 AND g.group_id = aa.group_id
         GROUP BY g.group_id, g.group_name
         ORDER BY g.group_id";
 
-if(!($result = $db->sql_query($sql)))
-message_die(GENERAL_ERROR,'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
+if(!($result = $nuke_db->sql_query($sql)))
+message_die(NUKE_GENERAL_ERROR,'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
 
-while($row = $db->sql_fetchrow($result)):
-  $moderators[] = '<a href="'.append_sid("groupcp.$phpEx?".POST_GROUPS_URL."=".$row['group_id']).'">'.GroupColor($row['group_name']).'</a>';
+while($row = $nuke_db->sql_fetchrow($result)):
+  $moderators[] = '<a href="'.append_sid("groupcp.$phpEx?".NUKE_POST_GROUPS_URL."=".$row['group_id']).'">'.GroupColor($row['group_name']).'</a>';
 endwhile;
 
 $l_moderators = (count($moderators) == 1) ? $lang['Moderator'] : $lang['Moderators'];
@@ -306,15 +306,15 @@ if(!empty($HTTP_POST_VARS['topicdays']) || !empty($HTTP_GET_VARS['topicdays'])):
         $topic_days = (!empty($HTTP_POST_VARS['topicdays'])) ? intval($HTTP_POST_VARS['topicdays']) : intval($HTTP_GET_VARS['topicdays']);
         $min_topic_time = time() - ($topic_days * 86400);
         $sql = "SELECT COUNT(t.topic_id) AS forum_topics
-                FROM (".TOPICS_TABLE." t, ".POSTS_TABLE." p)
+                FROM (".NUKE_BB_TOPICS_TABLE." t, ".NUKE_POSTS_TABLE." p)
                 WHERE t.forum_id = '$forum_id'
                         AND p.post_id = t.topic_last_post_id
                         AND p.post_time >= '$min_topic_time'";
-        if (!($result = $db->sql_query($sql))):
-        message_die(GENERAL_ERROR,'Could not obtain limited topics count information','', __LINE__, __FILE__,$sql);
+        if (!($result = $nuke_db->sql_query($sql))):
+        message_die(NUKE_GENERAL_ERROR,'Could not obtain limited topics count information','', __LINE__, __FILE__,$sql);
         endif;
         
-		$row = $db->sql_fetchrow($result);
+		$row = $nuke_db->sql_fetchrow($result);
 
         $topics_count = ($row['forum_topics']) ? $row['forum_topics'] : 1;
         $limit_topics_time = "AND p.post_time >= $min_topic_time";
@@ -343,38 +343,38 @@ $select_topic_days .= '</select>';
 
  # Mod: Topic Cement v1.0.3 START
  $sql = "SELECT t.*, u.username, u.user_id, u2.username as user2, u2.user_id as id2, p.post_time, p.post_username
-   FROM (".TOPICS_TABLE." t, ".USERS_TABLE." u, ".POSTS_TABLE." p, ".USERS_TABLE." u2)
+   FROM (".NUKE_BB_TOPICS_TABLE." t, ".NUKE_USERS_TABLE." u, ".NUKE_POSTS_TABLE." p, ".NUKE_USERS_TABLE." u2)
    WHERE t.topic_poster = u.user_id
       AND p.post_id = t.topic_last_post_id
       AND p.poster_id = u2.user_id
-      AND t.topic_type = ".POST_GLOBAL_ANNOUNCE."
+      AND t.topic_type = ".NUKE_POST_GLOBAL_ANNOUNCE."
    ORDER BY t.topic_priority DESC, t.topic_last_post_id DESC ";
  # Mod: Topic Cement v1.0.3 END
 
-if(!$result = $db->sql_query($sql))
-message_die(GENERAL_ERROR,"Couldn't obtain topic information","", __LINE__, __FILE__,$sql);
+if(!$result = $nuke_db->sql_query($sql))
+message_die(NUKE_GENERAL_ERROR,"Couldn't obtain topic information","", __LINE__, __FILE__,$sql);
 $topic_rowset = array();
 $total_announcements = 0;
-while($row = $db->sql_fetchrow($result)):
+while($row = $nuke_db->sql_fetchrow($result)):
    $topic_rowset[] = $row;
    $total_announcements++;
 endwhile;
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 # Mod: Global Announcements v1.2.8 END
 
 # All announcement data, this keeps announcements
 # on each viewforum page ...
 $sql = "SELECT t.*, u.username, u.user_id, u2.username as user2, u2.user_id as id2, p.post_time, p.post_username
-        FROM (".TOPICS_TABLE." t, ".USERS_TABLE." u, ".POSTS_TABLE." p, ".USERS_TABLE." u2)
+        FROM (".NUKE_BB_TOPICS_TABLE." t, ".NUKE_USERS_TABLE." u, ".NUKE_POSTS_TABLE." p, ".NUKE_USERS_TABLE." u2)
         WHERE t.forum_id = '$forum_id'
                 AND t.topic_poster = u.user_id
                 AND p.post_id = t.topic_last_post_id
                 AND p.poster_id = u2.user_id
-                AND t.topic_type = ".POST_ANNOUNCE."
+                AND t.topic_type = ".NUKE_POST_ANNOUNCE."
         ORDER BY t.topic_last_post_id DESC ";
 
-if ( !($result = $db->sql_query($sql)) )
-message_die(GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
+if ( !($result = $nuke_db->sql_query($sql)) )
+message_die(NUKE_GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
 
 /*****[BEGIN]******************************************
  [ Mod:     Global Announcements               v1.2.8 ] HERE WE GO AGAIN WITH UNCOMMENTED CHANGES? WHY? WHO?
@@ -385,11 +385,11 @@ message_die(GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, _
  [ Mod:     Global Announcements               v1.2.8 ] HERE WE GO AGAIN WITH UNCOMMENTED CHANGES? WHY? WHO?
  ******************************************************/
 
-while($row = $db->sql_fetchrow($result)):
+while($row = $nuke_db->sql_fetchrow($result)):
   $topic_rowset[] = $row;
   $total_announcements++;
 endwhile;
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 
 # Grab all the basic data (all topics except announcements)
 # for this forum
@@ -423,14 +423,14 @@ $order_method = get_forum_display_sort_option($order_value,'field','order');
 # Mod: Topic Cement v1.0.3 START
 # Mod: Topic display order v1.0.2 START
 $sql = "SELECT t.*, u.username, u.user_id, u2.username as user2, u2.username as user2, u2.user_id as id2, p.post_username, p2.post_username AS post_username2, p2.post_time
-        FROM (".TOPICS_TABLE." t, ".USERS_TABLE." u, ".POSTS_TABLE." p, ".POSTS_TABLE." p2, ".USERS_TABLE." u2)
+        FROM (".NUKE_BB_TOPICS_TABLE." t, ".NUKE_USERS_TABLE." u, ".NUKE_POSTS_TABLE." p, ".NUKE_POSTS_TABLE." p2, ".NUKE_USERS_TABLE." u2)
         WHERE t.forum_id = '$forum_id'
                 AND t.topic_poster = u.user_id
                 AND p.post_id = t.topic_first_post_id
                 AND p2.post_id = t.topic_last_post_id
                 AND u2.user_id = p2.poster_id
-                AND t.topic_type <> ".POST_ANNOUNCE."
-                AND t.topic_type <> ".POST_GLOBAL_ANNOUNCE."
+                AND t.topic_type <> ".NUKE_POST_ANNOUNCE."
+                AND t.topic_type <> ".NUKE_POST_GLOBAL_ANNOUNCE."
                 $limit_topics_time
         ORDER BY t.topic_type DESC, t.topic_priority DESC, $sort_method $order_method, t.topic_last_post_id DESC
         LIMIT $start, ".$board_config['topics_per_page'];
@@ -438,15 +438,15 @@ $sql = "SELECT t.*, u.username, u.user_id, u2.username as user2, u2.username as 
 # Mod: Topic Cement v1.0.3 END
 # Mod: Topic display order v1.0.2 END
 
-if(!($result = $db->sql_query($sql)))
-message_die(GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
+if(!($result = $nuke_db->sql_query($sql)))
+message_die(NUKE_GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
 
 $total_topics = 0;
-while($row = $db->sql_fetchrow($result)):
+while($row = $nuke_db->sql_fetchrow($result)):
     $topic_rowset[] = $row;
     $total_topics++;
 endwhile;
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 
 # Total topics ...
 $total_topics += $total_announcements;
@@ -463,9 +463,9 @@ obtain_word_list($orig_word, $replacement_word);
 # Post URL generation for templating vars
 $template->assign_vars(array(
     'L_DISPLAY_TOPICS' => $lang['Display_topics'],
-    'U_POST_NEW_TOPIC' => append_sid("posting.$phpEx?mode=newtopic&amp;".POST_FORUM_URL."=$forum_id"),
+    'U_POST_NEW_TOPIC' => append_sid("posting.$phpEx?mode=newtopic&amp;".NUKE_POST_FORUM_URL."=$forum_id"),
     'S_SELECT_TOPIC_DAYS' => $select_topic_days,
-    'S_POST_DAYS_ACTION' => append_sid("viewforum.$phpEx?".POST_FORUM_URL."=".$forum_id."&amp;start=$start"))
+    'S_POST_DAYS_ACTION' => append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=".$forum_id."&amp;start=$start"))
 );
 
 # User authorisation levels output
@@ -480,7 +480,7 @@ attach_build_auth_levels($is_auth, $s_auth_can);
 # Mod: Attachment Mod v2.4.1 END
 
 if($is_auth['auth_mod'])
-$s_auth_can .= sprintf($lang['Rules_moderate'], '<a href="'.append_sid("modcp.$phpEx?".POST_FORUM_URL."=$forum_id").'">', '</a>');
+$s_auth_can .= sprintf($lang['Rules_moderate'], '<a href="'.append_sid("modcp.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id").'">', '</a>');
 
 # Mozilla navigation bar
 $nav_links['up'] = array(
@@ -511,7 +511,7 @@ $template->assign_vars(array(
 		# Mod: Forum Icons v1.0.4 END
 
         'MODERATORS' => $forum_moderators,
-        'POST_IMG' => ( $forum_row['forum_status'] == FORUM_LOCKED ) ? $images['post_locked'] : $images['post_new'],
+        'POST_IMG' => ( $forum_row['forum_status'] == NUKE_FORUM_LOCKED ) ? $images['post_locked'] : $images['post_new'],
         'FOLDER_IMG' => $images['folder'],
         'FOLDER_NEW_IMG' => $images['folder_new'],
         'FOLDER_HOT_IMG' => $images['folder_hot'],
@@ -535,7 +535,7 @@ $template->assign_vars(array(
         'L_LASTPOST' => $lang['Last_Post'],
         'L_MODERATOR' => $l_moderators,
         'L_MARK_TOPICS_READ' => $lang['Mark_all_topics'],
-        'L_POST_NEW_TOPIC' => ( $forum_row['forum_status'] == FORUM_LOCKED ) ? $lang['Forum_locked'] : $lang['Post_new_topic'],
+        'L_POST_NEW_TOPIC' => ( $forum_row['forum_status'] == NUKE_FORUM_LOCKED ) ? $lang['Forum_locked'] : $lang['Post_new_topic'],
         'L_NO_NEW_POSTS' => $lang['No_new_posts'],
         'L_NEW_POSTS' => $lang['New_posts'],
         'L_NO_NEW_POSTS_LOCKED' => $lang['No_new_posts_locked'],
@@ -553,8 +553,8 @@ $template->assign_vars(array(
         'L_JOINED' => $lang['Joined'],
         'L_AUTHOR' => $lang['Author'],
         'S_AUTH_LIST' => $s_auth_can,
-        'U_VIEW_FORUM' => append_sid("viewforum.$phpEx?".POST_FORUM_URL."=$forum_id"),
-        'U_MARK_READ' => append_sid("viewforum.$phpEx?".POST_FORUM_URL."=$forum_id&amp;mark=topics"))
+        'U_VIEW_FORUM' => append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id"),
+        'U_MARK_READ' => append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id&amp;mark=topics"))
 );
 
 # Mod: Simple Subforums v1.0.1 START
@@ -564,7 +564,7 @@ if($forum_row['forum_parent']):
 		if($all_forums[$i]['forum_id'] == $parent_id):
 			$template->assign_vars(array(
 				'PARENT_FORUM'			=> 1,
-				'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?" . POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
+				'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
 				'PARENT_FORUM_NAME'		=> $all_forums[$i]['forum_name'],
 				));
 		endif;
@@ -617,7 +617,7 @@ if($total_topics):
      # Mod: Post Icons v1.0.1 START
 	 $type = $topic_rowset[$i]['topic_type'];
 
-	 if($type == POST_NORMAL):
+	 if($type == NUKE_POST_NORMAL):
 		if(!empty($topic_rowset[$i]['topic_calendar_time']))
 			$type = POST_CALENDAR;
 		if(!empty($topic_rowset[$i]['topic_pic_url']))
@@ -634,7 +634,7 @@ if($total_topics):
     if($topic_rowset[$i]['topic_vote'])
     $topic_type .= $lang['Topic_Poll'].' ';
 
-    if($topic_rowset[$i]['topic_status'] == TOPIC_MOVED):
+    if($topic_rowset[$i]['topic_status'] == NUKE_TOPIC_MOVED):
        $topic_id = $topic_rowset[$i]['topic_moved_id'];
 	   
 	   # Mod: Customized Topic Status v1.0.0 START
@@ -646,22 +646,22 @@ if($total_topics):
        $newest_post_img = '';
     else:
        # Mod: Global Announcements v1.2.8 START
-       if($topic_rowset[$i]['topic_type'] == POST_GLOBAL_ANNOUNCE):
+       if($topic_rowset[$i]['topic_type'] == NUKE_POST_GLOBAL_ANNOUNCE):
           $folder = $images['folder_global_announce'];
           $folder_new = $images['folder_global_announce_new'];
           $topic_title = "".$board_config['global_view_open']." ".$topic_title."".$board_config['global_view_close']."";
        # Mod: Global Announcements v1.2.8 END
 
 	   # Mod: Customized Topic Status v1.0.0 START
-      elseif($topic_rowset[$i]['topic_type'] == POST_ANNOUNCE):
+      elseif($topic_rowset[$i]['topic_type'] == NUKE_POST_ANNOUNCE):
              $folder = $images['folder_announce'];
              $folder_new = $images['folder_announce_new'];
              $topic_title = "".$board_config['announce_view_open']." ".$topic_title."".$board_config['announce_view_close']."";
-       elseif($topic_rowset[$i]['topic_type'] == POST_STICKY):
+       elseif($topic_rowset[$i]['topic_type'] == NUKE_POST_STICKY):
              $folder = $images['folder_sticky'];
              $folder_new = $images['folder_sticky_new'];
              $topic_title = "".$board_config['sticky_view_open']." ".$topic_title."".$board_config['sticky_view_close']."";
-       elseif($topic_rowset[$i]['topic_status'] == TOPIC_LOCKED):
+       elseif($topic_rowset[$i]['topic_status'] == NUKE_TOPIC_LOCKED):
              $folder = $images['folder_locked'];
              $folder_new = $images['folder_locked_new'];
              $topic_title = "".$board_config['locked_view_open']." ".$topic_title."".$board_config['locked_view_close']."";
@@ -703,28 +703,28 @@ if($total_topics):
                   if($unread_topics):
                     $folder_image = $folder_new;
                     $folder_alt = $lang['New_posts'];
-                    $newest_post_img = '<a href="'.append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;view=newest").'"><img 
+                    $newest_post_img = '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;view=newest").'"><img 
 					src="'.$images['icon_newest_reply'].'" alt="'.$lang['View_newest_post'].'" title="'.$lang['View_newest_post'].'" border="0" /></a> ';
                   else:
                     $folder_image = $folder;
-                    $folder_alt = ($topic_rowset[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+                    $folder_alt = ($topic_rowset[$i]['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
                     $newest_post_img = '';
                   endif;
             else:
             
                $folder_image = $folder_new;
-               $folder_alt = ($topic_rowset[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['New_posts'];
-               $newest_post_img = '<a href="'.append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;view=newest").'"><img 
+               $folder_alt = ($topic_rowset[$i]['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['New_posts'];
+               $newest_post_img = '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;view=newest").'"><img 
 			   src="'.$images['icon_newest_reply'].'" alt="'.$lang['View_newest_post'].'" title="'.$lang['View_newest_post'].'" border="0" /></a> ';
             endif;
         else:
           $folder_image = $folder;
-          $folder_alt = ($topic_rowset[$i]['topic_status'] == TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+          $folder_alt = ($topic_rowset[$i]['topic_status'] == NUKE_TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
           $newest_post_img = '';
         endif;
       else:
         $folder_image = $folder;
-        $folder_alt = ($topic_rowset[$i]['topic_status'] == TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+        $folder_alt = ($topic_rowset[$i]['topic_status'] == NUKE_TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
         $newest_post_img = '';
       endif;
     endif;
@@ -736,7 +736,7 @@ if($total_topics):
        $times = 1;
 
        for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page']):
-         $goto_page .= '<a href="'.append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=".$topic_id."&amp;start=$j").'">'.$times.'</a>';
+         $goto_page .= '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=".$topic_id."&amp;start=$j").'">'.$times.'</a>';
          if($times == 1 && $total_pages > 4):
             $goto_page .= ' ... ';
             $times = $total_pages - 3;
@@ -759,21 +759,21 @@ if($total_topics):
     $topic_rowset[$i]['user2'] = UsernameColor($topic_rowset[$i]['user2']);
     # Mod: Advanced Username Color v1.0.5 END
 
-    $view_topic_url = append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id");
-    $topic_author = ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL.'='.$topic_rowset[$i]['user_id']).'">' : '';
+    $view_topic_url = append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id");
+    $topic_author = ($topic_rowset[$i]['user_id'] != NUKE_ANONYMOUS) ? '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL.'='.$topic_rowset[$i]['user_id']).'">' : '';
     
-	$topic_author .= ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? $topic_rowset[$i]['username'] : (($topic_rowset[$i]['post_username'] != '') 
+	$topic_author .= ($topic_rowset[$i]['user_id'] != NUKE_ANONYMOUS) ? $topic_rowset[$i]['username'] : (($topic_rowset[$i]['post_username'] != '') 
 	? $topic_rowset[$i]['post_username'] : $lang['Guest']);
     
-	$topic_author .= ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? '</a>' : '';
+	$topic_author .= ($topic_rowset[$i]['user_id'] != NUKE_ANONYMOUS) ? '</a>' : '';
     $first_post_time = create_date($board_config['default_dateformat'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone']);
     $last_post_time = create_date($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
     
-	$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') 
+	$last_post_author = ($topic_rowset[$i]['id2'] == NUKE_ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') 
 	? $topic_rowset[$i]['post_username2'].' ' : $lang['Guest'].' ' ) : '<a 
-	href="'. append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL.'='.$topic_rowset[$i]['id2']).'">'.$topic_rowset[$i]['user2'].'</a>';
+	href="'. append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL.'='.$topic_rowset[$i]['id2']).'">'.$topic_rowset[$i]['user2'].'</a>';
     
-	$last_post_url = '<a href="'.append_sid("viewtopic.$phpEx?".POST_POST_URL.'='.$topic_rowset[$i]['topic_last_post_id']).'#'.$topic_rowset[$i]['topic_last_post_id'].'"><i 
+	$last_post_url = '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL.'='.$topic_rowset[$i]['topic_last_post_id']).'#'.$topic_rowset[$i]['topic_last_post_id'].'"><i 
 	class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$lang['View_latest_post'].'"></i></a>';
     
 	$views = $topic_rowset[$i]['topic_views'];
@@ -826,7 +826,7 @@ if($total_topics):
         $template->assign_vars(array(
 
        # Mod: Topic display order v1.0.2 START
-          'PAGINATION' => generate_pagination("viewforum.$phpEx?".POST_FORUM_URL."=$forum_id&amp;
+          'PAGINATION' => generate_pagination("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id&amp;
 		  topicdays=$topic_days&amp;sort=$sort_value&amp;order=$order_value", $topics_count, $board_config['topics_per_page'], $start),
        # Mod: Topic display order v1.0.2 START
           'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($topics_count / $board_config['topics_per_page'] )),
@@ -835,7 +835,7 @@ if($total_topics):
 
 else:
     # No topics
-    $no_topics_msg = ($forum_row['forum_status'] == FORUM_LOCKED) ? $lang['Forum_locked'] : $lang['No_topics_post_one'];
+    $no_topics_msg = ($forum_row['forum_status'] == NUKE_FORUM_LOCKED) ? $lang['Forum_locked'] : $lang['No_topics_post_one'];
     $template->assign_vars(array(
         'L_NO_TOPICS' => $no_topics_msg)
     );
@@ -846,16 +846,16 @@ endif;
 switch(SQL_LAYER):
 	case 'postgresql':
 		$sql = "SELECT f.*, p.post_time, p.post_username, u.username, u.user_id 
-			FROM ".FORUMS_TABLE." f, ".POSTS_TABLE." p, ".USERS_TABLE." u
+			FROM ".NUKE_FORUMS_TABLE." f, ".NUKE_POSTS_TABLE." p, ".NUKE_USERS_TABLE." u
 			WHERE p.post_id = f.forum_last_post_id 
 				AND u.user_id = p.poster_id  
 				AND f.forum_parent = '{$forum_id}'
 				UNION (
 					SELECT f.*, NULL, NULL, NULL, NULL
-					FROM ".FORUMS_TABLE." f
+					FROM ".NUKE_FORUMS_TABLE." f
 					WHERE NOT EXISTS (
 						SELECT p.post_time
-						FROM ".POSTS_TABLE." p
+						FROM ".NUKE_POSTS_TABLE." p
 						WHERE p.post_id = f.forum_last_post_id  
 					)
 				)
@@ -863,7 +863,7 @@ switch(SQL_LAYER):
 		break;
 	case 'oracle':
 		$sql = "SELECT f.*, p.post_time, p.post_username, u.username, u.user_id
-			FROM ".FORUMS_TABLE." f, ".POSTS_TABLE." p, ".USERS_TABLE." u
+			FROM ".NUKE_FORUMS_TABLE." f, ".NUKE_POSTS_TABLE." p, ".NUKE_USERS_TABLE." u
 			WHERE p.post_id = f.forum_last_post_id(+)
 				AND u.user_id = p.poster_id(+)
 				AND f.forum_parent = '{$forum_id}'
@@ -871,26 +871,26 @@ switch(SQL_LAYER):
 		break;
 	default:
 		$sql = "SELECT f.*, p.post_time, p.post_username, u.username, u.user_id
-			FROM (( ".FORUMS_TABLE." f
-			LEFT JOIN ".POSTS_TABLE." p ON p.post_id = f.forum_last_post_id )
-			LEFT JOIN ".USERS_TABLE." u ON u.user_id = p.poster_id )
+			FROM (( ".NUKE_FORUMS_TABLE." f
+			LEFT JOIN ".NUKE_POSTS_TABLE." p ON p.post_id = f.forum_last_post_id )
+			LEFT JOIN ".NUKE_USERS_TABLE." u ON u.user_id = p.poster_id )
 			WHERE f.forum_parent = '{$forum_id}'
 			ORDER BY f.cat_id, f.forum_order";
 		break;
 endswitch;
 
-if(!($result = $db->sql_query($sql)))
-message_die(GENERAL_ERROR,'Could not query subforums information','', __LINE__, __FILE__,$sql);
+if(!($result = $nuke_db->sql_query($sql)))
+message_die(NUKE_GENERAL_ERROR,'Could not query subforums information','', __LINE__, __FILE__,$sql);
 $subforum_data = array();
-while($row = $db->sql_fetchrow($result)):
+while($row = $nuke_db->sql_fetchrow($result)):
  $subforum_data[] = $row;
 endwhile;
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 
 if(($total_forums = count($subforum_data)) > 0):
 	# Find which forums are visible for this user
 	$is_auth_ary = array();
-	$is_auth_ary = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata, $subforum_data);
+	$is_auth_ary = auth(NUKE_AUTH_VIEW, NUKE_AUTH_LIST_ALL, $userdata, $subforum_data);
 	$display_forums = false;
 
 	for($j = 0; $j < $total_forums; $j++):
@@ -908,7 +908,7 @@ if($total_forums)
 	$template->assign_block_vars('catrow', array(
 		'CAT_ID'	=> $forum_id,
 		'CAT_DESC'	=> $forum_row['forum_name'],
-		'U_VIEWCAT' => append_sid("viewforum.$phpEx?" . POST_FORUM_URL ."=$forum_id"),
+		'U_VIEWCAT' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL ."=$forum_id"),
 		));
 
 	
@@ -916,27 +916,27 @@ if($total_forums)
 	# posts made since user last visited
 	if($userdata['session_logged_in']):
 		$sql = "SELECT t.forum_id, t.topic_id, p.post_time 
-			FROM ".TOPICS_TABLE." t, ".POSTS_TABLE." p 
+			FROM ".NUKE_BB_TOPICS_TABLE." t, ".NUKE_POSTS_TABLE." p 
 			WHERE p.post_id = t.topic_last_post_id 
 				AND p.post_time > ".$userdata['user_lastvisit']." 
 				AND t.topic_moved_id = 0"; 
 
-		if(!($result = $db->sql_query($sql)))
-		message_die(GENERAL_ERROR,'Could not query new topic information','', __LINE__, __FILE__,$sql);
+		if(!($result = $nuke_db->sql_query($sql)))
+		message_die(NUKE_GENERAL_ERROR,'Could not query new topic information','', __LINE__, __FILE__,$sql);
 
 		$new_topic_data = array();
 
-		while($topic_data = $db->sql_fetchrow($result)):
+		while($topic_data = $nuke_db->sql_fetchrow($result)):
 			$new_topic_data[$topic_data['forum_id']][$topic_data['topic_id']] = $topic_data['post_time'];
 		endwhile;
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
 	endif;
 
 	# Obtain list of moderators of each forum
 	# First users, then groups ... broken into two queries
 	$subforum_moderators = array();
 	$sql = "SELECT aa.forum_id, u.user_id, u.username 
-		FROM ".AUTH_ACCESS_TABLE." aa, ".USER_GROUP_TABLE." ug, ".GROUPS_TABLE." g, ".USERS_TABLE." u
+		FROM ".NUKE_AUTH_ACCESS_TABLE." aa, ".NUKE_USER_GROUP_TABLE." ug, ".NUKE_GROUPS_TABLE." g, ".NUKE_USERS_TABLE." u
 		WHERE aa.auth_mod = ".TRUE." 
 			AND g.group_single_user = 1 
 			AND ug.group_id = aa.group_id 
@@ -945,31 +945,31 @@ if($total_forums)
 		GROUP BY u.user_id, u.username, aa.forum_id 
 		ORDER BY aa.forum_id, u.user_id";
 
-	if (!($result = $db->sql_query($sql, false, true)))
-	message_die(GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
+	if (!($result = $nuke_db->sql_query($sql, false, true)))
+	message_die(NUKE_GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
 
-	while($row = $db->sql_fetchrow($result)):
-	 $subforum_moderators[$row['forum_id']][] = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
+	while($row = $nuke_db->sql_fetchrow($result)):
+	 $subforum_moderators[$row['forum_id']][] = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
 	endwhile;
-	$db->sql_freeresult($result);	
+	$nuke_db->sql_freeresult($result);	
 
 	$sql = "SELECT aa.forum_id, g.group_id, g.group_name 
-		FROM ".AUTH_ACCESS_TABLE." aa, ".USER_GROUP_TABLE." ug, ".GROUPS_TABLE." g 
+		FROM ".NUKE_AUTH_ACCESS_TABLE." aa, ".NUKE_USER_GROUP_TABLE." ug, ".NUKE_GROUPS_TABLE." g 
 		WHERE aa.auth_mod = ".TRUE." 
 			AND g.group_single_user = 0 
-			AND g.group_type <> ".GROUP_HIDDEN."
+			AND g.group_type <> ".NUKE_GROUP_HIDDEN."
 			AND ug.group_id = aa.group_id 
 			AND g.group_id = aa.group_id 
 		GROUP BY g.group_id, g.group_name, aa.forum_id 
 		ORDER BY aa.forum_id, g.group_id";
 
-	if(!($result = $db->sql_query($sql,false,true)))
-	message_die(GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
+	if(!($result = $nuke_db->sql_query($sql,false,true)))
+	message_die(NUKE_GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
 
-	while($row = $db->sql_fetchrow($result))
-		$subforum_moderators[$row['forum_id']][] = '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=" . $row['group_id']) . '">' . 	GroupColor($row['group_name']) . '</a>';
+	while($row = $nuke_db->sql_fetchrow($result))
+		$subforum_moderators[$row['forum_id']][] = '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=" . $row['group_id']) . '">' . 	GroupColor($row['group_name']) . '</a>';
 	emdwhile;
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 
 	# show subforums
 	for($j = 0; $j < $total_forums; $j++):
@@ -978,7 +978,7 @@ if($total_forums)
 		
 			$unread_topics = false;
 
-			if($subforum_data[$j]['forum_status'] == FORUM_LOCKED):
+			if($subforum_data[$j]['forum_status'] == NUKE_FORUM_LOCKED):
 				$folder_image = $images['forum_locked']; 
 				$folder_alt = $lang['Forum_locked'];
 			else:
@@ -1020,11 +1020,11 @@ if($total_forums)
 				$last_post_time = create_date($board_config['default_dateformat'], $subforum_data[$j]['post_time'], $board_config['board_timezone']);
 				$last_post = $last_post_time . '<br />';
 				
-				$last_post .= ($subforum_data[$j]['user_id'] == ANONYMOUS) ? (($subforum_data[$j]['post_username'] != '') 
+				$last_post .= ($subforum_data[$j]['user_id'] == NUKE_ANONYMOUS) ? (($subforum_data[$j]['post_username'] != '') 
 				? $subforum_data[$j]['post_username'].' ' : $lang['Guest'].' ' ) : '<a 
-				href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL.'='.$subforum_data[$j]['user_id']).'">'.UsernameColor($subforum_data[$j]['username']).'</a> ';
+				href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL.'='.$subforum_data[$j]['user_id']).'">'.UsernameColor($subforum_data[$j]['username']).'</a> ';
 				
-				$last_post .= '<a href="'.append_sid("viewtopic.$phpEx?".POST_POST_URL.'='.$subforum_data[$j]['forum_last_post_id']).'#'.$subforum_data[$j]['forum_last_post_id'].'"><img 
+				$last_post .= '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL.'='.$subforum_data[$j]['forum_last_post_id']).'#'.$subforum_data[$j]['forum_last_post_id'].'"><img 
 				src="'.$images['icon_latest_reply'].'" border="0" alt="'.$lang['View_latest_post'].'" title="'.$lang['View_latest_post'].'" /></a>';
 			
 			else:
@@ -1062,7 +1062,7 @@ if($total_forums)
 				'LAST_POST_TIME' => $last_post_time,
 				'L_MODERATOR' => $l_moderators, 
 				'L_FORUM_FOLDER_ALT' => $folder_alt,
-				'U_VIEWFORUM' => append_sid("viewforum.$phpEx?" . POST_FORUM_URL . "=$subforum_id"))
+				'U_VIEWFORUM' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$subforum_id"))
 			);
 		endif;
 	endfor;

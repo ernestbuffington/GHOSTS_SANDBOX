@@ -39,7 +39,7 @@ if ($form['nthnumber'] == "" )
 {
    // OPEN TABLE CASE 1
    echo "<center><table bgcolor=\"FA5F19\" width=\"40%\" height=\"600\" border=\"4\" cellpadding=\"4\" cellspacing=\"4\" bordercolor=\"#FF8080\" background=\"http://www.scottybcoder.com/public_html/modules/Proof Of God/images/.jpg\"><tr><td>";  
-   // OPEN TABLE FOR USER INPUT  
+   // OPEN TABLE FOR NUKE_USER INPUT  
    echo "<center><table bgcolor=\"FFFFCC\" width=\"70%\" height=\"500\" border=\"4\" cellpadding=\"4\" cellspacing=\"4\" bordercolor=\"#FF8080\">";
 
    // OPEN FORM

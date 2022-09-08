@@ -33,7 +33,7 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', TRUE);
+define('IN_PHPBB2', TRUE);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
@@ -41,15 +41,15 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 //
 // Parameters
 //
-$post_id = (isset($HTTP_GET_VARS[POST_POST_URL])) ? intval($HTTP_GET_VARS[POST_POST_URL]) : ((isset($HTTP_POST_VARS[POST_POST_URL])) ? intval($HTTP_POST_VARS[POST_POST_URL]) : 0);
-$topic_id = (isset($HTTP_GET_VARS[POST_TOPIC_URL])) ? intval($HTTP_GET_VARS[POST_TOPIC_URL]) : ((isset($HTTP_POST_VARS[POST_TOPIC_URL])) ? intval($HTTP_POST_VARS[POST_TOPIC_URL]) : 0);
+$post_id = (isset($HTTP_GET_VARS[NUKE_POST_POST_URL])) ? intval($HTTP_GET_VARS[NUKE_POST_POST_URL]) : ((isset($HTTP_POST_VARS[NUKE_POST_POST_URL])) ? intval($HTTP_POST_VARS[NUKE_POST_POST_URL]) : 0);
+$topic_id = (isset($HTTP_GET_VARS[NUKE_POST_TOPIC_URL])) ? intval($HTTP_GET_VARS[NUKE_POST_TOPIC_URL]) : ((isset($HTTP_POST_VARS[NUKE_POST_TOPIC_URL])) ? intval($HTTP_POST_VARS[NUKE_POST_TOPIC_URL]) : 0);
 $start = (isset($HTTP_GET_VARS['start'])) ? intval($HTTP_GET_VARS['start']) : ((isset($HTTP_POST_VARS['start'])) ? intval($HTTP_POST_VARS['start']) : 0);
 
 
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_PROFILE);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_PROFILE);
 init_userprefs($userdata);
 //
 // End session management
@@ -58,19 +58,19 @@ init_userprefs($userdata);
 
 if(!$userdata['session_logged_in'])
 {
-  $redirect = ($post_id) ? POST_POST_URL . "=$post_id" : POST_TOPIC_URL . "=$topic_id&start=$start";
-  redirect(append_sid("login.$phpEx?redirect=emailtopic.$phpEx&$redirect", true));
+  $nuke_redirect = ($post_id) ? NUKE_POST_POST_URL . "=$post_id" : NUKE_POST_TOPIC_URL . "=$topic_id&start=$start";
+  nuke_redirect(append_sid("login.$phpEx?nuke_redirect=emailtopic.$phpEx&$nuke_redirect", true));
 }
 
 
 // Check if the specified ID('s) exist
-$sql = ($post_id) ? 'SELECT t.topic_id, t.topic_title, t.forum_id, p.post_id FROM ' . TOPICS_TABLE . ' t, ' . POSTS_TABLE . ' p WHERE p.post_id = ' . $post_id . ' AND t.topic_id = p.topic_id' : 'SELECT topic_id, topic_title, forum_id FROM ' . TOPICS_TABLE . ' WHERE topic_id = ' . $topic_id;
-if(!$result = $db->sql_query($sql))
+$sql = ($post_id) ? 'SELECT t.topic_id, t.topic_title, t.forum_id, p.post_id FROM ' . NUKE_BB_TOPICS_TABLE . ' t, ' . NUKE_POSTS_TABLE . ' p WHERE p.post_id = ' . $post_id . ' AND t.topic_id = p.topic_id' : 'SELECT topic_id, topic_title, forum_id FROM ' . NUKE_BB_TOPICS_TABLE . ' WHERE topic_id = ' . $topic_id;
+if(!$result = $nuke_db->sql_query($sql))
 {
-  message_die(GENERAL_ERROR, 'Could not obtain topic information', __LINE__, __FILE__, $sql);
+  message_die(NUKE_GENERAL_ERROR, 'Could not obtain topic information', __LINE__, __FILE__, $sql);
 }
-$row = $db->sql_fetchrow($result);
-$db->sql_freeresult($result);
+$row = $nuke_db->sql_fetchrow($result);
+$nuke_db->sql_freeresult($result);
 
 $topic_title = $row['topic_title'];
 $topic_id = $row['topic_id'];
@@ -81,7 +81,7 @@ $post_id = $row['post_id'];
 // If neither a topic nor post are specified, DIE!
 if(!$topic_id && !$post_id)
 {
-  message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+  message_die(NUKE_GENERAL_MESSAGE, 'Topic_post_not_exist');
 }
 
 
@@ -95,19 +95,19 @@ $email_limit = 5;
 $email_time = 24;
 $current_time = time();
 $sql = 'SELECT COUNT(user_id) AS total
-    FROM ' . TOPICS_EMAIL_TABLE . '
+    FROM ' . NUKE_TOPICS_EMAIL_TABLE . '
     WHERE user_id = ' . $userdata['user_id'] . '
     AND time >= ' . ($current_time - ($email_time * 3600));
-if(!$result = $db->sql_query($sql))
+if(!$result = $nuke_db->sql_query($sql))
 {
-  message_die(GENERAL_ERROR, 'Could not obtain user\'s email informaton', __LINE__, __FILE__, $sql);
+  message_die(NUKE_GENERAL_ERROR, 'Could not obtain user\'s email informaton', __LINE__, __FILE__, $sql);
 }
 
-$row = $db->sql_fetchrow($result);
-$db->sql_freeresult($result);
+$row = $nuke_db->sql_fetchrow($result);
+$nuke_db->sql_freeresult($result);
 if($row['total'] >= $email_limit)
 {
-  message_die(GENERAL_MESSAGE, sprintf($lang['Email_max_exceeded'], $email_limit, $email_time));
+  message_die(NUKE_GENERAL_MESSAGE, sprintf($lang['Email_max_exceeded'], $email_limit, $email_time));
 }
 */
 
@@ -121,17 +121,17 @@ if(isset($_POST['submit']))
 
   if(strlen($friend_name) < 3 || strlen($friend_email) < 3)
   {
-    message_die(GENERAL_MESSAGE, $lang['No_friend_specified']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['No_friend_specified']);
   }
 
   if(strlen($friend_name) > 100)
   {
-    message_die(GENERAL_MESSAGE, $lang['Friend_name_too_long']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['Friend_name_too_long']);
   }
 
   if(strlen($message) > 255)
   {
-    message_die(GENERAL_MESSAGE, $lang['Message_too_long']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['Message_too_long']);
   }
 
 
@@ -141,7 +141,7 @@ if(isset($_POST['submit']))
   $server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
   $script_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['script_path']));
   $script_name = ($script_name != '') ? 'modules.php?name=Forums&file=viewtopic&' : 'modules.php?name=Forums&file=viewtopic&';
-  $u_viewtopic = $server_protocol . $server_name . $server_port . $script_name . POST_TOPIC_URL . "=$topic_id";
+  $u_viewtopic = $server_protocol . $server_name . $server_port . $script_name . NUKE_POST_TOPIC_URL . "=$topic_id";
 
   include('includes/emailer.'.$phpEx);
   $emailer = new emailer($board_config['smtp_delivery']);
@@ -166,27 +166,27 @@ if(isset($_POST['submit']))
 
   // Add record to database
   $current_time = time();
-  $sql = "INSERT INTO " . TOPICS_EMAIL_TABLE . " (user_id, friend_name, friend_email, message, topic_id, time) VALUES (" . $userdata['user_id'] . ", '" . str_replace("\'", "''", $friend_name) . "', '" . str_replace ("\'", "''", $friend_email) . "', '" . str_replace ("\'", "''", $message) . "', $topic_id, $current_time)";
-  if(!$result = $db->sql_query($sql))
+  $sql = "INSERT INTO " . NUKE_TOPICS_EMAIL_TABLE . " (user_id, friend_name, friend_email, message, topic_id, time) VALUES (" . $userdata['user_id'] . ", '" . str_replace("\'", "''", $friend_name) . "', '" . str_replace ("\'", "''", $friend_email) . "', '" . str_replace ("\'", "''", $message) . "', $topic_id, $current_time)";
+  if(!$result = $nuke_db->sql_query($sql))
   {
-    message_die(GENERAL_ERROR, 'Could not insert topic email data', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not insert topic email data', __LINE__, __FILE__, $sql);
   }
 
 
-  // All done - add the post anchor if a post ID was specified, and redirect to the original topic
-  $redirect = ($post_id) ? POST_POST_URL . "=$post_id" : POST_TOPIC_URL . "=$topic_id&amp;start=$start";
-  $template->assign_var('META', '<meta http-equiv="refresh" content="3; url=' . append_sid("viewtopic.$phpEx?$redirect") . (($post_id) ? "#$post_id" : '') . '" />');
+  // All done - add the post anchor if a post ID was specified, and nuke_redirect to the original topic
+  $nuke_redirect = ($post_id) ? NUKE_POST_POST_URL . "=$post_id" : NUKE_POST_TOPIC_URL . "=$topic_id&amp;start=$start";
+  $template->assign_var('META', '<meta http-equiv="refresh" content="3; url=' . append_sid("viewtopic.$phpEx?$nuke_redirect") . (($post_id) ? "#$post_id" : '') . '" />');
 
-  $msg = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?$redirect") . (($post_id) ? "#$post_id" : '') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
-  message_die(GENERAL_MESSAGE, $msg);
+  $msg = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?$nuke_redirect") . (($post_id) ? "#$post_id" : '') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+  message_die(NUKE_GENERAL_MESSAGE, $msg);
 }
 
 
 //
 // Default page
 //
-$s_hidden_fields = '<input type="hidden" name="' . POST_POST_URL . '" value="' . $post_id . '" />';
-$s_hidden_fields .= '<input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '" />';
+$s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_POST_URL . '" value="' . $post_id . '" />';
+$s_hidden_fields .= '<input type="hidden" name="' . NUKE_POST_TOPIC_URL . '" value="' . $topic_id . '" />';
 $s_hidden_fields .= '<input type="hidden" name="start" value="' . $start . '" />';
 
 

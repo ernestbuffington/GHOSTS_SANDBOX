@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -48,7 +48,7 @@ class cached_db
 
 class StatisticsDB
 {
-    var $db_result = array();
+    var $nuke_db_result = array();
     var $index = -2;
     var $numrows_data = array();
     var $fetchrowset_data = array();
@@ -58,7 +58,7 @@ class StatisticsDB
     var $curr_fs_row = 0;
     var $curr_f_row = 0;
 
-    // DEBUG
+    // NUKE_DEBUG
     var $num_queries = 0;
     var $sql_time = 0;
     var $sql_report = '';
@@ -99,7 +99,7 @@ class StatisticsDB
 
     function sql_query($query = "", $transaction = FALSE)
     {
-        global $db, $dbms;
+        global $nuke_db, $nuke_dbms;
 
         if ($this->index == -2)
         {
@@ -118,39 +118,39 @@ class StatisticsDB
         {
             $this->num_queries++;
 
-            if ( STATS_DEBUG )
+            if ( STATS_NUKE_DEBUG )
             {
                 global $stats_starttime;
                 $curtime = explode(' ', microtime());
                 $curtime = $curtime[0] + $curtime[1] - $stats_starttime;
             }
 
-            $db_result = $db->sql_query($query, $transaction);
+            $nuke_db_result = $nuke_db->sql_query($query, $transaction);
 
-            if ( STATS_DEBUG )
+            if ( STATS_NUKE_DEBUG )
             {
                 $endtime = explode(' ', microtime());
                 $endtime = $endtime[0] + $endtime[1] - $stats_starttime;
 
                 $this->sql_report .= "<pre>Query:\t" . htmlspecialchars(preg_replace('/[\s]*[\n\r\t]+[\n\r\s\t]*/', "\n\t", $query)) . "\n\n";
-                $affected_rows = $db->sql_affectedrows($db_result);
-                if ($db_result)
+                $affected_rows = $nuke_db->sql_affectedrows($nuke_db_result);
+                if ($nuke_db_result)
                 {
                     $this->sql_report .= "Time before:  $curtime\nTime after:   $endtime\nElapsed time: <strong>" . ($endtime - $curtime) . "</strong>\n</pre>";
                 }
                 else
                 {
-                    $error = $db->sql_error();
+                    $error = $nuke_db->sql_error();
                     $this->sql_report .= '<strong>FAILED</strong> - MySQL Error ' . $error['code'] . ': ' . htmlspecialchars($error['message']) . '<br /><br /><pre>';
                 }
                 $this->sql_time += $endtime - $curtime;
 
-                if ( (($dbms == 'mysql') || ($dbms == 'mysql4')) && (function_exists('mysql_fetch_assoc')) )
+                if ( (($nuke_dbms == 'mysql') || ($nuke_dbms == 'mysql4')) && (function_exists('mysql_fetch_assoc')) )
                 {
                     if (preg_match('/^SELECT/', $query))
                     {
                         $html_table = FALSE;
-                        if ($result = mysql_query("EXPLAIN $query", $db->db_connect_id))
+                        if ($result = mysql_query("EXPLAIN $query", $nuke_db->db_connect_id))
                         {
                             $i = 0;
                             while ($row = mysql_fetch_assoc($result))
@@ -181,19 +181,19 @@ class StatisticsDB
         }
         else
         {
-            $db_result = $this->index;
+            $nuke_db_result = $this->index;
             $this->curr_n_row = 0;
             $this->curr_fs_row = 0;
             $this->curr_f_row = 0;
         }
 
-        $this->db_result[$this->index] = $db_result;
+        $this->db_result[$this->index] = $nuke_db_result;
 
         $this->begin_new_transaction();
         
         if (!$this->use_cache)
         {
-            return ($db_result);
+            return ($nuke_db_result);
         }
         else
         {
@@ -203,11 +203,11 @@ class StatisticsDB
 
     function sql_numrows($query_id = 0)
     {
-        global $db;
+        global $nuke_db;
 
         if (!$this->use_cache)
         {
-            $result = $db->sql_numrows($query_id);
+            $result = $nuke_db->sql_numrows($query_id);
             $this->numrows_data[$this->index][] = $result;
         }
         else
@@ -220,11 +220,11 @@ class StatisticsDB
 
     function sql_fetchrowset($query_id = 0)
     {
-        global $db;
+        global $nuke_db;
 
         if (!$this->use_cache)
         {
-            $result = $db->sql_fetchrowset($query_id);
+            $result = $nuke_db->sql_fetchrowset($query_id);
             $this->fetchrowset_data[$this->index][] = $result;
         }
         else
@@ -237,11 +237,11 @@ class StatisticsDB
 
     function sql_fetchrow($query_id = 0)
     {
-        global $db;
+        global $nuke_db;
 
         if (!$this->use_cache)
         {
-            $result = $db->sql_fetchrow($query_id);
+            $result = $nuke_db->sql_fetchrow($query_id);
             $this->fetchrow_data[$this->index][] = $result;
         }
         else
@@ -254,7 +254,7 @@ class StatisticsDB
 
     function end_cached_query($module_id, $empty_cache = false)
     {
-        global $db;
+        global $nuke_db;
 
         if ($this->use_cache)
         {
@@ -277,9 +277,9 @@ class StatisticsDB
             WHERE module_id = " . $module_id;
         }
 
-        if (!$db->sql_query($sql))
+        if (!$nuke_db->sql_query($sql))
         {
-            message_die(GENERAL_ERROR, 'Unable to update DB Cache', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to update DB Cache', '', __LINE__, __FILE__, $sql);
         }
     }
 }

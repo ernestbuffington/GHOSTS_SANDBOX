@@ -21,14 +21,14 @@
       Automatic Subject on Reply               v1.0.0       09/03/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
 
 $submit = $refresh = FALSE;
 $hidden_form_fields = '<input type="hidden" name="mode" value="reply" />';
-$hidden_form_fields .= '<input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '" />';
+$hidden_form_fields .= '<input type="hidden" name="' . NUKE_POST_TOPIC_URL . '" value="' . $topic_id . '" />';
 $hidden_form_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
 //
 // Set toggles for various options
@@ -39,7 +39,7 @@ if ( !$board_config['allow_html'] )
 }
 else
 {
-    $html_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_html']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? $board_config['allow_html'] : $userdata['user_allowhtml'] );
+    $html_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_html']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == NUKE_ANONYMOUS ) ? $board_config['allow_html'] : $userdata['user_allowhtml'] );
 }
 
 if ( !$board_config['allow_bbcode'] )
@@ -48,7 +48,7 @@ if ( !$board_config['allow_bbcode'] )
 }
 else
 {
-    $bbcode_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_bbcode']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? $board_config['allow_bbcode'] : $userdata['user_allowbbcode'] );
+    $bbcode_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_bbcode']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == NUKE_ANONYMOUS ) ? $board_config['allow_bbcode'] : $userdata['user_allowbbcode'] );
 }
 
 if ( !$board_config['allow_smilies'] )
@@ -57,7 +57,7 @@ if ( !$board_config['allow_smilies'] )
 }
 else
 {
-    $smilies_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_smilies']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? $board_config['allow_smilies'] : $userdata['user_allowsmile'] );
+    $smilies_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_smilies']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == NUKE_ANONYMOUS ) ? $board_config['allow_smilies'] : $userdata['user_allowsmile'] );
 }
 
 if ( ($submit || $refresh) && $is_auth['auth_read'])
@@ -69,16 +69,16 @@ else
     if ( $userdata['session_logged_in'] && $is_auth['auth_read'] )
     {
         $sql = "SELECT topic_id
-            FROM " . TOPICS_WATCH_TABLE . "
+            FROM " . NUKE_TOPICS_WATCH_TABLE . "
             WHERE topic_id = $topic_id
                 AND user_id = " . $userdata['user_id'];
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Could not obtain topic watch information', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not obtain topic watch information', '', __LINE__, __FILE__, $sql);
         }
 
-        $notify_user = ( $db->sql_fetchrow($result) ) ? TRUE : $userdata['user_notify'];
-        $db->sql_freeresult($result);
+        $notify_user = ( $nuke_db->sql_fetchrow($result) ) ? TRUE : $userdata['user_notify'];
+        $nuke_db->sql_freeresult($result);
     }
     else
     {
@@ -86,11 +86,11 @@ else
     }
 }
 
-$attach_sig = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['attach_sig']) ) ? TRUE : 0 ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? 0 : $userdata['user_attachsig'] );
+$attach_sig = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['attach_sig']) ) ? TRUE : 0 ) : ( ( $userdata['user_id'] == NUKE_ANONYMOUS ) ? 0 : $userdata['user_attachsig'] );
 
 $user_sig = ( $userdata['user_sig'] != '' ) ? $userdata['user_sig'] : '';
 
-if ( (($userdata['user_quickreply_mode']==1) && ($userdata['user_id'] != ANONYMOUS)) || (($board_config['anonymous_sqr_mode']==1) && ($userdata['user_id'] == ANONYMOUS)) )
+if ( (($userdata['user_quickreply_mode']==1) && ($userdata['user_id'] != NUKE_ANONYMOUS)) || (($board_config['anonymous_sqr_mode']==1) && ($userdata['user_id'] == NUKE_ANONYMOUS)) )
 {
     $template->assign_block_vars('switch_advanced_qr', array());
     //
@@ -145,7 +145,7 @@ if ( (($userdata['user_quickreply_mode']==1) && ($userdata['user_id'] != ANONYMO
     //
     if ( $userdata['session_logged_in'] && $is_auth['auth_read'] )
     {
-        if ( $mode != 'editpost' || ( $mode == 'editpost' && $post_info['poster_id'] != ANONYMOUS ) )
+        if ( $mode != 'editpost' || ( $mode == 'editpost' && $post_info['poster_id'] != NUKE_ANONYMOUS ) )
         {
             $template->assign_block_vars('switch_advanced_qr.switch_notify_checkbox', array());
         }
@@ -155,15 +155,15 @@ if ( (($userdata['user_quickreply_mode']==1) && ($userdata['user_id'] != ANONYMO
  ******************************************************/
 if (  $is_auth['auth_mod'] )
 {
-        $sql = "SELECT topic_status FROM " . TOPICS_TABLE . " WHERE topic_id = '$reply_topic_id'";
-            if (!$result = $db->sql_query($sql)) {
-            message_die(GENERAL_ERROR, 'Could not obtain topic status information', '', __LINE__, __FILE__, $sql);
+        $sql = "SELECT topic_status FROM " . NUKE_BB_TOPICS_TABLE . " WHERE topic_id = '$reply_topic_id'";
+            if (!$result = $nuke_db->sql_query($sql)) {
+            message_die(NUKE_GENERAL_ERROR, 'Could not obtain topic status information', '', __LINE__, __FILE__, $sql);
             }
-        $topic_status = $db->sql_fetchrow($result);
-        $db->sql_freeresult($result);
+        $topic_status = $nuke_db->sql_fetchrow($result);
+        $nuke_db->sql_freeresult($result);
         $topic_status = $topic_status['topic_status'];
 
-    if ( $topic_status == TOPIC_LOCKED )
+    if ( $topic_status == NUKE_TOPIC_LOCKED )
     {
         $template->assign_block_vars('switch_advanced_qr.switch_unlock_topic', array());
 
@@ -172,7 +172,7 @@ if (  $is_auth['auth_mod'] )
             'S_UNLOCK_CHECKED' => ( $unlock ) ? 'checked="checked"' : '')
         );
     }
-    else if ( $topic_status == TOPIC_UNLOCKED )
+    else if ( $topic_status == NUKE_TOPIC_UNLOCKED )
     {
         $template->assign_block_vars('switch_advanced_qr.switch_lock_topic', array());
 
@@ -187,7 +187,7 @@ if (  $is_auth['auth_mod'] )
  ******************************************************/
 
     // Generate smilies listing for page output
-    generate_smilies('inline', PAGE_POSTING);
+    generate_smilies('inline', NUKE_PAGE_POSTING);
 
     $template->assign_vars(array(
 
@@ -233,7 +233,7 @@ else
     }
 }
 
-if( !$userdata['session_logged_in'] || ( $mode == 'editpost' && $post_info['poster_id'] == ANONYMOUS ) )
+if( !$userdata['session_logged_in'] || ( $mode == 'editpost' && $post_info['poster_id'] == NUKE_ANONYMOUS ) )
 {
     $template->assign_block_vars('switch_username_select', array());
 }
@@ -241,7 +241,7 @@ if( !$userdata['session_logged_in'] || ( $mode == 'editpost' && $post_info['post
 //
 // Output the data to the template
 //
-if ( (($userdata['user_open_quickreply']==1) && ($userdata['user_id'] != ANONYMOUS)) || (($board_config['anonymous_open_sqr']==1) && ($userdata['user_id'] == ANONYMOUS)) )
+if ( (($userdata['user_open_quickreply']==1) && ($userdata['user_id'] != NUKE_ANONYMOUS)) || (($board_config['anonymous_open_sqr']==1) && ($userdata['user_id'] == NUKE_ANONYMOUS)) )
 {
     $template->assign_block_vars('switch_open_qr_yes', array());
 }

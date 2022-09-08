@@ -15,7 +15,7 @@
  * 
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -128,9 +128,9 @@ echo "    <tr>\n"
     ."    </tr>\n";
 
 $fileeditproblem=0;
-$fileeditchecking=array("index.php"=>"#Arcade MOD - IBProSupport#",
-                        "includes/constants.php"=>"#PAGE_SCOREBOARD#",
-                        "modules/Forums/admin/index.php"=>"#case PAGE_GAME:#",
+$fileeditchecking=array("index.php"=>"#Arcade NUKE_MOD - IBProSupport#",
+                        "includes/constants.php"=>"#NUKE_PAGE_SCOREBOARD#",
+                        "modules/Forums/admin/index.php"=>"#case NUKE_PAGE_GAME:#",
                         "modules/Forums/admin/admin_users.php"=>"#game_highuser = 0 ;#");
 foreach($fileeditchecking as $file=>$pattern){
     $fp=fopen($root_path.$file, "r");
@@ -157,11 +157,11 @@ echo "    <tr>\n"
     ."    <tr>\n"
     ."        <td align=\"center\" width=\"150\"><strong>Tablename</strong></td><td align=\"center\"><strong>Status</strong></th>\n"
     ."    </tr>\n";
-$tablecheck=array(GAMES_TABLE,SCORES_TABLE,GAMEHASH_TABLE,ARCADE_CATEGORIES_TABLE,ARCADE_TABLE,AUTH_ARCADE_ACCESS_TABLE,COMMENTS_TABLE,ARCADE_FAV_TABLE);
+$tablecheck=array(NUKE_GAMES_TABLE,NUKE_SCORES_TABLE,NUKE_GAMEHASH_TABLE,NUKE_ARCADE_CATEGORIES_TABLE,NUKE_ARCADE_TABLE,NUKE_AUTH_ARCADE_ACCESS_TABLE,NUKE_COMMENTS_TABLE,NUKE_ARCADE_FAV_TABLE);
 foreach($tablecheck as $tablename){
     echo "<tr><td>$tablename</td>";
     $SQL="SELECT COUNT(*) FROM $tablename";
-    $result=$db->sql_query($SQL);
+    $result=$nuke_db->sql_query($SQL);
     if ($result) 
         echo "<td align=\"center\"> OK</td>";
     else {
@@ -215,8 +215,8 @@ echo "    <tr>\n"
     ."        <td align=\"center\" width=\"150\"><strong>Name</strong></td><td align=\"center\"><strong>Status</strong></td>\n"
     ."    </tr>\n";
 
-$sql = "SELECT user_level FROM " . USERS_TABLE . " WHERE user_id = 2";
-$row = $db->sql_fetchrow($db->sql_query($sql));
+$sql = "SELECT user_level FROM " . NUKE_USERS_TABLE . " WHERE user_id = 2";
+$row = $nuke_db->sql_fetchrow($nuke_db->sql_query($sql));
 if (empty($row))
 {
 echo "<tr><td>Admin User ID Check</td>";

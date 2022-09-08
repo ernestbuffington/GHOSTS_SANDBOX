@@ -76,7 +76,7 @@ if ( !$result ) {
 	echo "<input type='hidden' name='msnl_cid' value='0'>\n";
 	echo "</div>\n";
 
-	$row = $db->sql_fetchrow( $result );
+	$row = $nuke_db->sql_fetchrow( $result );
 	
 	if ( $row['msnl_cnt'] > 0 ) { //This delete will affect current newsletters, get confirmation
 

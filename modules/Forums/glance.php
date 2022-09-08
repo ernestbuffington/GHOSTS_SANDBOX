@@ -23,7 +23,7 @@
        Smilies in Topic Titles Toggle           v1.0.0       09/10/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -49,7 +49,7 @@ include('includes/posting_icons.'. $phpEx);
     $glance_auth_read = intval($board_config['glance_auth_read']);
     $glance_topic_length = intval($board_config['glance_topic_length']);
     //
-    // GET USER LAST VISIT
+    // GET NUKE_USER LAST VISIT
     //
     $glance_last_visit = $userdata['user_lastvisit'];
     $glance_recent_offset = (isset($HTTP_GET_VARS['glance_recent_offset'])) ? intval($HTTP_GET_VARS['glance_recent_offset']) : 0;
@@ -76,7 +76,7 @@ include('includes/posting_icons.'. $phpEx);
     //
     if ( $glance_num_news )
     {
-        $news_data = $db->sql_fetchrow($result);
+        $news_data = $nuke_db->sql_fetchrow($result);
          $sql = "
             SELECT
                 f.forum_id, f.forum_name, f.forum_color" . $sql_title . ", t.topic_id, t.topic_last_post_id, t.topic_poster, t.topic_views, t.topic_replies, t.topic_type, t.topic_status, t.topic_icon,
@@ -85,12 +85,12 @@ include('includes/posting_icons.'. $phpEx);
                 u.username as last_username,
                 u2.username as author_username
             FROM "
-                . FORUMS_TABLE . " f, "
-                . POSTS_TABLE . " p, "
-                . TOPICS_TABLE . " t, "
-                . POSTS_TABLE . " p2, "
-                . USERS_TABLE . " u, "
-                . USERS_TABLE . " u2
+                . NUKE_FORUMS_TABLE . " f, "
+                . NUKE_POSTS_TABLE . " p, "
+                . NUKE_BB_TOPICS_TABLE . " t, "
+                . NUKE_POSTS_TABLE . " p2, "
+                . NUKE_USERS_TABLE . " u, "
+                . NUKE_USERS_TABLE . " u2
             WHERE
                 f.forum_id IN (" . $glance_news_forum_id . ")
                 AND t.forum_id = f.forum_id
@@ -103,29 +103,29 @@ include('includes/posting_icons.'. $phpEx);
 
         $sql .= ($glance_news_offset) ? " LIMIT " . $glance_news_offset . ", " . $glance_num_news : " LIMIT " . $glance_num_news;
 
-        if( !($result = $db->sql_query($sql)) )
+        if( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, "Could not query new news information", "", __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, "Could not query new news information", "", __LINE__, __FILE__, $sql);
         }
         $latest_news = array();
-        while ( $topic_row = $db->sql_fetchrow($result) )
+        while ( $topic_row = $nuke_db->sql_fetchrow($result) )
         {
             $topic_row['topic_title'] = ( count($orig_word) ) ? preg_replace($orig_word, $replacement_word, $topic_row['topic_title']) : $topic_row['topic_title'];
             $latest_news[] = $topic_row;
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 
-        // MOD NAV BEGIN
+        // NUKE_MOD NAV BEGIN
         // obtain the total number of topic for our news topic navigation bit
-        $sql = "SELECT SUM(forum_topics) as topic_total FROM " . FORUMS_TABLE . " f WHERE f.forum_id IN (" . $glance_news_forum_id . ")";
-        if ( !($result = $db->sql_query($sql)) )
+        $sql = "SELECT SUM(forum_topics) as topic_total FROM " . NUKE_FORUMS_TABLE . " f WHERE f.forum_id IN (" . $glance_news_forum_id . ")";
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, "Could not query total topics information", "", __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, "Could not query total topics information", "", __LINE__, __FILE__, $sql);
         }
-        $row = $db->sql_fetchrow($result);
+        $row = $nuke_db->sql_fetchrow($result);
         $overall_news_topics = $row['topic_total'];
-        $db->sql_freeresult($result);
-        // MOD NAV END
+        $nuke_db->sql_freeresult($result);
+        // NUKE_MOD NAV END
     }
 
     //
@@ -133,8 +133,8 @@ include('includes/posting_icons.'. $phpEx);
     //
     if ( $glance_num_recent )
     {
-        $glance_auth_level = ( $glance_auth_read ) ? AUTH_VIEW : AUTH_ALL;
-        $is_auth_ary = auth($glance_auth_level, AUTH_LIST_ALL, $userdata);
+        $glance_auth_level = ( $glance_auth_read ) ? NUKE_AUTH_VIEW : NUKE_AUTH_ALL;
+        $is_auth_ary = auth($glance_auth_level, NUKE_AUTH_LIST_ALL, $userdata);
 
         $forumsignore = $glance_news_forum_id;
         if ( $num_forums = count($is_auth_ary) )
@@ -168,12 +168,12 @@ include('includes/posting_icons.'. $phpEx);
                 u.username as last_username,
                 u2.username as author_username
             FROM "
-                . FORUMS_TABLE . " f, "
-                . POSTS_TABLE . " p, "
-                . TOPICS_TABLE . " t, "
-                . POSTS_TABLE . " p2, "
-                . USERS_TABLE . " u, "
-                . USERS_TABLE . " u2
+                . NUKE_FORUMS_TABLE . " f, "
+                . NUKE_POSTS_TABLE . " p, "
+                . NUKE_BB_TOPICS_TABLE . " t, "
+                . NUKE_POSTS_TABLE . " p2, "
+                . NUKE_USERS_TABLE . " u, "
+                . NUKE_USERS_TABLE . " u2
             WHERE
                 f.forum_id NOT IN (" . $forumsignore . $glance_recent_ignore . ")
                 AND t.forum_id = f.forum_id
@@ -186,23 +186,23 @@ include('includes/posting_icons.'. $phpEx);
 
         $sql .= ($glance_recent_offset) ? " LIMIT " . $glance_recent_offset . ", " . $glance_num_recent : " LIMIT " . $glance_num_recent;
 
-        if( !($result = $db->sql_query($sql)) )
+        if( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, "Could not query latest topic information", "", __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, "Could not query latest topic information", "", __LINE__, __FILE__, $sql);
         }
         $latest_topics = array();
         $latest_anns = array();
         $latest_stickys = array();
-        while ( $topic_row = $db->sql_fetchrow($result) )
+        while ( $topic_row = $nuke_db->sql_fetchrow($result) )
         {
             $topic_row['topic_title'] = ( count($orig_word) ) ? preg_replace($orig_word, $replacement_word, $topic_row['topic_title']) : $topic_row['topic_title'];
             switch ($topic_row['topic_type'])
                 {
-                    case POST_GLOBAL_ANNOUNCE:
-                    case POST_ANNOUNCE:
+                    case NUKE_POST_GLOBAL_ANNOUNCE:
+                    case NUKE_POST_ANNOUNCE:
                         $latest_anns[] = $topic_row;
                         break;
-                    case POST_STICKY:
+                    case NUKE_POST_STICKY:
                         $latest_stickys[] = $topic_row;
                         break;
                     default:
@@ -211,19 +211,19 @@ include('includes/posting_icons.'. $phpEx);
                 }
         }
         $latest_topics = array_merge($latest_anns, $latest_stickys, $latest_topics);
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 
-        // MOD NAV BEGIN
+        // NUKE_MOD NAV BEGIN
         // obtain the total number of topic for our recent topic navigation bit
-        $sql = "SELECT SUM(forum_topics) as topic_total FROM " . FORUMS_TABLE . " f WHERE f.forum_id NOT IN (" . $forumsignore . $glance_recent_ignore . $glance_news_forum_id . ")";
-        if ( !($result = $db->sql_query($sql)) )
+        $sql = "SELECT SUM(forum_topics) as topic_total FROM " . NUKE_FORUMS_TABLE . " f WHERE f.forum_id NOT IN (" . $forumsignore . $glance_recent_ignore . $glance_news_forum_id . ")";
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, "Could not query total topics information", "", __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, "Could not query total topics information", "", __LINE__, __FILE__, $sql);
         }
-        $row = $db->sql_fetchrow($result);
+        $row = $nuke_db->sql_fetchrow($result);
         $overall_total_topics = $row['topic_total'];
-        $db->sql_freeresult($result);
-        // MOD NAV END
+        $nuke_db->sql_freeresult($result);
+        // NUKE_MOD NAV END
     }
 
     //
@@ -278,7 +278,7 @@ include('includes/posting_icons.'. $phpEx);
                 endif;
 
                 //
-                // MOD TODAY AT BEGIN
+                // NUKE_MOD TODAY AT BEGIN
                 //
                 //if ( $board_config['time_today'] < $latest_news[$i]['post_time'])
                 //{
@@ -288,17 +288,17 @@ include('includes/posting_icons.'. $phpEx);
                 //{
                 //    $last_post_time = sprintf($lang['Yesterday_at'], create_date($board_config['default_timeformat'], $latest_news[$i]['post_time'], $board_config['board_timezone']));
                 //}
-                // MOD TODAY AT END
+                // NUKE_MOD TODAY AT END
 
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
                  $guest = (!empty($latest_topics[$i]['post_username'])) ? $latest_topics[$i]['post_username'] : $latest_topics[$i]['last_username'] . ' ';
-                $last_poster = ($latest_news[$i]['poster_id'] == ANONYMOUS ) ? ( ($latest_news[$i]['last_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '='  . $latest_news[$i]['poster_id']) . '">' . UsernameColor($latest_news[$i]['last_username']) . '</a> ';
+                $last_poster = ($latest_news[$i]['poster_id'] == NUKE_ANONYMOUS ) ? ( ($latest_news[$i]['last_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $latest_news[$i]['poster_id']) . '">' . UsernameColor($latest_news[$i]['last_username']) . '</a> ';
 
-                $last_post_img = '<a href="' . append_sid("viewtopic.$phpEx?"  . POST_POST_URL . '=' . $latest_news[$i]['topic_last_post_id']) . '#' . $latest_news[$i]['topic_last_post_id'] . '"><i class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$lang['View_latest_post'].'"></i></a>';
+                $last_post_img = '<a href="' . append_sid("viewtopic.$phpEx?"  . NUKE_POST_POST_URL . '=' . $latest_news[$i]['topic_last_post_id']) . '#' . $latest_news[$i]['topic_last_post_id'] . '"><i class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$lang['View_latest_post'].'"></i></a>';
 
-                $topic_poster = ($latest_news[$i]['topic_poster'] == ANONYMOUS ) ? ( ($latest_news[$i]['author_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '='  . $latest_news[$i]['topic_poster']) . '">' . UsernameColor($latest_news[$i]['author_username']) . '</a> ';
+                $topic_poster = ($latest_news[$i]['topic_poster'] == NUKE_ANONYMOUS ) ? ( ($latest_news[$i]['author_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $latest_news[$i]['topic_poster']) . '">' . UsernameColor($latest_news[$i]['author_username']) . '</a> ';
 
                 $last_post_time = create_date($board_config['default_dateformat'], $latest_news[$i]['post_time'], $board_config['board_timezone']);
 /*****[END]********************************************
@@ -341,7 +341,7 @@ include('includes/posting_icons.'. $phpEx);
 
                     );
             }
-            // MOD NAV BEGIN
+            // NUKE_MOD NAV BEGIN
             if (($glance_news_offset > 0) or ($glance_news_offset+$glance_num_news < $overall_news_topics))
             {
                 $new_url = '<a href="' . $glance_forum_dir . 'index&amp;glance_news_offset=';
@@ -359,7 +359,7 @@ include('includes/posting_icons.'. $phpEx);
                     $next_news_url = ($glance_recent_offset > 0) ? $new_url . ($glance_news_offset+$glance_num_news) . '&amp;glance_recent_offset=' . $glance_recent_offset . '" class="th">Next ' . $glance_num_news . ' &gt;&gt;</a>' : $new_url . ($glance_news_offset+$glance_num_news).'" class="th">Next ' . $glance_num_news . ' &gt;&gt;</a>';
                 }
             }
-            // MOD NAV END
+            // NUKE_MOD NAV END
         }
         else
         {
@@ -403,17 +403,17 @@ include('includes/posting_icons.'. $phpEx);
                 }
                 switch ($latest_topics[$i]['topic_type'])
                 {
-                    case POST_GLOBAL_ANNOUNCE:
+                    case NUKE_POST_GLOBAL_ANNOUNCE:
                         $bullet_full = $bullet_pre . ( ( $shownew && $glance_show_new_bullets ) ? $images['folder_global_announce_new'] :  $images['folder_global_announce'] ) . '" border="0" alt="" />';
                         break;
-                    case POST_ANNOUNCE:
+                    case NUKE_POST_ANNOUNCE:
                         $bullet_full = $bullet_pre . ( ( $shownew && $glance_show_new_bullets ) ? $images['folder_announce_new'] :  $images['folder_announce'] ) . '" border="0" alt="" />';
                         break;
-                    case POST_STICKY:
+                    case NUKE_POST_STICKY:
                         $bullet_full = $bullet_pre . ( ( $shownew && $glance_show_new_bullets ) ? $images['folder_sticky_new'] :  $images['folder_sticky'] ) . '" border="0" alt="" />';
                         break;
                     default:
-                        if ($latest_topics[$i]['topic_status'] == TOPIC_LOCKED)
+                        if ($latest_topics[$i]['topic_status'] == NUKE_TOPIC_LOCKED)
                         {
                             $folder = $images['folder_locked'];
                             $folder_new = $images['folder_locked_new'];
@@ -448,18 +448,18 @@ include('includes/posting_icons.'. $phpEx);
  ******************************************************/
                 $guest = (!empty($latest_topics[$i]['post_username'])) ? $latest_topics[$i]['post_username'] : $latest_topics[$i]['last_username'] . ' ';
 
-                $topic_poster = ($latest_topics[$i]['topic_poster'] == ANONYMOUS ) ? ( ($latest_topics[$i]['author_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '='  . $latest_topics[$i]['topic_poster']) . '">' . UsernameColor($latest_topics[$i]['author_username']) . '</a> ';
+                $topic_poster = ($latest_topics[$i]['topic_poster'] == NUKE_ANONYMOUS ) ? ( ($latest_topics[$i]['author_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $latest_topics[$i]['topic_poster']) . '">' . UsernameColor($latest_topics[$i]['author_username']) . '</a> ';
 
                 $last_post_time = create_date($board_config['default_dateformat'], $latest_topics[$i]['post_time'], $board_config['board_timezone']);
-                $last_poster = ($latest_topics[$i]['poster_id'] == ANONYMOUS ) ? ( ($latest_topics[$i]['last_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '='  . $latest_topics[$i]['poster_id']) . '">' . UsernameColor($latest_topics[$i]['last_username']) . '</a> ';
+                $last_poster = ($latest_topics[$i]['poster_id'] == NUKE_ANONYMOUS ) ? ( ($latest_topics[$i]['last_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $latest_topics[$i]['poster_id']) . '">' . UsernameColor($latest_topics[$i]['last_username']) . '</a> ';
 
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $last_post_img = '<a href="' . append_sid("viewtopic.$phpEx?"  . POST_POST_URL . '=' . $latest_topics[$i]['topic_last_post_id']) . '#' . $latest_topics[$i]['topic_last_post_id'] . '"><i class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$lang['View_latest_post'].'"></i></a>';
+                $last_post_img = '<a href="' . append_sid("viewtopic.$phpEx?"  . NUKE_POST_POST_URL . '=' . $latest_topics[$i]['topic_last_post_id']) . '#' . $latest_topics[$i]['topic_last_post_id'] . '"><i class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$lang['View_latest_post'].'"></i></a>';
 
                 //
-                // MOD TODAY AT BEGIN
+                // NUKE_MOD TODAY AT BEGIN
                 //
                 //if ( $board_config['time_today'] < $latest_topics[$i]['post_time'])
                 //{
@@ -469,7 +469,7 @@ include('includes/posting_icons.'. $phpEx);
                 //{
                 //    $last_post_time = sprintf($lang['Yesterday_at'], create_date($board_config['default_timeformat'], $latest_topics[$i]['post_time'], $board_config['board_timezone']));
                 //}
-                // MOD TODAY AT END
+                // NUKE_MOD TODAY AT END
 
 /*****[BEGIN]******************************************
  [ Mod:     Post Icons                         v1.0.1 ]
@@ -516,7 +516,7 @@ include('includes/posting_icons.'. $phpEx);
                 );
             }
 
-            // MOD NAV BEGIN
+            // NUKE_MOD NAV BEGIN
             if (($glance_recent_offset > 0) or ($glance_recent_offset+$glance_num_recent < $overall_total_topics))
             {
                 $new_url = '<a href="' . $glance_forum_dir . 'index&amp;glance_recent_offset=';
@@ -534,7 +534,7 @@ include('includes/posting_icons.'. $phpEx);
                     $next_recent_url = ($glance_news_offset > 0) ? $new_url . ($glance_recent_offset+$glance_num_recent) . '&amp;glance_news_offset=' . $glance_news_offset . '" class="th">Next ' . $glance_num_recent . ' &gt;&gt;</a>' : $new_url . ($glance_recent_offset+$glance_num_recent).'" class="th">Next ' . $glance_num_recent . ' &gt;&gt;</a>';
                 }
             }
-            // MOD NAV END
+            // NUKE_MOD NAV END
         }
         else
         {
@@ -553,7 +553,7 @@ include('includes/posting_icons.'. $phpEx);
             'PREV_URL' => $prev_news_url)
         );
 
-        // MOD CAT ROLLOUT BEGIN
+        // NUKE_MOD CAT ROLLOUT BEGIN
         //$news_on = !isset($HTTP_COOKIE_VARS['phpbbGlance_news']) || !empty($HTTP_COOKIE_VARS['phpbbGlance_news']) ? true : false;
         //if( $news_on )
         //{
@@ -563,7 +563,7 @@ include('includes/posting_icons.'. $phpEx);
         //{
         //    $template->assign_block_vars('switch_glance_news.switch_news_off', array());
         //}
-        // MOD CAT ROLLOUT END
+        // NUKE_MOD CAT ROLLOUT END
     }
     if ( $glance_num_recent )
     {
@@ -575,7 +575,7 @@ include('includes/posting_icons.'. $phpEx);
             'PREV_URL' => $prev_recent_url)
         );
 
-        // MOD CAT ROLLOUT BEGIN
+        // NUKE_MOD CAT ROLLOUT BEGIN
         //$recent_on = !isset($HTTP_COOKIE_VARS['phpbbGlance_recent']) || !empty($HTTP_COOKIE_VARS['phpbbGlance_recent']) ? true : false;
         //if( $recent_on )
         //{
@@ -585,7 +585,7 @@ include('includes/posting_icons.'. $phpEx);
         //{
         //   $template->assign_block_vars('switch_glance_recent.switch_recent_off', array());
         //}
-        // MOD CAT ROLLOUT END
+        // NUKE_MOD CAT ROLLOUT END
     }
 
     $template->assign_vars(array(

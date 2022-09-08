@@ -16,7 +16,7 @@ if (!defined('IN_FILE_REPOSITORY'))
 //	DEFINE THE STANDARD SQL TABLES
 //---------------------------------------------------------------------
 define('_GROUPS_TABLE', 				$prefix.'_bbgroups');
-define('_USER_TABLE', 					$user_prefix.'_users');
+define('_USER_TABLE', 					$nuke_user_prefix.'_users');
 define('_USER_GROUP_TABLE', 			$prefix.'_bbuser_group');
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
@@ -177,15 +177,15 @@ if($themes[get_theme()]['show_left'] == false)
 
 function _average_rating($did,$decimal=FALSE)
 {
-	global $db, $lang_new, $module_name;
+	global $nuke_db, $lang_new, $module_name;
 	
 	$ratingSum   = 0;
 	$ratingCount = 0;
 	
-	$result = $db->sql_query("SELECT `rating` FROM `"._FILE_REPOSITORY_COMMENTS."` WHERE `did`='$did'");
-	if($db->sql_numrows($result) > 0)
+	$result = $nuke_db->sql_query("SELECT `rating` FROM `"._FILE_REPOSITORY_COMMENTS."` WHERE `did`='$did'");
+	if($nuke_db->sql_numrows($result) > 0)
 	{
-		while(list($rating) = $db->sql_fetchrow($result))
+		while(list($rating) = $nuke_db->sql_fetchrow($result))
 		{
 			if($rating <> 0)
 			{
@@ -227,24 +227,24 @@ function _float_left_right($leftFloatLink=false, $leftFloat, $rightFloatLink=fal
 }
 
 //---------------------------------------------------------------------
-//	THIS FUNCTION IS ONLY DISPLAYED IN THE ADMIN AREA
+//	THIS FUNCTION IS ONLY DISPLAYED IN THE NUKE_ADMIN AREA
 //---------------------------------------------------------------------
 function _admin_navigation_menu()
 {
-	global $db, $admin_file, $lang_new, $module_name, $settings;
-	// $row = $db->sql_ufetchrow("SELECT count(isbroken) as isbroken FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isbroken`=1");
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings;
+	// $row = $nuke_db->sql_ufetchrow("SELECT count(isbroken) as isbroken FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isbroken`=1");
 
 	// count the broken downloads in the database.
 	$sql = "SELECT count(isbroken) as isbroken FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isbroken` = 1";
-	$result = $db->sql_query($sql);
-	list($isbroken) = $db->sql_fetchrow($result);
-	$db->sql_freeresult($result);
+	$result = $nuke_db->sql_query($sql);
+	list($isbroken) = $nuke_db->sql_fetchrow($result);
+	$nuke_db->sql_freeresult($result);
 
 	// count the client uploaded files in the database.
 	$sql = "SELECT count(isapproved) as isapproved FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isapproved` = 0";
-	$result = $db->sql_query($sql);
-	list($isapproved) = $db->sql_fetchrow($result);
-	$db->sql_freeresult($result);
+	$result = $nuke_db->sql_query($sql);
+	list($isapproved) = $nuke_db->sql_fetchrow($result);
+	$nuke_db->sql_freeresult($result);
 
 	echo '<table style="width: 100%;" border="0" cellpadding="3" cellspacing="1" class="forumline">'."\n";
 	echo '  <tr'._bgColor(2).'>'."\n";
@@ -275,7 +275,7 @@ function _admin_navigation_menu()
 	echo ($_GET['action']) ? '<br />' : '';
 }
 //---------------------------------------------------------------------
-//	THIS FUNCTION IS ONLY DISPLAYED IN THE ADMIN AREA
+//	THIS FUNCTION IS ONLY DISPLAYED IN THE NUKE_ADMIN AREA
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 //	FUNCTION IN BETWEEN THESE TWO COMMENT AREAS ARE FOR RAVEN NUKE
@@ -317,7 +317,7 @@ function _bgColor($bgColor)
 
 function _category_deletion($cid)
 {
-	global $db;	
+	global $nuke_db;	
 	$catarray  = array();
 	$sql_ary   = '';
 	$physical  = array();
@@ -330,12 +330,12 @@ function _category_deletion($cid)
 		$sql_ary .= $cat . ',';
 	}
 	$sql_ary .= '-1';
-	$result = $db->sql_query("SELECT `did` FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `cid` IN ($sql_ary)");
-	while(list($did) = $db->sql_fetchrow($result)) 
+	$result = $nuke_db->sql_query("SELECT `did` FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `cid` IN ($sql_ary)");
+	while(list($did) = $nuke_db->sql_fetchrow($result)) 
 	{
 		$physical[$did]['did'] = $did;
 	}
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 	
 	# FIRST DELETE THE LINKS
 	if ( count($physical) > 0 ) 
@@ -345,74 +345,74 @@ function _category_deletion($cid)
 //---------------------------------------------------------------------
 //	HERE WE CHECK THE DATABASE FOR THE FILES ATTACHED
 //---------------------------------------------------------------------
-			$result = $db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$delete_did['did']."'");
-			if( $db->sql_numrows($result) > 0 )
+			$result = $nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$delete_did['did']."'");
+			if( $nuke_db->sql_numrows($result) > 0 )
 			{
-				while($row = $db->sql_fetchrow($result))
+				while($row = $nuke_db->sql_fetchrow($result))
 				{
 					@unlink(_FILE_REPOSITORY_DIR.$row['filename']);
-					$db->sql_query("DELETE FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$delete_did['did']."'");
+					$nuke_db->sql_query("DELETE FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$delete_did['did']."'");
 				}
 			}
-			$db->sql_freeresult($result);
+			$nuke_db->sql_freeresult($result);
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 //	HERE WE CHECK THE DATABASE FOR THE SCREENSHOTS ATTACHED
 //---------------------------------------------------------------------
-			$result = $db->sql_query('SELECT * FROM `'._FILE_REPOSITORY_SCREENSHOTS.'` WHERE `did`="'.$delete_did['did'].'"');
-			if( $db->sql_numrows($result) > 0 )
+			$result = $nuke_db->sql_query('SELECT * FROM `'._FILE_REPOSITORY_SCREENSHOTS.'` WHERE `did`="'.$delete_did['did'].'"');
+			if( $nuke_db->sql_numrows($result) > 0 )
 			{
-				while($row = $db->sql_fetchrow($result))
+				while($row = $nuke_db->sql_fetchrow($result))
 				{
 					@unlink(_FILE_REPOSITORY_SCREENS.'thumbs/thumb_100x100_'.$row['filename']);
 					@unlink(_FILE_REPOSITORY_SCREENS.'thumbs/thumb_190x120_'.$row['filename']);
 					@unlink(_FILE_REPOSITORY_SCREENS.$row['filename']);
-					$db->sql_query("DELETE FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$delete_did['did']."'");
+					$nuke_db->sql_query("DELETE FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$delete_did['did']."'");
 				}
 			}
-			$db->sql_freeresult($result);
+			$nuke_db->sql_freeresult($result);
 //---------------------------------------------------------------------
-			$db->sql_query("DELETE FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `did`='".$delete_did['did']."'");
+			$nuke_db->sql_query("DELETE FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `did`='".$delete_did['did']."'");
 		}
 	}
 	@arsort($childcats);	
 	foreach ( $childcats as $number => $cat ) 
 	{		
-		$db->sql_query("DELETE FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `cid`='".$cat."'");
+		$nuke_db->sql_query("DELETE FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `cid`='".$cat."'");
 	}
-	$db->sql_optimize(_FILE_REPOSITORY_CATEGORIES);
-	$db->sql_optimize(_FILE_REPOSITORY_FILES);
-	$db->sql_optimize(_FILE_REPOSITORY_ITEMS);
-	$db->sql_optimize(_FILE_REPOSITORY_SCREENSHOTS);
+	$nuke_db->sql_optimize(_FILE_REPOSITORY_CATEGORIES);
+	$nuke_db->sql_optimize(_FILE_REPOSITORY_FILES);
+	$nuke_db->sql_optimize(_FILE_REPOSITORY_ITEMS);
+	$nuke_db->sql_optimize(_FILE_REPOSITORY_SCREENSHOTS);
 }
 
 function _category_deletion_scan($catid, $catary) 
 {
-	global $db;
+	global $nuke_db;
 	static $catary, $counter;
-	$allcats = $db->sql_query("SELECT `cid`, `parentid` FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid` =".$catid);
-	while ( list($catid, $parentid) = $db->sql_fetchrow($allcats) ) 
+	$allcats = $nuke_db->sql_query("SELECT `cid`, `parentid` FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid` =".$catid);
+	while ( list($catid, $parentid) = $nuke_db->sql_fetchrow($allcats) ) 
 	{
 		$counter++;
 		$catary[$counter] = $catid;
 		_category_deletion_scan($catid, $catary);
 	}
-	$db->sql_freeresult($allcats);
+	$nuke_db->sql_freeresult($allcats);
 	return $catary;
 }
 
 function _categories_from_database($cpID) 
 {
-	global $db, $admin_file, $lang_new, $module_name;
-    $res = $db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='".$cpID."' ORDER BY `parentid`, `cname` ASC");
-    if (!$db->sql_numrows($res)) 
+	global $nuke_db, $admin_file, $lang_new, $module_name;
+    $res = $nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='".$cpID."' ORDER BY `parentid`, `cname` ASC");
+    if (!$nuke_db->sql_numrows($res)) 
     	return false;
     
-    while($r = $db->sql_fetchrow($res)) 
+    while($r = $nuke_db->sql_fetchrow($res)) 
     {
         $sub_category 			= _categories_from_database($r['cid']);
-        list($totalSubs) 		= $db->sql_fetchrow($db->sql_query("SELECT COUNT(cid) FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='".$r['cid']."'"));
-		list($totalDownloads) 	= $db->sql_fetchrow($db->sql_query("SELECT COUNT(did) FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `cid`='".$r['cid']."'"));
+        list($totalSubs) 		= $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT COUNT(cid) FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='".$r['cid']."'"));
+		list($totalDownloads) 	= $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT COUNT(did) FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `cid`='".$r['cid']."'"));
         if($r['parentid'] == 0)
         {
         	$return .= '  <tr'._bgColor(1).'>';
@@ -459,8 +459,8 @@ function _categories_from_database($cpID)
 
 function _category_parents($name,$value=0)
 {
-	global $db, $lang_new, $module_name, $settings;		
-	$result = $db->sql_query("SELECT `cid`, `cname`, `parentid`, `color` FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='0' ORDER BY `cname`");
+	global $nuke_db, $lang_new, $module_name, $settings;		
+	$result = $nuke_db->sql_query("SELECT `cid`, `cname`, `parentid`, `color` FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='0' ORDER BY `cname`");
 	$category_list = '<select class="glowing-border"';
 	$category_list .= ' style="';
 	$category_list .= 'border: 1px solid; ';
@@ -472,13 +472,13 @@ function _category_parents($name,$value=0)
 	$category_list .= ((!defined('NUKE_EVO')) ? 'padding: 4px; ' : 'padding: 5px; ');
 	$category_list .= 'text-transform: '.(($settings['utext'] == 1) ? 'uppercase' : 'none').';" name="'.$name.'">';
 	$category_list .= '  <option value="'.intval($row['cid']).'">'.$lang_new[$module_name]['CATEGORY_PARENT_NEW'].'</option>';
-	if($db->sql_numrows($result))
+	if($nuke_db->sql_numrows($result))
 	{
-		while($row = $db->sql_fetchrow($result))
+		while($row = $nuke_db->sql_fetchrow($result))
 		{
 			$category_list .= '  <option'.(($row['color']) ? ' style="color:'.$row['color'].';"' : '').' value="'.intval($row['cid']).'" '.(($value == $row['cid']) ? 'selected="selected"' : '').'>'.stripslashes($row['cname']).'</option>';
 		}
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
 	}
 	$category_list .= '</select>';		
 	return $category_list;
@@ -486,8 +486,8 @@ function _category_parents($name,$value=0)
 
 function _category_parents_and_children($name,$value,$search=false,$onlyShowAllowed=false)
 {
-	global $db, $settings;
-	$result = $db->sql_query("SELECT `cid`, `cname`, `color`, `isallowed`, `permissions` FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='0' ORDER BY `cname`");
+	global $nuke_db, $settings;
+	$result = $nuke_db->sql_query("SELECT `cid`, `cname`, `color`, `isallowed`, `permissions` FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='0' ORDER BY `cname`");
 	$category_list = '<select class="glowing-border"';
 	$category_list .= ' style="';
 	$category_list .= 'border: 1px solid; ';
@@ -500,15 +500,15 @@ function _category_parents_and_children($name,$value,$search=false,$onlyShowAllo
 	$category_list .= 'text-transform: '.(($settings['utext'] == 1) ? 'uppercase' : 'none').';" name="'.$name.'">';
 	if($search == true)
 		$category_list .= '  <option value="0">'.$lang_new[$module_name]['CATEGORY_ALL'].'</option>'."\n";
-	while( $row = $db->sql_fetchrow($result) ) 
+	while( $row = $nuke_db->sql_fetchrow($result) ) 
 	{
 		// _check_users_permissions($row['permissions']) == true
 
 		// $category_list .= '  <option style="color:'.$row['color'].';" value="'.$row['cid'].'" '.(($row['cid'] == $value) ? 'selected="selected"' : '').'>'.$row['cname'].'</option>'."\n";
 		$category_list .= '  <option style="color:'.$row['color'].';" value="'.$row['cid'].'" '.(($row['cid'] == $value) ? 'selected="selected"' : '').(($onlyShowAllowed == true) ? (($row['isallowed'] == 1 && _check_users_permissions($row['permissions']) == true) ? '' : 'disabled') : '').'>'.$row['cname'].'</option>'."\n";
 
-		$result2 = $db->sql_query("SELECT `cid`, `cname`, `color`, `parentid`, `permissions`, `isallowed` FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='".$row['cid']."' ORDER BY `cname`");
-		while( $row2 = $db->sql_fetchrow($result2) ) 
+		$result2 = $nuke_db->sql_query("SELECT `cid`, `cname`, `color`, `parentid`, `permissions`, `isallowed` FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='".$row['cid']."' ORDER BY `cname`");
+		while( $row2 = $nuke_db->sql_fetchrow($result2) ) 
 		{
 			if($search == true):
 				$category_list .= '<option style="color:'.$row2['color'].';" value="'.$row2['cid'].'" '.(($row2['cid'] == $value) ? 'selected="selected"' : '').'>&nbsp;&nbsp;'._category_parents_name($row2['parentid'], $row2['cname']).'</option>'."\n";
@@ -521,18 +521,18 @@ function _category_parents_and_children($name,$value,$search=false,$onlyShowAllo
 
 			endif;
 		}
-		$db->sql_freeresult($result2);
+		$nuke_db->sql_freeresult($result2);
 	}
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 	$category_list .= '</select>'."\n";		
 	return $category_list;
 }
 
 function _category_parents_name($parentid,$title='',$did='',$version='',$color=false) 
 {
-	global $db, $lang_new, $module_name;		
+	global $nuke_db, $lang_new, $module_name;		
 	$parentid  = intval($parentid);
-	$row       = $db->sql_fetchrow($db->sql_query("SELECT `cid`, `color`, `cname`, `parentid` FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `cid`=".$parentid));
+	$row       = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `cid`, `color`, `cname`, `parentid` FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `cid`=".$parentid));
 	$ptitle    = $row['cname'];
 	$pparentid = intval($row['parentid']);
 	
@@ -562,14 +562,14 @@ function _check_users_permissions($section)
 
 function _check_users_group($gid) 
 {
-	global $prefix, $db, $userinfo, $module_name, $user;
+	global $prefix, $nuke_db, $userinfo, $module_name, $user;
 	if (is_mod_admin($module_name)) 
 		return true;
 	elseif (is_user($user)) 
 	{
 		$guid = $userinfo['user_id'];
-		$result = $db->sql_query("SELECT COUNT(*) FROM `"._USER_GROUP_TABLE."` WHERE group_id='".$gid."' AND user_id='".$guid."' AND user_pending != '1'");
-		list($ingroup) = $db->sql_fetchrow($result);
+		$result = $nuke_db->sql_query("SELECT COUNT(*) FROM `"._USER_GROUP_TABLE."` WHERE group_id='".$gid."' AND user_id='".$guid."' AND user_pending != '1'");
+		list($ingroup) = $nuke_db->sql_fetchrow($result);
 		if ($ingroup > 0) 
 			return true; 
 	}
@@ -602,7 +602,7 @@ function _copyright_popup_display()
 	// echo '	<tr'._bgColor(2).'>'."\n";
 	// echo '    <td'._tdcss(false,'center',_sh(),2).'>'._suh($lang_new[$module_name]['COPYRIGHT_INFORMATION']).'</td>'."\n";
 	// echo '  </tr>'."\n".'<tr'._bgColor(1).'>'."\n";
-	// echo '	  <td'._tdcss(false,'center',_sc(),2).'>'.$lang_new[$module_name]['MODULE'].' '.$lang_new[$module_name]['COPYRIGHT_FOR'].' '.((function_exists('redirect')) ? $lang_new[$module_name]['COPYRIGHT_EVOLUTION_XTREME'] : $lang_new[$module_name]['COPYRIGHT_RAVEN_CMS']).'</td>'."\n";
+	// echo '	  <td'._tdcss(false,'center',_sc(),2).'>'.$lang_new[$module_name]['MODULE'].' '.$lang_new[$module_name]['COPYRIGHT_FOR'].' '.((function_exists('nuke_redirect')) ? $lang_new[$module_name]['COPYRIGHT_EVOLUTION_XTREME'] : $lang_new[$module_name]['COPYRIGHT_RAVEN_CMS']).'</td>'."\n";
 	// echo '  </tr>'."\n".'<tr'._bgColor(2).'>'."\n";
 	// echo '    <td'._tdcss(false,'center',_sh(),2).'>&nbsp;</td>'."\n";
 	// echo '  </tr>'."\n".'<tr'._bgColor(1).'>'."\n";
@@ -637,16 +637,16 @@ function _copyright_popup_display()
 
 function _collect_iteminfo($id,$isfile=false)
 {
-	global $db, $lang_new, $module_name, $settings;
+	global $nuke_db, $lang_new, $module_name, $settings;
 	$where = ($isfile == false) ? ' WHERE dn.`did`="'.$id.'"' : 'WHERE fl.`fid`="'.$id.'"';
-	$result = $db->sql_query("
+	$result = $nuke_db->sql_query("
 			SELECT dn.*, fl.*, COUNT(cm.cid) as comments, SUM(filesize) as filesize, COUNT(fl.did) as filecount
 				FROM (`"._FILE_REPOSITORY_ITEMS."` AS dn)
 					LEFT JOIN `"._FILE_REPOSITORY_COMMENTS."` as cm ON (cm.did = dn.did)
 					LEFT JOIN `"._FILE_REPOSITORY_FILES."` as fl ON (fl.did = dn.did)".$where.' GROUP BY dn.cid, dn.did, fl.fid');
-	$row = $db->sql_fetchrow($result);
+	$row = $nuke_db->sql_fetchrow($result);
 
-	list( $total_attach_files ) = $db->sql_ufetchrow( "select count(*) from `"._FILE_REPOSITORY_FILES."` where `did`='".$id."'" );
+	list( $total_attach_files ) = $nuke_db->sql_ufetchrow( "select count(*) from `"._FILE_REPOSITORY_FILES."` where `did`='".$id."'" );
 
 	if($row['author'])
 		$iteminfo['author']			= (!defined('NUKE_EVO')) ? $row['author'] : UsernameColor($row['author']);
@@ -963,21 +963,21 @@ function _decode_bbcode_text($text,$parse_smilies=false)
 //---------------------------------------------------------------------
 function _escape_string($query)
 {
-	global $db;
+	global $nuke_db;
 	return (!defined('NUKE_EVO')) ? FixQuotes($query) : Fix_Quotes($query);
 }
 //---------------------------------------------------------------------
 
 function _grab_the_items_screenshots($did)
 {
-	global $db, $module_name, $settings;
+	global $nuke_db, $module_name, $settings;
 	$sql 	= "SELECT * FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$did."'";
-	$result = $db->sql_query($sql);
-	$count 	= $db->sql_numrows($result);
+	$result = $nuke_db->sql_query($sql);
+	$count 	= $nuke_db->sql_numrows($result);
 	$jcarousel .= '  <div class="jcarousel-wrapper">'."\n";
 	$jcarousel .= '    <div class="jcarousel thumbnail_border">'."\n";
 	$jcarousel .= '      <ul>'."\n";
-	while($screen = $db->sql_fetchrow($result))
+	while($screen = $nuke_db->sql_fetchrow($result))
 	{
 		if(file_exists(_FILE_REPOSITORY_SCREENS.$screen['filename']))
 		{
@@ -988,7 +988,7 @@ function _grab_the_items_screenshots($did)
 			$jcarousel .= '</li>'."\n";
 		}
 	}
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 	$jcarousel .= '      </ul>'."\n";
 	$jcarousel .= '    </div>'."\n";
 	if($count > 1)
@@ -1046,7 +1046,7 @@ function _image_viewer($slideshow)
 
 function _index_navigation_header()
 {
-	global $db, $admin_file, $lang_new, $module_name, $admin, $settings, $bgcolor, $userinfo;		
+	global $nuke_db, $admin_file, $lang_new, $module_name, $admin, $settings, $bgcolor, $userinfo;		
 	echo '<table style="width: 100%;" border="0" cellpadding="4" cellspacing="1" class="forumline">'."\n";
 	echo '	<tr'._bgColor(2).'>'."\n";
 	echo '	  <td'._tdcss(false,'center',_sh(),6).'>'._suh($lang_new[$module_name]['MODULE']).'</td>'."\n";
@@ -1106,8 +1106,8 @@ function _index_navigation_header()
 		echo '	              <td'._tdcss(false,'center',_sh(),3).'>'._suh($lang_new[$module_name]['LATEST_FILES']).'</td>';
 		echo '              </tr>'."\n";
 		$sql 	 = "SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isactive` = 1 && `isapproved` = 1 && `isbroken` = 0 ORDER BY `date` DESC LIMIT 0,".$settings['overview_count'];
-		$result  = $db->sql_query($sql);
-		$numrows = $db->sql_numrows($result);
+		$result  = $nuke_db->sql_query($sql);
+		$numrows = $nuke_db->sql_numrows($result);
 		if($numrows > 0):
 		
 			echo '              <tr'._bgColor(2).'>'."\n";
@@ -1116,7 +1116,7 @@ function _index_navigation_header()
 			echo '	              <td'._tdcss(false,'center',_sh()).'>'._suh($lang_new[$module_name]['HITS']).'</td>';
 			echo '              </tr>'."\n";
 			$x = 1;
-			while($lf = $db->sql_fetchrow($result)):
+			while($lf = $nuke_db->sql_fetchrow($result)):
 			
 				$iteminfo['isnew'] = (($lf['isupdated'] == '0000-00-00 00:00:00') ? $lf['date'] : $lf['isupdated']);
 				echo '              <tr'._bgColor(1).'>'."\n";
@@ -1127,7 +1127,7 @@ function _index_navigation_header()
 				$x++;
 			
 			endwhile;
-			$db->sql_freeresult($result);
+			$nuke_db->sql_freeresult($result);
 
 		else:
 
@@ -1145,8 +1145,8 @@ function _index_navigation_header()
 		echo '	              <td'._tdcss(false,'center',_sh(),3).'>'._suh($lang_new[$module_name]['MOST_DOWNLOADS']).'</td>';
 		echo '              </tr>'."\n";
 		$sql 	 = "SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `hits` <> 0 && `isactive` = 1 && `isapproved` = 1 && `isbroken` = 0 ORDER BY `hits` DESC LIMIT 0,".$settings['overview_count'];
-		$result  = $db->sql_query($sql);
-		$numrows = $db->sql_numrows($result);
+		$result  = $nuke_db->sql_query($sql);
+		$numrows = $nuke_db->sql_numrows($result);
 		if($numrows > 0):
 
 			echo '              <tr'._bgColor(2).'>'."\n";
@@ -1155,7 +1155,7 @@ function _index_navigation_header()
 			echo '	              <td'._tdcss(false,'center',_sh()).'>'._suh($lang_new[$module_name]['HITS']).'</td>';
 			echo '              </tr>'."\n";
 			$s = 1;
-			while($md = $db->sql_fetchrow($result)):
+			while($md = $nuke_db->sql_fetchrow($result)):
 
 				$iteminfo['isnew'] = (($md['isupdated'] == '0000-00-00 00:00:00') ? $md['date'] : $md['isupdated']);
 				echo '              <tr'._bgColor(1).'>'."\n";
@@ -1166,7 +1166,7 @@ function _index_navigation_header()
 				$s++;
 
 			endwhile;
-			$db->sql_freeresult($result);
+			$nuke_db->sql_freeresult($result);
 
 		else:
 
@@ -1189,8 +1189,8 @@ function _index_navigation_header()
 	echo '</table>'."\n";
 
 	$sql 	 = "SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isapproved` = 0 && `isbroken` = 0 && `suid` = '".$userinfo['user_id']."' ORDER BY `date`";
-	$result  = $db->sql_query($sql);
-	$waiting = $db->sql_numrows($result);
+	$result  = $nuke_db->sql_query($sql);
+	$waiting = $nuke_db->sql_numrows($result);
 
 	$settings['show_user_awaiting_approval_message'] = true;
 	if($settings['show_user_awaiting_approval_message'] && $waiting > 0):
@@ -1202,7 +1202,7 @@ function _index_navigation_header()
 		echo '  </tr>'."\n";
 
 		$x = 1;
-		while($awaiting = $db->sql_fetchrow($result)):
+		while($awaiting = $nuke_db->sql_fetchrow($result)):
 
 			echo '  <tr'._bgColor(1).'>'."\n";
 			echo '	  <td'._tdcss('5%','center',_sc()).'>'.$x.'</td>'."\n";
@@ -1270,8 +1270,8 @@ function _sh($view=true)
 
 function _list_available_permission_groups($name, $value)
 {
-	global $db, $lang_new, $module_name, $settings;		
-	$result = $db->sql_query("SELECT * FROM `"._GROUPS_TABLE."` WHERE `group_single_user` != '1' ORDER BY `group_name`");
+	global $nuke_db, $lang_new, $module_name, $settings;		
+	$result = $nuke_db->sql_query("SELECT * FROM `"._GROUPS_TABLE."` WHERE `group_single_user` != '1' ORDER BY `group_name`");
 	$groups  = '<select class="glowing-border"';
 	$groups .= ' style="';
 	$groups .= 'border: 1px solid; ';
@@ -1287,15 +1287,15 @@ function _list_available_permission_groups($name, $value)
 	$groups .= '          <option value="1" '.(($value == 1) ? 'selected="selected"' : '').'>'.$lang_new[$module_name]['REGISTERED'].'</option>'."\n";
 	$groups .= '          <option value="2" '.(($value == 2) ? 'selected="selected"' : '').'>'.$lang_new[$module_name]['ADMINISTRATORS'].'</option>'."\n";
 	$groups .= '        </optgroup>'."\n";
-	if( $db->sql_numrows($result) > 0 )
+	if( $nuke_db->sql_numrows($result) > 0 )
 	{
 		$groups .= '    <optgroup label="'.$lang_new[$module_name]['FORUM_GROUPS'].'">'."\n";			
-		while($ginfo = $db->sql_fetchrow($result)) 
+		while($ginfo = $nuke_db->sql_fetchrow($result)) 
 		{
 			$ginfo['group_id'] = $ginfo['group_id'] + 2;
 			$groups .= '  <option value="'.$ginfo['group_id'].'" '.(($value == $ginfo['group_id']) ? 'selected="selected"' : '').'>'._sut($ginfo['group_name']).'</option>'."\n";
 		}
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
 	}
 	$groups .= '      </select>'."\n";
 	return $groups;
@@ -1384,22 +1384,22 @@ function _ls()
 
 function _module_themes()
 {
-	global $db, $module_name, $lang_new;
+	global $nuke_db, $module_name, $lang_new;
 	static $themes;
     
 	if(isset($themes) && is_array($themes))
 		return $themes;
       
 	$sql 	= "SELECT `cell`, `head`, `per_row`, `show_left`, `theme_name` FROM `"._FILE_REPOSITORY_THEMES."`";    
-	$result = $db->sql_query($sql);
-	while ($row = $db->sql_fetchrow($result)) 
+	$result = $nuke_db->sql_query($sql);
+	while ($row = $nuke_db->sql_fetchrow($result)) 
 	{
 		$themes[$row['theme_name']]['per_row']   	= $row['per_row'];
 		$themes[$row['theme_name']]['show_left'] 	= $row['show_left'];
 		$themes[$row['theme_name']]['cell'] 		= $row['cell'];
 		$themes[$row['theme_name']]['head'] 		= $row['head'];
 	}
- 	$db->sql_freeresult($result);   
+ 	$nuke_db->sql_freeresult($result);   
 	return $themes;
 }
 
@@ -1410,12 +1410,12 @@ function _mostpopular($hits)
 		return '&nbsp;<span class="legend-images-sprite legend_popular" alt="'.$lang_new[$module_name]['HOT'].'" title="'.$lang_new[$module_name]['HOT'].'"></span>';	
 }
 
-function _redirect($redirect)
+function _nuke_redirect($nuke_redirect)
 {
-	if(function_exists('redirect'))
-		redirect($redirect);
+	if(function_exists('nuke_redirect'))
+		nuke_redirect($nuke_redirect);
 	else
-		Header('Location:'.$redirect);
+		Header('Location:'.$nuke_redirect);
 }
 
 function _selectbox($n,$ops,$v,$r=false)
@@ -1441,16 +1441,16 @@ function _selectbox($n,$ops,$v,$r=false)
 
 function _settings_variables()
 {
-	global $db, $module_name, $lang_new;
+	global $nuke_db, $module_name, $lang_new;
 	static $settings;
 	
    	if(isset($settings) && is_array($settings))
 		return $settings;
 	
-	$result = $db->sql_query("SELECT `config_value`, `config_name` FROM `"._FILE_REPOSITORY_SETTINGS."`");
-	while ($row = $db->sql_fetchrow($result))
+	$result = $nuke_db->sql_query("SELECT `config_value`, `config_name` FROM `"._FILE_REPOSITORY_SETTINGS."`");
+	while ($row = $nuke_db->sql_fetchrow($result))
 		$settings[$row['config_name']] = $row['config_value'];
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
    	return $settings;
 }
 
@@ -1541,7 +1541,7 @@ function _timestamp($date,$format='M d, Y g:i a')
 
 function _user_is_within_group_name($gid,$isallowed=true) 
 {
-    global $db, $lang_new, $module_name;
+    global $nuke_db, $lang_new, $module_name;
 	
     if($isallowed == 0)
     {
@@ -1558,7 +1558,7 @@ function _user_is_within_group_name($gid,$isallowed=true)
 		elseif ($gid > 2) 
 		{
 			$group_id = ($gid - 2);
-			list($group_name) = $db->sql_fetchrow($db->sql_query("SELECT `group_name` FROM `"._GROUPS_TABLE."` WHERE `group_id`='$group_id'"));
+			list($group_name) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `group_name` FROM `"._GROUPS_TABLE."` WHERE `group_id`='$group_id'"));
 			$groupname = ((!defined('NUKE_EVO')) ? _sut($group_name) : _sut(GroupColor($group_name)));
 		}
 	}
@@ -1579,7 +1579,7 @@ function _generate_rand_string()
 
 function _client_side_file_upload($type,$upload,$uploaddir,$index)
 {
-	global $db, $lang_new, $module_name, $settings;
+	global $nuke_db, $lang_new, $module_name, $settings;
 	if (!empty($upload))
 	{
 		$file_extensions = $settings['allowed_file_extensions'];

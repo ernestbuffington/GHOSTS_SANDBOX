@@ -26,7 +26,7 @@
 
 global $directory_mode, $file_mode;
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 //
 // Let's set the root dir for phpBB
@@ -71,14 +71,14 @@ include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 
 $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
 }
 
 $stats_config = array();
 
-while ($row = $db->sql_fetchrow($result))
+while ($row = $nuke_db->sql_fetchrow($result))
 {
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
@@ -101,12 +101,12 @@ if ($cancel)
     if (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')))
     {
         header('Refresh: 0; URL=' . $server_protocol . $server_name . $server_port . $script_name . $url);
-        echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><meta http-equiv="refresh" content="0; url=' . $server_protocol . $server_name . $server_port . $script_name . $url . '"><title>Redirect</title></head><body><div align="center">If your browser does not support meta redirection please click <a href="' . $server_protocol . $server_name . $server_port . $script_name . $url . '">HERE</a> to be redirected</div></body></html>';
+        echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><meta http-equiv="refresh" content="0; url=' . $server_protocol . $server_name . $server_port . $script_name . $url . '"><title>Redirect</title></head><body><div align="center">If your browser does not support meta nuke_redirection please click <a href="' . $server_protocol . $server_name . $server_port . $script_name . $url . '">HERE</a> to be nuke_redirected</div></body></html>';
         exit;
     }
 
     // Behave as per HTTP/1.1 spec for others
-    redirect($server_protocol . $server_name . $server_port . $script_name . $url);
+    nuke_redirect($server_protocol . $server_name . $server_port . $script_name . $url);
     exit;
 }
 
@@ -125,7 +125,7 @@ if (($mode == 'mod_install') && ($submit))
         
         if (!($fp = fopen($filename, 'r')) )
         {
-            message_die(GENERAL_ERROR, 'Unable to open ' . $filename);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to open ' . $filename);
         }
 
         read_pak_header($fp);
@@ -139,7 +139,7 @@ if (($mode == 'mod_install') && ($submit))
         $stream = implode('', @file($filename));
         $info_file = read_pak_file($stream, 'INFO');
         $lang_file = read_pak_file($stream, 'LANG');
-        $php_file = read_pak_file($stream, 'MOD');
+        $php_file = read_pak_file($stream, 'NUKE_MOD');
         
         $info_array = parse_info_file($info_file);
         
@@ -155,11 +155,11 @@ if (($mode == 'mod_install') && ($submit))
 
         if ($update_id == -1)
         {
-            message_die(GENERAL_MESSAGE, $lang['Module_installed']);
+            message_die(NUKE_GENERAL_MESSAGE, $lang['Module_installed']);
         }
         else
         {
-            message_die(GENERAL_MESSAGE, $lang['Module_updated']);
+            message_die(NUKE_GENERAL_MESSAGE, $lang['Module_updated']);
         }
     }
 
@@ -174,14 +174,14 @@ if (($mode == 'mod_install') && ($submit))
         // check php upload-size
         if ( ($filename == 'none') || ($filename == '') )
         {
-            message_die(GENERAL_ERROR, 'Unable to upload file, please use the pak file selector');
+            message_die(NUKE_GENERAL_ERROR, 'Unable to upload file, please use the pak file selector');
         }
 
         $contents = @implode('', @file($filename));
 
         if ($contents == '')
         {
-            message_die(GENERAL_ERROR, 'Unable to upload file, please use the pak file selector');
+            message_die(NUKE_GENERAL_ERROR, 'Unable to upload file, please use the pak file selector');
         }
 
         if (!file_exists($phpbb2_root_path . 'modules/cache'))
@@ -192,7 +192,7 @@ if (($mode == 'mod_install') && ($submit))
         
         if (!($fp = fopen($phpbb2_root_path . 'modules/cache/temp.pak', 'wt')))
         {
-            message_die(GENERAL_ERROR, 'Unable to write temp file');
+            message_die(NUKE_GENERAL_ERROR, 'Unable to write temp file');
         }
 
         fwrite($fp, $contents, strlen($contents));
@@ -202,12 +202,12 @@ if (($mode == 'mod_install') && ($submit))
     }
     else
     {
-        message_die(GENERAL_ERROR, 'Unable to find Module Package');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to find Module Package');
     }
 
     if (!($fp = fopen($filename, 'r')) )
     {
-        message_die(GENERAL_ERROR, 'Unable to open ' . $filename);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to open ' . $filename);
     }
     
     read_pak_header($fp);
@@ -225,42 +225,42 @@ if (($mode == 'mod_install') && ($submit))
 
     if (trim($info_array['short_name']) == '')
     {
-        message_die(GENERAL_ERROR, 'Short name not specified.', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Short name not specified.', '', __LINE__, __FILE__, $sql);
     }
     
     if ($update_id == -1)
     {
         $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE short_name = '" . trim($info_array['short_name']) . "'";
 
-        if (!($result = $db->sql_query($sql)) )
+        if (!($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
         }
     
-        if ($db->sql_numrows($result) > 0)
+        if ($nuke_db->sql_numrows($result) > 0)
         {
-            message_die(GENERAL_ERROR, sprintf($lang['Inst_module_already_exist'], $info_array['short_name']));
+            message_die(NUKE_GENERAL_ERROR, sprintf($lang['Inst_module_already_exist'], $info_array['short_name']));
         }
     }
     else
     {
         $sql = "SELECT * FROM " . MODULES_TABLE . " WHERE module_id = " . $update_id;
 
-        if (!($result = $db->sql_query($sql)) )
+        if (!($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
         }
     
-        if ($db->sql_numrows($result) == 0)
+        if ($nuke_db->sql_numrows($result) == 0)
         {
-            message_die(GENERAL_ERROR, 'Unable to get Module ' . $update_id);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $update_id);
         }
         
-        $row = $db->sql_fetchrow($result);
+        $row = $nuke_db->sql_fetchrow($result);
 
         if (trim($row['short_name']) != trim($info_array['short_name']))
         {
-            message_die(GENERAL_ERROR, $lang['Incorrect_update_module']);
+            message_die(NUKE_GENERAL_ERROR, $lang['Incorrect_update_module']);
         }
     }
 
@@ -415,14 +415,14 @@ if ($mode == 'mod_manage')
 
     $sql = "SELECT m.*, i.* FROM " . MODULES_TABLE . " m, " . MODULE_INFO_TABLE . " i WHERE i.module_id = m.module_id ORDER BY module_order ASC";
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
     }
 
-    if ($db->sql_numrows($result) == 0)
+    if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(GENERAL_MESSAGE, 'No installed Modules found.');
+        message_die(NUKE_GENERAL_MESSAGE, 'No installed Modules found.');
     }
 
     $template->assign_vars(array(
@@ -434,7 +434,7 @@ if ($mode == 'mod_manage')
         'L_MANAGE_MODULES_EXPLAIN' => $lang['Manage_modules_explain'])
     );
 
-    while ($row = $db->sql_fetchrow($result))
+    while ($row = $nuke_db->sql_fetchrow($result))
     {
         $module_id = intval($row['module_id']);
         $module_active = (intval($row['active'])) ? TRUE : FALSE;
@@ -468,7 +468,7 @@ if ($mode == 'mod_delete')
         }
         else
         {
-            message_die(GENERAL_ERROR, 'Unable to delete Module.');
+            message_die(NUKE_GENERAL_ERROR, 'Unable to delete Module.');
         }
 
         $hidden_fields = '<input type="hidden" name="mode" value="'.$mode.'" /><input type="hidden" name="module_id" value="'.$module_id.'" />';
@@ -496,23 +496,23 @@ if ($mode == 'mod_delete')
         }
         else
         {
-            message_die(GENERAL_ERROR, 'Unable to delete Module.');
+            message_die(NUKE_GENERAL_ERROR, 'Unable to delete Module.');
         }
     
         // Firstly, we need the Module Informations ;)
         $sql = "SELECT * FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
         
-        if (!($result = $db->sql_query($sql)) )
+        if (!($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
         }
 
-        if ($db->sql_numrows($result) == 0)
+        if ($nuke_db->sql_numrows($result) == 0)
         {
-            message_die(GENERAL_MESSAGE, 'No Module Data found... unable to delete Module.');
+            message_die(NUKE_GENERAL_MESSAGE, 'No Module Data found... unable to delete Module.');
         }
 
-        $row = $db->sql_fetchrow($result);
+        $row = $nuke_db->sql_fetchrow($result);
         $short_name = trim($row['short_name']);
         
         // Ok, collect the Informations for deleting the Language Variables
@@ -521,7 +521,7 @@ if ($mode == 'mod_delete')
 
         if (!file_exists($language_directory))
         {
-            message_die(GENERAL_ERROR, 'Unable to find Language Directory');
+            message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
         }
 
         if( $dir = @opendir($language_directory) )
@@ -553,7 +553,7 @@ if ($mode == 'mod_delete')
             }
 /*            else 
             {
-                message_die(GENERAL_ERROR, 'ERROR: Empty Language File ? -> ' . $language_file);
+                message_die(NUKE_GENERAL_ERROR, 'ERROR: Empty Language File ? -> ' . $language_file);
             }*/
 
             $new_language_data[$languages[$i]] = trim($file_content);
@@ -562,34 +562,34 @@ if ($mode == 'mod_delete')
         // Now begin the Transaction
         $sql = "DELETE FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
 
-        if (!($result = $db->sql_query($sql)) )
+        if (!($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to delete Module', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to delete Module', '', __LINE__, __FILE__, $sql);
         }
 
         $sql = "DELETE FROM " . MODULE_INFO_TABLE . " WHERE module_id = " . $module_id;
 
-        if (!($result = $db->sql_query($sql)) )
+        if (!($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to delete Module', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to delete Module', '', __LINE__, __FILE__, $sql);
         }
         
         $sql = "DELETE FROM " . CACHE_TABLE . " WHERE module_id = " . $module_id;
 
-        if (!($result = $db->sql_query($sql)) )
+        if (!($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to delete Module', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to delete Module', '', __LINE__, __FILE__, $sql);
         }
 
         // was this the last module ?
         $sql = "SELECT * FROM " . MODULES_TABLE;
 
-        if (!($result = $db->sql_query($sql)) )
+        if (!($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to select Modules', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to select Modules', '', __LINE__, __FILE__, $sql);
         }
         
-        if ($db->sql_numrows($result) == 0)
+        if ($nuke_db->sql_numrows($result) == 0)
         {
             $delete_language_folder = TRUE;
         }
@@ -658,7 +658,7 @@ if ($mode == 'mod_delete')
         
                 if (!($fp = fopen($language_file, 'wt')))
                 {
-                    message_die(GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+                    message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
                 }
 
                 fwrite($fp, $new_language_data[$language], strlen($new_language_data[$language]));
@@ -689,7 +689,7 @@ if ($mode == 'mod_delete')
         // Resync Order
         resync_module_order();
         
-        message_die(GENERAL_MESSAGE, 'Module successfully deleted');
+        message_die(NUKE_GENERAL_MESSAGE, 'Module successfully deleted');
     
     }
 }

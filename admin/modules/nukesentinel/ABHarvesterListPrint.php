@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -23,14 +23,14 @@ echo '<title>'.$pagetitle.'</title>'."\n";
 echo '</head>'."\n";
 echo '<body bgcolor="#FFFFFF" text="#000000" link="#000000" alink="#000000" vlink="#000000">'."\n";
 echo '<h1 align="center">'.$pagetitle.'</h1>'."\n";
-$totalselected = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_harvesters`"));
+$totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_harvesters`"));
 if($totalselected > 0) {
   echo '<table summary="" align="center" border="0" bgcolor="#000000" cellpadding="2" cellspacing="2">'."\n";
   echo '<tr bgcolor="#ffffff">'."\n";
   echo '<td><strong>'._AB_HARVESTER.'</strong></td>'."\n";
   echo '</tr>'."\n";
-  $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_harvesters` ORDER BY `harvester`");
-  while($getIPs = $db->sql_fetchrow($result)) {
+  $result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_harvesters` ORDER BY `harvester`");
+  while($getIPs = $nuke_db->sql_fetchrow($result)) {
     echo '<tr bgcolor="#ffffff">'."\n";
     echo '<td>'.$getIPs['harvester'].'</td>'."\n";
     echo '</tr>'."\n";

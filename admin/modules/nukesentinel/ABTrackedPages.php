@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -35,8 +35,8 @@ if (!isset($tid)) $tid = '';
 if(!$column or $column=="") $column = "date";
 if(!$direction or $direction=="") $direction = "desc";
 $tid=intval($tid);
-$result = $db->sql_query("SELECT `ip_long` FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$user_id' AND `ip_addr`='$ip_addr' LIMIT 0,1");
-list($ip_long) = $db->sql_fetchrow($result);
+$result = $nuke_db->sql_query("SELECT `ip_long` FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$user_id' AND `ip_addr`='$ip_addr' LIMIT 0,1");
+list($ip_long) = $nuke_db->sql_fetchrow($result);
 echo '<center><strong>'.$ip_addr.'</strong></center><br />'."\n";
 // Page Sorting
 if($column == "page") $selcolumn1 = ' selected="selected"';
@@ -68,8 +68,8 @@ echo '<td bgcolor="'.$bgcolor2.'" nowrap="nowrap" width="70%"><strong>'._AB_PAGE
 echo '<td bgcolor="'.$bgcolor2.'" nowrap="nowrap" width="20%"><strong>'._AB_DATE.'</strong></td>'."\n";
 echo '<td bgcolor="'.$bgcolor2.'" nowrap="nowrap" width="10%"><strong>&nbsp;</strong></td>'."\n";
 echo '</tr>'."\n";
-$result = $db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$user_id' ORDER BY $column $direction LIMIT $min, $perpage");
-while(list($ltid, $page, $date_time) = $db->sql_fetchrow($result)){
+$result = $nuke_db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$user_id' ORDER BY $column $direction LIMIT $min, $perpage");
+while(list($ltid, $page, $date_time) = $nuke_db->sql_fetchrow($result)){
   $page = str_replace(" ", "_", $page);
   if(strlen($page) > 50) {
     $rpage = substr($page, 0, 50)."...";

@@ -112,7 +112,7 @@ function display_config() {
     Notes:       Writes values to the DB
 ================================================================================================*/
 function write_values($values) {
-    global $db, $prefix, $cache;
+    global $nuke_db, $prefix, $cache;
     //Loop through values
     foreach ($values as $key => $value) {
         //Remove crap
@@ -122,7 +122,7 @@ function write_values($values) {
         $sql = 'UPDATE `'.$prefix.'_donators_config` SET';
         $sql .= ' config_value="'.$value.'" WHERE config_name="block_'.$key.'";';
         //Run SQL
-        $db->sql_query($sql);
+        $nuke_db->sql_query($sql);
     }
     //Clear the cache
     $cache->delete('block', 'donations');
@@ -157,19 +157,19 @@ function set_values() {
     Notes:       Will toss a DonateError if the values are not found
 ================================================================================================*/
 function get_values() {
-    global $db, $prefix, $lang_donate, $cache;
+    global $nuke_db, $prefix, $lang_donate, $cache;
     static $block;
     if(isset($block) && is_array($block)) { return $block; }
     if (!$block = $cache->load('block', 'donations')) {
         $sql = 'SELECT config_value, config_name from '.$prefix.'_donators_config WHERE config_name LIKE "block_%"';
-        if(!$result = $db->sql_query($sql)) {
+        if(!$result = $nuke_db->sql_query($sql)) {
             DonateError($lang_donate['VALUES_NF']);
         }
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             $block[str_replace('block_', '', $row['config_name'])] = $row['config_value'];
         }
         $cache->save('block', 'donations', $block);
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
     }
     return $block;
 }

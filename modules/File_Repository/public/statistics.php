@@ -14,26 +14,26 @@ if (!defined('MODULE_FILE'))
 
 function _general_statistics()
 {
-	global $db, $lang_new, $module_name, $settings;
+	global $nuke_db, $lang_new, $module_name, $settings;
 	OpenTable();
 	_index_navigation_header();
 	# TOTAL CATEGORY COUNT
-	$cresult			= $db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_CATEGORIES."`");
-	$totalcategories 	= $db->sql_numrows($cresult);
+	$cresult			= $nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_CATEGORIES."`");
+	$totalcategories 	= $nuke_db->sql_numrows($cresult);
 	# TOTAL ACTIVE DOWNLOADS
-	$dresult  			= $db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."`");
-	$totaldownloads     = $db->sql_numrows($dresult);
+	$dresult  			= $nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."`");
+	$totaldownloads     = $nuke_db->sql_numrows($dresult);
 	# COUNT THE TOTAL FILE DOWNLOADS THROUGHOUT THE MODULE
-	$sresult  			= $db->sql_query("SELECT SUM(hits) as totalhits FROM `"._FILE_REPOSITORY_ITEMS."`");
-	$statistic          = $db->sql_fetchrow($sresult);
+	$sresult  			= $nuke_db->sql_query("SELECT SUM(hits) as totalhits FROM `"._FILE_REPOSITORY_ITEMS."`");
+	$statistic          = $nuke_db->sql_fetchrow($sresult);
 	# GRAB THE TOTAL FILE DATABASE SIZE
-	$sresult2  			= $db->sql_query("SELECT SUM(filesize) as totalsize FROM `"._FILE_REPOSITORY_FILES."`");
-	$statistic2         = $db->sql_fetchrow($sresult2);
+	$sresult2  			= $nuke_db->sql_query("SELECT SUM(filesize) as totalsize FROM `"._FILE_REPOSITORY_FILES."`");
+	$statistic2         = $nuke_db->sql_fetchrow($sresult2);
 	# GRAB THE TOP 5 POPULAR FILES
-	$presult  			= $db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `hits` > 0 && `isactive` = 1 ORDER BY `hits` DESC, `title` ASC LIMIT 0,5");
-	$totalpopular       = $db->sql_numrows($presult);
+	$presult  			= $nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `hits` > 0 && `isactive` = 1 ORDER BY `hits` DESC, `title` ASC LIMIT 0,5");
+	$totalpopular       = $nuke_db->sql_numrows($presult);
 	# GRAB THE LATEST FILE FROM THE DATABASE
-	$lresult  			= $db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isactive` = 1 ORDER BY `date` DESC LIMIT 0,5");
+	$lresult  			= $nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isactive` = 1 ORDER BY `date` DESC LIMIT 0,5");
 
 	echo '<br />';
 	echo '<table style="width: 100%; table-layout:fixed;" border="0" cellpadding="4" cellspacing="1" class="forumline">'."\n";
@@ -80,7 +80,7 @@ function _general_statistics()
 		echo '          <td'._tdcss('70%',false,_sh()).'>'._suh($lang_new[$module_name]['TITLE']).'</td>'."\n";
 		echo '          <td'._tdcss('30%','center',_sh()).'>'._suh($lang_new[$module_name]['HITS']).'</td>'."\n";
 		echo '        </tr>'."\n";
-		while($popular = $db->sql_fetchrow($presult))
+		while($popular = $nuke_db->sql_fetchrow($presult))
 		{
 			$iteminfo['isnew'] = (($popular['isupdated'] == '0000-00-00 00:00:00') ? $popular['date'] : $popular['isupdated']);
 			echo '        <tr'._bgColor(1).'>'."\n";
@@ -88,7 +88,7 @@ function _general_statistics()
 			echo '	        <td'._tdcss('30%','center',_sc()).'>'.$popular['hits'].'</td>';
 			echo '        </tr>';
 		}
-		$db->sql_freeresult($presult);
+		$nuke_db->sql_freeresult($presult);
 	} else {
 		echo '        <tr'._bgColor(1).'>'."\n";
 		echo '	        <td'._tdcss(false,'center',_sc(),2).'>'.$lang_new[$module_name]['NOINFO'].'</td>';
@@ -104,7 +104,7 @@ function _general_statistics()
 		echo '          <td'._tdcss('70%',false,_sh()).'>'._suh($lang_new[$module_name]['TITLE']).'</td>'."\n";
 		echo '          <td'._tdcss('30%','center',_sh()).'>'._suh($lang_new[$module_name]['DATE_ADDED']).'</td>'."\n";
 		echo '        </tr>'."\n";
-		while($latest = $db->sql_fetchrow($lresult))
+		while($latest = $nuke_db->sql_fetchrow($lresult))
 		{
 			$iteminfo['isnew'] = (($latest['isupdated'] == '0000-00-00 00:00:00') ? $latest['date'] : $latest['isupdated']);
 			echo '        <tr'._bgColor(1).'>'."\n";
@@ -112,7 +112,7 @@ function _general_statistics()
 			echo '	        <td'._tdcss('30%','center',_sc()).'>'._timestamp($latest['date']).'</td>';
 			echo '        </tr>';
 		}
-		$db->sql_freeresult($lresult);
+		$nuke_db->sql_freeresult($lresult);
 	} else {
 		echo '        <tr'._bgColor(1).'>'."\n";
 		echo '	        <td'._tdcss(false,'center',_sc(),2).'>'.$lang_new[$module_name]['NOINFO'].'</td>';

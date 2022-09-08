@@ -19,13 +19,13 @@
 ************************************************************************/
 defined('NUKE_EVO') or die('Just go away, Shit Head!');
 
-global $db, $prefix, $userinfo;
+global $nuke_db, $prefix, $userinfo;
 global $evouserinfo_avatar, $board_config, $userinfo; 
 
 $max_height = '60';
 $max_width = '60';
 
-$result = $db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 10");
+$result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".NUKE_USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 10");
 
 $content   = '<div align="center">';
 $content  .= '<table border="0" width="200">';
@@ -34,7 +34,7 @@ $content  .= '<td align="center">';
 
 $content  .= '<table border="1" cellpadding="0" cellspacing="1" class="visitorlog">';
 
-while($whosbeen = $db->sql_fetchrow($result)):
+while($whosbeen = $nuke_db->sql_fetchrow($result)):
 
 	if($whosbeen['user_from_flag'] ):
 	$whosbeen['user_from_flag'] = str_replace('.png','',$whosbeen['user_from_flag']);
@@ -58,16 +58,16 @@ while($whosbeen = $db->sql_fetchrow($result)):
 	   switch($whosbeen['user_avatar_type'])
 	   {
 		# user_allowavatar = 1
-		case USER_AVATAR_UPLOAD:
+		case NUKE_USER_AVATAR_UPLOAD:
 		$avatar = '<td width="45px">'.( $board_config['allow_avatar_upload'] ) 
 		? '<div align="center"><img class="rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_path'] . '/' . $whosbeen['user_avatar'] . '" alt="" border="0" /></div></td>' : '</td>';
 		break;
 		# user_allowavatar = 2
-		case USER_AVATAR_REMOTE:
+		case NUKE_USER_AVATAR_REMOTE:
 		$avatar = '<td width="45px"><div align="center">'.'<img class="rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;"  src="'.avatar_resize($whosbeen['user_avatar']).'" alt="" border="0" /></div></td>';
 		break;
 		# user_allowavatar = 3
-		case USER_AVATAR_GALLERY:
+		case NUKE_USER_AVATAR_GALLERY:
 		$avatar = '<td width="45px">'. ( $board_config['allow_avatar_local'] ) 
 		? '<div align="center"><img class="rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_gallery_path'] . '/' . (($whosbeen['user_avatar'] == 'blank.gif' || $whosbeen['user_avatar'] == 'gallery/blank.gif') ? 'blank.png' : $whosbeen['user_avatar']) . '" alt="" border="0" /></td>' : '</div></td>';
 		break;

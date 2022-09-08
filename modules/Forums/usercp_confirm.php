@@ -33,7 +33,7 @@ if (!defined('MODULE_FILE')) {
    die ("You can't access this file directly...");
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 $phpbb2_root_path = NUKE_PHPBB2_DIR;
 
 include_once($phpbb2_root_path . 'extension.inc');
@@ -43,7 +43,7 @@ include_once('includes/bbcode.'.$phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_INDEX);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
 init_userprefs($userdata);
 //
 // End session management
@@ -77,12 +77,12 @@ $sql = 'SELECT code
     FROM ' . CONFIRM_TABLE . "
     WHERE session_id = '" . $userdata['session_id'] . "'
         AND confirm_id = '$confirm_id'";
-$result = $db->sql_query($sql);
+$result = $nuke_db->sql_query($sql);
 
 // If we have a row then grab data else create a new id
-if ($row = $db->sql_fetchrow($result))
+if ($row = $nuke_db->sql_fetchrow($result))
 {
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     $code = $row['code'];
 }
 else

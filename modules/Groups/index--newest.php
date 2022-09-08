@@ -42,7 +42,7 @@ if (!defined('NUKE_EVO')) exit;
 
 $module_name = basename(dirname(__FILE__));
 require(NUKE_PHPBB2_DIR.'nukebb.php');
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include(NUKE_PHPBB2_DIR.'extension.inc');
 include(NUKE_PHPBB2_DIR.'common.php');
 
@@ -64,23 +64,23 @@ function generate_user_info(&$row, $date_format, $group_mod, &$from, &$flag, &$p
         $posts 	= ( $row['user_posts'] ) ? $row['user_posts'] : 0;
         $poster_avatar = '';
 
-        if ($row['user_avatar_type'] && $row['user_id'] != ANONYMOUS && $row['user_allowavatar']) 
+        if ($row['user_avatar_type'] && $row['user_id'] != NUKE_ANONYMOUS && $row['user_allowavatar']) 
         {
                 switch($row['user_avatar_type'])  
                 {
-                        case USER_AVATAR_UPLOAD:
+                        case NUKE_USER_AVATAR_UPLOAD:
                         $poster_avatar = ($board_config['allow_avatar_upload']) ? '<img src="' . $board_config['avatar_path'] . '/' . $row['user_avatar'] . '" alt="" border="0" />' : '';
                         break;
 /*****[BEGIN]******************************************
  [ Mod:     Remote Avatar Resize               v2.0.0 ]
  ******************************************************/
-                        case USER_AVATAR_REMOTE:
+                        case NUKE_USER_AVATAR_REMOTE:
                         $poster_avatar = resize_avatar($row['user_avatar']);
                         break;
 /*****[END]********************************************
  [ Mod:     Remote Avatar Resize               v2.0.0 ]
  ******************************************************/
-                        case USER_AVATAR_GALLERY:
+                        case NUKE_USER_AVATAR_GALLERY:
                         $poster_avatar = ( $board_config['allow_avatar_local'] ) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $row['user_avatar'] . '" alt="" border="0" />' : '';
                         break;
                 }
@@ -88,7 +88,7 @@ function generate_user_info(&$row, $date_format, $group_mod, &$from, &$flag, &$p
 
         if ( !empty($row['user_viewemail']) || $group_mod ) 
         {
-			$email_uri 	= ( $board_config['board_email_form'] ) ? append_sid("profile.$phpEx?mode=email&amp;" . POST_USERS_URL .'=' . $row['user_id']) : 'mailto:' . $row['user_email'];
+			$email_uri 	= ( $board_config['board_email_form'] ) ? append_sid("profile.$phpEx?mode=email&amp;" . NUKE_POST_USERS_URL .'=' . $row['user_id']) : 'mailto:' . $row['user_email'];
 			$email_img 	= '<a href="' . $email_uri . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" border="0" /></a>';
 			$email 		= '<a href="' . $email_uri . '">' . $lang['Send_email'] . '</a>';
         } 
@@ -98,11 +98,11 @@ function generate_user_info(&$row, $date_format, $group_mod, &$from, &$flag, &$p
 			$email 		= '&nbsp;';
         }
 
-        $temp_url 		= "modules.php?name=Profile&amp;mode=viewprofile&amp;" . POST_USERS_URL . "=" . $row['user_id'];
+        $temp_url 		= "modules.php?name=Profile&amp;mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id'];
         $profile_img 	= '<a href="' . $temp_url . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" border="0" /></a>';
         $profile 		= '<a href="' . $temp_url . '">' . $lang['Read_profile'] . '</a>';
 
-        $temp_url 		= "modules.php?name=Private_Messages&amp;mode=post&amp;" . POST_USERS_URL . "=" . $row['user_id'];
+        $temp_url 		= "modules.php?name=Private_Messages&amp;mode=post&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id'];
         $pm_img 		= '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" border="0" /></a>';
         $pm 			= '<a href="' . $temp_url . '">' . $lang['Send_private_message'] . '</a>';
 
@@ -163,8 +163,8 @@ $server_name = trim($board_config['server_name']);
 $server_protocol = ( $board_config['cookie_secure'] ) ? 'https://' : 'http://';
 $server_port = ( $board_config['server_port'] <> 80 ) ? ':' . trim($board_config['server_port']) . '/' : '/';
 $server_url = $server_protocol . $server_name . $server_port . $script_name;
-if ( isset($_GET[POST_GROUPS_URL]) || isset($_POST[POST_GROUPS_URL]) ) {
-        $group_id = ( isset($_POST[POST_GROUPS_URL]) ) ? intval($_POST[POST_GROUPS_URL]) : intval($_GET[POST_GROUPS_URL]);
+if ( isset($_GET[NUKE_POST_GROUPS_URL]) || isset($_POST[NUKE_POST_GROUPS_URL]) ) {
+        $group_id = ( isset($_POST[NUKE_POST_GROUPS_URL]) ) ? intval($_POST[NUKE_POST_GROUPS_URL]) : intval($_GET[NUKE_POST_GROUPS_URL]);
 } else {
         $group_id = '';
 }
@@ -191,54 +191,54 @@ $is_moderator = FALSE;
 
 if ( isset($_POST['groupstatus']) && $group_id ) {
         if ( !is_user() ) {
-                redirect(append_sid("login.$phpEx?redirect=groupcp.$phpEx&" . POST_GROUPS_URL . "=$group_id", true));
+                nuke_redirect(append_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
         }
-        $sql = "SELECT group_moderator FROM " . GROUPS_TABLE . " WHERE group_id = '$group_id'";
-        if ( !($result = $db->sql_query($sql)) ) {
-                message_die(GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
+        $sql = "SELECT group_moderator FROM " . NUKE_GROUPS_TABLE . " WHERE group_id = '$group_id'";
+        if ( !($result = $nuke_db->sql_query($sql)) ) {
+                message_die(NUKE_GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
         }
-        $row = $db->sql_fetchrow($result);
-        if ( $row['group_moderator'] != $userdata['user_id'] && $userdata['user_level'] != ADMIN ) {
+        $row = $nuke_db->sql_fetchrow($result);
+        if ( $row['group_moderator'] != $userdata['user_id'] && $userdata['user_level'] != NUKE_ADMIN ) {
                 $template->assign_vars(array(
                         'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
                 );
-                $message = $lang['Not_group_moderator'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
-                message_die(GENERAL_MESSAGE, $message);
+                $message = $lang['Not_group_moderator'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                message_die(NUKE_GENERAL_MESSAGE, $message);
         }
-        $sql = "UPDATE " . GROUPS_TABLE . " SET group_type = " . intval($_POST['group_type']) . " WHERE group_id = '$group_id'";
-        if ( !($result = $db->sql_query($sql)) ) {
-                message_die(GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
+        $sql = "UPDATE " . NUKE_GROUPS_TABLE . " SET group_type = " . intval($_POST['group_type']) . " WHERE group_id = '$group_id'";
+        if ( !($result = $nuke_db->sql_query($sql)) ) {
+                message_die(NUKE_GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
         }
         $template->assign_vars(array(
-                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">')
+                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
         );
-        $message = $lang['Group_type_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
-        message_die(GENERAL_MESSAGE, $message);
+        $message = $lang['Group_type_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+        message_die(NUKE_GENERAL_MESSAGE, $message);
 } elseif ( isset($_POST['joingroup']) && $group_id ) {
         //
         // First, joining a group
-        // If the user isn't logged in redirect them to login
+        // If the user isn't logged in nuke_redirect them to login
         //
         if ( !is_user() || !$userdata['session_logged_in']) {
-                redirect(append_sid("login.$phpEx?redirect=groupcp.$phpEx&" . POST_GROUPS_URL . "=$group_id", true));
+                nuke_redirect(append_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
         } else if ( $sid !== $userdata['session_id'] )
     	{
-    		message_die(GENERAL_ERROR, $lang['Session_invalid']);
+    		message_die(NUKE_GENERAL_ERROR, $lang['Session_invalid']);
     	}
 
-        $sql = "SELECT ug.user_id, g.group_type, group_count, group_count_max FROM (" . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g) WHERE g.group_id = '$group_id' AND ( g.group_type <> " . GROUP_HIDDEN . " OR (g.group_count <= '".$userdata['user_posts']."' AND g.group_count_max > '".$userdata['user_posts']."')) AND ug.group_id = g.group_id";
-        if ( !($result = $db->sql_query($sql)) ) {
-                message_die(GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
+        $sql = "SELECT ug.user_id, g.group_type, group_count, group_count_max FROM (" . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g) WHERE g.group_id = '$group_id' AND ( g.group_type <> " . NUKE_GROUP_HIDDEN . " OR (g.group_count <= '".$userdata['user_posts']."' AND g.group_count_max > '".$userdata['user_posts']."')) AND ug.group_id = g.group_id";
+        if ( !($result = $nuke_db->sql_query($sql)) ) {
+                message_die(NUKE_GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
         }
 /*****[BEGIN]******************************************
  [ Mod:    Auto Group                          v1.2.2 ]
  ******************************************************/
-        //if ( $row = $db->sql_fetchrow($result) ) {
-                //if ( $row['group_type'] == GROUP_OPEN ) {
-        if (	$row = $db->sql_fetchrow($result) )
+        //if ( $row = $nuke_db->sql_fetchrow($result) ) {
+                //if ( $row['group_type'] == NUKE_GROUP_OPEN ) {
+        if (	$row = $nuke_db->sql_fetchrow($result) )
         {
             $is_autogroup_enable = ($row['group_count'] <= $userdata['user_posts'] && $row['group_count_max'] > $userdata['user_posts']) ? true : false;
-                if ( $row['group_type'] == GROUP_OPEN || $is_autogroup_enable)
+                if ( $row['group_type'] == NUKE_GROUP_OPEN || $is_autogroup_enable)
 	            {
 /*****[END]********************************************
  [ Mod:    Auto Group                          v1.2.2 ]
@@ -248,29 +248,29 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                                         $template->assign_vars(array(
                                                 'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
                                         );
-                                        $message = $lang['Already_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
-                                        message_die(GENERAL_MESSAGE, $message);
+                                        $message = $lang['Already_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                                        message_die(NUKE_GENERAL_MESSAGE, $message);
                                 }
-                        } while ( $row = $db->sql_fetchrow($result) );
+                        } while ( $row = $nuke_db->sql_fetchrow($result) );
                 } else {
                         $template->assign_vars(array(
                                 'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
                         );
-                        $message = $lang['This_closed_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
-                        message_die(GENERAL_MESSAGE, $message);
+                        $message = $lang['This_closed_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
                 }
         } else {
-                message_die(GENERAL_MESSAGE, $lang['No_groups_exist']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['No_groups_exist']);
         }
-        $sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending) VALUES ('$group_id', " . $userdata['user_id'] . ",'".(($is_autogroup_enable)? 0 : 1)."')";
-        if ( !($result = $db->sql_query($sql)) ) {
-                message_die(GENERAL_ERROR, "Error inserting user group subscription", "", __LINE__, __FILE__, $sql);
+        $sql = "INSERT INTO " . NUKE_USER_GROUP_TABLE . " (group_id, user_id, user_pending) VALUES ('$group_id', " . $userdata['user_id'] . ",'".(($is_autogroup_enable)? 0 : 1)."')";
+        if ( !($result = $nuke_db->sql_query($sql)) ) {
+                message_die(NUKE_GENERAL_ERROR, "Error inserting user group subscription", "", __LINE__, __FILE__, $sql);
         }
-        $sql = "SELECT u.user_email, u.username, u.user_lang, g.group_name FROM (".USERS_TABLE . " u, " . GROUPS_TABLE . " g) WHERE u.user_id = g.group_moderator AND g.group_id = '$group_id'";
-        if ( !($result = $db->sql_query($sql)) ) {
-                message_die(GENERAL_ERROR, "Error getting group moderator data", "", __LINE__, __FILE__, $sql);
+        $sql = "SELECT u.user_email, u.username, u.user_lang, g.group_name FROM (".NUKE_USERS_TABLE . " u, " . NUKE_GROUPS_TABLE . " g) WHERE u.user_id = g.group_moderator AND g.group_id = '$group_id'";
+        if ( !($result = $nuke_db->sql_query($sql)) ) {
+                message_die(NUKE_GENERAL_ERROR, "Error getting group moderator data", "", __LINE__, __FILE__, $sql);
         }
-        $moderator = $db->sql_fetchrow($result);
+        $moderator = $nuke_db->sql_fetchrow($result);
 /*****[BEGIN]******************************************
  [ Mod:    Auto Group                          v1.2.2 ]
  ******************************************************/
@@ -291,7 +291,7 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                 'GROUP_MODERATOR' => $moderator['username'],
                 'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
 
-                'U_GROUPCP' => $server_url . '&' . POST_GROUPS_URL . "=$group_id&validate=true")
+                'U_GROUPCP' => $server_url . '&' . NUKE_POST_GROUPS_URL . "=$group_id&validate=true")
         );
         $emailer->send();
         $emailer->reset();
@@ -299,32 +299,32 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
         $template->assign_vars(array(
                 'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
         );
-        $message = ($is_autogroup_enable) ? $lang['Group_added'] : $lang['Group_joined'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
-        message_die(GENERAL_MESSAGE, $message);
+        $message = ($is_autogroup_enable) ? $lang['Group_added'] : $lang['Group_joined'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+        message_die(NUKE_GENERAL_MESSAGE, $message);
 } elseif ( isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id ) {
         //
         // Second, unsubscribing from a group
         // Check for confirmation of unsub.
         //
         if ( $cancel ) {
-                redirect(append_sid("groupcp.$phpEx", true));
+                nuke_redirect(append_sid("groupcp.$phpEx", true));
         } elseif ( !is_user() || !$userdata['session_logged_in'] )  {
-                redirect('modules.php?name=Your_Account&amp;redirect=groupcp.php&amp;' . POST_GROUPS_URL . '='.$group_id);
+                nuke_redirect('modules.php?name=Your_Account&amp;nuke_redirect=groupcp.php&amp;' . NUKE_POST_GROUPS_URL . '='.$group_id);
         } else if ( $sid !== $userdata['session_id'] )
         {
- 		     message_die(GENERAL_ERROR, $lang['Session_invalid']);
+ 		     message_die(NUKE_GENERAL_ERROR, $lang['Session_invalid']);
  	    }
         if ( $confirm ) {
 /*****[BEGIN]******************************************
  [ Mod:     Group Colors and Ranks             v1.0.0 ]
  ******************************************************/
-            $sql = "UPDATE " . USERS_TABLE . "
+            $sql = "UPDATE " . NUKE_USERS_TABLE . "
                     SET user_color_gc = '',
                     user_color_gi  = '',
                     user_rank = 0
                     WHERE user_id = " . $userdata['user_id'];
-            if ( !$db->sql_query($sql) ) {
-                    message_die(GENERAL_ERROR, 'Could not remove color from user', '', __LINE__, __FILE__, $sql);
+            if ( !$nuke_db->sql_query($sql) ) {
+                    message_die(NUKE_GENERAL_ERROR, 'Could not remove color from user', '', __LINE__, __FILE__, $sql);
             }
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -336,34 +336,34 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
 /*****[END]********************************************
  [ Mod:     Group Colors and Ranks             v1.0.0 ]
  ******************************************************/
-                $sql = "DELETE FROM " . USER_GROUP_TABLE . "
+                $sql = "DELETE FROM " . NUKE_USER_GROUP_TABLE . "
                         WHERE user_id = " . $userdata['user_id'] . "
                 AND group_id = '$group_id'";
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not delete group memebership data', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not delete group memebership data', '', __LINE__, __FILE__, $sql);
                 }
 
-                if ( $userdata['user_level'] != ADMIN && $userdata['user_level'] == MOD )
+                if ( $userdata['user_level'] != NUKE_ADMIN && $userdata['user_level'] == NUKE_MOD )
                 {
                         $sql = "SELECT COUNT(auth_mod) AS is_auth_mod
-                                FROM (" . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug)
+                                FROM (" . NUKE_AUTH_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug)
                                 WHERE ug.user_id = " . $userdata['user_id'] . "
                                         AND aa.group_id = ug.group_id
                                         AND aa.auth_mod = '1'";
-                        if ( !($result = $db->sql_query($sql)) )
+                        if ( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not obtain moderator status', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not obtain moderator status', '', __LINE__, __FILE__, $sql);
                         }
 
-                        if ( !($row = $db->sql_fetchrow($result)) || $row['is_auth_mod'] == 0 )
+                        if ( !($row = $nuke_db->sql_fetchrow($result)) || $row['is_auth_mod'] == 0 )
                         {
-                                $sql = "UPDATE " . USERS_TABLE . "
-                                        SET user_level = " . USER . "
+                                $sql = "UPDATE " . NUKE_USERS_TABLE . "
+                                        SET user_level = " . NUKE_USER . "
                                         WHERE user_id = " . $userdata['user_id'];
-                                if ( !($result = $db->sql_query($sql)) )
+                                if ( !($result = $nuke_db->sql_query($sql)) )
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
                                 }
                         }
                 }
@@ -372,15 +372,15 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                         'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
                 );
 
-                $message = $lang['Unsub_success'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                $message = $lang['Unsub_success'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
 
-                message_die(GENERAL_MESSAGE, $message);
+                message_die(NUKE_GENERAL_MESSAGE, $message);
         }
         else
         {
                 $unsub_msg = ( isset($_POST['unsub']) ) ? $lang['Confirm_unsub'] : $lang['Confirm_unsub_pending'];
 
-                $s_hidden_fields = '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" /><input type="hidden" name="unsub" value="1" />';
+                $s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" /><input type="hidden" name="unsub" value="1" />';
                 $s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
 
                 $page_title = $lang['Group_Control_Panel'];
@@ -415,7 +415,7 @@ else if ( $group_id )
         {
                 if ( !is_user() )
                 {
-                        redirect(append_sid("login.$phpEx?redirect=groupcp.$phpEx&" . POST_GROUPS_URL . "=$group_id", true));
+                        nuke_redirect(append_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
                         exit;
                 }
         }
@@ -424,20 +424,20 @@ else if ( $group_id )
         // For security, get the ID of the group moderator.
         //
         $sql = "SELECT g.group_moderator, g.group_type, aa.auth_mod
-                FROM ( " . GROUPS_TABLE . " g
-                LEFT JOIN " . AUTH_ACCESS_TABLE . " aa ON aa.group_id = g.group_id )
+                FROM ( " . NUKE_GROUPS_TABLE . " g
+                LEFT JOIN " . NUKE_AUTH_ACCESS_TABLE . " aa ON aa.group_id = g.group_id )
                 WHERE g.group_id = '$group_id'";
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Could not get moderator information', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not get moderator information', '', __LINE__, __FILE__, $sql);
         }
 
-        if ( $group_info = $db->sql_fetchrow($result) )
+        if ( $group_info = $nuke_db->sql_fetchrow($result) )
         {
                 $group_moderator = $group_info['group_moderator'];
 
-                if ( $group_moderator == $userdata['user_id'] || $userdata['user_level'] == ADMIN )
+                if ( $group_moderator == $userdata['user_id'] || $userdata['user_level'] == NUKE_ADMIN )
                 {
                         $is_moderator = TRUE;
                 }
@@ -449,10 +449,10 @@ else if ( $group_id )
                 {
                         if ( !is_user() )
                         {
-                                redirect(append_sid("login.$phpEx?redirect=groupcp.$phpEx&" . POST_GROUPS_URL . "=$group_id", true));
+                                nuke_redirect(append_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
                         } else if ( $sid !== $userdata['session_id'] )
             			{
-            				message_die(GENERAL_ERROR, $lang['Session_invalid']);
+            				message_die(NUKE_GENERAL_ERROR, $lang['Session_invalid']);
             			}
 
                         if ( !$is_moderator )
@@ -463,7 +463,7 @@ else if ( $group_id )
 
                                 $message = $lang['Not_group_moderator'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
 
-                                message_die(GENERAL_MESSAGE, $message);
+                                message_die(NUKE_GENERAL_MESSAGE, $message);
                         }
 
                         if ( isset($_POST['add']) )
@@ -471,62 +471,62 @@ else if ( $group_id )
                 $username = ( isset($_POST['username']) ) ? phpbb_clean_username($_POST['username']) : '';
 
                                 $sql = "SELECT user_id, user_email, user_lang, user_level
-                                        FROM " . USERS_TABLE . "
+                                        FROM " . NUKE_USERS_TABLE . "
                                         WHERE username = '" . str_replace("\'", "''", $username) . "'";
-                                if ( !($result = $db->sql_query($sql)) )
+                                if ( !($result = $nuke_db->sql_query($sql)) )
                                 {
-                                        message_die(GENERAL_ERROR, "Could not get user information", $lang['Error'], __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, "Could not get user information", $lang['Error'], __LINE__, __FILE__, $sql);
                                 }
 
-                                if ( !($row = $db->sql_fetchrow($result)) )
+                                if ( !($row = $nuke_db->sql_fetchrow($result)) )
                                 {
                                         $template->assign_vars(array(
-                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">')
+                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
                                         );
 
-                                        $message = $lang['Could_not_add_user'] . "<br /><br />" . sprintf($lang['Click_return_group'], "<a href=\"" . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_index'], "<a href=\"" . append_sid("index.$phpEx") . "\">", "</a>");
+                                        $message = $lang['Could_not_add_user'] . "<br /><br />" . sprintf($lang['Click_return_group'], "<a href=\"" . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_index'], "<a href=\"" . append_sid("index.$phpEx") . "\">", "</a>");
 
-                                        message_die(GENERAL_MESSAGE, $message);
+                                        message_die(NUKE_GENERAL_MESSAGE, $message);
                                 }
 
-                                if ( $row['user_id'] == ANONYMOUS )
+                                if ( $row['user_id'] == NUKE_ANONYMOUS )
                                 {
                                         $template->assign_vars(array(
-                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">')
+                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
                                         );
 
-                                        $message = $lang['Could_not_anon_user'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                                        $message = $lang['Could_not_anon_user'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
 
-                                        message_die(GENERAL_MESSAGE, $message);
+                                        message_die(NUKE_GENERAL_MESSAGE, $message);
                                 }
 
                                 $sql = "SELECT ug.user_id, u.user_level
-                                        FROM (" . USER_GROUP_TABLE . " ug, " . USERS_TABLE . " u)
+                                        FROM (" . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_USERS_TABLE . " u)
                                         WHERE u.user_id = " . $row['user_id'] . "
                                                 AND ug.user_id = u.user_id
                                                 AND ug.group_id = '$group_id'";
-                                if ( !($result = $db->sql_query($sql)) )
+                                if ( !($result = $nuke_db->sql_query($sql)) )
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not get user information', '', __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not get user information', '', __LINE__, __FILE__, $sql);
                                 }
 
-                                if ( !($db->sql_fetchrow($result)) )
+                                if ( !($nuke_db->sql_fetchrow($result)) )
                                 {
-                                        $sql = "INSERT INTO " . USER_GROUP_TABLE . " (user_id, group_id, user_pending)
+                                        $sql = "INSERT INTO " . NUKE_USER_GROUP_TABLE . " (user_id, group_id, user_pending)
                                                 VALUES (" . $row['user_id'] . ", '$group_id', '0')";
-                                        if ( !$db->sql_query($sql) )
+                                        if ( !$nuke_db->sql_query($sql) )
                                         {
-                                                message_die(GENERAL_ERROR, 'Could not add user to group', '', __LINE__, __FILE__, $sql);
+                                                message_die(NUKE_GENERAL_ERROR, 'Could not add user to group', '', __LINE__, __FILE__, $sql);
                                         }
-                                        if ( $row['user_level'] != ADMIN && $row['user_level'] != MOD && $group_info['auth_mod'] )
+                                        if ( $row['user_level'] != NUKE_ADMIN && $row['user_level'] != NUKE_MOD && $group_info['auth_mod'] )
                                         {
 
-                                                $sql = "UPDATE " . USERS_TABLE . "
-                                                        SET user_level = " . MOD . "
+                                                $sql = "UPDATE " . NUKE_USERS_TABLE . "
+                                                        SET user_level = " . NUKE_MOD . "
                                                         WHERE user_id = " . $row['user_id'];
-                                                if ( !$db->sql_query($sql) )
+                                                if ( !$nuke_db->sql_query($sql) )
                                                 {
-                                                        message_die(GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
+                                                        message_die(NUKE_GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
                                                 }
                                         }
 
@@ -535,14 +535,14 @@ else if ( $group_id )
                                         // Email the user and tell them they're in the group
                                         //
                                         $group_sql = "SELECT group_name
-                                                FROM " . GROUPS_TABLE . "
+                                                FROM " . NUKE_GROUPS_TABLE . "
                                                 WHERE group_id = '$group_id'";
-                                        if ( !($result = $db->sql_query($group_sql)) )
+                                        if ( !($result = $nuke_db->sql_query($group_sql)) )
                                         {
-                                                message_die(GENERAL_ERROR, 'Could not get group information', '', __LINE__, __FILE__, $group_sql);
+                                                message_die(NUKE_GENERAL_ERROR, 'Could not get group information', '', __LINE__, __FILE__, $group_sql);
                                         }
 
-                                        $group_name_row = $db->sql_fetchrow($result);
+                                        $group_name_row = $nuke_db->sql_fetchrow($result);
 
                                         $group_name = $group_name_row['group_name'];
 
@@ -569,7 +569,7 @@ else if ( $group_id )
                                                 'GROUP_NAME' => $group_name,
                                                 'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
 
-                                                'U_GROUPCP' => $server_url . '&' . POST_GROUPS_URL . "=$group_id")
+                                                'U_GROUPCP' => $server_url . '&' . NUKE_POST_GROUPS_URL . "=$group_id")
                                         );
                                         $emailer->send();
                                         $emailer->reset();
@@ -577,12 +577,12 @@ else if ( $group_id )
                                 else
                                 {
                                         $template->assign_vars(array(
-                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">')
+                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
                                         );
 
-                                        $message = $lang['User_is_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                                        $message = $lang['User_is_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
 
-                                        message_die(GENERAL_MESSAGE, $message);
+                                        message_die(NUKE_GENERAL_MESSAGE, $message);
                                 }
                         }
                         else
@@ -602,44 +602,44 @@ else if ( $group_id )
                                         {
                                                 if ( $group_info['auth_mod'] )
                                                 {
-                                                        $sql = "UPDATE " . USERS_TABLE . "
-                                                                SET user_level = " . MOD . "
+                                                        $sql = "UPDATE " . NUKE_USERS_TABLE . "
+                                                                SET user_level = " . NUKE_MOD . "
                                                                 WHERE user_id IN ($sql_in)
-                                                                        AND user_level NOT IN (" . MOD . ", " . ADMIN . ")";
+                                                                        AND user_level NOT IN (" . NUKE_MOD . ", " . NUKE_ADMIN . ")";
 
-                                                        if ( !$db->sql_query($sql) )
+                                                        if ( !$nuke_db->sql_query($sql) )
                                                         {
-                                                                message_die(GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
+                                                                message_die(NUKE_GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
                                                         }
                                                 }
 /*****[BEGIN]******************************************
  [ Mod:     Group Colors and Ranks             v1.0.0 ]
  ******************************************************/
                                         global $prefix;
-                                        $sql_color = "SELECT group_color FROM " . GROUPS_TABLE . " WHERE group_id = '$group_id'";
-                                        if (!$result_color = $db->sql_query($sql_color))
+                                        $sql_color = "SELECT group_color FROM " . NUKE_GROUPS_TABLE . " WHERE group_id = '$group_id'";
+                                        if (!$result_color = $nuke_db->sql_query($sql_color))
                                         {
-                                                    message_die(GENERAL_ERROR, 'Could not gather group color', '', __LINE__, __FILE__, $sql);
+                                                    message_die(NUKE_GENERAL_ERROR, 'Could not gather group color', '', __LINE__, __FILE__, $sql);
                                         }
-                                        $row_color = $db->sql_fetchrow($result_color);
-                                        $db->sql_freeresult($result_color);
+                                        $row_color = $nuke_db->sql_fetchrow($result_color);
+                                        $nuke_db->sql_freeresult($result_color);
                                         $color = $row_color['group_color'];
                                         if ($color) {
                                             $sql_color = "SELECT group_color, group_id FROM " . $prefix . "_bbadvanced_username_color WHERE group_id = '$color'";
-                                            if (!$result_color = $db->sql_query($sql_color))
+                                            if (!$result_color = $nuke_db->sql_query($sql_color))
                                             {
-                                                        message_die(GENERAL_ERROR, 'Could not gather group color', '', __LINE__, __FILE__, $sql);
+                                                        message_die(NUKE_GENERAL_ERROR, 'Could not gather group color', '', __LINE__, __FILE__, $sql);
                                             }
-                                            $row_color = $db->sql_fetchrow($result_color);
-                                            $db->sql_freeresult($result_color);
+                                            $row_color = $nuke_db->sql_fetchrow($result_color);
+                                            $nuke_db->sql_freeresult($result_color);
                                         }
-                                        $sql_rank = "SELECT group_rank FROM " . GROUPS_TABLE . " WHERE group_id = '$group_id'";
-                                        if (!$result_rank = $db->sql_query($sql_rank))
+                                        $sql_rank = "SELECT group_rank FROM " . NUKE_GROUPS_TABLE . " WHERE group_id = '$group_id'";
+                                        if (!$result_rank = $nuke_db->sql_query($sql_rank))
                                         {
-                                                    message_die(GENERAL_ERROR, 'Could not gather group rank', '', __LINE__, __FILE__, $sql);
+                                                    message_die(NUKE_GENERAL_ERROR, 'Could not gather group rank', '', __LINE__, __FILE__, $sql);
                                         }
-                                        $row_rank = $db->sql_fetchrow($result_rank);
-                                        $db->sql_freeresult($result_rank);
+                                        $row_rank = $nuke_db->sql_fetchrow($result_rank);
+                                        $nuke_db->sql_freeresult($result_rank);
                                         if($row_rank['group_rank'] && !$row_color['group_color']) {
                                             $sql = "user_rank = '".$row_rank['group_rank']."'";
                                         }elseif($row_color["group_color"] && !$row_rank['group_rank']) {
@@ -655,12 +655,12 @@ else if ( $group_id )
 
                                         if ($sql) {
 
-                                            $sql = "UPDATE " . USERS_TABLE . "
+                                            $sql = "UPDATE " . NUKE_USERS_TABLE . "
                                                     SET " . $sql . "
                                                     WHERE user_id IN ($sql_in)";
-                                            if ( !$db->sql_query($sql) )
+                                            if ( !$nuke_db->sql_query($sql) )
                                             {
-                                                    message_die(GENERAL_ERROR, 'Could not add color to user', '', __LINE__, __FILE__, $sql);
+                                                    message_die(NUKE_GENERAL_ERROR, 'Could not add color to user', '', __LINE__, __FILE__, $sql);
                                             }
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -674,12 +674,12 @@ else if ( $group_id )
  [ Mod:     Group Colors and Ranks             v1.0.0 ]
  ******************************************************/
 
-                                                $sql = "UPDATE " . USER_GROUP_TABLE . "
+                                                $sql = "UPDATE " . NUKE_USER_GROUP_TABLE . "
                                                         SET user_pending = 0
                                                         WHERE user_id IN ($sql_in)
                                                                 AND group_id = '$group_id'";
                                                 $sql_select = "SELECT user_email
-                                                        FROM ". USERS_TABLE . "
+                                                        FROM ". NUKE_USERS_TABLE . "
                                                         WHERE user_id IN ($sql_in)";
                                         }
                                         else if ( isset($_POST['deny']) || isset($_POST['remove']) )
@@ -687,18 +687,18 @@ else if ( $group_id )
                                                 if ( $group_info['auth_mod'] )
                                                 {
                                                         $sql = "SELECT ug.user_id, ug.group_id
-                                                                FROM (" . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug)
+                                                                FROM (" . NUKE_AUTH_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug)
                                                                 WHERE ug.user_id IN  ($sql_in)
                                                                         AND aa.group_id = ug.group_id
                                                                         AND aa.auth_mod = '1'
                                                                 GROUP BY ug.user_id, ug.group_id
                                                                 ORDER BY ug.user_id, ug.group_id";
-                                                        if ( !($result = $db->sql_query($sql)) )
+                                                        if ( !($result = $nuke_db->sql_query($sql)) )
                                                         {
-                                                                message_die(GENERAL_ERROR, 'Could not obtain moderator status', '', __LINE__, __FILE__, $sql);
+                                                                message_die(NUKE_GENERAL_ERROR, 'Could not obtain moderator status', '', __LINE__, __FILE__, $sql);
                                                         }
 
-                                                        if ( $row = $db->sql_fetchrow($result) )
+                                                        if ( $row = $nuke_db->sql_fetchrow($result) )
                                                         {
                                                                 $group_check = array();
                                                                 $remove_mod_sql = '';
@@ -707,7 +707,7 @@ else if ( $group_id )
                                                                 {
                                                                         $group_check[$row['user_id']][] = $row['group_id'];
                                                                 }
-                                                                while ( $row = $db->sql_fetchrow($result) );
+                                                                while ( $row = $nuke_db->sql_fetchrow($result) );
 
                                                                 while( list($user_id, $group_list) = @each($group_check) )
                                                                 {
@@ -719,13 +719,13 @@ else if ( $group_id )
 
                                                                 if ( $remove_mod_sql != '' )
                                                                 {
-                                                                        $sql = "UPDATE " . USERS_TABLE . "
-                                                                                SET user_level = " . USER . "
+                                                                        $sql = "UPDATE " . NUKE_USERS_TABLE . "
+                                                                                SET user_level = " . NUKE_USER . "
                                                                                 WHERE user_id IN ($remove_mod_sql)
-                                                                                        AND user_level NOT IN (" . ADMIN . ")";
-                                                                        if ( !$db->sql_query($sql) )
+                                                                                        AND user_level NOT IN (" . NUKE_ADMIN . ")";
+                                                                        if ( !$nuke_db->sql_query($sql) )
                                                                         {
-                                                                                message_die(GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
+                                                                                message_die(NUKE_GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
                                                                         }
                                                                 }
                                                         }
@@ -733,14 +733,14 @@ else if ( $group_id )
 /*****[BEGIN]******************************************
  [ Mod:     Group Colors and Ranks             v1.0.0 ]
  ******************************************************/
-                                                $sql = "UPDATE " . USERS_TABLE . "
+                                                $sql = "UPDATE " . NUKE_USERS_TABLE . "
                                                         SET user_color_gc = '',
                                                         user_color_gi  = '',
                                                         user_rank = 0
                                                         WHERE user_id IN ($sql_in)";
-                                                if ( !$db->sql_query($sql) )
+                                                if ( !$nuke_db->sql_query($sql) )
                                                 {
-                                                                message_die(GENERAL_ERROR, 'Could not remove color from user', '', __LINE__, __FILE__, $sql);
+                                                                message_die(NUKE_GENERAL_ERROR, 'Could not remove color from user', '', __LINE__, __FILE__, $sql);
                                                 }
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -753,14 +753,14 @@ else if ( $group_id )
  [ Mod:     Group Colors and Ranks             v1.0.0 ]
  ******************************************************/
 
-                                                $sql = "DELETE FROM " . USER_GROUP_TABLE . "
+                                                $sql = "DELETE FROM " . NUKE_USER_GROUP_TABLE . "
                                                         WHERE user_id IN ($sql_in)
                                                                 AND group_id = '$group_id'";
                                         }
 
-                                        if ( !$db->sql_query($sql) )
+                                        if ( !$nuke_db->sql_query($sql) )
                                         {
-                                                message_die(GENERAL_ERROR, 'Could not update user group table', '', __LINE__, __FILE__, $sql);
+                                                message_die(NUKE_GENERAL_ERROR, 'Could not update user group table', '', __LINE__, __FILE__, $sql);
                                         }
 
                                         //
@@ -768,13 +768,13 @@ else if ( $group_id )
                                         //
                                         if ( isset($_POST['approve']) )
                                         {
-                                                if ( !($result = $db->sql_query($sql_select)) )
+                                                if ( !($result = $nuke_db->sql_query($sql_select)) )
                                                 {
-                                                        message_die(GENERAL_ERROR, 'Could not get user email information', '', __LINE__, __FILE__, $sql);
+                                                        message_die(NUKE_GENERAL_ERROR, 'Could not get user email information', '', __LINE__, __FILE__, $sql);
                                                 }
 
                                                 $bcc_list = array();
-                                                while ($row = $db->sql_fetchrow($result))
+                                                while ($row = $nuke_db->sql_fetchrow($result))
                                                 {
                                                         $bcc_list[] = $row['user_email'];
                                                 }
@@ -783,14 +783,14 @@ else if ( $group_id )
                                                 // Get the group name
                                                 //
                                                 $group_sql = "SELECT group_name
-                                                        FROM " . GROUPS_TABLE . "
+                                                        FROM " . NUKE_GROUPS_TABLE . "
                                                         WHERE group_id = '$group_id'";
-                                                if ( !($result = $db->sql_query($group_sql)) )
+                                                if ( !($result = $nuke_db->sql_query($group_sql)) )
                                                 {
-                                                        message_die(GENERAL_ERROR, 'Could not get group information', '', __LINE__, __FILE__, $group_sql);
+                                                        message_die(NUKE_GENERAL_ERROR, 'Could not get group information', '', __LINE__, __FILE__, $group_sql);
                                                 }
 
-                                                $group_name_row = $db->sql_fetchrow($result);
+                                                $group_name_row = $nuke_db->sql_fetchrow($result);
                                                 $group_name = $group_name_row['group_name'];
 
                                                 include(NUKE_INCLUDE_DIR.'emailer.php');
@@ -811,7 +811,7 @@ else if ( $group_id )
                                                         'SITENAME' => $board_config['sitename'],
                                                         'GROUP_NAME' => $group_name,
                                                         'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
-                                                        'U_GROUPCP' => $server_url . '&' . POST_GROUPS_URL . "=$group_id")
+                                                        'U_GROUPCP' => $server_url . '&' . NUKE_POST_GROUPS_URL . "=$group_id")
                                                 );
                                                 $emailer->send();
                                                 $emailer->reset();
@@ -825,21 +825,21 @@ else if ( $group_id )
         }
         else
         {
-                message_die(GENERAL_MESSAGE, $lang['No_groups_exist']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['No_groups_exist']);
         }
 
         //
         // Get group details
         //
-        $sql = "SELECT * FROM " . GROUPS_TABLE . " WHERE group_id = '$group_id' AND group_single_user = '0'";
-        if ( !($result = $db->sql_query($sql)) )
+        $sql = "SELECT * FROM " . NUKE_GROUPS_TABLE . " WHERE group_id = '$group_id' AND group_single_user = '0'";
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Error getting group information', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Error getting group information', '', __LINE__, __FILE__, $sql);
         }
 
-        if ( !($group_info = $db->sql_fetchrow($result)) )
+        if ( !($group_info = $nuke_db->sql_fetchrow($result)) )
         {
-                message_die(GENERAL_MESSAGE, $lang['Group_not_exist']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['Group_not_exist']);
         }
 
         //
@@ -848,19 +848,19 @@ else if ( $group_id )
 /*****[BEGIN]******************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
-        $sql = "SELECT * FROM ".USERS_TABLE." WHERE user_id = " . $group_info['group_moderator'];
+        $sql = "SELECT * FROM ".NUKE_USERS_TABLE." WHERE user_id = " . $group_info['group_moderator'];
 /*****[END]********************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Error getting user list for group', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Error getting user list for group', '', __LINE__, __FILE__, $sql);
         }
 
-        $group_moderator = $db->sql_fetchrow($result);
+        $group_moderator = $nuke_db->sql_fetchrow($result);
 
       if(!$group_moderator) {
-                message_die(GENERAL_ERROR, var_dump($_POST, true)); // shaun
+                message_die(NUKE_GENERAL_ERROR, var_dump($_POST, true)); // shaun
       }
 
         //
@@ -870,7 +870,7 @@ else if ( $group_id )
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
         $sql = "SELECT u.username, u.user_id, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_from_flag, u.user_website, u.user_email, ug.user_pending, u.user_allow_viewonline, u.user_session_time
-                FROM (" . USERS_TABLE . " u, " . USER_GROUP_TABLE . " ug)
+                FROM (" . NUKE_USERS_TABLE . " u, " . NUKE_USER_GROUP_TABLE . " ug)
                 WHERE ug.group_id = '$group_id'
                         AND u.user_id = ug.user_id
                         AND ug.user_pending = '0'
@@ -879,22 +879,22 @@ else if ( $group_id )
 /*****[END]********************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Error getting user list for group', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Error getting user list for group', '', __LINE__, __FILE__, $sql);
         }
 
-        $group_members = $db->sql_fetchrowset($result);
+        $group_members = $nuke_db->sql_fetchrowset($result);
 
         $group_members = array();
 
         $members_count = count($group_members);
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 /*****[BEGIN]******************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
         $sql = "SELECT u.username, u.user_id, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_allow_viewonline, u.user_session_time
-                FROM (" . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug, " . USERS_TABLE . " u)
+                FROM (" . NUKE_GROUPS_TABLE . " g, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_USERS_TABLE . " u)
                 WHERE ug.group_id = '$group_id'
                         AND g.group_id = ug.group_id
                         AND ug.user_pending = '1'
@@ -903,15 +903,15 @@ else if ( $group_id )
 /*****[END]********************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Error getting user pending information', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Error getting user pending information', '', __LINE__, __FILE__, $sql);
         }
 
-        $modgroup_pending_list = $db->sql_fetchrowset($result);
+        $modgroup_pending_list = $nuke_db->sql_fetchrowset($result);
         $modgroup_pending_list = array();
         $modgroup_pending_count = count($modgroup_pending_list);
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 
         $is_group_member = 0;
         if ( $members_count )
@@ -944,7 +944,7 @@ else if ( $group_id )
                 }
         }
 
-        if ( $userdata['user_level'] == ADMIN )
+        if ( $userdata['user_level'] == NUKE_ADMIN )
         {
                 $is_moderator = TRUE;
         }
@@ -955,7 +955,7 @@ else if ( $group_id )
 
                 $group_details =  $lang['Are_group_moderator'];
 
-                $s_hidden_fields = '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
+                $s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
         }
         else if ( $is_group_member || $is_group_pending_member )
         {
@@ -963,57 +963,57 @@ else if ( $group_id )
 
                 $group_details =  ( $is_group_pending_member ) ? $lang['Pending_this_group'] : $lang['Member_this_group'];
 
-                $s_hidden_fields = '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
+                $s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
         }
-        else if ( $userdata['user_id'] == ANONYMOUS )
+        else if ( $userdata['user_id'] == NUKE_ANONYMOUS )
         {
                 $group_details =  $lang['Login_to_join'];
                 $s_hidden_fields = '';
         }
         else
         {
-                if ( $group_info['group_type'] == GROUP_OPEN )
+                if ( $group_info['group_type'] == NUKE_GROUP_OPEN )
                 {
                         $template->assign_block_vars('switch_subscribe_group_input', array());
 
                         $group_details =  $lang['This_open_group'];
-                        $s_hidden_fields = '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
+                        $s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
                 }
 /*****[BEGIN]******************************************
  [ Mod:    Auto Group                          v1.2.2 ]
  ******************************************************/
                 //Replaced for Auto Group
-                //else if ( $group_info['group_type'] == GROUP_CLOSED )
+                //else if ( $group_info['group_type'] == NUKE_GROUP_CLOSED )
                 //{
                         //$group_details =  $lang['This_closed_group'];
                         //$s_hidden_fields = '';
                 //}
-                //else if ( $group_info['group_type'] == GROUP_HIDDEN )
+                //else if ( $group_info['group_type'] == NUKE_GROUP_HIDDEN )
                 //{
                         //$group_details =  $lang['This_hidden_group'];
                         //$s_hidden_fields = '';
                 //}
 
-                else if ( $group_info['group_type'] == GROUP_CLOSED )
+                else if ( $group_info['group_type'] == NUKE_GROUP_CLOSED )
                 {
                     if ($is_autogroup_enable)
                     {
                             $template->assign_block_vars('switch_subscribe_group_input', array());
                             $group_details =  sprintf ($lang['This_closed_group'],$lang['Join_auto']);
-                            $s_hidden_fields = '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
+                            $s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
                     } else
                     {
                             $group_details =  sprintf ($lang['This_closed_group'],$lang['No_more']);
                             $s_hidden_fields = '';
                     }
 		        }
-                else if ( $group_info['group_type'] == GROUP_HIDDEN )
+                else if ( $group_info['group_type'] == NUKE_GROUP_HIDDEN )
 		        {
                     if ($is_autogroup_enable)
                     {
                             $template->assign_block_vars('switch_subscribe_group_input', array());
                             $group_details =  sprintf ($lang['This_hidden_group'],$lang['Join_auto']);
-                            $s_hidden_fields = '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
+                            $s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
                     } else
                     {
                             $group_details =  sprintf ($lang['This_closed_group'],$lang['No_add_allowed']);
@@ -1128,19 +1128,19 @@ else if ( $group_id )
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
 
-                'U_MOD_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id"),
+                'U_MOD_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$user_id"),
                 'U_SEARCH_USER' => append_sid("search.$phpEx?mode=searchuser&popup=1"),
 
-                'S_GROUP_OPEN_TYPE' => GROUP_OPEN,
-                'S_GROUP_CLOSED_TYPE' => GROUP_CLOSED,
-                'S_GROUP_HIDDEN_TYPE' => GROUP_HIDDEN,
-                'S_GROUP_OPEN_CHECKED' => ( $group_info['group_type'] == GROUP_OPEN ) ? ' checked="checked"' : '',
-                'S_GROUP_CLOSED_CHECKED' => ( $group_info['group_type'] == GROUP_CLOSED ) ? ' checked="checked"' : '',
-                'S_GROUP_HIDDEN_CHECKED' => ( $group_info['group_type'] == GROUP_HIDDEN ) ? ' checked="checked"' : '',
+                'S_GROUP_OPEN_TYPE' => NUKE_GROUP_OPEN,
+                'S_GROUP_CLOSED_TYPE' => NUKE_GROUP_CLOSED,
+                'S_GROUP_HIDDEN_TYPE' => NUKE_GROUP_HIDDEN,
+                'S_GROUP_OPEN_CHECKED' => ( $group_info['group_type'] == NUKE_GROUP_OPEN ) ? ' checked="checked"' : '',
+                'S_GROUP_CLOSED_CHECKED' => ( $group_info['group_type'] == NUKE_GROUP_CLOSED ) ? ' checked="checked"' : '',
+                'S_GROUP_HIDDEN_CHECKED' => ( $group_info['group_type'] == NUKE_GROUP_HIDDEN ) ? ' checked="checked"' : '',
                 'S_HIDDEN_FIELDS' => $s_hidden_fields,
                 'S_MODE_SELECT' => $select_sort_mode,
                 'S_ORDER_SELECT' => $select_sort_order,
-                'S_GROUPCP_ACTION' => append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id"))
+                'S_GROUPCP_ACTION' => append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id"))
         );
 
         //
@@ -1165,7 +1165,7 @@ else if ( $group_id )
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
 
-                if ( $group_info['group_type'] != GROUP_HIDDEN || $is_group_member || $is_moderator )
+                if ( $group_info['group_type'] != NUKE_GROUP_HIDDEN || $is_group_member || $is_moderator )
                 {
                         $row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
                         $row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
@@ -1205,7 +1205,7 @@ else if ( $group_id )
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
 
-                                'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id"))
+                                'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$user_id"))
                         );
 
                         if ( $is_moderator )
@@ -1229,13 +1229,13 @@ else if ( $group_id )
         $current_page = ( !$members_count ) ? 1 : ceil( $members_count / $board_config['topics_per_page'] );
 
         $template->assign_vars(array(
-                'PAGINATION' => generate_pagination("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id", $members_count, $board_config['topics_per_page'], $start),
+                'PAGINATION' => generate_pagination("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id", $members_count, $board_config['topics_per_page'], $start),
                 'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $board_config['topics_per_page'] ) + 1 ), $current_page ),
 
                 'L_GOTO_PAGE' => $lang['Goto_page'])
         );
 
-        if ( $group_info['group_type'] == GROUP_HIDDEN && !$is_group_member && !$is_moderator )
+        if ( $group_info['group_type'] == NUKE_GROUP_HIDDEN && !$is_group_member && !$is_moderator )
         {
                 //
                 // No group members
@@ -1316,7 +1316,7 @@ else if ( $group_id )
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
 
-                                        'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id"))
+                                        'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$user_id"))
                                 );
                         }
 
@@ -1353,17 +1353,17 @@ else
         if ( is_user() )
         {
                 $sql = "SELECT g.group_id, g.group_name, g.group_type, ug.user_pending
-                        FROM (" . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug)
+                        FROM (" . NUKE_GROUPS_TABLE . " g, " . NUKE_USER_GROUP_TABLE . " ug)
                         WHERE ug.user_id = " . $userdata['user_id'] . "
                                 AND ug.group_id = g.group_id
                                 AND g.group_single_user <> " . TRUE . "
                         ORDER BY g.group_name, ug.user_id";
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                        message_die(GENERAL_ERROR, 'Error getting group information', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Error getting group information', '', __LINE__, __FILE__, $sql);
                 }
 
-                if ( $row = $db->sql_fetchrow($result) )
+                if ( $row = $nuke_db->sql_fetchrow($result) )
                 {
                         $in_group = array();
                         $s_member_groups_opt = '';
@@ -1381,10 +1381,10 @@ else
                                         $s_member_groups_opt .= '<option value="' . $row['group_id'] . '">' . $row['group_name'] . '</option>';
                                 }
                         }
-                        while( $row = $db->sql_fetchrow($result) );
+                        while( $row = $nuke_db->sql_fetchrow($result) );
 
-                        $s_pending_groups = '<select name="' . POST_GROUPS_URL . '">' . $s_pending_groups_opt . "</select>";
-                        $s_member_groups = '<select name="' . POST_GROUPS_URL . '">' . $s_member_groups_opt . "</select>";
+                        $s_pending_groups = '<select name="' . NUKE_POST_GROUPS_URL . '">' . $s_pending_groups_opt . "</select>";
+                        $s_member_groups = '<select name="' . NUKE_POST_GROUPS_URL . '">' . $s_member_groups_opt . "</select>";
                 }
         }
 
@@ -1393,17 +1393,17 @@ else
         //
         $ignore_group_sql =        ( count($in_group) ) ? "AND group_id NOT IN (" . implode(', ', $in_group) . ")" : '';
         $sql = "SELECT group_id, group_name, group_type, group_count , group_count_max
-                FROM " . GROUPS_TABLE . " g
+                FROM " . NUKE_GROUPS_TABLE . " g
                 WHERE group_single_user <> " . TRUE . "
                         $ignore_group_sql
                 ORDER BY g.group_name";
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Error getting group information', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Error getting group information', '', __LINE__, __FILE__, $sql);
         }
 
         $s_group_list_opt = '';
-        while( $row = $db->sql_fetchrow($result) )
+        while( $row = $nuke_db->sql_fetchrow($result) )
         {
 /*****[BEGIN]******************************************
  [ Mod:    Auto Group                          v1.2.2 ]
@@ -1412,12 +1412,12 @@ else
 /*****[END]********************************************
  [ Mod:    Auto Group                          v1.2.2 ]
  ******************************************************/
-                if  ( $row['group_type'] != GROUP_HIDDEN || $userdata['user_level'] == ADMIN || $is_autogroup_enable )
+                if  ( $row['group_type'] != NUKE_GROUP_HIDDEN || $userdata['user_level'] == NUKE_ADMIN || $is_autogroup_enable )
                 {
                         $s_group_list_opt .='<option value="' . $row['group_id'] . '">' . $row['group_name'] . '</option>';
                 }
         }
-        $s_group_list = '<select name="' . POST_GROUPS_URL . '">' . $s_group_list_opt . '</select>';
+        $s_group_list = '<select name="' . NUKE_POST_GROUPS_URL . '">' . $s_group_list_opt . '</select>';
 
         if ( $s_group_list_opt != '' || $s_pending_groups_opt != '' || $s_member_groups_opt != '' )
         {
@@ -1476,7 +1476,7 @@ else
         }
         else
         {
-                message_die(GENERAL_MESSAGE, $lang['No_groups_exist']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['No_groups_exist']);
         }
 
 }

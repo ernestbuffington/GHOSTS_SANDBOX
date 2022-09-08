@@ -18,7 +18,7 @@
        Advanced Username Color                  v1.0.5       08/08/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -51,7 +51,7 @@ $core->assign_defined_view('align_rows', array(
     'left')
 );
 
-$sql = "SELECT COUNT(topic_id) as total_topics FROM " . TOPICS_TABLE . " WHERE topic_status <> " . TOPIC_MOVED;
+$sql = "SELECT COUNT(topic_id) as total_topics FROM " . NUKE_BB_TOPICS_TABLE . " WHERE topic_status <> " . NUKE_TOPIC_MOVED;
 
 $result = $core->sql_query($sql, 'Unable to retrieve total topics');
 $row = $core->sql_fetchrow($result);
@@ -62,8 +62,8 @@ $total_topics = $row['total_topics'];
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
 $sql = "SELECT u.user_id, u.user_color_gc, u.username, COUNT(t.topic_poster) num_topics
-FROM " . USERS_TABLE . " u, " . TOPICS_TABLE . " t
-WHERE (t.topic_poster <> " . ANONYMOUS . ") AND (u.user_posts > 0) AND (u.user_id = t.topic_poster)
+FROM " . NUKE_USERS_TABLE . " u, " . NUKE_BB_TOPICS_TABLE . " t
+WHERE (t.topic_poster <> " . NUKE_ANONYMOUS . ") AND (u.user_posts > 0) AND (u.user_id = t.topic_poster)
 GROUP BY t.topic_poster ORDER BY num_topics DESC
 LIMIT " . $core->return_limit;
 /*****[END]********************************************

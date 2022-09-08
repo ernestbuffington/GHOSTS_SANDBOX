@@ -42,7 +42,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -51,7 +51,7 @@ if (!defined('IN_PHPBB'))
 // Show the overall footer.
 //
 global $popup, $admin_file;
-$admin_link = ( $userdata['user_level'] == ADMIN ) ? '<a href="'.$admin_file.'.php?op=forums">' . $lang['Admin_panel'] . '</a><br /><br />' : '';
+$admin_link = ( $userdata['user_level'] == NUKE_ADMIN ) ? '<a href="'.$admin_file.'.php?op=forums">' . $lang['Admin_panel'] . '</a><br /><br />' : '';
 
 $template->set_filenames(array(
     'overall_footer' => ( empty($gen_simple_header) ) ? 'overall_footer.tpl' : 'simple_footer.tpl')
@@ -66,7 +66,7 @@ $template->assign_vars(array(
 //
 // Close our DB connection.
 //
-$db->sql_close();
+$nuke_db->sql_close();
 
 //
 // Compress buffered output if required and send to browser

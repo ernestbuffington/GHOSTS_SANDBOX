@@ -9,7 +9,7 @@
  *
  ***************************************************************************/
  
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 	
 if( !empty($setmodules) )
 {
@@ -56,20 +56,20 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 	// No Install Time Set, Set It
 	if (!$board_config['ftr_installed'])
 	{
-		$q = "UPDATE ". CONFIG_TABLE ."
+		$q = "UPDATE ". NUKE_CONFIG_TABLE ."
 			  SET config_value = '". time() ."'
 			  WHERE config_name = 'ftr_installed'";
-		$db->sql_query($q);	
+		$nuke_db->sql_query($q);	
 	}
 	
 	// Reset All Viewers
 	if ($mode == 'reset')
 	{
-		$q = "UPDATE ". USERS_TABLE ."
+		$q = "UPDATE ". NUKE_USERS_TABLE ."
 			  SET user_ftr = '', user_ftr_time = ''
-			  WHERE user_id > '". ANONYMOUS ."'";
-		$db->sql_query($q);
-		message_die(GENERAL_MESSAGE, $lang['admin_ftr_config_do_reset']);
+			  WHERE user_id > '". NUKE_ANONYMOUS ."'";
+		$nuke_db->sql_query($q);
+		message_die(NUKE_GENERAL_MESSAGE, $lang['admin_ftr_config_do_reset']);
 	}
 	
 	// Change Message
@@ -77,11 +77,11 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 	{
 		$new_msg = addslashes(stripslashes($HTTP_POST_VARS['message']));
 		
-		$q = "UPDATE ". CONFIG_TABLE ."
+		$q = "UPDATE ". NUKE_CONFIG_TABLE ."
 			  SET config_value = '". $new_msg ."'
 			  WHERE config_name = 'ftr_msg'";
-		$db->sql_query($q);
-		message_die(GENERAL_MESSAGE, $lang['admin_ftr_config_save_msg']);		
+		$nuke_db->sql_query($q);
+		message_die(NUKE_GENERAL_MESSAGE, $lang['admin_ftr_config_save_msg']);		
 	}
 	
 	// Change Active Status
@@ -89,11 +89,11 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 	{
 		$new_status = ($board_config['ftr_active']) ? 0 : 1;
 		
-		$q = "UPDATE ". CONFIG_TABLE ."
+		$q = "UPDATE ". NUKE_CONFIG_TABLE ."
 			  SET config_value = '". $new_status ."'
 			  WHERE config_name = 'ftr_active'";
-		$db->sql_query($q);
-		message_die(GENERAL_MESSAGE, $lang['admin_ftr_config_save_active']);		
+		$nuke_db->sql_query($q);
+		message_die(NUKE_GENERAL_MESSAGE, $lang['admin_ftr_config_save_active']);		
 	}
 	
 	// Change Whos Forced Status
@@ -101,26 +101,26 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 	{
 		$new_status = ($board_config['ftr_who'] == 1) ? 2 : 1;
 		
-		$q = "UPDATE ". CONFIG_TABLE ."
+		$q = "UPDATE ". NUKE_CONFIG_TABLE ."
 			  SET config_value = '". $new_status ."'
 			  WHERE config_name = 'ftr_who'";
-		$db->sql_query($q);
-		message_die(GENERAL_MESSAGE, $lang['admin_ftr_config_save_who']);		
+		$nuke_db->sql_query($q);
+		message_die(NUKE_GENERAL_MESSAGE, $lang['admin_ftr_config_save_who']);		
 	}
 		
 	// Change Selected Topic
 	if ($mode == 'change_post')
 	{
 		$q = 'SELECT forum_id, forum_name
-			  FROM '. FORUMS_TABLE;
-		$r 		= $db->sql_query($q);
-		$frows 	= $db->sql_fetchrowset($r);
+			  FROM '. NUKE_FORUMS_TABLE;
+		$r 		= $nuke_db->sql_query($q);
+		$frows 	= $nuke_db->sql_fetchrowset($r);
 		
 		$q = 'SELECT topic_id, topic_title
-			  FROM '. TOPICS_TABLE .'
+			  FROM '. NUKE_BB_TOPICS_TABLE .'
 			  WHERE forum_id = "'. $forum_selected .'"';
-		$r 		= $db->sql_query($q);
-		$trows 	= $db->sql_fetchrowset($r);			
+		$r 		= $nuke_db->sql_query($q);
+		$trows 	= $nuke_db->sql_fetchrowset($r);			
 		
 		// Process forum listing
 		if (!$forum_selected)
@@ -205,11 +205,11 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 		}
 		else
 		{
-			$q = "UPDATE ". CONFIG_TABLE ."
+			$q = "UPDATE ". NUKE_CONFIG_TABLE ."
 				  SET config_value = '". intval($topic_selected) ."'
 				  WHERE config_name = 'ftr_topic'";
-			$db->sql_query($q);
-			message_die(GENERAL_MESSAGE, $lang['admin_ftr_config_save_select']);
+			$nuke_db->sql_query($q);
+			message_die(NUKE_GENERAL_MESSAGE, $lang['admin_ftr_config_save_select']);
 		}
 	}
 	
@@ -233,15 +233,15 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 		if ($board_config['ftr_topic'])
 		{
 			$q = 'SELECT forum_id, forum_name
-				  FROM '. FORUMS_TABLE;
-			$r 		= $db->sql_query($q);
-			$frows 	= $db->sql_fetchrowset($r);
+				  FROM '. NUKE_FORUMS_TABLE;
+			$r 		= $nuke_db->sql_query($q);
+			$frows 	= $nuke_db->sql_fetchrowset($r);
 			
 			$q = 'SELECT topic_id, topic_title, forum_id
-				  FROM '. TOPICS_TABLE .'
+				  FROM '. NUKE_BB_TOPICS_TABLE .'
 				  WHERE topic_id = "'. intval($board_config['ftr_topic']) .'"';
-			$r 		= $db->sql_query($q);
-			$trows 	= $db->sql_fetchrow($r);
+			$r 		= $nuke_db->sql_query($q);
+			$trows 	= $nuke_db->sql_fetchrow($r);
 			
 			for ($x = 0; $x < count($frows); $x++)
 			{
@@ -389,10 +389,10 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 		{
 			$who = intval($HTTP_GET_VARS['remove']);
 			
-			$q = "UPDATE ". USERS_TABLE ."
+			$q = "UPDATE ". NUKE_USERS_TABLE ."
 				  SET user_ftr = '', user_ftr_time = ''
 				  WHERE user_id = '". $who ."'";
-			$db->sql_query($q);
+			$nuke_db->sql_query($q);
 		}
 		
 		$order 		= ($HTTP_GET_VARS['order']) ? $HTTP_GET_VARS['order'] : 'username';
@@ -408,13 +408,13 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 		
 
 		$q = "SELECT username, user_id, user_ftr, user_ftr_time
-			  FROM ". USERS_TABLE ."
-			  WHERE user_id <> '". ANONYMOUS ."'
+			  FROM ". NUKE_USERS_TABLE ."
+			  WHERE user_id <> '". NUKE_ANONYMOUS ."'
 			  AND user_ftr <> ''
 			  $order_by";
-		if (!$r = $db->sql_query($q))
-			message_die(GENERAL_ERROR, 'Error Grabbing FTR User Info.', '', __LINE__, __FILE__, $q);
-		$rows = $db->sql_fetchrowset($r);
+		if (!$r = $nuke_db->sql_query($q))
+			message_die(NUKE_GENERAL_ERROR, 'Error Grabbing FTR User Info.', '', __LINE__, __FILE__, $q);
+		$rows = $nuke_db->sql_fetchrowset($r);
 
 		echo '<table align="center" width="100%" class="forumline">';
 		echo '	<tr>';
@@ -449,12 +449,12 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 		}
 
 		$q = "SELECT username, user_ftr, user_ftr_time
-			  FROM ". USERS_TABLE ."
-			  WHERE user_id <> '". ANONYMOUS ."'
+			  FROM ". NUKE_USERS_TABLE ."
+			  WHERE user_id <> '". NUKE_ANONYMOUS ."'
 			  AND user_ftr <> ''";
-		if (!$r = $db->sql_query($q))
-			message_die(GENERAL_ERROR, 'Error Grabbing FTR User Info For Pagination.', '', __LINE__, __FILE__, $q);
-		$rows = $db->sql_fetchrowset($r);
+		if (!$r = $nuke_db->sql_query($q))
+			message_die(NUKE_GENERAL_ERROR, 'Error Grabbing FTR User Info For Pagination.', '', __LINE__, __FILE__, $q);
+		$rows = $nuke_db->sql_fetchrowset($r);
 
 		if ( is_array( $rows ) )
 		{

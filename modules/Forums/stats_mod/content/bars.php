@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -55,7 +55,7 @@ class Content_bars
 
     function init_bars($bars = '')
     {
-        global $board_config, $userdata, $theme, $db, $stats_template, $phpbb2_root_path;
+        global $board_config, $userdata, $theme, $nuke_db, $stats_template, $phpbb2_root_path;
         
         if (is_array($bars))
         {
@@ -80,7 +80,7 @@ class Content_bars
         //
         if( !$board_config['override_user_style'] )
         {
-            if( ($userdata['user_id'] != ANONYMOUS) && (isset($userdata['user_style'])) )
+            if( ($userdata['user_id'] != NUKE_ANONYMOUS) && (isset($userdata['user_style'])) )
             {
                 $style = $userdata['user_style'];
                 if( !$theme )
@@ -99,12 +99,12 @@ class Content_bars
         }
 
         $sql = 'SELECT * 
-        FROM ' . THEMES_TABLE . ' 
+        FROM ' . NUKE_BB_THEMES_TABLE . ' 
         WHERE themes_id = ' . $style;
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(CRITICAL_ERROR, 'Couldn\'t query database for theme info.');
+            message_die(NUKE_CRITICAL_ERROR, 'Couldn\'t query database for theme info.');
         }
         $ThemeSel = get_theme();
                 if (file_exists("themes/$ThemeSel/forums/index_body.tpl")) 

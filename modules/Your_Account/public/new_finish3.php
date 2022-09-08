@@ -47,7 +47,7 @@ if(!isset($_SESSION)) { session_start(); }
 if (!isset($_SESSION['YA1']) || !isset($_SESSION['YA2'])) {
     global $debugger;
     $debugger->handle_error('Session not valid for user: Name - '.Fix_Quotes($ya_username).' Email - '.Fix_Quotes($femail), 'Error');
-    redirect('modules.php?name='.$module_name.'&op=new_user');
+    nuke_redirect('modules.php?name='.$module_name.'&op=new_user');
 }
 unset($_SESSION['YA1']);
 unset($_SESSION['YA2']);
@@ -78,11 +78,11 @@ include(NUKE_BASE_DIR. 'header.php');
     if (!isset($stop)) {
         $ya_username = ya_fixtext($ya_username);
         $ya_user_email = ya_fixtext($ya_user_email);
-        if ($result = $db->sql_query("SELECT * FROM ".$user_prefix."_users WHERE `username`='$ya_username' OR `user_email`='$ya_user_email'")) {
-            if ($row = $db->sql_fetchrow($result)) {
+        if ($result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE `username`='$ya_username' OR `user_email`='$ya_user_email'")) {
+            if ($row = $nuke_db->sql_fetchrow($result)) {
                 if (isset($row['username']) || isset($row['user_email'])) {
                     if ($row['username'] ==  $ya_username || $row['user_email'] == $ya_user_email) {
-                        redirect("modules.php?name=$module_name");
+                        nuke_redirect("modules.php?name=$module_name");
                         exit;
                     }
                 }
@@ -127,35 +127,35 @@ include(NUKE_BASE_DIR. 'header.php');
 /*****[END]********************************************
  [ Mod:     XData                              v0.1.1 ]
  ******************************************************/
-        list($newest_uid) = $db->sql_fetchrow($db->sql_query("SELECT max(user_id) AS newest_uid FROM ".$user_prefix."_users"));
+        list($newest_uid) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT max(user_id) AS newest_uid FROM ".$nuke_user_prefix."_users"));
         if ($newest_uid == "-1") { $new_uid = 1; } else { $new_uid = $newest_uid+1; }
         $lv = time();
-        $result = $db->sql_query("INSERT INTO ".$user_prefix."_users (user_id, name, username, user_email, user_avatar, user_regdate, user_viewemail, user_password, user_lang, user_lastvisit) VALUES ($new_uid, '$ya_username', '$ya_username', '$ya_user_email', 'gallery/blank.gif', '$user_regdate', '0', '$new_password', '$language', '$lv')");
+        $result = $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_users (user_id, name, username, user_email, user_avatar, user_regdate, user_viewemail, user_password, user_lang, user_lastvisit) VALUES ($new_uid, '$ya_username', '$ya_username', '$ya_user_email', 'gallery/blank.gif', '$user_regdate', '0', '$new_password', '$language', '$lv')");
 
         if ((count($nfield) > 0) AND ($result)) {
           foreach ($nfield as $key => $var) {
-              $db->sql_query("INSERT INTO ".$user_prefix."_cnbya_value (uid, fid, value) VALUES ('$new_uid', '$key','$nfield[$key]')");
+              $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_cnbya_value (uid, fid, value) VALUES ('$new_uid', '$key','$nfield[$key]')");
           }
         }
 
-    $db->sql_query("LOCK TABLES ".$user_prefix."_users WRITE");
-    $db->sql_query("UPDATE ".$user_prefix."_users SET user_avatar='gallery/blank.gif', user_avatar_type='3', user_lang='$language', user_lastvisit='$lv', umode='nested' WHERE user_id='$new_uid'");
+    $nuke_db->sql_query("LOCK TABLES ".$nuke_user_prefix."_users WRITE");
+    $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET user_avatar='gallery/blank.gif', user_avatar_type='3', user_lang='$language', user_lastvisit='$lv', umode='nested' WHERE user_id='$new_uid'");
 
-    $db->sql_query("UPDATE ".$user_prefix."_users SET username='$ya_username', name='$realname', user_email='$ya_user_email', femail='$femail', user_website='$user_website', user_from='$user_from', user_occ='$user_occ', user_interests='$user_interests', newsletter='$newsletter', user_viewemail='$user_viewemail', user_allow_viewonline='$user_allow_viewonline', user_timezone='$user_timezone', user_dateformat='$user_dateformat', user_sig='$user_sig', bio='$bio', user_password='$new_password', user_regdate='$user_regdate' WHERE user_id='$new_uid'");
+    $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET username='$ya_username', name='$realname', user_email='$ya_user_email', femail='$femail', user_website='$user_website', user_from='$user_from', user_occ='$user_occ', user_interests='$user_interests', newsletter='$newsletter', user_viewemail='$user_viewemail', user_allow_viewonline='$user_allow_viewonline', user_timezone='$user_timezone', user_dateformat='$user_dateformat', user_sig='$user_sig', bio='$bio', user_password='$new_password', user_regdate='$user_regdate' WHERE user_id='$new_uid'");
 
-    $db->sql_query("UNLOCK TABLES");
-    $sql = "INSERT INTO " . GROUPS_TABLE . " (group_name, group_description, group_single_user, group_moderator)
+    $nuke_db->sql_query("UNLOCK TABLES");
+    $sql = "INSERT INTO " . NUKE_GROUPS_TABLE . " (group_name, group_description, group_single_user, group_moderator)
             VALUES ('', 'Personal User', '1', '0')";
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
         DisplayError('Could not insert data into groups table<br />'.$sql);
     }
 
-    $group_id = $db->sql_nextid();
+    $group_id = $nuke_db->sql_nextid();
 
-    $sql = "INSERT INTO " . USER_GROUP_TABLE . " (user_id, group_id, user_pending)
+    $sql = "INSERT INTO " . NUKE_USER_GROUP_TABLE . " (user_id, group_id, user_pending)
         VALUES ('$new_uid', '$group_id', '0')";
-    if( !($result = $db->sql_query($sql)) )
+    if( !($result = $nuke_db->sql_query($sql)) )
     {
         DisplayError('Could not insert data into user_group table<br />'.$sql);
     }
@@ -198,9 +198,9 @@ include(NUKE_BASE_DIR. 'header.php');
             }
             title(_USERREGLOGIN);
             OpenTable();
-            $result = $db->sql_query("SELECT * FROM ".$user_prefix."_users WHERE username='$ya_username' AND user_password='$new_password'");
-            if ($db->sql_numrows($result) == 1) {
-                $userinfo = $db->sql_fetchrow($result);
+            $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE username='$ya_username' AND user_password='$new_password'");
+            if ($nuke_db->sql_numrows($result) == 1) {
+                $userinfo = $nuke_db->sql_fetchrow($result);
                 yacookie($userinfo['user_id'],$userinfo['username'],$userinfo['user_password'],$userinfo['storynum'],$userinfo['umode'],$userinfo['uorder'],$userinfo['thold'],$userinfo['noscore'],$userinfo['ublockon'],$userinfo['theme'],$userinfo['commentmax']);
 // menelaos: i wonder if this cookie is set correctly
 // menelaos: refresh of location? The next line causes multiple accounts to be loaded into the database, this has to be fixed

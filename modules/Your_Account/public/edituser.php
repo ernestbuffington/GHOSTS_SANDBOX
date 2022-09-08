@@ -47,11 +47,11 @@ if(!defined('CNBYA'))die('CNBYA protection');
       nav();
       CloseTable();
 
-      $result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field");
+      $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field");
     
-	  while($sqlvalue = $db->sql_fetchrow($result)):
+	  while($sqlvalue = $nuke_db->sql_fetchrow($result)):
       
-	  list($value) = $db->sql_fetchrow( $db->sql_query("SELECT value FROM ".$user_prefix."_cnbya_value WHERE fid ='$sqlvalue[fid]' AND uid = '$userinfo[user_id]'"));
+	  list($value) = $nuke_db->sql_fetchrow( $nuke_db->sql_query("SELECT value FROM ".$nuke_user_prefix."_cnbya_value WHERE fid ='$sqlvalue[fid]' AND uid = '$userinfo[user_id]'"));
     
       $userinfo[$sqlvalue['name']] = $value;
       endwhile;
@@ -80,9 +80,9 @@ if(!defined('CNBYA'))die('CNBYA protection');
         echo "<tr><td bgcolor='$bgcolor2'><strong>"._YOURHOMEPAGE.":</strong><br />"._OPTIONAL."</td>";
         echo "<td bgcolor='$bgcolor3'><input type='text' name='user_website' value=\"$userinfo[user_website]\" size='50' maxlength='255'></td></tr>";
         
-        $result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field WHERE need <> '0' ORDER BY pos");
+        $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field WHERE need <> '0' ORDER BY pos");
         
-		while($sqlvalue = $db->sql_fetchrow($result)): 
+		while($sqlvalue = $nuke_db->sql_fetchrow($result)): 
           $t = $sqlvalue[fid];
           $value2 = explode("::", $sqlvalue[value]);
 		  if(substr($sqlvalue[name],0,1)=='_') 

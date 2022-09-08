@@ -13,7 +13,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -100,13 +100,13 @@ for ($i = 0; $i < count($rows); $i++)
     $index_s[$rows[$i]['smile_url']]['count'] = $rows[$i]['smile_count'];
 }
 
-$sql = "SELECT max(post_id) as total FROM " . POSTS_TABLE;
+$sql = "SELECT max(post_id) as total FROM " . NUKE_POSTS_TABLE;
 $result = $core->sql_query($sql, 'Unable to determine last_post_id');
 $row = $core->sql_fetchrow($result);
 
 $last_post = $row['total'];
 
-$sql = "SELECT COUNT(post_id) as total FROM " . POSTS_TABLE;
+$sql = "SELECT COUNT(post_id) as total FROM " . NUKE_POSTS_TABLE;
 $result = $core->sql_query($sql, 'Unable to determine last_post_id');
 $row = $core->sql_fetchrow($result);
 
@@ -122,7 +122,7 @@ else
     $last_post_index = -1;
 }
 
-$sql = 'SELECT smile_url FROM ' . SMILIES_TABLE . ' GROUP BY smile_url'; 
+$sql = 'SELECT smile_url FROM ' . NUKE_SMILIES_TABLE . ' GROUP BY smile_url'; 
 $result = $core->sql_query($sql, 'Couldn\'t retrieve smilies data');
 
 $all_smilies = array(); 
@@ -190,7 +190,7 @@ if ($num_smilie_rows > 0)
         if (($build_new_smilie) || ($update_smilie))
         {
             $sql = "SELECT * 
-            FROM " . SMILIES_TABLE . " 
+            FROM " . NUKE_SMILIES_TABLE . " 
             WHERE smile_url = '" . str_replace("'", "\\'", $smilies[$i]['smile_url']) . "'"; 
         
             $result = $core->sql_query($sql, 'Couldn\'t retrieve smilies data'); 
@@ -210,7 +210,7 @@ if ($num_smilie_rows > 0)
                 $plus_where = ($last_post_index == -1) ? '' : ' AND post_id > ' . $last_post_index;
 
                 $sql = "SELECT post_id, post_text 
-                FROM " . POSTS_TEXT_TABLE . " 
+                FROM " . NUKE_POSTS_TEXT_TABLE . " 
                 WHERE post_text LIKE '%" . str_replace("'", "\\'", $smile_codes[$j]['code']) . "%'" . $plus_where; 
 
                 $result = $core->sql_query($sql, 'Couldn\'t retrieve smilies data'); 

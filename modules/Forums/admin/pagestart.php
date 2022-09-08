@@ -32,7 +32,7 @@
       Admin IP Lock                            v2.1.0       06/24/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -94,17 +94,17 @@ if(!(
 	($admin[1] == $admin_info['pwd'] && !empty($admin_info['pwd']) && is_mod_admin('Forums'))
 	OR
 	#Checks to see if they are a standard forum admin
-	(is_user() && ($cookie[2] == $user_info['user_password']) && !empty($user_info['user_password']) && ($user_info['user_level'] == ADMIN))
+	(is_user() && ($cookie[2] == $user_info['user_password']) && !empty($user_info['user_password']) && ($user_info['user_level'] == NUKE_ADMIN))
 ))
 {
     unset($cookie);
     unset($admin);
-    message_die(GENERAL_MESSAGE, "You are not authorized to administer this board");
+    message_die(NUKE_GENERAL_MESSAGE, "You are not authorized to administer this board");
 }
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_INDEX);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
 init_userprefs($userdata);
 //
 // End session management

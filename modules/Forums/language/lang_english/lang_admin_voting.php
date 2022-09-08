@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-// Admin Voting MOD
+// Admin Voting NUKE_MOD
 $lang['Admin_Vote_Explain'] = 'Poll Results (who voted and how they voted).';
 $lang['Admin_Vote_Title'] = 'Poll Administration';
 $lang['Vote_id'] = '#';

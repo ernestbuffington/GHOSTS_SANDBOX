@@ -31,7 +31,7 @@
       Ranks summarize                          v1.0.4       06/24/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }

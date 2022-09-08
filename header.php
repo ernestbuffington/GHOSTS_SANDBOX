@@ -47,7 +47,7 @@ function head()
 						   $userinfo, 
 						     $cookie, 
 							$sitekey, 
-							     $db, 
+							     $nuke_db, 
 							$banners, 
 						        $ads, 
 							$browser, 
@@ -63,7 +63,7 @@ function head()
       echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd" />'."\n";
       echo '<!DOCTYPE html>'."\n";
 	  
-	  echo '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="'._LANGCODE.'" />'."\n";
+	  echo '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="'._NUKE_LANGCODE.'" />'."\n";
       echo '<html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="https://www.facebook.com/2008/fbml" />'."\n"; 
       echo "<!-- START <head> -->\n";
       echo '<head>'."\n";
@@ -71,7 +71,7 @@ function head()
       echo '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />'."\n";
       echo '<![endif]-->'."\n";
       echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'."\n";
-      echo '<meta http-equiv="Content-Language" content="'._LANGCODE.'" />'."\n";
+      echo '<meta http-equiv="Content-Language" content="'._NUKE_LANGCODE.'" />'."\n";
       echo '<meta http-equiv="Content-Style-Type" content="text/css" />'."\n";
       echo '<meta http-equiv="Content-Script-Type" content="text/javascript" />'."\n";
     endif;	
@@ -204,7 +204,7 @@ head();
 
 function online() 
 {
-    global $prefix, $db, $name, $board_config, $userinfo, $identify;
+    global $prefix, $nuke_db, $name, $board_config, $userinfo, $identify;
     $ip = $identify->get_ip();
     $url = (defined('ADMIN_FILE')) ? 'index.php' : Fix_Quotes($_SERVER['REQUEST_URI']);
     $uname = $ip;
@@ -407,7 +407,7 @@ function online()
     $url = str_replace("&amp;", "&", $url);
 	$url = addslashes($url);
     $past = time() - $board_config['online_time'];
-    $db->sql_query('DELETE FROM '.$prefix.'_session WHERE time < "'.$past.'"');
+    $nuke_db->sql_query('DELETE FROM '.$prefix.'_session WHERE time < "'.$past.'"');
     $ctime = time();
 
     /**
@@ -415,7 +415,7 @@ function online()
      *
      * @since 2.0.9E
      */
-    $db->sql_query("REPLACE INTO `".$prefix."_session` (uname, 
+    $nuke_db->sql_query("REPLACE INTO `".$prefix."_session` (uname, 
 	                                                     time, 
 													starttime, 
 													host_addr, 
@@ -436,7 +436,7 @@ function online()
      * @since 2.0.9E
      */
     if ( $guest == 0 )
-        $db->sql_query("REPLACE INTO `".$prefix."_users_who_been` (`user_ID`, 
+        $nuke_db->sql_query("REPLACE INTO `".$prefix."_users_who_been` (`user_ID`, 
 		                                                           `username`, 
 																   `last_visit`) 
    values ('".$userinfo['user_id']."', 

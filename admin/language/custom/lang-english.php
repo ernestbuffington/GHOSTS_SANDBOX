@@ -295,7 +295,7 @@ define("_THEMES_THEME_MISSING", "Theme Missing!");
 define("_THEMES_THEME_DEACTIVATED", "Theme deactivated successfully!");
 define("_THEMES_THEME_DEACTIVATED_FAILED", "Theme deactivation failed!");
 define("_THEMES_DEACTIVATE1", "Are you sure you wish to deactivate this theme?");
-define("_THEMES_DEACTIVATE2", "This will set ALL users using this theme back to the default theme!");
+define("_THEMES_DEACTIVATE2", "This will set all users using this theme back to the default theme!");
 define("_THEMES_THEME_DEACTIVATE", "Deactivate Theme");
 define("_THEMES_TRANSFER", "Transfer Theme Users");
 define("_THEMES_MANG_OPTIONS", "Theme Management Options");

@@ -179,7 +179,7 @@ define('HTTP', $href_path_http . '/');
 # Modules Directory
 define('MODULES', TITANIUM_BASE_DIR . 'modules/');
 
-# ADMIN Directory
+# NUKE_ADMIN Directory
 define('TITANIUM_ADMIN_DIR', TITANIUM_BASE_DIR . 'admin/'); 
 define('TITANIUM_ADMIN_MODULE_DIR', TITANIUM_ADMIN_DIR . 'modules/');
 
@@ -258,6 +258,11 @@ define('TITANIUM_FORUMS_DIR', TITANIUM_MODULES_DIR . 'Forums/');
 define('TITANIUM_FORUMS_ADMIN_DIR', TITANIUM_FORUMS_DIR . 'admin/');
 define('TITANIUM_FORUMS_ADMIN_HREF_DIR', $href_path . '/modules/Forums/admin/');
 
+# FORUMS Directory
+define('NUKE_PHPBB3_DIR', TITANIUM_MODULES_DIR . 'phpbb3/');
+define('TITANIUM_FORUMS_ADMIN_DIR', NUKE_PHPBB3_DIR . 'adm/');
+define('TITANIUM_FORUMS_ADMIN_HREF_DIR', $href_path . '/modules/phpbb3/admn/');
+
 # OTHER Directories
 define('TITANIUM_RSS_DIR', TITANIUM_INCLUDE_DIR . 'rss/');
 define('TITANIUM_STATS_DIR', TITANIUM_THEMES_DIR);
@@ -317,15 +322,15 @@ endif;
 # Enable 86it Network Support START
 if (@file_exists(NUKE_BASE_DIR.'nconfig.php')):  
 @require_once(NUKE_BASE_DIR.'nconfig.php');
-global $dbpass2, $dbhost2, $dbname2, $dbuname2, $db2, $network_prefix;
+global $network_dbpass, $network_dbname, $network_dbuname, $network_db, $network_prefix;
 
 if(defined('network')):
-  if(!isset($dbname2) || empty($dbname2)) 
-  die('$dbname2 <- your network database name is not configured in your ROOT nbconfig.php file!');
-  if(!isset($dbuname2) || empty($dbuname2)) 
-  die('$dbuname2 <- your network database user name is not configured in your ROOT nbconfig.php file!');
-  if(!isset($dbpass2) || empty($dbpass2)) 
-  die('$dbpass2 <- your network database password is not configured in your ROOT nbconfig.php file!');
+  if(!isset($network_dbname) || empty($network_dbname)) 
+  die('$network_dbname <- your network database name is not configured in your ROOT nbconfig.php file!');
+  if(!isset($network_dbuname) || empty($network_dbuname)) 
+  die('$network_dbuname <- your network database user name is not configured in your ROOT nbconfig.php file!');
+  if(!isset($network_dbpass) || empty($network_dbpass)) 
+  die('$network_dbpass <- your network database password is not configured in your ROOT nbconfig.php file!');
   if(!isset($network_prefix) || empty($network_prefix)) 
   die('$network_prefix <- your network prefix is not configured in your ROOT nbconfig.php file!');
   endif;
@@ -368,7 +373,7 @@ include_once(NUKE_INCLUDE_DIR . 'abstract/abstract.exception.php');
 
 // Include the required files
 @require_once(NUKE_DB_DIR.'db.php');
-//$db->debug = true;
+//$nuke_db->debug = true;
 // Include Error Logger and identify class
 @require_once(NUKE_CLASSES_DIR.'class.identify.php');
 global $agent;
@@ -436,12 +441,12 @@ endif;
 if (is_array($userinfo) && isset($userinfo['user_active']) 
 && $userinfo['user_id'] != 1 && $userinfo['user_id'] != 0 
 && $userinfo['user_active'] == 0 && $_GET['name'] != 'Your_Account'):
-    redirect('modules.php?name=Your_Account&op=logout');
+    nuke_redirect('modules.php?name=Your_Account&op=logout');
     die();
 endif;
 
 if(stristr($_SERVER['REQUEST_URI'], '.php/'))
-redirect(str_replace('.php/', '.php', $_SERVER['REQUEST_URI']));
+nuke_redirect(str_replace('.php/', '.php', $_SERVER['REQUEST_URI']));
 
 include_once(NUKE_MODULES_DIR.'Your_Account/includes/mainfileend.php');
 
@@ -449,7 +454,7 @@ if(isset($_POST['clear_cache']))
 $cache->clear();
 
 define('NUKE_FILE', true);
-$dbi = $db->db_connect_id;
+$nuke_dbi = $nuke_db->db_connect_id;
 $badreasons = 4;
 $sitekey = md5($_SERVER['HTTP_HOST']);
 $gfx_chk = 0;
@@ -630,8 +635,8 @@ function is_admin($trash=0)
 
     if (!empty($aid) && !empty($pwd)):
         if (!function_exists('get_admin_field')):
-            global $db, $prefix;
-            $pass = $db->sql_ufetchrow("SELECT `pwd` FROM `" . $prefix . "_authors` WHERE `aid` = '" .  str_replace("\'", "''", $aid) . "'", SQL_ASSOC);
+            global $nuke_db, $prefix;
+            $pass = $nuke_db->sql_ufetchrow("SELECT `pwd` FROM `" . $prefix . "_authors` WHERE `aid` = '" .  str_replace("\'", "''", $aid) . "'", SQL_ASSOC);
             $pass = (isset($pass['pwd'])) ? $pass['pwd'] : '';
         else:
             $pass = get_admin_field('pwd', $aid);
@@ -661,9 +666,9 @@ function is_god_admin($trash=0)
 
     if (!empty($godaid) && !empty($pwd)):
         if (!function_exists('get_admin_field')):
-            global $db;
-            $pass    = $db->sql_ufetchrow("SELECT `pwd` FROM `" . _AUTHOR_TABLE."` WHERE `aid` = '" .  str_replace("\'", "''", $godaid) . "'", SQL_ASSOC);
-            $godname = $db->sql_ufetchrow("SELECT `name` FROM `" . _AUTHOR_TABLE."` WHERE `aid` = '" .  str_replace("\'", "''", $godaid) . "'", SQL_ASSOC);
+            global $nuke_db;
+            $pass    = $nuke_db->sql_ufetchrow("SELECT `pwd` FROM `" . _AUTHOR_TABLE."` WHERE `aid` = '" .  str_replace("\'", "''", $godaid) . "'", SQL_ASSOC);
+            $godname = $nuke_db->sql_ufetchrow("SELECT `name` FROM `" . _AUTHOR_TABLE."` WHERE `aid` = '" .  str_replace("\'", "''", $godaid) . "'", SQL_ASSOC);
             $pass    = (isset($pass['pwd'])) ? $pass['pwd'] : '';
             $godname = (isset($godname['name'])) ? $godname['name'] : '';
         else:
@@ -750,7 +755,7 @@ function title($text)
 
 function is_active($module) 
 {
-    global $prefix, $db, $cache;
+    global $prefix, $nuke_db, $cache;
     static $active_modules;
     
 	if (is_array($active_modules)) 
@@ -758,11 +763,11 @@ function is_active($module)
     
 	if ((($active_modules = $cache->load('active_modules', 'config')) === false) || empty($active_modules)):
 		$active_modules = array();
-        $result = $db->sql_query('SELECT `title` FROM `'.$prefix.'_modules` WHERE `active`="1"');
-		while(list($title) = $db->sql_fetchrow($result, SQL_NUM)):
+        $result = $nuke_db->sql_query('SELECT `title` FROM `'.$prefix.'_modules` WHERE `active`="1"');
+		while(list($title) = $nuke_db->sql_fetchrow($result, SQL_NUM)):
             $active_modules[$title] = 1;
         endwhile;
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
         $cache->save('active_modules', 'config', $active_modules);
     endif;
 	return (isset($active_modules[$module]) ? 1 : 0);
@@ -842,18 +847,18 @@ function blocks_visible($side)
 }
 
 function blocks($side, $count=false) {
-    global $prefix, $multilingual, $currentlang, $db, $userinfo, $cache;
+    global $prefix, $multilingual, $currentlang, $nuke_db, $userinfo, $cache;
     static $blocks;
 
     $querylang = ($multilingual) ? 'AND (`blanguage`="'.$currentlang.'" OR `blanguage`="")' : '';
     $side = strtolower($side[0]);
     if((($blocks = $cache->load('blocks', 'config')) === false) || !isset($blocks)) {
         $sql = 'SELECT * FROM `'.$prefix.'_blocks` WHERE `active`="1" '.$querylang.' ORDER BY `weight` ASC';
-        $result = $db->sql_query($sql);
-        while($row = $db->sql_fetchrow($result, SQL_ASSOC)) {
+        $result = $nuke_db->sql_query($sql);
+        while($row = $nuke_db->sql_fetchrow($result, SQL_ASSOC)) {
             $blocks[$row['bposition']][] = $row;
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         $cache->save('blocks', 'config', $blocks);
     }
     if ($count) {
@@ -877,11 +882,11 @@ function blocks($side, $count=false) {
         $now = time();
         if ($expire != 0 AND $expire <= $now) {
             if ($action == 'd') {
-                $db->sql_query('UPDATE `'.$prefix.'_blocks` SET `active`="0", `expire`="0" WHERE `bid`="'.$bid.'"');
+                $nuke_db->sql_query('UPDATE `'.$prefix.'_blocks` SET `active`="0", `expire`="0" WHERE `bid`="'.$bid.'"');
                 $cache->delete('blocks', 'config');
                 return;
             } elseif ($action == 'r') {
-                $db->sql_query('DELETE FROM `'.$prefix.'_blocks` WHERE `bid`="'.$bid.'"');
+                $nuke_db->sql_query('DELETE FROM `'.$prefix.'_blocks` WHERE `bid`="'.$bid.'"');
                 $cache->delete('blocks', 'config');
                 return;
             }
@@ -980,7 +985,7 @@ function rss_content($url)
 
 function headlines($bid, $side=0, $row='') 
 {
-    global $prefix, $db, $my_headlines, $cache;
+    global $prefix, $nuke_db, $my_headlines, $cache;
 
     if(!$my_headlines) 
 	return;
@@ -988,14 +993,14 @@ function headlines($bid, $side=0, $row='')
 	$bid = intval($bid);
     
 	if (!is_array($row)) 
-    $row = $db->sql_ufetchrow('SELECT `title`, `content`, `url`, `refresh`, `time` FROM `'.$prefix.'_blocks` WHERE `bid`='.$bid, SQL_ASSOC);
+    $row = $nuke_db->sql_ufetchrow('SELECT `title`, `content`, `url`, `refresh`, `time` FROM `'.$prefix.'_blocks` WHERE `bid`='.$bid, SQL_ASSOC);
     
 	$content =& trim($row['content']);
 
     if ($row['time'] < (time()-$row['refresh']) || empty($content)):
         $content = rss_content($row['url']);
         $btime = time();
-        $db->sql_query("UPDATE `".$prefix."_blocks` SET `content`='".Fix_Quotes($content)."', `time`='$btime' WHERE `bid`='$bid'");
+        $nuke_db->sql_query("UPDATE `".$prefix."_blocks` SET `content`='".Fix_Quotes($content)."', `time`='$btime' WHERE `bid`='$bid'");
         $cache->delete('blocks', 'config');
     endif;
 
@@ -1012,12 +1017,12 @@ function headlines($bid, $side=0, $row='')
 
 function blog_ultramode() 
 {
-    global $db, $prefix, $multilingual, $currentlang;
+    global $nuke_db, $prefix, $multilingual, $currentlang;
     $querylang = ($multilingual == 1) ? "AND (s.alanguage='".$currentlang."' OR s.alanguage='')" : "";
     $sql = "SELECT s.sid, s.catid, s.aid, s.title, s.datePublished, s.dateModified, s.hometext, s.comments, s.topic, s.ticon, t.topictext, t.topicimage FROM `".$prefix."_stories` s LEFT JOIN `".$prefix."_topics` t ON t.topicid = s.topic WHERE s.ihome = '0' ".$querylang." ORDER BY s.datePublished DESC LIMIT 0,10";
-    $result = $db->sql_query($sql);
+    $result = $nuke_db->sql_query($sql);
     
-	while ($row = $db->sql_fetchrow($result, SQL_ASSOC)): 
+	while ($row = $nuke_db->sql_fetchrow($result, SQL_ASSOC)): 
         $rsid = $row['sid'];
         $raid = $row['aid'];
         $rtitle = htmlspecialchars(stripslashes($row['title']));
@@ -1032,7 +1037,7 @@ function blog_ultramode()
         $content .= "%%\n".$rtitle."\n/modules.php?name=Blog&file=article&sid=".$rsid."\n".$rtime."\n".$raid."\n".$topictext."\n".$rcomments."\n".$topicimage."\n";
     endwhile;
 	
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     
 	if (file_exists(NUKE_BASE_DIR."ultramode.txt") && is_writable(NUKE_BASE_DIR."ultramode.txt")): 
         $file = fopen(NUKE_BASE_DIR."ultramode.txt", "w");
@@ -1046,14 +1051,14 @@ function blog_ultramode()
 
 function ultramode() 
 {
-    global $db, $prefix, $multilingual, $currentlang;
+    global $nuke_db, $prefix, $multilingual, $currentlang;
 
     $querylang = ($multilingual == 1) ? "AND (s.alanguage='".$currentlang."' OR s.alanguage='')" : "";
 
     $sql = "SELECT s.sid, s.catid, s.aid, s.title, s.datePublished, s.dateModified, s.hometext, s.comments, s.topic, s.ticon, t.topictext, t.topicimage FROM `".$prefix."_stories` s LEFT JOIN `".$prefix."_topics` t ON t.topicid = s.topic WHERE s.ihome = '0' ".$querylang." ORDER BY s.datePublished DESC LIMIT 0,10";
-    $result = $db->sql_query($sql);
+    $result = $nuke_db->sql_query($sql);
 
-    while ($row = $db->sql_fetchrow($result, SQL_ASSOC)):
+    while ($row = $nuke_db->sql_fetchrow($result, SQL_ASSOC)):
         $rsid = $row['sid'];
         $raid = $row['aid'];
         $rtitle = htmlspecialchars(stripslashes($row['title']));
@@ -1068,7 +1073,7 @@ function ultramode()
         $content .= "%%\n".$rtitle."\n/modules.php?name=News&file=article&sid=".$rsid."\n".$rtime."\n".$raid."\n".$topictext."\n".$rcomments."\n".$topicimage."\n";
     endwhile;
 	
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     if (file_exists(NUKE_BASE_DIR."ultramode.txt") && is_writable(NUKE_BASE_DIR."ultramode.txt")):
         $file = fopen(NUKE_BASE_DIR."ultramode.txt", "w");
@@ -1090,7 +1095,7 @@ function Fix_Quotes($str, $nohtml=false)
     // Quote if not integer
     /*if (!is_numeric($str)) {
         $str = str_replace('%27', "'", $str);
-        $str = $db->sql_addq($str);
+        $str = $nuke_db->sql_addq($str);
     }*/
     return $str;
 }
@@ -1227,7 +1232,7 @@ function get_microtime()
  ******************************************************/
 function blog_signature($aid) 
 {
-    global $user_prefix, $db;
+    global $nuke_user_prefix, $nuke_db;
     static $users;
 
     if (is_array($users[$aid])):
@@ -1244,7 +1249,7 @@ function blog_signature($aid)
 			    $name,
 				 $bio,
 		 $admin_notes,
-		    $user_occ) = $db->sql_ufetchrow('SELECT `username`,
+		    $user_occ) = $nuke_db->sql_ufetchrow('SELECT `username`,
 		                                         `user_avatar`, 
 												  `user_email`, 
 												        `name`, 
@@ -1252,14 +1257,15 @@ function blog_signature($aid)
 											`user_admin_notes`,
 											        `user_occ` 
 											
-											FROM `'.$user_prefix.'_users` WHERE `username`="'.$aid.'"', SQL_NUM);
+											FROM `'.$nuke_user_prefix.'_users` WHERE `username`="'.$aid.'"', SQL_NUM);
      $aid  = '';				   
      $aid .= 'Sincerely,<br />';
      $aid .= $name.'<br />';				   				   
      $aid .= '<br />';				   
      $aid .= '<table border="0" cellpadding="0" cellspacing="0" width="100%" height="0">';
      $aid .= '<tr>';
-     $aid .= '<td valign="top" height="80" width="80" height="200"><img width="90" class="rounded-corners" style="max-height: 150px; max-width: 150px;" src="modules/Forums/images/avatars/'.$avatar.'" alt="avatar" border="0"></td>';
+     $aid .= '<td valign="top" height="80" width="80" height="200"><img width="90" class="rounded-corners" 
+	 style="max-height: 150px; max-width: 150px;" src="modules/Forums/images/avatars/'.  $avatar.'" alt="avatar" border="0"></td>';
      $aid .= '<td align="top">';
      $aid .= '&nbsp;&nbsp;<strong>'.$user_occ.'</strong><br />';
      $aid .= '&nbsp;&nbsp;name: '.$name.'<br />';
@@ -1278,7 +1284,7 @@ function blog_signature($aid)
 
 function get_author($aid) 
 {
-    global $user_prefix, $db;
+    global $nuke_user_prefix, $nuke_db;
     static $users;
 
     if (is_array($users[$aid])): 
@@ -1288,9 +1294,9 @@ function get_author($aid)
         $users[$aid] = $row;
     endif;
 	
-    $result = $db->sql_query('SELECT `user_id` from `'.$user_prefix.'_users` WHERE `username`="'.$aid.'"');
-    $userid = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $result = $nuke_db->sql_query('SELECT `user_id` from `'.$nuke_user_prefix.'_users` WHERE `username`="'.$aid.'"');
+    $userid = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -1308,7 +1314,7 @@ function get_author($aid)
 
 function getTopics($s_sid) 
 {
-    global $topicname, $topicimage, $topictext, $db;
+    global $topicname, $topicimage, $topictext, $nuke_db;
     $sid = intval($s_sid);
     
 	$sql = 'SELECT t.`topicname`, t.`topicimage`, t.`topictext` 
@@ -1317,9 +1323,9 @@ function getTopics($s_sid)
 	ON t.`topicid` = s.`topic`) 
 	WHERE s.`sid` = "'.$sid.'"';
     
-	$result = $db->sql_query($sql);
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+	$result = $nuke_db->sql_query($sql);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
     $topicname = $row['topicname'];
     $topicimage = $row['topicimage'];
     $topictext = stripslashes($row['topictext']);
@@ -1330,21 +1336,21 @@ function getTopics($s_sid)
  ******************************************************/
 function ads($position) 
 {
-    global $prefix, $db, $sitename, $adminmail, $nukeurl, $banners;
+    global $prefix, $nuke_db, $sitename, $adminmail, $nukeurl, $banners;
 
     if(!$banners) { return ''; }
     
 	$position = intval($position);
    
-	$result = $db->sql_query("SELECT * FROM `".$prefix."_banner` WHERE `position`='$position' AND `active`='1' ORDER BY RAND() LIMIT 0,1");
+	$result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_banner` WHERE `position`='$position' AND `active`='1' ORDER BY RAND() LIMIT 0,1");
     
-	$numrows = $db->sql_numrows($result);
+	$numrows = $nuke_db->sql_numrows($result);
     
 	if ($numrows < 1) return '';
     
-	$row = $db->sql_fetchrow($result, SQL_ASSOC);
+	$row = $nuke_db->sql_fetchrow($result, SQL_ASSOC);
     
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
     
 	foreach($row as $var => $value) 
 	{
@@ -1356,13 +1362,13 @@ function ads($position)
     
 	if(!is_admin()) 
 	{
-        $db->sql_query("UPDATE `".$prefix."_banner` SET `impmade`=" . $impmade . "+1 WHERE `bid`='$bid'");
+        $nuke_db->sql_query("UPDATE `".$prefix."_banner` SET `impmade`=" . $impmade . "+1 WHERE `bid`='$bid'");
     }
     
 	$sql2 = "SELECT `cid`, `imptotal`, `impmade`, `clicks`, `date`, `ad_class`, `ad_code`, `ad_width`, `ad_height`, `clickurl` FROM `".$prefix."_banner` WHERE `bid`='$bid'";
-    $result2 = $db->sql_query($sql2);
-    list($cid, $imptotal, $impmade, $clicks, $date, $ad_class, $ad_code, $ad_width, $ad_height, $clickurl) = $db->sql_fetchrow($result2, SQL_NUM);
-    $db->sql_freeresult($result2);
+    $result2 = $nuke_db->sql_query($sql2);
+    list($cid, $imptotal, $impmade, $clicks, $date, $ad_class, $ad_code, $ad_width, $ad_height, $clickurl) = $nuke_db->sql_fetchrow($result2, SQL_NUM);
+    $nuke_db->sql_freeresult($result2);
     $cid = intval($cid);
     $imptotal = intval($imptotal);
     $impmade = intval($impmade);
@@ -1370,11 +1376,11 @@ function ads($position)
     
 	/* Check if this impression is the last one and print the banner */
     if (($imptotal <= $impmade) && ($imptotal != 0)) {
-        $db->sql_query("UPDATE `".$prefix."_banner` SET `active`='0' WHERE `bid`='$bid'");
+        $nuke_db->sql_query("UPDATE `".$prefix."_banner` SET `active`='0' WHERE `bid`='$bid'");
         $sql3 = "SELECT `name`, `contact`, `email` FROM `".$prefix."_banner_clients` WHERE `cid`='$cid'";
-        $result3 = $db->sql_query($sql3);
-        list($c_name, $c_contact, $c_email) = $db->sql_fetchrow($result3, SQL_NUM);
-        $db->sql_freeresult($result3);
+        $result3 = $nuke_db->sql_query($sql3);
+        list($c_name, $c_contact, $c_email) = $nuke_db->sql_fetchrow($result3, SQL_NUM);
+        $nuke_db->sql_freeresult($result3);
         if (!empty($c_email)) {
             $from = $sitename.' <'.$adminmail.'>';
             $to = $c_contact.' <'.$c_email.'>';
@@ -1411,7 +1417,7 @@ function ads($position)
 
 function network_ads($position) 
 {
-    global $network_prefix, $db2, $sitename, $adminmail, $nukeurl, $banners;
+    global $network_prefix, $network_db, $sitename, $adminmail, $nukeurl, $banners;
 
     if(defined('network')):
 
@@ -1422,14 +1428,14 @@ function network_ads($position)
     return ''; 
     
 	$position = intval($position);
-    $result = $db2->sql_query("SELECT * FROM `".$network_prefix."_banner` WHERE `position`='$position' AND `active`='1' ORDER BY RAND() LIMIT 0,1");
-    $numrows = $db2->sql_numrows($result);
+    $result = $network_db->sql_query("SELECT * FROM `".$network_prefix."_banner` WHERE `position`='$position' AND `active`='1' ORDER BY RAND() LIMIT 0,1");
+    $numrows = $network_db->sql_numrows($result);
     
 	if ($numrows < 1) 
 	return '';
     
-	$row = $db2->sql_fetchrow($result, SQL_ASSOC);
-    $db2->sql_freeresult($result);
+	$row = $network_db->sql_fetchrow($result, SQL_ASSOC);
+    $network_db->sql_freeresult($result);
     
 	foreach($row as $var => $value): 
         if (isset($$var)) 
@@ -1440,7 +1446,7 @@ function network_ads($position)
 	$bid = intval($bid);
     
 	if(!is_admin()) 
-    $db2->sql_query("UPDATE `".$network_prefix."_banner` SET `impmade`=" . $impmade . "+1 WHERE `bid`='$bid'");
+    $network_db->sql_query("UPDATE `".$network_prefix."_banner` SET `impmade`=" . $impmade . "+1 WHERE `bid`='$bid'");
 
     $sql2 = "SELECT `cid`, 
 	           `imptotal`, 
@@ -1454,11 +1460,11 @@ function network_ads($position)
 			  
 			  FROM `".$network_prefix."_banner` WHERE `bid`='$bid'";
     
-	$result2 = $db2->sql_query($sql2);
+	$result2 = $network_db->sql_query($sql2);
 
-    list($cid, $imptotal, $impmade, $clicks, $date, $ad_class, $ad_code, $ad_width, $ad_height) = $db2->sql_fetchrow($result2, SQL_NUM);
+    list($cid, $imptotal, $impmade, $clicks, $date, $ad_class, $ad_code, $ad_width, $ad_height) = $network_db->sql_fetchrow($result2, SQL_NUM);
 
-    $db2->sql_freeresult($result2);
+    $network_db->sql_freeresult($result2);
     $cid = intval($cid);
     $imptotal = intval($imptotal);
     $impmade = intval($impmade);
@@ -1467,13 +1473,13 @@ function network_ads($position)
 	/* Check if this impression is the last one and print the banner */
     if (($imptotal <= $impmade) && ($imptotal != 0)): 
 	
-        $db2->sql_query("UPDATE `".$network_prefix."_banner` SET `active`='0' WHERE `bid`='$bid'");
+        $network_db->sql_query("UPDATE `".$network_prefix."_banner` SET `active`='0' WHERE `bid`='$bid'");
         $sql3 = "SELECT `name`, `contact`, `email` FROM `".$network_prefix."_banner_clients` WHERE `cid`='$cid'";
-        $result3 = $db->sql_query($sql3);
+        $result3 = $nuke_db->sql_query($sql3);
     
-	    list($c_name, $c_contact, $c_email) = $db->sql_fetchrow($result3, SQL_NUM);
+	    list($c_name, $c_contact, $c_email) = $nuke_db->sql_fetchrow($result3, SQL_NUM);
     
-	    $db2->sql_freeresult($result3);
+	    $network_db->sql_freeresult($result3);
         
 		if (!empty($c_email)): 
             $from = $sitename.' <'.$adminmail.'>';
@@ -1734,7 +1740,7 @@ function encode_mail($email)
 # get username color
 function UsernameColor($username, $old_name=false) 
 {
-    global $db, $user_prefix, $use_colors, $cache;
+    global $nuke_db, $nuke_user_prefix, $use_colors, $cache;
 
     static $cached_names;
 
@@ -1754,7 +1760,7 @@ function UsernameColor($username, $old_name=false)
     
     if (!isset($cached_names[$plain_username])):
           
-		    list($user_color, $uname) = $db->sql_ufetchrow("SELECT `user_color_gc`, `username` FROM `" . $user_prefix . "_users` WHERE `username` = '" . str_replace("'", "\'", $username) . "'", SQL_NUM);
+		    list($user_color, $uname) = $nuke_db->sql_ufetchrow("SELECT `user_color_gc`, `username` FROM `" . $nuke_user_prefix . "_users` WHERE `username` = '" . str_replace("'", "\'", $username) . "'", SQL_NUM);
             $uname = (!empty($uname)) ? $uname : $username;
             $username = (strlen($user_color) == 6) ? '<span style="color: #'. $user_color .'">'. $uname .'</span>' : $uname;
             $cached_names[$plain_username] = $username;
@@ -1767,7 +1773,7 @@ function UsernameColor($username, $old_name=false)
 # get group color
 function GroupColor($group_name, $short=0) 
 {
-    global $db, $use_colors, $cache;
+    global $nuke_db, $use_colors, $cache;
 
     static $cached_groups;
 
@@ -1783,18 +1789,18 @@ function GroupColor($group_name, $short=0)
         
 		$cached_groups = array();
         
-		$sql = 'SELECT `auc`.`group_color` as `group_color`, `gr`.`group_name` as`group_name` FROM ( `'.GROUPS_TABLE.'` `gr` LEFT JOIN  `' . AUC_TABLE . '` `auc` ON `gr`.`group_color` =  `auc`.`group_id`) WHERE `gr`.`group_description` <> "Personal User" ORDER BY `gr`.`group_name` ASC';
+		$sql = 'SELECT `auc`.`group_color` as `group_color`, `gr`.`group_name` as`group_name` FROM ( `'.NUKE_GROUPS_TABLE.'` `gr` LEFT JOIN  `' . NUKE_AUC_TABLE . '` `auc` ON `gr`.`group_color` =  `auc`.`group_id`) WHERE `gr`.`group_description` <> "Personal User" ORDER BY `gr`.`group_name` ASC';
         
-		$result = $db->sql_query($sql);
+		$result = $nuke_db->sql_query($sql);
     
-	     while (list($group_color, $groupcolor_name) = $db->sql_fetchrow($result)): 
+	     while (list($group_color, $groupcolor_name) = $nuke_db->sql_fetchrow($result)): 
             $colorgroup_short = (strlen($groupcolor_name) > 13) ? substr($groupcolor_name,0,10).'...' : $groupcolor_name;
             $colorgroup_name  = $groupcolor_name;
             $cached_groups[$groupcolor_name.'_short'] = (strlen($group_color) == 6) ? '<span style="color: #'. $group_color .'"><strong>'. $colorgroup_short .'</strong></span>' : $colorgroup_short;
             $cached_groups[$groupcolor_name] = (strlen($group_color) == 6) ? '<span style="color: #'. $group_color .'"><strong>'. $colorgroup_name .'</strong></span>' : $colorgroup_name;
          endwhile;
     
-	    $db->sql_freeresult($result);
+	    $nuke_db->sql_freeresult($result);
         $cache->save('GroupColors', 'config', $cached_groups);
     
 	endif;
@@ -1807,12 +1813,12 @@ function GroupColor($group_name, $short=0)
 
 function check_priv_mess($user_id) 
 {
-    global $db;
+    global $nuke_db;
 
     if (empty($user_id) || !is_numeric($user_id)) 
     return false;
     
- 	$pms = $db->sql_ufetchrow("SELECT COUNT(privmsgs_id) as no FROM ".PRIVMSGS_TABLE." WHERE privmsgs_to_userid='".$user_id."' AND (privmsgs_type='5' OR privmsgs_type='1')");
+ 	$pms = $nuke_db->sql_ufetchrow("SELECT COUNT(privmsgs_id) as no FROM ".NUKE_PRIVMSGS_TABLE." WHERE privmsgs_to_userid='".$user_id."' AND (privmsgs_type='5' OR privmsgs_type='1')");
     return $pms['no'];
 }
 

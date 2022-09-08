@@ -14,7 +14,7 @@
  *
  ***************************************************************************/
  
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -45,15 +45,15 @@ include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '
     $q = "SELECT *
           FROM ". COLORS ."
           WHERE group_weight = '0'";
-    $r = $db->sql_query($q);
-    while ($rows = $db->sql_fetchrow($r))
+    $r = $nuke_db->sql_query($q);
+    while ($rows = $nuke_db->sql_fetchrow($r))
         {
         if ($rows['group_id'])
             {
         $q1 = "UPDATE ". COLORS ."
                SET group_weight = '". $rows['group_id'] ."'
                WHERE group_id = '". $rows['group_id'] ."'";
-        $db->sql_query($q1);
+        $nuke_db->sql_query($q1);
             }
         }
         
@@ -65,16 +65,16 @@ include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '
     $q = "SELECT *
           FROM ". COLORS ."
           WHERE group_id = '". intval($group) ."'";
-    $r = $db->sql_query($q);
-    $group_one = $db->sql_fetchrow($r);
+    $r = $nuke_db->sql_query($q);
+    $group_one = $nuke_db->sql_fetchrow($r);
     
     $above_it = $group_one['group_weight'] - 1;
     
     $q = "SELECT *
           FROM ". COLORS ."
           WHERE group_weight = '". intval($above_it) ."'";
-    $r = $db->sql_query($q);
-    $group_two = $db->sql_fetchrow($r);
+    $r = $nuke_db->sql_query($q);
+    $group_two = $nuke_db->sql_fetchrow($r);
     
     $group_one_id         = $group_one['group_id'];    
     $group_one_weight     = $group_one['group_weight'];
@@ -85,14 +85,14 @@ include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '
     $q = "UPDATE ". COLORS ."
           SET group_weight = '". $group_two_weight ."'
           WHERE group_id = '". $group_one_id ."'";
-    $db->sql_query($q);
+    $nuke_db->sql_query($q);
     
     $q = "UPDATE ". COLORS ."
           SET group_weight = '". $group_one_weight ."'
           WHERE group_id = '". $group_two_id ."'";
-    $db->sql_query($q);
+    $nuke_db->sql_query($q);
     
-    message_die(GENERAL_MESSAGE, 'Saved');
+    message_die(NUKE_GENERAL_MESSAGE, 'Saved');
         }
         
     if ($mode == 'move_down')
@@ -103,16 +103,16 @@ include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '
     $q = "SELECT *
           FROM ". COLORS ."
           WHERE group_id = '". intval($group) ."'";
-    $r = $db->sql_query($q);
-    $group_one = $db->sql_fetchrow($r);
+    $r = $nuke_db->sql_query($q);
+    $group_one = $nuke_db->sql_fetchrow($r);
     
     $below_it = $group_one['group_weight'] + 1;
     
     $q = "SELECT *
           FROM ". COLORS ."
           WHERE group_weight = '". intval($below_it) ."'";
-    $r = $db->sql_query($q);
-    $group_two = $db->sql_fetchrow($r);
+    $r = $nuke_db->sql_query($q);
+    $group_two = $nuke_db->sql_fetchrow($r);
     
     $group_one_id         = $group_one['group_id'];    
     $group_one_weight     = $group_one['group_weight'];
@@ -123,14 +123,14 @@ include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '
     $q = "UPDATE ". COLORS ."
           SET group_weight = '". $group_two_weight ."'
           WHERE group_id = '". $group_one_id ."'";
-    $db->sql_query($q);
+    $nuke_db->sql_query($q);
     
     $q = "UPDATE ". COLORS ."
           SET group_weight = '". $group_one_weight ."'
           WHERE group_id = '". $group_two_id ."'";
-    $db->sql_query($q);
+    $nuke_db->sql_query($q);
     
-    message_die(GENERAL_MESSAGE, 'Saved');
+    message_die(NUKE_GENERAL_MESSAGE, 'Saved');
         }
         
 if($mode == "main" || !$mode)
@@ -160,16 +160,16 @@ if($mode == "main" || !$mode)
     $q = "SELECT *
           FROM ". COLORS ."
           WHERE group_id > '0'";
-    $r        = $db -> sql_query($q);
-    $total    = $db->sql_numrows($r);    
+    $r        = $nuke_db -> sql_query($q);
+    $total    = $nuke_db->sql_numrows($r);    
     
     $w = 1;
     $q = "SELECT *
           FROM ". COLORS ."
           WHERE group_id > '0'
           ORDER BY group_weight ASC";
-    $r            = $db -> sql_query($q);
-    while($row     = $db -> sql_fetchrow($r))
+    $r            = $nuke_db -> sql_query($q);
+    while($row     = $nuke_db -> sql_fetchrow($r))
         {    
         if ($w != 1)
             $links = '&nbsp;&nbsp;<a href="admin_advanced_username_color.'. $phpEx .'?mode=move_up&amp;id='. $row['group_id'] .'&amp;sid='. $userdata['session_id'] .'">Up</a>';
@@ -271,8 +271,8 @@ if($mode == "main" || !$mode)
           FROM ". COLORS ."
           WHERE group_id > '0'
           ORDER BY group_name ASC";
-    $r            = $db -> sql_query($q);
-    while($row     = $db -> sql_fetchrow($r))
+    $r            = $nuke_db -> sql_query($q);
+    while($row     = $nuke_db -> sql_fetchrow($r))
         {    
     $name     = $row['group_name'];
     $id     = $row['group_id'];    
@@ -320,8 +320,8 @@ if($mode == "main" || !$mode)
           FROM ". COLORS ."
           WHERE group_id > '0'
           ORDER BY group_name ASC";
-    $r            = $db -> sql_query($q);
-    while($row     = $db -> sql_fetchrow($r))
+    $r            = $nuke_db -> sql_query($q);
+    while($row     = $nuke_db -> sql_fetchrow($r))
         {    
     $name     = $row['group_name'];
     $id     = $row['group_id'];    
@@ -442,18 +442,18 @@ if($mode == "main" || !$mode)
         {
     $to_delete = $_POST['group'];
     if(!$to_delete) 
-        message_die(GENERAL_ERROR, $lang['delete_error'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
+        message_die(NUKE_GENERAL_ERROR, $lang['delete_error'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
     
     $q = "DELETE FROM ". COLORS ."
           WHERE group_id = '". $to_delete ."'";
-    $r = $db -> sql_query($q);
+    $r = $nuke_db -> sql_query($q);
     
     #==== Update all users for this group
     $q = "SELECT user_color_gi, user_id
-          FROM ". USERS_TABLE ."
+          FROM ". NUKE_USERS_TABLE ."
           WHERE user_color_gi <> '0'";
-    $r         = $db->sql_query($q);
-    $row     = $db->sql_fetchrowset($r);
+    $r         = $nuke_db->sql_query($q);
+    $row     = $nuke_db->sql_fetchrowset($r);
     
         for ($a = 0; $a < count($row); $a++)
             {
@@ -470,8 +470,8 @@ if($mode == "main" || !$mode)
                     {
                 $q = "SELECT group_color, group_id
                       FROM ". COLORS ."";
-                $r = $db->sql_query($q);
-                $groups_info = $db->sql_fetchrowset($r);
+                $r = $nuke_db->sql_query($q);
+                $groups_info = $nuke_db->sql_fetchrowset($r);
                 
                     for ($b = 0; $b < count($groups_info); $b++)
                         {
@@ -485,7 +485,7 @@ if($mode == "main" || !$mode)
                 else
                     $new_color = '';
                     
-                $q1 = "UPDATE ". USERS_TABLE ."
+                $q1 = "UPDATE ". NUKE_USERS_TABLE ."
                        SET user_color_gi = '$new_id', user_color_gc = '$new_color'
                        WHERE user_id = '". $row[$a]['user_id'] ."'";
 /*****[BEGIN]******************************************
@@ -495,24 +495,24 @@ if($mode == "main" || !$mode)
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-                $db->sql_query($q1);                        
+                $nuke_db->sql_query($q1);                        
             break;
                 }
             }
             
-    message_die(GENERAL_MESSAGE, $lang['delete_success'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['success']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['delete_success'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['success']);
         }
         
     if($mode == "edit_exis_group")
         {
     $color = $_POST['group'];    
-    if(!$color) message_die(GENERAL_ERROR, $lang['edit_error'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
+    if(!$color) message_die(NUKE_GENERAL_ERROR, $lang['edit_error'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
     
     $q = "SELECT *
           FROM ". COLORS ."
           WHERE group_id = '". $color ."'";
-    $r            = $db -> sql_query($q);
-    $row         = $db -> sql_fetchrow($r);
+    $r            = $nuke_db -> sql_query($q);
+    $row         = $nuke_db -> sql_fetchrow($r);
     
     echo "<table width='100%' border='0' class='forumline' cellspacing='2' align='center' valign='middle'>";
     echo "    <tr>";
@@ -576,37 +576,37 @@ if($mode == "main" || !$mode)
     $old_name     = $_POST['old_name'];
     $id            = $_POST['id'];
     
-    if(!$new_name || !$new_color) message_die(GENERAL_ERROR, $lang['save_error'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
-    if(strlen($new_color) <> 6) message_die(GENERAL_ERROR, $lang['add_error_3'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
+    if(!$new_name || !$new_color) message_die(NUKE_GENERAL_ERROR, $lang['save_error'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
+    if(strlen($new_color) <> 6) message_die(NUKE_GENERAL_ERROR, $lang['add_error_3'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
 
     $q = "SELECT group_name
           FROM ". COLORS ."
           WHERE group_name = '". $new_name ."'";
-    $r            = $db -> sql_query($q);
-    $row         = $db -> sql_fetchrow($r);
+    $r            = $nuke_db -> sql_query($q);
+    $row         = $nuke_db -> sql_fetchrow($r);
     $exists = $row['group_name'];
     
         if($new_name != $old_name)
             {
-        if($exists == $new_name) message_die(GENERAL_ERROR, $lang['save_error_1'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
+        if($exists == $new_name) message_die(NUKE_GENERAL_ERROR, $lang['save_error_1'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
             }    
     
     $q = "SELECT *
           FROM ". COLORS ."
           WHERE group_id = '". $id ."'";
-    $r            = $db -> sql_query($q);
-    $row         = $db -> sql_fetchrow($r);
+    $r            = $nuke_db -> sql_query($q);
+    $row         = $nuke_db -> sql_fetchrow($r);
     $current_c     = $row['group_color'];
                     
     $q = "UPDATE ". COLORS ."
           SET group_name = '". $new_name ."', group_color = '". $new_color ."'
           WHERE group_id = '". $id ."'";
-    $r = $db -> sql_query($q);
+    $r = $nuke_db -> sql_query($q);
     
-    $q = "UPDATE ". USERS_TABLE ."
+    $q = "UPDATE ". NUKE_USERS_TABLE ."
           SET user_color_gc = '". $new_color ."'
           WHERE user_color_gc = '". $current_c ."'";
-    $r = $db -> sql_query($q);    
+    $r = $nuke_db -> sql_query($q);    
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -614,7 +614,7 @@ if($mode == "main" || !$mode)
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    message_die(GENERAL_MESSAGE, $lang['add_success'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['success']);                    
+    message_die(NUKE_GENERAL_MESSAGE, $lang['add_success'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['success']);                    
         }
         
     if($mode == "add_new_color")
@@ -622,30 +622,30 @@ if($mode == "main" || !$mode)
     $color_name        = $_POST['new_name'];
     $color_color    = $_POST['new_color'];
     
-    if(!$color_name || !$color_color) message_die(GENERAL_ERROR, $lang['add_error'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
-    if(strlen($color_color) <> 6) message_die(GENERAL_ERROR, $lang['add_error_3'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
+    if(!$color_name || !$color_color) message_die(NUKE_GENERAL_ERROR, $lang['add_error'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
+    if(strlen($color_color) <> 6) message_die(NUKE_GENERAL_ERROR, $lang['add_error_3'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
         
     $q = "SELECT group_name
           FROM ". COLORS ."
           WHERE group_name = '". $color_name ."'";
-    $r            = $db -> sql_query($q);
-    $row         = $db -> sql_fetchrow($r);
+    $r            = $nuke_db -> sql_query($q);
+    $row         = $nuke_db -> sql_fetchrow($r);
     
     if($row['group_name']) 
-        message_die(GENERAL_ERROR, $lang['add_error_2'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
+        message_die(NUKE_GENERAL_ERROR, $lang['add_error_2'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['error']);
 
     $q = "SELECT MAX(group_weight) AS max_weight
           FROM ". COLORS ."";
-    $r        = $db -> sql_query($q);
-    $next    = $db -> sql_fetchrow($r);
+    $r        = $nuke_db -> sql_query($q);
+    $next    = $nuke_db -> sql_fetchrow($r);
         
     $weight = $next['max_weight'] + 1;
     
     $q = "INSERT INTO ". COLORS ."
           VALUES (NULL, '". $color_name ."', '". $color_color ."', '". $weight ."')";
-    $r = $db -> sql_query($q);
+    $r = $nuke_db -> sql_query($q);
                 
-    message_die(GENERAL_MESSAGE, $lang['add_success'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['success']);        
+    message_die(NUKE_GENERAL_MESSAGE, $lang['add_success'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['success']);        
         }
 
 include('page_footer_admin.' . $phpEx);

@@ -26,7 +26,7 @@ define('COUNTER', 1);
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME']))
     exit('Access Denied');
 
-global $prefix, $db, $browser, $agent;
+global $prefix, $nuke_db, $browser, $agent;
 
 if($agent['engine'] == 'bot'):
     $browser = 'Bot';
@@ -43,12 +43,12 @@ else:
 endif;
 
 $now = explode('-',date('d-m-Y-H'));
-$result = $db->sql_query('UPDATE '.$prefix."_counter SET count=count+1 WHERE (var='$browser' AND type='browser') OR (var='$os' AND type='os') OR (type='total' AND var='hits')");
-$db->sql_freeresult($result);
+$result = $nuke_db->sql_query('UPDATE '.$prefix."_counter SET count=count+1 WHERE (var='$browser' AND type='browser') OR (var='$os' AND type='os') OR (type='total' AND var='hits')");
+$nuke_db->sql_freeresult($result);
 
-if (!$db->sql_query('UPDATE '.$prefix."_stats_hour SET hits=hits+1 WHERE (year='$now[2]') AND (month='$now[1]') AND (date='$now[0]') AND (hour='$now[3]')") || !$db->sql_affectedrows()) {
-    $db->sql_query('INSERT INTO '.$prefix."_stats_hour VALUES ('$now[2]','$now[1]','$now[0]','$now[3]','1')");
+if (!$nuke_db->sql_query('UPDATE '.$prefix."_stats_hour SET hits=hits+1 WHERE (year='$now[2]') AND (month='$now[1]') AND (date='$now[0]') AND (hour='$now[3]')") || !$nuke_db->sql_affectedrows()) {
+    $nuke_db->sql_query('INSERT INTO '.$prefix."_stats_hour VALUES ('$now[2]','$now[1]','$now[0]','$now[3]','1')");
 }
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 
 ?>

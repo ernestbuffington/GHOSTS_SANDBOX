@@ -98,7 +98,7 @@ if ( !$result ) { //Bad SQL call
 	echo "<input type='hidden' name='msnl_prev_cid' value='$msnl_iPrevCID'>\n";
 	echo "</div>\n";
 
-	$row = $db->sql_fetchrow( $result ); 
+	$row = $nuke_db->sql_fetchrow( $result ); 
 
 	$msnl_asRec['cid']							= intval( $row['cid'] );
 	$msnl_asRec['topic']						= stripslashes( $row['topic'] );

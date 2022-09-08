@@ -47,7 +47,7 @@ if(is_mod_admin($module_name)) {
 	echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _USER_RETURNMAIN . "</a> ]</div>\n";
 	CloseTable();
 	echo "<br />";
-    list($username, $realname, $email, $check_num) = $db->sql_fetchrow($db->sql_query("SELECT username, realname, user_email, check_num FROM ".$user_prefix."_users_temp WHERE user_id='$act_uid'"));
+    list($username, $realname, $email, $check_num) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT username, realname, user_email, check_num FROM ".$nuke_user_prefix."_users_temp WHERE user_id='$act_uid'"));
 
     $pagetitle = ": "._USERADMIN." - "._YA_APPROVEUSER;
     

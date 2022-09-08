@@ -16,7 +16,7 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME']))
 global $admin_file, $module_name;
 
 $lang_new[$module_name]['ADMINISTRATION'] 				= 'Administration Settings';
-$lang_new[$module_name]['ANONYMOUS'] 					= 'You are an Anonymous user. You can register for free by clicking <a style="text-decoration:none; letter-spacing:1px;" href="modules.php?name=Your_Account">here</a>';
+$lang_new[$module_name]['NUKE_ANONYMOUS'] 					= 'You are an Anonymous user. You can register for free by clicking <a style="text-decoration:none; letter-spacing:1px;" href="modules.php?name=Your_Account">here</a>';
 $lang_new[$module_name]['ATTENTION'] 					= '<span style="font-weight:bold;">ATTENTION</span>';
 $lang_new[$module_name]['BACKGROUND'] 					= 'Background Color';
 $lang_new[$module_name]['BORDER'] 						= 'Border Color';
@@ -101,7 +101,7 @@ $lang_new[$module_name]['SUPPORTED'] 					= 'Only the following filetype\'s are 
 $lang_new[$module_name]['TO']							= 'to';
 $lang_new[$module_name]['UPLOAD'] 						= 'Upload an Image';
 $lang_new[$module_name]['UPLOADED'] 					= 'Uploaded';
-$lang_new[$module_name]['USER']							= 'User';
+$lang_new[$module_name]['NUKE_USER']							= 'User';
 $lang_new[$module_name]['USERS'] 						= 'Manage User(s)';
 $lang_new[$module_name]['USER_ADMINISTRATION']			= 'User Administration';
 $lang_new[$module_name]['VERSION'] 						= 'Version & Changelog';

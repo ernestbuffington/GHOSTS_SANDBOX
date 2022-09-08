@@ -79,7 +79,7 @@ if ( $msnl_iCID == 0 ) {  //Pull all newsletters regardless of category
 $sql	.= "ORDER BY `datesent` DESC";
 
 $result 				= msnl_fSQLCall( $sql );
-$resultcount		= $db->sql_numrows( $result );
+$resultcount		= $nuke_db->sql_numrows( $result );
 
 /************************************************************************
 * Check if there was an error getting the newsletters, and if not, write them
@@ -132,7 +132,7 @@ if ( !$result ) { //Bad SQL call
 	* Cycle through the result set.
 	************************************************************************/
 
-	while (	$row = $db->sql_fetchrow( $result ) ) { 
+	while (	$row = $nuke_db->sql_fetchrow( $result ) ) { 
 
 			$msnl_asRec['nid']						= intval( $row['nid'] );
 			$msnl_asRec['cid']						= intval( $row['cid'] );

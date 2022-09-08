@@ -43,7 +43,7 @@
 	  Post Icons                               v1.0.1
  ************************************************************************/
 
-if (!defined('IN_PHPBB') && !defined('NUKE_EVO'))
+if (!defined('IN_PHPBB2') && !defined('NUKE_EVO'))
 {
     die('Hacking attempt');
 }
@@ -220,17 +220,17 @@ function get_icon_title($icon, $empty=0, $topic_type=-1, $admin=false)
 		$change = true;
 		switch($topic_type)
 		{
-			case POST_NORMAL:
-				$icon = $icon_defined_special['POST_NORMAL']['icon'];
+			case NUKE_POST_NORMAL:
+				$icon = $icon_defined_special['NUKE_POST_NORMAL']['icon'];
 				break;
-			case POST_STICKY:
-				$icon = $icon_defined_special['POST_STICKY']['icon'];
+			case NUKE_POST_STICKY:
+				$icon = $icon_defined_special['NUKE_POST_STICKY']['icon'];
 				break;
-			case POST_ANNOUNCE:
-				$icon = $icon_defined_special['POST_ANNOUNCE']['icon'];
+			case NUKE_POST_ANNOUNCE:
+				$icon = $icon_defined_special['NUKE_POST_ANNOUNCE']['icon'];
 				break;
-			case POST_GLOBAL_ANNOUNCE:
-				$icon = $icon_defined_special['POST_GLOBAL_ANNOUNCE']['icon'];
+			case NUKE_POST_GLOBAL_ANNOUNCE:
+				$icon = $icon_defined_special['NUKE_POST_GLOBAL_ANNOUNCE']['icon'];
 				break;
 			case POST_BIRTHDAY:
 				$icon = $icon_defined_special['POST_BIRTHDAY']['icon'];
@@ -295,21 +295,21 @@ function get_icon_title($icon, $empty=0, $topic_type=-1, $admin=false)
 
 function get_db_stat($mode)
 {
-    global $db;
+    global $nuke_db;
 
     switch( $mode )
     {
         case 'usercount':
             $sql = "SELECT COUNT(user_id) AS total
-                FROM ".USERS_TABLE."
-                WHERE user_id <> ".ANONYMOUS;
+                FROM ".NUKE_USERS_TABLE."
+                WHERE user_id <> ".NUKE_ANONYMOUS;
             break;
-        # If THE LATEST REGISTERED USER IS IN GHOST MODE 
-		# DO NOT SHOW THEM AS THE LATEST REGISTERED USER.
+        # If THE LATEST REGISTERED NUKE_USER IS IN GHOST MODE 
+		# DO NOT SHOW THEM AS THE LATEST REGISTERED NUKE_USER.
         case 'newestuser':
             $sql = "SELECT user_id, username
-                FROM ".USERS_TABLE."
-                WHERE user_id <> ".ANONYMOUS."
+                FROM ".NUKE_USERS_TABLE."
+                WHERE user_id <> ".NUKE_ANONYMOUS."
                 AND user_allow_viewonline = 1 ORDER BY user_id DESC
                 LIMIT 1";
             break;
@@ -317,16 +317,16 @@ function get_db_stat($mode)
         case 'postcount':
         case 'topiccount':
             $sql = "SELECT SUM(forum_topics) AS topic_total, SUM(forum_posts) AS post_total
-                FROM ".FORUMS_TABLE;
+                FROM ".NUKE_FORUMS_TABLE;
             break;
     }
 
-    if(!($result = $db->sql_query($sql)))
+    if(!($result = $nuke_db->sql_query($sql)))
     {
         return false;
     }
 
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
 
     switch($mode)
     {
@@ -419,7 +419,7 @@ function phpbb_rtrim($str, $charlist = false)
 */
 function dss_rand()
 {
-	global $db, $board_config, $dss_seeded;
+	global $nuke_db, $board_config, $dss_seeded;
 
 	$val = $board_config['rand_seed'] . microtime();
 	$val = md5($val);
@@ -427,13 +427,13 @@ function dss_rand()
 
 	if($dss_seeded !== true)
 	{
-		$sql = "UPDATE " . CONFIG_TABLE . " SET
+		$sql = "UPDATE " . NUKE_CONFIG_TABLE . " SET
 			config_value = '" . $board_config['rand_seed'] . "'
 			WHERE config_name = 'rand_seed'";
 
-		if(!$db->sql_query($sql))
+		if(!$nuke_db->sql_query($sql))
 		{
-			message_die(GENERAL_ERROR, "Unable to reseed PRNG", "", __LINE__, __FILE__, $sql);
+			message_die(NUKE_GENERAL_ERROR, "Unable to reseed PRNG", "", __LINE__, __FILE__, $sql);
 		}
 
 		$dss_seeded = true;
@@ -446,15 +446,15 @@ function dss_rand()
 //
 function get_userdata($user, $force_str = false) 
 {
-    global $db;
+    global $nuke_db;
     $user = (!is_numeric($user) || $force_str) ? phpbb_clean_username($user) : intval($user);
-    $sql = "SELECT * FROM ".USERS_TABLE." WHERE ";
-    $sql .= (( is_integer($user)) ? "user_id = $user" : "username = '".str_replace("\'", "''", $user)."'" )." AND user_id <> ".ANONYMOUS;
-    if(!($result = $db->sql_query($sql))) 
+    $sql = "SELECT * FROM ".NUKE_USERS_TABLE." WHERE ";
+    $sql .= (( is_integer($user)) ? "user_id = $user" : "username = '".str_replace("\'", "''", $user)."'" )." AND user_id <> ".NUKE_ANONYMOUS;
+    if(!($result = $nuke_db->sql_query($sql))) 
 	{
-        message_die(GENERAL_ERROR, 'Tried obtaining data for a non-existent user', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Tried obtaining data for a non-existent user', '', __LINE__, __FILE__, $sql);
     }
-    return ($row = $db->sql_fetchrow($result)) ? $row : false;
+    return ($row = $nuke_db->sql_fetchrow($result)) ? $row : false;
 }
 
 /*****[BEGIN]******************************************
@@ -469,12 +469,12 @@ function get_userdata($user, $force_str = false)
  * @param int|string $user        - user_id or username of the user we're editing
  * @param int|string $which_xdata - the profile field being changed
  * @param mixed $value            - value to assign
- * @global class $db
+ * @global class $nuke_db
  * @return null
  */
 function set_user_xdata($user, $which_xdata, $value)
 {
-    global $db;
+    global $nuke_db;
 
 //    $value = trim(htmlspecialchars($value));
     $value = str_replace("\\'", "'", $value);
@@ -492,35 +492,35 @@ function set_user_xdata($user, $which_xdata, $value)
 	$field_where = ($xd_is_name) ? ('xf.code_name = \''.$which_xdata.'\'') : ('xf.field_id = '.$which_xdata);
 
     $sql = "SELECT u.user_id, xf.field_id FROM ("
-        .USERS_TABLE. " AS u, ".XDATA_FIELDS_TABLE." AS xf)
+        .NUKE_USERS_TABLE. " AS u, ".NUKE_XDATA_FIELDS_TABLE." AS xf)
         WHERE " .$user_where. " AND ".$field_where."
         LIMIT 1";
 
-    if(!($result = $db->sql_query($sql)))
+    if(!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, $lang['XData_error_obtaining_userdata'], '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, $lang['XData_error_obtaining_userdata'], '', __LINE__, __FILE__, $sql);
     }
 
-     $row = $db->sql_fetchrow($result);
+     $row = $nuke_db->sql_fetchrow($result);
 
-    $sql = "DELETE FROM ".XDATA_DATA_TABLE."
+    $sql = "DELETE FROM ".NUKE_XDATA_DATA_TABLE."
         WHERE user_id = ".$row['user_id']." AND field_id = ".$row['field_id']."
         LIMIT 1";
 
-    if(!($db->sql_query($sql)))
+    if(!($nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, $lang['XData_failure_removing_data'], '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_removing_data'], '', __LINE__, __FILE__, $sql);
     }
 
     if($value !== '')
     {
-        $sql = "INSERT INTO ".XDATA_DATA_TABLE."
+        $sql = "INSERT INTO ".NUKE_XDATA_DATA_TABLE."
             (user_id, field_id, xdata_value)
             VALUES (" . $row['user_id'] . ", ".$row['field_id'].", '".$value."')";
 
-        if(!($db->sql_query($sql)))
+        if(!($nuke_db->sql_query($sql)))
         {
-               message_die(GENERAL_ERROR, $lang['XData_failure_inserting_data'], '', __LINE__, __FILE__, $sql);
+               message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_inserting_data'], '', __LINE__, __FILE__, $sql);
         }
     }
 }
@@ -533,13 +533,13 @@ function set_user_xdata($user, $which_xdata, $value)
  *
  * @param int|string $user
  * @param bool $force_str
- * @global class $db
+ * @global class $nuke_db
  * @global array $lang
  * @return array $data
  */
 function get_user_xdata($user, $force_str = false)
 {
-    global $db;
+    global $nuke_db;
     $is_name = ((intval($user) == 0) || $force_str);
 
     if(!isset($user) || empty($user)) return '';
@@ -551,7 +551,7 @@ function get_user_xdata($user, $force_str = false)
         $user = str_replace("'", "\\'", $user);
 
         $sql = "SELECT xf.field_type, xf.code_name, xd.xdata_value
-				FROM ".XDATA_DATA_TABLE." xd, ".USERS_TABLE." u, ".XDATA_FIELDS_TABLE." xf
+				FROM ".NUKE_XDATA_DATA_TABLE." xd, ".NUKE_USERS_TABLE." u, ".NUKE_XDATA_FIELDS_TABLE." xf
  				WHERE xf.field_id = xd.field_id AND xd.user_id = u.user_id AND u.username = '".$user."'";
     }
     else
@@ -559,21 +559,21 @@ function get_user_xdata($user, $force_str = false)
         $user = intval($user);
 
         $sql = "SELECT xf.field_type, xf.code_name, xd.xdata_value
-				FROM ".XDATA_DATA_TABLE." xd, ".XDATA_FIELDS_TABLE." xf
+				FROM ".NUKE_XDATA_DATA_TABLE." xd, ".NUKE_XDATA_FIELDS_TABLE." xf
 				WHERE xf.field_id = xd.field_id AND xd.user_id = ".$user;
     }
 
-    if(!($result = $db->sql_query($sql)))
+    if(!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, $lang['XData_error_obtaining_user_xdata'], '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, $lang['XData_error_obtaining_user_xdata'], '', __LINE__, __FILE__, $sql);
     }
 
     $data = array();
-    while($row = $db->sql_fetchrow($result))
+    while($row = $nuke_db->sql_fetchrow($result))
     {
         $data[$row['code_name']] = ($row['field_type'] != 'checkbox') ? $row['xdata_value'] : (($row['xdata_value'] == 1) ? $lang['true'] : $lang['false']);
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     return $data;
 }
@@ -590,7 +590,7 @@ function get_user_xdata($user, $force_str = false)
  */
 function get_xd_metadata($force_refresh = false)
 {
-    global $db;
+    global $nuke_db;
     static $meta = false;
 
     if(!is_array($meta) || $force_refresh)
@@ -615,17 +615,17 @@ function get_xd_metadata($force_refresh = false)
                 allow_html,
                 viewtopic,
                 signup
-            FROM " . XDATA_FIELDS_TABLE . "
+            FROM " . NUKE_XDATA_FIELDS_TABLE . "
             ORDER BY field_order ASC";
 
-        if(!($result = $db->sql_query($sql)))
+        if(!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, $lang['XData_failure_obtaining_field_data'], '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_obtaining_field_data'], '', __LINE__, __FILE__, $sql);
         }
 
         $data = array();
 
-        while($row = $db->sql_fetchrow($result))
+        while($row = $nuke_db->sql_fetchrow($result))
         {
             $data[$row['code_name']] = $row;
 
@@ -650,7 +650,7 @@ function get_xd_metadata($force_refresh = false)
 
 function xdata_auth($fields, $userid, $meta = false)
 {
-    global $db;
+    global $nuke_db;
 
     if(!isset($userid) || empty($userid)) return '';
 
@@ -669,22 +669,22 @@ function xdata_auth($fields, $userid, $meta = false)
 
     if($meta == false)
     {
-        $sql = "SELECT xf.default_auth AS default_auth, xf.code_name AS code_name FROM ".XDATA_FIELDS_TABLE." xf
+        $sql = "SELECT xf.default_auth AS default_auth, xf.code_name AS code_name FROM ".NUKE_XDATA_FIELDS_TABLE." xf
 				WHERE $field_sql";
-        if(!($result = $db->sql_query($sql)))
+        if(!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, $lang['XData_failure_obtaining_field_data'], '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_obtaining_field_data'], '', __LINE__, __FILE__, $sql);
         }
 
         $meta = array();
-        while($data = $db->sql_fetchrow($result))
+        while($data = $nuke_db->sql_fetchrow($result))
         {
             $meta[$data['code_name']]['default_auth'] = $data['default_auth'];
         }
     }
 
     $sql = "SELECT xf.code_name, xa.auth_value, g.group_single_user
-			FROM ".XDATA_FIELDS_TABLE." xf, ".XDATA_AUTH_TABLE." xa, ".USER_GROUP_TABLE." ug, ".GROUPS_TABLE." g
+			FROM ".NUKE_XDATA_FIELDS_TABLE." xf, ".NUKE_XDATA_AUTH_TABLE." xa, ".NUKE_USER_GROUP_TABLE." ug, ".NUKE_GROUPS_TABLE." g
 			WHERE xf.field_id = xa.field_id
 			  AND xa.group_id = ug.group_id
 			  AND xa.group_id = g.group_id
@@ -692,9 +692,9 @@ function xdata_auth($fields, $userid, $meta = false)
 			  AND $field_sql
 			ORDER BY g.group_single_user ASC";
 
-   if(!($result = $db->sql_query($sql)))
+   if(!($result = $nuke_db->sql_query($sql)))
    {
-        message_die(GENERAL_ERROR, $lang['XData_failure_obtaining_field_auth'], '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_obtaining_field_auth'], '', __LINE__, __FILE__, $sql);
    }
 
    $auth = array();
@@ -703,9 +703,9 @@ function xdata_auth($fields, $userid, $meta = false)
         $auth[$key] = $value['default_auth'];
    }
 
-   while($data = $db->sql_fetchrow($result))
+   while($data = $nuke_db->sql_fetchrow($result))
    {
-        $auth[$data['code_name']] = ( $data['auth_value'] == XD_AUTH_ALLOW);
+        $auth[$data['code_name']] = ( $data['auth_value'] == NUKE_XD_AUTH_ALLOW);
    }
 
    if(!is_array($fields))
@@ -735,27 +735,27 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
 /*****[BEGIN]******************************************
  [ Mod:     Global Announcements               v1.2.8 ]
  ******************************************************/
-    global $template, $userdata, $lang, $db, $nav_links, $phpEx, $SID;
+    global $template, $userdata, $lang, $nuke_db, $nav_links, $phpEx, $SID;
 /*****[END]********************************************
  [ Mod:     Global Announcements               v1.2.8 ]
  ******************************************************/
-    $is_auth = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata);
+    $is_auth = auth(NUKE_AUTH_VIEW, NUKE_AUTH_LIST_ALL, $userdata);
 /*****[BEGIN]******************************************
  [ Mod:     Global Announcements               v1.2.8 ]
  [ Mod:     Forumtitle as Weblink              v1.2.2 ]
  ******************************************************/
     $sql = "SELECT c.cat_id, c.cat_title, c.cat_order
-        FROM (".CATEGORIES_TABLE." c, ".FORUMS_TABLE." f)
+        FROM (".NUKE_CATEGORIES_TABLE." c, ".NUKE_FORUMS_TABLE." f)
         WHERE f.cat_id = c.cat_id
 		AND f.title_is_link = 0
-        ".(($userdata['user_level'] == ADMIN)? "" : " AND c.cat_id<>'".HIDDEN_CAT."'" )."
+        ".(($userdata['user_level'] == NUKE_ADMIN)? "" : " AND c.cat_id<>'".NUKE_HIDDEN_CAT."'" )."
         GROUP BY c.cat_id, c.cat_title, c.cat_order
         ORDER BY c.cat_order";
 /*****[END]********************************************
  [ Mod:     Forumtitle as Weblink              v1.2.2 ]
  [ Mod:     Global Announcements               v1.2.8 ]
  ******************************************************/
-    $category_rows = $db->sql_ufetchrowset($sql);
+    $category_rows = $nuke_db->sql_ufetchrowset($sql);
 
     if ( $total_categories = count($category_rows) )
     {
@@ -763,22 +763,22 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
  [ Mod:    Forumtitle as Weblink               v1.2.2 ]
  ******************************************************/ 
         $sql = "SELECT *
-            FROM ".FORUMS_TABLE."
+            FROM ".NUKE_FORUMS_TABLE."
 			WHERE title_is_link = 0
             ORDER BY cat_id, forum_order";
 /*****[END]********************************************
  [ Mod:    Forumtitle as Weblink               v1.2.2 ]
  ******************************************************/ 
-        if(!($result = $db->sql_query($sql)))
+        if(!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
         }
 
-        $boxstring = '<select name="'.POST_FORUM_URL.'" onchange="if(this.options[this.selectedIndex].value 
+        $boxstring = '<select name="'.NUKE_POST_FORUM_URL.'" onchange="if(this.options[this.selectedIndex].value 
 		!= -1){ forms[\'jumpbox\'].submit() }"><option value="-1">'.$lang['Select_forum'].'</option>';
 
         $forum_rows = array();
-        while($row = $db->sql_fetchrow($result))
+        while($row = $nuke_db->sql_fetchrow($result))
         {
             $forum_rows[] = $row;
 /*****[BEGIN]******************************************
@@ -789,7 +789,7 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
  [ Mod:    Simple Subforums                    v1.0.1 ]
  ******************************************************/
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 
         if($total_forums = count($forum_rows))
         {
@@ -798,7 +798,7 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
                 $boxstring_forums = '';
                 for($j = 0; $j < $total_forums; $j++)
                 {
-                    if ( !$forum_rows[$j]['forum_parent'] && $forum_rows[$j]['cat_id'] == $category_rows[$i]['cat_id'] && $forum_rows[$j]['auth_view'] <= AUTH_REG )
+                    if ( !$forum_rows[$j]['forum_parent'] && $forum_rows[$j]['cat_id'] == $category_rows[$i]['cat_id'] && $forum_rows[$j]['auth_view'] <= NUKE_AUTH_REG )
                     {
 
 //                    if ( !$forum_rows[$j]['forum_parent'] &&  $forum_rows[$j]['cat_id'] == $category_rows[$i]['cat_id'] && $is_auth[$forum_rows[$j]['forum_id']]['auth_view'] )
@@ -818,7 +818,7 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
                         // 'chapter' and 'forum' can create multiple items, therefore we are using a nested array.
                         //
                         $nav_links['chapter forum'][$forum_rows[$j]['forum_id']] = array (
-                            'url' => append_sid("viewforum.$phpEx?" . POST_FORUM_URL . "=" . $forum_rows[$j]['forum_id']),
+                            'url' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=" . $forum_rows[$j]['forum_id']),
                             'title' => $forum_rows[$j]['forum_name']
                         );
 /*****[BEGIN]******************************************
@@ -826,7 +826,7 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
  ******************************************************/
 						for( $k = 0; $k < $total_forums; $k++ )
 						{
-							if ( $forum_rows[$k]['forum_parent'] == $id && $forum_rows[$k]['cat_id'] == $category_rows[$i]['cat_id'] && $forum_rows[$k]['auth_view'] <= AUTH_REG )
+							if ( $forum_rows[$k]['forum_parent'] == $id && $forum_rows[$k]['cat_id'] == $category_rows[$i]['cat_id'] && $forum_rows[$k]['auth_view'] <= NUKE_AUTH_REG )
 							{
 //							if ( $forum_rows[$k]['forum_parent'] == $id && $forum_rows[$k]['cat_id'] == $category_rows[$i]['cat_id'] && $is_auth[$forum_rows[$k]['forum_id']]['auth_view'] )
 //							{
@@ -838,7 +838,7 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
 								// 'chapter' and 'forum' can create multiple items, therefore we are using a nested array.
 								//
 								$nav_links['chapter forum'][$forum_rows[$k]['forum_id']] = array (
-									'url' => append_sid("viewforum.$phpEx?" . POST_FORUM_URL . "=" . $forum_rows[$k]['forum_id']),
+									'url' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=" . $forum_rows[$k]['forum_id']),
 									'title' => $forum_rows[$k]['forum_name']
 								);
 								
@@ -865,7 +865,7 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
     }
     else
     {
-        $boxstring .= '<select name="' . POST_FORUM_URL . '" onchange="if(this.options[this.selectedIndex].value != -1){ forms[\'jumpbox\'].submit() }"></select>';
+        $boxstring .= '<select name="' . NUKE_POST_FORUM_URL . '" onchange="if(this.options[this.selectedIndex].value != -1){ forms[\'jumpbox\'].submit() }"></select>';
     }
 
     // Let the jumpbox work again in sites having additional session id checks.
@@ -894,12 +894,12 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
 // Initialise user settings on page load
 function init_userprefs($userdata)
 {
-    global $board_config, $theme, $images, $template, $lang, $phpEx, $phpbb2_root_path, $db, $nav_links;
+    global $board_config, $theme, $images, $template, $lang, $phpEx, $phpbb2_root_path, $nuke_db, $nav_links;
 
 /*****[BEGIN]******************************************
  [ Mod:     Post Icons                         v1.0.1 ]
  ******************************************************/
-	global $db, $mods, $list_yes_no, $userdata;
+	global $nuke_db, $mods, $list_yes_no, $userdata;
 
 	//	get all the mods settings
 	$dir = @opendir(NUKE_INCLUDE_DIR . 'mods_settings');
@@ -915,7 +915,7 @@ function init_userprefs($userdata)
  [ Mod:     Post Icons                         v1.0.1 ]
  ******************************************************/
 
-    if ( $userdata['user_id'] != ANONYMOUS )
+    if ( $userdata['user_id'] != NUKE_ANONYMOUS )
     {
         if ( !empty($userdata['user_lang']))
         {
@@ -940,7 +940,7 @@ function init_userprefs($userdata)
 
 	if ( !file_exists(@phpbb_realpath($phpbb2_root_path . 'language/lang_' . $default_lang . '/lang_main.'.$phpEx)) )
 	{
-		if ( $userdata['user_id'] != ANONYMOUS )
+		if ( $userdata['user_id'] != NUKE_ANONYMOUS )
 		{
 			// For logged in users, try the board default language next
 			$default_lang = phpbb_ltrim(basename(phpbb_rtrim($board_config['default_lang'])), "'");
@@ -955,21 +955,21 @@ function init_userprefs($userdata)
 
 		if ( !file_exists(@phpbb_realpath($phpbb2_root_path . 'language/lang_' . $default_lang . '/lang_main.'.$phpEx)) )
 		{
-			message_die(CRITICAL_ERROR, 'Could not locate valid language pack');
+			message_die(NUKE_CRITICAL_ERROR, 'Could not locate valid language pack');
 		}
 	}
 
 	// If we've had to change the value in any way then let's write it back to the database
 	// before we go any further since it means there is something wrong with it
-	if ( $userdata['user_id'] != ANONYMOUS && $userdata['user_lang'] !== $default_lang )
+	if ( $userdata['user_id'] != NUKE_ANONYMOUS && $userdata['user_lang'] !== $default_lang )
 	{
-		$sql = 'UPDATE ' . USERS_TABLE . "
+		$sql = 'UPDATE ' . NUKE_USERS_TABLE . "
 			SET user_lang = '" . $default_lang . "'
 			WHERE user_lang = '" . $userdata['user_lang'] . "'";
 
-		if ( !($result = $db->sql_query($sql)) )
+		if ( !($result = $nuke_db->sql_query($sql)) )
 		{
-			message_die(CRITICAL_ERROR, 'Could not update user language info');
+			message_die(NUKE_CRITICAL_ERROR, 'Could not update user language info');
 		}
 
 		$board_config['default_lang'] = $default_lang;
@@ -977,13 +977,13 @@ function init_userprefs($userdata)
 	}
 	elseif ( $board_config['default_lang'] !== $default_lang )
 	{
-		$sql = 'UPDATE ' . CONFIG_TABLE . "
+		$sql = 'UPDATE ' . NUKE_CONFIG_TABLE . "
 			SET config_value = '" . $default_lang . "'
 			WHERE config_name = 'default_lang'";
 
-		if ( !($result = $db->sql_query($sql)) )
+		if ( !($result = $nuke_db->sql_query($sql)) )
 		{
-			message_die(CRITICAL_ERROR, 'Could not update user language info');
+			message_die(NUKE_CRITICAL_ERROR, 'Could not update user language info');
 		}
 
 		$board_config['default_lang'] = $default_lang;
@@ -1026,7 +1026,7 @@ function init_userprefs($userdata)
 
     if ( !$board_config['override_user_style'] )
     {
-        if ( $userdata['user_id'] != ANONYMOUS && $userdata['user_style'] > 0 )
+        if ( $userdata['user_id'] != NUKE_ANONYMOUS && $userdata['user_style'] > 0 )
         {
             if ( $theme = setup_style($userdata['user_style']) )
             {
@@ -1065,7 +1065,7 @@ function init_userprefs($userdata)
 
 function setup_style($style)
 {
-    global $db, $prefix, $board_config, $template, $images, $phpbb2_root_path, $name, $user, $cookie;
+    global $nuke_db, $prefix, $board_config, $template, $images, $phpbb2_root_path, $name, $user, $cookie;
 
     if($name == "Forums"){
         $default_style=$board_config['default_style'];
@@ -1074,13 +1074,13 @@ function setup_style($style)
         }
     }
 
-    $sql = "SELECT * FROM " . THEMES_TABLE . " WHERE themes_id = ". (int) $style;
-    if ( !($result = $db->sql_query($sql)) )
+    $sql = "SELECT * FROM " . NUKE_BB_THEMES_TABLE . " WHERE themes_id = ". (int) $style;
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(CRITICAL_ERROR, 'Could not query database for theme info');
+        message_die(NUKE_CRITICAL_ERROR, 'Could not query database for theme info');
     }
 
-    if ( !($row = $db->sql_fetchrow($result)) )
+    if ( !($row = $nuke_db->sql_fetchrow($result)) )
     {
  		// We are trying to setup a style which does not exist in the database
  		// Try to fallback to the board default (if the user had a custom style)
@@ -1088,36 +1088,36 @@ function setup_style($style)
  		if ( $style != $board_config['default_style'])
  		{
  			$sql = 'SELECT *
- 				FROM ' . THEMES_TABLE . '
+ 				FROM ' . NUKE_BB_THEMES_TABLE . '
  				WHERE themes_id = ' . (int) $board_config['default_style'];
- 			if ( !($result = $db->sql_query($sql)) )
+ 			if ( !($result = $nuke_db->sql_query($sql)) )
  			{
- 				message_die(CRITICAL_ERROR, 'Could not query database for theme info');
+ 				message_die(NUKE_CRITICAL_ERROR, 'Could not query database for theme info');
  			}
 
- 			if ( $row = $db->sql_fetchrow($result) )
+ 			if ( $row = $nuke_db->sql_fetchrow($result) )
  			{
- 				$db->sql_freeresult($result);
+ 				$nuke_db->sql_freeresult($result);
 
- 				$sql = 'UPDATE ' . USERS_TABLE . '
+ 				$sql = 'UPDATE ' . NUKE_USERS_TABLE . '
  					SET user_style = ' . (int) $board_config['default_style'] . "
  					WHERE user_style = $style";
- 				if ( !($result = $db->sql_query($sql)) )
+ 				if ( !($result = $nuke_db->sql_query($sql)) )
  				{
- 					message_die(CRITICAL_ERROR, 'Could not update user theme info');
+ 					message_die(NUKE_CRITICAL_ERROR, 'Could not update user theme info');
  				}
  			}
  			else
  			{
- 				message_die(CRITICAL_ERROR, "Could not get theme data for themes_id [$style]");
+ 				message_die(NUKE_CRITICAL_ERROR, "Could not get theme data for themes_id [$style]");
  			}
  		}
  		else
  		{
- 			message_die(CRITICAL_ERROR, "Could not get theme data for themes_id [$style]");
+ 			message_die(NUKE_CRITICAL_ERROR, "Could not get theme data for themes_id [$style]");
  		}
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     $ThemeSel = get_theme();
     if (file_exists("themes/$ThemeSel/forums/index_body.tpl")) {
@@ -1127,7 +1127,7 @@ function setup_style($style)
         $template_name = $row['template_name'];
         $template_path = $phpbb2_root_path . 'templates/';
     }
-    $template = new Template($template_path . $template_name, $board_config, $db);
+    $template = new Template($template_path . $template_name, $board_config, $nuke_db);
 
     if ( $template )
     {
@@ -1142,7 +1142,7 @@ function setup_style($style)
 
         if ( !defined('TEMPLATE_CONFIG') )
         {
-            message_die(CRITICAL_ERROR, "Could not open $template_name template config file", '', __LINE__, __FILE__);
+            message_die(NUKE_CRITICAL_ERROR, "Could not open $template_name template config file", '', __LINE__, __FILE__);
         }
 
         //$img_lang = ( file_exists(@phpbb_realpath($phpbb2_root_path . $current_template_path . '/images/lang_' . $board_config['default_lang'])) ) ? $board_config['default_lang'] : 'english';
@@ -1198,7 +1198,7 @@ function create_date($format, $gmepoch, $tz)
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-if ( $userdata['user_id'] != ANONYMOUS )
+if ( $userdata['user_id'] != NUKE_ANONYMOUS )
 {
     switch ( $userdata['user_time_mode'] )
     {
@@ -1477,27 +1477,27 @@ function phpbb_preg_quote($str, $delimiter)
 //
 function obtain_word_list(&$orig_word, &$replacement_word)
 {
-    global $db;
+    global $nuke_db;
 
     //
     // Define censored word matches
     //
     $sql = "SELECT word, replacement
-        FROM  " . WORDS_TABLE;
-    if( !($result = $db->sql_query($sql)) )
+        FROM  " . NUKE_WORDS_TABLE;
+    if( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not get censored words from database', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get censored words from database', '', __LINE__, __FILE__, $sql);
     }
 
-    if ( $row = $db->sql_fetchrow($result) )
+    if ( $row = $nuke_db->sql_fetchrow($result) )
     {
         do
         {
             $orig_word[] = '#\b(' . str_replace('\*', '\w*?', preg_quote($row['word'], '#')) . ')\b#i';
             $replacement_word[] = $row['replacement'];
         }
-        while ( $row = $db->sql_fetchrow($result) );
-        $db->sql_freeresult($result);
+        while ( $row = $nuke_db->sql_fetchrow($result) );
+        $nuke_db->sql_freeresult($result);
     }
 
     return true;
@@ -1509,22 +1509,22 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 //
 // $msg_code can be one of these constants:
 //
-// GENERAL_MESSAGE : Use for any simple text message, eg. results
+// NUKE_GENERAL_MESSAGE : Use for any simple text message, eg. results
 // of an operation, authorisation failures, etc.
 //
 // GENERAL ERROR : Use for any error which occurs _AFTER_ the
 // common.php include and session code, ie. most errors in
 // pages/functions
 //
-// CRITICAL_MESSAGE : Used when basic config data is available but
+// NUKE_CRITICAL_MESSAGE : Used when basic config data is available but
 // a session may not exist, eg. banned users
 //
-// CRITICAL_ERROR : Used when config data cannot be obtained, eg
+// NUKE_CRITICAL_ERROR : Used when config data cannot be obtained, eg
 // no database connection. Should _not_ be used in 99.5% of cases
 //
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
-    global $db, $template, $board_config, $theme, $lang, $phpEx, $phpbb2_root_path, $nav_links, $gen_simple_header, $images, $userdata, $user_ip, $session_length, $starttime;
+    global $nuke_db, $template, $board_config, $theme, $lang, $phpEx, $phpbb2_root_path, $nav_links, $gen_simple_header, $images, $userdata, $user_ip, $session_length, $starttime;
     static $has_died, $msg_history;
 	
 	if ( !isset($msg_history) || ( isset($msg_history) && !is_array($msg_history) ) )
@@ -1550,7 +1550,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	$error_message .= 'Error File: ' . $err_file . "\n";
 	$error_message .= 'Error SQL: ' . $sql . "\n";
 	
-	if ($msg_code != GENERAL_MESSAGE) {
+	if ($msg_code != NUKE_GENERAL_MESSAGE) {
 		log_write('error', $error_message, 'Message die() called multiple times');
 	}
 	
@@ -1612,9 +1612,9 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	// Get SQL error if we are debugging. Do this as soon as possible to prevent
     // subsequent queries from overwriting the status of sql_error()
     //
-    if ( DEBUG && ( $msg_code == GENERAL_ERROR || $msg_code == CRITICAL_ERROR ) )
+    if ( NUKE_DEBUG && ( $msg_code == NUKE_GENERAL_ERROR || $msg_code == NUKE_CRITICAL_ERROR ) )
     {
-        $sql_error = $db->sql_error();
+        $sql_error = $nuke_db->sql_error();
 
         $debug_text = '';
 
@@ -1634,16 +1634,16 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
         }
     }
 
-    if( empty($userdata) && ( $msg_code == GENERAL_MESSAGE || $msg_code == GENERAL_ERROR ) )
+    if( empty($userdata) && ( $msg_code == NUKE_GENERAL_MESSAGE || $msg_code == NUKE_GENERAL_ERROR ) )
     {
-		$userdata = session_pagestart($user_ip, PAGE_INDEX);
+		$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
 		init_userprefs($userdata);
     }
 
     //
     // If the header hasn't been output then do it
     //
-    if ( !defined('HEADER_INC') && $msg_code != CRITICAL_ERROR )
+    if ( !defined('HEADER_INC') && $msg_code != NUKE_CRITICAL_ERROR )
     {
         if ( empty($lang) )
         {
@@ -1698,21 +1698,21 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
     switch($msg_code)
     {
-        case GENERAL_MESSAGE:
+        case NUKE_GENERAL_MESSAGE:
             if ( empty($msg_title) )
             {
                 $msg_title = $lang['Information'];
             }
             break;
 
-        case CRITICAL_MESSAGE:
+        case NUKE_CRITICAL_MESSAGE:
             if ( empty($msg_title) )
             {
                 $msg_title = $lang['Critical_Information'];
             }
             break;
 
-        case GENERAL_ERROR:
+        case NUKE_GENERAL_ERROR:
             if ( empty($msg_text) )
             {
                 $msg_text = $lang['An_error_occured'];
@@ -1724,7 +1724,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
             }
             break;
 
-        case CRITICAL_ERROR:
+        case NUKE_CRITICAL_ERROR:
             //
             // Critical errors mean we cannot rely on _ANY_ DB information being
             // available so we're going to dump out a simple echo'd statement
@@ -1753,19 +1753,19 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
     }
 
     //
-    // Add on DEBUG info if we've enabled debug mode and this is an error. This
-    // prevents debug info being output for general messages should DEBUG be
+    // Add on NUKE_DEBUG info if we've enabled debug mode and this is an error. This
+    // prevents debug info being output for general messages should NUKE_DEBUG be
     // set TRUE by accident (preventing confusion for the end user!)
     //
-    if ( DEBUG && ( $msg_code == GENERAL_ERROR || $msg_code == CRITICAL_ERROR ) )
+    if ( NUKE_DEBUG && ( $msg_code == NUKE_GENERAL_ERROR || $msg_code == NUKE_CRITICAL_ERROR ) )
     {
         if ( !empty($debug_text) )
         {
-            $msg_text = $msg_text . '<br /><br /><strong><u>DEBUG MODE</u></strong>' . $debug_text;
+            $msg_text = $msg_text . '<br /><br /><strong><u>NUKE_DEBUG MODE</u></strong>' . $debug_text;
         }
     }
 
-    if ( $msg_code != CRITICAL_ERROR )
+    if ( $msg_code != NUKE_CRITICAL_ERROR )
     {
         if ( !empty($lang[$msg_text]) )
         {
@@ -1823,51 +1823,51 @@ function phpbb_realpath($path)
 
 // modded by Quake for NOT using $nukeuser
 function bblogin($session_id) {
-        global $userdata, $user_ip, $session_length, $session_id, $db, $nuke_file_path, $cookie;
+        global $userdata, $user_ip, $session_length, $session_id, $nuke_db, $nuke_file_path, $cookie;
         define("IN_LOGIN", true);
         $nuid = $cookie[0];
         $sql = "SELECT s.*
-                FROM " . SESSIONS_TABLE . " s
+                FROM " . NUKE_BB_SESSIONS_TABLE . " s
                 WHERE s.session_id = '$session_id'
                 AND s.session_ip = '$user_ip'";
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(CRITICAL_ERROR, 'Error doing DB query userdata row fetch : session_pagestar');
+                message_die(NUKE_CRITICAL_ERROR, 'Error doing DB query userdata row fetch : session_pagestar');
         }
-        $logindata = $db->sql_fetchrow($result);
-        $db->sql_freeresult($result);
+        $logindata = $nuke_db->sql_fetchrow($result);
+        $nuke_db->sql_freeresult($result);
         if( $nuid != $logindata['session_user_id'] ) {
             $nusername = $cookie[1];
             $sql = "SELECT user_id, username, user_password, user_active, user_level
-                    FROM ".USERS_TABLE."
+                    FROM ".NUKE_USERS_TABLE."
                     WHERE username = '" . str_replace("\'", "''", $nusername) . "'";
-            $result = $db->sql_query($sql);
+            $result = $nuke_db->sql_query($sql);
             if(!$result) {
-                message_die(GENERAL_ERROR, "Error in obtaining userdata : login", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Error in obtaining userdata : login", "", __LINE__, __FILE__, $sql);
             }
-            $rowresult = $db->sql_fetchrow($result);
-            $db->sql_freeresult($result);
+            $rowresult = $nuke_db->sql_fetchrow($result);
+            $nuke_db->sql_freeresult($result);
             $password = $cookie[2];
             if(count($rowresult) ) {
-                if( $rowresult['user_level'] != ADMIN && $board_config['board_disable'] ) {
-                    redirect(append_sid("index.$phpEx", true));
+                if( $rowresult['user_level'] != NUKE_ADMIN && $board_config['board_disable'] ) {
+                    nuke_redirect(append_sid("index.$phpEx", true));
                 } else {
                     if( $password == $rowresult['user_password'] && $rowresult['user_active'] ) {
                         $autologin = 0;
-                        $userdata = session_begin($rowresult['user_id'], $user_ip, PAGE_INDEX, $session_length, FALSE, $autologin);
+                        $userdata = session_begin($rowresult['user_id'], $user_ip, NUKE_PAGE_INDEX, $session_length, FALSE, $autologin);
                         $session_id = $userdata['session_id'];
                         if(!$session_id ) {
-                            message_die(CRITICAL_ERROR, "Couldn't start session : login", "", __LINE__, __FILE__);
+                            message_die(NUKE_CRITICAL_ERROR, "Couldn't start session : login", "", __LINE__, __FILE__);
                         } else {
                         }
                     } else {
-                        $message = $lang['Error_login'] . "<br /><br />" . sprintf($lang['Click_return_login'], "<a href=\"" . append_sid("login.$phpEx?$redirect") . "\">", "</a> ") . "<br /><br />" .  sprintf($lang['Click_return_index'], "<a href=\"" . append_sid("index.$phpEx") . "\">", "</a> ");
-                        message_die(GENERAL_MESSAGE, $message);
+                        $message = $lang['Error_login'] . "<br /><br />" . sprintf($lang['Click_return_login'], "<a href=\"" . append_sid("login.$phpEx?$nuke_redirect") . "\">", "</a> ") . "<br /><br />" .  sprintf($lang['Click_return_index'], "<a href=\"" . append_sid("index.$phpEx") . "\">", "</a> ");
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
                     }
                 }
             } else {
-                $message = $lang['Error_login'] . "<br /><br />" . sprintf($lang['Click_return_login'], "<a href=\"" . append_sid("login.$phpEx?$redirect") . "\">", "</a> ") . "<br /><br />" .  sprintf($lang['Click_return_index'], "<a href=\"" . append_sid("index.$phpEx") . "\">", "</a> ");
-                message_die(GENERAL_MESSAGE, $message);
+                $message = $lang['Error_login'] . "<br /><br />" . sprintf($lang['Click_return_login'], "<a href=\"" . append_sid("login.$phpEx?$nuke_redirect") . "\">", "</a> ") . "<br /><br />" .  sprintf($lang['Click_return_index'], "<a href=\"" . append_sid("index.$phpEx") . "\">", "</a> ");
+                message_die(NUKE_GENERAL_MESSAGE, $message);
             }
         }
 }
@@ -1884,9 +1884,9 @@ function show_glance($where) {
         return false;
     }
 
-    $where_array['index'] = array(GLANCE_INDEX, GLANCE_INDEX_AND_FORUMS, GLANCE_INDEX_AND_TOPICS, GLANCE_ALL);
-    $where_array['forums'] = array(GLANCE_FORUMS, GLANCE_INDEX_AND_FORUMS, GLANCE_FORUMS_AND_TOPICS, GLANCE_ALL);
-    $where_array['topics'] = array(GLANCE_TOPICS, GLANCE_INDEX_AND_TOPICS, GLANCE_FORUMS_AND_TOPICS, GLANCE_ALL);
+    $where_array['index'] = array(NUKE_GLANCE_INDEX, NUKE_GLANCE_INDEX_AND_FORUMS, NUKE_GLANCE_INDEX_AND_TOPICS, NUKE_GLANCE_ALL);
+    $where_array['forums'] = array(NUKE_GLANCE_FORUMS, NUKE_GLANCE_INDEX_AND_FORUMS, NUKE_GLANCE_FORUMS_AND_TOPICS, NUKE_GLANCE_ALL);
+    $where_array['topics'] = array(NUKE_GLANCE_TOPICS, NUKE_GLANCE_INDEX_AND_TOPICS, NUKE_GLANCE_FORUMS_AND_TOPICS, NUKE_GLANCE_ALL);
 
     if (in_array($mode, $where_array[$where])) {
         return true;
@@ -1904,13 +1904,13 @@ function show_glance($where) {
  ******************************************************/
 function allow_log_view($user_level) {
     global $board_config, $userdata;
-      if ($board_config['logs_view_level'] == ADMIN && $user_level == ADMIN) {
+      if ($board_config['logs_view_level'] == NUKE_ADMIN && $user_level == NUKE_ADMIN) {
            return true;
            exit;
-      } elseif ($board_config['logs_view_level'] == MOD && ($user_level == MOD || $user_level == ADMIN)) {
+      } elseif ($board_config['logs_view_level'] == NUKE_MOD && ($user_level == NUKE_MOD || $user_level == NUKE_ADMIN)) {
            return true;
            exit;
-      } elseif ($board_config['logs_view_level'] == USER && $user_level >= USER && $userdata['user_id'] != ANONYMOUS) {
+      } elseif ($board_config['logs_view_level'] == NUKE_USER && $user_level >= NUKE_USER && $userdata['user_id'] != NUKE_ANONYMOUS) {
            return true;
            exit;
       } elseif ($board_config['logs_view_level'] == "0") {
@@ -1958,7 +1958,7 @@ function resize_avatar($avatar_url) {
  [ Mod:     Remote Avatar Resize               v1.1.4 ]
  ******************************************************/
 /*****[BEGIN]******************************************
- [ Mod:    DHTML Collapsible Forum Index MOD     v1.1.1]
+ [ Mod:    DHTML Collapsible Forum Index NUKE_MOD     v1.1.1]
  ******************************************************/
 function get_cfi_cookie_name()
 {
@@ -1996,14 +1996,14 @@ function is_category_collapsed($cat_id)
 	return in_array($cat_id, $collapsed_cats) ? true : false;
 }
 /*****[END]********************************************
- [ Mod:    DHTML Collapsible Forum Index MOD     v1.1.1]
+ [ Mod:    DHTML Collapsible Forum Index NUKE_MOD     v1.1.1]
  ******************************************************/
 //
 // Password-protected topics/forums
 //
-function password_check ($mode, $id, $password, $redirect)
+function password_check ($mode, $id, $password, $nuke_redirect)
 {
-	global $db, $template, $theme, $board_config, $lang, $phpEx, $phpbb2_root_path, $gen_simple_header;
+	global $nuke_db, $template, $theme, $board_config, $lang, $phpEx, $phpbb2_root_path, $gen_simple_header;
 	global $userdata;
 	global $HTTP_COOKIE_VARS;
 	$cookie_name = $board_config['cookie_name'];
@@ -2013,12 +2013,12 @@ function password_check ($mode, $id, $password, $redirect)
 	switch($mode)
 	{
 		case 'topic':
-			$sql = "SELECT topic_password AS password FROM " . TOPICS_TABLE . " WHERE topic_id = $id";
+			$sql = "SELECT topic_password AS password FROM " . NUKE_BB_TOPICS_TABLE . " WHERE topic_id = $id";
 			$passdata = ( isset($HTTP_COOKIE_VARS[$cookie_name . '_tpass']) ) ? unserialize(stripslashes($HTTP_COOKIE_VARS[$cookie_name . '_tpass'])) : '';
 			$savename = $cookie_name . '_tpass';
 			break;
 		case 'forum':
-			$sql = "SELECT forum_password AS password FROM " . FORUMS_TABLE . " WHERE forum_id = $id";
+			$sql = "SELECT forum_password AS password FROM " . NUKE_FORUMS_TABLE . " WHERE forum_id = $id";
 			$passdata = ( isset($HTTP_COOKIE_VARS[$cookie_name . '_fpass']) ) ? unserialize(stripslashes($HTTP_COOKIE_VARS[$cookie_name . '_fpass'])) : '';
 			$savename = $cookie_name . '_fpass';
 			break;
@@ -2026,28 +2026,28 @@ function password_check ($mode, $id, $password, $redirect)
 			$sql = '';
 			$passdata = '';
 	}
-	if( !$result = $db->sql_query($sql) )
+	if( !$result = $nuke_db->sql_query($sql) )
 	{
-		message_die(GENERAL_ERROR, 'Could not retrieve password', '', __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, 'Could not retrieve password', '', __LINE__, __FILE__, $sql);
 	}
-	$row = $db->sql_fetchrow($result);
+	$row = $nuke_db->sql_fetchrow($result);
 	if( $password != $row['password'] )
 	{
 		$message = ( $mode == 'topic' ) ? $lang['Incorrect_topic_password'] : $lang['Incorrect_forum_password'];
-		message_die(GENERAL_MESSAGE, $message);
+		message_die(NUKE_GENERAL_MESSAGE, $message);
 	}
 	$passdata[$id] = md5($password);
 	setcookie($savename, serialize($passdata), 0, $cookie_path, $cookie_domain, $cookie_secure);
 	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3; url="' . $redirect . '" />'
+		'META' => '<meta http-equiv="refresh" content="3; url="' . $nuke_redirect . '" />'
 		)
 	);
-	$message = $lang['Password_login_success'] . '<br /><br />' . sprintf($lang['Click_return_page'], '<a href="' . $redirect . '">', '</a>');
-	message_die(GENERAL_MESSAGE, $message);
+	$message = $lang['Password_login_success'] . '<br /><br />' . sprintf($lang['Click_return_page'], '<a href="' . $nuke_redirect . '">', '</a>');
+	message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 function password_box ($mode, $s_form_action)
 {
-	global $db, $template, $theme, $board_config, $lang, $phpEx, $phpbb2_root_path, $gen_simple_header;
+	global $nuke_db, $template, $theme, $board_config, $lang, $phpEx, $phpbb2_root_path, $gen_simple_header;
 	global $userdata;
 	$l_enter_password = ( $mode == 'topic' ) ? $lang['Enter_topic_password'] : $lang['Enter_forum_password'];
 	$page_title = $l_enter_password;

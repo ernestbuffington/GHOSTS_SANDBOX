@@ -41,7 +41,7 @@ if (!defined('CNBYA')) {
 
 if(is_mod_admin($module_name)) {
 
-    list($email) = $db->sql_fetchrow($db->sql_query("SELECT user_email FROM ".$user_prefix."_users WHERE user_id='$res_uid'"));
+    list($email) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_email FROM ".$nuke_user_prefix."_users WHERE user_id='$res_uid'"));
     if ($ya_config['servermail'] == 0) {
         $message = _SORRYTO." $sitename "._HASRESTORE;
         $subject = _ACCTRESTORE;
@@ -53,7 +53,7 @@ if(is_mod_admin($module_name)) {
         );
         evo_phpmailer( $email, $subject, $message, $headers );
     }
-    $db->sql_query("UPDATE ".$user_prefix."_users SET user_level='1', user_active='1' WHERE user_id='$res_uid'");
+    $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET user_level='1', user_active='1' WHERE user_id='$res_uid'");
     $pagetitle = ": "._USERADMIN." - "._ACCTRESTORE;
     include_once(NUKE_BASE_DIR.'header.php');
 	OpenTable();

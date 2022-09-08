@@ -49,8 +49,8 @@ function evouserinfo_login () {
     [ Mod:     Advanced Security Code Control     v1.0.0 ]
     ******************************************************/
     $evouserinfo_login .= "</td><td align=\"center\">";
-    if(!empty($redirect)) {
-       $evouserinfo_login .= "<input type=\"hidden\" name=\"redirect\" value=\"$redirect\">\n";
+    if(!empty($nuke_redirect)) {
+       $evouserinfo_login .= "<input type=\"hidden\" name=\"nuke_redirect\" value=\"$nuke_redirect\">\n";
     }
     if(!empty($mode)) {
        $evouserinfo_login .= "<input type=\"hidden\" name=\"mode\" value=\"$mode\">\n";
@@ -101,7 +101,7 @@ else
     
 	$evouserinfo_login .= '<div style="padding-left: 8px;">';
     $evouserinfo_login .= '  <font color="darkgreen"><i class="fas fa-link" aria-hidden="true"></i></font> <a 
-	href="modules.php?name=Network_Bookmarks">'.$lang_evo_userblock['BLOCK']['LOGIN']['MYBOOKMARKS'].'</a>';
+	href="modules.php?name=Member_Bookmarks">'.$lang_evo_userblock['BLOCK']['LOGIN']['MYBOOKMARKS'].'</a>';
     $evouserinfo_login .= '</div>';
 
     $evouserinfo_login .= '<div style="padding-left: 10px;">';

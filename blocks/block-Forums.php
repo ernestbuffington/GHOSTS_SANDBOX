@@ -3,7 +3,7 @@
 if(!defined('NUKE_EVO')) 
 	exit;
 
-global $db, $block_title, $user_prefix, $prefix, $cache, $blockslang, $images, $board_config, $board_config, $userinfo;
+global $nuke_db, $block_title, $nuke_user_prefix, $prefix, $cache, $blockslang, $images, $board_config, $board_config, $userinfo;
 
 define('forum_board_icon_path','themes/'.get_theme().'/forums');
 
@@ -32,9 +32,9 @@ $count_topics = 0;
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
 	$topic_data = array();
-	$result = $db->sql_query("SELECT t.topic_id, t.topic_type, t.topic_attachment, f.forum_name, f.forum_color, f.forum_id, t.topic_last_post_id, t.topic_first_post_id, t.topic_title, t.topic_poster, t.topic_views, t.topic_replies, t.topic_status, p.post_time, p.poster_id, pu.username as postername, u.username, u.user_id FROM ".$prefix."_bbtopics t, ".$prefix."_bbforums f, ".$prefix."_bbposts p, ".$user_prefix."_users u, ".$user_prefix."_users pu WHERE t.forum_id=f.forum_id AND p.post_id=t.topic_last_post_id AND u.user_id=t.topic_poster AND pu.user_id=p.poster_id AND t.topic_moved_id = '0' ORDER BY topic_last_post_id DESC LIMIT $last_new_topics");
+	$result = $nuke_db->sql_query("SELECT t.topic_id, t.topic_type, t.topic_attachment, f.forum_name, f.forum_color, f.forum_id, t.topic_last_post_id, t.topic_first_post_id, t.topic_title, t.topic_poster, t.topic_views, t.topic_replies, t.topic_status, p.post_time, p.poster_id, pu.username as postername, u.username, u.user_id FROM ".$prefix."_bbtopics t, ".$prefix."_bbforums f, ".$prefix."_bbposts p, ".$nuke_user_prefix."_users u, ".$nuke_user_prefix."_users pu WHERE t.forum_id=f.forum_id AND p.post_id=t.topic_last_post_id AND u.user_id=t.topic_poster AND pu.user_id=p.poster_id AND t.topic_moved_id = '0' ORDER BY topic_last_post_id DESC LIMIT $last_new_topics");
 
-	while ( list( $topic_id, $topic_type, $topic_attachment, $forum_name, $forum_color, $forum_id, $topic_last_post_id, $topic_first_post_id, $topic_title, $topic_poster, $topic_views, $topic_replies, $topic_status, $post_time, $poster_id, $poster_name, $username, $user_id ) = $db->sql_fetchrow( $result)) 
+	while ( list( $topic_id, $topic_type, $topic_attachment, $forum_name, $forum_color, $forum_id, $topic_last_post_id, $topic_first_post_id, $topic_title, $topic_poster, $topic_views, $topic_replies, $topic_status, $post_time, $poster_id, $poster_name, $username, $user_id ) = $nuke_db->sql_fetchrow( $result)) 
 	{
 	        $topic_data[$topic_id]['topic_id'] 			  = $topic_id;
 	        $topic_data[$topic_id]['topic_type'] 		  = $topic_type;
@@ -55,7 +55,7 @@ $count_topics = 0;
 	        $topic_data[$topic_id]['username'] 			  = $username;
 	        $topic_data[$topic_id]['user_id'] 			  = $user_id;
 	}
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

@@ -47,19 +47,19 @@ if(is_mod_admin($module_name)) {
     if ($chng_email != $old_email) { ya_mailCheck($chng_email); }
     if (empty($stop)) {
         $time = time();
-//      $db->sql_query("UPDATE ".$user_prefix."_users_temp SET username='$chng_uname', realname='$chng_realname',  user_email='$chng_email', user_regdate='$chng_regdate', time='$time' WHERE user_id='$chng_uid'");
-        $db->sql_query("UPDATE ".$user_prefix."_users_temp SET username='$chng_uname', realname='$chng_realname',  user_email='$chng_email' WHERE user_id='$chng_uid'");
+//      $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users_temp SET username='$chng_uname', realname='$chng_realname',  user_email='$chng_email', user_regdate='$chng_regdate', time='$time' WHERE user_id='$chng_uid'");
+        $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users_temp SET username='$chng_uname', realname='$chng_realname',  user_email='$chng_email' WHERE user_id='$chng_uid'");
 
         if (count($nfield) > 0) {
          foreach ($nfield as $key => $var) {
          $nfield[$key] = ya_fixtext($nfield[$key]);
-           if (($db->sql_numrows($db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_value_temp WHERE fid='$key' AND uid = '$chng_uid'"))) == 0) {
+           if (($nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_value_temp WHERE fid='$key' AND uid = '$chng_uid'"))) == 0) {
           
-            $sql = "INSERT INTO ".$user_prefix."_cnbya_value_temp (uid, fid, value) VALUES ('$chng_uid', '$key','$nfield[$key]')";
-            $db->sql_query($sql);
+            $sql = "INSERT INTO ".$nuke_user_prefix."_cnbya_value_temp (uid, fid, value) VALUES ('$chng_uid', '$key','$nfield[$key]')";
+            $nuke_db->sql_query($sql);
           }
           else {
-            $db->sql_query("UPDATE ".$user_prefix."_cnbya_value_temp SET value='$nfield[$key]' WHERE fid='$key' AND uid = '$chng_uid'");
+            $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_cnbya_value_temp SET value='$nfield[$key]' WHERE fid='$key' AND uid = '$chng_uid'");
           } 
          }
         }

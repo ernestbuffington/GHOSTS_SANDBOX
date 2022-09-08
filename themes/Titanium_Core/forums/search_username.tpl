@@ -8,7 +8,7 @@
 <!--
 function refresh_username(selected_username)
 {
-    <!-- Start replacement - Custom mass PM MOD -->
+    <!-- Start replacement - Custom mass PM NUKE_MOD -->
     if (opener.document.forms['post'].username.value)
     {
         opener.document.forms['post'].username.value = opener.document.forms['post'].username.value + ';' + selected_username;
@@ -17,7 +17,7 @@ function refresh_username(selected_username)
     {
         opener.document.forms['post'].username.value = selected_username;
     }
-    <!-- End replacement - Custom mass PM MOD -->
+    <!-- End replacement - Custom mass PM NUKE_MOD -->
     opener.focus();
     window.close();
 }

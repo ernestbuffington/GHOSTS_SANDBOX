@@ -10,7 +10,7 @@
       BBCode Box                               v1.0.0       10/06/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -49,17 +49,17 @@ while( list($var, $param) = @each($trim_var_list) )
 
 $signature = str_replace('<br />', "\n", $signature);
 
-// if cancel pressed then redirect to the index page
+// if cancel pressed then nuke_redirect to the index page
 if ( isset($HTTP_POST_VARS['cancel']) )
 {
-    $redirect = "index.$phpEx";
+    $nuke_redirect = "index.$phpEx";
 
-// redirect 2.0.4 only
-    redirect(append_sid($redirect, true));
+// nuke_redirect 2.0.4 only
+    nuke_redirect(append_sid($nuke_redirect, true));
 
-// redirect 2.0.x
+// nuke_redirect 2.0.x
 //    $header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')) ) ? 'Refresh: 0; URL=' : 'Location: ';
-//    redirect(append_sid($redirect, true));
+//    nuke_redirect(append_sid($nuke_redirect, true));
 //    exit;
 
 }
@@ -89,13 +89,13 @@ if ($submit)
         $signature = prepare_message($signature, $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
         $user_id =  $userdata['user_id'];
 
-        $sql = "UPDATE " . USERS_TABLE . "
+        $sql = "UPDATE " . NUKE_USERS_TABLE . "
         SET user_sig = '" . str_replace("\'", "''", $signature) . "', user_sig_bbcode_uid = '$bbcode_uid'
         WHERE user_id = $user_id";
 
-            if ( !($result = $db->sql_query($sql)) )
+            if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
             }
 
             else
@@ -107,7 +107,7 @@ if ($submit)
 
     else
     {
-        message_die(GENERAL_MESSAGE, 'An Error occured while submitting Signature');
+        message_die(NUKE_GENERAL_MESSAGE, 'An Error occured while submitting Signature');
     }
 }
 
@@ -156,7 +156,7 @@ else if ($preview)
 
     else
     {
-        message_die(GENERAL_MESSAGE, 'An Error occured while submitting Signature');
+        message_die(NUKE_GENERAL_MESSAGE, 'An Error occured while submitting Signature');
     }
 }
 

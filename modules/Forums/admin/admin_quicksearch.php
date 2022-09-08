@@ -17,7 +17,7 @@
 /***************************************************************************
  *
  *    Code in this file was borrowed from code in admin_addsearch.php from
- *    EasySite MOD by ycl6 < ycl6@users.sourceforge.net > (Mac)
+ *    EasySite NUKE_MOD by ycl6 < ycl6@users.sourceforge.net > (Mac)
  *    http://macphpbbmod.sourceforge.net
  *
  ***************************************************************************/
@@ -31,7 +31,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -88,18 +88,18 @@ if( !empty($mode) )
         {
             if( empty($search_id) )
             {
-                message_die(GENERAL_MESSAGE, $lang['Must_select_search']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['Must_select_search']);
             }
 
-            $sql = "SELECT * FROM " . QUICKSEARCH_TABLE . "
+            $sql = "SELECT * FROM " . NUKE_QUICK_SEARCH_TABLE . "
                 WHERE search_id = $search_id";
-            if(!$result = $db->sql_query($sql))
+            if(!$result = $nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, "Couldn't obtain quick search data", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't obtain quick search data", "", __LINE__, __FILE__, $sql);
             }
             
             $search_info = array();
-            $search_info = $db->sql_fetchrow($result);
+            $search_info = $nuke_db->sql_fetchrow($result);
             $s_hidden_fields .= '<input type="hidden" name="id" value="' . $search_id . '" />';
 
         }
@@ -144,12 +144,12 @@ if( !empty($mode) )
 
         if( empty($search_name) )
         {
-            message_die(GENERAL_MESSAGE, $lang['Must_enter_search_name']);
+            message_die(NUKE_GENERAL_MESSAGE, $lang['Must_enter_search_name']);
         }
 
         if ($search_id)
         {            
-            $sql = "UPDATE " . QUICKSEARCH_TABLE . "
+            $sql = "UPDATE " . NUKE_QUICK_SEARCH_TABLE . "
                 SET search_name = '" . str_replace("\'", "''", $search_name) . "', search_url1 = '" . str_replace("\'", "''", $search_url1) . "', search_url2 = '" . str_replace("\'", "''", $search_url2) . "'
                 WHERE search_id = $search_id";
 
@@ -157,20 +157,20 @@ if( !empty($mode) )
         }
         else
         {
-            $sql = "INSERT INTO " . QUICKSEARCH_TABLE . " (search_name, search_url1, search_url2)
+            $sql = "INSERT INTO " . NUKE_QUICK_SEARCH_TABLE . " (search_name, search_url1, search_url2)
                 VALUES ('" . str_replace("\'", "''", $search_name) . "', '" . str_replace("\'", "''", $search_url1) . "', '" . str_replace("\'", "''", $search_url2) . "')";
 
             $message = $lang['Search_added'];
         }
         
-        if( !$result = $db->sql_query($sql) )
+        if( !$result = $nuke_db->sql_query($sql) )
         {
-            message_die(GENERAL_ERROR, "Couldn't update quick search table", "", __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, "Couldn't update quick search table", "", __LINE__, __FILE__, $sql);
         }
 
         $message .= "<br /><br />" . sprintf($lang['Click_return_addsearchadmin'], "<a href=\"" . append_sid("admin_quicksearch.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
 
     }
     else if( $mode == "delete" )
@@ -181,27 +181,27 @@ if( !empty($mode) )
         }
         else
         {
-            message_die(CRITICAL_ERROR, 'No search ID was selected to be deleted.');
+            message_die(NUKE_CRITICAL_ERROR, 'No search ID was selected to be deleted.');
         }
         
         if( $search_id )
         {
-            $sql = "DELETE FROM " . QUICKSEARCH_TABLE . "
+            $sql = "DELETE FROM " . NUKE_QUICK_SEARCH_TABLE . "
                 WHERE search_id = $search_id";
             
-            if( !$result = $db->sql_query($sql) )
+            if( !$result = $nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Couldn't delete quick search data", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't delete quick search data", "", __LINE__, __FILE__, $sql);
             }
 
             $message = $lang['Search_removed'] . "<br /><br />" . sprintf($lang['Click_return_addsearchadmin'], "<a href=\"" . append_sid("admin_quicksearch.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-            message_die(GENERAL_MESSAGE, $message);
+            message_die(NUKE_GENERAL_MESSAGE, $message);
 
         }
         else
         {
-            message_die(GENERAL_MESSAGE, $lang['Must_select_page']);
+            message_die(NUKE_GENERAL_MESSAGE, $lang['Must_select_page']);
         }
     }
     else
@@ -210,15 +210,15 @@ if( !empty($mode) )
             "body" => "admin/quicksearch_body.tpl")
         );
         
-        $sql = "SELECT * FROM " . QUICKSEARCH_TABLE . "
+        $sql = "SELECT * FROM " . NUKE_QUICK_SEARCH_TABLE . "
             ORDER BY search_name";
-        if( !$result = $db->sql_query($sql) )
+        if( !$result = $nuke_db->sql_query($sql) )
         {
-            message_die(GENERAL_ERROR, "Couldn't retrieve quick search data", "", __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, "Couldn't retrieve quick search data", "", __LINE__, __FILE__, $sql);
         }
         
         $search_rows = array();
-        $search_rows = $db->sql_fetchrowset($result);
+        $search_rows = $nuke_db->sql_fetchrowset($result);
         $search_count = count($search_rows);
         
         $template->assign_vars(array(
@@ -261,16 +261,16 @@ else
         "body" => "admin/quicksearch_body.tpl")
     );
     
-    $sql = "SELECT * FROM " . QUICKSEARCH_TABLE . "
+    $sql = "SELECT * FROM " . NUKE_QUICK_SEARCH_TABLE . "
         ORDER BY search_name";
-    if( !$result = $db->sql_query($sql) )
+    if( !$result = $nuke_db->sql_query($sql) )
     {
-        message_die(GENERAL_ERROR, "Couldn't retrieve quick search data", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't retrieve quick search data", "", __LINE__, __FILE__, $sql);
     }
-    $search_count = $db->sql_numrows($result);
+    $search_count = $nuke_db->sql_numrows($result);
 
     $search_rows = array();
-    $search_rows = $db->sql_fetchrowset($result);
+    $search_rows = $nuke_db->sql_fetchrowset($result);
     
     $template->assign_vars(array(
         "L_SEARCHS_TITLE" => $lang['Search_title'],

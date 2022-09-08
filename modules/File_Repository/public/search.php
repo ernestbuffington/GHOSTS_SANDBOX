@@ -14,7 +14,7 @@ if (!defined('IN_FILE_REPOSITORY'))
 
 function _query_the_download_database()
 {
-	global $db, $lang_new, $module_name, $settings, $themes;
+	global $nuke_db, $lang_new, $module_name, $settings, $themes;
 	OpenTable();
 	_index_navigation_header();
 	$cid 	= intval($_POST['cid']);
@@ -47,8 +47,8 @@ function _query_the_download_database()
 		echo '  </tr>'."\n";
 		$where 	= ($cid > 0) ? ' AND `cid`='.$cid : '';
 		$sql 	  = "SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE (`title` LIKE '%".$query."%' OR `description` LIKE '%".$query."%') AND `isactive` > 0".$where;
-		$result   = $db->sql_query($sql);
-		$numrows  = $db->sql_numrows($result);
+		$result   = $nuke_db->sql_query($sql);
+		$numrows  = $nuke_db->sql_numrows($result);
 		if($numrows > 0)
 		{
 			if($settings['download_view'] == 0)
@@ -60,11 +60,11 @@ function _query_the_download_database()
 				echo '    <td'._tdcss('10%','center',_sh()).'>'._suh($lang_new[$module_name]['FILE_SIZE']).'</td>'.PHP_EOL;
 				echo '    <td'._tdcss('20%','center',_sh()).'>'._suh($lang_new[$module_name]['DATE_ADDED']).'</td>'.PHP_EOL;
 				echo '  </tr>'."\n";
-				while($q = $db->sql_fetchrow($result))
+				while($q = $nuke_db->sql_fetchrow($result))
 				{
 					$v 			= (($q['version']) ? sprintf($lang_new[$module_name]['V'],$q['version']) : '');
 					$iteminfo 	= _collect_iteminfo($q['did']);
-					$screen[$items] = $db->sql_fetchrow($db->sql_query("SELECT `filename`, `title` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$q['did']."' ORDER BY RAND()"));
+					$screen[$items] = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `filename`, `title` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$q['did']."' ORDER BY RAND()"));
 					echo '  <tr'._bgColor(1).'>'."\n";
 					if($screen[$items]['filename'])
 					{
@@ -88,11 +88,11 @@ function _query_the_download_database()
 			else 
 			{
 				$items = 0;
-				while($q = $db->sql_fetchrow($result))
+				while($q = $nuke_db->sql_fetchrow($result))
 				{
 					$v 				= (($q['version']) ? sprintf($lang_new[$module_name]['V'],$q['version']) : '');
 					$iteminfo 		= _collect_iteminfo($q['did']);
-					$screen[$items] = $db->sql_fetchrow($db->sql_query("SELECT `filename`, `title` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$q['did']."' ORDER BY RAND()"));
+					$screen[$items] = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `filename`, `title` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$q['did']."' ORDER BY RAND()"));
 					$ustring 		= ($iteminfo['updated'] == '0000-00-00 00:00:00') ? _sut($lang_new[$module_name]['DATE_ADDED']) : _sut($lang_new[$module_name]['UPDATED']);
 					if($screen[$items]['filename'])
 						$colspan = false;
@@ -156,7 +156,7 @@ function _query_the_download_database()
 					echo '  </tr>'."\n";
 	  			}
 			}
-			$db->sql_freeresult($result);
+			$nuke_db->sql_freeresult($result);
 			echo '  <tr'._bgColor(2).'>'."\n";
 			echo '    <td'._tdcss(false,'center',_sh(),(($settings['download_view'] == 0) ? '6' : $themes[get_theme()]['per_row'])).'>&nbsp;</td>'."\n";
 			echo '  </tr>'."\n";

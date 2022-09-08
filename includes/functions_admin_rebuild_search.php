@@ -20,7 +20,7 @@
  ***************************************************************************/
 function get_db_sizes()
 {
-  global $db, $table_prefix, $dbname;
+  global $nuke_db, $phpbb2_table_prefix, $nuke_dbname;
 
   // some code taken from admin/index.php
   //
@@ -32,43 +32,43 @@ function get_db_sizes()
   if( preg_match("/^mysql/", SQL_LAYER) )
   {
     $sql = "SELECT VERSION() AS mysql_version";
-    if($result = $db->sql_query($sql))
+    if($result = $nuke_db->sql_query($sql))
     {
-      $row = $db->sql_fetchrow($result);
+      $row = $nuke_db->sql_fetchrow($result);
       $version = $row['mysql_version'];
 
       if( preg_match("/^(3\.23|4\.|5\.)/", $version) )
       {
-        $db_name = ( preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)|(5\.)/", $version) ) ? "`$dbname`" : $dbname;
+        $nuke_db_name = ( preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)|(5\.)/", $version) ) ? "`$nuke_dbname`" : $nuke_dbname;
 
         $sql = "SHOW TABLE STATUS
-          FROM " . $db_name;
+          FROM " . $nuke_db_name;
 
-        if($result = $db->sql_query($sql))
+        if($result = $nuke_db->sql_query($sql))
         {
-          $tabledata_ary = $db->sql_fetchrowset($result);
+          $tabledata_ary = $nuke_db->sql_fetchrowset($result);
 
-          $db_size = 0;
+          $nuke_db_size = 0;
           $search_size = 0; // added
 
           for($i = 0; $i < count($tabledata_ary); $i++)
           {
             if( $tabledata_ary[$i]['Type'] != "MRG_MyISAM" )
             {
-              if( $table_prefix != "" )
+              if( $phpbb2_table_prefix != "" )
               {
-                if( strstr($tabledata_ary[$i]['Name'], $table_prefix) )
+                if( strstr($tabledata_ary[$i]['Name'], $phpbb2_table_prefix) )
                 {
-                  $db_size += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
+                  $nuke_db_size += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
                 }
               }
               else
               {
-                $db_size += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
+                $nuke_db_size += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
               }
 
               // calculate the size of the search tables only
-              if ( $tabledata_ary[$i]['Name'] == SEARCH_WORD_TABLE || $tabledata_ary[$i]['Name'] == SEARCH_MATCH_TABLE )
+              if ( $tabledata_ary[$i]['Name'] == NUKE_SEARCH_WORD_TABLE || $tabledata_ary[$i]['Name'] == NUKE_SEARCH_MATCH_TABLE )
               {
                 $search_size += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
               }
@@ -78,13 +78,13 @@ function get_db_sizes()
       }
       else
       {
-        $db_size = '';      // changed
+        $nuke_db_size = '';      // changed
         $search_size = '';  // changed
       }
     }
     else
     {
-      $db_size = '';      // changed
+      $nuke_db_size = '';      // changed
       $search_size = '';  // changed
     }
   }
@@ -93,52 +93,52 @@ function get_db_sizes()
     $sql = "SELECT ((SUM(size) * 8.0) * 1024.0) as dbsize
       FROM sysfiles";
 
-    if( $result = $db->sql_query($sql) )
+    if( $result = $nuke_db->sql_query($sql) )
     {
-      $db_size = ( $row = $db->sql_fetchrow($result) ) ? intval($row['dbsize']) : ''; // changed
+      $nuke_db_size = ( $row = $nuke_db->sql_fetchrow($result) ) ? intval($row['dbsize']) : ''; // changed
       $search_size = '';  // added
     }
     else
     {
-      $db_size = '';      // changed
+      $nuke_db_size = '';      // changed
       $search_size = '';  // added
     }
   }
   else
   {
-    $db_size = '';        // changed
+    $nuke_db_size = '';        // changed
     $search_size = '';    // added
   }
 
-  return array($db_size, $search_size);
+  return array($nuke_db_size, $search_size);
 }
 
 // convert numeric value to x Bytes string
-function create_db_size($db_size)
+function create_db_size($nuke_db_size)
 {
   global $lang;
 
-  if ( $db_size != '' && is_numeric($db_size) )
+  if ( $nuke_db_size != '' && is_numeric($nuke_db_size) )
   {
-    if( $db_size >= 1048576 )
+    if( $nuke_db_size >= 1048576 )
     {
-      $db_size = sprintf("%.2f MB", ( $db_size / 1048576 ));
+      $nuke_db_size = sprintf("%.2f MB", ( $nuke_db_size / 1048576 ));
     }
-    else if( $db_size >= 1024 )
+    else if( $nuke_db_size >= 1024 )
     {
-      $db_size = sprintf("%.2f KB", ( $db_size / 1024 ));
+      $nuke_db_size = sprintf("%.2f KB", ( $nuke_db_size / 1024 ));
     }
     else
     {
-      $db_size = sprintf("%.2f ".$lang['Bytes'], $db_size);
+      $nuke_db_size = sprintf("%.2f ".$lang['Bytes'], $nuke_db_size);
     }
   }
   else
   {
-    $db_size = $lang['Not_available'];
+    $nuke_db_size = $lang['Not_available'];
   }
 
-  return $db_size;
+  return $nuke_db_size;
 }
 
 // convert time values (seconds) to "number of days, hours, minutes and seconds"
@@ -177,18 +177,18 @@ function create_time($seconds)
 // get the latest post_id in the forum
 function get_latest_post_id()
 {
-  global $db;
+  global $nuke_db;
 
-  $sql = "SELECT post_id FROM " . POSTS_TEXT_TABLE . "
+  $sql = "SELECT post_id FROM " . NUKE_POSTS_TEXT_TABLE . "
     ORDER BY post_id DESC
     LIMIT 1";
 
-  if ( !($result = $db->sql_query($sql)) )
+  if ( !($result = $nuke_db->sql_query($sql)) )
   {
-    message_die(GENERAL_ERROR, 'Could not obtain latest post', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain latest post', '', __LINE__, __FILE__, $sql);
   }
 
-  $row = $db->sql_fetchrow($result);
+  $row = $nuke_db->sql_fetchrow($result);
 
   return ( $row['post_id'] ) ? $row['post_id'] : 0;
 }
@@ -196,18 +196,18 @@ function get_latest_post_id()
 // get the last rebuild_session_id
 function get_last_rebuild_session_id()
 {
-  global $db;
+  global $nuke_db;
 
   $sql = "SELECT rebuild_session_id FROM " . SEARCH_REBUILD_TABLE . "
     ORDER BY rebuild_session_id DESC
     LIMIT 1";
 
-  if ( !($result = $db->sql_query($sql)) )
+  if ( !($result = $nuke_db->sql_query($sql)) )
   {
-    message_die(GENERAL_ERROR, 'Could not obtain rebuild session id', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain rebuild session id', '', __LINE__, __FILE__, $sql);
   }
 
-  $row = $db->sql_fetchrow($result);
+  $row = $nuke_db->sql_fetchrow($result);
 
   return ( $row['rebuild_session_id'] ) ? $row['rebuild_session_id'] : 0;
 }
@@ -218,7 +218,7 @@ function get_last_rebuild_session_id()
 // $details is one of the fields or 'all' of them
 function get_rebuild_session_details($id, $details = 'all')
 {
-  global $db;
+  global $nuke_db;
 
   if ( $id != 'last' )
   {
@@ -232,12 +232,12 @@ function get_rebuild_session_details($id, $details = 'all')
       LIMIT 1";
   }
 
-  if ( !($result = $db->sql_query($sql)) )
+  if ( !($result = $nuke_db->sql_query($sql)) )
   {
-    message_die(GENERAL_ERROR, 'Could not obtain rebuild details', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain rebuild details', '', __LINE__, __FILE__, $sql);
   }
 
-  $row = $db->sql_fetchrow($result);
+  $row = $nuke_db->sql_fetchrow($result);
 
   if ( !empty($row) )
   {
@@ -257,7 +257,7 @@ function get_rebuild_session_details($id, $details = 'all')
 // 'session' to get the posts of the last session
 function get_processed_posts($mode = 'total')
 {
-  global $db;
+  global $nuke_db;
 
   if ( $mode == 'total' )
   {
@@ -269,12 +269,12 @@ function get_processed_posts($mode = 'total')
     WHERE rebuild_session_id = " . get_last_rebuild_session_id();
   }
 
-  if ( !($result = $db->sql_query($sql)) )
+  if ( !($result = $nuke_db->sql_query($sql)) )
   {
-    message_die(GENERAL_ERROR, 'Could not obtain number of posts', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain number of posts', '', __LINE__, __FILE__, $sql);
   }
 
-  $row = $db->sql_fetchrow($result);
+  $row = $nuke_db->sql_fetchrow($result);
 
   return ( $row['posts'] ) ? $row['posts'] : 0;
 }
@@ -283,17 +283,17 @@ function get_processed_posts($mode = 'total')
 // after/before include the post_id too
 function get_total_posts($mode = 'after', $post_id = 0)
 {
-  global $db;
+  global $nuke_db;
 
-  $sql = "SELECT COUNT(post_id) as total_posts FROM " . POSTS_TABLE . "
+  $sql = "SELECT COUNT(post_id) as total_posts FROM " . NUKE_POSTS_TABLE . "
     WHERE post_id " . (($mode == 'after') ? '>= ' : '<= ' ) . $post_id;
 
-  if ( !($result = $db->sql_query($sql)) )
+  if ( !($result = $nuke_db->sql_query($sql)) )
   {
-    message_die(GENERAL_ERROR, 'Could not obtain number of posts', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain number of posts', '', __LINE__, __FILE__, $sql);
   }
 
-  $row = $db->sql_fetchrow($result);
+  $row = $nuke_db->sql_fetchrow($result);
 
   return ( $row['total_posts'] ) ? $row['total_posts'] : 0;
 }
@@ -301,28 +301,28 @@ function get_total_posts($mode = 'after', $post_id = 0)
 // clear the search tables
 function clear_search_tables($clear_search)
 {
-  global $db;
+  global $nuke_db;
 
   // initialize our own table
   $sql = "DELETE FROM " . SEARCH_REBUILD_TABLE;
 
-  if( !$db->sql_query($sql) )
+  if( !$nuke_db->sql_query($sql) )
   {
-    message_die(GENERAL_ERROR, 'Could not delete search rebuild table', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not delete search rebuild table', '', __LINE__, __FILE__, $sql);
   }
 
   // initialize (clear) all 3 phpbb_search tables
   if ( $clear_search )
   {
-    $table_ary = array(SEARCH_TABLE, SEARCH_WORD_TABLE, SEARCH_MATCH_TABLE);
+    $table_ary = array(NUKE_SEARCH_TABLE_RESULTS, NUKE_SEARCH_WORD_TABLE, NUKE_SEARCH_MATCH_TABLE);
 
     foreach ($table_ary as $table)
     {
       $sql = (( $clear_search == 1 ) ? "DELETE FROM " : "TRUNCATE TABLE " ) . $table;
 
-      if( !$db->sql_query($sql) )
+      if( !$nuke_db->sql_query($sql) )
       {
-        message_die(GENERAL_ERROR, 'Could not delete search table', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not delete search table', '', __LINE__, __FILE__, $sql);
       }
     }
   }
@@ -388,15 +388,15 @@ function create_percent_box($box, $percent_color, $percent_width)
 // enable/disable the board
 function change_board_status($state = 'enable')
 {
-  global $db;
+  global $nuke_db;
 
-  $sql = "UPDATE " . CONFIG_TABLE . "
+  $sql = "UPDATE " . NUKE_CONFIG_TABLE . "
     SET config_value = " . ( ( $state == 'enable' ) ? 0 : 1 ) . "
     WHERE config_name = 'board_disable'";
 
-  if ( !$db->sql_query($sql) )
+  if ( !$nuke_db->sql_query($sql) )
   {
-    message_die(GENERAL_ERROR, 'Could not disable/enable board', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not disable/enable board', '', __LINE__, __FILE__, $sql);
   }
 }
 

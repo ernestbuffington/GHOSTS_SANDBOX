@@ -25,7 +25,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -147,7 +147,7 @@ $template->assign_var_from_handle('ROPM_QUICKREPLY_OUTPUT', 'ropm_quick_reply_ou
 
 function generate_smilies_row()
 {
-   global $db, $board_config, $template;
+   global $nuke_db, $board_config, $template;
 
    $max_smilies = $board_config['ropm_quick_reply_smilies'];
 
@@ -157,23 +157,23 @@ function generate_smilies_row()
       // case 'mysqli':
       //    $sql = 'SELECT TOP ' . $max_smilies . 'min(emoticon) AS emoticon,
       //    min(code) AS code, smile_url
-      //    FROM ' . SMILIES_TABLE . '
+      //    FROM ' . NUKE_SMILIES_TABLE . '
       //    GROUP BY [smile_url]';
       // break;
 
       default:
          $sql = 'SELECT emoticon, code, smile_url
-         FROM ' . SMILIES_TABLE . '
+         FROM ' . NUKE_SMILIES_TABLE . '
          GROUP BY smile_url, smilies_id
          ORDER BY smilies_id LIMIT ' . $max_smilies;
       break;
    }
-   if (!$result = $db->sql_query($sql))
+   if (!$result = $nuke_db->sql_query($sql))
    {
-      message_die(GENERAL_ERROR, "Couldn't retrieve smilies list", '', __LINE__, __FILE__, $sql);
+      message_die(NUKE_GENERAL_ERROR, "Couldn't retrieve smilies list", '', __LINE__, __FILE__, $sql);
    }
-   $smilies_count = $db->sql_numrows($result);
-   $smilies_data = $db->sql_fetchrowset($result);
+   $smilies_count = $nuke_db->sql_numrows($result);
+   $smilies_data = $nuke_db->sql_fetchrowset($result);
    for ($i = 0; $i < $smilies_count; $i++)
    {
          $template->assign_block_vars('ROPM_QUICK_REPLY.SMILIES', array(
@@ -182,14 +182,14 @@ function generate_smilies_row()
             'DESC' => $smilies_data[$i]['emoticon'])
          );
 }
-   $sql = 'SELECT COUNT(*) FROM ' . SMILIES_TABLE . '
+   $sql = 'SELECT COUNT(*) FROM ' . NUKE_SMILIES_TABLE . '
            GROUP BY smile_url;';
 
-   if (!$result = $db->sql_query($sql))
+   if (!$result = $nuke_db->sql_query($sql))
    {
-      message_die(GENERAL_ERROR, "Couldn't count smilies", '', __LINE__, __FILE__, $sql);
+      message_die(NUKE_GENERAL_ERROR, "Couldn't count smilies", '', __LINE__, __FILE__, $sql);
    }
-   $real_smilies_count = $db->sql_numrows($result);
+   $real_smilies_count = $nuke_db->sql_numrows($result);
    if ($real_smilies_count > $max_smilies || !$max_smilies)
    $template->assign_block_vars('ROPM_QUICK_REPLY.MORESMILIES', array());
 }

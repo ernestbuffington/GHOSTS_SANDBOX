@@ -13,7 +13,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -26,7 +26,7 @@ $core->start_module(true);
 $core->set_content('values');
 
 $sql = "SELECT YEAR(FROM_UNIXTIME(post_time)) as year_post, MONTH(FROM_UNIXTIME(post_time)) as month_post, COUNT(*) AS num_posts 
-FROM " . POSTS_TABLE . " 
+FROM " . NUKE_POSTS_TABLE . " 
 GROUP BY YEAR(FROM_UNIXTIME(post_time)), MONTH(FROM_UNIXTIME(post_time)), post_id 
 ORDER BY post_time";
 

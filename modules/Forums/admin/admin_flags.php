@@ -17,7 +17,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -82,17 +82,17 @@ if( $mode != "" )
 		{
 			if( empty($flag_id) )
 			{
-				message_die(GENERAL_MESSAGE, $lang['Must_select_flag']);
+				message_die(NUKE_GENERAL_MESSAGE, $lang['Must_select_flag']);
 			}
 
-			$sql = "SELECT * FROM " . FLAG_TABLE . "
+			$sql = "SELECT * FROM " . NUKE_FLAG_TABLE . "
 				WHERE flag_id = $flag_id";
-			if(!$result = $db->sql_query($sql))
+			if(!$result = $nuke_db->sql_query($sql))
 			{
-				message_die(GENERAL_ERROR, "Couldn't obtain flag data", "", __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, "Couldn't obtain flag data", "", __LINE__, __FILE__, $sql);
 			}
 			
-			$flag_info = $db->sql_fetchrow($result);
+			$flag_info = $nuke_db->sql_fetchrow($result);
 			$s_hidden_fields .= '<input type="hidden" name="id" value="' . $flag_id . '" />';
 
 		}
@@ -134,7 +134,7 @@ if( $mode != "" )
 
 		if( $flag_name == "" )
 		{
-			message_die(GENERAL_MESSAGE, $lang['Must_select_flag']);
+			message_die(NUKE_GENERAL_MESSAGE, $lang['Must_select_flag']);
 		}
 
 		//
@@ -150,7 +150,7 @@ if( $mode != "" )
 
 		if ($flag_id)
 		{
-			$sql = "UPDATE " . FLAG_TABLE . "
+			$sql = "UPDATE " . NUKE_FLAG_TABLE . "
 				SET flag_name = '" . str_replace("\'", "''", $flag_name) . "', flag_image = '" . str_replace("\'", "''", $flag_image) . "'
 				WHERE flag_id = $flag_id";
 
@@ -158,20 +158,20 @@ if( $mode != "" )
 		}
 		else
 		{
-			$sql = "INSERT INTO " . FLAG_TABLE . " (flag_name, flag_image)
+			$sql = "INSERT INTO " . NUKE_FLAG_TABLE . " (flag_name, flag_image)
 				VALUES ('" . str_replace("\'", "''", $flag_name) . "', '" . str_replace("\'", "''", $flag_image) . "')";
 
 			$message = $lang['Flag_added'];
 		}
 		
-		if( !$result = $db->sql_query($sql) )
+		if( !$result = $nuke_db->sql_query($sql) )
 		{
-			message_die(GENERAL_ERROR, "Couldn't update/insert into flags table", "", __LINE__, __FILE__, $sql);
+			message_die(NUKE_GENERAL_ERROR, "Couldn't update/insert into flags table", "", __LINE__, __FILE__, $sql);
 		}
 
 		$message .= "<br /><br />" . sprintf($lang['Click_return_flagadmin'], "<a href=\"" . append_sid("admin_flags.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-		message_die(GENERAL_MESSAGE, $message);
+		message_die(NUKE_GENERAL_MESSAGE, $message);
 
 	}
 	else if( $mode == 'delete' )
@@ -224,43 +224,43 @@ if( $mode != "" )
 		if( $flag_id )
 		{
 			// get the doomed flag's info
-			$sql = "SELECT * FROM " . FLAG_TABLE . " 
+			$sql = "SELECT * FROM " . NUKE_FLAG_TABLE . " 
 				WHERE flag_id = $flag_id" ;
-			if( !$result = $db->sql_query($sql) )
+			if( !$result = $nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, "Couldn't get flag data", "", __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, "Couldn't get flag data", "", __LINE__, __FILE__, $sql);
 			}
-			$row = $db->sql_fetchrow($result);
+			$row = $nuke_db->sql_fetchrow($result);
 			$flag_image = $row['flag_image'] ;
 
 
 			// delete the flag
-			$sql = "DELETE FROM " . FLAG_TABLE . "
+			$sql = "DELETE FROM " . NUKE_FLAG_TABLE . "
 				WHERE flag_id = $flag_id";
 			
-			if( !$result = $db->sql_query($sql) )
+			if( !$result = $nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, "Couldn't delete flag data", "", __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, "Couldn't delete flag data", "", __LINE__, __FILE__, $sql);
 			}
 
 
 			// update the users who where using this flag			
-			$sql = "UPDATE " . USERS_TABLE . " 
+			$sql = "UPDATE " . NUKE_USERS_TABLE . " 
 				SET user_from_flag = 'blank.gif' 
 				WHERE user_from_flag = '$flag_image'";
-			if( !$result = $db->sql_query($sql) ) 
+			if( !$result = $nuke_db->sql_query($sql) ) 
 			{
-				message_die(GENERAL_ERROR, $lang['No_update_flags'], "", __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, $lang['No_update_flags'], "", __LINE__, __FILE__, $sql);
 			}
 
 			$message = $lang['Flag_removed'] . "<br /><br />" . sprintf($lang['Click_return_flagadmin'], "<a href=\"" . append_sid("admin_flags.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-			message_die(GENERAL_MESSAGE, $message);
+			message_die(NUKE_GENERAL_MESSAGE, $message);
 
 		}
 		else
 		{
-			message_die(GENERAL_MESSAGE, $lang['Must_select_flag']);
+			message_die(NUKE_GENERAL_MESSAGE, $lang['Must_select_flag']);
 		}
 	}
 	else
@@ -273,14 +273,14 @@ if( $mode != "" )
 			"body" => "admin/flags_list_body.tpl")
 		);
 		
-		$sql = "SELECT * FROM " . FLAG_TABLE . "
+		$sql = "SELECT * FROM " . NUKE_FLAG_TABLE . "
 			ORDER BY flag_name";
-		if( !$result = $db->sql_query($sql) )
+		if( !$result = $nuke_db->sql_query($sql) )
 		{
-			message_die(GENERAL_ERROR, "Couldn't obtain flags data", "", __LINE__, __FILE__, $sql);
+			message_die(NUKE_GENERAL_ERROR, "Couldn't obtain flags data", "", __LINE__, __FILE__, $sql);
 		}
 		
-		$flag_rows = $db->sql_fetchrowset($result);
+		$flag_rows = $nuke_db->sql_fetchrowset($result);
 		$flag_count = count($flag_rows);
 		
 		$template->assign_vars(array(
@@ -327,15 +327,15 @@ else
 		"body" => "admin/flags_list_body.tpl")
 	);
 	
-	$sql = "SELECT * FROM " . FLAG_TABLE . "
+	$sql = "SELECT * FROM " . NUKE_FLAG_TABLE . "
 		ORDER BY flag_name ASC";
-	if( !$result = $db->sql_query($sql) )
+	if( !$result = $nuke_db->sql_query($sql) )
 	{
-		message_die(GENERAL_ERROR, "Couldn't obtain flags data", "", __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, "Couldn't obtain flags data", "", __LINE__, __FILE__, $sql);
 	}
-	$flag_count = $db->sql_numrows($result);
+	$flag_count = $nuke_db->sql_numrows($result);
 
-	$flag_rows = $db->sql_fetchrowset($result);
+	$flag_rows = $nuke_db->sql_fetchrowset($result);
 	
 	$template->assign_vars(array(
 		"L_FLAGS_TITLE" => $lang['Flags_title'],

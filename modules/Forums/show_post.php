@@ -44,7 +44,7 @@
  ************************************************************************/
 if (!defined('MODULE_FILE')) die ("You can't access this file directly...");
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 $phpbb2_root_path = NUKE_PHPBB2_DIR;
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
@@ -56,7 +56,7 @@ if(isset($HTTP_GET_VARS['p']))
 $post_id = intval($HTTP_GET_VARS['p']);
 
 if(!isset($post_id))
-message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+message_die(NUKE_GENERAL_MESSAGE, 'Topic_post_not_exist');
 
 # Find topic id if user requested a newer
 # or older topic
@@ -66,36 +66,36 @@ if(isset($HTTP_GET_VARS['view'])):
     $sql_condition = ( $HTTP_GET_VARS['view'] == 'next' ) ? '>' : '<';
     $sql_ordering = ( $HTTP_GET_VARS['view'] == 'next' ) ? 'ASC' : 'DESC';
 
-    $sql = "SELECT topic_id, post_time FROM " . POSTS_TABLE . " WHERE post_id = " . $post_id . " LIMIT 1";
+    $sql = "SELECT topic_id, post_time FROM " . NUKE_POSTS_TABLE . " WHERE post_id = " . $post_id . " LIMIT 1";
 
-    if (!($result = $db->sql_query($sql)))
-    message_die(GENERAL_ERROR, "Could not obtain newer/older post information", '', __LINE__, __FILE__, $sql);
+    if (!($result = $nuke_db->sql_query($sql)))
+    message_die(NUKE_GENERAL_ERROR, "Could not obtain newer/older post information", '', __LINE__, __FILE__, $sql);
 
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
 
     $topic_id = $row['topic_id'];
     $post_time = $row['post_time'];
 
-    $sql = "SELECT post_id FROM ".POSTS_TABLE."
+    $sql = "SELECT post_id FROM ".NUKE_POSTS_TABLE."
             WHERE topic_id = $topic_id
             AND post_time $sql_condition ".$post_time."
             ORDER BY post_time $sql_ordering
             LIMIT 1";
         
-    if(!($result = $db->sql_query($sql)))
-    message_die(GENERAL_ERROR, "Could not obtain newer/older post information", '', __LINE__, __FILE__, $sql);
+    if(!($result = $nuke_db->sql_query($sql)))
+    message_die(NUKE_GENERAL_ERROR, "Could not obtain newer/older post information", '', __LINE__, __FILE__, $sql);
         
-        if($row = $db->sql_fetchrow($result)):
+        if($row = $nuke_db->sql_fetchrow($result)):
             $post_id = $row['post_id'];
         else:
             $message = ( $HTTP_GET_VARS['view'] == 'next' ) ? 'No_newer_posts' : 'No_older_posts';
-            message_die(GENERAL_MESSAGE, $message);
+            message_die(NUKE_GENERAL_MESSAGE, $message);
         endif;
     endif;
 endif;
 
 if(!isset($post_id))
-message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+message_die(NUKE_GENERAL_MESSAGE, 'Topic_post_not_exist');
 
 # Get topic info ...
 $sql = "SELECT t.topic_title, 
@@ -112,7 +112,7 @@ $sql = "SELECT t.topic_title,
 		         f.auth_vote, 
 		  f.auth_attachments 
 
-FROM ".TOPICS_TABLE." t, ".FORUMS_TABLE." f, ".POSTS_TABLE." p
+FROM ".NUKE_BB_TOPICS_TABLE." t, ".NUKE_FORUMS_TABLE." f, ".NUKE_POSTS_TABLE." p
 WHERE p.post_id = $post_id
 AND t.topic_id = p.topic_id
 AND f.forum_id = t.forum_id";
@@ -128,11 +128,11 @@ $tmp = '';
 
 # Mod: Attachment Mod v2.4.1 END
 
-if(!($result = $db->sql_query($sql)))
-message_die(GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
+if(!($result = $nuke_db->sql_query($sql)))
+message_die(NUKE_GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
 
-if(!($forum_row = $db->sql_fetchrow($result)))
-message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+if(!($forum_row = $nuke_db->sql_fetchrow($result)))
+message_die(NUKE_GENERAL_MESSAGE, 'Topic_post_not_exist');
 
 $forum_id = $forum_row['forum_id'];
 $topic_title = $forum_row['topic_title'];
@@ -143,10 +143,10 @@ init_userprefs($userdata);
 # End session management
 
 $is_auth = array();
-$is_auth = auth(AUTH_ALL, $forum_id, $userdata, $forum_row);
+$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata, $forum_row);
 
 if(!$is_auth['auth_read'])
-message_die(GENERAL_MESSAGE, sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']));
+message_die(NUKE_GENERAL_MESSAGE, sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']));
 
 # Define censored word matches
 if(empty($orig_word) && empty($replacement_word)):
@@ -185,32 +185,32 @@ $template->assign_vars(array(
 );
 
 $sql = "SELECT *
-        FROM " . RANKS_TABLE . "
+        FROM " . NUKE_RANKS_TABLE . "
         ORDER BY rank_special, rank_min";
 
-if(!($result = $db->sql_query($sql)))
-message_die(GENERAL_ERROR, "Could not obtain ranks information.", '', __LINE__, __FILE__, $sql);
+if(!($result = $nuke_db->sql_query($sql)))
+message_die(NUKE_GENERAL_ERROR, "Could not obtain ranks information.", '', __LINE__, __FILE__, $sql);
 
 $ranksrow = array();
 
-while($row = $db->sql_fetchrow($result)):
+while($row = $nuke_db->sql_fetchrow($result)):
     $ranksrow[] = $row;
 endwhile;
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
     
 
 # Go ahead and pull all data for this topic
 # Mod: Online/Offline/Hidden v2.2.7 START
 $sql = "SELECT u.*, p.*, u.user_allow_viewonline, u.user_session_time, pt.post_text, pt.post_subject, pt.bbcode_uid
-        FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt
+        FROM " . NUKE_POSTS_TABLE . " p, " . NUKE_USERS_TABLE . " u, " . NUKE_POSTS_TEXT_TABLE . " pt
         WHERE p.post_id = $post_id
         AND p.poster_id = u.user_id
         AND p.post_id = pt.post_id
         LIMIT 1";
 # Mod: Online/Offline/Hidden v2.2.7 END
 
-if(!($result = $db->sql_query($sql)))
-message_die(GENERAL_ERROR, 'Could not obtain post/user information', '', __LINE__, __FILE__, $sql);
+if(!($result = $nuke_db->sql_query($sql)))
+message_die(NUKE_GENERAL_ERROR, 'Could not obtain post/user information', '', __LINE__, __FILE__, $sql);
 
 # Mod: Attachment Mod v2.4.1 START
 
@@ -223,7 +223,7 @@ message_die(GENERAL_ERROR, 'Could not obtain post/user information', '', __LINE_
 
 # Okay, let's do the loop, yeah come on baby let's do the loop
 # and it goes like this ...
-if($row = $db->sql_fetchrow($result)):
+if($row = $nuke_db->sql_fetchrow($result)):
 
     $mini_post_img = $images['icon_minipost'];
     $mini_post_alt = $lang['Post'];
@@ -232,31 +232,31 @@ if($row = $db->sql_fetchrow($result)):
     do
     {
         $poster_id = $row['user_id'];
-        $poster = ( $poster_id == ANONYMOUS ) ? $lang['Guest'] : $row['username'];
+        $poster = ( $poster_id == NUKE_ANONYMOUS ) ? $lang['Guest'] : $row['username'];
 
         $post_date = create_date($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']);
 
-        $poster_posts = ( $row['user_id'] != ANONYMOUS ) ? $lang['Posts'] . ': ' . $row['user_posts'] : '';
+        $poster_posts = ( $row['user_id'] != NUKE_ANONYMOUS ) ? $lang['Posts'] . ': ' . $row['user_posts'] : '';
 
-        $poster_from = ( $row['user_from'] && $row['user_id'] != ANONYMOUS ) ? $lang['Location'] . ': ' . $row['user_from'] : '';
+        $poster_from = ( $row['user_from'] && $row['user_id'] != NUKE_ANONYMOUS ) ? $lang['Location'] . ': ' . $row['user_from'] : '';
         $poster_from = str_replace(".gif", "", $poster_from);
-        $poster_joined = ( $row['user_id'] != ANONYMOUS ) ? $lang['Joined'] . ': ' . $row['user_regdate'] : '';
+        $poster_joined = ( $row['user_id'] != NUKE_ANONYMOUS ) ? $lang['Joined'] . ': ' . $row['user_regdate'] : '';
 
         $poster_avatar = '';
         
 		# Mod: View/Disable Avatars/Signatures v1.1.2 START
-        if ( $row['user_avatar_type'] && $poster_id != ANONYMOUS && $row['user_allowavatar'] && $userdata['user_showavatars']):
+        if ( $row['user_avatar_type'] && $poster_id != NUKE_ANONYMOUS && $row['user_allowavatar'] && $userdata['user_showavatars']):
 		# Mod: View/Disable Avatars/Signatures v1.1.2 END
             switch( $row['user_avatar_type']):
-                case USER_AVATAR_UPLOAD:
+                case NUKE_USER_AVATAR_UPLOAD:
                     $poster_avatar = ( $board_config['allow_avatar_upload'] ) ? '<img src="' . $board_config['avatar_path'] . '/' . $row['user_avatar'] . '" alt="" border="0" />' : '';
                     break;
                 # Mod: Remote Avatar Resize v2.0.0 START
-                case USER_AVATAR_REMOTE:
+                case NUKE_USER_AVATAR_REMOTE:
                     $poster_avatar = resize_avatar($row['user_avatar']);
                     break;
                 # Mod: Remote Avatar Resize v2.0.0 END
-                case USER_AVATAR_GALLERY:
+                case NUKE_USER_AVATAR_GALLERY:
                     $poster_avatar = ( $board_config['allow_avatar_local'] ) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $row['user_avatar'] . '" alt="" border="0" />' : '';
                     break;
             endswitch;
@@ -266,7 +266,7 @@ if($row = $db->sql_fetchrow($result)):
         $poster_rank = '';
         $rank_image = '';
 
-        if ($row['user_id'] == ANONYMOUS):
+        if ($row['user_id'] == NUKE_ANONYMOUS):
         # do some shit if the user is anonymous
         elseif($row['user_rank']):
             for($j = 0; $j < count($ranksrow); $j++):
@@ -285,20 +285,20 @@ if($row = $db->sql_fetchrow($result)):
         endif;
 
         # Handle anon users posting with usernames
-        if($poster_id == ANONYMOUS && !empty($row['post_username'])):
+        if($poster_id == NUKE_ANONYMOUS && !empty($row['post_username'])):
             $poster = $row['post_username'];
             $poster_rank = $lang['Guest'];
         endif;
 
         $temp_url = '';
 
-        if($poster_id != ANONYMOUS):
+        if($poster_id != NUKE_ANONYMOUS):
         
-            $temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=$poster_id");
+            $temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$poster_id");
             $profile_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_profile'].'" alt="'.$lang['Read_profile'].'" title="'.$lang['Read_profile'].'" border="0" /></a>';
             $profile = '<a href="'.$temp_url.'">'.$lang['Read_profile'].'</a>';
 
-            $temp_url = append_sid("privmsg.$phpEx?mode=post&amp;".POST_USERS_URL."=$poster_id");
+            $temp_url = append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$poster_id");
 
             if(is_active("Private_Messages")): 
               $pm_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_pm'].'" alt="'.$lang['Send_private_message'].'" title="'.$lang['Send_private_message'].'" border="0" /></a>';
@@ -306,7 +306,7 @@ if($row = $db->sql_fetchrow($result)):
             endif;
 
             if(!empty($row['user_viewemail']) || $is_auth['auth_mod']):
-                $email_uri = ($board_config['board_email_form']) ? append_sid("profile.$phpEx?mode=email&amp;".POST_USERS_URL.'='.$poster_id) : 'mailto:'.$row['user_email'];
+                $email_uri = ($board_config['board_email_form']) ? append_sid("profile.$phpEx?mode=email&amp;".NUKE_POST_USERS_URL.'='.$poster_id) : 'mailto:'.$row['user_email'];
                 $email_img = '<a href="'.$email_uri.'"><img src="'.$images['icon_email'].'" alt="'.$lang['Send_email'].'" title="'.$lang['Send_email'].'" border="0" /></a>';
                 $email = '<a href="'.$email_uri.'">'.$lang['Send_email'].'</a>';
             else:
@@ -344,7 +344,7 @@ if($row = $db->sql_fetchrow($result)):
             
 			$aim = ( $row['user_aim'] ) ? '<a href="aim:goim?screenname='.$row['user_aim'].'&amp;message=Hello+Are+you+there?">'.$lang['AIM'].'</a>' : '';
 
-            $temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=$poster_id");
+            $temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$poster_id");
             $msn_img = ($row['user_msnm']) ? '<a href="'.$temp_url.'"><img src="'.$images['icon_msnm'].'" alt="'.$lang['MSNM'].'" title="'.$lang['MSNM'].'" border="0" /></a>' : '';
             $msn = ($row['user_msnm']) ? '<a href="'.$temp_url.'">'.$lang['MSNM'].'</a>' : '';
 
@@ -407,7 +407,7 @@ if($row = $db->sql_fetchrow($result)):
 
         endif;
 
-        $temp_url = append_sid("posting.$phpEx?mode=quote&amp;".POST_POST_URL."=".$row['post_id']);
+        $temp_url = append_sid("posting.$phpEx?mode=quote&amp;".NUKE_POST_POST_URL."=".$row['post_id']);
         $quote_img = '<a href="'.$temp_url.'" target="_parent"><img src="'.$images['icon_quote'].'" alt="'.$lang['Reply_with_quote'].'" title="'.$lang['Reply_with_quote'].'" border="0" /></a>';
         $quote = '<a href="'.$temp_url.'" target="_parent">'.$lang['Reply_with_quote'].'</a>';
 
@@ -507,7 +507,7 @@ if($row = $db->sql_fetchrow($result)):
 		
         # Mod: Report Post v1.0.0 START
         if($userdata['session_logged_in']):
-          $report_img = '<a href="'.append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.POST_POST_URL.'='.$post_id).'"><img 
+          $report_img = '<a href="'.append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$post_id).'"><img 
 		  src="'.$images['icon_report'].'" border="0" width="16" height="18" alt="'.$lang['Report_post'].'" title="'.$lang['Report_post'].'" /></a>';
         else:
           $report_img = '';
@@ -586,10 +586,10 @@ if($row = $db->sql_fetchrow($result)):
 
       $i++;
     }
-    while($row = $db->sql_fetchrow($result));
+    while($row = $nuke_db->sql_fetchrow($result));
 
 else:
-    message_die(GENERAL_MESSAGE, 'Topic_post_not_exist', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_MESSAGE, 'Topic_post_not_exist', '', __LINE__, __FILE__, $sql);
 endif;
 
 $template->pparse('reviewbody');

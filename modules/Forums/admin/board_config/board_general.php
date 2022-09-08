@@ -76,9 +76,9 @@ $admin_style_default = (!$new['use_theme_style']) ? 'checked="checked"' : '';
  [ Mod:     Forum Admin Style Selection        v1.0.0 ]
  ******************************************************/
 
-$activation_none = ( $new['require_activation'] == USER_ACTIVATION_NONE ) ? 'checked="checked"' : '';
-$activation_user = ( $new['require_activation'] == USER_ACTIVATION_SELF ) ? 'checked="checked"' : '';
-$activation_admin = ( $new['require_activation'] == USER_ACTIVATION_ADMIN ) ? 'checked="checked"' : '';
+$activation_none = ( $new['require_activation'] == NUKE_USER_ACTIVATION_NONE ) ? 'checked="checked"' : '';
+$activation_user = ( $new['require_activation'] == NUKE_USER_ACTIVATION_SELF ) ? 'checked="checked"' : '';
+$activation_admin = ( $new['require_activation'] == NUKE_USER_ACTIVATION_ADMIN ) ? 'checked="checked"' : '';
 
 $board_email_form_yes = ( $new['board_email_form'] ) ? 'checked="checked"' : '';
 $board_email_form_no = ( !$new['board_email_form'] ) ? 'checked="checked"' : '';
@@ -349,11 +349,11 @@ $template->assign_vars(array(
 /*****[END]********************************************
  [ Mod:     Forum Admin Style Selection        v1.0.0 ]
  ******************************************************/
-    'ACTIVATION_NONE' => USER_ACTIVATION_NONE,
+    'ACTIVATION_NONE' => NUKE_USER_ACTIVATION_NONE,
     'ACTIVATION_NONE_CHECKED' => $activation_none,
-    'ACTIVATION_USER' => USER_ACTIVATION_SELF,
+    'ACTIVATION_USER' => NUKE_USER_ACTIVATION_SELF,
     'ACTIVATION_USER_CHECKED' => $activation_user,
-    'ACTIVATION_ADMIN' => USER_ACTIVATION_ADMIN,
+    'ACTIVATION_ADMIN' => NUKE_USER_ACTIVATION_ADMIN,
     'ACTIVATION_ADMIN_CHECKED' => $activation_admin,
     'BOARD_EMAIL_FORM_ENABLE' => $board_email_form_yes,
     'BOARD_EMAIL_FORM_DISABLE' => $board_email_form_no,

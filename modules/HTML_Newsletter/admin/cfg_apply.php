@@ -51,7 +51,7 @@ if ( $_POST['msnl_debug_mode'] <> MSNL_OFF
 		&& $_POST['msnl_debug_mode'] <> MSNL_ERROR 
 		&& $_POST['msnl_debug_mode'] <> MSNL_VERBOSE ) {
 
-	msnl_fRaiseAppError( _MSNL_CFG_APPLY_VAL_DEBUGMODE );	
+	msnl_fRaiseAppError( _MSNL_CFG_APPLY_VAL_NUKE_DEBUGMODE );	
 
 } else {
 
@@ -67,7 +67,7 @@ if ($_POST['msnl_debug_output'] <> MSNL_DISPLAY
 		&& $_POST['msnl_debug_output'] <> MSNL_LOGFILE 
 		&& $_POST['msnl_debug_output'] <> MSNL_BOTH ) {
 
-	msnl_fRaiseAppError( _MSNL_CFG_APPLY_VAL_DEBUGOUTPUT );	
+	msnl_fRaiseAppError( _MSNL_CFG_APPLY_VAL_NUKE_DEBUGOUTPUT );	
 
 } else {
 

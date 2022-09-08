@@ -26,7 +26,7 @@
 
 // Only delivered with the Module Development Kit
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 if( !empty($setmodules) )
 {
@@ -64,14 +64,14 @@ include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 
 $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
 }
 
 $stats_config = array();
 
-while ($row = $db->sql_fetchrow($result))
+while ($row = $nuke_db->sql_fetchrow($result))
 {
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
@@ -92,7 +92,7 @@ if (($mode == 'mod_pak') && ($submit))
     // create temporary file
     if (!($fp = fopen($phpbb2_root_path . 'modules/cache/' . $pak_name, 'wb')))
     {
-        message_die(GENERAL_ERROR, 'Unable to write Package File. Please check the Package Naming.');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write Package File. Please check the Package Naming.');
     }
 
     // Write PAK Header
@@ -120,13 +120,13 @@ if (($mode == 'mod_pak') && ($submit))
     fwrite($fp, pack("C*", 0xFF, 0xCC, 0xCC), 3);
     
     fwrite($fp, pack("C*", 0xFF, 0xFC, 0xCC), 3);
-    fwrite($fp, 'MOD', 3);
+    fwrite($fp, 'NUKE_MOD', 3);
     fwrite($fp, pack("C*", 0xCC, 0xFC, 0xFF), 3);
     $content = implode('', file($phpbb2_root_path . 'modules/pakfiles/' . $php_file));
     $size = strlen($content);
     fwrite($fp, $content, $size);
     fwrite($fp, pack("C*", 0xCC, 0xCC, 0xFF), 3);
-    fwrite($fp, 'MOD', 4);
+    fwrite($fp, 'NUKE_MOD', 4);
     fwrite($fp, pack("C*", 0xFF, 0xCC, 0xCC), 3);
 
     fclose($fp);
@@ -179,7 +179,7 @@ if (($mode == 'mod_pak') && (!$submit))
 
     if ((count($info_files) == 0) || (count($lang_files) == 0) || (count($php_files) == 0))
     {
-        message_die(GENERAL_MESSAGE, 'Found no files to package up. Info/Lang/PHP Files have to be placed into \'modules/pakfiles\'.');
+        message_die(NUKE_GENERAL_MESSAGE, 'Found no files to package up. Info/Lang/PHP Files have to be placed into \'modules/pakfiles\'.');
     }
     
     sort($info_files, SORT_STRING);

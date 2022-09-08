@@ -73,8 +73,8 @@ if (!defined('CNBYA')) {
 	}
     # end Nuke Honeypot
 
-    $result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field WHERE (need = '2') OR (need = '3') ORDER BY pos");
-        while ($sqlvalue = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field WHERE (need = '2') OR (need = '3') ORDER BY pos");
+        while ($sqlvalue = $nuke_db->sql_fetchrow($result)) {
           $t = $sqlvalue['fid'];
           $value2 = explode("::", $sqlvalue['value']);
           if (substr($sqlvalue['name'],0,1)=='_') eval( "\$name_exit = $sqlvalue[name];"); else $name_exit = $sqlvalue['name'];
@@ -139,14 +139,14 @@ if (!defined('CNBYA')) {
     closedir($handle);
     if ($thmcount > 1) { echo "<li>"._ASREG6."\n"; }
     $sql = "SELECT custom_title FROM ".$prefix."_modules WHERE active='1' AND view='1' AND inmenu='1'";
-    $result = $db->sql_query($sql);
-    while ($row = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query($sql);
+    while ($row = $nuke_db->sql_fetchrow($result)) {
         $custom_title = $row['custom_title'];
         if (!empty($custom_title)) { echo "<li>"._ACCESSTO." $custom_title\n"; }
     }
     $sql = "SELECT title FROM ".$prefix."_blocks WHERE active='1' AND view='1'";
-    $result = $db->sql_query($sql);
-    while ($row = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query($sql);
+    while ($row = $nuke_db->sql_fetchrow($result)) {
         $b_title = $row['title'];
         if (!empty($b_title)) { echo "<li>"._ACCESSTO." $b_title\n"; }
     }

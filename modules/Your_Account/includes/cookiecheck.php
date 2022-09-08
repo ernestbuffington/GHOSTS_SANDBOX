@@ -161,7 +161,7 @@ function ShowCookiesRedirect()
   setcookie("CNB_test3","3",time()-604800,"/");
   setcookie("CNB_test4","4",time()-604800,"$ya_config[cookiepath]");
 
-  redirect("modules.php?name=$module_name&op=ShowCookies");
+  nuke_redirect("modules.php?name=$module_name&op=ShowCookies");
 }
 
 /*************************************************************************************/
@@ -238,10 +238,10 @@ OpenTable();
     echo $username;
 
     $CookieArray = $_COOKIE;
-    $db->sql_query("DELETE FROM ".$prefix."_session WHERE uname='$r_username'");
-    $db->sql_query("OPTIMIZE TABLE ".$prefix."_session");
-//    $db->sql_query("DELETE FROM     ".$prefix."_bbsessions WHERE session_user_id='$r_uid'");
-//    $db->sql_query("OPTIMIZE TABLE ".$prefix."_bbsessions");
+    $nuke_db->sql_query("DELETE FROM ".$prefix."_session WHERE uname='$r_username'");
+    $nuke_db->sql_query("OPTIMIZE TABLE ".$prefix."_session");
+//    $nuke_db->sql_query("DELETE FROM     ".$prefix."_bbsessions WHERE session_user_id='$r_uid'");
+//    $nuke_db->sql_query("OPTIMIZE TABLE ".$prefix."_bbsessions");
 
     echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"5\" border=\"0\"><tr>";
     echo "<form action=\"modules.php?name=$module_name&amp;op=ShowCookies\" method=\"post\">";

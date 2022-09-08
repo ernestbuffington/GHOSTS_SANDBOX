@@ -13,7 +13,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -53,7 +53,7 @@ function display_compile_cache_clear($filename, $template_var)
 */
 function init_complete_extensions_data()
 {
-    global $db, $allowed_extensions, $display_categories, $download_modes, $upload_icons;
+    global $nuke_db, $allowed_extensions, $display_categories, $download_modes, $upload_icons;
 
     $extension_informations = get_extension_informations();
     $allowed_extensions = array();
@@ -193,7 +193,7 @@ function display_assign_link($post_id)
 */
 function init_display_post_attachments($switch_attachment)
 {
-    global $attach_config, $db, $is_auth, $template, $lang, $postrow, $total_posts, $attachments, $forum_row, $forum_topic_data;
+    global $attach_config, $nuke_db, $is_auth, $template, $lang, $postrow, $total_posts, $attachments, $forum_row, $forum_topic_data;
 
     if (empty($forum_topic_data) && !empty($forum_row))
     {
@@ -260,9 +260,9 @@ function privmsgs_attachment_image($privmsg_id)
 {
     global $attach_config, $userdata;
 
-    $auth = ($userdata['user_level'] == ADMIN) ? 1 : intval($attach_config['allow_pm_attach']);
+    $auth = ($userdata['user_level'] == NUKE_ADMIN) ? 1 : intval($attach_config['allow_pm_attach']);
 
-    if (!attachment_exists_db($privmsg_id, PAGE_PRIVMSGS) || !$auth || intval($attach_config['disable_mod']) || $attach_config['topic_icon'] == '')
+    if (!attachment_exists_db($privmsg_id, NUKE_PAGE_PRIVMSGS) || !$auth || intval($attach_config['disable_mod']) || $attach_config['topic_icon'] == '')
     {
         return '';
     }
@@ -279,7 +279,7 @@ function display_pm_attachments($privmsgs_id, $switch_attachment)
 {
     global $attach_config, $userdata, $template, $lang;
 
-    if ($userdata['user_level'] == ADMIN)
+    if ($userdata['user_level'] == NUKE_ADMIN)
     {
         $auth_download = 1;
     }
@@ -308,7 +308,7 @@ function init_display_pm_attachments($switch_attachment)
 {
     global $attach_config, $template, $userdata, $lang, $attachments, $privmsg;
 
-    if ($userdata['user_level'] == ADMIN)
+    if ($userdata['user_level'] == NUKE_ADMIN)
     {
         $auth_download = 1;
     }
@@ -404,7 +404,7 @@ function init_display_review_attachments($is_auth)
 */
 function display_attachments_preview($attachment_list, $attachment_filesize_list, $attachment_filename_list, $attachment_comment_list, $attachment_extension_list, $attachment_thumbnail_list)
 {
-    global $attach_config, $is_auth, $allowed_extensions, $lang, $userdata, $display_categories, $upload_dir, $upload_icons, $template, $db, $theme;
+    global $attach_config, $is_auth, $allowed_extensions, $lang, $userdata, $display_categories, $upload_dir, $upload_icons, $template, $nuke_db, $theme;
 
 	if (sizeof($attachment_list) != 0)
     {
@@ -616,7 +616,7 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
 */
 function display_attachments($post_id)
 {
-    global $template, $upload_dir, $userdata, $allowed_extensions, $display_categories, $download_modes, $db, $lang, $phpEx, $attachments, $upload_icons, $attach_config;
+    global $template, $upload_dir, $userdata, $allowed_extensions, $display_categories, $download_modes, $nuke_db, $lang, $phpEx, $attachments, $upload_icons, $attach_config;
     global $phpbb2_root_path;
 
 	$num_attachments = sizeof($attachments['_' . $post_id]);
@@ -673,7 +673,7 @@ function display_attachments($post_id)
             );
         }
 
-        if (!$denied || $userdata['user_level'] == ADMIN)
+        if (!$denied || $userdata['user_level'] == NUKE_ADMIN)
         {
             // Some basic Template Vars
             $template->assign_vars(array(
@@ -783,9 +783,9 @@ function display_attachments($post_id)
                         SET download_count = download_count + 1
                         WHERE attach_id = ' . (int) $attachments['_' . $post_id][$i]['attach_id'];
 
-                    if ( !($db->sql_query($sql)) )
+                    if ( !($nuke_db->sql_query($sql)) )
                     {
-                        message_die(GENERAL_ERROR, 'Couldn\'t update attachment download count.', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t update attachment download count.', '', __LINE__, __FILE__, $sql);
                     }
                 }
             }
@@ -851,9 +851,9 @@ function display_attachments($post_id)
                     SET download_count = download_count + 1
                     WHERE attach_id = ' . (int) $attachments['_' . $post_id][$i]['attach_id'];
 
-                if ( !($db->sql_query($sql)) )
+                if ( !($nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, 'Couldn\'t update attachment download count', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Couldn\'t update attachment download count', '', __LINE__, __FILE__, $sql);
                 }
             }
 
@@ -881,9 +881,9 @@ function display_attachments($post_id)
                     SET download_count = download_count + 1
                     WHERE attach_id = ' . (int) $attachments['_' . $post_id][$i]['attach_id'];
 
-                if ( !($db->sql_query($sql)) )
+                if ( !($nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, 'Couldn\'t update attachment download count', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Couldn\'t update attachment download count', '', __LINE__, __FILE__, $sql);
                 }
             }
 

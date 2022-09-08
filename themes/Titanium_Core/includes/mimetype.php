@@ -1,8 +1,8 @@
 <?php
 global $doctype;
 $output  .= '<?xml version="1.0" encoding="' . $mime . '"?>'."\n";
-$charset = defined('_CHARSET') ? _CHARSET : 'UTF-8';
-$mime = defined('_MIME') ? _MIME : 'text/html';
+$charset = defined('_NUKE_CHARSET') ? _NUKE_CHARSET : 'UTF-8';
+$mime = defined('_NUKE_MIME') ? _NUKE_MIME : 'text/html';
 $is304 = false;
 
 if(empty($doctype)) 
@@ -39,7 +39,7 @@ switch ($doctype)
         break;
 }
 
-$output  .= '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="'._LANGCODE.'" />'."\n";
+$output  .= '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="'._NUKE_LANGCODE.'" />'."\n";
 $output  .= '<html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="https://www.facebook.com/2008/fbml" />'."\n"; 
 
 $output .= "<!-- START <head> -->\n";
@@ -49,7 +49,7 @@ $output .= '<!--[if IE]>';
 $output .= "\n".'<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />'."\n";
 $output .= '<![endif]-->';
 $output .= "\n".'<meta http-equiv="Content-Type" content="'.$mime.'; charset='.$charset.'"/>'."\n";
-$output .= '<meta http-equiv="Content-Language" content="'._LANGCODE.'" />'."\n";
+$output .= '<meta http-equiv="Content-Language" content="'._NUKE_LANGCODE.'" />'."\n";
 $output .= '<meta http-equiv="Content-Style-Type" content="text/css" />'."\n";
 $output .= '<meta http-equiv="Content-Script-Type" content="text/javascript" />'."\n";
 

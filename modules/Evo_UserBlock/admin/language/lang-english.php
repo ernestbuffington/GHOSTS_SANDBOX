@@ -11,12 +11,12 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 global $lang_evo_userblock;
 
 //Common
-$lang_evo_userblock['ADMIN']['EVO_USERINFO'] = 'Evolution UserInfo Block';
-$lang_evo_userblock['ADMIN']['BREAK'] = 'Break';
-$lang_evo_userblock['ADMIN']['SAVE'] = 'Save';
-$lang_evo_userblock['ADMIN']['SAVED'] = 'Saved';
-$lang_evo_userblock['ADMIN']['HELP'] = 'Help';
-$lang_evo_userblock['ADMIN']['MSG_SAVED'] = 'Message Saved';
+$lang_evo_userblock['NUKE_ADMIN']['EVO_USERINFO'] = 'Evolution UserInfo Block';
+$lang_evo_userblock['NUKE_ADMIN']['BREAK'] = 'Break';
+$lang_evo_userblock['NUKE_ADMIN']['SAVE'] = 'Save';
+$lang_evo_userblock['NUKE_ADMIN']['SAVED'] = 'Saved';
+$lang_evo_userblock['NUKE_ADMIN']['HELP'] = 'Help';
+$lang_evo_userblock['NUKE_ADMIN']['MSG_SAVED'] = 'Message Saved';
 $lang_evo_userblock['YES'] = 'Yes';
 $lang_evo_userblock['NO'] = 'No';
 
@@ -25,10 +25,10 @@ $lang_evo_userblock['ACCESS_DENIED'] = 'Access Is Denied';
 $lang_evo_userblock['VALUES_NF'] = 'Could not find values for ';
 
 //Admin
-$lang_evo_userblock['ADMIN']['ADMIN_HELP'] = 'Drag and drop items on or off the block<br />Double click on an item to admin it if available';
-$lang_evo_userblock['ADMIN']['ADMIN_HEADER'] = 'UserInfo Block :: Modules Admin Panel';
-$lang_evo_userblock['ADMIN']['ADMIN_RETURN'] = 'Return to Main Administration';
-$lang_evo_userblock['ADMIN']['COLLAPSE'] = 'Collapsible modules?';
+$lang_evo_userblock['NUKE_ADMIN']['ADMIN_HELP'] = 'Drag and drop items on or off the block<br />Double click on an item to admin it if available';
+$lang_evo_userblock['NUKE_ADMIN']['ADMIN_HEADER'] = 'UserInfo Block :: Modules Admin Panel';
+$lang_evo_userblock['NUKE_ADMIN']['ADMIN_RETURN'] = 'Return to Main Administration';
+$lang_evo_userblock['NUKE_ADMIN']['COLLAPSE'] = 'Collapsible modules?';
 
 /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 

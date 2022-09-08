@@ -3,7 +3,7 @@ if (!defined('ADMIN_FILE')) {
    die ("Illegal File Access");
 }
 
-global $prefix, $db, $admin_file, $admdata;
+global $prefix, $nuke_db, $admin_file, $admdata;
 $module_name = basename(dirname(dirname(__FILE__)));
 
 if (!is_mod_admin($module_name)) {

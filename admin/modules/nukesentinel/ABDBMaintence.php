@@ -9,7 +9,7 @@
 /* By: NukeScripts Network (webmaster@nukescripts.net)  */
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2008 by NukeScripts Network       */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if(is_god($_COOKIE['admin'])) {

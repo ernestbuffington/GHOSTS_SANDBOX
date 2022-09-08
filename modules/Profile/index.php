@@ -39,7 +39,7 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 /*****[BEGIN]******************************************
@@ -53,7 +53,7 @@ include('includes/functions_reputation.'.$phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_PROFILE);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_PROFILE);
 init_userprefs($userdata);
 //
 // End session management
@@ -61,7 +61,7 @@ init_userprefs($userdata);
 /*****[BEGIN]******************************************
  [ Mod:   Admin delete user with all postings v.1.0.5 ]
  ******************************************************/
-if( $userdata['session_logged_in']  &&  $userdata['user_level'] == ADMIN )
+if( $userdata['session_logged_in']  &&  $userdata['user_level'] == NUKE_ADMIN )
 {
 	include($phpbb2_root_path.'language/lang_' . $userdata['user_lang'] . '/lang_user_delete.'.$phpEx);
 }
@@ -116,7 +116,7 @@ function gen_rand_string($hash)
                 if ( !is_user() )
                 {
                     $mode = "register";
-                    redirect('modules.php?name=Your_Account&op=new_user');
+                    nuke_redirect('modules.php?name=Your_Account&op=new_user');
                     exit;
                 } else {
                     $mode = "editprofile";
@@ -136,13 +136,13 @@ function gen_rand_string($hash)
         } 
 		elseif($mode == 'register' && !$check_num) 
 		{
-                redirect('modules.php?name=Your_Account&op=new_user');
+                nuke_redirect('modules.php?name=Your_Account&op=new_user');
         } 
 		else if($mode == 'editprofile')
         {
            if(!is_user() && $mode == 'editprofile'):
               $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/",$_SERVER["SERVER_SOFTWARE"])) ? "Refresh: 0; URL=" : "Location: ";
-              redirect(append_sid("login.$phpEx?redirect=profile.$phpEx&mode=editprofile", true));
+              nuke_redirect(append_sid("login.$phpEx?nuke_redirect=profile.$phpEx&mode=editprofile", true));
               exit;
            endif;
          include("includes/usercp_register.php");
@@ -156,7 +156,7 @@ function gen_rand_string($hash)
             if ( !is_user() && $mode == 'signature' )
             {
                 $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", $_SERVER("SERVER_SOFTWARE")) ) ? "Refresh: 0; URL=" : "Location: ";
-                redirect(append_sid("login.$phpEx?redirect=profile.$phpEx&mode=signature", true));
+                nuke_redirect(append_sid("login.$phpEx?nuke_redirect=profile.$phpEx&mode=signature", true));
                 exit;
             }
 
@@ -222,7 +222,7 @@ function gen_rand_string($hash)
  ******************************************************/
         include('includes/usercp_register.'.$phpEx);
        // $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", $_SERVER["SERVER_SOFTWARE"]) ) ? "Refresh: 0; URL=" : "Location: ";
-       // redirect(append_sid("index.$phpEx", true));
+       // nuke_redirect(append_sid("index.$phpEx", true));
        // exit;
 
 ?>

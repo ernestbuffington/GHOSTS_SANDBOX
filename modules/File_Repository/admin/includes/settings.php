@@ -17,7 +17,7 @@ function _file_repository_configuration()
 {
 	// upload size in bytes (int)(str_replace('M', '', ini_get('post_max_size')) * 1024 * 1024)
 	// upload size in mb ini_get('post_max_size')
-	global $db, $admin_file, $lang_new, $module_name, $settings;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings;
 	_admin_navigation_menu();
 	echo '<form action="'.$admin_file.'.php?op='._MODNAME.'&amp;action=settings_save" method="post">'."\n";
 	echo '<table style="width: 100%;" border="0" cellpadding="4" cellspacing="1" class="forumline">'."\n";
@@ -234,12 +234,12 @@ function _file_repository_configuration()
 		if(!empty($themelist[$i])) 
 		{
 			$sql = "SELECT * FROM `"._FILE_REPOSITORY_THEMES."` WHERE `theme_name`='$themelist[$i]'";
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-			$db->sql_freeresult($result);
+			$result = $nuke_db->sql_query($sql);
+			$row = $nuke_db->sql_fetchrow($result);
+			$nuke_db->sql_freeresult($result);
 			if (empty($row)) 
 			{
-				$db->sql_query("INSERT INTO `"._FILE_REPOSITORY_THEMES."` (`theme_name`,`cell`,`head`,`per_row`,`show_left`) VALUES ('$themelist[$i]',0,0,2,1)");
+				$nuke_db->sql_query("INSERT INTO `"._FILE_REPOSITORY_THEMES."` (`theme_name`,`cell`,`head`,`per_row`,`show_left`) VALUES ('$themelist[$i]',0,0,2,1)");
 			}
 			$row['cell'] 		= ($row['cell']) ? $row['cell'] : '0';
 			$row['head'] 		= ($row['head']) ? $row['head'] : '0';
@@ -279,31 +279,31 @@ function _file_repository_configuration()
 
 function _file_repository_configuration_save_variables()
 {
-	global $db, $admin_file;
+	global $nuke_db, $admin_file;
 
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['pophits']."' WHERE `config_name`='pophits'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['uhead']."' WHERE `config_name`='uhead'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['utext']."' WHERE `config_name`='utext'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['parse_smilies']."' WHERE `config_name`='parse_smilies'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['viewer']."' WHERE `config_name`='viewer'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['date_format']."' WHERE `config_name`='date_format'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['usegfxcheck']."' WHERE `config_name`='usegfxcheck'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['captcha']."' WHERE `config_name`='captcha'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['viewer']."' WHERE `config_name`='viewer'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['developer_mode']."' WHERE `config_name`='developer_mode'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['overview_count']."' WHERE `config_name`='overview_count'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['overview_display']."' WHERE `config_name`='overview_display'");	
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['most_popular']."' WHERE `config_name`='most_popular'"); 
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['download_view']."' WHERE `config_name`='download_view'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['adminBypass']."' WHERE `config_name`='adminBypass'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['pophits']."' WHERE `config_name`='pophits'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['uhead']."' WHERE `config_name`='uhead'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['utext']."' WHERE `config_name`='utext'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['parse_smilies']."' WHERE `config_name`='parse_smilies'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['viewer']."' WHERE `config_name`='viewer'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['date_format']."' WHERE `config_name`='date_format'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['usegfxcheck']."' WHERE `config_name`='usegfxcheck'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['captcha']."' WHERE `config_name`='captcha'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['viewer']."' WHERE `config_name`='viewer'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['developer_mode']."' WHERE `config_name`='developer_mode'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['overview_count']."' WHERE `config_name`='overview_count'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['overview_display']."' WHERE `config_name`='overview_display'");	
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['most_popular']."' WHERE `config_name`='most_popular'"); 
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['download_view']."' WHERE `config_name`='download_view'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['adminBypass']."' WHERE `config_name`='adminBypass'");
 	# added in 1.1.0
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['show_legend']."' WHERE `config_name`='show_legend'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['users_can_upload']."' WHERE `config_name`='users_can_upload'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['group_allowed_to_upload']."' WHERE `config_name`='group_allowed_to_upload'");	
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['users_file_upload_amount']."' WHERE `config_name`='users_file_upload_amount'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['users_screens_upload_amount']."' WHERE `config_name`='users_screens_upload_amount'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['allowed_file_extensions']."' WHERE `config_name`='allowed_file_extensions'");
-	$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['allowed_image_extensions']."' WHERE `config_name`='allowed_image_extensions'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['show_legend']."' WHERE `config_name`='show_legend'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['users_can_upload']."' WHERE `config_name`='users_can_upload'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['group_allowed_to_upload']."' WHERE `config_name`='group_allowed_to_upload'");	
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['users_file_upload_amount']."' WHERE `config_name`='users_file_upload_amount'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['users_screens_upload_amount']."' WHERE `config_name`='users_screens_upload_amount'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['allowed_file_extensions']."' WHERE `config_name`='allowed_file_extensions'");
+	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['allowed_image_extensions']."' WHERE `config_name`='allowed_image_extensions'");
 	# added in 1.1.0
 
 	for ($x = 1; $x <= $_POST['total_themes']; $x++) 
@@ -312,7 +312,7 @@ function _file_repository_configuration_save_variables()
 		if ( $_POST['show_left'.$x] ):
 			$show_left = ", `show_left`='".$_POST['show_left'.$x]."'";
 		endif;
-		$db->sql_query("UPDATE `"._FILE_REPOSITORY_THEMES."` SET `cell`='".$_POST['cell'.$x]."', `head`='".$_POST['head'.$x]."', `per_row`='".$_POST['per_row'.$x]."'".$show_left." WHERE `theme_name`='".$_POST['theme_name'.$x]."'");
+		$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_THEMES."` SET `cell`='".$_POST['cell'.$x]."', `head`='".$_POST['head'.$x]."', `per_row`='".$_POST['per_row'.$x]."'".$show_left." WHERE `theme_name`='".$_POST['theme_name'.$x]."'");
 	}
 
 	# added in 1.1.0
@@ -322,14 +322,14 @@ function _file_repository_configuration_save_variables()
 			$area_to_display .= $areas.',';
 		endforeach;
 		$area_to_display_string = rtrim($area_to_display, ", \t\n");
-		$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$area_to_display_string."' WHERE `config_name`='overview_display_areas'");
+		$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='".$area_to_display_string."' WHERE `config_name`='overview_display_areas'");
 
 	else:
 		# if there are no values, just empty the value.
-		$db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='' WHERE `config_name`='overview_display_areas'");
+		$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_SETTINGS."` SET `config_value`='' WHERE `config_name`='overview_display_areas'");
 	endif;
 	# added in 1.1.0
-	_redirect($admin_file.'.php?op='._MODNAME.'&action=settings');
+	_nuke_redirect($admin_file.'.php?op='._MODNAME.'&action=settings');
 }
 
 switch($_GET['action'])

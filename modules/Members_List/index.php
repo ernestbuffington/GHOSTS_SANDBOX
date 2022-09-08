@@ -50,12 +50,12 @@ if (!defined('MODULE_FILE'))die('You can\'t access this file directly...');
 $module_name = basename(dirname(__FILE__));
 require(NUKE_PHPBB2_DIR.'/nukebb.php');
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path.'extension.inc');
 include($phpbb2_root_path.'common.'.$phpEx);
 
 # Start session management
-$userdata = session_pagestart($user_ip, PAGE_VIEWMEMBERS);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_VIEW_MEMBERS);
 init_userprefs($userdata);
 
 $pageroot = (!empty($HTTP_GET_VARS['page'])) ? $HTTP_GET_VARS['page'] : 1;
@@ -215,9 +215,9 @@ if ($username && isset($HTTP_POST_VARS['submituser'])):
 	      user_session_time, 
 		     user_lastvisit 
 	
-	FROM ".USERS_TABLE." 
+	FROM ".NUKE_USERS_TABLE." 
 	WHERE username LIKE '".str_replace("\'", "''",$search_author)."' 
-	AND user_id <> ".ANONYMOUS." LIMIT 1";
+	AND user_id <> ".NUKE_ANONYMOUS." LIMIT 1";
     
 	# this is the original SQL queery START
 	$deprecated_sql = "SELECT username, 
@@ -239,9 +239,9 @@ if ($username && isset($HTTP_POST_VARS['submituser'])):
 				     user_session_time, 
 					    user_lastvisit 
 						
-	FROM ".USERS_TABLE." 
+	FROM ".NUKE_USERS_TABLE." 
 	WHERE username = '$username' 
-	AND user_id <> ".ANONYMOUS." LIMIT 1";
+	AND user_id <> ".NUKE_ANONYMOUS." LIMIT 1";
 	# this is the original SQL queery END
 
 
@@ -265,16 +265,16 @@ else:
 	      user_session_time, 
 		     user_lastvisit 
 			 
-    FROM ".USERS_TABLE." WHERE user_id <> ".ANONYMOUS."".$where." ORDER BY $order_by";
+    FROM ".NUKE_USERS_TABLE." WHERE user_id <> ".NUKE_ANONYMOUS."".$where." ORDER BY $order_by";
 endif;
 
-if(!($result = $db->sql_query($sql)))
-message_die(GENERAL_ERROR, 'Could not query users', '', __LINE__, __FILE__, $sql);
+if(!($result = $nuke_db->sql_query($sql)))
+message_die(NUKE_GENERAL_ERROR, 'Could not query users', '', __LINE__, __FILE__, $sql);
 
 global $textcolor1;
 $theme_name = get_theme();
 
-if($row = $db->sql_fetchrow($result)):
+if($row = $nuke_db->sql_fetchrow($result)):
 
 	$i = 0;
 	do
@@ -291,7 +291,7 @@ if($row = $db->sql_fetchrow($result)):
 		 
 		# Calculate the users age.
 		$bday_month_day = floor($row['user_birthday'] / 10000);
-		$bday_year_age = ($row['birthday_display'] != BIRTHDAY_NONE && $row['birthday_display'] != BIRTHDAY_DATE) ? $row['user_birthday'] - 10000*$bday_month_day : 0;
+		$bday_year_age = ($row['birthday_display'] != NUKE_BIRTHDAY_NONE && $row['birthday_display'] != NUKE_BIRTHDAY_DATE) ? $row['user_birthday'] - 10000*$bday_month_day : 0;
 		$fudge = (gmdate('md') < $bday_month_day) ? 1 : 0;
 		$age = ($bday_year_age) ? gmdate('Y')-$bday_year_age-$fudge : false;
 		
@@ -314,13 +314,13 @@ if($row = $db->sql_fetchrow($result)):
         ******************************************************/
         switch($row['user_avatar_type'])
         {
-           case USER_AVATAR_UPLOAD:
+           case NUKE_USER_AVATAR_UPLOAD:
            $current_avatar = $board_config['avatar_path'] . '/' . $row['user_avatar'];
            break;
-           case USER_AVATAR_REMOTE:
+           case NUKE_USER_AVATAR_REMOTE:
            $current_avatar = resize_avatar($row['user_avatar']);
            break;
-           case USER_AVATAR_GALLERY:
+           case NUKE_USER_AVATAR_GALLERY:
            $current_avatar = $board_config['avatar_gallery_path'] . '/' . (($row['user_avatar'] 
 			== 'blank.gif' || $row['user_avatar'] == 'gallery/blank.gif') ? 'blank.png' : $row['user_avatar']);
            break;
@@ -333,7 +333,7 @@ if($row = $db->sql_fetchrow($result)):
 		$posts = ($row['user_posts']) ? '<a href="modules.php?name=Forums&file=search&search_author='.$username.'">'.$row['user_posts'].'</a>' : 0;
 		
 		# Private message link
-		$pm = '<a href="'.append_sid("privmsg.$phpEx?mode=post&amp;".POST_USERS_URL."=$user_id").'"><img class="tooltip-html copyright" alt="Male" title="Send A Private Message To '.$username.'" width="30"alt="online" src="themes/'.$theme_name.'/forums/images/status/icons8-send-80.png" /></a>';
+		$pm = '<a href="'.append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$user_id").'"><img class="tooltip-html copyright" alt="Male" title="Send A Private Message To '.$username.'" width="30"alt="online" src="themes/'.$theme_name.'/forums/images/status/icons8-send-80.png" /></a>';
 		
 		# does the person have a dick START
 		if($row['user_gender'] ==1)
@@ -396,12 +396,12 @@ if($row = $db->sql_fetchrow($result)):
 			'FACEBOOK' => $facebook,
 			'STATUS' => $online_status,
 			'CURRENT_AVATAR' => '<img class="rounded-corners-header" height="auto" width="30" src="'.$current_avatar.'">&nbsp;',
-			'U_VIEWPROFILE' => "modules.php?name=Profile&mode=viewprofile&amp;" . POST_USERS_URL . "=$user_id")
+			'U_VIEWPROFILE' => "modules.php?name=Profile&mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$user_id")
 		);
 		$i++;
 	} 
-	while ( $row = $db->sql_fetchrow($result) );
-	$db->sql_freeresult($result);
+	while ( $row = $nuke_db->sql_fetchrow($result) );
+	$nuke_db->sql_freeresult($result);
 
 else:
 	$template->assign_block_vars('no_username', array(
@@ -409,14 +409,14 @@ else:
 	);
 endif;
 
-$total_found = $db->sql_unumrows($sql);
+$total_found = $nuke_db->sql_unumrows($sql);
 
 # Generate the page numbers
 $alphanum 	= ( isset($HTTP_POST_VARS['alphanum']) ) ? htmlspecialchars($HTTP_POST_VARS['alphanum']) : htmlspecialchars($HTTP_GET_VARS['alphanum']);
 $where 		= ( $alphanum == 'num' ) ? " AND `username` NOT RLIKE '^[A-Z]' " : " AND `username` LIKE '".$alphanum."%' ";
-$sql1 		= "SELECT count(*) AS total FROM " . USERS_TABLE . " WHERE user_id <> " . ANONYMOUS.$where;
-$result1 	= $db->sql_query($sql1);
-$total 		= $db->sql_fetchrow($result1);
+$sql1 		= "SELECT count(*) AS total FROM " . NUKE_USERS_TABLE . " WHERE user_id <> " . NUKE_ANONYMOUS.$where;
+$result1 	= $nuke_db->sql_query($sql1);
+$total 		= $nuke_db->sql_fetchrow($result1);
 
 if($total['total'] > $board_config['topics_per_page'] && $mode != 'topten' || $board_config['topics_per_page'] < 10):
 	if(isset($pageroot))
@@ -424,7 +424,7 @@ if($total['total'] > $board_config['topics_per_page'] && $mode != 'topten' || $b
 	else
 	$page = 1;
 	$pagination = '';
-	$redirect = 'modules.php?name=Members_List'.(($HTTP_GET_VARS['mode']) ? '&mode=letter&alphanum='.$HTTP_GET_VARS['alphanum'] : '');
+	$nuke_redirect = 'modules.php?name=Members_List'.(($HTTP_GET_VARS['mode']) ? '&mode=letter&alphanum='.$HTTP_GET_VARS['alphanum'] : '');
 	if(isset($page)):
 		$totalPages = ceil($total['total'] / $board_config['topics_per_page']);
 		if($totalPages == 1)
@@ -433,7 +433,7 @@ if($total['total'] > $board_config['topics_per_page'] && $mode != 'topten' || $b
 		if($totalPages > 10):
 			$init_page_max = ( $totalPages > 3 ) ? 3 : $totalPages;
 			for($i = 1; $i < $init_page_max + 1; $i++):
-				$pagination .= ( $i == $on_page ) ? '<span style="font-weight:bold; font-size:13px;">'.$i.'</span>' : '<a href="'.$redirect.'&amp;page='.$i.'"><span>'.$i.'</span></a>';
+				$pagination .= ( $i == $on_page ) ? '<span style="font-weight:bold; font-size:13px;">'.$i.'</span>' : '<a href="'.$nuke_redirect.'&amp;page='.$i.'"><span>'.$i.'</span></a>';
 				if ( $i <  $init_page_max )
 				$pagination .= "&nbsp;";
 			endfor;
@@ -443,7 +443,7 @@ if($total['total'] > $board_config['topics_per_page'] && $mode != 'topten' || $b
 					$init_page_min = ( $on_page > 4 ) ? $on_page : 5;
 					$init_page_max = ( $on_page < $totalPages - 4 ) ? $on_page : $totalPages - 4;
 					for($i = $init_page_min - 1; $i < $init_page_max + 2; $i++):
-						$pagination .= ($i == $on_page) ? '<span style="font-weight:bold; font-size:13px;">'.$i.'</span>' : '<a href="'.$redirect.'&amp;page='.$i.'"><span>'.$i.'</span></a>';
+						$pagination .= ($i == $on_page) ? '<span style="font-weight:bold; font-size:13px;">'.$i.'</span>' : '<a href="'.$nuke_redirect.'&amp;page='.$i.'"><span>'.$i.'</span></a>';
 						if ( $i <  $init_page_max + 1 )
 							$pagination .= '&nbsp;';
 					endfor;
@@ -452,14 +452,14 @@ if($total['total'] > $board_config['topics_per_page'] && $mode != 'topten' || $b
 					$pagination .= ' ... ';
 				endif;
 				for($i = $totalPages - 2; $i < $totalPages + 1; $i++):
-					$pagination .= ( $i == $on_page ) ? '<span style="font-weight:bold; font-size:13px;">'.$i.'</span>'  : '<a href="'.$redirect.'&amp;page='.$i.'"><span>'.$i.'</span></a>';
+					$pagination .= ( $i == $on_page ) ? '<span style="font-weight:bold; font-size:13px;">'.$i.'</span>'  : '<a href="'.$nuke_redirect.'&amp;page='.$i.'"><span>'.$i.'</span></a>';
 					if( $i <  $totalPages )
 						$pagination .= "&nbsp;";
 				endfor;		
 			endif;
 		else:
 			for($i = 1; $i < $totalPages + 1; $i++):
-				$pagination .= ( $i == $on_page ) ? '<span style="font-weight:bold; font-size:13px;">'.$i.'</span>' : '<a href="'.$redirect.'&amp;page='.$i.'"><span>'.$i.'</span></a>';
+				$pagination .= ( $i == $on_page ) ? '<span style="font-weight:bold; font-size:13px;">'.$i.'</span>' : '<a href="'.$nuke_redirect.'&amp;page='.$i.'"><span>'.$i.'</span></a>';
 				if ( $i <  $totalPages )
 			    $pagination .= '&nbsp;';
 			endfor;
@@ -468,13 +468,13 @@ if($total['total'] > $board_config['topics_per_page'] && $mode != 'topten' || $b
 			$pagination = '<span>'.$lang['Goto_page_prev'].'</span>&nbsp;'.$pagination.'&nbsp';
 		else:
 			$j = $page - 1;
-			$pagination = '<span><a href="'.$redirect.'&amp;page='.$j.'">'.$lang['Goto_page_prev'].'</a></span>&nbsp;'.$pagination.'&nbsp;';
+			$pagination = '<span><a href="'.$nuke_redirect.'&amp;page='.$j.'">'.$lang['Goto_page_prev'].'</a></span>&nbsp;'.$pagination.'&nbsp;';
 		endif;
 		if($page == $totalPages):
 			$pagination .= '<span>'.$lang['Goto_page_next'].'</span>';
 		else:
 			$j = $page + 1;
-			$pagination .= '<a href="'.$redirect.'&amp;page='.$j.'">'.$lang['Goto_page_next'].'</a>';
+			$pagination .= '<a href="'.$nuke_redirect.'&amp;page='.$j.'">'.$lang['Goto_page_next'].'</a>';
 		endif;
 	endif;
 	$template->assign_block_vars('pagination', array(

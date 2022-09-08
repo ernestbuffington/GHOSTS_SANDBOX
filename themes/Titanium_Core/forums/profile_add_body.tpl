@@ -28,7 +28,7 @@
     </td>
     <td class="row2" style="width: 50%;"><input type="text" class="post" style="width:250px" name="email" size="25" maxlength="255" value="{EMAIL}" autocomplete='email' /></td>
   </tr>
-  <!-- Start add - Gender MOD -->
+  <!-- Start add - Gender NUKE_MOD -->
   <tr> 
     <td class="row1" style="width: 50%;">{L_GENDER}</td> 
     <td class="row2" style="width: 50%;"> 
@@ -37,7 +37,7 @@
       <input type="radio" name="gender" value="2" {GENDER_FEMALE_CHECKED}/>{L_GENDER_FEMALE}
     </td> 
   </tr>
-  <!-- End add - Gender MOD -->
+  <!-- End add - Gender NUKE_MOD -->
   <!-- BEGIN birthday_required -->
 	<tr>
     <td class="row1" style="width: 50%;">
@@ -250,10 +250,10 @@
     <td class="row1" style="width: 50%;">{L_BIRTHDAY_DISPLAY}</td>
     <td class="row2" style="width: 50%;">
       <select name="birthday_display">
-        <option value="{BIRTHDAY_ALL}"{BIRTHDAY_ALL_SELECTED}>{L_BIRTHDAY_ALL}</option>
-        <option value="{BIRTHDAY_DATE}"{BIRTHDAY_DATE_SELECTED}>{L_BIRTHDAY_YEAR}</option>
-        <option value="{BIRTHDAY_AGE}"{BIRTHDAY_AGE_SELECTED}>{L_BIRTHDAY_AGE}</option>
-        <option value="{BIRTHDAY_NONE}"{BIRTHDAY_NONE_SELECTED}>{L_BIRTHDAY_NONE}</option>
+        <option value="{NUKE_BIRTHDAY_ALL}"{BIRTHDAY_ALL_SELECTED}>{L_BIRTHDAY_ALL}</option>
+        <option value="{NUKE_BIRTHDAY_DATE}"{BIRTHDAY_DATE_SELECTED}>{L_BIRTHDAY_YEAR}</option>
+        <option value="{NUKE_BIRTHDAY_AGE}"{BIRTHDAY_AGE_SELECTED}>{L_BIRTHDAY_AGE}</option>
+        <option value="{NUKE_BIRTHDAY_NONE}"{BIRTHDAY_NONE_SELECTED}>{L_BIRTHDAY_NONE}</option>
       </select>
     </td>
   </tr>
@@ -285,7 +285,7 @@
     <td class="row1" style="width: 50%;">{L_NOTIFY_ON_PRIVMSG}</td>
     <td class="row2" style="width: 50%;"><input type="radio" name="notifypm" value="1" {NOTIFY_PM_YES} />{L_YES}&nbsp;&nbsp;<input type="radio" name="notifypm" value="0" {NOTIFY_PM_NO} />{L_NO}</td>
   </tr>
-  <!-- Start add - Custom mass PM MOD -->
+  <!-- Start add - Custom mass PM NUKE_MOD -->
   <!-- BEGIN switch_can_disable_mass_pm -->
   <tr>
     <td class="row1" style="width: 50%;">
@@ -306,7 +306,7 @@
     <td class="row2" style="width: 50%;"><input type="radio" name="allow_mass_pm" value="4" {ALLOW_MASS_PM_NOTIFY_CHECKED}/>{L_YES}&nbsp;&nbsp;<input type="radio" name="allow_mass_pm" value="2" {ALLOW_MASS_PM_CHECKED}/>{L_NO}</td>
   </tr>
   <!-- END switch_can_not_disable_mass_pm -->
-  <!-- End add - Custom mass PM MOD -->
+  <!-- End add - Custom mass PM NUKE_MOD -->
   <!-- <tr>
     <td class="row1" style="width: 50%;">
       <span class="gen" style="display: inline-block; float: left; margin-top: 2px;">{L_POPUP_ON_PRIVMSG}</span>
@@ -365,7 +365,7 @@
     <td class="row1" style="width: 50%;">{L_BOARD_STYLE}</td>
     <td class="row2" style="width: 50%;">{STYLE_SELECT}</td>
   </tr>
-  <!-- Start replacement - Advanced time management MOD -->
+  <!-- Start replacement - Advanced time management NUKE_MOD -->
   <tr>
     <td class="row1" style="width: 50%;">
       <span style="display: inline-block; float: left; margin-top: 2px;">{L_TIME_MODE}</span>
@@ -382,7 +382,7 @@
       &nbsp;&nbsp;{L_TIME_MODE_TIMEZONE}: {TIMEZONE_SELECT}
     </td>
   </tr>
-  <!-- End replacement - Advanced time management MOD -->
+  <!-- End replacement - Advanced time management NUKE_MOD -->
   <tr>
     <td class="row1" style="width: 50%;">
       <span style="display: inline-block; float: left; margin-top: 2px;">{L_DATE_FORMAT}</span>

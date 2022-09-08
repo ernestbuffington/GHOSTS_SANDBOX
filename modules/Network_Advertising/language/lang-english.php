@@ -36,7 +36,7 @@ define("_VIEWSYEAR","Network Average pages views per year:");
 define("_VIEWSMONTH","Network Average pages views per month:");
 define("_VIEWSDAY","Network Average pages views per day:");
 define("_VIEWSHOUR","Network Average pages views per hour:");
-define("_CURREGUSERS","Network Current registered users:");
+define("_CURREGUSERS","Network Current registered members:");
 define("_GOOGLERANK","Network This site Google's Page Rank:");
 define("_LISTPLANS","The following list shows our network advertising plans, prices and a direct link to buy your ads:");
 define("_PLANNAME","Network Ad Plan Name");

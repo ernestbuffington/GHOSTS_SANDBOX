@@ -55,15 +55,15 @@ if(is_mod_admin($module_name)) {
     OpenTable();
     if (!isset($min)) $min=0;
     if (!isset($max)) $max=$min+$ya_config['perpage'];
-    $totalselected = $db->sql_numrows($db->sql_query("SELECT * FROM ".$user_prefix."_users_temp"));
+    $totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users_temp"));
     echo "<table style='margin:auto' cellpadding='2' cellspacing='2' bgcolor='$textcolor1' border='0'>\n";
     echo "<tr bgcolor='$bgcolor2'>\n<td><strong>"._USERNAME." ("._USERID.")</strong></td>\n";
     echo "<td align='center'><strong>"._UREALNAME."</strong></td>\n";
     echo "<td align='center'><strong>"._EMAIL."</strong></td>\n";
     echo "<td align='center'><strong>"._REGDATE."</strong></td>\n";
     echo "<td align='center'><strong>"._FUNCTIONS."</strong></td>\n</tr>\n";
-    $result = $db->sql_query("SELECT * FROM ".$user_prefix."_users_temp ORDER BY username LIMIT $min,".$ya_config['perpage']."");
-    while($chnginfo = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users_temp ORDER BY username LIMIT $min,".$ya_config['perpage']."");
+    while($chnginfo = $nuke_db->sql_fetchrow($result)) {
         echo "<tr bgcolor='$bgcolor1'>\n<form action='modules.php?name=$module_name&amp;file=admin' method='post'>\n";
         echo "<input type='hidden' name='min' value='$min'>\n";
         echo "<input type='hidden' name='xop' value='$op'>\n";

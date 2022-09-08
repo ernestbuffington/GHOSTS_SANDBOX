@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_PUBLIC')) {
@@ -16,10 +16,10 @@ if (!defined('NUKESENTINEL_PUBLIC')) {
 }
 
 function stmain_menu($subtitle = "") {
-  global $db, $prefix, $module_name;
+  global $nuke_db, $prefix, $module_name;
   if($subtitle > "") { $subtitle = ": ".$subtitle; }
   OpenTable();
-  $checkrow = $db->sql_numrows($db->sql_query("SELECT `ip_lo` FROM `".$prefix."_nsnst_ip2country`"));
+  $checkrow = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT `ip_lo` FROM `".$prefix."_nsnst_ip2country`"));
   echo '<table summary="" align="center" border="0" cellpadding="2" cellspacing="2">'."\n";
   echo '<tr><td align="center" colspan="3" class="title">'._AB_NUKESENTINEL.$subtitle.'</td></tr>'."\n";
   echo '<tr><td><a href="modules.php?name='.$module_name.'&amp;op=STIPS">'._AB_BLOCKEDIPS.'</a></td></tr>'."\n";

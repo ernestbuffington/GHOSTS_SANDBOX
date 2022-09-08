@@ -47,9 +47,9 @@ if (count($field_name) > 0) {
     $field_pos[$key] = intval($field_pos[$key]);
     $field_name[$key] = addslashes($field_name[$key]);
     $field_value[$key] = addslashes($field_value[$key]);
-    //$result = $db -> sql_query("SELECT '".$field_name[$key]."' FROM ".$user_prefix."_users");
-    //$num = $db -> sql_numrows($result);
-    $db->sql_query("UPDATE ".$user_prefix."_cnbya_field SET name='$field_name[$key]', value='$field_value[$key]',size='$field_size[$key]',need='$field_need[$key]',pos='$field_pos[$key]', public='$field_public[$key]' WHERE fid='$key'");
+    //$result = $nuke_db -> sql_query("SELECT '".$field_name[$key]."' FROM ".$nuke_user_prefix."_users");
+    //$num = $nuke_db -> sql_numrows($result);
+    $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_cnbya_field SET name='$field_name[$key]', value='$field_value[$key]',size='$field_size[$key]',need='$field_need[$key]',pos='$field_pos[$key]', public='$field_public[$key]' WHERE fid='$key'");
   }
 }
 if (!empty($mfield_name)) {
@@ -57,11 +57,11 @@ if (!empty($mfield_name)) {
     $mfield_pos = intval($mfield_pos);
     $mfield_name = addslashes($mfield_name);
     $mfield_value = addslashes($mfield_value);  
-    //$result = $db -> sql_query("SELECT '".$mfield_name."' FROM ".$user_prefix."_users");
-    //$num = $db -> sql_numrows($result);
-    $db->sql_query("INSERT INTO ".$user_prefix."_cnbya_field (name, value, size, need, pos, public) VALUES ('$mfield_name','$mfield_value','$mfield_size','$mfield_need','$mfield_pos','$mfield_public')");
+    //$result = $nuke_db -> sql_query("SELECT '".$mfield_name."' FROM ".$nuke_user_prefix."_users");
+    //$num = $nuke_db -> sql_numrows($result);
+    $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_cnbya_field (name, value, size, need, pos, public) VALUES ('$mfield_name','$mfield_value','$mfield_size','$mfield_need','$mfield_pos','$mfield_public')");
 }
-    redirect("modules.php?name=$module_name&file=admin&op=addField");
+    nuke_redirect("modules.php?name=$module_name&file=admin&op=addField");
 }
 
 ?>

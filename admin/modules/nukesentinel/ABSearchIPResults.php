@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -49,7 +49,7 @@ echo '</form>'."\n";
 CloseTable();
 if($torun > 0) {
   //BLOCKED IP SEARCH RESULTS
-  $totalselected = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ips` WHERE `ip_addr` LIKE '$sip'"));
+  $totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ips` WHERE `ip_addr` LIKE '$sip'"));
   if($totalselected > 0) {
     echo '<br />'."\n";
     OpenTable();
@@ -63,14 +63,14 @@ if($torun > 0) {
     echo '<td align="center" width="15%"><strong>'._AB_REASON.'</strong></td>'."\n";
     echo '<td align="center" width="15%"><strong>'._AB_FUNCTIONS.'</strong></td>'."\n";
     echo '</tr>'."\n";
-    $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ips` WHERE `ip_addr` LIKE '$sip' ORDER BY `ip_long`");
-    while($getIPs = $db->sql_fetchrow($result)) {
-      list($getIPs['reason']) = $db->sql_fetchrow($db->sql_query("SELECT `reason` FROM `".$prefix."_nsnst_blockers` WHERE `blocker`='".$getIPs['reason']."' LIMIT 0,1"));
+    $result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ips` WHERE `ip_addr` LIKE '$sip' ORDER BY `ip_long`");
+    while($getIPs = $nuke_db->sql_fetchrow($result)) {
+      list($getIPs['reason']) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `reason` FROM `".$prefix."_nsnst_blockers` WHERE `blocker`='".$getIPs['reason']."' LIMIT 0,1"));
       $getIPs['reason'] = str_replace("Abuse-", "", $getIPs['reason']);
       $bdate = date("Y-m-d @ H:i:s", $getIPs['date']);
       $lookupip = str_replace("*", "0", $getIPs['ip_addr']);
       if($getIPs['expires']==0) { $bexpire = _AB_PERMENANT; } else { $bexpire = date("Y-m-d @ H:i:s", $getIPs['expires']); }
-      list($bname) = $db->sql_fetchrow($db->sql_query("SELECT `username` FROM `".$user_prefix."_users` WHERE `user_id`='".$getIPs['user_id']."' LIMIT 0,1"));
+      list($bname) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `username` FROM `".$nuke_user_prefix."_users` WHERE `user_id`='".$getIPs['user_id']."' LIMIT 0,1"));
       $qs = htmlentities(base64_decode($getIPs['query_string']));
       $qs = str_replace("%20", " ", $qs);
       $qs = str_replace("/**/", "/* */", $qs);
@@ -95,7 +95,7 @@ if($torun > 0) {
     CloseTable();
   }
   //BLOCKED RANGES SEARCH RESULTS
-  $totalselected = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ranges` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'"));
+  $totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ranges` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'"));
   if($totalselected > 0) {
     echo '<br />'."\n";
     OpenTable();
@@ -110,8 +110,8 @@ if($torun > 0) {
     echo '<td align="center" width="10%"><strong>'._AB_FUNCTIONS.'</strong></td>'."\n";
     echo '</tr>'."\n";
     $x = 0;
-    $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ranges` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'");
-    while($getIPs = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ranges` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'");
+    while($getIPs = $nuke_db->sql_fetchrow($result)) {
       $getIPs['ip_lo_ip'] = long2ip($getIPs['ip_lo']);
       $getIPs['ip_hi_ip'] = long2ip($getIPs['ip_hi']);
       $masscidr = ABGetCIDRs($getIPs['ip_lo'], $getIPs['ip_hi']);
@@ -136,7 +136,7 @@ if($torun > 0) {
     CloseTable();
   }
   //EXCLUDED RANGES SEARCH RESULTS
-  $totalselected = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_excluded_ranges` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'"));
+  $totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_excluded_ranges` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'"));
   if($totalselected > 0) {
     echo '<br />'."\n";
     OpenTable();
@@ -151,8 +151,8 @@ if($torun > 0) {
     echo '<td align="center" width="10%"><strong>'._AB_FUNCTIONS.'</strong></td>'."\n";
     echo '</tr>'."\n";
     $x = 0;
-    $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_excluded_ranges` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'");
-    while($getIPs = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_excluded_ranges` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'");
+    while($getIPs = $nuke_db->sql_fetchrow($result)) {
       $getIPs['ip_lo_ip'] = long2ip($getIPs['ip_lo']);
       $getIPs['ip_hi_ip'] = long2ip($getIPs['ip_hi']);
       $masscidr = ABGetCIDRs($getIPs['ip_lo'], $getIPs['ip_hi']);
@@ -177,7 +177,7 @@ if($torun > 0) {
     CloseTable();
   }
   //PROTECTED RANGES SEARCH RESULTS
-  $totalselected = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_protected_ranges` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'"));
+  $totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_protected_ranges` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'"));
   if($totalselected > 0) {
     echo '<br />'."\n";
     OpenTable();
@@ -192,8 +192,8 @@ if($torun > 0) {
     echo '<td align="center" width="10%"><strong>'._AB_FUNCTIONS.'</strong></td>'."\n";
     echo '</tr>'."\n";
     $x = 0;
-    $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_protected_ranges` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'");
-    while($getIPs = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_protected_ranges` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'");
+    while($getIPs = $nuke_db->sql_fetchrow($result)) {
       $getIPs['ip_lo_ip'] = long2ip($getIPs['ip_lo']);
       $getIPs['ip_hi_ip'] = long2ip($getIPs['ip_hi']);
       $masscidr = ABGetCIDRs($getIPs['ip_lo'], $getIPs['ip_hi']);
@@ -218,7 +218,7 @@ if($torun > 0) {
     CloseTable();
   }
   //IP 2 COUNTRY SEARCH
-  $totalselected = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_ip2country` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'"));
+  $totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_ip2country` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'"));
   if($totalselected > 0) {
     echo '<br />'."\n";
     OpenTable();
@@ -233,8 +233,8 @@ if($torun > 0) {
     echo '<td align="center" width="10%"><strong>'._AB_FUNCTIONS.'</strong></td>'."\n";
     echo '</tr>'."\n";
     $x = 0;
-    $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_ip2country` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'");
-    while($getIPs = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_ip2country` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip'");
+    while($getIPs = $nuke_db->sql_fetchrow($result)) {
       $getIPs['ip_lo_ip'] = long2ip($getIPs['ip_lo']);
       $getIPs['ip_hi_ip'] = long2ip($getIPs['ip_hi']);
       $masscidr = ABGetCIDRs($getIPs['ip_lo'], $getIPs['ip_hi']);
@@ -260,7 +260,7 @@ if($torun > 0) {
     CloseTable();
   }
   //TRACKED IP SEARCH RESULTS
-  $totalselected = $db->sql_numrows($db->sql_query("SELECT `username`, `ip_addr`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr` LIKE '$sip' GROUP BY 1,2"));
+  $totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT `username`, `ip_addr`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr` LIKE '$sip' GROUP BY 1,2"));
   if($totalselected > 0) {
     echo '<br />'."\n";
     OpenTable();
@@ -272,8 +272,8 @@ if($torun > 0) {
     echo '<td align="center"><strong>'._AB_LASTVIEWED.'</strong></td>'."\n";
     echo '<td align="center"><strong>'._AB_HITS.'</strong></td>'."\n";
     echo '<td align="center"><strong>'._AB_FUNCTIONS.'</strong></td>'."\n";
-    $result = $db->sql_query("SELECT `user_id`, `username`, `ip_addr`, MAX(`date`), COUNT(*), MIN(`tid`), `c2c` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr` LIKE '$sip' GROUP BY 2,3");
-    while(list($userid,$username,$ipaddr,$lastview,$hits,$tid, $c2c) = $db->sql_fetchrow($result)){
+    $result = $nuke_db->sql_query("SELECT `user_id`, `username`, `ip_addr`, MAX(`date`), COUNT(*), MIN(`tid`), `c2c` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr` LIKE '$sip' GROUP BY 2,3");
+    while(list($userid,$username,$ipaddr,$lastview,$hits,$tid, $c2c) = $nuke_db->sql_fetchrow($result)){
       echo '<tr onmouseover="this.style.backgroundColor=\''.$bgcolor2.'\'" onmouseout="this.style.backgroundColor=\''.$bgcolor1.'\'" bgcolor="'.$bgcolor1.'">'."\n";
       echo '<td>';
       if($userid != 1) {
@@ -297,8 +297,8 @@ if($torun > 0) {
     echo '</table>'."\n";
     CloseTable();
   }
-  //USER IP SEARCH RESULTS
-  $totalselected = $db->sql_numrows($db->sql_query("SELECT * FROM `".$user_prefix."_users` WHERE `last_ip` LIKE '$sip'"));
+  //NUKE_USER IP SEARCH RESULTS
+  $totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$nuke_user_prefix."_users` WHERE `last_ip` LIKE '$sip'"));
   if($totalselected > 0) {
     echo '<br />'."\n";
     OpenTable();
@@ -312,8 +312,8 @@ if($torun > 0) {
     echo '<td width="2%"><strong>&nbsp;</strong></td>'."\n";
     echo '<td align="right" width="15%"><strong>'._AB_REGDATE.'</strong></td>'."\n";
     echo '</tr>'."\n";
-    $result = $db->sql_query("SELECT * FROM `".$user_prefix."_users` WHERE `last_ip` LIKE '$sip'");
-    while($chnginfo = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query("SELECT * FROM `".$nuke_user_prefix."_users` WHERE `last_ip` LIKE '$sip'");
+    while($chnginfo = $nuke_db->sql_fetchrow($result)) {
       echo '<tr onmouseover="this.style.backgroundColor=\''.$bgcolor2.'\'" onmouseout="this.style.backgroundColor=\''.$bgcolor1.'\'" bgcolor="'.$bgcolor1.'">'."\n";
       echo '<td><a href="modules.php?name=Your_Account&amp;op=userinfo&amp;username='.$chnginfo['username'].'" target="_blank">'.$chnginfo['username'].'</a></td>'."\n";
       echo '<td><a href="mailto:'.$chnginfo['user_email'].'">'.$chnginfo['user_email'].'</a></td>'."\n";

@@ -34,7 +34,7 @@ if (!defined('NUKE_EVO')) {
     die("You can't access this file directly...");
 }
 
-global $db, $prefix, $smilies_path, $bbbttns_path, $bb_codes, $smilies_close, $bbcode_common, $currentlang, $nukeurl;
+global $nuke_db, $prefix, $smilies_path, $bbbttns_path, $bb_codes, $smilies_close, $bbcode_common, $currentlang, $nukeurl;
 
 if(file_exists(NUKE_LANGUAGE_DIR.'bbcode/lang-'.$currentlang.'.php')) {
     include_once(NUKE_LANGUAGE_DIR.'bbcode/lang-'.$currentlang.'.php');
@@ -174,7 +174,7 @@ if(!function_exists('bbcode_table'))
 }
 
 function get_smilies() {
-   global $db, $prefix, $cache;
+   global $nuke_db, $prefix, $cache;
    static $smilies;
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -183,7 +183,7 @@ function get_smilies() {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $smilies = $db->sql_ufetchrowset('SELECT * FROM '.$prefix.'_bbsmilies');
+        $smilies = $nuke_db->sql_ufetchrowset('SELECT * FROM '.$prefix.'_bbsmilies');
         if(count($smilies))
         {
             usort($smilies, 'sort_smiley');

@@ -37,7 +37,7 @@
 	} 
 	else 
 	{
-		global $db, $admin_file, $currentlang, $userinfo;
+		global $nuke_db, $admin_file, $currentlang, $userinfo;
 	
 		get_lang($module_name);
 		include(NUKE_BASE_DIR.'header.php');
@@ -46,8 +46,8 @@
 		switch($op)
 		{
 		//case 'approve_button':
-			//	$db->sql_query("UPDATE `". $prefix ."_link_us` SET `site_status` = '1' WHERE `id` = '".$id."'");
-			//	redirect($admin_file .'.php?op=active_sites');
+			//	$nuke_db->sql_query("UPDATE `". $prefix ."_link_us` SET `site_status` = '1' WHERE `id` = '".$id."'");
+			//	nuke_redirect($admin_file .'.php?op=active_sites');
 			//break;
 			case 'add_button':                include_once(NUKE_MODULES_DIR.$module_name.'/admin/inc/button_add.php'); break;		
 			case 'insert_button':             include_once(NUKE_MODULES_DIR.$module_name.'/admin/inc/button_save.php'); break;	

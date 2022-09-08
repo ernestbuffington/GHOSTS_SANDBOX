@@ -18,7 +18,7 @@
       Smilies in Topic Titles                  v1.0.0       09/02/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -54,7 +54,7 @@ $core->assign_defined_view('width_rows', array(
 );
 
 $sql = 'SELECT forum_id, topic_id, topic_title, topic_views
-FROM ' . TOPICS_TABLE .    '
+FROM ' . NUKE_BB_TOPICS_TABLE .    '
 WHERE (topic_status <> 2) AND (topic_views > 0)
 ORDER BY topic_views DESC
 LIMIT ' . $core->return_limit;

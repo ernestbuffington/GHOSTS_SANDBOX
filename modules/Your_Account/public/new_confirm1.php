@@ -107,8 +107,8 @@ if (!defined('CNBYA')) {
             exit;
         }
 
-        $result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field WHERE need = '3' ORDER BY pos");
-        while ($sqlvalue = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field WHERE need = '3' ORDER BY pos");
+        while ($sqlvalue = $nuke_db->sql_fetchrow($result)) {
           $t = trim($sqlvalue[fid]);
           if (empty($nfield[$t])) {
             OpenTable();

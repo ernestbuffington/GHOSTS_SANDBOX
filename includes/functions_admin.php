@@ -73,24 +73,24 @@
 // Simple version of jumpbox, just lists authed forums
 //
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
 
 function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
 {
-        global $db, $userdata, $lang;
+        global $nuke_db, $userdata, $lang;
 
-        $is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
+        $is_auth_ary = auth(NUKE_AUTH_READ, NUKE_AUTH_LIST_ALL, $userdata);
 
         $sql = 'SELECT f.forum_id, f.forum_name, f.forum_parent
-            FROM ' . CATEGORIES_TABLE . ' c, ' . FORUMS_TABLE . ' f
+            FROM ' . NUKE_CATEGORIES_TABLE . ' c, ' . NUKE_FORUMS_TABLE . ' f
             WHERE f.cat_id = c.cat_id
         ORDER BY c.cat_order, f.forum_order';
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Couldn not obtain forums information', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Couldn not obtain forums information', '', __LINE__, __FILE__, $sql);
         }
 
 /*****[BEGIN]******************************************
@@ -101,7 +101,7 @@ function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
 /*****[END]********************************************
  [ Mod:    Simple Subforums                    v1.0.1 ]
  ******************************************************/
-        while( $row = $db->sql_fetchrow($result) )
+        while( $row = $nuke_db->sql_fetchrow($result) )
         {
 /*****[BEGIN]******************************************
  [ Mod:    Simple Subforums                    v1.0.1 ]
@@ -150,7 +150,7 @@ function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
  ******************************************************/
                 }
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 
         $forum_list = ( $forum_list == '' ) ? $lang['No_forums'] : '<select name="' . $box_name . '">' . $forum_list . '</select>';
 
@@ -162,50 +162,50 @@ function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
 //
 function sync($type, $id = false)
 {
-        global $db;
+        global $nuke_db;
 
         switch($type)
         {
                 case 'all forums':
                         $sql = "SELECT forum_id
-                                FROM " . FORUMS_TABLE;
-                        if ( !($result = $db->sql_query($sql)) )
+                                FROM " . NUKE_FORUMS_TABLE;
+                        if ( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not get forum IDs', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not get forum IDs', '', __LINE__, __FILE__, $sql);
                         }
 
-                        while( $row = $db->sql_fetchrow($result) )
+                        while( $row = $nuke_db->sql_fetchrow($result) )
                         {
                                 sync('forum', $row['forum_id']);
                         }
-                        $db->sql_freeresult($result);
+                        $nuke_db->sql_freeresult($result);
                            break;
 
                 case 'all topics':
                         $sql = "SELECT topic_id
-                                FROM " . TOPICS_TABLE;
-                        if ( !($result = $db->sql_query($sql)) )
+                                FROM " . NUKE_BB_TOPICS_TABLE;
+                        if ( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not get topic ID', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not get topic ID', '', __LINE__, __FILE__, $sql);
                         }
 
-                        while( $row = $db->sql_fetchrow($result) )
+                        while( $row = $nuke_db->sql_fetchrow($result) )
                         {
                                 sync('topic', $row['topic_id']);
                         }
-                        $db->sql_freeresult($result);
+                        $nuke_db->sql_freeresult($result);
                         break;
 
                   case 'forum':
                         $sql = "SELECT MAX(post_id) AS last_post, COUNT(post_id) AS total
-                                FROM " . POSTS_TABLE . "
+                                FROM " . NUKE_POSTS_TABLE . "
                                 WHERE forum_id = '$id'";
-                        if ( !($result = $db->sql_query($sql)) )
+                        if ( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not get post ID', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not get post ID', '', __LINE__, __FILE__, $sql);
                         }
 
-                        if ( $row = $db->sql_fetchrow($result) )
+                        if ( $row = $nuke_db->sql_fetchrow($result) )
                         {
                                 $last_post = ( $row['last_post'] ) ? $row['last_post'] : 0;
                                 $total_posts = ($row['total']) ? $row['total'] : 0;
@@ -215,49 +215,49 @@ function sync($type, $id = false)
                                 $last_post = 0;
                                 $total_posts = 0;
                         }
-                        $db->sql_freeresult($result);
+                        $nuke_db->sql_freeresult($result);
 
                         $sql = "SELECT COUNT(topic_id) AS total
-                                FROM " . TOPICS_TABLE . "
+                                FROM " . NUKE_BB_TOPICS_TABLE . "
                                 WHERE forum_id = '$id'";
-                        if ( !($result = $db->sql_query($sql)) )
+                        if ( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not get topic count', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not get topic count', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $total_topics = ( $row = $db->sql_fetchrow($result) ) ? ( ( $row['total'] ) ? $row['total'] : 0 ) : 0;
+                        $total_topics = ( $row = $nuke_db->sql_fetchrow($result) ) ? ( ( $row['total'] ) ? $row['total'] : 0 ) : 0;
 
-                        $sql = "UPDATE " . FORUMS_TABLE . "
+                        $sql = "UPDATE " . NUKE_FORUMS_TABLE . "
                                 SET forum_last_post_id = '$last_post', forum_posts = '$total_posts', forum_topics = '$total_topics'
                                 WHERE forum_id = '$id'";
-                        if ( !$db->sql_query($sql) )
+                        if ( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not update forum', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not update forum', '', __LINE__, __FILE__, $sql);
                         }
-                        $db->sql_freeresult($result);
+                        $nuke_db->sql_freeresult($result);
                         break;
 
                 case 'topic':
                         $sql = "SELECT MAX(post_id) AS last_post, MIN(post_id) AS first_post, COUNT(post_id) AS total_posts
-                                FROM " . POSTS_TABLE . "
+                                FROM " . NUKE_POSTS_TABLE . "
                                 WHERE topic_id = '$id'";
-                        if ( !($result = $db->sql_query($sql)) )
+                        if ( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not get post ID', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not get post ID', '', __LINE__, __FILE__, $sql);
                         }
 
-                        if ( $row = $db->sql_fetchrow($result) )
+                        if ( $row = $nuke_db->sql_fetchrow($result) )
                         {
                 if ($row['total_posts'])
                 {
                     // Correct the details of this topic
-                    $sql = 'UPDATE ' . TOPICS_TABLE . '
+                    $sql = 'UPDATE ' . NUKE_BB_TOPICS_TABLE . '
                         SET topic_replies = ' . ($row['total_posts'] - 1) . ', topic_first_post_id = ' . $row['first_post'] . ', topic_last_post_id = ' . $row['last_post'] . "
                         WHERE topic_id = $id";
 
-                    if (!$db->sql_query($sql))
+                    if (!$nuke_db->sql_query($sql))
                     {
-                        message_die(GENERAL_ERROR, 'Could not update topic', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not update topic', '', __LINE__, __FILE__, $sql);
                     }
                 }
                 else
@@ -265,28 +265,28 @@ function sync($type, $id = false)
                     // There are no replies to this topic
                     // Check if it is a move stub
                     $sql = 'SELECT topic_moved_id
-                        FROM ' . TOPICS_TABLE . "
+                        FROM ' . NUKE_BB_TOPICS_TABLE . "
                         WHERE topic_id = $id";
 
-                    if (!($result = $db->sql_query($sql)))
+                    if (!($result = $nuke_db->sql_query($sql)))
                     {
-                        message_die(GENERAL_ERROR, 'Could not get topic ID', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not get topic ID', '', __LINE__, __FILE__, $sql);
                     }
 
-                    if ($row = $db->sql_fetchrow($result))
+                    if ($row = $nuke_db->sql_fetchrow($result))
                     {
                         if (!$row['topic_moved_id'])
                         {
-                            $sql = 'DELETE FROM ' . TOPICS_TABLE . " WHERE topic_id = $id";
+                            $sql = 'DELETE FROM ' . NUKE_BB_TOPICS_TABLE . " WHERE topic_id = $id";
 
-                            if (!$db->sql_query($sql))
+                            if (!$nuke_db->sql_query($sql))
                             {
-                                message_die(GENERAL_ERROR, 'Could not remove topic', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not remove topic', '', __LINE__, __FILE__, $sql);
                             }
                         }
                     }
 
-                    $db->sql_freeresult($result);
+                    $nuke_db->sql_freeresult($result);
                 }
                         }
 /*****[BEGIN]******************************************

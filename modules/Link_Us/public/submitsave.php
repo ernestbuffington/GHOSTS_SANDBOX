@@ -61,7 +61,7 @@
   			$img_upload = $site_image;
 		}
 		
-		$result = $db->sql_query("INSERT INTO `".$prefix."_link_us`(`id`, `site_name`, `site_url`, `site_image`, `site_description`, `site_hits`, `site_status`, `date_added`, `button_type`, `user_id`, `user_name`, `user_email`, `user_ip`) VALUES (NULL, '".$site_name."', '".$site_url."', '".$img_upload."', '".$site_description."', '".$site_hits."', '".$site_status."', '".$date_added."', '".$button_type."', '".$user_id."', '".$user_name."', '".$user_email."', '".$user_ip."')");
+		$result = $nuke_db->sql_query("INSERT INTO `".$prefix."_link_us`(`id`, `site_name`, `site_url`, `site_image`, `site_description`, `site_hits`, `site_status`, `date_added`, `button_type`, `user_id`, `user_name`, `user_email`, `user_ip`) VALUES (NULL, '".$site_name."', '".$site_url."', '".$img_upload."', '".$site_description."', '".$site_hits."', '".$site_status."', '".$date_added."', '".$button_type."', '".$user_id."', '".$user_name."', '".$user_email."', '".$user_ip."')");
 		
 		if(!$result) {
     		include_once(NUKE_BASE_DIR.'header.php');

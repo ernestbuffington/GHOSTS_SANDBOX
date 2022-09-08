@@ -42,7 +42,7 @@ $neconfig = ne_get_configs();
 
 get_lang($module_name);
 
-    global $db, 
+    global $nuke_db, 
     $storyhome, 
     $topicname, 
    $topicimage, 
@@ -62,7 +62,7 @@ get_lang($module_name);
 automated_news();
 
 if (isset($new_topic)) 
-redirect("modules.php?name=$module_name&file=topics&topic=$new_topic"); 
+nuke_redirect("modules.php?name=$module_name&file=topics&topic=$new_topic"); 
 
 $main_module = main_module();
 
@@ -128,21 +128,21 @@ switch ($op)
                 $querylang .= " AND topic='".$neconfig["hometopic"]."'";
         }
 
-        $result = $db->sql_query("SELECT COUNT(*) AS numrows FROM ".$prefix."_stories $querylang");
+        $result = $nuke_db->sql_query("SELECT COUNT(*) AS numrows FROM ".$prefix."_stories $querylang");
 
-        list($totalarticles) = $db->sql_fetchrow($result);
+        list($totalarticles) = $nuke_db->sql_fetchrow($result);
 
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 
         $querylang = (!isset($querylang) || empty($querylang)) ? 'WHERE `datePublished` <= now()' : $querylang . ' AND `datePublished` <= now()';
-        $result = $db->sql_query("SELECT * FROM ".$prefix."_stories $querylang ORDER BY sid DESC LIMIT $min,$storynum");
+        $result = $nuke_db->sql_query("SELECT * FROM ".$prefix."_stories $querylang ORDER BY sid DESC LIMIT $min,$storynum");
 
         if($neconfig["columns"] == 1) // DUAL BLOG
         echo "<table border='0' cellpadding='0' cellspacing='0' width='100%'>\n";
         
 		$a = 0;
         
-		while ($artinfo = $db->sql_fetchrow($result)) 
+		while ($artinfo = $nuke_db->sql_fetchrow($result)) 
 		{
             $artinfo["datePublished"] = formatTimestamp($artinfo["datePublished"]);
         
@@ -273,9 +273,9 @@ switch ($op)
 
             if ($artinfo["catid"] != 0) 
 			{
-                $result3 = $db->sql_query("SELECT title FROM ".$prefix."_stories_cat WHERE catid='".$artinfo["catid"]."'");
-                $catinfo = $db->sql_fetchrow($result3);
-                $db->sql_freeresult($result3);
+                $result3 = $nuke_db->sql_query("SELECT title FROM ".$prefix."_stories_cat WHERE catid='".$artinfo["catid"]."'");
+                $catinfo = $nuke_db->sql_fetchrow($result3);
+                $nuke_db->sql_freeresult($result3);
                 $morelink .= " | <a href='modules.php?name=$module_name&amp;file=categories&amp;op=newindex&amp;catid=".$artinfo["catid"]."'>".$catinfo["title"]."</a>";
             }
             
@@ -343,7 +343,7 @@ switch ($op)
 						    $topictext);
         }
         
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
 
         if($neconfig["columns"] == 1) // DUAL BLOG
 		{ 
@@ -422,7 +422,7 @@ switch ($op)
             
 			if ($score != 1 AND $score != 2 AND $score != 3 AND $score != 4 AND $score != 5) 
 			{
-                redirect("index.php");
+                nuke_redirect("index.php");
                 exit;
             }
 
@@ -440,15 +440,15 @@ switch ($op)
             
 			if ($a == 1) 
 			{
-                redirect("modules.php?name=$module_name&op=rate_complete&sid=$sid&rated=1");
+                nuke_redirect("modules.php?name=$module_name&op=rate_complete&sid=$sid&rated=1");
             } 
 			else 
 			{
-                $result = $db->sql_query("update ".$prefix."_stories set score=score+$score, ratings=ratings+1 where sid='$sid'");
-                $db->sql_freeresult($result);
+                $result = $nuke_db->sql_query("update ".$prefix."_stories set score=score+$score, ratings=ratings+1 where sid='$sid'");
+                $nuke_db->sql_freeresult($result);
                 $info = base64_encode("$rcookie$sid:");
                 setcookie("ratecookie","$info",time()+86400);
-                redirect("modules.php?name=Blog&op=rate_complete&sid=$sid&score=$score");
+                nuke_redirect("modules.php?name=Blog&op=rate_complete&sid=$sid&score=$score");
             }
         } 
 		else 

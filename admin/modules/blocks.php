@@ -27,7 +27,7 @@
 if(!defined('ADMIN_FILE'))
 die ("Illegal File Access");
 
-global $prefix, $db, $admin_file, $cache, $userinfo;
+global $prefix, $nuke_db, $admin_file, $cache, $userinfo;
 
 if (!is_admin()) 
 {
@@ -61,7 +61,7 @@ function parse_data($data)
 
 function update_db($data_array, $col_check)
 {
-    global $cache, $prefix, $db;
+    global $cache, $prefix, $nuke_db;
     if (is_array($data_array)) {
         foreach($data_array AS $set => $items)
         {
@@ -69,7 +69,7 @@ function update_db($data_array, $col_check)
             foreach($items AS $item)
             {
                 $sql = "UPDATE " . $prefix . "_blocks SET bposition = '$set', weight = '$i'  WHERE bid = '$item' $col_check";
-                $db->sql_query($sql);
+                $nuke_db->sql_query($sql);
                 $i++;
             }
         }
@@ -86,13 +86,13 @@ function blocks_update($data)
 
 function status_update($data) 
 {
-    global $prefix, $db, $cache;
+    global $prefix, $nuke_db, $cache;
     $data = explode(':', $data);
     $bid = $data[0];
     $status = $data[1];
     $status = ($status == 1) ? 0 : 1;
     $sql = "UPDATE " . $prefix . "_blocks SET `active` = '$status' WHERE `bid` = '$bid'";
-    $db->sql_query($sql);
+    $nuke_db->sql_query($sql);
     $cache->delete('blocks', 'config');
     $cache->resync();
     return 1;
@@ -100,28 +100,28 @@ function status_update($data)
 
 function AddBlock($data) 
 {
-    global $cache, $db, $prefix, $admin_file;
+    global $cache, $nuke_db, $prefix, $admin_file;
 
     $data['title'] = Fix_Quotes($data['title']);
     $data['headline'] = intval($data['headline']);
     $data['view'] = intval($data['view']);
     if($data['headline'] != 0) {
-        $result = $db->sql_query("SELECT sitename, headlinesurl FROM ".$prefix."_headlines WHERE hid='" . $data['headline'] . "'");
-        list($title, $data['url']) = $db->sql_fetchrow($result);
+        $result = $nuke_db->sql_query("SELECT sitename, headlinesurl FROM ".$prefix."_headlines WHERE hid='" . $data['headline'] . "'");
+        list($title, $data['url']) = $nuke_db->sql_fetchrow($result);
         if (empty($data['title'])) {
             $data['title'] = $title;
         }
     }
     if (!isset($data['oldposition']) || empty($data['oldposition'])) {
-        $result = $db->sql_query("SELECT weight FROM ".$prefix."_blocks WHERE bposition='" . $data['bposition'] . "' ORDER BY weight DESC");
-        list($weight) = $db->sql_fetchrow($result);
+        $result = $nuke_db->sql_query("SELECT weight FROM ".$prefix."_blocks WHERE bposition='" . $data['bposition'] . "' ORDER BY weight DESC");
+        list($weight) = $nuke_db->sql_fetchrow($result);
         $weight++;
     } else {
-        $result = $db->sql_query("SELECT weight FROM ".$prefix."_blocks WHERE bid='" . $data['bid'] . "'");
-        $row = $db->sql_fetchrow($result);
+        $result = $nuke_db->sql_query("SELECT weight FROM ".$prefix."_blocks WHERE bid='" . $data['bid'] . "'");
+        $row = $nuke_db->sql_fetchrow($result);
         $weight = $row[0];
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     $data['btime'] = 0;
     if($data['blockfile'] != '') {
         $data['url'] = '';
@@ -150,22 +150,22 @@ function AddBlock($data)
         $data['bposition'] = (!empty($data['bposition'])) ? $data['bposition'] : $data['oldposition'];
         $sql = "UPDATE ".$prefix."_blocks SET bkey='', title='" . $data['title'] . "', content='".Fix_Quotes($data['content'])."', url='" . $data['url'] . "', bposition='" . $data['bposition'] . "', weight='" . $weight . "', active='" . $data['active'] . "', refresh='" . $data['refresh'] . "', time='" . $data['btime'] . "', blanguage='" . $data['blanguage'] . "', blockfile='" . $data['blockfile'] . "', view='" . $data['view'] . "' WHERE bid=".$data['bid'];
     }
-    $db->sql_query($sql);
+    $nuke_db->sql_query($sql);
     $cache->delete('blocks', 'config');
     $cache->resync();
-    redirect("$admin_file.php?op=blocks");
+    nuke_redirect("$admin_file.php?op=blocks");
 }
 
 function deleteBlock($bid) 
 {
-    global $db, $prefix;
-    $db->sql_query("DELETE FROM " . $prefix . "_blocks WHERE bid = '" . $bid . "'");
+    global $nuke_db, $prefix;
+    $nuke_db->sql_query("DELETE FROM " . $prefix . "_blocks WHERE bid = '" . $bid . "'");
     return true;
 }
 
 function BlocksAdmin() 
 {
-    global $prefix, $db, $Sajax, $admin_file, $admlang;
+    global $prefix, $nuke_db, $Sajax, $admin_file, $admlang;
 
     define('USE_DRAG_DROP',true);
     global $g2, $element_ids;
@@ -183,9 +183,9 @@ function BlocksAdmin()
 
     OpenTable();
 
-    $result = $db->sql_query('SELECT bid, bkey, title, url, bposition, weight, active, blanguage, blockfile, view FROM '.$prefix.'_blocks ORDER BY weight');
+    $result = $nuke_db->sql_query('SELECT bid, bkey, title, url, bposition, weight, active, blanguage, blockfile, view FROM '.$prefix.'_blocks ORDER BY weight');
     $blocks = array();
-    while($row = $db->sql_fetchrow($result)) {
+    while($row = $nuke_db->sql_fetchrow($result)) {
         $blocks[$row['bposition']][] = $row;
     }
     echo "<table border='0' width='100%'>\n";
@@ -286,9 +286,9 @@ function BlocksAdmin()
 }
 
 function block_show($bid) {
-    global $prefix, $db, $admin_file;
-    $result = $db->sql_query("SELECT bid, bkey, title, content, url, bposition, blockfile, view, refresh, time FROM ".$prefix."_blocks WHERE bid='".$bid."'");
-    $row = $db->sql_fetchrow($result);
+    global $prefix, $nuke_db, $admin_file;
+    $result = $nuke_db->sql_query("SELECT bid, bkey, title, content, url, bposition, blockfile, view, refresh, time FROM ".$prefix."_blocks WHERE bid='".$bid."'");
+    $row = $nuke_db->sql_fetchrow($result);
     define('USE_DRAG_DROP',true);
     global $g2, $element_ids;
     $g2 = 1;
@@ -315,12 +315,12 @@ function rssfail() {
     DisplayError('<center><strong>'._RSSFAIL.'</strong><br /><br />'._RSSTRYAGAIN.'<br /><br />'._GOBACK.'</center>');
 }
 function NewBlock($bid='') {
-    global $db, $prefix, $admin_file, $admlang;
+    global $nuke_db, $prefix, $admin_file, $admlang;
 
     if (!empty($bid)) {
-       $edit = $db->sql_fetchrow($db->sql_query("SELECT * FROM " . $prefix . "_blocks WHERE `bid`=".$bid));
+       $edit = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM " . $prefix . "_blocks WHERE `bid`=".$bid));
     } else {
-       list($bid) = $db->sql_fetchrow($db->sql_query("SELECT bid FROM " . $prefix . "_blocks ORDER BY bid DESC LIMIT 1"));
+       list($bid) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT bid FROM " . $prefix . "_blocks ORDER BY bid DESC LIMIT 1"));
        $bid++;
     }
     include_once(NUKE_BASE_DIR.'header.php');
@@ -355,8 +355,8 @@ function NewBlock($bid='') {
     $value = (isset($edit)) ? "value=\"".$edit['url']."\"" : '';
     echo "<input type=\"text\" name=\"url\" size=\"30\" maxlength=\"200\" $value />&nbsp;&nbsp;\n";
     $headlines[0] = $admlang['global']['custom'];
-    $res = $db->sql_query("select hid, sitename from ".$prefix."_headlines");
-    while (list($hid, $htitle) = $db->sql_fetchrow($res)) {
+    $res = $nuke_db->sql_query("select hid, sitename from ".$prefix."_headlines");
+    while (list($hid, $htitle) = $nuke_db->sql_fetchrow($res)) {
         $headlines[$hid] = $htitle;
     }
     echo select_box('headline', $value, $headlines)."&nbsp;[ <a href=\"".$admin_file.".php?op=headlines\" target=\"_blank\">Setup</a> ]<br /><span class=\"tiny\">".$admlang['blocks']['headlines_setup']."</span></td></tr>\n";
@@ -365,8 +365,8 @@ function NewBlock($bid='') {
         <select name=\"blockfile\">\n
         <option value=\"\" selected=\"selected\">"._NONE."</option>\n";
 
-    $result = $db->sql_query('SELECT blockfile FROM '.$prefix.'_blocks');
-    while($row = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query('SELECT blockfile FROM '.$prefix.'_blocks');
+    while($row = $nuke_db->sql_fetchrow($result)) {
         $allblocks[$row[0]] = 1;
     }
     $value = (isset($edit)) ? $edit['blockfile'] : '';
@@ -450,8 +450,8 @@ function NewBlock($bid='') {
     ."<option value=\"6\" $o6>".$admlang['global']['groups_only']."</option>"
      ."</select><br />";
     echo "<span class='tiny'>"._WHATGRDESC."</span><br /><strong>"._WHATGROUPS."</strong> <select name='add_groups[]' multiple size='5'>\n";
-    $groupsResult = $db->sql_query("select group_id, group_name from ".$prefix."_bbgroups where group_description <> 'Personal User'");
-    while(list($gid, $gname) = $db->sql_fetchrow($groupsResult)) {
+    $groupsResult = $nuke_db->sql_query("select group_id, group_name from ".$prefix."_bbgroups where group_description <> 'Personal User'");
+    while(list($gid, $gname) = $nuke_db->sql_fetchrow($groupsResult)) {
         if(@in_array($gid,$ingroups) AND $o6 == 'SELECTED') { $sel = "selected"; } else { $sel = ""; }
         echo "<OPTION VALUE='$gid'$sel>$gname</option>\n";
     }

@@ -85,9 +85,9 @@
   <table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
     <tr>
       <td align="left" valign="middle">{POST_PM_IMG}</td>
-      <!-- Start add - Custom mass PM MOD -->
+      <!-- Start add - Custom mass PM NUKE_MOD -->
       <td align="left" valign="middle">{MASS_PM_IMG}</td>
-      <!-- End add - Custom mass PM MOD -->
+      <!-- End add - Custom mass PM NUKE_MOD -->
       <td align="left" width="100%"><span class="nav"><a href="{U_INDEX}" class="nav">{L_INDEX}</a></span></td>
       <td align="right" nowrap="nowrap"><span class="gensmall">{L_DISPLAY_MESSAGES}:
         <select name="msgdays">{S_SELECT_MSG_DAYS}
@@ -135,9 +135,9 @@
   <table width="100%" cellspacing="2" border="0" align="center" cellpadding="2">
     <tr>
       <td align="left" valign="middle"><span class="nav">{POST_PM_IMG}</span></td>
-      <!-- Start add - Custom mass PM MOD -->
+      <!-- Start add - Custom mass PM NUKE_MOD -->
       <td align="left" valign="middle"><span class="nav">{MASS_PM_IMG}</span></td>
-      <!-- End add - Custom mass PM MOD -->
+      <!-- End add - Custom mass PM NUKE_MOD -->
       <td align="left" valign="middle" width="100%">{PAGE_NUMBER}</td>
       <td align="right" valign="top" nowrap="nowrap"><strong><span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a> :: <a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span></strong><br />{PAGINATION}<br /><span class="gensmall">{S_TIMEZONE}</span></td>
     </tr>

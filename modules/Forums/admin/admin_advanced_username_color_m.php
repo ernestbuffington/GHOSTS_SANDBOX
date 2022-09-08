@@ -19,7 +19,7 @@
       AUC Group                                v1.0.0       06/20/2005
  ************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -78,8 +78,8 @@ if ($mode == "main" || !$mode)
           FROM ". COLORS ."
           WHERE group_id > '0'
           ORDER BY group_name ASC";
-    $r            = $db->sql_query($q);
-    while($row     = $db->sql_fetchrow($r))
+    $r            = $nuke_db->sql_query($q);
+    while($row     = $nuke_db->sql_fetchrow($r))
         {
     $name     = $row['group_name'];
     $id     = $row['group_id'];
@@ -110,8 +110,8 @@ if ($mode == "main" || !$mode)
     $q = "SELECT *
           FROM ". COLORS ."
           WHERE group_id = '". $group ."'";
-    $r        = $db->sql_query($q);
-    $row     = $db->sql_fetchrow($r);
+    $r        = $nuke_db->sql_query($q);
+    $row     = $nuke_db->sql_fetchrow($r);
     $name     = $row['group_name'];
     $id     = $row['group_id'];
     $color    = $row['group_color'];
@@ -146,11 +146,11 @@ if ($mode == "main" || !$mode)
     echo "                <select name=''>";
 
     $q = "SELECT username, user_color_gi
-          FROM ". USERS_TABLE ."
+          FROM ". NUKE_USERS_TABLE ."
           WHERE user_color_gi <> '0'
           ORDER BY username ASC";
-    $r            = $db->sql_query($q);
-    while($row     = $db->sql_fetchrow($r))
+    $r            = $nuke_db->sql_query($q);
+    while($row     = $nuke_db->sql_fetchrow($r))
         {
         if    (preg_match('/--'. $id .'--/i', $row['user_color_gi']))
             echo "                <option value=''>". $row['username'] ."</option>";
@@ -174,11 +174,11 @@ if ($mode == "main" || !$mode)
     echo "            <span class='genmed'>";
 
     $q = "SELECT group_id, group_name
-          FROM ". GROUPS_TABLE ."
+          FROM ". NUKE_GROUPS_TABLE ."
           WHERE group_id > 0 AND group_description <> 'Personal User'
           ORDER BY group_id ASC";
-    $r = $db->sql_query($q);
-    $groups = $db->sql_fetchrowset($r);
+    $r = $nuke_db->sql_query($q);
+    $groups = $nuke_db->sql_fetchrowset($r);
 
     echo "                <select name='group_id'>";
     echo '                    <option selected value="" class="post">----------</option>';
@@ -209,10 +209,10 @@ if ($mode == "main" || !$mode)
     echo "            <span class='genmed'>";
 
     $q = "SELECT username, user_id
-          FROM ". USERS_TABLE ."
+          FROM ". NUKE_USERS_TABLE ."
           ORDER BY username ASC";
-    $r = $db->sql_query($q);
-    $users = $db->sql_fetchrowset($r);
+    $r = $nuke_db->sql_query($q);
+    $users = $nuke_db->sql_fetchrowset($r);
     echo "                <select name='users_id'>";
     echo '                    <option selected value="" class="post">----------</option>';
         for ($x = 0; $x < count($users); $x++)
@@ -253,11 +253,11 @@ if ($mode == "main" || !$mode)
     echo "            <span class='genmed'>";
     echo "                <select name='delete'>";
     $q = "SELECT username, user_id, user_color_gi
-          FROM ". USERS_TABLE ."
+          FROM ". NUKE_USERS_TABLE ."
           WHERE user_color_gi <> '0'
           ORDER BY username ASC";
-    $r            = $db->sql_query($q);
-    while($row     = $db->sql_fetchrow($r))
+    $r            = $nuke_db->sql_query($q);
+    while($row     = $nuke_db->sql_fetchrow($r))
         {
         if    (preg_match('/--'. $id .'--/i', $row['user_color_gi']))
             echo "            <option value='". $row['user_id'] ."'>". $row['username'] ."</option>";
@@ -281,10 +281,10 @@ if ($mode == "main" || !$mode)
     $group     = $HTTP_POST_VARS['group'];
 
     $q = "SELECT user_color_gi
-          FROM ". USERS_TABLE ."
+          FROM ". NUKE_USERS_TABLE ."
           WHERE user_id = '". $user ."'";
-    $r         = $db->sql_query($q);
-    $row     = $db->sql_fetchrow($r);
+    $r         = $nuke_db->sql_query($q);
+    $row     = $nuke_db->sql_fetchrow($r);
 
     $remove = str_replace('--'. $group .'--', '', $row['user_color_gi']);
     if (!$remove)
@@ -297,8 +297,8 @@ if ($mode == "main" || !$mode)
         {
     $q = "SELECT group_color, group_id
           FROM ". COLORS ."";
-    $r = $db->sql_query($q);
-    $groups_info = $db->sql_fetchrowset($r);
+    $r = $nuke_db->sql_query($q);
+    $groups_info = $nuke_db->sql_fetchrowset($r);
         for ($a = 0; $a < count($groups_info); $a++)
             {
             if (preg_match('/--'. $groups_info[$a]['group_id'] .'--/i', $new_id))
@@ -311,10 +311,10 @@ if ($mode == "main" || !$mode)
     else
         $new_color = '';
 
-    $q = "UPDATE ". USERS_TABLE ."
+    $q = "UPDATE ". NUKE_USERS_TABLE ."
           SET user_color_gi = '$new_id', user_color_gc = '$new_color'
           WHERE user_id = '". $user ."'";
-    $r = $db->sql_query($q);
+    $r = $nuke_db->sql_query($q);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -322,7 +322,7 @@ if ($mode == "main" || !$mode)
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    message_die(GENERAL_MESSAGE, $lang['group_delete_user_2'] . "<br /><br />" . sprintf($lang['Return_to_management'], "<a href=admin_advanced_username_color_m.php>", "</a>"), $lang['success']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['group_delete_user_2'] . "<br /><br />" . sprintf($lang['Return_to_management'], "<a href=admin_advanced_username_color_m.php>", "</a>"), $lang['success']);
         }
 
     if ($mode == "add_user")
@@ -337,7 +337,7 @@ if ($mode == "main" || !$mode)
         if ($multi)
             $who = '';
         if ( (!$who) && (!$multi) )
-            message_die(GENERAL_ERROR, $lang['choose_user_id_error'] . "<br /><br />" . sprintf($lang['Return_to_management'], "<a href=admin_advanced_username_color_m.php>", "</a>"));
+            message_die(NUKE_GENERAL_ERROR, $lang['choose_user_id_error'] . "<br /><br />" . sprintf($lang['Return_to_management'], "<a href=admin_advanced_username_color_m.php>", "</a>"));
 
         if ($multi)
             {
@@ -346,21 +346,21 @@ if ($mode == "main" || !$mode)
                 {
             $users[$x] = trim(addslashes(stripslashes($users[$x])));
             $q = "SELECT user_color_gi, user_id
-                  FROM ". USERS_TABLE ."
+                  FROM ". NUKE_USERS_TABLE ."
                   WHERE username = '". $users[$x] ."'";
-            $r         = $db->sql_query($q);
-            $row     = $db->sql_fetchrow($r);
+            $r         = $nuke_db->sql_query($q);
+            $row     = $nuke_db->sql_fetchrow($r);
 
                 if ($row['user_color_gi'] <> '0')
                     $group = '--'. $group .'--'. $row['user_color_gi'];
                 else
                     $group = '--'. $group .'--';
 
-            $q = "UPDATE ". USERS_TABLE ."
+            $q = "UPDATE ". NUKE_USERS_TABLE ."
                   SET user_color_gi = '". $group ."', user_color_gc = '". $color ."'
                   WHERE user_id = '". $row['user_id'] ."'";
-            if (!$db->sql_query($q))
-                message_die(GENERAL_ERROR, 'ERROR!', '', __LINE__, __FILE__, $q);
+            if (!$nuke_db->sql_query($q))
+                message_die(NUKE_GENERAL_ERROR, 'ERROR!', '', __LINE__, __FILE__, $q);
                 }
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -374,21 +374,21 @@ if ($mode == "main" || !$mode)
         if ($who)
             {
         $q = "SELECT user_color_gi
-              FROM ". USERS_TABLE ."
+              FROM ". NUKE_USERS_TABLE ."
               WHERE user_id = '". $who ."'";
-        $r         = $db->sql_query($q);
-        $row     = $db->sql_fetchrow($r);
+        $r         = $nuke_db->sql_query($q);
+        $row     = $nuke_db->sql_fetchrow($r);
 
             if ($row['user_color_gi'] <> '0')
                 $group = '--'. $group .'--'. $row['user_color_gi'];
             else
                 $group = '--'. $group .'--';
 
-        $q = "UPDATE ". USERS_TABLE ."
+        $q = "UPDATE ". NUKE_USERS_TABLE ."
               SET user_color_gi = '". $group ."', user_color_gc = '". $color ."'
               WHERE user_id = '". $who ."'";
-        if (!$db->sql_query($q))
-            message_die(GENERAL_ERROR, 'ERROR!', '', __LINE__, __FILE__, $q);
+        if (!$nuke_db->sql_query($q))
+            message_die(NUKE_GENERAL_ERROR, 'ERROR!', '', __LINE__, __FILE__, $q);
             }
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -397,7 +397,7 @@ if ($mode == "main" || !$mode)
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    message_die(GENERAL_MESSAGE, $lang['group_user_added'] . "<br /><br />" . sprintf($lang['Return_to_management'], "<a href=admin_advanced_username_color_m.php>", "</a>"), $lang['success']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['group_user_added'] . "<br /><br />" . sprintf($lang['Return_to_management'], "<a href=admin_advanced_username_color_m.php>", "</a>"), $lang['success']);
         }
 /*****[BEGIN]******************************************
  [ Mod:    AUC Group                           v1.0.0 ]
@@ -409,17 +409,17 @@ if ($mode == "main" || !$mode)
     $color     = $HTTP_POST_VARS['color'];
 
         $q_group = "SELECT user_id
-              FROM ". USER_GROUP_TABLE ."
+              FROM ". NUKE_USER_GROUP_TABLE ."
               WHERE group_id = '". $who ."'";
-        $r_group    = $db->sql_query($q_group);
+        $r_group    = $nuke_db->sql_query($q_group);
 
-    while($id_group = $db->sql_fetchrow($r_group))
+    while($id_group = $nuke_db->sql_fetchrow($r_group))
       {
         $q = "SELECT user_color_gi
-              FROM ". USERS_TABLE ."
+              FROM ". NUKE_USERS_TABLE ."
               WHERE user_id = '". $id_group['user_id'] ."'";
-        $r         = $db->sql_query($q);
-        $row     = $db->sql_fetchrow($r);
+        $r         = $nuke_db->sql_query($q);
+        $row     = $nuke_db->sql_fetchrow($r);
             $test = '--'. $group .'--';
         if(strstr($row[0], $test)) {
                 continue;
@@ -429,12 +429,12 @@ if ($mode == "main" || !$mode)
             else
                 $group = '--'. $group .'--';
 
-        $q = "UPDATE ". USERS_TABLE ."
+        $q = "UPDATE ". NUKE_USERS_TABLE ."
               SET user_color_gi = '". $group ."', user_color_gc = '". $color ."'
               WHERE user_id = '". $id_group['user_id'] ."'";
 
-        if (!$db->sql_query($q)) {
-            message_die(GENERAL_ERROR, 'ERROR!', '', __LINE__, __FILE__, $q);
+        if (!$nuke_db->sql_query($q)) {
+            message_die(NUKE_GENERAL_ERROR, 'ERROR!', '', __LINE__, __FILE__, $q);
             }
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -444,7 +444,7 @@ if ($mode == "main" || !$mode)
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
         }
-        message_die(GENERAL_MESSAGE, $lang['group_user_added'] . "<br /><br />" . sprintf($lang['Return_to_management'], "<a href=admin_advanced_username_color_m.php>", "</a>"), $lang['success']);
+        message_die(NUKE_GENERAL_MESSAGE, $lang['group_user_added'] . "<br /><br />" . sprintf($lang['Return_to_management'], "<a href=admin_advanced_username_color_m.php>", "</a>"), $lang['success']);
       }
 /*****[END]********************************************
  [ Mod:    AUC Group                           v1.0.0 ]

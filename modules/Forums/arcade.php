@@ -33,7 +33,7 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 $phpbb2_root_path = NUKE_PHPBB2_DIR;
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
@@ -43,7 +43,7 @@ include('includes/constants.'. $phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_ARCADES, $nukeuser);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_ARCADES, $nukeuser);
 init_userprefs($userdata);
 //
 // End session management
@@ -105,29 +105,29 @@ $delfavori = $HTTP_GET_VARS['delfavori'];
 
 if ($actfav=$favori+$delfavori)
     {
-    $sql = "SELECT COUNT(*) AS nbfav FROM ".ARCADE_FAV_TABLE." WHERE  user_id= ".$userdata['user_id']." AND game_id= ".$actfav;
-    if( !($result = $db->sql_query($sql)) )
+    $sql = "SELECT COUNT(*) AS nbfav FROM ".NUKE_ARCADE_FAV_TABLE." WHERE  user_id= ".$userdata['user_id']." AND game_id= ".$actfav;
+    if( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, "Could not read the favorites game table", '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, "Could not read the favorites game table", '', __LINE__, __FILE__, $sql);
         }
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
     $nbfav = $row['nbfav'];
 
     if (!$nbfav && $favori)
         {
-            $sql = "INSERT INTO ". ARCADE_FAV_TABLE ." VALUES ('','".$userdata['user_id']."','$favori')";
-            if( !($result = $db->sql_query($sql)) )
+            $sql = "INSERT INTO ". NUKE_ARCADE_FAV_TABLE ." VALUES ('','".$userdata['user_id']."','$favori')";
+            if( !($result = $nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, "Could not read the favorites game table", '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, "Could not read the favorites game table", '', __LINE__, __FILE__, $sql);
                 }
         }
 
     elseif($delfavori)
         {
-            $sql = "DELETE FROM ". ARCADE_FAV_TABLE ." WHERE  user_id= ".$userdata['user_id']." AND game_id= ".$delfavori;
-            if( !($result = $db->sql_query($sql)) )
+            $sql = "DELETE FROM ". NUKE_ARCADE_FAV_TABLE ." WHERE  user_id= ".$userdata['user_id']." AND game_id= ".$delfavori;
+            if( !($result = $nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, "Could not read the favorites game table", '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, "Could not read the favorites game table", '', __LINE__, __FILE__, $sql);
                 }
         }
     };
@@ -163,16 +163,16 @@ if (( $arcade_catid == 0 ) and ( $arcade_config['use_category_mod'] )) {
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-            . GAMES_TABLE." g LEFT JOIN "
-            . USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN "
-            . SCORES_TABLE . " s ON s.game_id = g.game_id and s.user_id = " . $userdata['user_id'] . " LEFT JOIN "
-            . ARCADE_FAV_TABLE . " f ON f.game_id = g.game_id WHERE f.user_id=".$userdata['user_id'] ;
+            . NUKE_GAMES_TABLE." g LEFT JOIN "
+            . NUKE_USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN "
+            . NUKE_SCORES_TABLE . " s ON s.game_id = g.game_id and s.user_id = " . $userdata['user_id'] . " LEFT JOIN "
+            . NUKE_ARCADE_FAV_TABLE . " f ON f.game_id = g.game_id WHERE f.user_id=".$userdata['user_id'] ;
 
-            if( !($result = $db->sql_query($sql)) )
+            if( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_ERROR, "Could not read the favorites game table", '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Could not read the favorites game table", '', __LINE__, __FILE__, $sql);
             }
-            if ($db->sql_numrows($result))
+            if ($nuke_db->sql_numrows($result))
             {
                 $template->assign_block_vars('favrow',array()) ;
 /*****[BEGIN]******************************************
@@ -182,7 +182,7 @@ if (( $arcade_catid == 0 ) and ( $arcade_config['use_category_mod'] )) {
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                while( $frow = $db->sql_fetchrow($result))
+                while( $frow = $nuke_db->sql_fetchrow($result))
                 {
                 $template->assign_block_vars('favrow.fav_row',array(
                 'GAMENAMEF' => $frow[game_name],
@@ -221,23 +221,23 @@ if (( $arcade_catid == 0 ) and ( $arcade_config['use_category_mod'] )) {
 
         $liste_jeux = array();
 
-        $sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . GAMES_TABLE . " g LEFT JOIN " . USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . SCORES_TABLE . " s ON s.game_id = g.game_id and s.user_id = " . $userdata['user_id'] . " WHERE  g.arcade_catid IN ($liste_cat_auth) ORDER BY g.arcade_catid, $order_by";
+        $sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . NUKE_GAMES_TABLE . " g LEFT JOIN " . NUKE_USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . NUKE_SCORES_TABLE . " s ON s.game_id = g.game_id and s.user_id = " . $userdata['user_id'] . " WHERE  g.arcade_catid IN ($liste_cat_auth) ORDER BY g.arcade_catid, $order_by";
 
-        if( !($result = $db->sql_query($sql)) ) {
-                message_die(GENERAL_ERROR, "Could not read arcade categories", '', __LINE__, __FILE__, $sql);
+        if( !($result = $nuke_db->sql_query($sql)) ) {
+                message_die(NUKE_GENERAL_ERROR, "Could not read arcade categories", '', __LINE__, __FILE__, $sql);
         }
 
-        while( $row = $db->sql_fetchrow($result)) {
+        while( $row = $nuke_db->sql_fetchrow($result)) {
                 $liste_jeux[$row['arcade_catid']][] = $row;
         }
 
-        $sql = "SELECT arcade_catid, arcade_cattitle, arcade_nbelmt, arcade_catauth FROM " . ARCADE_CATEGORIES_TABLE . " WHERE  arcade_catid IN ($liste_cat_auth) ORDER BY arcade_catorder";
+        $sql = "SELECT arcade_catid, arcade_cattitle, arcade_nbelmt, arcade_catauth FROM " . NUKE_ARCADE_CATEGORIES_TABLE . " WHERE  arcade_catid IN ($liste_cat_auth) ORDER BY arcade_catorder";
 
-        if( !($result = $db->sql_query($sql)) ) {
-                message_die(GENERAL_ERROR, "Could not read arcade categories", '', __LINE__, __FILE__, $sql);
+        if( !($result = $nuke_db->sql_query($sql)) ) {
+                message_die(NUKE_GENERAL_ERROR, "Could not read arcade categories", '', __LINE__, __FILE__, $sql);
         }
 
-        while( $row = $db->sql_fetchrow($result)) {
+        while( $row = $nuke_db->sql_fetchrow($result)) {
                 $nbjeux = sizeof($liste_jeux[$row['arcade_catid']]);
 
                 if ($nbjeux > 0) {
@@ -314,27 +314,27 @@ $total_games = 0;
 
 if ( $arcade_config['use_category_mod']) {
         $sql_where = " WHERE  arcade_catid = $arcade_catid AND arcade_catid IN ($liste_cat_auth)";
-        $sql = "SELECT arcade_cattitle, arcade_nbelmt AS nbgames FROM " . ARCADE_CATEGORIES_TABLE . " $sql_where";
+        $sql = "SELECT arcade_cattitle, arcade_nbelmt AS nbgames FROM " . NUKE_ARCADE_CATEGORIES_TABLE . " $sql_where";
 
-        if( !($result = $db->sql_query($sql)) ) {
-                message_die(GENERAL_ERROR, "Could not read the arcade categories table", '', __LINE__, __FILE__, $sql);
+        if( !($result = $nuke_db->sql_query($sql)) ) {
+                message_die(NUKE_GENERAL_ERROR, "Could not read the arcade categories table", '', __LINE__, __FILE__, $sql);
         }
 
-        if ( $row = $db->sql_fetchrow($result)) {
+        if ( $row = $nuke_db->sql_fetchrow($result)) {
                 $total_games = $row['nbgames'];
         } else {
-                message_die(GENERAL_MESSAGE,$lang['no_arcade_cat']);
+                message_die(NUKE_GENERAL_MESSAGE,$lang['no_arcade_cat']);
         }
 
         $template->assign_block_vars('use_category_mod', array());
 } else {
-        $sql = "SELECT COUNT(*) AS nbgames FROM " . GAMES_TABLE;
+        $sql = "SELECT COUNT(*) AS nbgames FROM " . NUKE_GAMES_TABLE;
 
-        if( !($result = $db->sql_query($sql)) ) {
-                message_die(GENERAL_ERROR, "Could not read games table", '', __LINE__, __FILE__, $sql);
+        if( !($result = $nuke_db->sql_query($sql)) ) {
+                message_die(NUKE_GENERAL_ERROR, "Could not read games table", '', __LINE__, __FILE__, $sql);
         }
 
-        if ( $row = $db->sql_fetchrow($result)) {
+        if ( $row = $nuke_db->sql_fetchrow($result)) {
                 $total_games = $row['nbgames'];
         }
 }
@@ -365,20 +365,20 @@ $template->assign_vars(array(
     if(($arcade_config['use_fav_category'])&&(!$arcade_config['use_category_mod']))
         {
             $sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date, f.* FROM "
-            . GAMES_TABLE." g LEFT JOIN "
-            . USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN "
-            . SCORES_TABLE . " s ON s.game_id = g.game_id and s.user_id = " . $userdata['user_id'] . " LEFT JOIN "
-            . ARCADE_FAV_TABLE . " f ON f.game_id = g.game_id WHERE  f.user_id=".$userdata['user_id'] ;
+            . NUKE_GAMES_TABLE." g LEFT JOIN "
+            . NUKE_USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN "
+            . NUKE_SCORES_TABLE . " s ON s.game_id = g.game_id and s.user_id = " . $userdata['user_id'] . " LEFT JOIN "
+            . NUKE_ARCADE_FAV_TABLE . " f ON f.game_id = g.game_id WHERE  f.user_id=".$userdata['user_id'] ;
 
-            if( !($result = $db->sql_query($sql)) )
+            if( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_ERROR, "Could not read games table", '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Could not read games table", '', __LINE__, __FILE__, $sql);
             }
-            if ($db->sql_numrows($result))
+            if ($nuke_db->sql_numrows($result))
             {
                 $template->assign_block_vars('favrow',array()) ;
 
-                while( $frow = $db->sql_fetchrow($result))
+                while( $frow = $nuke_db->sql_fetchrow($result))
                 {
                 $template->assign_block_vars('favrow.fav_row',array(
                 'GAMENAMEF' => $frow[game_name],
@@ -416,13 +416,13 @@ $template->assign_vars(array(
             }
         }
 
-$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . GAMES_TABLE . " g LEFT JOIN " . USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . SCORES_TABLE . " s ON s.game_id = g.game_id and s.user_id = " . $userdata['user_id'] . " $sql_where ORDER BY $order_by $limit";
+$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . NUKE_GAMES_TABLE . " g LEFT JOIN " . NUKE_USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . NUKE_SCORES_TABLE . " s ON s.game_id = g.game_id and s.user_id = " . $userdata['user_id'] . " $sql_where ORDER BY $order_by $limit";
 
-if( !($result = $db->sql_query($sql)) ) {
-        message_die(GENERAL_ERROR, "Could not read games table", '', __LINE__, __FILE__, $sql);
+if( !($result = $nuke_db->sql_query($sql)) ) {
+        message_die(NUKE_GENERAL_ERROR, "Could not read games table", '', __LINE__, __FILE__, $sql);
 }
 
-while( $row = $db->sql_fetchrow($result) ) {
+while( $row = $nuke_db->sql_fetchrow($result) ) {
         $template->assign_block_vars('gamerow', array(
                 'GAMENAME' => $row['game_name'],
                 'GAMEPIC' => ( $row['game_pic'] != '' ) ? "<a href='" . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . "'><img src='".$phpbb2_root_path ."games/pics/" . $row['game_pic'] . "' align='absmiddle' border='0' width='30' height='30' alt='" . $row['game_name'] . "' ></a>" : '' ,

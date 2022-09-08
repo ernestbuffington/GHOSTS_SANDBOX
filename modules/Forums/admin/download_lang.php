@@ -24,7 +24,7 @@
 *
 ***************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 global $file_mode;
 
@@ -57,14 +57,14 @@ include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 
 $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
 }
 
 $stats_config = array();
 
-while ($row = $db->sql_fetchrow($result))
+while ($row = $nuke_db->sql_fetchrow($result))
 {
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
@@ -80,27 +80,27 @@ if ($mode == 'export_module')
         
     if (($language == '') || ($module_id == -1))
     {
-        message_die(GENERAL_MESSAGE, 'Invalid Call, Hacking Attempt ?');
+        message_die(NUKE_GENERAL_MESSAGE, 'Invalid Call, Hacking Attempt ?');
     }
         
     $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
     }
     
-    if ($db->sql_numrows($result) == 0)
+    if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(GENERAL_ERROR, 'Unable to get Module ' . $module_id);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $module_id);
     }
         
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
     $short_name = trim($row['short_name']);
     
     if (!($fp = fopen($phpbb2_root_path . 'modules/cache/temp.pak', 'wb')))
     {
-        message_die(GENERAL_ERROR, 'Unable to write Package File to cache.');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write Package File to cache.');
     }
 
     $language_content = get_lang_entries($short_name, $language);
@@ -152,27 +152,27 @@ else if ($mode == 'export_lang')
         
     if ($language == '')
     {
-        message_die(GENERAL_MESSAGE, 'Invalid Call, Hacking Attempt ?');
+        message_die(NUKE_GENERAL_MESSAGE, 'Invalid Call, Hacking Attempt ?');
     }
         
     $sql = "SELECT short_name FROM " . MODULES_TABLE;
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
     }
     
-    if ($db->sql_numrows($result) == 0)
+    if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(GENERAL_ERROR, 'Unable to get Modules.');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Modules.');
     }
         
-    $rows = $db->sql_fetchrowset($result);
-    $num_rows = $db->sql_numrows($result);
+    $rows = $nuke_db->sql_fetchrowset($result);
+    $num_rows = $nuke_db->sql_numrows($result);
     
     if (!($fp = fopen($phpbb2_root_path . 'modules/cache/temp.pak', 'wb')))
     {
-        message_die(GENERAL_ERROR, 'Unable to write Package File to cache.');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write Package File to cache.');
     }
 
     fwrite($fp, pack("C*", 0xFF, 0xFC, 0xCC), 3);
@@ -227,24 +227,24 @@ else if ($mode == 'export_everything')
 {
     $sql = "SELECT short_name FROM " . MODULES_TABLE;
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
     }
     
-    if ($db->sql_numrows($result) == 0)
+    if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(GENERAL_ERROR, 'Unable to get Modules.');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Modules.');
     }
         
-    $rows = $db->sql_fetchrowset($result);
-    $num_rows = $db->sql_numrows($result);
+    $rows = $nuke_db->sql_fetchrowset($result);
+    $num_rows = $nuke_db->sql_numrows($result);
     
     $languages = get_all_installed_languages();
         
     if (!($fp = fopen($phpbb2_root_path . 'modules/cache/temp.pak', 'wb')))
     {
-        message_die(GENERAL_ERROR, 'Unable to write Package File to cache.');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write Package File to cache.');
     }
 
     fwrite($fp, pack("C*", 0xFF, 0xFC, 0xCC), 3);

@@ -349,20 +349,20 @@ define("_MSNL_CFG_LAB_MAINCFG","Hauptmodul Konfiguration");
 
 //Modul Optionen
 define("_MSNL_CFG_LAB_MODULEOPT","Modul Optionen");
-define("_MSNL_CFG_LAB_DEBUGMODE","Debug Modus");
-define("_MSNL_CFG_LAB_DEBUGMODE_OFF","OFF");
-define("_MSNL_CFG_LAB_DEBUGMODE_ERR","ERROR");
-define("_MSNL_CFG_LAB_DEBUGMODE_VER","VERBOSE");
-define("_MSNL_CFG_LAB_DEBUGOUTPUT","Debug Output");
-define("_MSNL_CFG_LAB_DEBUGOUTPUT_DIS","DISPLAY");
-define("_MSNL_CFG_LAB_DEBUGOUTPUT_LOG","LOG FILE");
-define("_MSNL_CFG_LAB_DEBUGOUTPUT_BTH","BOTH");
+define("_MSNL_CFG_LAB_NUKE_DEBUGMODE","Debug Modus");
+define("_MSNL_CFG_LAB_NUKE_DEBUGMODE_OFF","OFF");
+define("_MSNL_CFG_LAB_NUKE_DEBUGMODE_ERR","ERROR");
+define("_MSNL_CFG_LAB_NUKE_DEBUGMODE_VER","VERBOSE");
+define("_MSNL_CFG_LAB_NUKE_DEBUGOUTPUT","Debug Output");
+define("_MSNL_CFG_LAB_NUKE_DEBUGOUTPUT_DIS","DISPLAY");
+define("_MSNL_CFG_LAB_NUKE_DEBUGOUTPUT_LOG","LOG FILE");
+define("_MSNL_CFG_LAB_NUKE_DEBUGOUTPUT_BTH","BOTH");
 define("_MSNL_CFG_LAB_SHOWBLOCKS","Zeige rechte Bl&ouml;cke");
 define("_MSNL_CFG_LAB_NSNGRPS","Benutze NSN Groups (Zusatz-Addon)");
 define("_MSNL_CFG_LAB_DLMODULE","Name der Download SQL Tabelle");
 define("_MSNL_CFG_LAB_WYSIWYGON","Benutzer WYSIWYG Editor");
 define("_MSNL_CFG_LAB_WYSIWYGROWS","Zeilen des Eingabefeldes");
-define("_MSNL_CFG_HLP_DEBUGMODE","Diese Option bietet dem Admin folgende"
+define("_MSNL_CFG_HLP_NUKE_DEBUGMODE","Diese Option bietet dem Admin folgende"
 	." Error-Log Methoden:<br /><strong>OFF</strong> = Nur auf Modulebene - reine Modul-Mitteilungen, "
 	."ohne Details werden angezeigt.<br /><strong>ERROR</strong> = Modulfehler "
 	."werden zusammen mit n&uuml;tzlichen Debugger-Mitteilungen angezeigt. "
@@ -372,7 +372,7 @@ define("_MSNL_CFG_HLP_DEBUGMODE","Diese Option bietet dem Admin folgende"
 	."Informationen ihres Servers auslesen k&ouml;nnen. <b>HINWEIS: Diese Option verschickt keine e-Mails!</b>"
 	." - sehr n&uuml;tzlich bei der Fehlersuche."
 	);
-define("_MSNL_CFG_HLP_DEBUGOUTPUT","Diese Option wird noch nicht unterst&uuml;tzt. K&uuml;nftig soll man sich hierr&uuml;ber "
+define("_MSNL_CFG_HLP_NUKE_DEBUGOUTPUT","Diese Option wird noch nicht unterst&uuml;tzt. K&uuml;nftig soll man sich hierr&uuml;ber "
 	."die Fehlermeldungen im Browser und/oder "
 	." als Logdatei ausgeben zu lassen"
 	);
@@ -448,10 +448,10 @@ define("_MSNL_CFG_HLP_SCROLLDELAY","Legt die Verz&ouml;gerung zwischen den Scrol
 ************************************************************************/
 
 define("_MSNL_CFG_APPLY_ERR_DBFAILED","Das updaten der Konfigurations-Informationen schlug fehl");
-define("_MSNL_CFG_APPLY_VAL_DEBUGMODE","Es wurde ein falscher Debug-Modus &uuml;bergeben - kann an "
+define("_MSNL_CFG_APPLY_VAL_NUKE_DEBUGMODE","Es wurde ein falscher Debug-Modus &uuml;bergeben - kann an "
 	."einem Problem mit der Modulinstallation liegen"
 	);
-define("_MSNL_CFG_APPLY_VAL_DEBUGOUTPUT","Es wurde ein falscher Debug-Ausgabe-Modus &uuml;bergeben - kann an "
+define("_MSNL_CFG_APPLY_VAL_NUKE_DEBUGOUTPUT","Es wurde ein falscher Debug-Ausgabe-Modus &uuml;bergeben - kann an "
 	."einem Problem mit der Modulinstallation liegen"
 	);
 define("_MSNL_CFG_APPLY_MSG_BACK","Zur&uuml;ck zur Haupt-Konfiguration");

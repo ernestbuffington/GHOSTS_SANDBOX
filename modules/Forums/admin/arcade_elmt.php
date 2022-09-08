@@ -13,7 +13,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 $phpbb2_root_path = "../";
 require($phpbb2_root_path . 'extension.inc');
@@ -43,13 +43,13 @@ if ( $mode == 'move')
     $game_order = get_var_gf(array('name' => 'game_order', 'intval' => true, 'method' => 'GET'));
     $gorder2 = get_var_gf(array('name' => 'gorder2', 'intval' => true, 'method' => 'GET'));
 
-    $sql = "UPDATE " . GAMES_TABLE . "
+    $sql = "UPDATE " . NUKE_GAMES_TABLE . "
             SET game_order = $game_order + $gorder2 - game_order
             WHERE game_id = '$game_id' OR game_id = '$gid2'";
 
-    if( !$db->sql_query($sql) )
+    if( !$nuke_db->sql_query($sql) )
     {
-        message_die(GENERAL_ERROR, "Couldn't update games table", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't update games table", "", __LINE__, __FILE__, $sql);
     }
 }
 
@@ -63,15 +63,15 @@ if( !empty($mode) )
             {
                 $l_title = $lang['Edit_game'];
                 $newmode = 'editsave';
-                $sql = "SELECT * FROM " . GAMES_TABLE . " WHERE game_id = '$game_id' ORDER BY game_order ASC";
-                if( !($result = $db->sql_query($sql)) )
+                $sql = "SELECT * FROM " . NUKE_GAMES_TABLE . " WHERE game_id = '$game_id' ORDER BY game_order ASC";
+                if( !($result = $nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, "Could not read the games table", '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, "Could not read the games table", '', __LINE__, __FILE__, $sql);
                 }
 
-                if( !($row = $db->sql_fetchrow($result)) )
+                if( !($row = $nuke_db->sql_fetchrow($result)) )
                 {
-                    message_die(GENERAL_ERROR, "No game corresponds to this ID ($game_id)");
+                    message_die(NUKE_GENERAL_ERROR, "No game corresponds to this ID ($game_id)");
                 }
                 $arcade_catid = $row['arcade_catid'];
                 $game_name = $row['game_name'];
@@ -88,13 +88,13 @@ if( !empty($mode) )
                 $selected4 = ( $row['game_type']==4 ) ? "selected='selected'" : "";
                 $selected5 = ( $row['game_type']==5 ) ? "selected='selected'" : "";
 
-                $sql = "SELECT arcade_cattitle, arcade_catid FROM " . ARCADE_CATEGORIES_TABLE . " ORDER BY arcade_cattitle ASC";
-                if( !($result = $db->sql_query($sql)) )
+                $sql = "SELECT arcade_cattitle, arcade_catid FROM " . NUKE_ARCADE_CATEGORIES_TABLE . " ORDER BY arcade_cattitle ASC";
+                if( !($result = $nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, "Could not read the arcade categories", '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, "Could not read the arcade categories", '', __LINE__, __FILE__, $sql);
                 }
                 $liste_cat = '';
-                while ( $row = $db->sql_fetchrow($result))
+                while ( $row = $nuke_db->sql_fetchrow($result))
                 {
                   $selected = ( $row['arcade_catid'] == $arcade_catid ) ? " selected='selected'" : "";
                   $liste_cat .= "<option value='" . $row['arcade_catid'] . "' $selected >" . $row['arcade_cattitle'] . "</option>\n";
@@ -120,13 +120,13 @@ if( !empty($mode) )
                 $selected1 = "";
                 $selected2 = "";
 
-                $sql = "SELECT arcade_cattitle, arcade_catid FROM " . ARCADE_CATEGORIES_TABLE . " ORDER BY arcade_cattitle ASC";
-                if( !($result = $db->sql_query($sql)) )
+                $sql = "SELECT arcade_cattitle, arcade_catid FROM " . NUKE_ARCADE_CATEGORIES_TABLE . " ORDER BY arcade_cattitle ASC";
+                if( !($result = $nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, "Could not read the arcade category table", '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, "Could not read the arcade category table", '', __LINE__, __FILE__, $sql);
                 }
                 $liste_cat = '';
-                while ( $row = $db->sql_fetchrow($result))
+                while ( $row = $nuke_db->sql_fetchrow($result))
                 {
                   $liste_cat .= "<option value='" . $row['arcade_catid'] . "' >" . $row['arcade_cattitle'] . "</option>\n";
                 }
@@ -191,61 +191,61 @@ if( !empty($mode) )
           case 'createsave':
             if( trim(empty($game_name)) )
             {
-                message_die(GENERAL_ERROR, "Can not create a game without a name.");
+                message_die(NUKE_GENERAL_ERROR, "Can not create a game without a name.");
             }
             
             if( trim(empty($game_swf)) )
             {
-                message_die(GENERAL_ERROR, "Impossible to create a play without file swf.");
+                message_die(NUKE_GENERAL_ERROR, "Impossible to create a play without file swf.");
             }
                 
             $sql = "SELECT MAX(game_order) AS max_order
-                FROM " . GAMES_TABLE;
-            if( !$result = $db->sql_query($sql) )
+                FROM " . NUKE_GAMES_TABLE;
+            if( !$result = $nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Impossible to obtain the last sequence number of the table plays", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Impossible to obtain the last sequence number of the table plays", "", __LINE__, __FILE__, $sql);
             }
-            $row = $db->sql_fetchrow($result);
+            $row = $nuke_db->sql_fetchrow($result);
 
             $max_order = $row['max_order'];
             $next_order = $max_order + 10;
 
-            $sql = "INSERT INTO " . GAMES_TABLE . " ( game_order, game_pic, game_desc, game_highscore, game_highdate, game_highuser, game_name, game_swf, game_width, game_height, game_scorevar, game_type, arcade_catid ) " .
+            $sql = "INSERT INTO " . NUKE_GAMES_TABLE . " ( game_order, game_pic, game_desc, game_highscore, game_highdate, game_highuser, game_name, game_swf, game_width, game_height, game_scorevar, game_type, arcade_catid ) " .
                 "VALUES ($next_order, '$game_pic', '" . str_replace("\'", "''", $game_desc) . "', 0, 0, 0, '" . str_replace("\'", "''", $game_name) . "', '$game_swf', '$game_width', '$game_height', '$game_scorevar','$game_type','$arcade_catid')";
-            if( !$result = $db->sql_query($sql) )
+            if( !$result = $nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Couldn't insert row in games table", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't insert row in games table", "", __LINE__, __FILE__, $sql);
             }
 
-            $sql = "UPDATE " . ARCADE_CATEGORIES_TABLE . " SET arcade_nbelmt = arcade_nbelmt + 1 WHERE arcade_catid = $arcade_catid";
-            if( !$db->sql_query($sql) )
+            $sql = "UPDATE " . NUKE_ARCADE_CATEGORIES_TABLE . " SET arcade_nbelmt = arcade_nbelmt + 1 WHERE arcade_catid = $arcade_catid";
+            if( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Couldn't update categories table", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't update categories table", "", __LINE__, __FILE__, $sql);
             }
             
             //Comments Mod Start
-            $sql = "SELECT * FROM " . GAMES_TABLE . " WHERE game_order = $next_order ";
-            if( !$result = $db->sql_query($sql) )
+            $sql = "SELECT * FROM " . NUKE_GAMES_TABLE . " WHERE game_order = $next_order ";
+            if( !$result = $nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Couldn't update comments table", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't update comments table", "", __LINE__, __FILE__, $sql);
             }
-            $row = $db->sql_fetchrow($result);
+            $row = $nuke_db->sql_fetchrow($result);
             $game_id = $row['game_id'];
             
-            $sql = "INSERT INTO " . COMMENTS_TABLE . " ( game_id, comments_value ) VALUES ($game_id, '')";
-            if( !$db->sql_query($sql) )
+            $sql = "INSERT INTO " . NUKE_COMMENTS_TABLE . " ( game_id, comments_value ) VALUES ($game_id, '')";
+            if( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Couldn't update comments table", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't update comments table", "", __LINE__, __FILE__, $sql);
             }
             //Comments Mod End
 
 
             $message = $lang['Games_updated'] . "<br /><br />" . sprintf($lang['Click_return_gameadmin'], "<a href=\"arcade_elmt.$phpEx?arcade_catid=$arcade_catid\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
-            message_die(GENERAL_MESSAGE, $message);
+            message_die(NUKE_GENERAL_MESSAGE, $message);
             break;
 
         case 'editsave':
-            $sql = "UPDATE " . GAMES_TABLE . " SET 
+            $sql = "UPDATE " . NUKE_GAMES_TABLE . " SET 
             game_name = '" . str_replace("\'", "''", $game_name) . "',
             game_desc = '" . str_replace("\'", "''", $game_desc) . "',
             game_pic = '" . $game_pic . "',
@@ -257,28 +257,28 @@ if( !empty($mode) )
             arcade_catid = " . $arcade_catid . "
                     WHERE game_id = " . $game_id;
                 
-            if( !$result = $db->sql_query($sql) )
+            if( !$result = $nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Couldn't update game informations", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't update game informations", "", __LINE__, __FILE__, $sql);
             }
 
             if ($arcade_catid != $last_catid)
             {
-                $sql = "UPDATE " . ARCADE_CATEGORIES_TABLE . " SET arcade_nbelmt = arcade_nbelmt + 1 WHERE arcade_catid = $arcade_catid";                
-                if( !$db->sql_query($sql) )
+                $sql = "UPDATE " . NUKE_ARCADE_CATEGORIES_TABLE . " SET arcade_nbelmt = arcade_nbelmt + 1 WHERE arcade_catid = $arcade_catid";                
+                if( !$nuke_db->sql_query($sql) )
                 {
-                    message_die(GENERAL_ERROR, "Couldn't update categories table", "", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, "Couldn't update categories table", "", __LINE__, __FILE__, $sql);
                 }
 
-                $sql = "UPDATE " . ARCADE_CATEGORIES_TABLE . " SET arcade_nbelmt = arcade_nbelmt - 1 WHERE arcade_catid = $last_catid";                
-                if( !$db->sql_query($sql) )
+                $sql = "UPDATE " . NUKE_ARCADE_CATEGORIES_TABLE . " SET arcade_nbelmt = arcade_nbelmt - 1 WHERE arcade_catid = $last_catid";                
+                if( !$nuke_db->sql_query($sql) )
                 {
-                    message_die(GENERAL_ERROR, "Couldn't update categories table", "", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, "Couldn't update categories table", "", __LINE__, __FILE__, $sql);
                 }
             }
 
             $message = $lang['Games_updated'] . "<br /><br />" . sprintf($lang['Click_return_gameadmin'], "<a href=\"arcade_elmt.$phpEx?arcade_catid=$last_catid\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
-            message_die(GENERAL_MESSAGE, $message);
+            message_die(NUKE_GENERAL_MESSAGE, $message);
             break;
     }                
 }
@@ -301,69 +301,69 @@ if ($valid_select <> '')
     switch ($type_select)
     {
         case 'Z':
-            $sql = "DELETE FROM " . SCORES_TABLE . "  
+            $sql = "DELETE FROM " . NUKE_SCORES_TABLE . "  
                 WHERE game_id IN ($select_id_sql) ";
-            if ( !$db->sql_query($sql) )
+            if ( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, 'Could not delete from the scores table', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not delete from the scores table', '', __LINE__, __FILE__, $sql);
             }
-            $sql = "UPDATE " . GAMES_TABLE . " SET game_set = 0, game_highscore = 0, game_highuser = 0, game_highdate = 0
+            $sql = "UPDATE " . NUKE_GAMES_TABLE . " SET game_set = 0, game_highscore = 0, game_highuser = 0, game_highdate = 0
                 WHERE game_id IN ($select_id_sql) ";
-            if ( !$db->sql_query($sql) )
+            if ( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, 'Could not update the games table', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not update the games table', '', __LINE__, __FILE__, $sql);
             }
-            // Comments MOD Start
-                        $sql = "UPDATE " . COMMENTS_TABLE. " SET comments_value = '' WHERE game_id IN ($select_id_sql) ";
-                        if (!$db->sql_query($sql))
+            // Comments NUKE_MOD Start
+                        $sql = "UPDATE " . NUKE_COMMENTS_TABLE. " SET comments_value = '' WHERE game_id IN ($select_id_sql) ";
+                        if (!$nuke_db->sql_query($sql))
                         {
-                                message_die(GENERAL_ERROR, 'Could not delete from comments table', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not delete from comments table', '', __LINE__, __FILE__, $sql);
                         }
-                        // Comments MOD End
+                        // Comments NUKE_MOD End
             break;
         case 'S':
-            $sql = "DELETE FROM " . SCORES_TABLE . " 
+            $sql = "DELETE FROM " . NUKE_SCORES_TABLE . " 
                 WHERE game_id IN ($select_id_sql) ";
-            if ( !$db->sql_query($sql) )
+            if ( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, 'Could not delete from the scores table', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not delete from the scores table', '', __LINE__, __FILE__, $sql);
             }
-            $sql = "DELETE FROM " . GAMES_TABLE . " 
+            $sql = "DELETE FROM " . NUKE_GAMES_TABLE . " 
                 WHERE game_id IN ($select_id_sql) ";
-            if ( !$db->sql_query($sql) )
+            if ( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, 'Could not delete from the games table', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not delete from the games table', '', __LINE__, __FILE__, $sql);
             }
             
             //Comments Mod Start
-            $sql = "DELETE FROM " . COMMENTS_TABLE . " WHERE game_id IN ($select_id_sql) ";
-            if ( !$db->sql_query($sql) )
+            $sql = "DELETE FROM " . NUKE_COMMENTS_TABLE . " WHERE game_id IN ($select_id_sql) ";
+            if ( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, 'Could delete from comments table', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could delete from comments table', '', __LINE__, __FILE__, $sql);
             }
             //Comments Mod End
 
-            $sql = "UPDATE " . ARCADE_CATEGORIES_TABLE . " SET arcade_nbelmt = arcade_nbelmt - $csc WHERE arcade_catid = $arcade_catid";                
-            if( !$db->sql_query($sql) )
+            $sql = "UPDATE " . NUKE_ARCADE_CATEGORIES_TABLE . " SET arcade_nbelmt = arcade_nbelmt - $csc WHERE arcade_catid = $arcade_catid";                
+            if( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Couldn't update categories table", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't update categories table", "", __LINE__, __FILE__, $sql);
             }
             break;
         case 'Y':
-            $sql = "SELECT SUM(score_set) AS nbset, game_id FROM " . SCORES_TABLE . " 
+            $sql = "SELECT SUM(score_set) AS nbset, game_id FROM " . NUKE_SCORES_TABLE . " 
                 WHERE game_id IN ($select_id_sql) GROUP BY game_id";
-            if ( !$result = $db->sql_query($sql) )
+            if ( !$result = $nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, 'Impossible to reach the table of the scores', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Impossible to reach the table of the scores', '', __LINE__, __FILE__, $sql);
             }
             
-            while ($row = $db->sql_fetchrow($result))
+            while ($row = $nuke_db->sql_fetchrow($result))
             {
-                $sql2 = "UPDATE " . GAMES_TABLE . " SET game_set = " . $row['nbset'] .
+                $sql2 = "UPDATE " . NUKE_GAMES_TABLE . " SET game_set = " . $row['nbset'] .
                     " WHERE game_id = " . $row['game_id'];
-                if ( !$db->sql_query($sql2) )
+                if ( !$nuke_db->sql_query($sql2) )
                 {
-                    message_die(GENERAL_ERROR, 'Impossible to reach the table of the games', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Impossible to reach the table of the games', '', __LINE__, __FILE__, $sql);
                 }
             }
             break;
@@ -399,15 +399,15 @@ $template->set_filenames(array(
         "S_ACTION" => "arcade_elmt.$phpEx")
         );
 
-$sql = "SELECT COUNT(s.score_game) as nbset, g.game_id, g.game_order, g.game_name, g.game_highscore, g.game_set FROM " . GAMES_TABLE . " g left join " . SCORES_TABLE ." s on s.game_id = g.game_id WHERE g.arcade_catid = '$arcade_catid' GROUP BY g.game_id ORDER BY g.game_order";
+$sql = "SELECT COUNT(s.score_game) as nbset, g.game_id, g.game_order, g.game_name, g.game_highscore, g.game_set FROM " . NUKE_GAMES_TABLE . " g left join " . NUKE_SCORES_TABLE ." s on s.game_id = g.game_id WHERE g.arcade_catid = '$arcade_catid' GROUP BY g.game_id ORDER BY g.game_order";
 
-if( !($result = $db->sql_query($sql)) )
+if( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, "Impossible to reach the table of the games", '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, "Impossible to reach the table of the games", '', __LINE__, __FILE__, $sql);
 }
 
 $liste_jeux = array();
-while( $row = $db->sql_fetchrow($result) )
+while( $row = $nuke_db->sql_fetchrow($result) )
 {
   $liste_jeux[] = $row;
 }

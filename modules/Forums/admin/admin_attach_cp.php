@@ -13,7 +13,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 if (!empty($setmodules))
 {
@@ -280,12 +280,12 @@ if ($submit_change && $view == 'attachments')
         FROM ' . ATTACHMENTS_DESC_TABLE . '
         ORDER BY attach_id';
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Couldn\'t get Attachment informations', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t get Attachment informations', '', __LINE__, __FILE__, $sql);
     }
 
-    while ($attachrow = $db->sql_fetchrow($result))
+    while ($attachrow = $nuke_db->sql_fetchrow($result))
     {
         if (isset($attachments['_' . $attachrow['attach_id']]))
         {
@@ -295,14 +295,14 @@ if ($submit_change && $view == 'attachments')
                     SET comment = '" . attach_mod_sql_escape($attachments['_' . $attachrow['attach_id']]['comment']) . "', download_count = " . (int) $attachments['_' . $attachrow['attach_id']]['download_count'] . "
                     WHERE attach_id = " . (int) $attachrow['attach_id'];
                 
-                if (!$db->sql_query($sql))
+                if (!$nuke_db->sql_query($sql))
                 {
-                    message_die(GENERAL_ERROR, 'Couldn\'t update Attachments Informations', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Couldn\'t update Attachments Informations', '', __LINE__, __FILE__, $sql);
                 }
             }
         }
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 }
 
 // Statistics
@@ -330,13 +330,13 @@ if ($view == 'stats')
     $sql = "SELECT count(*) AS total
         FROM " . ATTACHMENTS_DESC_TABLE;
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Error getting total attachments', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Error getting total attachments', '', __LINE__, __FILE__, $sql);
     }
 
-    $total = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $total = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     $number_of_attachments = $total['total'];
 
@@ -345,52 +345,52 @@ if ($view == 'stats')
         WHERE post_id <> 0
         GROUP BY post_id";
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Error getting total posts', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Error getting total posts', '', __LINE__, __FILE__, $sql);
     }
 
-    $number_of_posts = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $number_of_posts = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     $sql = "SELECT privmsgs_id
         FROM " . ATTACHMENTS_TABLE . "
         WHERE privmsgs_id <> 0
         GROUP BY privmsgs_id";
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Error getting total private messages', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Error getting total private messages', '', __LINE__, __FILE__, $sql);
     }
 
-    $number_of_pms = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $number_of_pms = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     $sql = "SELECT p.topic_id
-        FROM " . ATTACHMENTS_TABLE . " a, " . POSTS_TABLE . " p
+        FROM " . ATTACHMENTS_TABLE . " a, " . NUKE_POSTS_TABLE . " p
         WHERE a.post_id = p.post_id
         GROUP BY p.topic_id";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Error getting total topics', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Error getting total topics', '', __LINE__, __FILE__, $sql);
     }
 
-    $number_of_topics = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $number_of_topics = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     $sql = "SELECT user_id_1
         FROM " . ATTACHMENTS_TABLE . "
         WHERE (post_id <> 0)
         GROUP BY user_id_1";
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Error getting total users', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Error getting total users', '', __LINE__, __FILE__, $sql);
     }
 
-    $number_of_users = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $number_of_users = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     $template->assign_vars(array(
         'L_STATISTIC'                => $lang['Statistic'],
@@ -419,17 +419,17 @@ if ($view == 'search')
 {
     // Get Forums and Categories
     $sql = "SELECT c.cat_title, c.cat_id, f.forum_name, f.forum_id  
-        FROM " . CATEGORIES_TABLE . " c, " . FORUMS_TABLE . " f
+        FROM " . NUKE_CATEGORIES_TABLE . " c, " . NUKE_FORUMS_TABLE . " f
         WHERE f.cat_id = c.cat_id 
         ORDER BY c.cat_id, f.forum_order";
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Could not obtain forum_name/forum_id', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not obtain forum_name/forum_id', '', __LINE__, __FILE__, $sql);
     }
 
     $s_forums = '';
-    while ($row = $db->sql_fetchrow($result))
+    while ($row = $nuke_db->sql_fetchrow($result))
     {
         $s_forums .= '<option value="' . $row['forum_id'] . '">' . $row['forum_name'] . '</option>';
 
@@ -453,7 +453,7 @@ if ($view == 'search')
     }
     else
     {
-        message_die(GENERAL_MESSAGE, $lang['No_searchable_forums']);
+        message_die(NUKE_GENERAL_MESSAGE, $lang['No_searchable_forums']);
     }
     
     $template->set_filenames(array(
@@ -504,7 +504,7 @@ if ($view == 'username')
     );
     // Get all Users with their respective total attachments amount
     $sql = "SELECT u.username, a.user_id_1 as user_id, count(*) as total_attachments
-        FROM " . ATTACHMENTS_TABLE . " a, " . USERS_TABLE . " u
+        FROM " . ATTACHMENTS_TABLE . " a, " . NUKE_USERS_TABLE . " u
         WHERE a.user_id_1 = u.user_id
         GROUP BY a.user_id_1, u.username"; 
 
@@ -513,14 +513,14 @@ if ($view == 'username')
         $sql .= ' ' . $order_by;
     }
     
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
     }
 
-    $members = $db->sql_fetchrowset($result);
-    $num_members = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $members = $nuke_db->sql_fetchrowset($result);
+    $num_members = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     if ($num_members > 0)
     {
@@ -532,14 +532,14 @@ if ($view == 'username')
                 WHERE user_id_1 = " . intval($members[$i]['user_id']) . " 
                 GROUP BY attach_id";
         
-            if (!($result = $db->sql_query($sql)))
+            if (!($result = $nuke_db->sql_query($sql)))
             {
-                message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
             }
         
-            $attach_ids = $db->sql_fetchrowset($result);
-            $num_attach_ids = $db->sql_numrows($result);
-            $db->sql_freeresult($result);
+            $attach_ids = $nuke_db->sql_fetchrowset($result);
+            $num_attach_ids = $nuke_db->sql_numrows($result);
+            $nuke_db->sql_freeresult($result);
 
             $attach_id = array();
 
@@ -555,13 +555,13 @@ if ($view == 'username')
                     FROM " . ATTACHMENTS_DESC_TABLE . "
                     WHERE attach_id IN (" . implode(', ', $attach_id) . ")";
 
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
                 }
 
-                $row = $db->sql_fetchrow($result);
-                $db->sql_freeresult($result);
+                $row = $nuke_db->sql_fetchrow($result);
+                $nuke_db->sql_freeresult($result);
 
                 $members[$i]['total_size'] = (int) $row['total_size'];
             }
@@ -598,13 +598,13 @@ if ($view == 'username')
         FROM " . ATTACHMENTS_TABLE . "
         GROUP BY user_id_1";
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Error getting total users', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Error getting total users', '', __LINE__, __FILE__, $sql);
     }
 
-    $total_rows = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $total_rows = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 }
 
 // Attachments
@@ -646,16 +646,16 @@ if ($view == 'attachments')
     if ($user_based)
     {
         $sql = "SELECT username 
-            FROM " . USERS_TABLE . " 
+            FROM " . NUKE_USERS_TABLE . " 
             WHERE user_id = " . intval($uid);
 
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Error getting username', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Error getting username', '', __LINE__, __FILE__, $sql);
         }
 
-        $row = $db->sql_fetchrow($result);
-        $db->sql_freeresult($result);
+        $row = $nuke_db->sql_fetchrow($result);
+        $nuke_db->sql_freeresult($result);
 
         $username = $row['username'];
 
@@ -673,18 +673,18 @@ if ($view == 'attachments')
             WHERE user_id_1 = " . intval($uid) . "
             GROUP BY attach_id";
         
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
         }
         
-        $attach_ids = $db->sql_fetchrowset($result);
-        $num_attach_ids = $db->sql_numrows($result);
-        $db->sql_freeresult($result);
+        $attach_ids = $nuke_db->sql_fetchrowset($result);
+        $num_attach_ids = $nuke_db->sql_numrows($result);
+        $nuke_db->sql_freeresult($result);
 
         if ($num_attach_ids == 0)
         {
-            message_die(GENERAL_MESSAGE, 'For some reason no Attachments are assigned to the User "' . $username . '".');
+            message_die(NUKE_GENERAL_MESSAGE, 'For some reason no Attachments are assigned to the User "' . $username . '".');
         }
         
         $total_rows = $num_attach_ids;
@@ -716,14 +716,14 @@ if ($view == 'attachments')
 
     if (!$search_based)
     {
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
         }
 
-        $attachments = $db->sql_fetchrowset($result);
-        $num_attach = $db->sql_numrows($result);
-        $db->sql_freeresult($result);
+        $attachments = $nuke_db->sql_fetchrowset($result);
+        $num_attach = $nuke_db->sql_numrows($result);
+        $nuke_db->sql_freeresult($result);
     }
     
 	if (sizeof($attachments) > 0)
@@ -752,31 +752,31 @@ if ($view == 'attachments')
                 FROM " . ATTACHMENTS_TABLE . "
                 WHERE attach_id = " . intval($attachments[$i]['attach_id']);
 
-            if (!($result = $db->sql_query($sql)))
+            if (!($result = $nuke_db->sql_query($sql)))
             {
-                message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
             }
 
-            $ids = $db->sql_fetchrowset($result);
-            $num_ids = $db->sql_numrows($result);
-            $db->sql_freeresult($result);
+            $ids = $nuke_db->sql_fetchrowset($result);
+            $num_ids = $nuke_db->sql_numrows($result);
+            $nuke_db->sql_freeresult($result);
 
             for ($j = 0; $j < $num_ids; $j++)
             {
                 if ($ids[$j]['post_id'] != 0)
                 {
                     $sql = "SELECT t.topic_title
-                        FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
+                        FROM " . NUKE_BB_TOPICS_TABLE . " t, " . NUKE_POSTS_TABLE . " p
                         WHERE p.post_id = " . intval($ids[$j]['post_id']) . " AND p.topic_id = t.topic_id
                         GROUP BY t.topic_id, t.topic_title";
 
-                    if (!($result = $db->sql_query($sql)))
+                    if (!($result = $nuke_db->sql_query($sql)))
                     {
-                        message_die(GENERAL_ERROR, 'Couldn\'t query topic', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query topic', '', __LINE__, __FILE__, $sql);
                     }
 
-                    $row = $db->sql_fetchrow($result);
-                    $db->sql_freeresult($result);
+                    $row = $nuke_db->sql_fetchrow($result);
+                    $nuke_db->sql_freeresult($result);
             
                     $post_title = $row['topic_title'];
 
@@ -785,7 +785,7 @@ if ($view == 'attachments')
                         $post_title = substr($post_title, 0, 30) . '...';
                     }
 
-                    $view_topic = append_sid('viewtopic.' . $phpEx . '?' . POST_POST_URL . '=' . $ids[$j]['post_id'] . '&menu=1#' . $ids[$j]['post_id']);
+                    $view_topic = append_sid('viewtopic.' . $phpEx . '?' . NUKE_POST_POST_URL . '=' . $ids[$j]['post_id'] . '&menu=1#' . $ids[$j]['post_id']);
 
                     $post_titles[] = '<a href="' . $view_topic . '" class="gen" target="_blank">' . $post_title . '</a>';
                 }
@@ -815,7 +815,7 @@ if ($view == 'attachments')
                 'S_DELETE_BOX'    => $delete_box,
                 'S_HIDDEN'        => $hidden_field,
                 'U_VIEW_ATTACHMENT'    => append_sid('download.' . $phpEx . '?id=' . $attachments[$i]['attach_id'] . '&menu=1'))
-//                'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_sid("../viewtopic." . $phpEx . "?" . POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : '')
+//                'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_sid("../viewtopic." . $phpEx . "?" . NUKE_POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : '')
             );
             
         }
@@ -827,13 +827,13 @@ if ($view == 'attachments')
         {
             $sql = "SELECT attach_id FROM " . ATTACHMENTS_DESC_TABLE;
 
-            if ( !($result = $db->sql_query($sql)) )
+            if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_ERROR, 'Could not query Attachment Description Table', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not query Attachment Description Table', '', __LINE__, __FILE__, $sql);
             }
 
-            $total_rows = $db->sql_numrows($result);
-            $db->sql_freeresult($result);
+            $total_rows = $nuke_db->sql_numrows($result);
+            $nuke_db->sql_freeresult($result);
         }
     }
 }

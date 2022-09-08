@@ -34,11 +34,11 @@
         <td align="left"><span  class="nav"><a href="{U_INDEX}" class="nav">{L_INDEX}</a>
         <!-- BEGIN switch_not_privmsg --> 
         -> <a href="{U_VIEW_FORUM}" class="nav">{FORUM_NAME}</a>
-        <!-- // Begin View Topic Name While Posting MOD -->
+        <!-- // Begin View Topic Name While Posting NUKE_MOD -->
         <!-- BEGIN reply_mode -->
                 -> <a href="{U_VIEW_TOPIC}" class="nav">{TOPIC_SUBJECT}</a>
         <!-- END reply_mode -->
-        <!-- // End View Topic Name While Posting MOD -->
+        <!-- // End View Topic Name While Posting NUKE_MOD -->
         </span></td>
         <!-- END switch_not_privmsg -->
     </tr>
@@ -60,14 +60,14 @@
         <td class="row2"><span class="genmed"><input type="text"  class="post" name="username" size="25" tabindex="1" value="{USERNAME}" /><input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}', '_phpbbsearch', 'HEIGHT=250,resizable=yes,WIDTH=400');return false;" /></span></td>
     </tr>
     <!-- END switch_privmsg -->
-    <!-- Start add - Custom mass PM MOD -->
+    <!-- Start add - Custom mass PM NUKE_MOD -->
     <!-- BEGIN switch_groupmsg -->
     <tr> 
         <td class="row1"><span class="gen"><strong>{L_USERNAME}</strong></span></td>
         <td class="row2"><span class="genmed">{USERNAME}</span></td>
     </tr>
     <!-- END switch_groupmsg -->
-    <!-- End add - Custom mass PM MOD -->
+    <!-- End add - Custom mass PM NUKE_MOD -->
     <tr> 
       <td class="row1" width="22%"><span class="gen"><strong>{L_SUBJECT}</strong></span></td>
       <td class="row2" width="78%"> <span class="gen"> 
@@ -170,7 +170,7 @@
                                             <option style="color:darkgreen; background-color: {T_TD_COLOR1}" value="darkgreen" class="genmed">{L_COLOR_DARKGREEN}</option>
                                             </select>
                                     </td>
-                                    <td align="right" width="30%"><a href="http://hvmdesign.com/" class="gensmall" title="Advanced BBCode Box v5.0.0 MOD - by Disturbed One - www.HVMDesign.com" target="blank">&copy;</a></td>
+                                    <td align="right" width="30%"><a href="http://hvmdesign.com/" class="gensmall" title="Advanced BBCode Box v5.0.0 NUKE_MOD - by Disturbed One - www.HVMDesign.com" target="blank">&copy;</a></td>
                                 </tr>
                             </table>
                         </td>

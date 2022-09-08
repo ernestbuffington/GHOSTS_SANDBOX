@@ -41,9 +41,9 @@ if (!defined('CNBYA')) {
 
 if(is_mod_admin($module_name)) 
 {
-    $db->sql_query("DELETE FROM ".$user_prefix."_cnbya_field WHERE fid='$fid'");
-    $db->sql_query("DELETE FROM ".$user_prefix."_cnbya_value WHERE fid='$fid'");
-    $db->sql_query("DELETE FROM ".$user_prefix."_cnbya_value_temp WHERE fid='$fid'");
+    $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_cnbya_field WHERE fid='$fid'");
+    $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_cnbya_value WHERE fid='$fid'");
+    $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_cnbya_value_temp WHERE fid='$fid'");
     header("Location:modules.php?name=$module_name&file=admin&op=addField");
 }
 

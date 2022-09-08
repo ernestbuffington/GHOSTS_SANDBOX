@@ -43,7 +43,7 @@ if ($popup != "1") {
         $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 include('includes/functions_admin.'.$phpEx);
@@ -60,7 +60,7 @@ include("includes/functions_log.php");
 // function block
 function get_topic_id($topic)
 {
-    global $db;
+    global $nuke_db;
     $topic_id = 0;
 
     // is this a direct value ?
@@ -85,16 +85,16 @@ function get_topic_id($topic)
             if (empty($val)) $val = 0;
             switch($key)
             {
-                case POST_POST_URL:
-                    $sql = "SELECT topic_id FROM " . POSTS_TABLE . " WHERE post_id=$val";
-                    if ( !($result = $db->sql_query($sql)) ) message_die(GENERAL_ERROR, 'Could not get post informations', '', __LINE__, __FILE__, $sql);
-                    if ($row = $db->sql_fetchrow($result))
+                case NUKE_POST_POST_URL:
+                    $sql = "SELECT topic_id FROM " . NUKE_POSTS_TABLE . " WHERE post_id=$val";
+                    if ( !($result = $nuke_db->sql_query($sql)) ) message_die(NUKE_GENERAL_ERROR, 'Could not get post informations', '', __LINE__, __FILE__, $sql);
+                    if ($row = $nuke_db->sql_fetchrow($result))
                     {
                         $val = $row['topic_id'];
                         $found = true;
                     }
                     break;
-                case POST_TOPIC_URL:
+                case NUKE_POST_TOPIC_URL:
                     $found = true;
                     break;
             }
@@ -111,23 +111,23 @@ function get_topic_id($topic)
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_INDEX);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
 init_userprefs($userdata);
 //
 // End session management
 //
 
 // check if user is a moderator or an admin
-if (($userdata['user_level'] != MOD) && ($userdata['user_level'] != ADMIN))
+if (($userdata['user_level'] != NUKE_MOD) && ($userdata['user_level'] != NUKE_ADMIN))
 {
-    message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['Not_Authorised']);
 }
 
 // from topic
 $from_topic = isset($HTTP_POST_VARS['from_topic']) ? strtolower(trim(htmlspecialchars($HTTP_POST_VARS['from_topic']))) : '';
-if (empty($from_topic) && (isset($HTTP_GET_VARS[POST_TOPIC_URL]) || isset($HTTP_GET_VARS[POST_POST_URL])))
+if (empty($from_topic) && (isset($HTTP_GET_VARS[NUKE_POST_TOPIC_URL]) || isset($HTTP_GET_VARS[NUKE_POST_POST_URL])))
 {
-    $from_topic = (isset($HTTP_GET_VARS[POST_TOPIC_URL])) ? intval($HTTP_GET_VARS[POST_TOPIC_URL]) : POST_POST_URL . '=' . intval($HTTP_GET_VARS[POST_POST_URL]);
+    $from_topic = (isset($HTTP_GET_VARS[NUKE_POST_TOPIC_URL])) ? intval($HTTP_GET_VARS[NUKE_POST_TOPIC_URL]) : NUKE_POST_POST_URL . '=' . intval($HTTP_GET_VARS[NUKE_POST_POST_URL]);
 }
 $from_topic_id = get_topic_id($from_topic);
 
@@ -188,9 +188,9 @@ if (!empty($HTTP_POST_VARS['sid']) || !empty($HTTP_GET_VARS['sid']))
 $from_title = '';
 if (!empty($from_topic_id))
 {
-    $sql = "SELECT topic_title FROM " . TOPICS_TABLE . " WHERE topic_id=$from_topic_id";
-    if ( !($result = $db->sql_query($sql)) ) message_die(GENERAL_ERROR, 'Could not get from-topic informations', '', __LINE__, __FILE__, $sql);
-    if ($row = $db->sql_fetchrow($result))
+    $sql = "SELECT topic_title FROM " . NUKE_BB_TOPICS_TABLE . " WHERE topic_id=$from_topic_id";
+    if ( !($result = $nuke_db->sql_query($sql)) ) message_die(NUKE_GENERAL_ERROR, 'Could not get from-topic informations', '', __LINE__, __FILE__, $sql);
+    if ($row = $nuke_db->sql_fetchrow($result))
     {
         $from_title = $row['topic_title'];
     }
@@ -198,9 +198,9 @@ if (!empty($from_topic_id))
 $to_title = '';
 if (!empty($to_topic_id))
 {
-    $sql = "SELECT topic_title FROM " . TOPICS_TABLE . " WHERE topic_id=$to_topic_id";
-    if ( !($result = $db->sql_query($sql)) ) message_die(GENERAL_ERROR, 'Could not get to-topic informations', '', __LINE__, __FILE__, $sql);
-    if ($row = $db->sql_fetchrow($result))
+    $sql = "SELECT topic_title FROM " . NUKE_BB_TOPICS_TABLE . " WHERE topic_id=$to_topic_id";
+    if ( !($result = $nuke_db->sql_query($sql)) ) message_die(NUKE_GENERAL_ERROR, 'Could not get to-topic informations', '', __LINE__, __FILE__, $sql);
+    if ($row = $nuke_db->sql_fetchrow($result))
     {
         $to_title = $row['topic_title'];
     }
@@ -208,14 +208,14 @@ if (!empty($to_topic_id))
 
 // forum_id
 $forum_id = 0;
-if (isset($HTTP_POST_VARS[POST_FORUM_URL]) || isset($HTTP_GET_VARS[POST_FORUM_URL]))
+if (isset($HTTP_POST_VARS[NUKE_POST_FORUM_URL]) || isset($HTTP_GET_VARS[NUKE_POST_FORUM_URL]))
 {
-    $forum_id = (isset($HTTP_POST_VARS[POST_FORUM_URL])) ? intval($HTTP_POST_VARS[POST_FORUM_URL]) : intval($HTTP_GET_VARS[POST_FORUM_URL]);
+    $forum_id = (isset($HTTP_POST_VARS[NUKE_POST_FORUM_URL])) ? intval($HTTP_POST_VARS[NUKE_POST_FORUM_URL]) : intval($HTTP_GET_VARS[NUKE_POST_FORUM_URL]);
 }
 if (isset($HTTP_POST_VARS['fid']) || isset($HTTP_GET_VARS['fid']))
 {
     $fid = (isset($HTTP_POST_VARS['fid'])) ? $HTTP_POST_VARS['fid'] : $HTTP_GET_VARS['fid'];
-    if (substr($fid, 0, 1) == POST_FORUM_URL)
+    if (substr($fid, 0, 1) == NUKE_POST_FORUM_URL)
     {
         $forum_id = intval(substr($fid, 1));
     }
@@ -227,11 +227,11 @@ if (($select_from || $select_to) && (!$cancel))
     // get the list of forums
     if (function_exists(selectbox))
     {
-        $list_forums = selectbox('fid', false, POST_FORUM_URL . $forum_id);
+        $list_forums = selectbox('fid', false, NUKE_POST_FORUM_URL . $forum_id);
     }
     else
     {
-        $list_forums = make_forum_select(POST_FORUM_URL, false, $forum_id);
+        $list_forums = make_forum_select(NUKE_POST_FORUM_URL, false, $forum_id);
     }
 
     // how many record in the forum
@@ -239,22 +239,22 @@ if (($select_from || $select_to) && (!$cancel))
     $per_page = intval($board_config['topics_per_page']);
 
     $sql_merge = "SELECT t.*, u.username, u.user_id, u2.username as user2, u2.user_id as id2, p.post_username, p2.post_username AS post_username2, p2.post_time 
-        FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u2
+        FROM " . NUKE_BB_TOPICS_TABLE . " t, " . NUKE_USERS_TABLE . " u, " . NUKE_POSTS_TABLE . " p, " . NUKE_POSTS_TABLE . " p2, " . NUKE_USERS_TABLE . " u2
         WHERE t.forum_id = $forum_id
             AND t.topic_poster = u.user_id
             AND p.post_id = t.topic_first_post_id
             AND p2.post_id = t.topic_last_post_id
             AND u2.user_id = p2.poster_id 
-            AND topic_status <> " . TOPIC_MOVED;
+            AND topic_status <> " . NUKE_TOPIC_MOVED;
 
     if ( !empty($forum_id) )
     {
         $sql = $sql_merge;
-        if ( !$result = $db->sql_query($sql) )
+        if ( !$result = $nuke_db->sql_query($sql) )
         {
-            message_die(GENERAL_ERROR, 'Could not get topics informations', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not get topics informations', '', __LINE__, __FILE__, $sql);
         }
-        $nbitems = $db->sql_numrows($result);
+        $nbitems = $nuke_db->sql_numrows($result);
         $nbpages = floor( ($nbitems-1) / $per_page )+1;
     }
 
@@ -298,13 +298,13 @@ if (($select_from || $select_to) && (!$cancel))
     if ( !empty($forum_id) )
     {
         $sql = $sql_merge . " ORDER BY t.topic_type DESC, t.topic_last_post_id DESC LIMIT $start_topic, $per_page";
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Could not get topics informations', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not get topics informations', '', __LINE__, __FILE__, $sql);
         }
-        while ($row = $db->sql_fetchrow($result))
+        while ($row = $nuke_db->sql_fetchrow($result))
         {
-            $row['topic_id'] = POST_TOPIC_URL . $row['topic_id'];
+            $row['topic_id'] = NUKE_POST_TOPIC_URL . $row['topic_id'];
             $topic_rowset[] = $row;
         }
     }
@@ -350,7 +350,7 @@ if ($submit)
     // check session id
     if ($sid == '' || $sid != $userdata['session_id'])
     {
-        message_die(GENERAL_ERROR, 'Invalid_session');
+        message_die(NUKE_GENERAL_ERROR, 'Invalid_session');
     }
 
     // init
@@ -364,9 +364,9 @@ if ($submit)
     $from_poll = false;
     if (!empty($from_topic_id))
     {
-        $sql = "SELECT forum_id, topic_vote FROM " . TOPICS_TABLE . " WHERE topic_id=$from_topic_id";
-        if ( !($result = $db->sql_query($sql)) ) message_die(GENERAL_ERROR, 'Could not get topic informations', '', __LINE__, __FILE__, $sql);
-        if ($row = $db->sql_fetchrow($result))
+        $sql = "SELECT forum_id, topic_vote FROM " . NUKE_BB_TOPICS_TABLE . " WHERE topic_id=$from_topic_id";
+        if ( !($result = $nuke_db->sql_query($sql)) ) message_die(NUKE_GENERAL_ERROR, 'Could not get topic informations', '', __LINE__, __FILE__, $sql);
+        if ($row = $nuke_db->sql_fetchrow($result))
         {
             $from_forum_id = $row['forum_id'];
             $from_poll = $row['topic_vote'];
@@ -385,9 +385,9 @@ if ($submit)
     $to_poll = false;
     if (!empty($to_topic_id))
     {
-        $sql = "SELECT forum_id, topic_vote FROM " . TOPICS_TABLE . " WHERE topic_id=$to_topic_id";
-        if ( !($result = $db->sql_query($sql)) ) message_die(GENERAL_ERROR, 'Could not get topic informations', '', __LINE__, __FILE__, $sql);
-        if ($row = $db->sql_fetchrow($result))
+        $sql = "SELECT forum_id, topic_vote FROM " . NUKE_BB_TOPICS_TABLE . " WHERE topic_id=$to_topic_id";
+        if ( !($result = $nuke_db->sql_query($sql)) ) message_die(NUKE_GENERAL_ERROR, 'Could not get topic informations', '', __LINE__, __FILE__, $sql);
+        if ($row = $nuke_db->sql_fetchrow($result))
         {
             $to_forum_id = $row['forum_id'];
             $to_poll = $row['topic_vote'];
@@ -413,7 +413,7 @@ if ($submit)
     // check authorizations
     if (!empty($from_forum_id))
     {
-        $is_auth = auth(AUTH_ALL, $from_forum_id, $userdata);
+        $is_auth = auth(NUKE_AUTH_ALL, $from_forum_id, $userdata);
         if ( !$is_auth['auth_mod'] )
         {
             $error = true;
@@ -422,7 +422,7 @@ if ($submit)
     }
     if (!empty($to_forum_id))
     {
-        $is_auth = auth(AUTH_ALL, $to_forum_id, $userdata);
+        $is_auth = auth(NUKE_AUTH_ALL, $to_forum_id, $userdata);
         if ( !$is_auth['auth_mod'] )
         {
             $error = true;
@@ -451,7 +451,7 @@ if ($submit)
     // error found
     if ($error)
     {
-        message_die(GENERAL_ERROR, $error_msg);
+        message_die(NUKE_GENERAL_ERROR, $error_msg);
     }
 
     // ask for confirmation or process
@@ -464,76 +464,76 @@ if ($submit)
             {
                 // delete the vote
                 $vote_id = 0;
-                $sql = "SELECT vote_id FROM " . VOTE_DESC_TABLE . " WHERE topic_id=$from_topic_id";
-                if ( !$result=$db->sql_query($sql) ) message_die(GENERAL_ERROR, 'Could not read vote description', '', __LINE__, __FILE__, $sql);
-                if ($row=$db->sql_fetchrow($result)) $vote_id = $row['vote_id'];
+                $sql = "SELECT vote_id FROM " . NUKE_VOTE_DESC_TABLE . " WHERE topic_id=$from_topic_id";
+                if ( !$result=$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not read vote description', '', __LINE__, __FILE__, $sql);
+                if ($row=$nuke_db->sql_fetchrow($result)) $vote_id = $row['vote_id'];
                 if (!empty($vote_id))
                 {
                     // delete voters
-                    $sql = "DELETE FROM " . VOTE_USERS_TABLE . " WHERE vote_id=$vote_id";
-                    if ( !$db->sql_query($sql) ) message_die(GENERAL_ERROR, 'Could not delete votes', '', __LINE__, __FILE__, $sql);
+                    $sql = "DELETE FROM " . NUKE_VOTE_USERS_TABLE . " WHERE vote_id=$vote_id";
+                    if ( !$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not delete votes', '', __LINE__, __FILE__, $sql);
                     // delete results
-                    $sql = "DELETE FROM " . VOTE_RESULTS_TABLE . " WHERE vote_id=$vote_id";
-                    if ( !$db->sql_query($sql) ) message_die(GENERAL_ERROR, 'Could not delete vote results', '', __LINE__, __FILE__, $sql);
+                    $sql = "DELETE FROM " . NUKE_VOTE_RESULTS_TABLE . " WHERE vote_id=$vote_id";
+                    if ( !$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not delete vote results', '', __LINE__, __FILE__, $sql);
                     // delete description
-                    $sql = "DELETE FROM " . VOTE_DESC_TABLE . " WHERE vote_id=$vote_id";
-                    if ( !$db->sql_query($sql) ) message_die(GENERAL_ERROR, 'Could not delete vote description', '', __LINE__, __FILE__, $sql);
+                    $sql = "DELETE FROM " . NUKE_VOTE_DESC_TABLE . " WHERE vote_id=$vote_id";
+                    if ( !$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not delete vote description', '', __LINE__, __FILE__, $sql);
                 }
             }
             else
             {
                 // grab the poll to the new topic
-                $sql = "UPDATE " . VOTE_DESC_TABLE . "
+                $sql = "UPDATE " . NUKE_VOTE_DESC_TABLE . "
                             SET topic_id=$to_topic_id
                             WHERE topic_id=$from_topic_id";
-                if ( !$db->sql_query($sql) ) message_die(GENERAL_ERROR, 'Could not update vote desc information', '', __LINE__, __FILE__, $sql);
+                if ( !$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not update vote desc information', '', __LINE__, __FILE__, $sql);
             }
         }
 
         // here you can add the process of ie mycalendar dates
 
         // check if the destination is already watched
-        $sql = "SELECT * FROM " . TOPICS_WATCH_TABLE . " WHERE topic_id=$to_topic_id";
-        if ( !$result=$db->sql_query($sql) ) message_die(GENERAL_ERROR, 'Could not read topics watch informations', '', __LINE__, __FILE__, $sql);
+        $sql = "SELECT * FROM " . NUKE_TOPICS_WATCH_TABLE . " WHERE topic_id=$to_topic_id";
+        if ( !$result=$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not read topics watch informations', '', __LINE__, __FILE__, $sql);
         $user_ids = array();
-        while ($row = $db->sql_fetchrow($result)) $user_ids[] = $row['user_id'];
+        while ($row = $nuke_db->sql_fetchrow($result)) $user_ids[] = $row['user_id'];
         $sql_user = '';
         if (!empty($user_ids))
         {
             $sql_user = " AND user_id NOT IN (" . implode(', ', $user_ids) . ")";
         }
         // grab the topics watch to the new topic
-        $sql = "UPDATE " . TOPICS_WATCH_TABLE . " SET topic_id=$to_topic_id WHERE topic_id=$from_topic_id" . $sql_user;
-        if ( !$db->sql_query($sql) ) message_die(GENERAL_ERROR, 'Could not update topics watch table', '', __LINE__, __FILE__, $sql);
+        $sql = "UPDATE " . NUKE_TOPICS_WATCH_TABLE . " SET topic_id=$to_topic_id WHERE topic_id=$from_topic_id" . $sql_user;
+        if ( !$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not update topics watch table', '', __LINE__, __FILE__, $sql);
         // clean up the old topics watch
-        $sql = "DELETE FROM " . TOPICS_WATCH_TABLE . " WHERE topic_id=$from_topic_id";
-        if ( !$db->sql_query($sql) ) message_die(GENERAL_ERROR, 'Could not delete topics watch table', '', __LINE__, __FILE__, $sql);
+        $sql = "DELETE FROM " . NUKE_TOPICS_WATCH_TABLE . " WHERE topic_id=$from_topic_id";
+        if ( !$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not delete topics watch table', '', __LINE__, __FILE__, $sql);
 
         // process the posts
-        $sql = "UPDATE " . POSTS_TABLE . " SET forum_id=$to_forum_id, topic_id=$to_topic_id WHERE topic_id=$from_topic_id";
-        if ( !$db->sql_query($sql) ) message_die(GENERAL_ERROR, 'Could not update posts information', '', __LINE__, __FILE__, $sql);
+        $sql = "UPDATE " . NUKE_POSTS_TABLE . " SET forum_id=$to_forum_id, topic_id=$to_topic_id WHERE topic_id=$from_topic_id";
+        if ( !$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not update posts information', '', __LINE__, __FILE__, $sql);
 
         // get the old topic data for a shadow
-        $sql = "SELECT * FROM " . TOPICS_TABLE . " WHERE topic_id=$from_topic_id";
-        if ( !$result = $db->sql_query($sql) ) message_die(GENERAL_ERROR, 'Could not read from-topic informations', '', __LINE__, __FILE__, $sql);
-        $topic_data = $db->sql_fetchrow($result);
+        $sql = "SELECT * FROM " . NUKE_BB_TOPICS_TABLE . " WHERE topic_id=$from_topic_id";
+        if ( !$result = $nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not read from-topic informations', '', __LINE__, __FILE__, $sql);
+        $topic_data = $nuke_db->sql_fetchrow($result);
 
         if ($shadow)
         {
             // transform the merged topic in a shadow
-            $sql = "UPDATE " . TOPICS_TABLE . " 
-                    SET topic_status=" . TOPIC_MOVED . ", topic_type=" . POST_NORMAL . ", topic_moved_id=$to_topic_id
+            $sql = "UPDATE " . NUKE_BB_TOPICS_TABLE . " 
+                    SET topic_status=" . NUKE_TOPIC_MOVED . ", topic_type=" . NUKE_POST_NORMAL . ", topic_moved_id=$to_topic_id
                     WHERE topic_id=$from_topic_id";
-            if ( !$db->sql_query($sql) )
+            if ( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, 'Could not set shadow topic', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not set shadow topic', '', __LINE__, __FILE__, $sql);
             }
         }
         else
         {
             // delete the old topic
-            $sql = "DELETE FROM " . TOPICS_TABLE . " WHERE topic_id=$from_topic_id";
-            if ( !$db->sql_query($sql) ) message_die(GENERAL_ERROR, 'Could not update delete topic merged', '', __LINE__, __FILE__, $sql);
+            $sql = "DELETE FROM " . NUKE_BB_TOPICS_TABLE . " WHERE topic_id=$from_topic_id";
+            if ( !$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not update delete topic merged', '', __LINE__, __FILE__, $sql);
         }
 
         // build the update request
@@ -547,16 +547,16 @@ if ($submit)
         if ($from_poll && !$to_poll)
         {
             $sql_update .= ( empty($sql_update) ? '' : ', ') . 'topic_vote=1';
-            $sql = "UPDATE " . TOPICS_TABLE . " SET topic_vote=1 WHERE topic_id=$to_topic_id";
+            $sql = "UPDATE " . NUKE_BB_TOPICS_TABLE . " SET topic_vote=1 WHERE topic_id=$to_topic_id";
         }
 
         // final update
         if ( !empty($sql_update) )
         {
-            $sql = " UPDATE " . TOPICS_TABLE . " SET $sql_update WHERE topic_id=$to_topic_id";
-            if ( !$db->sql_query($sql) )
+            $sql = " UPDATE " . NUKE_BB_TOPICS_TABLE . " SET $sql_update WHERE topic_id=$to_topic_id";
+            if ( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, 'Could not update to topic', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not update to topic', '', __LINE__, __FILE__, $sql);
             }
         }
         
@@ -575,9 +575,9 @@ if ($submit)
         
         // send end message
         $template->assign_vars(array(
-            'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$to_topic_id") . '">')
+            'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$to_topic_id") . '">')
         );
-        message_die(GENERAL_MESSAGE, $lang['Merge_topic_done'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$to_topic_id") . '" class="gen">', '</a>')  . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '" class="gen">', '</a>'));
+        message_die(NUKE_GENERAL_MESSAGE, $lang['Merge_topic_done'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$to_topic_id") . '" class="gen">', '</a>')  . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '" class="gen">', '</a>'));
         exit;
     }
     else

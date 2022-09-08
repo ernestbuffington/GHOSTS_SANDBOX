@@ -43,7 +43,7 @@ if ($popup != "1")
     {
         $phpbb2_root_path = NUKE_PHPBB2_DIR;
     }
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 include_once("includes/functions_report.php");
@@ -51,7 +51,7 @@ include_once("includes/functions_report.php");
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_INDEX);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
 init_userprefs($userdata);
 //
 // End session management
@@ -59,12 +59,12 @@ init_userprefs($userdata);
 
 if( !$userdata['session_logged_in'] )
 {
-    redirect('login.'.$phpEx.'?redirect=viewpost_reports.'.$phpEx);
+    nuke_redirect('login.'.$phpEx.'?nuke_redirect=viewpost_reports.'.$phpEx);
 }
 
-if ( $userdata['user_level'] < ADMIN )
+if ( $userdata['user_level'] < NUKE_ADMIN )
 {
-    message_die(GENERAL_MESSAGE, $lang['Not_Moderator'], $lang['Not_Authorised']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['Not_Moderator'], $lang['Not_Authorised']);
 }
 
 if ( isset($HTTP_POST_VARS['status']) || isset($HTTP_GET_VARS['status']) )
@@ -73,7 +73,7 @@ if ( isset($HTTP_POST_VARS['status']) || isset($HTTP_GET_VARS['status']) )
 }
 else
 {
-    $status = REPORT_POST_NEW;
+    $status = NUKE_REPORT_POST_NEW;
 }
 
 if ( isset($HTTP_POST_VARS['mode']) || isset($HTTP_GET_VARS['mode']) )
@@ -119,7 +119,7 @@ if ( ($mode == 'closereport' || $mode == 'openreport') && $report_id != '' )
             'TOPIC_TITLE' => $topic_title,
             'POST_ID' => $post_id,
             'REPORT_COMMENTS' => $report_comments,
-            'U_VIEW_TOPIC' => append_sid('viewtopic.'.$phpEx.'?' . POST_POST_URL . '=' . $post_id . '#' . $post_id),
+            'U_VIEW_TOPIC' => append_sid('viewtopic.'.$phpEx.'?' . NUKE_POST_POST_URL . '=' . $post_id . '#' . $post_id),
             'L_REPORT_COMMENT' => $lang['Report_comment'],
             'L_ACTION' => $lang['Action'],
             'L_COMMENTS' => $lang['Comments'],
@@ -144,7 +144,7 @@ if ( ($mode == 'closereport' || $mode == 'openreport') && $report_id != '' )
         $time_var = time();
 
         // create the new comments
-        $last_action_user = '<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;' . POST_USERS_URL . '=' . $userdata['user_id'] . '">' . $userdata['username'] . '</a>' ;
+        $last_action_user = '<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;' . NUKE_POST_USERS_URL . '=' . $userdata['user_id'] . '">' . $userdata['username'] . '</a>' ;
         $last_action_date = create_date($board_config['default_dateformat'], $time_var, $board_config['board_timezone']);
 
         if ( $mode == 'closereport' )
@@ -164,20 +164,20 @@ if ( ($mode == 'closereport' || $mode == 'openreport') && $report_id != '' )
         }
 
         // update report status
-          $sql = "UPDATE " . POST_REPORTS_TABLE . " SET
-            report_status = " . ( ( $mode == 'closereport' ) ? REPORT_POST_CLOSED : REPORT_POST_NEW ) . ",
+          $sql = "UPDATE " . NUKE_POST_REPORTS_TABLE . " SET
+            report_status = " . ( ( $mode == 'closereport' ) ? NUKE_REPORT_POST_CLOSED : NUKE_REPORT_POST_NEW ) . ",
             last_action_user_id = " . $userdata['user_id'] . ",
             last_action_time = " . $time_var . ",
             last_action_comments = '" . str_replace("\'", "''", $last_action_comments) . "'
             WHERE report_id = " . $report_id;
 
-        if ( !$db->sql_query($sql) )
+        if ( !$nuke_db->sql_query($sql) )
         {
-            message_die(GENERAL_ERROR, 'Could not update status', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not update status', '', __LINE__, __FILE__, $sql);
         }
 
         $message =  $lang['Close_success'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
     }
 }
 else if ( $mode == 'close' || $mode == 'open' )
@@ -187,7 +187,7 @@ else if ( $mode == 'close' || $mode == 'open' )
 
     // comment to use when doing mass (checkbox & drop down menu) updating
     // here we have to add the previous comments for each report too
-    $last_action_user = '<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;' . POST_USERS_URL . '=' . $userdata['user_id'] . '">' . $userdata['username'] . '</a>' ;
+    $last_action_user = '<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;' . NUKE_POST_USERS_URL . '=' . $userdata['user_id'] . '">' . $userdata['username'] . '</a>' ;
     $last_action_date = create_date($board_config['default_dateformat'], $time_var, $board_config['board_timezone']);
 
     if ( $mode == 'close' )
@@ -205,12 +205,12 @@ else if ( $mode == 'close' || $mode == 'open' )
     $mass_action_comments = str_replace("'", "&#039;", $mass_action_comments);
 
     // get the selected reports
-    $reports = $HTTP_POST_VARS[POST_POST_URL];
+    $reports = $HTTP_POST_VARS[NUKE_POST_POST_URL];
 
     if ( empty($reports) )
     {
         $message =  $lang['Report_not_selected'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
     }
 
     $report_ids = array();
@@ -220,17 +220,17 @@ else if ( $mode == 'close' || $mode == 'open' )
     }
 
     // get the stored comments for the specific reports
-    $sql = "SELECT report_id, last_action_comments FROM " . POST_REPORTS_TABLE . "
+    $sql = "SELECT report_id, last_action_comments FROM " . NUKE_POST_REPORTS_TABLE . "
         WHERE report_id IN (" . implode(',', $report_ids) . ")";
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not get report comments', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get report comments', '', __LINE__, __FILE__, $sql);
     }
 
     // store results into a special array
     // using report_id as a key pointing to the right last_action_comments
     $reports_comments = array();
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
         $reports_comments[$row['report_id']] = $row['last_action_comments'];
     }
@@ -250,56 +250,56 @@ else if ( $mode == 'close' || $mode == 'open' )
                 $last_action_comments = $mass_action_comments;
             }
 
-            $sql = "UPDATE " . POST_REPORTS_TABLE . " SET
-                report_status = " . ( ( $mode == 'close' ) ? REPORT_POST_CLOSED : REPORT_POST_NEW ) . ",
+            $sql = "UPDATE " . NUKE_POST_REPORTS_TABLE . " SET
+                report_status = " . ( ( $mode == 'close' ) ? NUKE_REPORT_POST_CLOSED : NUKE_REPORT_POST_NEW ) . ",
                 last_action_user_id = " . $userdata['user_id'] . ",
                 last_action_time = " . $time_var . ",
                 last_action_comments = '" . str_replace("\'", "''", $last_action_comments) . "'
                 WHERE report_id = " . $key;
 
-            if ( !$db->sql_query($sql) )
+            if ( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, 'Could not update status', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not update status', '', __LINE__, __FILE__, $sql);
             }
         }
     }
     else
     {
-        message_die(GENERAL_ERROR, 'Could not find any reports','');
+        message_die(NUKE_GENERAL_ERROR, 'Could not find any reports','');
     }
 
     $message =  $lang['Close_success'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
-    message_die(GENERAL_MESSAGE, $message);
+    message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 else if ( $mode == 'optout' || $mode == 'optin' )
 {
-    $sql = "UPDATE " . USERS_TABLE . " SET
+    $sql = "UPDATE " . NUKE_USERS_TABLE . " SET
         user_report_optout = " . (( $mode == 'optout' ) ? 1 : 0) . "
         WHERE user_id = " . $userdata['user_id'];
 
-    if ( !$db->sql_query($sql) )
+    if ( !$nuke_db->sql_query($sql) )
     {
-        message_die(GENERAL_ERROR, 'Could not opt status', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not opt status', '', __LINE__, __FILE__, $sql);
     }
 
     $message = $lang['Opt_success'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
-    message_die(GENERAL_MESSAGE, $message);
+    message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 else if ( $mode == 'delete' )
 {
     // check if the user is an admin
-    if ( $userdata['user_level'] != ADMIN )
+    if ( $userdata['user_level'] != NUKE_ADMIN )
     {
-        message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+        message_die(NUKE_GENERAL_MESSAGE, $lang['Not_Authorised']);
     }
 
     // get the selected reports
-    $reports = $HTTP_POST_VARS[POST_POST_URL];
+    $reports = $HTTP_POST_VARS[NUKE_POST_POST_URL];
 
     if ( empty($reports) )
     {
         $message =  $lang['Report_not_selected'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
     }
 
     $report_ids = array();
@@ -309,16 +309,16 @@ else if ( $mode == 'delete' )
     }
 
     // delete the selected reports
-    $sql = "DELETE FROM " . POST_REPORTS_TABLE . "
+    $sql = "DELETE FROM " . NUKE_POST_REPORTS_TABLE . "
         WHERE report_id IN (" . implode(',', $report_ids) . ")";
 
-    if ( !$db->sql_query($sql) )
+    if ( !$nuke_db->sql_query($sql) )
     {
-        message_die(GENERAL_ERROR, 'Could not delete reports', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not delete reports', '', __LINE__, __FILE__, $sql);
     }
 
     $message =  $lang['Delete_success'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
-    message_die(GENERAL_MESSAGE, $message);
+    message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 $page_title = $lang['View_post_reports'];
 include('includes/page_header.'.$phpEx);
@@ -349,8 +349,8 @@ $template->assign_vars(array(
 
     'U_OPT_OUT'        => ( $userdata['user_report_optout'] ) ? append_sid('viewpost_reports.' . $phpEx . '?mode=optin') : append_sid('viewpost_reports.' . $phpEx . '?mode=optout'),
 
-    'S_OPEN'            => ( $status == REPORT_POST_NEW ) ? ' selected="selected"' : '',
-    'S_CLOSED'        => ( $status == REPORT_POST_CLOSED ) ? ' selected="selected"' : '',
+    'S_OPEN'            => ( $status == NUKE_REPORT_POST_NEW ) ? ' selected="selected"' : '',
+    'S_CLOSED'        => ( $status == NUKE_REPORT_POST_CLOSED ) ? ' selected="selected"' : '',
     'S_ALL'            => ( $status == 'all' ) ? ' selected="selected"' : '',
 
     'S_ACTION'        => append_sid('viewpost_reports.'.$phpEx))

@@ -18,15 +18,15 @@ donation_title();
     Notes:       N/A
 ================================================================================================*/
 function make_get_values () {
-    global $db, $prefix, $lang_donate;
+    global $nuke_db, $prefix, $lang_donate;
     //Get the donation values
     $sql = 'SELECT config_value from '.$prefix.'_donators_config WHERE config_name="values"';
     //If not
-    if(!$result = $db->sql_query($sql)) {
+    if(!$result = $nuke_db->sql_query($sql)) {
         DonateError($lang_donate['VALUES_NF'],0);
     }
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
     //Explode them into an array
     $values = explode(',', $row[0]);
     //Send them back

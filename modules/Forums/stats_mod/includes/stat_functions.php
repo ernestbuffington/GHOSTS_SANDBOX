@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -71,23 +71,23 @@ function clear_directory($file = 'modules/cache')
 //
 function user_is_within_group($user_id, $group_id)
 {
-    global $db;
+    global $nuke_db;
 
     if ((empty($user_id)) || (empty($group_id)))
     {
         return (FALSE);
     }
     
-    $sql = "SELECT u.group_id FROM " . USER_GROUP_TABLE . " u, " . GROUPS_TABLE . " g 
+    $sql = "SELECT u.group_id FROM " . NUKE_USER_GROUP_TABLE . " u, " . NUKE_GROUPS_TABLE . " g 
     WHERE (g.group_single_user = 0) AND (u.group_id = g.group_id) AND (u.user_id = " . $user_id . ") AND (g.group_id = " . $group_id . ")
     LIMIT 1";
             
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not get User Group', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get User Group', '', __LINE__, __FILE__, $sql);
     }
 
-    if ($db->sql_numrows($result) == 0)
+    if ($nuke_db->sql_numrows($result) == 0)
     {
         return (FALSE);
     }
@@ -100,7 +100,7 @@ function user_is_within_group($user_id, $group_id)
 // Get module informations
 function get_modules($activated = true, $module_id = -1)
 {
-    global $db, $stats_config, $userdata;
+    global $nuke_db, $stats_config, $userdata;
 
     $where_statement = ($activated) ? 'WHERE active = 1 ' : '';
     if ($module_id != -1)
@@ -112,24 +112,24 @@ function get_modules($activated = true, $module_id = -1)
     $sql = "SELECT * FROM " . MODULES_TABLE . " " . $where_statement . "
     ORDER BY module_order ASC";
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get module informations', "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get module informations', "", __LINE__, __FILE__, $sql);
     }
 
-    $rows = $db->sql_fetchrowset($result);
-    $num_rows = $db->sql_numrows($result);
+    $rows = $nuke_db->sql_fetchrowset($result);
+    $num_rows = $nuke_db->sql_numrows($result);
 
     // Check Group
     $sql = "SELECT * FROM " . MODULE_GROUP_AUTH_TABLE;
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get Permission informations', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Permission informations', '', __LINE__, __FILE__, $sql);
     }
             
-    $g_rows = $db->sql_fetchrowset($result);
-    $g_num_rows = $db->sql_numrows($result);
+    $g_rows = $nuke_db->sql_fetchrowset($result);
+    $g_num_rows = $nuke_db->sql_numrows($result);
     $authed_groups = array();
 
     for ($i = 0; $i < $g_num_rows; $i++)
@@ -151,7 +151,7 @@ function get_modules($activated = true, $module_id = -1)
         
         if (intval($rows[$i]['perm_reg']) == 1)
         {
-            if ($userdata['user_id'] != ANONYMOUS)
+            if ($userdata['user_id'] != NUKE_ANONYMOUS)
             {
                 $authed = TRUE;
             }
@@ -159,7 +159,7 @@ function get_modules($activated = true, $module_id = -1)
     
         if (intval($rows[$i]['perm_mod']) == 1)
         {
-            if ($userdata['user_level'] == MOD)
+            if ($userdata['user_level'] == NUKE_MOD)
             {
                 $authed = TRUE;
             }
@@ -167,7 +167,7 @@ function get_modules($activated = true, $module_id = -1)
 
         if (intval($rows[$i]['perm_admin']) == 1)
         {
-            if ($userdata['user_level'] == ADMIN)
+            if ($userdata['user_level'] == NUKE_ADMIN)
             {
                 $authed = TRUE;
             }
@@ -195,18 +195,18 @@ function get_modules($activated = true, $module_id = -1)
 
 function get_num_modules($activated = true)
 {
-    global $db, $stats_config;
+    global $nuke_db, $stats_config;
 
     $where_statement = ($activated) ? 'WHERE active = 1 ' : '';
 
     $sql = "SELECT COUNT(*) as total FROM " . MODULES_TABLE . " " . $where_statement;
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get module informations', "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get module informations', "", __LINE__, __FILE__, $sql);
     }
 
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
 
     return(intval($row['total']));
 }
@@ -214,24 +214,24 @@ function get_num_modules($activated = true)
 // Determine if we have to use the db cache
 function module_use_db_cache($module_id, &$cache)
 {
-    global $db, $core;
+    global $nuke_db, $core;
 
     $core->module_info['last_update_time'] = 0;
     $core->module_info['next_update_time'] = 0;
     
     $sql = "SELECT c.*, m.update_time FROM " . CACHE_TABLE . " c, " . MODULES_TABLE . " m WHERE c.module_id = " . $module_id . " AND m.module_id = c.module_id";
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get cache informations', "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get cache informations', "", __LINE__, __FILE__, $sql);
     }
     
-    if ($db->sql_numrows($result) == 0)
+    if ($nuke_db->sql_numrows($result) == 0)
     {
         return (false);
     }
     
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
     $core->module_info['last_update_time'] = intval($row['module_cache_time']);
     $core->module_info['next_update_time'] = intval($row['module_cache_time']) + (intval($row['update_time']) * 60);
     
@@ -275,7 +275,7 @@ function module_use_db_cache($module_id, &$cache)
 
 function set_module_cache_priority($module_id, $add_value)
 {
-    global $db;
+    global $nuke_db;
 
     if ($add_value < 0)
     {
@@ -292,9 +292,9 @@ function set_module_cache_priority($module_id, $add_value)
 
     $sql = "UPDATE " . CACHE_TABLE . " SET " . $set . " WHERE module_id = " . intval($module_id);
 
-    if (!$db->sql_query($sql))
+    if (!$nuke_db->sql_query($sql))
     {
-        message_die(GENERAL_ERROR, 'Unable to update cache priority', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to update cache priority', '', __LINE__, __FILE__, $sql);
     }
 
     return;
@@ -302,13 +302,13 @@ function set_module_cache_priority($module_id, $add_value)
 
 function reset_module_cache_priority($module_id)
 {
-    global $db;
+    global $nuke_db;
     
     $sql = "UPDATE " . CACHE_TABLE . " SET priority = 0 WHERE module_id = " . intval($module_id);
 
-    if (!$db->sql_query($sql))
+    if (!$nuke_db->sql_query($sql))
     {
-        message_die(GENERAL_ERROR, 'Unable to update cache priority', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to update cache priority', '', __LINE__, __FILE__, $sql);
     }
 
     return;
@@ -316,17 +316,17 @@ function reset_module_cache_priority($module_id)
 
 function module_cache_priority($module_id, $current_priority)
 {
-    global $db, $core, $stat_functions;
+    global $nuke_db, $core, $stat_functions;
 
     $sql = "SELECT priority FROM " . CACHE_TABLE . " WHERE module_id <> " . $module_id . " AND priority > 0 ORDER BY priority ASC";
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Unable to get cache priority', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get cache priority', '', __LINE__, __FILE__, $sql);
     }
     
-    $num_rows = $db->sql_numrows($result);
-    $rows = $db->sql_fetchrowset($result);
+    $num_rows = $nuke_db->sql_numrows($result);
+    $rows = $nuke_db->sql_fetchrowset($result);
 
     if ($num_rows == 0)
     {

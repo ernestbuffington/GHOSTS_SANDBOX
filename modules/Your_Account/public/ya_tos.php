@@ -60,7 +60,7 @@ if (!defined('CNBYA')) die('CNBYA protection');
     echo "<input type=\"hidden\" name=\"user_password\" value=$user_password>\n";
     echo "<input type=\"hidden\" name=\"random_num\" value=$random_num>\n";
     echo "<input type=\"hidden\" name=\"gfx_check\" value=$gfx_check>\n";
-    echo "<input type=\"hidden\" name=\"redirect\" value=$redirect>\n";
+    echo "<input type=\"hidden\" name=\"nuke_redirect\" value=$nuke_redirect>\n";
     echo "<input type=\"hidden\" name=\"mode\" value=$mode>\n";
     echo "<input type=\"hidden\" name=\"f\" value=$f>\n";
     echo "<input type=\"hidden\" name=\"t\" value=$t>\n";

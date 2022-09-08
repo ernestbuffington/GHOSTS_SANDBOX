@@ -32,7 +32,7 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path .'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 include('includes/functions_post.' . $phpEx);
@@ -40,7 +40,7 @@ include('includes/functions_post.' . $phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_POSTING, $nukeuser);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_POSTING, $nukeuser);
 init_userprefs($userdata);
 $gen_simple_header = TRUE;
 //
@@ -52,14 +52,14 @@ $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SO
 
 if ( !$userdata['session_logged_in'] )
 {
-	header($header_location . append_sid("login.$phpEx?redirect=comments.$phpEx", true));
+	header($header_location . append_sid("login.$phpEx?nuke_redirect=comments.$phpEx", true));
 	exit;
 }
 //
 // End of auth check
 //
 
-generate_smilies('inline', PAGE_POSTING);
+generate_smilies('inline', NUKE_PAGE_POSTING);
 include("includes/page_header_review.php");
 
 $mode = $HTTP_GET_VARS['mode'];
@@ -76,22 +76,22 @@ if($mode == "update")
 			//This query checks the user_id stored in the users cookie and in the database.
 			//If they don't match, the comments is not entered and error message is displayed.
 			$user_id = $userdata['user_id'];
-			$sql = "SELECT game_highuser FROM " . GAMES_TABLE. " WHERE game_id = $game_id";
-				if( !($result = $db->sql_query($sql)))
+			$sql = "SELECT game_highuser FROM " . NUKE_GAMES_TABLE. " WHERE game_id = $game_id";
+				if( !($result = $nuke_db->sql_query($sql)))
 			{
-			message_die(GENERAL_ERROR, "Error Authenticating User", '', __LINE__, __FILE__, $sql);
+			message_die(NUKE_GENERAL_ERROR, "Error Authenticating User", '', __LINE__, __FILE__, $sql);
 			}
-			$row = $db->sql_fetchrow($result);
+			$row = $nuke_db->sql_fetchrow($result);
 
 			if($row['game_highuser'] != $user_id)
 			{
-			message_die(GENERAL_ERROR, "Error Authenticating User - Possible hack attempt!", '');
+			message_die(NUKE_GENERAL_ERROR, "Error Authenticating User - Possible hack attempt!", '');
 			}
 			//Enters Comment into the DB
-			$sql = "UPDATE " . COMMENTS_TABLE . " SET comments_value = '$comment_text' WHERE game_id = $game_id";
-			if( !$result = $db->sql_query($sql) )
+			$sql = "UPDATE " . NUKE_COMMENTS_TABLE . " SET comments_value = '$comment_text' WHERE game_id = $game_id";
+			if( !$result = $nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, "Couldn't insert row in comments table", "", __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, "Couldn't insert row in comments table", "", __LINE__, __FILE__, $sql);
 			}
 
                         //Comment Updated/Added Successfully go back to game
@@ -106,12 +106,12 @@ if($mode == "update")
 	//This query checks the user_id stored in the users cookie and in the database.
 	//If they don't match, the comments is not entered and error message is displayed.
 	$user_id = $userdata['user_id'];
-	$sql = "SELECT game_highuser FROM " . GAMES_TABLE. " WHERE game_id = $game_id";
-		if( !($result = $db->sql_query($sql)))
+	$sql = "SELECT game_highuser FROM " . NUKE_GAMES_TABLE. " WHERE game_id = $game_id";
+		if( !($result = $nuke_db->sql_query($sql)))
 		{
-		message_die(GENERAL_ERROR, "Error Authenticating User", '', __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, "Error Authenticating User", '', __LINE__, __FILE__, $sql);
 		}
-		$row = $db->sql_fetchrow($result);
+		$row = $nuke_db->sql_fetchrow($result);
 
 		if($row['game_highuser'] != $user_id)
 		{
@@ -120,12 +120,12 @@ if($mode == "update")
 		}
 
 	//Comment submission Timeout Check
-	$sql = "SELECT game_highdate FROM " . GAMES_TABLE. " WHERE game_id = $game_id";
-	if( !($result = $db->sql_query($sql)))
+	$sql = "SELECT game_highdate FROM " . NUKE_GAMES_TABLE. " WHERE game_id = $game_id";
+	if( !($result = $nuke_db->sql_query($sql)))
 		{
-		message_die(GENERAL_ERROR, "Error Authenticating User", '', __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, "Error Authenticating User", '', __LINE__, __FILE__, $sql);
 		}
-		$row = $db->sql_fetchrow($result);
+		$row = $nuke_db->sql_fetchrow($result);
 
 		//Checks the current time and time highscore was recorded.
 		//If they are not within a minute of each other user is refreshed back to game.
@@ -140,13 +140,13 @@ if($mode == "update")
                                        'body' => 'commentspopup_new_body.tpl'));
 
 	//Gets comments from database
-	$sql = "SELECT g.game_id, g.game_name, c.* FROM " . GAMES_TABLE. " g LEFT JOIN " . COMMENTS_TABLE . " c ON g.game_id = c.game_id WHERE g.game_id = $game_id";
-	if( !($result = $db->sql_query($sql)) )
+	$sql = "SELECT g.game_id, g.game_name, c.* FROM " . NUKE_GAMES_TABLE. " g LEFT JOIN " . NUKE_COMMENTS_TABLE . " c ON g.game_id = c.game_id WHERE g.game_id = $game_id";
+	if( !($result = $nuke_db->sql_query($sql)) )
 			{
-			message_die(GENERAL_ERROR, "Error retrieving comment list", '', __LINE__, __FILE__, $sql);
+			message_die(NUKE_GENERAL_ERROR, "Error retrieving comment list", '', __LINE__, __FILE__, $sql);
 			}
 
-	$row = $db->sql_fetchrow($result);
+	$row = $nuke_db->sql_fetchrow($result);
 
 	$game_name = '<a href="' . append_sid("gamespopup.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>';
 	$return_arcade = '<a href="' . append_sid("gamespopup.$phpEx?gid=" . $row['game_id']) . '">here</a>';
@@ -162,12 +162,12 @@ if($mode == "update")
 			));
 
 	//Gets Avatar based on user settings and other user stats
-	$sql = "SELECT username, user_avatar_type, user_allowavatar, user_avatar FROM " . USERS_TABLE . " WHERE user_id = " . $userdata['user_id'] ;
-	if( !($result = $db->sql_query($sql)) )
+	$sql = "SELECT username, user_avatar_type, user_allowavatar, user_avatar FROM " . NUKE_USERS_TABLE . " WHERE user_id = " . $userdata['user_id'] ;
+	if( !($result = $nuke_db->sql_query($sql)) )
 	{
-		message_die(GENERAL_ERROR, "Cannot access the users table", '', __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, "Cannot access the users table", '', __LINE__, __FILE__, $sql);
 	}
-	$row = $db->sql_fetchrow($result);
+	$row = $nuke_db->sql_fetchrow($result);
 
 	$user_avatar_type = $row['user_avatar_type'];
 	$user_allowavatar = $row['user_allowavatar'];
@@ -178,13 +178,13 @@ if($mode == "update")
 	{
 	   switch( $user_avatar_type )
 	   {
-	      case USER_AVATAR_UPLOAD:
+	      case NUKE_USER_AVATAR_UPLOAD:
 	         $avatar_img = ( $board_config['allow_avatar_upload'] ) ? '<img src="' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" border="0" hspace="20" align="center" valign="center"/>' : '';
 	         break;
-	      case USER_AVATAR_REMOTE:
+	      case NUKE_USER_AVATAR_REMOTE:
 	         $avatar_img = ( $board_config['allow_avatar_remote'] ) ? '<img src="' . $user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center" />' : '';
 	         break;
-	      case USER_AVATAR_GALLERY:
+	      case NUKE_USER_AVATAR_GALLERY:
 	         $avatar_img = ( $board_config['allow_avatar_local'] ) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center" />' : '';
 	         break;
 	   }

@@ -6,7 +6,7 @@ class Sajax {
     var $sajax_export_list;
     var $sajax_request_type;
     var $sajax_remote_uri;
-    var $sajax_failure_redirect;
+    var $sajax_failure_nuke_redirect;
     var $sajax_js_has_been_shown;
     var $sajax_added_scripts = '';
      
@@ -16,7 +16,7 @@ class Sajax {
         $this->sajax_export_list = array();
         $this->sajax_request_type = 'GET';
         $this->sajax_remote_uri = $_SERVER["REQUEST_URI"];
-        $this->sajax_failure_redirect = '';
+        $this->sajax_failure_nuke_redirect = '';
         $this->sajax_js_has_been_shown = 0;
     }
 
@@ -114,7 +114,7 @@ class Sajax {
         var sajax_debug_mode = <?php echo $this->sajax_debug_mode ? "true" : "false"; ?>;
         var sajax_request_type = "<?php echo $t; ?>";
         var sajax_target_id = "";
-        var sajax_failure_redirect = "<?php echo $this->sajax_failure_redirect; ?>";
+        var sajax_failure_nuke_redirect = "<?php echo $this->sajax_failure_nuke_redirect; ?>";
         
         function sajax_debug(text) {
             if (sajax_debug_mode)
@@ -193,8 +193,8 @@ class Sajax {
             }
             x = sajax_init_object();
             if (x == null) {
-                if (sajax_failure_redirect != "") {
-                    location.href = sajax_failure_redirect;
+                if (sajax_failure_nuke_redirect != "") {
+                    location.href = sajax_failure_nuke_redirect;
                     return false;
                 } else {
                     sajax_debug("NULL sajax object for user agent:\n" + navigator.userAgent);

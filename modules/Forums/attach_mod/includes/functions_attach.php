@@ -207,26 +207,26 @@ function attach_init_ftp($mode = false)
 
     if (!$conn_id)
     {
-        message_die(GENERAL_ERROR, sprintf($lang['Ftp_error_connect'], $server));
+        message_die(NUKE_GENERAL_ERROR, sprintf($lang['Ftp_error_connect'], $server));
     }
 
     $login_result = @ftp_login($conn_id, $attach_config['ftp_user'], $attach_config['ftp_pass']);
 
     if (!$login_result)
     {
-        message_die(GENERAL_ERROR, sprintf($lang['Ftp_error_login'], $attach_config['ftp_user']));
+        message_die(NUKE_GENERAL_ERROR, sprintf($lang['Ftp_error_login'], $attach_config['ftp_user']));
     }
         
     if (!@ftp_pasv($conn_id, intval($attach_config['ftp_pasv_mode'])))
     {
-        message_die(GENERAL_ERROR, $lang['Ftp_error_pasv_mode']);
+        message_die(NUKE_GENERAL_ERROR, $lang['Ftp_error_pasv_mode']);
     }
     
     $result = @ftp_chdir($conn_id, $ftp_path);
 
     if (!$result)
     {
-        message_die(GENERAL_ERROR, sprintf($lang['Ftp_error_path'], $ftp_path));
+        message_die(NUKE_GENERAL_ERROR, sprintf($lang['Ftp_error_path'], $ftp_path));
     }
 
     return $conn_id;
@@ -266,10 +266,10 @@ function unlink_attach($filename, $mode = false)
         $res = @ftp_delete($conn_id, $filename);
         if (!$res)
         {
-            if (ATTACH_DEBUG)
+            if (ATTACH_NUKE_DEBUG)
             {
                 $add = ($mode == MODE_THUMBNAIL) ? '/' . THUMB_DIR : ''; 
-                message_die(GENERAL_ERROR, sprintf($lang['Ftp_error_delete'], $attach_config['ftp_path'] . $add));
+                message_die(NUKE_GENERAL_ERROR, sprintf($lang['Ftp_error_delete'], $attach_config['ftp_path'] . $add));
             }
 
             return $deleted;
@@ -441,7 +441,7 @@ function thumbnail_exists($filename)
 */
 function physical_filename_already_stored($filename)
 {
-    global $db;
+    global $nuke_db;
 
     if ($filename == '')
     {
@@ -455,12 +455,12 @@ function physical_filename_already_stored($filename)
         WHERE physical_filename = '" . attach_mod_sql_escape($filename) . "' 
         LIMIT 1";
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Could not get attachment information for filename: ' . htmlspecialchars($filename), '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get attachment information for filename: ' . htmlspecialchars($filename), '', __LINE__, __FILE__, $sql);
     }
-    $num_rows = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $num_rows = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     return ($num_rows == 0) ? false : true;
 }
@@ -470,11 +470,11 @@ function physical_filename_already_stored($filename)
 */
 function attachment_exists_db($post_id, $page = 0)
 {
-    global $db;
+    global $nuke_db;
 
     $post_id = (int) $post_id;
 
-    if ($page == PAGE_PRIVMSGS)
+    if ($page == NUKE_PAGE_PRIVMSGS)
     {
         $sql_id = 'privmsgs_id';
     }
@@ -488,13 +488,13 @@ function attachment_exists_db($post_id, $page = 0)
         WHERE $sql_id = $post_id 
         LIMIT 1";
 
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Could not get attachment informations for specific posts', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get attachment informations for specific posts', '', __LINE__, __FILE__, $sql);
     }
     
-    $num_rows = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $num_rows = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     if ($num_rows > 0)
     {
@@ -511,7 +511,7 @@ function attachment_exists_db($post_id, $page = 0)
 */
 function get_attachments_from_post($post_id_array)
 {
-    global $db, $attach_config;
+    global $nuke_db, $attach_config;
 
     $attachments = array();
 
@@ -543,14 +543,14 @@ function get_attachments_from_post($post_id_array)
             AND a.attach_id = d.attach_id
         ORDER BY d.filetime $display_order";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not get Attachment Informations for post number ' . $post_id_array, '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get Attachment Informations for post number ' . $post_id_array, '', __LINE__, __FILE__, $sql);
     }
     
-    $num_rows = $db->sql_numrows($result);
-    $attachments = $db->sql_fetchrowset($result);
-    $db->sql_freeresult($result);
+    $num_rows = $nuke_db->sql_numrows($result);
+    $attachments = $nuke_db->sql_fetchrowset($result);
+    $nuke_db->sql_freeresult($result);
 
     if ($num_rows == 0)
     {
@@ -565,7 +565,7 @@ function get_attachments_from_post($post_id_array)
 */
 function get_attachments_from_pm($privmsgs_id_array)
 {
-    global $db, $attach_config;
+    global $nuke_db, $attach_config;
 
     $attachments = array();
 
@@ -597,14 +597,14 @@ function get_attachments_from_pm($privmsgs_id_array)
             AND a.attach_id = d.attach_id
         ORDER BY d.filetime $display_order";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not get Attachment Informations for private message number ' . $privmsgs_id_array, '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get Attachment Informations for private message number ' . $privmsgs_id_array, '', __LINE__, __FILE__, $sql);
     }
     
-    $num_rows = $db->sql_numrows($result);
-    $attachments = $db->sql_fetchrowset($result);
-    $db->sql_freeresult($result);
+    $num_rows = $nuke_db->sql_numrows($result);
+    $attachments = $nuke_db->sql_fetchrowset($result);
+    $nuke_db->sql_freeresult($result);
 
     if ($num_rows == 0 )
     {
@@ -619,7 +619,7 @@ function get_attachments_from_pm($privmsgs_id_array)
 */
 function get_total_attach_filesize($attach_ids)
 {
-    global $db;
+    global $nuke_db;
 
 	if (!is_array($attach_ids) || !sizeof($attach_ids))
     {
@@ -637,18 +637,18 @@ function get_total_attach_filesize($attach_ids)
         FROM ' . ATTACHMENTS_DESC_TABLE . "
         WHERE attach_id IN ($attach_ids)";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not query Total Filesize', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query Total Filesize', '', __LINE__, __FILE__, $sql);
     }
 
     $total_filesize = 0;
 
-    while ($row = $db->sql_fetchrow($result))
+    while ($row = $nuke_db->sql_fetchrow($result))
     {
         $total_filesize += (int) $row['filesize'];
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     return $total_filesize;
 }
@@ -658,7 +658,7 @@ function get_total_attach_filesize($attach_ids)
 */
 function get_total_attach_pm_filesize($direction, $user_id)
 {
-    global $db;
+    global $nuke_db;
 
     if ($direction != 'from_user' && $direction != 'to_user')
     {
@@ -670,31 +670,31 @@ function get_total_attach_pm_filesize($direction, $user_id)
     }
 
     $sql = 'SELECT a.attach_id
-		FROM ' . ATTACHMENTS_TABLE . ' a, ' . PRIVMSGS_TABLE . " p
+		FROM ' . ATTACHMENTS_TABLE . ' a, ' . NUKE_PRIVMSGS_TABLE . " p
         WHERE $user_sql 
             AND a.privmsgs_id <> 0 AND a.privmsgs_id = p.privmsgs_id
-            AND p.privmsgs_type <> " . PRIVMSGS_SENT_MAIL;
+            AND p.privmsgs_type <> " . NUKE_PRIVMSGS_SENT_MAIL;
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not query Attachment Informations', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query Attachment Informations', '', __LINE__, __FILE__, $sql);
     }
                 
     $pm_filesize_total = 0;
     $attach_id = array();
-    $num_rows = $db->sql_numrows($result);
+    $num_rows = $nuke_db->sql_numrows($result);
 
     if ($num_rows == 0)
     {
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         return $pm_filesize_total;
     }
     
-    while ($row = $db->sql_fetchrow($result))
+    while ($row = $nuke_db->sql_fetchrow($result))
     {
         $attach_id[] = $row['attach_id'];
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     $pm_filesize_total = get_total_attach_filesize($attach_id);
     return $pm_filesize_total;
@@ -705,7 +705,7 @@ function get_total_attach_pm_filesize($direction, $user_id)
 */
 function get_extension_informations()
 {
-    global $db;
+    global $nuke_db;
 
     $extensions = array();
 
@@ -715,13 +715,13 @@ function get_extension_informations()
         WHERE e.group_id = g.group_id
             AND g.allow_group = 1';
     
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Could not query Allowed Extensions.', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query Allowed Extensions.', '', __LINE__, __FILE__, $sql);
     }
 
-    $extensions = $db->sql_fetchrowset($result);
-    $db->sql_freeresult($result);
+    $extensions = $nuke_db->sql_fetchrowset($result);
+    $nuke_db->sql_freeresult($result);
     return $extensions;
 }
 
@@ -730,7 +730,7 @@ function get_extension_informations()
 */
 function attachment_sync_topic($topic_id)
 {
-    global $db;
+    global $nuke_db;
 
     if (!$topic_id)
     {
@@ -740,18 +740,18 @@ function attachment_sync_topic($topic_id)
     $topic_id = (int) $topic_id;
 
     $sql = 'SELECT post_id 
-        FROM ' . POSTS_TABLE . " 
+        FROM ' . NUKE_POSTS_TABLE . " 
         WHERE topic_id = $topic_id
         GROUP BY post_id";
         
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Couldn\'t select Post ID\'s', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t select Post ID\'s', '', __LINE__, __FILE__, $sql);
     }
 
-    $post_list = $db->sql_fetchrowset($result);
-    $num_posts = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $post_list = $nuke_db->sql_fetchrowset($result);
+    $num_posts = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     if ($num_posts == 0)
     {
@@ -777,18 +777,18 @@ function attachment_sync_topic($topic_id)
         WHERE post_id IN ($post_id_sql) 
         LIMIT 1";
         
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Couldn\'t select Attachment ID\'s', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t select Attachment ID\'s', '', __LINE__, __FILE__, $sql);
     }
 
-    $set_id = ($db->sql_numrows($result) == 0) ? 0 : 1;
+    $set_id = ($nuke_db->sql_numrows($result) == 0) ? 0 : 1;
 
-    $sql = 'UPDATE ' . TOPICS_TABLE . " SET topic_attachment = $set_id WHERE topic_id = $topic_id";
+    $sql = 'UPDATE ' . NUKE_BB_TOPICS_TABLE . " SET topic_attachment = $set_id WHERE topic_id = $topic_id";
 
-    if ( !($db->sql_query($sql)) )
+    if ( !($nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Couldn\'t update Topics Table', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t update Topics Table', '', __LINE__, __FILE__, $sql);
     }
         
 	for ($i = 0; $i < sizeof($post_ids); $i++)
@@ -798,18 +798,18 @@ function attachment_sync_topic($topic_id)
             WHERE post_id = ' . $post_ids[$i] . '
             LIMIT 1';
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Couldn\'t select Attachment ID\'s', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Couldn\'t select Attachment ID\'s', '', __LINE__, __FILE__, $sql);
         }
 
-        $set_id = ( $db->sql_numrows($result) == 0) ? 0 : 1;
+        $set_id = ( $nuke_db->sql_numrows($result) == 0) ? 0 : 1;
         
-        $sql = 'UPDATE ' . POSTS_TABLE . " SET post_attachment = $set_id WHERE post_id = {$post_ids[$i]}";
+        $sql = 'UPDATE ' . NUKE_POSTS_TABLE . " SET post_attachment = $set_id WHERE post_id = {$post_ids[$i]}";
 
-        if ( !($db->sql_query($sql)) )
+        if ( !($nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Couldn\'t update Posts Table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Couldn\'t update Posts Table', '', __LINE__, __FILE__, $sql);
         }
     }
 }
@@ -851,7 +851,7 @@ function delete_extension($filename)
 */
 function user_in_group($user_id, $group_id)
 {
-    global $db;
+    global $nuke_db;
 
     $user_id = (int) $user_id;
     $group_id = (int) $group_id;
@@ -862,7 +862,7 @@ function user_in_group($user_id, $group_id)
     }
     
     $sql = 'SELECT u.group_id 
-		FROM ' . USER_GROUP_TABLE . ' u, ' . GROUPS_TABLE . " g 
+		FROM ' . NUKE_USER_GROUP_TABLE . ' u, ' . NUKE_GROUPS_TABLE . " g 
         WHERE g.group_single_user = 0
 			AND u.user_pending = 0
             AND u.group_id = g.group_id
@@ -870,13 +870,13 @@ function user_in_group($user_id, $group_id)
             AND g.group_id = $group_id
         LIMIT 1";
             
-    if (!($result = $db->sql_query($sql)))
+    if (!($result = $nuke_db->sql_query($sql)))
     {
-        message_die(GENERAL_ERROR, 'Could not get User Group', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get User Group', '', __LINE__, __FILE__, $sql);
     }
 
-    $num_rows = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $num_rows = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 
     if ($num_rows == 0)
     {
@@ -983,7 +983,7 @@ function get_var($var_name, $default, $multibyte = false)
 */
 function attach_mod_sql_escape($text)
 {
-    global $db;
+    global $nuke_db;
     switch (SQL_LAYER)
     {
         case 'postgresql':
@@ -995,7 +995,7 @@ function attach_mod_sql_escape($text)
         case 'mysqli':
             if (function_exists('sql_escapestring'))
             {
-                return $db->sql_escapestring($text);
+                return $nuke_db->sql_escapestring($text);
             }
             else
             {

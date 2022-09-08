@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -24,7 +24,7 @@ echo '</head>'."\n";
 echo '<body bgcolor="#FFFFFF" text="#000000" link="#000000" alink="#000000" vlink="#000000">'."\n";
 echo '<h1 align="center">'.$pagetitle.'</h1>'."\n";
 $tid=intval($tid);
-list($uname) = $db->sql_fetchrow($db->sql_query("SELECT `user_agent` FROM `".$prefix."_nsnst_tracked_ips` WHERE `tid`='$tid' LIMIT 0,1"));
+list($uname) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `user_agent` FROM `".$prefix."_nsnst_tracked_ips` WHERE `tid`='$tid' LIMIT 0,1"));
 $xname = wordwrap($uname, 50, "\n", true);
 $xname = str_replace("&amp;amp;", "&amp;", htmlentities($xname, ENT_QUOTES));
 $xname = str_replace("\n", "<br />\n", $xname);
@@ -34,8 +34,8 @@ echo '<tr bgcolor="#ffffff">'."\n";
 echo '<td><strong>'._AB_PAGEVIEWED.'</strong></td>'."\n";
 echo '<td><strong>'._AB_DATE.'</strong></td>'."\n";
 echo '</tr>'."\n";
-$result = $db->sql_query("SELECT `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_agent`='$uname' ORDER BY `date` DESC");
-while(list($page, $date_time) = $db->sql_fetchrow($result)){
+$result = $nuke_db->sql_query("SELECT `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_agent`='$uname' ORDER BY `date` DESC");
+while(list($page, $date_time) = $nuke_db->sql_fetchrow($result)){
   $page = wordwrap($page, 50, "\n", true);
   $page = str_replace("&amp;amp;", "&amp;", htmlentities($page, ENT_QUOTES));
   $page = str_replace("\n", "<br />\n", $page);

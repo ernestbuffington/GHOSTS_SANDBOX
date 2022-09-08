@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -27,9 +27,9 @@ if(preg_match("#All.*Modules#", $showmodule) || !$showmodule ) {
 } else {
   $modfilter="AND page LIKE '%name=$showmodule%'";
 }
-$deleterow = $db->sql_fetchrow($db->sql_query("SELECT `user_id`, `ip_addr` FROM `".$prefix."_nsnst_tracked_ips` WHERE `tid`='$tid' LIMIT 0,1"));
-$db->sql_query("DELETE FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='".$deleterow['user_id']."' AND `ip_addr`='".$deleterow['ip_addr']."' $modfilter");
-$db->sql_query("OPTIMIZE TABLE `".$prefix."_nsnst_tracked_ips`");
+$deleterow = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `user_id`, `ip_addr` FROM `".$prefix."_nsnst_tracked_ips` WHERE `tid`='$tid' LIMIT 0,1"));
+$nuke_db->sql_query("DELETE FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='".$deleterow['user_id']."' AND `ip_addr`='".$deleterow['ip_addr']."' $modfilter");
+$nuke_db->sql_query("OPTIMIZE TABLE `".$prefix."_nsnst_tracked_ips`");
 header("Location: ".$admin_file.".php?op=$xop&min=$min&column=$column&direction=$direction&showmodule=$showmodule&sip=$sip");
 
 ?>

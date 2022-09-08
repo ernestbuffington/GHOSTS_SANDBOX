@@ -51,7 +51,7 @@ $sql = "SELECT `filename`, `hits`, `view`, `groups`, `cid` FROM `"
 			."WHERE `nid` = '$msnl_iNID'";
 			
 $result					= msnl_fSQLCall( $sql );
-$resultcount		= $db->sql_numrows( $result );
+$resultcount		= $nuke_db->sql_numrows( $result );
 
 /************************************************************************
 * View the newsletter if no errors and the file exists
@@ -63,7 +63,7 @@ if ( !$result || $resultcount < 1 ) { //Bad SQL call
 	
 } else { //Successful SQL call
 
-	$row = $db->sql_fetchrow( $result );
+	$row = $nuke_db->sql_fetchrow( $result );
 
 	$msnl_asRec['hits']			= intval( $row['hits'] );
 	$msnl_asRec['cid']			= intval( $row['cid'] );
@@ -83,7 +83,7 @@ if ( !$result || $resultcount < 1 ) { //Bad SQL call
 						. "SET `hits` = '".$msnl_asRec['hits']."' "
 						. "WHERE `nid` = '$msnl_iNID'";
 
-			$db->sql_query( $sql );
+			$nuke_db->sql_query( $sql );
 
 		}
 

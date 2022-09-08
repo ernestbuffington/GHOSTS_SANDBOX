@@ -11,7 +11,7 @@
 		-[ 08/11/2017 ] [  06:20pm to 06:27pm ] Fixed - Line 40 of Blogs.php under includes\custom_titles - if($topicimage) to if (isset($topicimage))!  
 		-[ 08/10/2017 ] [  05:23am to 05:26am ] Found - File Storage is broken! ( please fix )
 		-[ 08/10/2017 ] [  05:09am to 05:23am ] Found - Network members online link is taking the user to the wrong user number ( please fix )
-		-[ 08/10/2017 ] [  03:53am to 05:09am ] Found - After theme change a redirect is taking the user back to the wrong user number ( please fix )
+		-[ 08/10/2017 ] [  03:53am to 05:09am ] Found - After theme change a nuke_redirect is taking the user back to the wrong user number ( please fix )
 	    -[ 08/10/2017 ] [  03:53am to 05:09am ] Found - Message: Table 'admin_bridge.nuke_bbadvanced_username_color' doesn't exist ( please fix )
 		-[ 08/10/2017 ] [  03:53am to 05:09am ] Found - Cookie Bug in Music Vote addon! ( please fix )
 	    -[ 08/10/2017 ] [  03:00am to 03:53am ] Fixed - Music module tables spacing on reply articles.php page!

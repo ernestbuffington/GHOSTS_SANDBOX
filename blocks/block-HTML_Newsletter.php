@@ -42,7 +42,7 @@ if ( !defined( 'BLOCK_FILE' ) and !defined( 'NUKE_FILE' ) ) {
 * Initialize and assign key block variables.
 ************************************************************************/
 
-global $db, $prefix, $msnl_gasModCfg, $msnl_sModuleNm;
+global $nuke_db, $prefix, $msnl_gasModCfg, $msnl_sModuleNm;
 
 $msnl_sModuleNm	= "HTML_Newsletter";	//If you change the module directory, change every instance of this definition
 
@@ -93,7 +93,7 @@ $msnl_iNbrNls		= 1;	//Index for number of newsletters displayed within a categor
 $msnl_sPrevCat	= "";	//For determining category breaks
 $msnl_iMoreNls	= 0;	//Flag for when to display the "More Newsletters..." link
 
-while ( $row = $db->sql_fetchrow( $msnl_result2 ) ) {
+while ( $row = $nuke_db->sql_fetchrow( $msnl_result2 ) ) {
 
 	$msnl_iNID					= intval( $row['nid'] );
 	$msnl_iCID					= intval( $row['cid'] );

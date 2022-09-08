@@ -177,7 +177,7 @@
     </td>
     <td class="row2" style="height: 35px; width: 50%;"><input class="post" type="text" name="default_dateformat" style="width: 350px;" value="{DEFAULT_DATEFORMAT}" /></td>
   </tr>
-  <!-- Start replacement - Advanced time management MOD -->
+  <!-- Start replacement - Advanced time management NUKE_MOD -->
   <tr>
     <td class="row1" style="height: 35px; width: 50%;">
       <span style="display: inline-block; float: left; margin-top: 2px;">{L_TIME_MODE}</span>
@@ -195,7 +195,7 @@
       <span> {L_TIME_MODE_TIMEZONE}: </span><span class="gensmall">{TIMEZONE_SELECT}</span>
     </td>
   </tr>
-  <!-- End replacement - Advanced time management MOD -->
+  <!-- End replacement - Advanced time management NUKE_MOD -->
   <tr>
     <td class="row1" style="height: 35px; width: 50%;">
       <span style="display: inline-block; float: left; margin-top: 2px;">{L_ONLINE_TIME}</span>

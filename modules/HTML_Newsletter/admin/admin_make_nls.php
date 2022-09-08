@@ -84,7 +84,7 @@ if ( $_POST['msnl_stats'] == "yes" && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		$msnl_iStatsTotUsr		= intval( $db->sql_numrows( $result ) );
+		$msnl_iStatsTotUsr		= intval( $nuke_db->sql_numrows( $result ) );
 	
 	}
 
@@ -100,7 +100,7 @@ if ( $_POST['msnl_stats'] == "yes" && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		$row										= $db->sql_fetchrow( $result1 );
+		$row										= $nuke_db->sql_fetchrow( $result1 );
 		$msnl_iStatsTotHits			= intval( $row['count'] );
 		
 	}
@@ -116,7 +116,7 @@ if ( $_POST['msnl_stats'] == "yes" && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		$msnl_iStatsTotNews			= intval( $db->sql_numrows( $result2 ) );
+		$msnl_iStatsTotNews			= intval( $nuke_db->sql_numrows( $result2 ) );
 
 	}
 
@@ -131,7 +131,7 @@ if ( $_POST['msnl_stats'] == "yes" && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		$msnl_iStatsTotNewsCat	= intval( $db->sql_numrows( $result3 ) );
+		$msnl_iStatsTotNewsCat	= intval( $nuke_db->sql_numrows( $result3 ) );
 
 	}
 
@@ -146,7 +146,7 @@ if ( $_POST['msnl_stats'] == "yes" && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		$msnl_iStatsTotDls			= intval( $db->sql_numrows( $result4 ) );
+		$msnl_iStatsTotDls			= intval( $nuke_db->sql_numrows( $result4 ) );
 
 	}
 	
@@ -161,7 +161,7 @@ if ( $_POST['msnl_stats'] == "yes" && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		$msnl_iStatsTotDlsCat		= intval( $db->sql_numrows( $result5 ) );
+		$msnl_iStatsTotDlsCat		= intval( $nuke_db->sql_numrows( $result5 ) );
 
 	}
 	
@@ -176,7 +176,7 @@ if ( $_POST['msnl_stats'] == "yes" && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		$msnl_iStatsTotLnks			= intval( $db->sql_numrows( $result6 ) );
+		$msnl_iStatsTotLnks			= intval( $nuke_db->sql_numrows( $result6 ) );
 	
 	}
 	
@@ -191,7 +191,7 @@ if ( $_POST['msnl_stats'] == "yes" && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		$msnl_iStatsTotLnksCat	= intval( $db->sql_numrows( $result7 ) );
+		$msnl_iStatsTotLnksCat	= intval( $nuke_db->sql_numrows( $result7 ) );
 
 	}
 	
@@ -206,7 +206,7 @@ if ( $_POST['msnl_stats'] == "yes" && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		$msnl_iStatsTotForums		= intval( $db->sql_numrows( $result8 ) );
+		$msnl_iStatsTotForums		= intval( $nuke_db->sql_numrows( $result8 ) );
 	
 	}
 	
@@ -221,7 +221,7 @@ if ( $_POST['msnl_stats'] == "yes" && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		$msnl_iStatsTotPosts		= intval( $db->sql_numrows( $result9 ) );
+		$msnl_iStatsTotPosts		= intval( $nuke_db->sql_numrows( $result9 ) );
 	
 	}
 	
@@ -236,7 +236,7 @@ if ( $_POST['msnl_stats'] == "yes" && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		$msnl_iStatsTotReviews	= intval( $db->sql_numrows( $result10 ) );
+		$msnl_iStatsTotReviews	= intval( $nuke_db->sql_numrows( $result10 ) );
 
 	}
 	
@@ -285,7 +285,7 @@ if ( $_POST['msnl_news'] > 0 && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		while ( $row = $db->sql_fetchrow( $result11 ) ) {
+		while ( $row = $nuke_db->sql_fetchrow( $result11 ) ) {
 
 			$msnl_iSID					= intval( $row['sid'] );
 			$msnl_sNewsAuthor		= stripslashes ( $row['informant'] );
@@ -345,7 +345,7 @@ if ( $_POST['msnl_downloads'] > 0 && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		while ( $row = $db->sql_fetchrow( $result12 ) ) {
+		while ( $row = $nuke_db->sql_fetchrow( $result12 ) ) {
 
 			$msnl_iLID					= intval( $row['lid'] );
 			$msnl_iTopicCID			= intval( $row['cid'] );
@@ -403,7 +403,7 @@ if ( $_POST['msnl_weblinks'] > 0 && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		while ( $row = $db->sql_fetchrow( $result13 ) ) {
+		while ( $row = $nuke_db->sql_fetchrow( $result13 ) ) {
 
 			$msnl_iLID					= intval( $row['lid'] );
 			$msnl_iWlCID				= intval( $row['cid'] );
@@ -493,7 +493,7 @@ if ($_POST['msnl_forums'] > 0 && $msnl_sTemplateNm != "notemplate") {
 
 	} else { //Successful SQL call
 
-		while ( $row = $db->sql_fetchrow( $result14 ) ) {
+		while ( $row = $nuke_db->sql_fetchrow( $result14 ) ) {
 
 			$msnl_iTopicID							= intval( $row['topic_id'] );
 			$msnl_iForumID							= intval( $row['forum_id'] );
@@ -561,7 +561,7 @@ if ( $_POST['msnl_reviews'] > 0 && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 
-		while ( $row = $db->sql_fetchrow( $result15 ) ) {
+		while ( $row = $nuke_db->sql_fetchrow( $result15 ) ) {
 
 			$msnl_iReviewID				= intval( $row['id'] );
 			$msnl_sReviewAuthor		= stripslashes( $row['reviewer'] );
@@ -618,7 +618,7 @@ if ( $_POST['msnl_banner'] != "" && $msnl_sTemplateNm != "notemplate" ) {
 
 	} else { //Successful SQL call
 	
-		$row = $db->sql_fetchrow( $result16 );
+		$row = $nuke_db->sql_fetchrow( $result16 );
 		
 		$msnl_sImageURL		= stripslashes( $row['imageurl'] );
 		$msnl_sClickURL		= stripslashes( $row['clickurl'] );

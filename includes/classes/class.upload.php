@@ -56,14 +56,14 @@ class myubrowse
         }
 
         
-		function myubrowse($admin, $network_prefix, $db2, $module_name, $user_prefix) 
+		function myubrowse($admin, $network_prefix, $network_db, $module_name, $nuke_user_prefix) 
 		{
                 global $admin_file;
                 
 				$this->admin = $admin;
                 $this->prefix = $network_prefix;
                 $this->user_prefix = $network_prefix;
-                $this->db = $db2;
+                $this->db = $network_db;
                 $this->module_name = $module_name;
                 $this->pagetitle = " - ".MYU_MYUPLOADS;
                 
@@ -138,7 +138,7 @@ class myubrowse
 
         function browse($user_folder) 
 		{
-                global $directory_mode, $user_prefix, $db2, $network_prefix;
+                global $directory_mode, $nuke_user_prefix, $network_db, $network_prefix;
 		        $sql = "SELECT user_id FROM ".$this->user_prefix."_users WHERE username = '$user_folder'";
                 $res = $this->db->sql_query($sql, FALSE);
                 $row = $this->db->sql_fetchrow($res);

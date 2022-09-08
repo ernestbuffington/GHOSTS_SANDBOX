@@ -264,28 +264,28 @@ class Template {
 			{
 				$up[] = 'xs_template_time';
 			}
-			global $db;
-			if(!empty($db))
+			global $nuke_db;
+			if(!empty($nuke_db))
 			{
 				// adding new config values
 				for($i=0; $i<count($add); $i++)
 				{
-					if (!$db->sql_numrows($db->sql_query("SELECT * FROM " . CONFIG_TABLE . " WHERE config_name='" . $add[$i] . "'"))) {
-						$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('" . $add[$i] . "', '" . str_replace('\\\'', '\'\'', addslashes($board_config[$add[$i]])) . "')";
-						$db->sql_query($sql);
+					if (!$nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM " . NUKE_CONFIG_TABLE . " WHERE config_name='" . $add[$i] . "'"))) {
+						$sql = "INSERT INTO " . NUKE_CONFIG_TABLE . " (config_name, config_value) VALUES ('" . $add[$i] . "', '" . str_replace('\\\'', '\'\'', addslashes($board_config[$add[$i]])) . "')";
+						$nuke_db->sql_query($sql);
 					}
 				}
 				// removing old configuration variables that aren't used
 				for($i=0; $i<count($del); $i++)
 				{
-					$sql = "DELETE FROM " . CONFIG_TABLE . " WHERE config_name='" . $del[$i] . "'";
-					$db->sql_query($sql);
+					$sql = "DELETE FROM " . NUKE_CONFIG_TABLE . " WHERE config_name='" . $del[$i] . "'";
+					$nuke_db->sql_query($sql);
 				}
 				// updating variables that should be overwritten
 				for($i=0; $i<count($up); $i++)
 				{
-					$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . str_replace('\\\'', '\'\'', addslashes($board_config[$up[$i]])) . "' WHERE config_name='" . $up[$i] . "'";
-					$db->sql_query($sql);
+					$sql = "UPDATE " . NUKE_CONFIG_TABLE . " SET config_value='" . str_replace('\\\'', '\'\'', addslashes($board_config[$up[$i]])) . "' WHERE config_name='" . $up[$i] . "'";
+					$nuke_db->sql_query($sql);
 				}
 				// recache config table for cat_hierarchy 2.1.0
 				global $config;
@@ -422,12 +422,12 @@ class Template {
 
 	function subtemplates_make_filename($filename)
 	{
-		global $HTTP_GET_VARS, $HTTP_POST_VARS, $db, $board_config, $images, $theme;
+		global $HTTP_GET_VARS, $HTTP_POST_VARS, $nuke_db, $board_config, $images, $theme;
 		global $sub_template_key_image, $sub_templates;
 		global $tree;
 
 		// initiate the sub-template image pack that will be use
-		$sub_template_key_image = POST_CAT_URL . '0';
+		$sub_template_key_image = NUKE_POST_CAT_URL . '0';
 
 		// Check if sub_templates are defined for this theme
 		if ( $board_config['version'] > '.0.5' )
@@ -447,24 +447,24 @@ class Template {
 			$topic_id = 0;
 			$post_id = 0;
 
-			if ( !defined('IN_PRIVMSG') && ( isset($HTTP_GET_VARS[POST_POST_URL]) || isset($HTTP_POST_VARS[POST_POST_URL]) ) )
+			if ( !defined('IN_PRIVMSG') && ( isset($HTTP_GET_VARS[NUKE_POST_POST_URL]) || isset($HTTP_POST_VARS[NUKE_POST_POST_URL]) ) )
 			{
-				$post_id = isset($HTTP_GET_VARS[POST_POST_URL]) ? intval($HTTP_GET_VARS[POST_POST_URL]) : intval($HTTP_POST_VARS[POST_POST_URL]);
+				$post_id = isset($HTTP_GET_VARS[NUKE_POST_POST_URL]) ? intval($HTTP_GET_VARS[NUKE_POST_POST_URL]) : intval($HTTP_POST_VARS[NUKE_POST_POST_URL]);
 			}
 
-			if ( isset($HTTP_GET_VARS[POST_TOPIC_URL]) || isset($HTTP_POST_VARS[POST_TOPIC_URL]) )
+			if ( isset($HTTP_GET_VARS[NUKE_POST_TOPIC_URL]) || isset($HTTP_POST_VARS[NUKE_POST_TOPIC_URL]) )
 			{
-				$topic_id = intval($HTTP_GET_VARS[POST_TOPIC_URL]) ? intval($HTTP_GET_VARS[POST_TOPIC_URL]) : intval($HTTP_POST_VARS[POST_TOPIC_URL]);
+				$topic_id = intval($HTTP_GET_VARS[NUKE_POST_TOPIC_URL]) ? intval($HTTP_GET_VARS[NUKE_POST_TOPIC_URL]) : intval($HTTP_POST_VARS[NUKE_POST_TOPIC_URL]);
 			}
 
-			if ( isset($HTTP_GET_VARS[POST_FORUM_URL]) || isset($HTTP_POST_VARS[POST_FORUM_URL]) )
+			if ( isset($HTTP_GET_VARS[NUKE_POST_FORUM_URL]) || isset($HTTP_POST_VARS[NUKE_POST_FORUM_URL]) )
 			{
-				$forum_id = isset($HTTP_GET_VARS[POST_FORUM_URL]) ? intval($HTTP_GET_VARS[POST_FORUM_URL]) : intval($HTTP_POST_VARS[POST_FORUM_URL]);
+				$forum_id = isset($HTTP_GET_VARS[NUKE_POST_FORUM_URL]) ? intval($HTTP_GET_VARS[NUKE_POST_FORUM_URL]) : intval($HTTP_POST_VARS[NUKE_POST_FORUM_URL]);
 			}
 
-			if ( isset($HTTP_GET_VARS[POST_CAT_URL]) || isset($HTTP_POST_VARS[POST_CAT_URL]) )
+			if ( isset($HTTP_GET_VARS[NUKE_POST_CAT_URL]) || isset($HTTP_POST_VARS[NUKE_POST_CAT_URL]) )
 			{
-				$cat_id = isset($HTTP_GET_VARS[POST_CAT_URL]) ? intval($HTTP_GET_VARS[POST_CAT_URL]) : intval($HTTP_POST_VARS[POST_CAT_URL]);
+				$cat_id = isset($HTTP_GET_VARS[NUKE_POST_CAT_URL]) ? intval($HTTP_GET_VARS[NUKE_POST_CAT_URL]) : intval($HTTP_POST_VARS[NUKE_POST_CAT_URL]);
 			}
 
 			if ( isset($HTTP_GET_VARS['selected_id']) || isset($HTTP_POST_VARS['selected_id']) )
@@ -474,16 +474,16 @@ class Template {
 				$id = intval(substr($selected_id, 1));
 				if (!empty($id)) switch ($type)
 				{
-					case POST_CAT_URL:
+					case NUKE_POST_CAT_URL:
 						$cat_id = $id;
 						break;
-					case POST_FORUM_URL:
+					case NUKE_POST_FORUM_URL:
 						$forum_id = $id;
 						break;
-					case POST_TOPIC_URL:
+					case NUKE_POST_TOPIC_URL:
 						$topic_id = $id;
 						break;
-					case POST_POST_URL:
+					case NUKE_POST_POST_URL:
 						if ( !defined('IN_PRIVMSG') )
 						{
 							$post_id = $id;
@@ -499,12 +499,12 @@ class Template {
 			{
 				if ($post_id > 0)
 				{
-					$sql = "SELECT * FROM " . POSTS_TABLE . " WHERE post_id=$post_id";			
-					if ( !($result = $db->sql_query($sql)) )
+					$sql = "SELECT * FROM " . NUKE_POSTS_TABLE . " WHERE post_id=$post_id";			
+					if ( !($result = $nuke_db->sql_query($sql)) )
 					{
-						message_die(GENERAL_ERROR, 'Wasn\'t able to access posts', '', __LINE__, __FILE__, $sql);
+						message_die(NUKE_GENERAL_ERROR, 'Wasn\'t able to access posts', '', __LINE__, __FILE__, $sql);
 					}
-					if ( $row = $db->sql_fetchrow($result) )
+					if ( $row = $nuke_db->sql_fetchrow($result) )
 					{
 						$forum_id = $row['forum_id'];
 					}
@@ -512,12 +512,12 @@ class Template {
 
 				if ($topic_id > 0)
 				{
-					$sql = "SELECT * FROM " . TOPICS_TABLE . " WHERE topic_id=$topic_id";			
-					if ( !($result = $db->sql_query($sql)) )
+					$sql = "SELECT * FROM " . NUKE_BB_TOPICS_TABLE . " WHERE topic_id=$topic_id";			
+					if ( !($result = $nuke_db->sql_query($sql)) )
 					{
-						message_die(GENERAL_ERROR, 'Wasn\'t able to access topics', '', __LINE__, __FILE__, $sql);
+						message_die(NUKE_GENERAL_ERROR, 'Wasn\'t able to access topics', '', __LINE__, __FILE__, $sql);
 					}
-					if ( $row = $db->sql_fetchrow($result) )
+					if ( $row = $nuke_db->sql_fetchrow($result) )
 					{
 						$forum_id = $row['forum_id'];
 					}
@@ -534,15 +534,15 @@ class Template {
 				if ($forum_id > 0)
 				{
 					// add the forum_id
-					$fids[] = POST_FORUM_URL . $forum_id;
+					$fids[] = NUKE_POST_FORUM_URL . $forum_id;
 
 					// get the cat_id
-					$sql = "SELECT * FROM " . FORUMS_TABLE . " WHERE forum_id=$forum_id";
-					if ( !($result = $db->sql_query($sql)) )
+					$sql = "SELECT * FROM " . NUKE_FORUMS_TABLE . " WHERE forum_id=$forum_id";
+					if ( !($result = $nuke_db->sql_query($sql)) )
 					{
-						message_die(GENERAL_ERROR, 'Wasn\'t able to access forums', '', __LINE__, __FILE__, $sql);
+						message_die(NUKE_GENERAL_ERROR, 'Wasn\'t able to access forums', '', __LINE__, __FILE__, $sql);
 					}
-					if ( $row = $db->sql_fetchrow($result) )
+					if ( $row = $nuke_db->sql_fetchrow($result) )
 					{
 						$cat_id = $row['cat_id'];
 					}
@@ -551,7 +551,7 @@ class Template {
 				// add the cat_id
 				if ($cat_id > 0)
 				{
-					$fids[] = POST_CAT_URL . $cat_id;
+					$fids[] = NUKE_POST_CAT_URL . $cat_id;
 				}
 
 				// add the root level
@@ -563,11 +563,11 @@ class Template {
 				$cur = 'Root';
 				if ($forum_id > 0)
 				{
-					$cur = POST_FORUM_URL . $forum_id;
+					$cur = NUKE_POST_FORUM_URL . $forum_id;
 				}
 				else if ($cat_id > 0)
 				{
-					$cur = POST_CAT_URL . $cat_id;
+					$cur = NUKE_POST_CAT_URL . $cat_id;
 				}
 
 				// add start
@@ -608,7 +608,7 @@ class Template {
 					// convert root into c0 category
 					if ( ($key == 'Root') || empty($key) )
 					{
-						$key = POST_CAT_URL . '0';
+						$key = NUKE_POST_CAT_URL . '0';
 					}
 
 					if ( isset($sub_templates[$key]) )
@@ -637,7 +637,7 @@ class Template {
 					// convert root into c0 category
 					if ( ($key == 'Root') || empty($key) )
 					{
-						$key = POST_CAT_URL . '0';
+						$key = NUKE_POST_CAT_URL . '0';
 					}
 
 					if ( isset($sub_templates[$key]) )
@@ -664,7 +664,7 @@ class Template {
 					// convert root into c0 category
 					if ( ($key == 'Root') || empty($key) )
 					{
-						$key = POST_CAT_URL . '0';
+						$key = NUKE_POST_CAT_URL . '0';
 					}
 
 					if ( isset($sub_templates[$key]) )
@@ -699,7 +699,7 @@ class Template {
 			}
 
 			// get the root level images
-			$key = POST_CAT_URL . '0';
+			$key = NUKE_POST_CAT_URL . '0';
 			if ( isset($sub_templates[$key]) )
 			{
 				// get the sub-template path
@@ -725,7 +725,7 @@ class Template {
 			}
 
 			// get the current images
-			if ( !empty($sub_template_key_image) && ($sub_template_key_image != POST_CAT_URL . '0') )
+			if ( !empty($sub_template_key_image) && ($sub_template_key_image != NUKE_POST_CAT_URL . '0') )
 			{
 				$key = $sub_template_key_image;
 
@@ -810,7 +810,7 @@ class Template {
 
 		$this->uncompiled_code['bday_interface'] = trim($bday_template);
 
-		// the following two lines are required for phpBB's that use the eXtreme Styles MOD, cache/template_file_cache.php,
+		// the following two lines are required for phpBB's that use the eXtreme Styles NUKE_MOD, cache/template_file_cache.php,
 		// or other files bearing some sort of semblance to either of those.  on phpBB's not using those MODs, these lines
 		// don't do much of anything.
 
@@ -2245,7 +2245,7 @@ class Template {
 
 	//
 	//
-	// Functions added for USERGROUP MOD (optimized)
+	// Functions added for USERGROUP NUKE_MOD (optimized)
 	//
 	//
 	function append_var_from_handle_to_block($blockname, $varname, $handle)
@@ -2320,7 +2320,7 @@ class Template {
 			include($phpbb2_root_path . 'templates/' . $tpl . '/xs_config.cfg');
 			if(count($style_config))
 			{
-				global $board_config, $db;
+				global $board_config, $nuke_db;
 				for($i=0; $i<count($style_config); $i++)
 				{
 					$this->style_config[$style_config[$i]['var']] = $style_config[$i]['default'];
@@ -2332,8 +2332,8 @@ class Template {
 				$str = $this->_serialize($this->style_config);
 				$config_name = 'xs_style_' . $tpl;
 				$board_config[$config_name] = $str;
-				$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('" . str_replace('\\\'', '\'\'', addslashes($config_name)) . "', '" . str_replace('\\\'', '\'\'', addslashes($str)) . "')";
-				$db->sql_query($sql);
+				$sql = "INSERT INTO " . NUKE_CONFIG_TABLE . " (config_name, config_value) VALUES ('" . str_replace('\\\'', '\'\'', addslashes($config_name)) . "', '" . str_replace('\\\'', '\'\'', addslashes($str)) . "')";
+				$nuke_db->sql_query($sql);
 				// recache config table for cat_hierarchy 2.1.0
 				global $config;
 				if(isset($config->data) && $config->data === $board_config && isset($config->data['mod_cat_hierarchy']))
@@ -2372,7 +2372,7 @@ class Template {
 			include($phpbb2_root_path . 'templates/' . $tpl . '/xs_config.cfg');
 			if(count($style_config))
 			{
-				global $board_config, $db;
+				global $board_config, $nuke_db;
 				for($i=0; $i<count($style_config); $i++)
 				{
 					if(!isset($this->style_config[$style_config[$i]['var']]))
@@ -2388,13 +2388,13 @@ class Template {
 				$config_name = 'xs_style_' . $tpl;
 				if(isset($board_config[$config_name]))
 				{
-					$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . str_replace('\\\'', '\'\'', addslashes($str)) . "' WHERE config_name='" . str_replace('\\\'', '\'\'', addslashes($config_name)) . "'";
+					$sql = "UPDATE " . NUKE_CONFIG_TABLE . " SET config_value='" . str_replace('\\\'', '\'\'', addslashes($str)) . "' WHERE config_name='" . str_replace('\\\'', '\'\'', addslashes($config_name)) . "'";
 				}
 				else
 				{
-					$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('" . str_replace('\\\'', '\'\'', addslashes($config_name)) . "', '" . str_replace('\\\'', '\'\'', addslashes($str)) . "')";
+					$sql = "INSERT INTO " . NUKE_CONFIG_TABLE . " (config_name, config_value) VALUES ('" . str_replace('\\\'', '\'\'', addslashes($config_name)) . "', '" . str_replace('\\\'', '\'\'', addslashes($str)) . "')";
 				}
-				$db->sql_query($sql);
+				$nuke_db->sql_query($sql);
 				$board_config[$config_name] = $str;
 				// recache config table for cat_hierarchy 2.1.0
 				global $config;

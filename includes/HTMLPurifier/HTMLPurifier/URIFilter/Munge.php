@@ -23,7 +23,7 @@ class HTMLPurifier_URIFilter_Munge extends HTMLPurifier_URIFilter
         if (is_null($uri->host) || empty($scheme_obj->browsable)) {
             return true;
         }
-        // don't redirect if target host is our host
+        // don't nuke_redirect if target host is our host
         if ($uri->host === $config->getDefinition('URI')->host) {
             return true;
         }
@@ -33,7 +33,7 @@ class HTMLPurifier_URIFilter_Munge extends HTMLPurifier_URIFilter
 
         $new_uri = strtr($this->target, $this->replace);
         $new_uri = $this->parser->parse($new_uri);
-        // don't redirect if the target host is the same as the
+        // don't nuke_redirect if the target host is the same as the
         // starting host
         if ($uri->host === $new_uri->host) return true;
         $uri = $new_uri; // overwrite

@@ -24,34 +24,34 @@
 if(!defined('NUKE_EVO')) exit;
 
 function moduleblock_get_active() {
-    global $db, $prefix, $cache;
+    global $nuke_db, $prefix, $cache;
 
     $out = array();
-    if(!($result = $db->sql_query("SELECT * FROM `".$prefix."_modules` WHERE `active`='1' AND `inmenu`='1' AND `cat_id`<>0 ORDER BY `cat_id`, `pos` ASC"))) {
+    if(!($result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_modules` WHERE `active`='1' AND `inmenu`='1' AND `cat_id`<>0 ORDER BY `cat_id`, `pos` ASC"))) {
         return '';
     }
-    while ($row = $db->sql_fetchrow($result)) {
+    while ($row = $nuke_db->sql_fetchrow($result)) {
         $out[$row['cat_id']][] = $row;
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     return $out;
 }
 
 function moduleblock_get_cats() {
-    global $db, $prefix, $cache;
+    global $nuke_db, $prefix, $cache;
     static $cats;
     $use = (isset($_POST['save']) || (isset($_GET['area']) && $_GET['area'] == 'block')) ? 0 : 1;
     if (isset($cats) && is_array($cats) && $use) return $cats;
 
     if((($cats = $cache->load('module_cats', 'config')) === false) || !isset($cats) || !$use) {
         $cats = array();
-        if(!($result = $db->sql_query("SELECT * FROM `".$prefix."_modules_cat` ORDER BY `pos` ASC"))) {
+        if(!($result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_modules_cat` ORDER BY `pos` ASC"))) {
             return '';
         }
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             $cats[] = $row;
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         $cache->save('module_cats', 'config', $cats);
     }
 
@@ -168,34 +168,34 @@ function moduleblock_display() {
 }
 
 function moduleblock_get_inactive() {
-    global $db, $prefix, $cache;
+    global $nuke_db, $prefix, $cache;
 
-    if(!($result = $db->sql_query("SELECT * FROM `".$prefix."_modules` WHERE (`active`='0' OR `inmenu`='0' OR `cat_id`='0') AND `title` NOT LIKE '~l~%' ORDER BY `custom_title` ASC"))) {
+    if(!($result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_modules` WHERE (`active`='0' OR `inmenu`='0' OR `cat_id`='0') AND `title` NOT LIKE '~l~%' ORDER BY `custom_title` ASC"))) {
         return '';
     }
-    while ($row = $db->sql_fetchrow($result)) {
+    while ($row = $nuke_db->sql_fetchrow($result)) {
         $out[] = $row;
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     return $out;
 }
 
 function moduleblock_get_inactive_links() {
-    global $db, $prefix, $cache;
+    global $nuke_db, $prefix, $cache;
     static $links;
     $use = (isset($_POST['save']) || (isset($_GET['area']) && $_GET['area'] == 'block')) ? 0 : 1;
     if (isset($links) && is_array($links) && $use) return $links;
 
     if ((($links = $cache->load('module_links', 'config')) === false) || !isset($links) || !$use) {
         $links = '';
-        if(!($result = $db->sql_query("SELECT * FROM `".$prefix."_modules` WHERE (`active`=0 OR `cat_id`='0') AND `title` LIKE '~l~%' ORDER BY `title` ASC"))) {
+        if(!($result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_modules` WHERE (`active`=0 OR `cat_id`='0') AND `title` LIKE '~l~%' ORDER BY `title` ASC"))) {
             return '';
         }
         $links = array();
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             $links[] = $row;
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         if(!empty($links) && is_array($links)) {
             $cache->save('module_links', 'config', $links);
         } else {
@@ -254,7 +254,7 @@ function moduleblock_display_inactive() {
     $content .= "</div>\n";
 }
 
-global $prefix, $db, $language, $currentlang, $nukeurl, $content, $moduleblock_active, $moduleblock_cats;
+global $prefix, $nuke_db, $language, $currentlang, $nukeurl, $content, $moduleblock_active, $moduleblock_cats;
 
 $content = '';
 $main_module = main_module();

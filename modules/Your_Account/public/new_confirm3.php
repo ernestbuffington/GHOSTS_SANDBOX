@@ -43,7 +43,7 @@ if(!isset($_SESSION)) { session_start(); }
 if (!isset($_SESSION['YA1']) || isset($_SESSION['YA2'])) {
     global $debugger;
     $debugger->handle_error('Session not valid for user: Name - '.Fix_Quotes($ya_username).' Email - '.Fix_Quotes($femail), 'Error');
-    redirect('modules.php?name='.$module_name.'&op=new_user');
+    nuke_redirect('modules.php?name='.$module_name.'&op=new_user');
 }
 
 $_SESSION['YA2'] = true;
@@ -126,8 +126,8 @@ $_SESSION['YA2'] = true;
             exit;
         }
 
-        $result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field WHERE need = '3' ORDER BY pos");
-        while ($sqlvalue = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field WHERE need = '3' ORDER BY pos");
+        while ($sqlvalue = $nuke_db->sql_fetchrow($result)) {
           $t = trim($sqlvalue[fid]);
           if (empty($nfield[$t])) {
             OpenTable();

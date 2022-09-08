@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -35,16 +35,16 @@ if ( isset($HTTP_POST_VARS['submit']) )
     $email = ( !empty($HTTP_POST_VARS['email']) ) ? trim(strip_tags(htmlspecialchars($HTTP_POST_VARS['email']))) : '';
 
         $sql = "SELECT user_id, username, user_email, user_active, user_lang
-                FROM " . USERS_TABLE . "
+                FROM " . NUKE_USERS_TABLE . "
                 WHERE user_email = '" . str_replace("\'", "''", $email) . "'
             AND username = '" . str_replace("\'", "''", $username) . "'";
-    if ( $result = $db->sql_query($sql) )
+    if ( $result = $nuke_db->sql_query($sql) )
     {
-        if ( $row = $db->sql_fetchrow($result) )
+        if ( $row = $nuke_db->sql_fetchrow($result) )
         {
             if ( !$row['user_active'] )
             {
-                message_die(GENERAL_MESSAGE, $lang['No_send_account_inactive']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['No_send_account_inactive']);
             }
 
             $username = $row['username'];
@@ -58,15 +58,15 @@ if ( isset($HTTP_POST_VARS['submit']) )
 /*****[BEGIN]******************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
-                        $sql = "UPDATE " . USERS_TABLE . "
+                        $sql = "UPDATE " . NUKE_USERS_TABLE . "
                 SET user_newpasswd = '" . md5($user_password) . "', user_actkey = '$user_actkey'  
                 WHERE user_id = " . $row['user_id'];
 /*****[END]********************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
-            if ( !$db->sql_query($sql) )
+            if ( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, 'Could not update new password information', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not update new password information', '', __LINE__, __FILE__, $sql);
             }
 
             include("includes/emailer.php");
@@ -85,7 +85,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
                 'PASSWORD' => $user_password,
                 'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '', 
 
-                'U_ACTIVATE' => $server_url . '&mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey)
+                'U_ACTIVATE' => $server_url . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey)
             );
             $emailer->send();
             $emailer->reset();
@@ -96,16 +96,16 @@ if ( isset($HTTP_POST_VARS['submit']) )
 
             $message = $lang['Password_updated'] . '<br /><br />' . sprintf($lang['Click_return_index'],  '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
 
-            message_die(GENERAL_MESSAGE, $message);
+            message_die(NUKE_GENERAL_MESSAGE, $message);
         }
         else
         {
-            message_die(GENERAL_MESSAGE, $lang['No_email_match']);
+            message_die(NUKE_GENERAL_MESSAGE, $lang['No_email_match']);
         }
     }
     else
     {
-        message_die(GENERAL_ERROR, 'Could not obtain user information for sendpassword', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not obtain user information for sendpassword', '', __LINE__, __FILE__, $sql);
     }
 }
 else

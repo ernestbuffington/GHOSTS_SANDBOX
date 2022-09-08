@@ -33,7 +33,7 @@ define('NUKE_EVO_USERBLOCK_ADMIN', dirname(__FILE__) . '/');
 define('NUKE_EVO_USERBLOCK_ADMIN_INCLUDES', NUKE_EVO_USERBLOCK_ADMIN . 'includes/');
 define('NUKE_EVO_USERBLOCK_ADMIN_ADDONS', NUKE_EVO_USERBLOCK_ADMIN . 'addons/');
 
-global $prefix, $db, $admin_file, $admdata, $lang_evo_userblock;
+global $prefix, $nuke_db, $admin_file, $admdata, $lang_evo_userblock;
 $module_name = basename(dirname(dirname(__FILE__)));
 
 if (!is_mod_admin($module_name)) {
@@ -68,7 +68,7 @@ function evouserinfo_drawlists () {
     echo "<form action=\"".$admin_file.".php?op=evo-userinfo\" method=\"post\">\n";
     echo "<table border=\"0\" align=\"center\" cellspacing=\"1\" cellpadding=\"4\">\n";
     echo "<tr><td align=\"right\">\n";
-    echo $lang_evo_userblock['ADMIN']['COLLAPSE'];
+    echo $lang_evo_userblock['NUKE_ADMIN']['COLLAPSE'];
     echo "</td><td align=\"left\">\n";
     echo yesno_option('evouserinfo_ec', $evouserinfo_ec);
     echo "</td>\n";
@@ -103,7 +103,7 @@ function evouserinfo_drawlists () {
     //Breaks
     $end = count($active);
     for ($i = 0; $i < 5; $i++) {
-        echo "<li id=\"".$lang_evo_userblock['ADMIN']['BREAK'].$i."\"><hr /></li>\n";
+        echo "<li id=\"".$lang_evo_userblock['NUKE_ADMIN']['BREAK'].$i."\"><hr /></li>\n";
     }
     echo "</ul>\n";
     
@@ -177,7 +177,7 @@ function evouserinfo_drawlists () {
     echo "<form action=\"\" method=\"post\">
               <br />
               <input type=\"hidden\" name=\"order\" id=\"order\" value=\"\" />
-              <input type=\"submit\" onclick=\"getSort()\" value=\"".$lang_evo_userblock['ADMIN']['SAVE']."\" />
+              <input type=\"submit\" onclick=\"getSort()\" value=\"".$lang_evo_userblock['NUKE_ADMIN']['SAVE']."\" />
           </form>";
     echo "</td></tr>\n";
     echo "</table>\n";
@@ -186,19 +186,19 @@ function evouserinfo_drawlists () {
 }
 
 function evouserinfo_write ($data){
-    global $prefix, $db, $lang_evo_userblock, $cache;
+    global $prefix, $nuke_db, $lang_evo_userblock, $cache;
     
     //Clear All Previous Breaks
-    $db->sql_query('DELETE FROM `'.$prefix.'_evo_userinfo` WHERE `name`="Break"');
+    $nuke_db->sql_query('DELETE FROM `'.$prefix.'_evo_userinfo` WHERE `name`="Break"');
     //Write Data
     if(is_array($data)) {
         foreach ($data as $type => $sub) {
             if ($type == 'left_col') {
                 $i = 1;
                 foreach ($sub as $element) {
-                    if (!preg_match('#'.$lang_evo_userblock['ADMIN']['BREAK'].'#',$element)) {
+                    if (!preg_match('#'.$lang_evo_userblock['NUKE_ADMIN']['BREAK'].'#',$element)) {
                         $sql = 'UPDATE `'.$prefix.'_evo_userinfo` SET `position`='.$i.', `active`=0 WHERE `filename`="'.$element.'";';
-                        $db->sql_query($sql);
+                        $nuke_db->sql_query($sql);
                         $i++;
                     } else {
                         $i++;
@@ -207,13 +207,13 @@ function evouserinfo_write ($data){
             } else {
                 $i = 1;
                 foreach ($sub as $element) {
-                    if (!preg_match('#'.$lang_evo_userblock['ADMIN']['BREAK'].'#',$element)) {
+                    if (!preg_match('#'.$lang_evo_userblock['NUKE_ADMIN']['BREAK'].'#',$element)) {
                         $sql = 'UPDATE `'.$prefix.'_evo_userinfo` SET `position`='.$i.', `active`=1 WHERE `filename`="'.$element.'"';
-                        $db->sql_query($sql);
+                        $nuke_db->sql_query($sql);
                         $i++;
                     } else {
                         $sql = 'INSERT INTO `'.$prefix.'_evo_userinfo` values ("Break", "Break", 1, '.$i.', "")';
-                        $db->sql_query($sql);
+                        $nuke_db->sql_query($sql);
                         $i++;
                     }
                 }
@@ -259,12 +259,12 @@ if (isset($_POST['order']))
 {
   $data = evouserinfo_parse_data($_POST['order']);
   evouserinfo_write($data);
-  // redirect so refresh doesnt reset order to last save
-  redirect($admin_file.".php?op=evo-userinfo");
+  // nuke_redirect so refresh doesnt reset order to last save
+  nuke_redirect($admin_file.".php?op=evo-userinfo");
 }
 if (isset($_POST['evouserinfo_ec']) && is_int(intval($_POST['evouserinfo_ec']))) {
-    global $db, $prefix, $cache, $evouserinfo_ec;
-    $db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='".$_POST['evouserinfo_ec']."' WHERE evo_field='evouserinfo_ec'");
+    global $nuke_db, $prefix, $cache, $evouserinfo_ec;
+    $nuke_db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='".$_POST['evouserinfo_ec']."' WHERE evo_field='evouserinfo_ec'");
     $cache->delete('evoconfig', 'config');
     $cache->resync();
     $evouserinfo_ec = intval($_POST['evouserinfo_ec']);
@@ -274,7 +274,7 @@ if (!empty($file)){
     if(file_exists(NUKE_EVO_USERBLOCK_ADMIN_ADDONS . $file . '.php')) {
         include_once(NUKE_EVO_USERBLOCK_ADMIN_ADDONS . $file . '.php');
     } else {
-        redirect($admin_file.".php?op=evo-userinfo");
+        nuke_redirect($admin_file.".php?op=evo-userinfo");
     }
 } else {
     global $element_ids;
@@ -283,16 +283,16 @@ if (!empty($file)){
     $element_ids[] = 'right_col';
     include_once(NUKE_BASE_DIR.'header.php');
 	    OpenTable();
-        echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=evo-userinfo\">" .$lang_evo_userblock['ADMIN']['ADMIN_HEADER']. "</a></div>\n";
+        echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=evo-userinfo\">" .$lang_evo_userblock['NUKE_ADMIN']['ADMIN_HEADER']. "</a></div>\n";
         echo "<br /><br />";
-        echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" .$lang_evo_userblock['ADMIN']['ADMIN_RETURN']. "</a> ]</div>\n";
+        echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" .$lang_evo_userblock['NUKE_ADMIN']['ADMIN_RETURN']. "</a> ]</div>\n";
         CloseTable();
         echo "<br />";
         title(_EVO_USERINFO);
         OpenTable();
         echo "<div align=\"center\">\n";
-        echo "<span style=\"font-size: large; font-weight: bold;\">".$lang_evo_userblock['ADMIN']['HELP']."</span>\n<br /><br />\n";
-        echo $lang_evo_userblock['ADMIN']['ADMIN_HELP'];
+        echo "<span style=\"font-size: large; font-weight: bold;\">".$lang_evo_userblock['NUKE_ADMIN']['HELP']."</span>\n<br /><br />\n";
+        echo $lang_evo_userblock['NUKE_ADMIN']['ADMIN_HELP'];
         echo "</div>";
         CloseTable();
         echo "<br />\n";

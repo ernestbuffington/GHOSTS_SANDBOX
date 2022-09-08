@@ -75,7 +75,7 @@ else:
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 endif;
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
@@ -96,15 +96,15 @@ include('includes/posting_icons.'. $phpEx);
 
 # Start initial var setup
 $topic_id = $post_id = 0;
-if(isset($HTTP_GET_VARS[POST_TOPIC_URL]))
-$topic_id = intval($HTTP_GET_VARS[POST_TOPIC_URL]);
+if(isset($HTTP_GET_VARS[NUKE_POST_TOPIC_URL]))
+$topic_id = intval($HTTP_GET_VARS[NUKE_POST_TOPIC_URL]);
 elseif( isset($HTTP_GET_VARS['topic']))
 $topic_id = intval($HTTP_GET_VARS['topic']);
 
 $reply_topic_id = $topic_id;
 
-if(isset($HTTP_GET_VARS[POST_POST_URL]))
-$post_id = intval($HTTP_GET_VARS[POST_POST_URL]);
+if(isset($HTTP_GET_VARS[NUKE_POST_POST_URL]))
+$post_id = intval($HTTP_GET_VARS[NUKE_POST_POST_URL]);
 
 if($HTTP_GET_VARS['page']):
 $start = (isset($HTTP_GET_VARS['page']) ) ? intval($HTTP_GET_VARS['page']) : 0;
@@ -129,11 +129,11 @@ if(isset($HTTP_GET_VARS['printertopic']))
 # Mod: Printer Topic v1.0.8 END
 
 if (!$topic_id && !$post_id)
-message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+message_die(NUKE_GENERAL_MESSAGE, 'Topic_post_not_exist');
 
 # Find topic id if user requested a newer
 # or older topic
-if(isset($HTTP_GET_VARS['view']) && empty($HTTP_GET_VARS[POST_POST_URL])):
+if(isset($HTTP_GET_VARS['view']) && empty($HTTP_GET_VARS[NUKE_POST_POST_URL])):
 
    if($HTTP_GET_VARS['view'] == 'newest'):
    
@@ -158,36 +158,36 @@ if(isset($HTTP_GET_VARS['view']) && empty($HTTP_GET_VARS[POST_POST_URL])):
             $topic_last_read = 'u.user_lastvisit';
 
             $sql = "SELECT p.post_id, p.post_time
-            FROM (".POSTS_TABLE." p, ".SESSIONS_TABLE." s,  ".USERS_TABLE." u)
+            FROM (".NUKE_POSTS_TABLE." p, ".NUKE_BB_SESSIONS_TABLE." s,  ".NUKE_USERS_TABLE." u)
             WHERE s.session_id = '$session_id'
             AND u.user_id = s.session_user_id
             AND p.topic_id = ".intval($topic_id)."
             AND p.post_time >= ".$topic_last_read."
             LIMIT 1";
 
-            if(!($result = $db->sql_query($sql)))
-            message_die(GENERAL_ERROR, 'Could not obtain newer/older topic information', '', __LINE__, __FILE__, $sql);
+            if(!($result = $nuke_db->sql_query($sql)))
+            message_die(NUKE_GENERAL_ERROR, 'Could not obtain newer/older topic information', '', __LINE__, __FILE__, $sql);
 
-            if(!($row = $db->sql_fetchrow($result))):
-               $sql = "SELECT topic_last_post_id as post_id FROM ".TOPICS_TABLE." WHERE topic_id = ".intval($topic_id);
-               if(!($result = $db->sql_query($sql)))
-               message_die(GENERAL_ERROR, 'Could not obtain newer/older topic information', '', __LINE__, __FILE__, $sql);
+            if(!($row = $nuke_db->sql_fetchrow($result))):
+               $sql = "SELECT topic_last_post_id as post_id FROM ".NUKE_BB_TOPICS_TABLE." WHERE topic_id = ".intval($topic_id);
+               if(!($result = $nuke_db->sql_query($sql)))
+               message_die(NUKE_GENERAL_ERROR, 'Could not obtain newer/older topic information', '', __LINE__, __FILE__, $sql);
 
-               if(!($row = $db->sql_fetchrow($result)))
-               message_die(GENERAL_MESSAGE, 'No_new_posts_last_visit');
+               if(!($row = $nuke_db->sql_fetchrow($result)))
+               message_die(NUKE_GENERAL_MESSAGE, 'No_new_posts_last_visit');
             endif;
             # Mod: 'View Newest Post'-Fix v1.0.2 END
 
             $post_id = $row['post_id'];
 
             if(isset($HTTP_GET_VARS['sid']))
-            redirect(append_sid("viewtopic.$phpEx?sid=$session_id&".POST_POST_URL."=$post_id#$post_id",true));
+            nuke_redirect(append_sid("viewtopic.$phpEx?sid=$session_id&".NUKE_POST_POST_URL."=$post_id#$post_id",true));
             else
-            redirect(append_sid("viewtopic.$phpEx?".POST_POST_URL ."=$post_id#$post_id",true));
+            nuke_redirect(append_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL ."=$post_id#$post_id",true));
          endif;
       endif;
 
-      redirect(append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id",true));
+      nuke_redirect(append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id",true));
    
    elseif($HTTP_GET_VARS['view'] == 'next' || $HTTP_GET_VARS['view'] == 'previous'):
    
@@ -195,7 +195,7 @@ if(isset($HTTP_GET_VARS['view']) && empty($HTTP_GET_VARS[POST_POST_URL])):
       $sql_ordering = ( $HTTP_GET_VARS['view'] == 'next' ) ? 'ASC' : 'DESC';
 
       $sql = "SELECT t.topic_id
-      FROM (" . TOPICS_TABLE . " t, " . TOPICS_TABLE . " t2)
+      FROM (" . NUKE_BB_TOPICS_TABLE . " t, " . NUKE_BB_TOPICS_TABLE . " t2)
       WHERE
       t2.topic_id = '$topic_id'
       AND t.forum_id = t2.forum_id
@@ -204,14 +204,14 @@ if(isset($HTTP_GET_VARS['view']) && empty($HTTP_GET_VARS[POST_POST_URL])):
       ORDER BY t.topic_last_post_id $sql_ordering
       LIMIT 1";
       
-	  if(!($result = $db->sql_query($sql)))
-      message_die(GENERAL_ERROR, "Could not obtain newer/older topic information", '', __LINE__, __FILE__, $sql);
+	  if(!($result = $nuke_db->sql_query($sql)))
+      message_die(NUKE_GENERAL_ERROR, "Could not obtain newer/older topic information", '', __LINE__, __FILE__, $sql);
 
-      if ( $row = $db->sql_fetchrow($result)):
+      if ( $row = $nuke_db->sql_fetchrow($result)):
       $topic_id = intval($row['topic_id']);
       else:
          $message = ( $HTTP_GET_VARS['view'] == 'next' ) ? 'No_newer_topics' : 'No_older_topics';
-         message_die(GENERAL_MESSAGE, $message);
+         message_die(NUKE_GENERAL_MESSAGE, $message);
       endif;
    endif;
 endif;
@@ -220,7 +220,7 @@ endif;
 # This rather complex gaggle of code handles querying for topics but
 # also allows for direct linking to a post (and the calculation of which
 # page the post is on and the correct display of viewtopic)
-$join_sql_table = (!$post_id) ? '' : ", ".POSTS_TABLE." p, ".POSTS_TABLE." p2 ";
+$join_sql_table = (!$post_id) ? '' : ", ".NUKE_POSTS_TABLE." p, ".NUKE_POSTS_TABLE." p2 ";
 
 $join_sql = (!$post_id) ? "t.topic_id = '$topic_id'" : "p.post_id = '$post_id' AND t.topic_id = p.topic_id AND p2.topic_id = p.topic_id AND p2.post_id <= '$post_id'";
 
@@ -273,17 +273,17 @@ $sql = "SELECT t.topic_id,
 		  f.auth_announce, 
 		f.auth_pollcreate, 
 		      f.auth_vote, 
-	   f.auth_attachments ".$count_sql." FROM ".TOPICS_TABLE." t, ".FORUMS_TABLE." f".$join_sql_table." WHERE $join_sql AND f.forum_id = t.forum_id $order_sql";
+	   f.auth_attachments ".$count_sql." FROM ".NUKE_BB_TOPICS_TABLE." t, ".NUKE_FORUMS_TABLE." f".$join_sql_table." WHERE $join_sql AND f.forum_id = t.forum_id $order_sql";
 				
 # Mod: Attachment Mod v2.4.1 START
 attach_setup_viewtopic_auth($order_sql, $sql);
 # Mod: Attachment Mod v2.4.1 END
 
-if(!($result = $db->sql_query($sql)))
-message_die(GENERAL_ERROR, "Could not obtain topic information", '', __LINE__, __FILE__, $sql);
+if(!($result = $nuke_db->sql_query($sql)))
+message_die(NUKE_GENERAL_ERROR, "Could not obtain topic information", '', __LINE__, __FILE__, $sql);
 
-if ( !($forum_topic_data = $db->sql_fetchrow($result)) )
-message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+if ( !($forum_topic_data = $nuke_db->sql_fetchrow($result)) )
+message_die(NUKE_GENERAL_MESSAGE, 'Topic_post_not_exist');
 
 $forum_id = intval($forum_topic_data['forum_id']);
 
@@ -294,18 +294,18 @@ $topic_id = intval($forum_topic_data['topic_id']);
 # Mod: Thank You Mod v1.1.8 START
 # Check if the Thanks feature is active for this forum
 $sql = "SELECT `forum_thank` 
-		FROM ".FORUMS_TABLE." 
+		FROM ".NUKE_FORUMS_TABLE." 
 		WHERE forum_id =$forum_id";
 		
-if ( !($result = $db->sql_query($sql)) )
-message_die(GENERAL_ERROR, "Could not obtain forum information", '', __LINE__, __FILE__, $sql);
+if ( !($result = $nuke_db->sql_query($sql)) )
+message_die(NUKE_GENERAL_ERROR, "Could not obtain forum information", '', __LINE__, __FILE__, $sql);
 
-if ( !($forum_thank_result = $db->sql_fetchrow($result)) )
-message_die(GENERAL_MESSAGE, $lang['thank_no_exist']);
+if ( !($forum_thank_result = $nuke_db->sql_fetchrow($result)) )
+message_die(NUKE_GENERAL_MESSAGE, $lang['thank_no_exist']);
 
 # Setting if feature is active or not 
 
-$show_thanks = ($forum_thank_result['forum_thank'] == FORUM_THANKABLE) ? FORUM_THANKABLE : FORUM_UNTHANKABLE;
+$show_thanks = ($forum_thank_result['forum_thank'] == NUKE_FORUM_THANKABLE) ? NUKE_FORUM_THANKABLE : NUKE_FORUM_UNTHANKABLE;
 # Mod: Thank You Mod v1.1.8 END
 
 # Start session management
@@ -323,27 +323,27 @@ include($phpbb2_root_path.'language/lang_'.$board_config['default_lang'].'/lang_
 
 # auth check START
 $is_auth = array();
-$is_auth = auth(AUTH_ALL, $forum_id, $userdata, $forum_topic_data);
+$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata, $forum_topic_data);
 if( !$is_auth['auth_view'] || !$is_auth['auth_read']):
   if(!$userdata['session_logged_in']):
-     $redirect = ($post_id) ? POST_POST_URL . "=$post_id" : POST_TOPIC_URL . "=$topic_id";
-     $redirect .= ($start) ? "&start=$start" : '';
+     $nuke_redirect = ($post_id) ? NUKE_POST_POST_URL . "=$post_id" : NUKE_POST_TOPIC_URL . "=$topic_id";
+     $nuke_redirect .= ($start) ? "&start=$start" : '';
      $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", $_SERVER["SERVER_SOFTWARE"]) ) ? "Refresh: 0; URL=" : "Location: ";
-     redirect(append_sid("modules.php?name=Your_Account&redirect=viewtopic&$redirect", true));
+     nuke_redirect(append_sid("modules.php?name=Your_Account&nuke_redirect=viewtopic&$nuke_redirect", true));
      exit;
   endif;
         $message = ( !$is_auth['auth_view'] ) ? $lang['Topic_post_not_exist'] : sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']);
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
 endif;
 # auth check END
 
 # Base: Who viewed a topic v1.0.3 START
 $user_id=$userdata['user_id'];
-$sql='UPDATE '.TOPIC_VIEW_TABLE.' SET topic_id="'.$topic_id.'", view_time="'.time().'", view_count=view_count+1 WHERE topic_id='.$topic_id.' AND user_id='.$user_id;
-if ( !$db->sql_query($sql) || !$db->sql_affectedrows()):
-    $sql = 'INSERT IGNORE INTO '.TOPIC_VIEW_TABLE.' (topic_id, user_id, view_time,view_count) VALUES ('.$topic_id.', "'.$user_id.'", "'.time().'","1")';
-    if ( !($db->sql_query($sql)) )
-    message_die(CRITICAL_ERROR, 'Error create user view topic information ', '', __LINE__, __FILE__, $sql);
+$sql='UPDATE '.NUKE_TOPIC_VIEW_TABLE.' SET topic_id="'.$topic_id.'", view_time="'.time().'", view_count=view_count+1 WHERE topic_id='.$topic_id.' AND user_id='.$user_id;
+if ( !$nuke_db->sql_query($sql) || !$nuke_db->sql_affectedrows()):
+    $sql = 'INSERT IGNORE INTO '.NUKE_TOPIC_VIEW_TABLE.' (topic_id, user_id, view_time,view_count) VALUES ('.$topic_id.', "'.$user_id.'", "'.time().'","1")';
+    if ( !($nuke_db->sql_query($sql)) )
+    message_die(NUKE_CRITICAL_ERROR, 'Error create user view topic information ', '', __LINE__, __FILE__, $sql);
 endif;
 # Base: Who viewed a topic v1.0.3 END
 
@@ -360,26 +360,26 @@ $reply_topic_id = $topic_id;
 $topic_time = $forum_topic_data['topic_time'];
 
 # Password check START
-if( !$is_auth['auth_mod'] && $userdata['user_level'] != ADMIN ):
-	$redirect = str_replace("&amp;", "&", preg_replace('#.*?([a-z]+?\.' . $phpEx . '.*?)$#i', '\1', htmlspecialchars($HTTP_SERVER_VARS['REQUEST_URI'])));
+if( !$is_auth['auth_mod'] && $userdata['user_level'] != NUKE_ADMIN ):
+	$nuke_redirect = str_replace("&amp;", "&", preg_replace('#.*?([a-z]+?\.' . $phpEx . '.*?)$#i', '\1', htmlspecialchars($HTTP_SERVER_VARS['REQUEST_URI'])));
 	if( $HTTP_POST_VARS['cancel'] ):
-		redirect(append_sid("index.$phpEx"));
+		nuke_redirect(append_sid("index.$phpEx"));
 	elseif($HTTP_POST_VARS['pass_login']):
 		if($forum_topic_data['topic_password'] != ''):
-			password_check('topic', $topic_id, $HTTP_POST_VARS['password'], $redirect);
+			password_check('topic', $topic_id, $HTTP_POST_VARS['password'], $nuke_redirect);
 		elseif($forum_topic_data['forum_password'] != ''):
-			password_check('forum', $forum_id, $HTTP_POST_VARS['password'], $redirect);
+			password_check('forum', $forum_id, $HTTP_POST_VARS['password'], $nuke_redirect);
 	    endif;
 	endif;
 	if($forum_topic_data['topic_password'] != ''):
 		$passdata = ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'].'_tpass']) ) ? unserialize(stripslashes($HTTP_COOKIE_VARS[$board_config['cookie_name'].'_tpass'])) : '';
 		if($passdata[$topic_id] != md5($forum_topic_data['topic_password'])):
-	    password_box('topic', $redirect);
+	    password_box('topic', $nuke_redirect);
 		endif;
 	elseif($forum_topic_data['forum_password'] != '' ):
 		$passdata = ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'].'_fpass']) ) ? unserialize(stripslashes($HTTP_COOKIE_VARS[$board_config['cookie_name'].'_fpass'])) : '';
 		if($passdata[$forum_id] != md5($forum_topic_data['forum_password'])):
-			password_box('forum', $redirect);
+			password_box('forum', $nuke_redirect);
 		endif;
 
 	endif;
@@ -411,11 +411,11 @@ if($userdata['session_logged_in']):
             $template->assign_vars(array(
             'TOPIC_TITLE'    => $topic_title,
             'POST_ID'        => $post_id,
-            'U_VIEW_TOPIC'   => append_sid('viewtopic.'.$phpEx.'?'.POST_TOPIC_URL.'='.$topic_id),
+            'U_VIEW_TOPIC'   => append_sid('viewtopic.'.$phpEx.'?'.NUKE_POST_TOPIC_URL.'='.$topic_id),
             'L_REPORT_POST'  => $lang['Report_post'],
             'L_COMMENTS'     => $lang['Comments'],
             'L_SUBMIT'       => $lang['Submit'],
-            'S_ACTION'       => append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.POST_POST_URL.'='.$post_id))
+            'S_ACTION'       => append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$post_id))
             );
 
             $template->pparse('body');
@@ -424,7 +424,7 @@ if($userdata['session_logged_in']):
             exit;
         else:
             if(!report_flood())
-            message_die(GENERAL_MESSAGE, $lang['Flood_Error']);
+            message_die(NUKE_GENERAL_MESSAGE, $lang['Flood_Error']);
             # insert the report
             insert_report($post_id, $comments);
             # email the report if need to
@@ -432,11 +432,11 @@ if($userdata['session_logged_in']):
             email_report($forum_id, $post_id, $topic_title, $comments);
 
             $template->assign_vars(array(
-                'META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id").'">')
+                'META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id").'">')
             );
 
-            $message =  $lang['Post_reported'] . '<br /><br />'.sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id").'">', '</a>');
-            message_die(GENERAL_MESSAGE, $message);
+            $message =  $lang['Post_reported'] . '<br /><br />'.sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id").'">', '</a>');
+            message_die(NUKE_GENERAL_MESSAGE, $message);
         endif;
     endif;
     # Mod: Report Posts v1.0.2 END
@@ -444,44 +444,44 @@ if($userdata['session_logged_in']):
         $can_watch_topic = TRUE;
 
         $sql = "SELECT notify_status
-                FROM ".TOPICS_WATCH_TABLE."
+                FROM ".NUKE_TOPICS_WATCH_TABLE."
                 WHERE topic_id = '$topic_id'
                 AND user_id = ".$userdata['user_id'];
         
-		if(!($result = $db->sql_query($sql)))
-        message_die(GENERAL_ERROR, "Could not obtain topic watch information", '', __LINE__, __FILE__, $sql);
+		if(!($result = $nuke_db->sql_query($sql)))
+        message_die(NUKE_GENERAL_ERROR, "Could not obtain topic watch information", '', __LINE__, __FILE__, $sql);
 
-        if($row = $db->sql_fetchrow($result)):
+        if($row = $nuke_db->sql_fetchrow($result)):
         
            if(isset($HTTP_GET_VARS['unwatch'])):
            
               if($HTTP_GET_VARS['unwatch'] == 'topic'):
                  $is_watching_topic = 0;
                  $sql_priority = (SQL_LAYER == "mysql" || SQL_LAYER == "mysqli") ? "LOW_PRIORITY" : '';
-                 $sql = "DELETE $sql_priority FROM ".TOPICS_WATCH_TABLE."
+                 $sql = "DELETE $sql_priority FROM ".NUKE_TOPICS_WATCH_TABLE."
                  WHERE topic_id = '$topic_id'
                  AND user_id = " . $userdata['user_id'];
                  
-				 if(!($result = $db->sql_query($sql)))
-                 message_die(GENERAL_ERROR, "Could not delete topic watch information", '', __LINE__, __FILE__, $sql);
+				 if(!($result = $nuke_db->sql_query($sql)))
+                 message_die(NUKE_GENERAL_ERROR, "Could not delete topic watch information", '', __LINE__, __FILE__, $sql);
               endif;
                  $template->assign_vars(array(
-                 'META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;start=$start").'">'));
+                 'META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start").'">'));
 
                  $message = $lang['No_longer_watching'].'<br /><br />'.sprintf($lang['Click_return_topic'], '<a 
-				 href="' . append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;start=$start") . '">', '</a>');
-                 message_die(GENERAL_MESSAGE, $message);
+				 href="' . append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start") . '">', '</a>');
+                 message_die(NUKE_GENERAL_MESSAGE, $message);
            else:
               $is_watching_topic = TRUE;
               if($row['notify_status']):
                  $sql_priority = (SQL_LAYER == "mysql" || SQL_LAYER == "mysqli") ? "LOW_PRIORITY" : '';
-                 $sql = "UPDATE $sql_priority ".TOPICS_WATCH_TABLE."
+                 $sql = "UPDATE $sql_priority ".NUKE_TOPICS_WATCH_TABLE."
                  SET notify_status = '0'
                  WHERE topic_id = '$topic_id'
                  AND user_id = ".$userdata['user_id'];
                  
-				 if ( !($result = $db->sql_query($sql)) )
-                 message_die(GENERAL_ERROR, "Could not update topic watch information", '', __LINE__, __FILE__, $sql);
+				 if ( !($result = $nuke_db->sql_query($sql)) )
+                 message_die(NUKE_GENERAL_ERROR, "Could not update topic watch information", '', __LINE__, __FILE__, $sql);
               endif;
            endif;
         else:
@@ -489,14 +489,14 @@ if($userdata['session_logged_in']):
               if($HTTP_GET_VARS['watch'] == 'topic'):
                  $is_watching_topic = TRUE;
                  $sql_priority = (SQL_LAYER == "mysql" || SQL_LAYER == "mysqli") ? "LOW_PRIORITY" : '';
-                 $sql = "INSERT $sql_priority INTO ".TOPICS_WATCH_TABLE." (user_id, topic_id, notify_status)
+                 $sql = "INSERT $sql_priority INTO ".NUKE_TOPICS_WATCH_TABLE." (user_id, topic_id, notify_status)
                  VALUES (" . $userdata['user_id'] . ", '$topic_id', '0')";
-		         if(!($result = $db->sql_query($sql)))
-                 message_die(GENERAL_ERROR, "Could not insert topic watch information", '', __LINE__, __FILE__, $sql);
+		         if(!($result = $nuke_db->sql_query($sql)))
+                 message_die(NUKE_GENERAL_ERROR, "Could not insert topic watch information", '', __LINE__, __FILE__, $sql);
               endif;
-              $template->assign_vars(array('META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;start=$start").'">'));
-              $message = $lang['You_are_watching'].'<br /><br />'.sprintf($lang['Click_return_topic'], '<a href="'.append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;start=$start").'">', '</a>');
-               message_die(GENERAL_MESSAGE, $message);
+              $template->assign_vars(array('META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start").'">'));
+              $message = $lang['You_are_watching'].'<br /><br />'.sprintf($lang['Click_return_topic'], '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start").'">', '</a>');
+               message_die(NUKE_GENERAL_MESSAGE, $message);
            else:
                $is_watching_topic = 0;
            endif;
@@ -505,7 +505,7 @@ else:
    if(isset($HTTP_GET_VARS['unwatch'])):
        if($HTTP_GET_VARS['unwatch'] == 'topic'):
        $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", $_SERVER["SERVER_SOFTWARE"]) ) ? "Refresh: 0; URL=" : "Location: ";
-       redirect(append_sid("login.$phpEx?redirect=viewtopic.$phpEx&".POST_TOPIC_URL."=$topic_id&unwatch=topic", true));
+       nuke_redirect(append_sid("login.$phpEx?nuke_redirect=viewtopic.$phpEx&".NUKE_POST_TOPIC_URL."=$topic_id&unwatch=topic", true));
        exit;
     endif;
     else:
@@ -522,11 +522,11 @@ endif;
 $valid = FALSE;
 if($userdata['session_logged_in']): 
 	$sql = "SELECT p.poster_id, p.topic_id
-		FROM " . POSTS_TABLE . " p
+		FROM " . NUKE_POSTS_TABLE . " p
 		WHERE p.topic_id = $topic_id
 		AND p.poster_id = " . $userdata['user_id'];
-	$resultat = $db->sql_query($sql);
-	$valid = $db->sql_numrows($resultat) ? TRUE : FALSE;
+	$resultat = $nuke_db->sql_query($sql);
+	$valid = $nuke_db->sql_numrows($resultat) ? TRUE : FALSE;
 endif;
 # Mod: Hide Mod v1.2.0 END
 
@@ -538,16 +538,16 @@ if(!empty($HTTP_POST_VARS['postdays']) || !empty($HTTP_GET_VARS['postdays'])):
         $min_post_time = time() - (intval($post_days) * 86400);
 
         $sql = "SELECT COUNT(p.post_id) AS num_posts
-                FROM (" . TOPICS_TABLE . " t, " . POSTS_TABLE . " p)
+                FROM (" . NUKE_BB_TOPICS_TABLE . " t, " . NUKE_POSTS_TABLE . " p)
                 WHERE t.topic_id = '$topic_id'
                 AND p.topic_id = t.topic_id
                 AND p.post_time >= '$min_post_time'";
  
-        if(!($result = $db->sql_query($sql))):
-        message_die(GENERAL_ERROR, "Could not obtain limited topics count information", '', __LINE__, __FILE__, $sql);
+        if(!($result = $nuke_db->sql_query($sql))):
+        message_die(NUKE_GENERAL_ERROR, "Could not obtain limited topics count information", '', __LINE__, __FILE__, $sql);
         endif;
        
-	    $total_replies = ($row = $db->sql_fetchrow($result)) ? intval($row['num_posts']) : 0;
+	    $total_replies = ($row = $nuke_db->sql_fetchrow($result)) ? intval($row['num_posts']) : 0;
 
         $limit_posts_time = "AND p.post_time >= $min_post_time ";
 
@@ -575,7 +575,7 @@ if(!empty($HTTP_POST_VARS['postorder']) || !empty($HTTP_GET_VARS['postorder'])):
     $post_order = (!empty($HTTP_POST_VARS['postorder'])) ? htmlspecialchars($HTTP_POST_VARS['postorder']) : htmlspecialchars($HTTP_GET_VARS['postorder']);
 
     if (!preg_match("/^((asc)|(desc))$/i",$post_order) )
-    message_die(GENERAL_ERROR, 'Selected post order is not valid');
+    message_die(NUKE_GENERAL_ERROR, 'Selected post order is not valid');
 
     $post_time_order = ($post_order == "asc") ? "ASC" : "DESC";
 else:
@@ -633,7 +633,7 @@ $sql = "SELECT u.username,
 		    pt.bbcode_uid, 
 		u.user_reputation
         
-		FROM (".POSTS_TABLE." p, ".USERS_TABLE." u, ".POSTS_TEXT_TABLE." pt)
+		FROM (".NUKE_POSTS_TABLE." p, ".NUKE_USERS_TABLE." u, ".NUKE_POSTS_TEXT_TABLE." pt)
         WHERE p.topic_id = '$topic_id'
                 $limit_posts_time
                 AND pt.post_id = p.post_id
@@ -648,23 +648,23 @@ $sql = "SELECT u.username,
  # Mod: Birthdays v3.0.0 END
  # Mod: Users Reputations System v1.0.0 END
 
-if(!($result = $db->sql_query($sql)))
-message_die(GENERAL_ERROR, "Could not obtain post/user information.", '', __LINE__, __FILE__, $sql);
+if(!($result = $nuke_db->sql_query($sql)))
+message_die(NUKE_GENERAL_ERROR, "Could not obtain post/user information.", '', __LINE__, __FILE__, $sql);
 
 $postrow = array();
 
-if ($row = $db->sql_fetchrow($result)):
+if ($row = $nuke_db->sql_fetchrow($result)):
         do{
         $postrow[] = $row;
         }
-        while($row = $db->sql_fetchrow($result));
-        $db->sql_freeresult($result);
+        while($row = $nuke_db->sql_fetchrow($result));
+        $nuke_db->sql_freeresult($result);
         $total_posts = count($postrow);
 else:
    include("includes/functions_admin.php");
    sync('topic', $topic_id);
 
-   message_die(GENERAL_MESSAGE, $lang['No_posts_topic']);
+   message_die(NUKE_GENERAL_MESSAGE, $lang['No_posts_topic']);
 endif;
 
 $resync = FALSE;
@@ -683,8 +683,8 @@ endif;
 if($resync):
    include("includes/functions_admin.php");
    sync('topic', $topic_id);
-   $result = $db->sql_query('SELECT COUNT(post_id) AS total FROM '.POSTS_TABLE.' WHERE topic_id = '.$topic_id);
-   $row = $db->sql_fetchrow($result);
+   $result = $nuke_db->sql_query('SELECT COUNT(post_id) AS total FROM '.NUKE_POSTS_TABLE.' WHERE topic_id = '.$topic_id);
+   $row = $nuke_db->sql_fetchrow($result);
    $total_replies = $row['total'];
 endif;
 
@@ -722,22 +722,22 @@ endif;
 # templating vars
 
 # Mod: Printer Topic v1.0.8 START
-$printer_topic_url = append_sid("viewtopic.$phpEx?printertopic=1&amp;".POST_TOPIC_URL."=$topic_id&amp;start=$start&amp;postdays=$post_days&amp;postorder=$post_order&amp;vote=viewresult");
+$printer_topic_url = append_sid("viewtopic.$phpEx?printertopic=1&amp;".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start&amp;postdays=$post_days&amp;postorder=$post_order&amp;vote=viewresult");
 # Mod: Printer Topic v1.0.8 END
 
-$new_topic_url = append_sid("posting.$phpEx?mode=newtopic&amp;".POST_FORUM_URL."=$forum_id");
-$reply_topic_url = append_sid("posting.$phpEx?mode=reply&amp;".POST_TOPIC_URL."=$topic_id");
+$new_topic_url = append_sid("posting.$phpEx?mode=newtopic&amp;".NUKE_POST_FORUM_URL."=$forum_id");
+$reply_topic_url = append_sid("posting.$phpEx?mode=reply&amp;".NUKE_POST_TOPIC_URL."=$topic_id");
 
 # Mod: Thank You Mod v1.1.8 START
-$thank_topic_url = append_sid("posting.$phpEx?mode=thank&amp;".POST_TOPIC_URL."=$topic_id");
+$thank_topic_url = append_sid("posting.$phpEx?mode=thank&amp;".NUKE_POST_TOPIC_URL."=$topic_id");
 # Mod: Thank You Mod v1.1.8 END
 
-$view_forum_url = append_sid("viewforum.$phpEx?".POST_FORUM_URL."=$forum_id");
-$view_prev_topic_url = append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;view=previous");
-$view_next_topic_url = append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;view=next");
+$view_forum_url = append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id");
+$view_prev_topic_url = append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;view=previous");
+$view_next_topic_url = append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;view=next");
 
 # Base: Who viewed a topic v1.0.3 START
-$who_has_viewed_topic = append_sid("viewtopic_whoview.$phpEx?".POST_TOPIC_URL."=$topic_id");
+$who_has_viewed_topic = append_sid("viewtopic_whoview.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id");
 # Base: Who viewed a topic v1.0.3 END
 
 # Mozilla navigation bar
@@ -754,10 +754,10 @@ $nav_links['up'] = array(
         'title' => $forum_name
 );
 
-$reply_img = ($forum_topic_data['forum_status'] == FORUM_LOCKED || $forum_topic_data['topic_status'] == TOPIC_LOCKED) ? $images['reply_locked'] : $images['reply_new'];
-$reply_alt = ($forum_topic_data['forum_status'] == FORUM_LOCKED || $forum_topic_data['topic_status'] == TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['Reply_to_topic'];
-$post_img = ($forum_topic_data['forum_status'] == FORUM_LOCKED) ? $images['post_locked'] : $images['post_new'];
-$post_alt = ($forum_topic_data['forum_status'] == FORUM_LOCKED) ? $lang['Forum_locked'] : $lang['Post_new_topic'];
+$reply_img = ($forum_topic_data['forum_status'] == NUKE_FORUM_LOCKED || $forum_topic_data['topic_status'] == NUKE_TOPIC_LOCKED) ? $images['reply_locked'] : $images['reply_new'];
+$reply_alt = ($forum_topic_data['forum_status'] == NUKE_FORUM_LOCKED || $forum_topic_data['topic_status'] == NUKE_TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['Reply_to_topic'];
+$post_img = ($forum_topic_data['forum_status'] == NUKE_FORUM_LOCKED) ? $images['post_locked'] : $images['post_new'];
+$post_alt = ($forum_topic_data['forum_status'] == NUKE_FORUM_LOCKED) ? $lang['Forum_locked'] : $lang['Post_new_topic'];
 $whoview_img = $images['icon_view'];
 $whoview_alt = $lang['Topic_view_users'];
 
@@ -827,7 +827,7 @@ if( $parent_id )
 		{
 			$template->assign_vars(array(
 				'PARENT_FORUM'			=> 1,
-				'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?".POST_FORUM_URL.'='.$all_forums[$i]['forum_id']),
+				'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL.'='.$all_forums[$i]['forum_id']),
 				'PARENT_FORUM_NAME'		=> $all_forums[$i]['forum_name'],
 				));
 		}
@@ -871,46 +871,46 @@ $merge_topic_url = $merge_topic_btn = '';
 
 if($is_auth['auth_mod']):
 
-        $s_auth_can .= sprintf($lang['Rules_moderate'], '<a href="'.append_sid("modcp.$phpEx?".POST_FORUM_URL."=$forum_id").'">', '</a>');
+        $s_auth_can .= sprintf($lang['Rules_moderate'], '<a href="'.append_sid("modcp.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id").'">', '</a>');
 
-        $topic_mod .= '<a href="'.append_sid("modcp.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;mode=delete").'"><img 
+        $topic_mod .= '<a href="'.append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=delete").'"><img 
 		src="'.$images['topic_mod_delete'].'" alt="'.$lang['Delete_topic'].'" title="'. $lang['Delete_topic'].'" border="0" /></a>&nbsp;';
 		
-        $delete_topic_url = append_sid("modcp.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;mode=delete");
+        $delete_topic_url = append_sid("modcp.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;mode=delete");
         $delete_topic_btn = $lang['Delete_topic'];
 
-        $topic_mod .= '<a href="'.append_sid("modcp.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;mode=move").'"><img 
+        $topic_mod .= '<a href="'.append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=move").'"><img 
 		src="'.$images['topic_mod_move'].'" alt="'.$lang['Move_topic'].'" title="'.$lang['Move_topic'].'" border="0" /></a>&nbsp;';
         
-		$move_topic_url = append_sid("modcp.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;mode=move");
+		$move_topic_url = append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=move");
         $move_topic_btn = $lang['Move_topic'];
 
-        $topic_mod .= ($forum_topic_data['topic_status'] == TOPIC_UNLOCKED ) ? '<a href="'.append_sid("modcp.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;mode=lock").'"><img 
+        $topic_mod .= ($forum_topic_data['topic_status'] == NUKE_TOPIC_UNLOCKED ) ? '<a href="'.append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=lock").'"><img 
 		src="'.$images['topic_mod_lock'].'" alt="'.$lang['Lock_topic'].'" title="'.$lang['Lock_topic'].'" border="0" /></a>&nbsp;' : '<a 
-		href="'.append_sid("modcp.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;mode=unlock").'"><img 
+		href="'.append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=unlock").'"><img 
 		src="'.$images['topic_mod_unlock'].'" alt="'.$lang['Unlock_topic'].'" title="'.$lang['Unlock_topic'].'" border="0" /></a>&nbsp;';
         
-		if($forum_topic_data['topic_status'] == TOPIC_UNLOCKED):
-        	$lock_topic_url = append_sid("modcp.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;mode=lock");
+		if($forum_topic_data['topic_status'] == NUKE_TOPIC_UNLOCKED):
+        	$lock_topic_url = append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=lock");
         	$lock_topic_btn = $lang['Lock_topic'];
         	$lock_topic_status = 0;
         else:
-        	$lock_topic_url = append_sid("modcp.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;mode=unlock");
+        	$lock_topic_url = append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=unlock");
         	$lock_topic_btn = $lang['Unlock_topic'];
         	$lock_topic_status = 1;
         endif;
 
-        $topic_mod .= '<a href="'.append_sid("modcp.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;mode=split").'"><img 
+        $topic_mod .= '<a href="'.append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=split").'"><img 
 		src="'.$images['topic_mod_split'].'" alt="'.$lang['Split_topic'].'" title="'. $lang['Split_topic'].'" border="0" /></a>&nbsp;';
         
-		$split_topic_url = append_sid("modcp.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;mode=split");
+		$split_topic_url = append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=split");
         $split_topic_btn = $lang['Split_topic'];
 		
         # Mod: Simply Merge Threads v1.0.1 START
-        $topic_mod .= '<a href="' . append_sid("merge.$phpEx?" . POST_TOPIC_URL . '=' . $topic_id) . '"><img 
+        $topic_mod .= '<a href="' . append_sid("merge.$phpEx?" . NUKE_POST_TOPIC_URL . '=' . $topic_id) . '"><img 
 		src="' . $images['topic_mod_merge'] . '" alt="' . $lang['Merge_topics'] . '" title="' . $lang['Merge_topics'] . '" border="0" /></a>&nbsp;';
         
-		$merge_topic_url = append_sid("merge.$phpEx?" . POST_TOPIC_URL . '=' . $topic_id);
+		$merge_topic_url = append_sid("merge.$phpEx?" . NUKE_POST_TOPIC_URL . '=' . $topic_id);
         $merge_topic_btn = $lang['Merge_topics'];
         # Mod: Simply Merge Threads v1.0.1 END 
 endif;
@@ -920,22 +920,22 @@ endif;
 $s_watching_topic = $s_watching_topic_url = $s_watching_topic_text = $s_watching_topic_state = '';
 if($can_watch_topic):
   if($is_watching_topic):
-     $s_watching_topic = '<a href="' . append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;unwatch=topic&amp;start=$start").'">'.$lang['Stop_watching_topic'].'</a>';
+     $s_watching_topic = '<a href="' . append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;unwatch=topic&amp;start=$start").'">'.$lang['Stop_watching_topic'].'</a>';
      
-	 $s_watching_topic_img = (isset($images['Topic_un_watch']) ) ? '<a href="'.append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;unwatch=topic&amp;start=$start").'"><img 
+	 $s_watching_topic_img = (isset($images['Topic_un_watch']) ) ? '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;unwatch=topic&amp;start=$start").'"><img 
 	 src="'.$images['Topic_un_watch'].'" alt="'.$lang['Stop_watching_topic'].'" title="'.$lang['Stop_watching_topic'].'" border="0"></a>' : '';
 
-     $s_watching_topic_url = append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;unwatch=topic&amp;page=$start");
+     $s_watching_topic_url = append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;unwatch=topic&amp;page=$start");
      $s_watching_topic_text = $lang['Stop_watching_topic'];
      $s_watching_topic_state = 1;
         
   else:
         
-  $s_watching_topic = '<a href="'.append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;watch=topic&amp;start=$start").'">'.$lang['Start_watching_topic'].'</a>';
-  $s_watching_topic_img = ( isset($images['Topic_watch']) ) ? '<a href="' . append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;watch=topic&amp;start=$start").'"><img 
+  $s_watching_topic = '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;watch=topic&amp;start=$start").'">'.$lang['Start_watching_topic'].'</a>';
+  $s_watching_topic_img = ( isset($images['Topic_watch']) ) ? '<a href="' . append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;watch=topic&amp;start=$start").'"><img 
   src="'.$images['Topic_watch'].'" alt="'.$lang['Stop_watching_topic'].'" title="'.$lang['Start_watching_topic'].'" border="0"></a>' : '';
 
-  $s_watching_topic_url = append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;watch=topic&amp;page=$start");
+  $s_watching_topic_url = append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;watch=topic&amp;page=$start");
   $s_watching_topic_text = $lang['Start_watching_topic'];
   $s_watching_topic_state = 0;
   endif;
@@ -944,7 +944,7 @@ endif;
 # Mod: Email topic to friend v1.0.0 START
 $s_email_topic = $s_email_url = $s_email_text = '';
 if($userdata['session_logged_in']):
-  $action = ($post_id) ? POST_POST_URL."=$post_id" : POST_TOPIC_URL."=$topic_id&amp;start=$start";
+  $action = ($post_id) ? NUKE_POST_POST_URL."=$post_id" : NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start";
   $s_email_topic = '<a href="'.append_sid("emailtopic.$phpEx?$action").'">'.$lang['Email_topic'].'</a>';
   $s_email_url = append_sid("emailtopic.$phpEx?$action");
   $s_email_text = $lang['Email_topic'];
@@ -970,19 +970,19 @@ $pagination_printertopic = (isset($pagination_printertopic)) ? $pagination_print
 $pagination_highlight = (isset($pagination_highlight)) ? $pagination_highlight : '';
 $pagination_finish_rel = (isset($pagination_finish_rel)) ? $pagination_finish_rel : '';
 
-$pagination = generate_pagination("viewtopic&amp;".$pagination_printertopic.POST_TOPIC_URL."=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order&amp;".$pagination_highlight.$pagination_finish_rel, $total_replies, $pagination_ppp, $start);
+$pagination = generate_pagination("viewtopic&amp;".$pagination_printertopic.NUKE_POST_TOPIC_URL."=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order&amp;".$pagination_highlight.$pagination_finish_rel, $total_replies, $pagination_ppp, $start);
 
 # Mod: Thank You Mod v1.1.8 START
 $current_page = get_page($total_replies, $board_config['posts_per_page'], $start);
 # Mod: Thank You Mod v1.1.8 END
 
 if($pagination != '' && !empty($pagination_printertopic)):
-$pagination .= " &nbsp;<a href=\"modules.php?name=Forums&amp;file=viewtopic&amp;".$pagination_printertopic.POST_TOPIC_URL."=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order&amp;".$pagination_highlight. "start=0&amp;finish_rel=-10000\" title=\"".$lang['printertopic_cancel_pagination_desc']."\">:|&nbsp;|:</a>";
+$pagination .= " &nbsp;<a href=\"modules.php?name=Forums&amp;file=viewtopic&amp;".$pagination_printertopic.NUKE_POST_TOPIC_URL."=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order&amp;".$pagination_highlight. "start=0&amp;finish_rel=-10000\" title=\"".$lang['printertopic_cancel_pagination_desc']."\">:|&nbsp;|:</a>";
 endif;
 
 # Mod: Printer Topic v1.0.8 START
 $pagination_variables = array(
-	'url' => append_sid("viewtopic&amp;".$pagination_printertopic.POST_TOPIC_URL."=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order"), 
+	'url' => append_sid("viewtopic&amp;".$pagination_printertopic.NUKE_POST_TOPIC_URL."=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order"), 
 	'total' => $total_replies,
 	'per-page' => $pagination_ppp,
 	'next-previous' => true,
@@ -1000,7 +1000,7 @@ $template->assign_vars(array(
  		 *	@since 2.0.9e001
  		 */
 		'TOPIC_AUTHOR' => $topic_author,
-		'TOPIC_URI' => append_sid("viewforum.$phpEx?".POST_FORUM_URL.'='.$forum_id),
+		'TOPIC_URI' => append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL.'='.$forum_id),
       	'AUTHOR_AVATAR' => $author_avatar,
         'FORUM_ID' => $forum_id,
         'FORUM_NAME' => $forum_name,
@@ -1056,10 +1056,10 @@ $template->assign_vars(array(
         'L_DELETE_TOPIC' => $lang['Delete_topic'],
         'L_GOTO_PAGE' => $lang['Goto_page'],
 
-        'S_TOPIC_LINK' => POST_TOPIC_URL,
+        'S_TOPIC_LINK' => NUKE_POST_TOPIC_URL,
         'S_SELECT_POST_DAYS' => $select_post_days,
         'S_SELECT_POST_ORDER' => $select_post_order,
-        'S_POST_DAYS_ACTION' => append_sid("viewtopic.$phpEx?".POST_TOPIC_URL.'='.$topic_id."&amp;start=$start"),
+        'S_POST_DAYS_ACTION' => append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL.'='.$topic_id."&amp;start=$start"),
         'S_AUTH_LIST' => $s_auth_can,
         'S_TOPIC_ADMIN' => $topic_mod,
 
@@ -1088,7 +1088,7 @@ $template->assign_vars(array(
         'S_WATCH_TOPIC_TEXT' => $s_watching_topic_text,
         'S_WATCH_TOPIC_STATE' => $s_watching_topic_state,
 
-        'U_VIEW_TOPIC' => append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;start=$start&amp;postdays=$post_days&amp;postorder=$post_order&amp;highlight=$highlight"),
+        'U_VIEW_TOPIC' => append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start&amp;postdays=$post_days&amp;postorder=$post_order&amp;highlight=$highlight"),
         'U_VIEW_FORUM' => $view_forum_url,
         'U_VIEW_OLDER_TOPIC' => $view_prev_topic_url,
         'U_VIEW_NEWER_TOPIC' => $view_next_topic_url,
@@ -1112,17 +1112,17 @@ if(!empty($forum_topic_data['topic_vote'])):
         $s_hidden_fields = '';
 
         $sql = "SELECT vd.vote_id, vd.vote_text, vd.vote_start, vd.vote_length, vd.poll_view_toggle, vr.vote_option_id, vr.vote_option_text, vr.vote_result
-                FROM (".VOTE_DESC_TABLE." vd, ".VOTE_RESULTS_TABLE." vr)
+                FROM (".NUKE_VOTE_DESC_TABLE." vd, ".NUKE_VOTE_RESULTS_TABLE." vr)
                 WHERE vd.topic_id = '$topic_id'
                         AND vr.vote_id = vd.vote_id
                 ORDER BY vr.vote_option_id ASC";
         
-		if(!($result = $db->sql_query($sql)))
-        message_die(GENERAL_ERROR, "Could not obtain vote data for this topic", '', __LINE__, __FILE__, $sql);
+		if(!($result = $nuke_db->sql_query($sql)))
+        message_die(NUKE_GENERAL_ERROR, "Could not obtain vote data for this topic", '', __LINE__, __FILE__, $sql);
 
-        if($vote_info = $db->sql_fetchrowset($result)):
+        if($vote_info = $nuke_db->sql_fetchrowset($result)):
         
-                $db->sql_freeresult($result);
+                $nuke_db->sql_freeresult($result);
                 $vote_options = count($vote_info);
 
                 $vote_id = $vote_info[0]['vote_id'];
@@ -1136,15 +1136,15 @@ if(!empty($forum_topic_data['topic_vote'])):
                 # Mod: Must first vote to see Results v1.0.0 END
 
                 $sql = "SELECT vote_id
-                        FROM ".VOTE_USERS_TABLE."
+                        FROM ".NUKE_VOTE_USERS_TABLE."
                         WHERE vote_id = '$vote_id'
                         AND vote_user_id = " . intval($userdata['user_id']);
                 
-				if(!($result = $db->sql_query($sql)))
-                message_die(GENERAL_ERROR, "Could not obtain user vote data for this topic", '', __LINE__, __FILE__, $sql);
+				if(!($result = $nuke_db->sql_query($sql)))
+                message_die(NUKE_GENERAL_ERROR, "Could not obtain user vote data for this topic", '', __LINE__, __FILE__, $sql);
 
-                $user_voted = ($row = $db->sql_fetchrow($result)) ? TRUE : 0;
-                $db->sql_freeresult($result);
+                $user_voted = ($row = $nuke_db->sql_fetchrow($result)) ? TRUE : 0;
+                $nuke_db->sql_freeresult($result);
 
                 if( isset($HTTP_GET_VARS['vote']) || isset($HTTP_POST_VARS['vote']))
                 $view_result = (((isset($HTTP_GET_VARS['vote'])) ? $HTTP_GET_VARS['vote'] : $HTTP_POST_VARS['vote']) == 'viewresult') ? TRUE : 0;
@@ -1153,12 +1153,12 @@ if(!empty($forum_topic_data['topic_vote'])):
 
                 $poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < time()) ? TRUE : 0) : 0;
 
-                if ($user_voted || $view_result || $poll_expired || !$is_auth['auth_vote'] || $forum_topic_data['topic_status'] == TOPIC_LOCKED):
+                if ($user_voted || $view_result || $poll_expired || !$is_auth['auth_vote'] || $forum_topic_data['topic_status'] == NUKE_TOPIC_LOCKED):
                 
                      # Mod: Must first vote to see Results v1.0.0 START
                      # If poll is over, allow results to be viewed by all.
                      if (!$user_voted && !$poll_view_toggle && $view_result && !$poll_expired) 
-                     message_die(GENERAL_ERROR, $lang['must_first_vote']);
+                     message_die(NUKE_GENERAL_ERROR, $lang['must_first_vote']);
                      # Mod: Must first vote to see Results v1.0.0 START
 
                      $template->set_filenames(array(
@@ -1235,7 +1235,7 @@ if(!empty($forum_topic_data['topic_vote'])):
                                 'L_VIEW_RESULTS' => (!$user_voted && $poll_view_toggle) ? $lang['View_results'] : '',
                                  # Mod: Must first vote to see Results v1.0.0 END
 
-                                'U_VIEW_RESULTS' => append_sid("viewtopic.$phpEx?".POST_TOPIC_URL."=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order&amp;vote=viewresult"))
+                                'U_VIEW_RESULTS' => append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order&amp;vote=viewresult"))
                         );
 
                         $s_hidden_fields = '<input type="hidden" name="topic_id" value="'.$topic_id.'" /><input type="hidden" name="mode" value="vote" />';
@@ -1250,7 +1250,7 @@ if(!empty($forum_topic_data['topic_vote'])):
                         'POLL_QUESTION' => $vote_title,
 
                         'S_HIDDEN_FIELDS' => $s_hidden_fields,
-                        'S_POLL_ACTION' => append_sid("posting.$phpEx?mode=vote&amp;".POST_TOPIC_URL."=$topic_id"))
+                        'S_POLL_ACTION' => append_sid("posting.$phpEx?mode=vote&amp;".NUKE_POST_TOPIC_URL."=$topic_id"))
                 );
 
                 $template->assign_var_from_handle('POLL_DISPLAY', 'pollbox');
@@ -1263,34 +1263,34 @@ init_display_post_attachments($forum_topic_data['topic_attachment']);
 
 
 # Update the topic view counter
-$sql = "UPDATE ".TOPICS_TABLE."
+$sql = "UPDATE ".NUKE_BB_TOPICS_TABLE."
         SET topic_views = topic_views + 1
         WHERE topic_id = '$topic_id'";
 
-if(!$db->sql_query($sql))
-message_die(GENERAL_ERROR, "Could not update topic views.", '', __LINE__, __FILE__, $sql);
+if(!$nuke_db->sql_query($sql))
+message_die(NUKE_GENERAL_ERROR, "Could not update topic views.", '', __LINE__, __FILE__, $sql);
 
 
 # Mod: Thank You Mod v1.1.8 START
 # Get topic thanks
-if ($show_thanks == FORUM_THANKABLE):
+if ($show_thanks == NUKE_FORUM_THANKABLE):
 	# Select Format for the date
 	$timeformat = "d-m, G:i";
 
 	$sql = "SELECT u.user_id, u.username, t.thanks_time
-		 FROM ".THANKS_TABLE." t, ".USERS_TABLE." u
+		 FROM ".NUKE_THANKS_TABLE." t, ".NUKE_USERS_TABLE." u
 		 WHERE topic_id = $topic_id
 		 AND t.user_id = u.user_id";
 
-	if(!($result = $db->sql_query($sql)))
-    message_die(GENERAL_ERROR, "Could not obtain thanks information", '', __LINE__, __FILE__, $sql);
+	if(!($result = $nuke_db->sql_query($sql)))
+    message_die(NUKE_GENERAL_ERROR, "Could not obtain thanks information", '', __LINE__, __FILE__, $sql);
 
-	$total_thank = $db->sql_numrows($result);
+	$total_thank = $nuke_db->sql_numrows($result);
 	$thanksrow = array();
-	$thanksrow = $db->sql_fetchrowset($result);
+	$thanksrow = $nuke_db->sql_fetchrowset($result);
 
 	for($i = 0; $i < $total_thank; $i++):
-		$topic_thanks = $db->sql_fetchrow($result);
+		$topic_thanks = $nuke_db->sql_fetchrow($result);
 		$thanker_id[$i] = $thanksrow[$i]['user_id'];
 		$thanker_name[$i] = $thanksrow[$i]['username'];
 		$thanks_date[$i] = $thanksrow[$i]['thanks_time'];
@@ -1299,7 +1299,7 @@ if ($show_thanks == FORUM_THANKABLE):
 		$thanks_date[$i] = create_date($timeformat, $thanks_date[$i], $board_config['board_timezone']);
 
 		# Make thanker profile link
-		$thanker_profile[$i] = append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=$thanker_id[$i]");   
+		$thanker_profile[$i] = append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$thanker_id[$i]");   
 		$thanks .= '<a href="'.$thanker_profile[$i].'">'.UsernameColor($thanker_name[$i]).'</a> ('.$thanks_date[$i].'), ';
 		
 		if ($userdata['user_id'] == $thanksrow[$i]['user_id'])
@@ -1307,15 +1307,15 @@ if ($show_thanks == FORUM_THANKABLE):
 	endfor;
 
 	$sql = "SELECT u.topic_poster, t.user_id, t.username
-			FROM ".TOPICS_TABLE." u, ".USERS_TABLE." t
+			FROM ".NUKE_BB_TOPICS_TABLE." u, ".NUKE_USERS_TABLE." t
 			WHERE topic_id = $topic_id
 			AND u.topic_poster = t.user_id";
 
-	if(!($result = $db->sql_query($sql)))
-    message_die(GENERAL_ERROR, "Could not obtain user information", '', __LINE__, __FILE__, $sql);
+	if(!($result = $nuke_db->sql_query($sql)))
+    message_die(NUKE_GENERAL_ERROR, "Could not obtain user information", '', __LINE__, __FILE__, $sql);
 
-	if( !($autor = $db->sql_fetchrowset($result)) )
-	message_die(GENERAL_ERROR, "Could not obtain user information", '', __LINE__, __FILE__, $sql);
+	if( !($autor = $nuke_db->sql_fetchrowset($result)) )
+	message_die(NUKE_GENERAL_ERROR, "Could not obtain user information", '', __LINE__, __FILE__, $sql);
 
 	$autor_name = $autor[0]['username'];
 	$thanks .= '<br /><br />'.$lang['thanks_to'].' '.UsernameColor($autor_name).' '.$lang['thanks_end'];
@@ -1336,14 +1336,14 @@ endif;
 
 # Mod: Super Quick Reply v1.3.2 START
 $sqr_last_page = ((floor( $start / intval($board_config['posts_per_page'])) + 1) == ceil($total_replies / intval($board_config['posts_per_page'])));
-if($userdata['user_id'] != ANONYMOUS)
+if($userdata['user_id'] != NUKE_ANONYMOUS)
 $sqr_user_display = (bool)(($userdata['user_show_quickreply']==2) ? $sqr_last_page : $userdata['user_show_quickreply']);
 else
 $sqr_user_display = (bool)(($board_config['anonymous_show_sqr']==2) ? $sqr_last_page : $board_config['anonymous_show_sqr']);
 if(($board_config['allow_quickreply'] != 0) 
-&& (($forum_topic_data['forum_status'] != FORUM_LOCKED) 
+&& (($forum_topic_data['forum_status'] != NUKE_FORUM_LOCKED) 
 || $is_auth['auth_mod']) 
-&& (($forum_topic_data['topic_status'] != TOPIC_LOCKED) 
+&& (($forum_topic_data['topic_status'] != NUKE_TOPIC_LOCKED) 
 || $is_auth['auth_mod']) && $sqr_user_display )
 $show_qr_form =    true;
 else
@@ -1363,7 +1363,7 @@ for($i = 0; $i < $total_posts; $i++):
   $leave_out['show_avatar_once'] = false;
   $leave_out['show_rank_once'] = false;
   $leave_out['main'] = false;
-  if($postrow[$i]['user_id'] != ANONYMOUS):
+  if($postrow[$i]['user_id'] != NUKE_ANONYMOUS):
   	reset($already_processed);
 	while( list(, $v) = each($already_processed)):
         if($v == $postrow[$i]['user_id']):
@@ -1384,45 +1384,45 @@ for($i = 0; $i < $total_posts; $i++):
  endif;
     # Mod: Display Poster Information Once v2.0.0 START
     $poster_id = $postrow[$i]['user_id'];
-    $poster = ( $poster_id == ANONYMOUS ) ? $lang['Guest'] : $postrow[$i]['username'];
+    $poster = ( $poster_id == NUKE_ANONYMOUS ) ? $lang['Guest'] : $postrow[$i]['username'];
 
     $post_date = create_date($board_config['default_dateformat'], $postrow[$i]['post_time'], $board_config['board_timezone']);
 
-    $poster_posts = ( $postrow[$i]['user_id'] != ANONYMOUS ) ? $postrow[$i]['user_posts'] : '';
+    $poster_posts = ( $postrow[$i]['user_id'] != NUKE_ANONYMOUS ) ? $postrow[$i]['user_posts'] : '';
 
-    $poster_from = ( $postrow[$i]['user_from'] && $postrow[$i]['user_id'] != ANONYMOUS ) ? $lang['Location'] . ': '.$postrow[$i]['user_from'] : '';
+    $poster_from = ( $postrow[$i]['user_from'] && $postrow[$i]['user_id'] != NUKE_ANONYMOUS ) ? $lang['Location'] . ': '.$postrow[$i]['user_from'] : '';
     // $poster_from = str_replace(".gif", "", $poster_from);
     
 	# Mod: Member Country Flags               v2.0.7 START
 	$poster_from_flag = ( $postrow[$i]['user_from_flag'] 
-	&& $postrow[$i]['user_id'] != ANONYMOUS ) ? '<span class="countries '.str_replace('.png','',$postrow[$i]['user_from_flag']).'" style="float: right;"></span>' : '';
+	&& $postrow[$i]['user_id'] != NUKE_ANONYMOUS ) ? '<span class="countries '.str_replace('.png','',$postrow[$i]['user_from_flag']).'" style="float: right;"></span>' : '';
 	
     # Mod: Member Country Flags v2.0.7 END
-    $poster_joined = ( $postrow[$i]['user_id'] != ANONYMOUS ) ? $postrow[$i]['user_regdate'] : '';
+    $poster_joined = ( $postrow[$i]['user_id'] != NUKE_ANONYMOUS ) ? $postrow[$i]['user_regdate'] : '';
 
     # Mod: XData v1.0.3 START
-    $poster_xd = ( $postrow[$i]['user_id'] != ANONYMOUS ) ? get_user_xdata($postrow[$i]['user_id']) : array();
+    $poster_xd = ( $postrow[$i]['user_id'] != NUKE_ANONYMOUS ) ? get_user_xdata($postrow[$i]['user_id']) : array();
     # Mod: XData v1.0.3 END
 
     $poster_avatar = '';
 
     # Mod: View/Disable Avatars/Signatures v1.1.2 START 
     # Mod: Display Poster Information Once v2.0.0 START
-    if($postrow[$i]['user_avatar_type'] && $poster_id != ANONYMOUS && $postrow[$i]['user_allowavatar'] && $userdata['user_showavatars'] && !$leave_out['show_avatar_once']):
+    if($postrow[$i]['user_avatar_type'] && $poster_id != NUKE_ANONYMOUS && $postrow[$i]['user_allowavatar'] && $userdata['user_showavatars'] && !$leave_out['show_avatar_once']):
     # Mod: View/Disable Avatars/Signatures v1.1.2 END 
     # Mod: Display Poster Information Once v2.0.0 END
     
         switch($postrow[$i]['user_avatar_type']): 
-            case USER_AVATAR_UPLOAD:
+            case NUKE_USER_AVATAR_UPLOAD:
                 $poster_avatar = ($board_config['allow_avatar_upload']) 
 				? '<img width="200" class="rounded-corners-forum" src="'.$board_config['avatar_path'].'/'.$postrow[$i]['user_avatar'].'" alt="" border="0" />' : '';
                 break; 
             # Mod: Remote Avatar Resize v2.0.0 START 
-            case USER_AVATAR_REMOTE:
+            case NUKE_USER_AVATAR_REMOTE:
                 $poster_avatar = '<img width="200" class="rounded-corners-forum" src="'.resize_avatar($postrow[$i]['user_avatar']).'" alt="" border="0" />';
                 break;
             # Mod: Remote Avatar Resize v2.0.0 START 
-            case USER_AVATAR_GALLERY:
+            case NUKE_USER_AVATAR_GALLERY:
                 $poster_avatar = ($board_config['allow_avatar_local']) 
 				? '<img width="200" class="rounded-corners-forum" src="'.$board_config['avatar_gallery_path'].'/'.(($postrow[$i]['user_avatar'] == 'blank.gif' 
 				|| $postrow[$i]['user_avatar'] == 'gallery/blank.gif') ? 'blank.png' : $postrow[$i]['user_avatar']).'" alt="" border="0" />' : '';
@@ -1450,9 +1450,9 @@ for($i = 0; $i < $total_posts; $i++):
         $images['guest_avatar'] = "modules/Forums/images/avatars/gallery/blank.gif";
         
         # Mod: Default avatar v1.1.0 START
-        if(empty($poster_avatar) && $poster_id != ANONYMOUS)
+        if(empty($poster_avatar) && $poster_id != NUKE_ANONYMOUS)
         $poster_avatar = '<img class="forum-avatar" src="'.$images['default_avatar'].'" alt="" border="0" />';
-        if($poster_id == ANONYMOUS) 
+        if($poster_id == NUKE_ANONYMOUS) 
         $poster_avatar = '<img class="forum-avatar" src="'.$images['guest_avatar'].'" alt="" border="0" />';
         # Mod: Default avatar v1.1.0 END
         
@@ -1465,7 +1465,7 @@ for($i = 0; $i < $total_posts; $i++):
             $mini_post_alt = $lang['Post'];
         endif;
 
-        $mini_post_url = append_sid("viewtopic.$phpEx?".POST_POST_URL.'='.$postrow[$i]['post_id']).'#'.$postrow[$i]['post_id'];
+        $mini_post_url = append_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL.'='.$postrow[$i]['post_id']).'#'.$postrow[$i]['post_id'];
 		
         # Mod: Gender v1.2.6 START
         $gender_image = ''; 
@@ -1496,21 +1496,21 @@ for($i = 0; $i < $total_posts; $i++):
         }
 
         # Handle anon users posting with usernames
-        if ( $poster_id == ANONYMOUS && !empty($postrow[$i]['post_username'])):
+        if ( $poster_id == NUKE_ANONYMOUS && !empty($postrow[$i]['post_username'])):
                 $poster = $postrow[$i]['post_username'];
                 $user_rank_01 = $lang['Guest'] . '<br />';
         endif;
 
         $temp_url = '';
 
-        if($poster_id != ANONYMOUS):
-          $temp_url = "modules.php?name=Profile&amp;mode=viewprofile&amp;".POST_USERS_URL."=$poster_id";
+        if($poster_id != NUKE_ANONYMOUS):
+          $temp_url = "modules.php?name=Profile&amp;mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$poster_id";
           $profile_url = $temp_url;
           $profile_lang = $lang['Read_profile'];
           $profile_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_profile'].'" alt="'.$lang['Read_profile'].'" title="'.$lang['Read_profile'].'" border="0" /></a>';
           $profile = '<a href="'.$temp_url.'">'.$lang['Read_profile'].'</a>';
 
-          $temp_url = append_sid("privmsg.$phpEx?mode=post&amp;".POST_USERS_URL."=$poster_id");
+          $temp_url = append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$poster_id");
           
 		  if (is_active("Private_Messages")): 
            	 $pm_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_pm'].'" 
@@ -1533,7 +1533,7 @@ for($i = 0; $i < $total_posts; $i++):
           # Mod: Gender v1.2.6 END
 
          if(!empty($postrow[$i]['user_viewemail']) || $is_auth['auth_mod']):
-           $email_uri = ($board_config['board_email_form']) ? "modules.php?name=Profile&mode=email&amp;".POST_USERS_URL.'='.$poster_id : 'mailto:'.$postrow[$i]['user_email'];
+           $email_uri = ($board_config['board_email_form']) ? "modules.php?name=Profile&mode=email&amp;".NUKE_POST_USERS_URL.'='.$poster_id : 'mailto:'.$postrow[$i]['user_email'];
            $email_img = '<a href="'.$email_uri.'"><img src="'.$images['icon_email'].'" 
 		   alt="'.sprintf($lang['Send_email'],$postrow[$i]['username']).'" title="'.sprintf($lang['Send_email'],$postrow[$i]['username']).'" border="0" /></a>';
            $email = '<a href="'.$email_uri.'">'.$lang['Send_email'].'</a>';
@@ -1558,7 +1558,7 @@ for($i = 0; $i < $total_posts; $i++):
 				
            # Mod: Birthdays v3.0.0 START
 	       $bday_month_day = floor($postrow[$i]['user_birthday'] / 10000);
-		   $bday_year_age = ($postrow[$i]['birthday_display'] != BIRTHDAY_NONE && $postrow[$i]['birthday_display'] != BIRTHDAY_DATE ) ? $postrow[$i]['user_birthday'] - 10000*$bday_month_day : 0;
+		   $bday_year_age = ($postrow[$i]['birthday_display'] != NUKE_BIRTHDAY_NONE && $postrow[$i]['birthday_display'] != NUKE_BIRTHDAY_DATE ) ? $postrow[$i]['user_birthday'] - 10000*$bday_month_day : 0;
 		   $fudge = (gmdate('md') < $bday_month_day ) ? 1 : 0;
 		   $age = ($bday_year_age) ? gmdate('Y')-$bday_year_age-$fudge : false;
            # Mod: Birthdays v3.0.0 END
@@ -1627,7 +1627,7 @@ for($i = 0; $i < $total_posts; $i++):
         
 		endif;
 
-        $temp_url = append_sid("posting.$phpEx?mode=quote&amp;".POST_POST_URL."=".$postrow[$i]['post_id']);
+        $temp_url = append_sid("posting.$phpEx?mode=quote&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
         $quote_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_quote'].'" alt="'.$lang['Reply_with_quote'].'" title="'.$lang['Reply_with_quote'].'" border="0" /></a>';
         $quote = '<a href="'.$temp_url.'">'.$lang['Reply_with_quote'].'</a>';
 
@@ -1641,7 +1641,7 @@ for($i = 0; $i < $total_posts; $i++):
         $search_alt = sprintf($lang['Search_user_posts'], $postrow[$i]['username']);
 
         if(($userdata['user_id'] == $poster_id && $is_auth['auth_edit']) || $is_auth['auth_mod']):
-          $temp_url = append_sid("posting.$phpEx?mode=editpost&amp;".POST_POST_URL."=".$postrow[$i]['post_id']);
+          $temp_url = append_sid("posting.$phpEx?mode=editpost&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
           $edit_url = $temp_url;
           $edit_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_edit'].'" alt="'.$lang['Edit_delete_post'].'" title="'.$lang['Edit_delete_post'].'" border="0" /></a>';
           $edit = '<a href="'.$temp_url.'">'.$lang['Edit_delete_post'].'</a>';
@@ -1654,12 +1654,12 @@ for($i = 0; $i < $total_posts; $i++):
         endif;
 
         if($is_auth['auth_mod']):
-          $temp_url = append_sid("modcp.$phpEx?mode=ip&amp;".POST_POST_URL."=".$postrow[$i]['post_id']."&amp;".POST_TOPIC_URL."=".$topic_id);
+          $temp_url = append_sid("modcp.$phpEx?mode=ip&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']."&amp;".NUKE_POST_TOPIC_URL."=".$topic_id);
           $ip_url = $temp_url;
           $ip_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_ip'].'" alt="'.$lang['View_IP'].'" title="'.$lang['View_IP'].'" border="0" /></a>';
           $ip = '<a href="'.$temp_url.'">'.$lang['View_IP'].'</a>';
           $ip_alt = $lang['View_IP'];
-          $temp_url = append_sid("posting.$phpEx?mode=delete&amp;".POST_POST_URL."=".$postrow[$i]['post_id']);
+          $temp_url = append_sid("posting.$phpEx?mode=delete&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
           $delpost_url = $temp_url;
           $delpost_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_delpost'].'" alt="'.$lang['Delete_post'].'" title="'.$lang['Delete_post'].'" border="0" /></a>';
           $delpost = '<a href="'.$temp_url.'">'.$lang['Delete_post'].'</a>';
@@ -1671,7 +1671,7 @@ for($i = 0; $i < $total_posts; $i++):
           $ip_alt = '';
 
            if($userdata['user_id'] == $poster_id && $is_auth['auth_delete'] && $forum_topic_data['topic_last_post_id'] == $postrow[$i]['post_id']):
-             $temp_url = append_sid("posting.$phpEx?mode=delete&amp;".POST_POST_URL."=".$postrow[$i]['post_id']);
+             $temp_url = append_sid("posting.$phpEx?mode=delete&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
              $delpost_url = $temp_url;
              $delpost_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_delpost'].'" alt="'.$lang['Delete_post'].'" title="'.$lang['Delete_post'].'" border="0" /></a>';
              $delpost = '<a href="'.$temp_url.'">'.$lang['Delete_post'].'</a>';
@@ -1822,7 +1822,7 @@ for($i = 0; $i < $total_posts; $i++):
 		# Mod: Users Reputations Systems v1.0.0 START
         $reputation = '';
         
-		if($postrow[$i]['user_id'] != ANONYMOUS):
+		if($postrow[$i]['user_id'] != NUKE_ANONYMOUS):
         
           if($rep_config['rep_disable'] == 0):
           
@@ -1845,24 +1845,24 @@ for($i = 0; $i < $total_posts; $i++):
               endif;
             endif;
             
-			$reputation .=  " <a href=\"".append_sid("reputation.$phpEx?a=add&amp;".POST_USERS_URL."=".$postrow[$i]['user_id'])."&"
-			.POST_POST_URL."=".$postrow[$i]['post_id']."&c=".substr(md5($bbcode_uid),0,8)."\" target=\"_blank\" onClick=\"popupWin = 
+			$reputation .=  " <a href=\"".append_sid("reputation.$phpEx?a=add&amp;".NUKE_POST_USERS_URL."=".$postrow[$i]['user_id'])."&"
+			.NUKE_POST_POST_URL."=".$postrow[$i]['post_id']."&c=".substr(md5($bbcode_uid),0,8)."\" target=\"_blank\" onClick=\"popupWin = 
 			window.open(this.href, '".$lang['Reputation']."', 'location,width=700,height=400,top=0,scrollbars=yes'); popupWin.focus(); 
 			return false;\"><img src=\"modules/Forums/images/reputation_add_plus.gif\" alt=\"\" border=\"0\"><img src=\"modules/Forums/images/reputation_add_minus.gif\" alt=\"\" border=\"0\"></a>";
             
 			$sql = "SELECT COUNT(user_id) AS count_reps
-                FROM " . REPUTATION_TABLE . " AS r
+                FROM " . NUKE_REPUTATION_TABLE . " AS r
                 WHERE r.user_id = " . $postrow[$i]['user_id'] . "
                 GROUP BY user_id";
             
-			if(!($result = $db->sql_query($sql)))
-            message_die(GENERAL_ERROR, "Could not obtain reputation stats for this user", '', __LINE__, __FILE__, $sql);
+			if(!($result = $nuke_db->sql_query($sql)))
+            message_die(NUKE_GENERAL_ERROR, "Could not obtain reputation stats for this user", '', __LINE__, __FILE__, $sql);
             
             
-			$row_rep = $db->sql_fetchrow($result);
+			$row_rep = $nuke_db->sql_fetchrow($result);
             
 			if($row_rep):
-              $reputation .= "<br /><a href=\"".append_sid("reputation.$phpEx?a=stats&amp;".POST_USERS_URL."=" 
+              $reputation .= "<br /><a href=\"".append_sid("reputation.$phpEx?a=stats&amp;".NUKE_POST_USERS_URL."=" 
 			  .$postrow[$i]['user_id'])."\" target=\"_blank\" onClick=\"popupWin = window.open(this.href, '".$lang['Reputation']."', 'location,width=700,
 			  height=400,top=0,scrollbars=yes'); popupWin.focus(); return false;\">".$lang['Votes']."</a>: ".$row_rep['count_reps'];
 			endif;
@@ -1887,9 +1887,9 @@ for($i = 0; $i < $total_posts; $i++):
         # This if statement should keep server processing down a bit
         if ($display_ad):
           $display_ad = ($board_config['ad_who'] == ALL) 
-		  || ($board_config['ad_who'] == ANONYMOUS 
-		  && $userdata['user_id'] == ANONYMOUS) 
-		  || ($board_config['ad_who'] == USER && $userdata['user_id'] != ANONYMOUS);
+		  || ($board_config['ad_who'] == NUKE_ANONYMOUS 
+		  && $userdata['user_id'] == NUKE_ANONYMOUS) 
+		  || ($board_config['ad_who'] == NUKE_USER && $userdata['user_id'] != NUKE_ANONYMOUS);
           
 		  $ad_no_forums = explode(",", $board_config['ad_no_forums']);
         
@@ -1903,19 +1903,19 @@ for($i = 0; $i < $total_posts; $i++):
 	      if ($board_config['ad_no_groups'] != ''):
               $ad_no_groups = explode(",", $board_config['ad_no_groups']);
               $sql = "SELECT 1
-                  FROM " . USER_GROUP_TABLE . "
+                  FROM " . NUKE_USER_GROUP_TABLE . "
                   WHERE user_id=".$userdata['user_id']." AND (group_id=0";
 		      for ($a=0; $a < count($ad_no_groups); $a++):
               $sql .= " OR group_id=".$ad_no_groups[$a];
               endfor;
               $sql .= ")";
-		      if(!($result = $db->sql_query($sql)))
-              message_die(GENERAL_ERROR, 'Could not query ad information', '', __LINE__, __FILE__, $sql);
-		      if ($row = $db->sql_fetchrow($result))
+		      if(!($result = $nuke_db->sql_query($sql)))
+              message_die(NUKE_GENERAL_ERROR, 'Could not query ad information', '', __LINE__, __FILE__, $sql);
+		      if ($row = $nuke_db->sql_fetchrow($result))
               $display_ad = false;
           endif;
 		  
-		  if ($userdata['user_id'] != ANONYMOUS && ($board_config['ad_post_threshold'] != '') && ($userdata['user_posts'] >= $board_config['ad_post_threshold']))
+		  if ($userdata['user_id'] != NUKE_ANONYMOUS && ($board_config['ad_post_threshold'] != '') && ($userdata['user_posts'] >= $board_config['ad_post_threshold']))
           $display_ad = false;
         
 		endif;
@@ -1923,14 +1923,14 @@ for($i = 0; $i < $total_posts; $i++):
         # check once more, for server performance
         if ($display_ad):
           $sql = "SELECT a.ad_code
-            FROM " . ADS_TABLE . " a";
-		  if(!($result = $db->sql_query($sql)))
-          message_die(GENERAL_ERROR, 'Could not query ad information', '', __LINE__, __FILE__, $sql);
+            FROM " . NUKE_ADS_TABLE . " a";
+		  if(!($result = $nuke_db->sql_query($sql)))
+          message_die(NUKE_GENERAL_ERROR, 'Could not query ad information', '', __LINE__, __FILE__, $sql);
           $adRow = array();
-          $adRow = $db->sql_fetchrowset($result);
+          $adRow = $nuke_db->sql_fetchrowset($result);
           srand((double)microtime()*1000000);
-          $adindex = rand(1, $db->sql_numrows($result)) - 1;
-          $db->sql_freeresult($result);
+          $adindex = rand(1, $nuke_db->sql_numrows($result)) - 1;
+          $nuke_db->sql_freeresult($result);
           $inline_ad_code = $adRow[$adindex]['ad_code'];
         endif;
         # Mod: Inline Banner Ad v1.2.3 START
@@ -1959,9 +1959,9 @@ for($i = 0; $i < $total_posts; $i++):
            # Mod: XData Date Conversion v0.1.1 END
 
            $value = str_replace("\n", "\n<br />\n", $value);
-           if($meta['display_posting'] == XD_DISPLAY_ROOT && $meta['viewtopic'])
+           if($meta['display_posting'] == NUKE_XD_DISPLAY_ROOT && $meta['viewtopic'])
              $xd_root[$code_name] = $value;
-           elseif($meta['display_posting'] == XD_DISPLAY_NORMAL && $meta['viewtopic'])
+           elseif($meta['display_posting'] == NUKE_XD_DISPLAY_NORMAL && $meta['viewtopic'])
              $xd_block[$code_name] = $value;
          endif;
        endwhile;
@@ -1976,8 +1976,8 @@ for($i = 0; $i < $total_posts; $i++):
 
        # Mod: Report Posts v1.0.2 START
        if($userdata['session_logged_in']):
-          $report_url = append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.POST_POST_URL.'='.$postrow[$i]['post_id']);
-          $report_img = '<a href="'.append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.POST_POST_URL.'='.$postrow[$i]['post_id']).'"><img 
+          $report_url = append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$postrow[$i]['post_id']);
+          $report_img = '<a href="'.append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$postrow[$i]['post_id']).'"><img 
 		  src="'.$images['icon_report'].'" border="0" alt="'.$lang['Report_post'].'" title="'.$lang['Report_post'].'" /></a>';
           $report_alt = $lang['Report_post'];
        else:
@@ -1987,13 +1987,13 @@ for($i = 0; $i < $total_posts; $i++):
        endif;
 
        # Mod: Force Topic Read v1.0.3 START
-	   if((!$userdata['user_ftr']) && ($userdata['user_id'] != ANONYMOUS)):
+	   if((!$userdata['user_ftr']) && ($userdata['user_id'] != NUKE_ANONYMOUS)):
 		  # They Have Clicked The Link & Are Viewing The Post, So Set Them As Read
 		  if ($HTTP_GET_VARS['directed'] == 'ftr'):
-			$q = "UPDATE ". USERS_TABLE ."
+			$q = "UPDATE ". NUKE_USERS_TABLE ."
 				  SET user_ftr = '1', user_ftr_time = '".time()."'
 				  WHERE user_id = '".$userdata['user_id']."'";
-			$db->sql_query($q);
+			$nuke_db->sql_query($q);
 		  else: # They Have Not Clicked The Link Yet
 			include_once($phpbb2_root_path.'language/lang_'.$board_config['default_lang'].'/lang_ftr.'.$phpEx);		
 			$force_message = $board_config['ftr_msg'];
@@ -2004,22 +2004,22 @@ for($i = 0; $i < $total_posts; $i++):
 			# Its On, Goto Work
 			if ($active == 1):
 				$q = "SELECT topic_title
-					  FROM ".TOPICS_TABLE."
+					  FROM ".NUKE_BB_TOPICS_TABLE."
 					  WHERE topic_id = '".$topic."'";
-				$r 		= $db->sql_query($q);
-				$row 	= $db->sql_fetchrow($r);
+				$r 		= $nuke_db->sql_query($q);
+				$row 	= $nuke_db->sql_fetchrow($r);
 				$topic_title = $row['topic_title'];
 				$msg = str_replace('*u*', $userdata['username'], $force_message);
 				$msg = str_replace('*t*', $topic_title, $msg);
-				$msg = str_replace('*l*', '<a href="'.append_sid('viewtopic.'.$phpEx.'?'.POST_TOPIC_URL.'='.$topic.'&amp;directed=ftr').'" target="_self">'.$lang['ftr_here'].'</a>', $msg);
+				$msg = str_replace('*l*', '<a href="'.append_sid('viewtopic.'.$phpEx.'?'.NUKE_POST_TOPIC_URL.'='.$topic.'&amp;directed=ftr').'" target="_self">'.$lang['ftr_here'].'</a>', $msg);
 				# New Only
 				if($who == 1):
 					# They Have Joined Since FTR Was Installed
 					if ($userdata['user_regdate'] > $installed):
-					message_die(GENERAL_MESSAGE, $msg);
+					message_die(NUKE_GENERAL_MESSAGE, $msg);
 					endif;
 				else: # New & Old
-				message_die(GENERAL_MESSAGE, $msg);
+				message_die(NUKE_GENERAL_MESSAGE, $msg);
 				endif;
 			endif;
 		 endif;
@@ -2105,7 +2105,7 @@ for($i = 0; $i < $total_posts; $i++):
                 'SEARCH_ALT' => $search_alt,
                 'PM_IMG' => $pm_img,
                 'PM' => $pm,
-                'PM_URL' => (is_active("Private_Messages")) ? append_sid("privmsg.$phpEx?mode=post&amp;".POST_USERS_URL."=$poster_id") : '',
+                'PM_URL' => (is_active("Private_Messages")) ? append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$poster_id") : '',
                 'PM_ALT' => $pm_alt,
                 'EMAIL_IMG' => $email_img,
                 'EMAIL' => $email,
@@ -2123,7 +2123,7 @@ for($i = 0; $i < $total_posts; $i++):
                 'EDIT_IMG' => $edit_img,
                 'EDIT_ALT' => $edit_alt,
                 'EDIT' => $edit,
-                'QUOTE_URL' => append_sid("posting.$phpEx?mode=quote&amp;".POST_POST_URL."=".$postrow[$i]['post_id']),
+                'QUOTE_URL' => append_sid("posting.$phpEx?mode=quote&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']),
                 'QUOTE_IMG' => $quote_img,
                 'QUOTE_ALT' => $lang['Reply_with_quote'],
                 'QUOTE' => $quote,
@@ -2169,7 +2169,7 @@ for($i = 0; $i < $total_posts; $i++):
 
 
         # Mod: Thank You Mod v1.1.8 START
-		if(($show_thanks == FORUM_THANKABLE) && ($i == 0) && ($current_page == 1) && ($total_thank > 0)):
+		if(($show_thanks == NUKE_FORUM_THANKABLE) && ($i == 0) && ($current_page == 1) && ($total_thank > 0)):
 			$template->assign_block_vars('postrow.thanks', array(
 			'THANKFUL' => $lang['thankful'],
 			'THANKED' => $lang['thanked'],
@@ -2191,20 +2191,20 @@ for($i = 0; $i < $total_posts; $i++):
 
 
         $sql = "SELECT mode
-        FROM ".LOGS_TABLE."
+        FROM ".NUKE_BB_LOGS_TABLE."
         WHERE last_post_id = '".$postrow[$i]['post_id']."'
         ORDER BY log_id DESC LIMIT 1";
 
-        if(!$result = $db->sql_query($sql))
-        message_die(GENERAL_ERROR, 'Could not get moved type', '', __LINE__, __FILE__, $sql);
+        if(!$result = $nuke_db->sql_query($sql))
+        message_die(NUKE_GENERAL_ERROR, 'Could not get moved type', '', __LINE__, __FILE__, $sql);
         
-		$row = $db->sql_fetchrow($result);
+		$row = $nuke_db->sql_fetchrow($result);
         $moved_type = $row['mode'];
         $select = '';
 
         if($moved_type == 'move'):
           $select = "mv.time, mv.last_post_id, f.forum_name AS forumparent, f2.forum_name AS forumtarget, u.username";
-          $from = "(". LOGS_TABLE ." mv, ".TOPICS_TABLE." t, ".FORUMS_TABLE." f, ".FORUMS_TABLE." f2, ".USERS_TABLE." u) ";
+          $from = "(". NUKE_BB_LOGS_TABLE ." mv, ".NUKE_BB_TOPICS_TABLE." t, ".NUKE_FORUMS_TABLE." f, ".NUKE_FORUMS_TABLE." f2, ".NUKE_USERS_TABLE." u) ";
           $where = "mv.last_post_id = '".$postrow[$i]['post_id']."'
           AND mv.forum_id = f.forum_id
           AND mv.new_forum_id = f2.forum_id
@@ -2213,7 +2213,7 @@ for($i = 0; $i < $total_posts; $i++):
 
         if($moved_type == 'split'):
           $select = "mv.time, mv.last_post_id, f.forum_name as forumparent, t2.topic_title, u.username";
-          $from = "(". LOGS_TABLE ." mv, ".TOPICS_TABLE." t, ".TOPICS_TABLE." t2, ".FORUMS_TABLE." f, ".USERS_TABLE." u) ";
+          $from = "(". NUKE_BB_LOGS_TABLE ." mv, ".NUKE_BB_TOPICS_TABLE." t, ".NUKE_BB_TOPICS_TABLE." t2, ".NUKE_FORUMS_TABLE." f, ".NUKE_USERS_TABLE." u) ";
           $where = "mv.last_post_id = '".$postrow[$i]['post_id']."'
           AND mv.forum_id = f.forum_id
           AND mv.topic_id = t2.topic_id
@@ -2222,7 +2222,7 @@ for($i = 0; $i < $total_posts; $i++):
 
        if($moved_type == 'lock' || $moved_type == 'unlock' || $moved_type == 'edit'):
          $select = "mv.time, mv.last_post_id,  u.username";
-         $from = "(". LOGS_TABLE ." mv,  ".USERS_TABLE." u) ";
+         $from = "(". NUKE_BB_LOGS_TABLE ." mv,  ".NUKE_USERS_TABLE." u) ";
          $where = "mv.last_post_id = '".$postrow[$i]['post_id']."'
          AND mv.user_id = u.user_id";
        endif;
@@ -2232,9 +2232,9 @@ for($i = 0; $i < $total_posts; $i++):
          FROM $from
          WHERE $where
          ORDER BY mv.time DESC LIMIT 1";
-	     if ( !$result = $db->sql_query($sql) )
-          message_die(GENERAL_ERROR, 'Could not get main move information', '', __LINE__, __FILE__, $sql);
-		$moved = $db->sql_fetchrow($result);
+	     if ( !$result = $nuke_db->sql_query($sql) )
+          message_die(NUKE_GENERAL_ERROR, 'Could not get main move information', '', __LINE__, __FILE__, $sql);
+		$moved = $nuke_db->sql_fetchrow($result);
       endif;
 
       $mini_icon = $images['icon_minipost'];

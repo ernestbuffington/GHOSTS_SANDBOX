@@ -87,11 +87,11 @@ function display_score($score) {
 }
 
 function write_review() {
-    global $admin, $sitename, $user, $cookie, $prefix, $user_prefix, $currentlang, $multilingual, $db, $module_name, $anonpost;
+    global $admin, $sitename, $user, $cookie, $prefix, $nuke_user_prefix, $currentlang, $multilingual, $nuke_db, $module_name, $anonpost;
     
     //Prevent Anonymous
     if(!is_user($user) && !$anonpost){
-        Header("Location: modules.php?name=Your_Account&op=login&redirect=Reviews");
+        Header("Location: modules.php?name=Your_Account&op=login&nuke_redirect=Reviews");
         die();
     }
 
@@ -137,9 +137,9 @@ function write_review() {
     <i>"._CHECKREVIEW."</i><br /><br />
     <strong>"._YOURNAME.":</strong><br />";
     if (is_user()) {
-        $result = $db->sql_query("SELECT username, user_email FROM ".$user_prefix."_users WHERE user_id = '".intval($cookie[0])."'");
-        list($rname, $email) = $db->sql_fetchrow($result);
-        $db->sql_freeresult($result);
+        $result = $nuke_db->sql_query("SELECT username, user_email FROM ".$nuke_user_prefix."_users WHERE user_id = '".intval($cookie[0])."'");
+        list($rname, $email) = $nuke_db->sql_fetchrow($result);
+        $nuke_db->sql_freeresult($result);
         $rname = stripslashes(check_html($rname, "nohtml"));
         $email = stripslashes(check_html($email, "nohtml"));
     }
@@ -321,7 +321,7 @@ function preview_review($date, $title, $text, $reviewer, $email, $score, $cover,
 }
 
 function send_review($date, $title, $text, $reviewer, $email, $score, $cover, $url, $url_title, $hits, $id, $rlanguage) {
-    global $admin, $EditedMessage, $prefix, $db, $module_name, $cache;
+    global $admin, $EditedMessage, $prefix, $nuke_db, $module_name, $cache;
 
     session_start();
     if(isset($_SESSION['title'])) {
@@ -363,13 +363,13 @@ function send_review($date, $title, $text, $reviewer, $email, $score, $cover, $u
         $score = 0;
     }
     if ((is_mod_admin($module_name)) && ($id == 0)) {
-        $db->sql_query("INSERT INTO ".$prefix."_reviews VALUES (NULL, '$date', '$title', '$text', '$reviewer', '$email', '$score', '$cover', '$url', '$url_title', '1', '$rlanguage')");
+        $nuke_db->sql_query("INSERT INTO ".$prefix."_reviews VALUES (NULL, '$date', '$title', '$text', '$reviewer', '$email', '$score', '$cover', '$url', '$url_title', '1', '$rlanguage')");
         echo ""._ISAVAILABLE."";
     } else if ((is_mod_admin($module_name)) && ($id != 0)) {
-        $db->sql_query("UPDATE ".$prefix."_reviews SET date='$date', title='$title', text='$text', reviewer='$reviewer', email='$email', score='$score', cover='$cover', url='$url', url_title='$url_title', hits='$hits', rlanguage='$rlanguage' WHERE id = '$id'");
+        $nuke_db->sql_query("UPDATE ".$prefix."_reviews SET date='$date', title='$title', text='$text', reviewer='$reviewer', email='$email', score='$score', cover='$cover', url='$url', url_title='$url_title', hits='$hits', rlanguage='$rlanguage' WHERE id = '$id'");
         echo ""._ISAVAILABLE."";
     } else {
-        $db->sql_query("INSERT INTO ".$prefix."_reviews_add VALUES (NULL, '$date', '$title', '$text', '$reviewer', '$email', '$score', '$url', '$url_title', '$rlanguage')");
+        $nuke_db->sql_query("INSERT INTO ".$prefix."_reviews_add VALUES (NULL, '$date', '$title', '$text', '$reviewer', '$email', '$score', '$url', '$url_title', '$rlanguage')");
         echo ""._EDITORWILLLOOK."";
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -385,7 +385,7 @@ function send_review($date, $title, $text, $reviewer, $email, $score, $cover, $u
 }
 
 function reviews_index() {
-    global $bgcolor3, $bgcolor2, $prefix, $multilingual, $currentlang, $db, $module_name;
+    global $bgcolor3, $bgcolor2, $prefix, $multilingual, $currentlang, $nuke_db, $module_name;
 
     include_once(NUKE_BASE_DIR.'header.php');
     if ($multilingual == 1) {
@@ -396,9 +396,9 @@ function reviews_index() {
     OpenTable();
     echo "<table border=\"0\" width=\"95%\" cellpadding=\"2\" cellspacing=\"4\" align=\"center\">
     <tr><td colspan=\"2\"><center><span class=\"title\">"._RWELCOME."</span></center><br /><br /><br />";
-    $result = $db->sql_query("SELECT title, description FROM ".$prefix."_reviews_main");
-    list($title, $description) = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $result = $nuke_db->sql_query("SELECT title, description FROM ".$prefix."_reviews_main");
+    list($title, $description) = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
     $title = stripslashes(check_html($title, "nohtml"));
     $description = stripslashes($description);
     echo "<center><strong>$title</strong><br /><br />$description</center>";
@@ -407,16 +407,16 @@ function reviews_index() {
     echo "</td></tr>";
     echo "<tr><td width=\"50%\" bgcolor=\"$bgcolor2\"><strong>"._10MOSTPOP."</strong></td>";
     echo "<td width=\"50%\" bgcolor=\"$bgcolor2\"><strong>"._10MOSTREC."</strong></td></tr>";
-    $result_pop = $db->sql_query("SELECT id, title, hits FROM ".$prefix."_reviews $querylang ORDER BY hits DESC limit 10");
-    $result_rec = $db->sql_query("SELECT id, title, date, hits FROM ".$prefix."_reviews $querylang ORDER BY date DESC limit 10");
+    $result_pop = $nuke_db->sql_query("SELECT id, title, hits FROM ".$prefix."_reviews $querylang ORDER BY hits DESC limit 10");
+    $result_rec = $nuke_db->sql_query("SELECT id, title, date, hits FROM ".$prefix."_reviews $querylang ORDER BY date DESC limit 10");
     $y = 1;
     for ($x = 0; $x < 10; $x++)    {
-        $myrow = $db->sql_fetchrow($result_pop);
+        $myrow = $nuke_db->sql_fetchrow($result_pop);
         $id = intval($myrow['id']);
         $title = stripslashes(check_html($myrow['title'], "nohtml"));
         $hits = intval($myrow['hits']);
         echo "<tr><td width=\"50%\" bgcolor=\"$bgcolor3\">$y) <a href=\"modules.php?name=$module_name&amp;rop=showcontent&amp;id=$id\">$title</a></td>";
-        $myrow2 = $db->sql_fetchrow($result_rec);
+        $myrow2 = $nuke_db->sql_fetchrow($result_rec);
         $id = intval($myrow2['id']);
         $title = stripslashes(check_html($myrow2['title'], "nohtml"));
         $hits = intval($myrow2['hits']);
@@ -424,15 +424,15 @@ function reviews_index() {
         $y++;
     }
     echo "<tr><td colspan=\"2\"><br /></td></tr>";
-    $result2 = $db->sql_query("SELECT * FROM ".$prefix."_reviews $querylang");
-    $numresults = $db->sql_numrows($result2);
+    $result2 = $nuke_db->sql_query("SELECT * FROM ".$prefix."_reviews $querylang");
+    $numresults = $nuke_db->sql_numrows($result2);
     echo "<tr><td colspan=\"2\"><br /><center>"._THEREARE." $numresults "._REVIEWSINDB."</center></td></tr></table>";
     CloseTable();
     include_once(NUKE_BASE_DIR.'footer.php');
 }
 
 function reviews($letter, $field, $order) {
-    global $bgcolor4, $sitename, $prefix, $multilingual, $currentlang, $db, $module_name, $anonpost;
+    global $bgcolor4, $sitename, $prefix, $multilingual, $currentlang, $nuke_db, $module_name, $anonpost;
 
     include_once(NUKE_BASE_DIR.'header.php');
     $letter = substr($letter, 0,1);
@@ -447,23 +447,23 @@ function reviews($letter, $field, $order) {
     switch ($field) {
 
         case "reviewer":
-            $result = $db->sql_query("SELECT id, title, hits, reviewer, score, email FROM ".$prefix."_reviews WHERE UPPER(title) LIKE '$letter%' $querylang ORDER BY reviewer $order");
+            $result = $nuke_db->sql_query("SELECT id, title, hits, reviewer, score, email FROM ".$prefix."_reviews WHERE UPPER(title) LIKE '$letter%' $querylang ORDER BY reviewer $order");
         break;
 
         case "score":
-            $result = $db->sql_query("SELECT id, title, hits, reviewer, score, email FROM ".$prefix."_reviews WHERE UPPER(title) LIKE '$letter%' $querylang ORDER BY score $order");
+            $result = $nuke_db->sql_query("SELECT id, title, hits, reviewer, score, email FROM ".$prefix."_reviews WHERE UPPER(title) LIKE '$letter%' $querylang ORDER BY score $order");
         break;
 
         case "hits":
-            $result = $db->sql_query("SELECT id, title, hits, reviewer, score, email FROM ".$prefix."_reviews WHERE UPPER(title) LIKE '$letter%' $querylang ORDER BY hits $order");
+            $result = $nuke_db->sql_query("SELECT id, title, hits, reviewer, score, email FROM ".$prefix."_reviews WHERE UPPER(title) LIKE '$letter%' $querylang ORDER BY hits $order");
         break;
 
         default:
-            $result = $db->sql_query("SELECT id, title, hits, reviewer, score, email FROM ".$prefix."_reviews WHERE UPPER(title) LIKE '$letter%' $querylang ORDER BY title $order");
+            $result = $nuke_db->sql_query("SELECT id, title, hits, reviewer, score, email FROM ".$prefix."_reviews WHERE UPPER(title) LIKE '$letter%' $querylang ORDER BY title $order");
         break;
 
     }
-    $numresults = $db->sql_numrows($result);
+    $numresults = $nuke_db->sql_numrows($result);
     if ($numresults == 0) {
         echo "<i><strong>"._NOREVIEWS." \"$letter\"</strong></i><br /><br />";
     } elseif ($numresults > 0) {
@@ -482,7 +482,7 @@ function reviews($letter, $field, $order) {
             <p align=\"center\"><a href=\"modules.php?name=$module_name&amp;rop=$letter&amp;field=hits&amp;order=ASC\"><img src=\"images/up.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTASC."\"></a><strong> "._HITS." </strong><a href=\"modules.php?name=$module_name&amp;rop=$letter&amp;field=hits&amp;order=DESC\"><img src=\"images/down.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTDESC."\"></a>
             </td>
             </tr>";
-        while($myrow = $db->sql_fetchrow($result)) {
+        while($myrow = $nuke_db->sql_fetchrow($result)) {
             $title = stripslashes(check_html($myrow['title'], "nohtml"));
             $id = intval($myrow['id']);
             $reviewer = stripslashes($myrow['reviewer']);
@@ -512,7 +512,7 @@ function reviews($letter, $field, $order) {
             echo "</center></td><td width=\"14%\" bgcolor=\"$bgcolor4\"><center>$hits</center></td>
               </tr>";
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         echo "</TABLE>";
         echo "<br />$numresults "._TOTALREVIEWS."<br /><br />";
     }
@@ -526,7 +526,7 @@ function postcomment($id, $title) {
 
     //Prevent Anonymous Comments
     if(!is_user($user) && !$anonpost){
-        Header("Location: modules.php?name=Your_Account&op=login&redirect=Reviews");
+        Header("Location: modules.php?name=Your_Account&op=login&nuke_redirect=Reviews");
         die();
     }
     
@@ -577,14 +577,14 @@ function postcomment($id, $title) {
 }
 
 function savecomment($xanonpost, $uname, $id, $score, $comments) {
-    global $anonymous, $user, $cookie, $prefix, $db, $module_name, $anonpost;
+    global $anonymous, $user, $cookie, $prefix, $nuke_db, $module_name, $anonpost;
 
     if(!isset($_POST) || empty($_POST)) {
         header("location: modules.php?name=$module_name&rop=showcontent&id=$id");
         die();
     }
     if(!is_user($user) && $cookie[1] != $uname && !$anonpost){
-        Header("Location: modules.php?name=Your_Account&op=login&redirect=Reviews");
+        Header("Location: modules.php?name=Your_Account&op=login&nuke_redirect=Reviews");
         die();
     }
     
@@ -608,17 +608,17 @@ function savecomment($xanonpost, $uname, $id, $score, $comments) {
     $id = intval($id);
     $score = intval($score);
     $name = Fix_Quotes(check_html($name));
-    $db->sql_query("INSERT INTO ".$prefix."_reviews_comments VALUES (NULL, '$id', '$uname', now(), '$comments', '$score')");
+    $nuke_db->sql_query("INSERT INTO ".$prefix."_reviews_comments VALUES (NULL, '$id', '$uname', now(), '$comments', '$score')");
     header("location: modules.php?name=$module_name&rop=showcontent&id=$id");
     die();
 }
 
 function r_comments($id, $title) {
-    global $admin, $prefix, $db, $module_name, $anonymous, $anonpost;
+    global $admin, $prefix, $nuke_db, $module_name, $anonymous, $anonpost;
 
     $id = intval($id);
-    $result = $db->sql_query("SELECT cid, userid, date, comments, score FROM ".$prefix."_reviews_comments WHERE rid='$id' ORDER BY date DESC");
-    while ($row = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query("SELECT cid, userid, date, comments, score FROM ".$prefix."_reviews_comments WHERE rid='$id' ORDER BY date DESC");
+    while ($row = $nuke_db->sql_fetchrow($result)) {
         $cid = intval($row['cid']);
         $uname = stripslashes($row['userid']);
         $date = $row['date'];
@@ -657,18 +657,18 @@ function r_comments($id, $title) {
 }
 
 function showcontent($id, $page) {
-    global $admin, $uimages, $prefix, $db, $module_name, $anonpost, $board_config;
+    global $admin, $uimages, $prefix, $nuke_db, $module_name, $anonpost, $board_config;
 
     $id = intval($id);
     $page = intval($page);
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
     if (($page == 1) || (empty($page))) {
-        $db->sql_query("UPDATE ".$prefix."_reviews SET hits=hits+1 WHERE id='$id'");
+        $nuke_db->sql_query("UPDATE ".$prefix."_reviews SET hits=hits+1 WHERE id='$id'");
     }
-    $result = $db->sql_query("SELECT * FROM ".$prefix."_reviews WHERE id='$id'");
-    $myrow = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $result = $nuke_db->sql_query("SELECT * FROM ".$prefix."_reviews WHERE id='$id'");
+    $myrow = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
     $id = intval($myrow['id']);
     $date = $myrow['date'];
     $year = substr($date,0,4);
@@ -758,7 +758,7 @@ function showcontent($id, $page) {
 }
 
 function mod_review($id) {
-    global $admin, $prefix, $db, $module_name, $rlanguage;
+    global $admin, $prefix, $nuke_db, $module_name, $rlanguage;
 
     $id = intval($id);
     include_once(NUKE_BASE_DIR.'header.php');
@@ -767,8 +767,8 @@ function mod_review($id) {
         echo "This function must be passed argument id, or you are not admin.";
     else if (($id != 0) && (is_mod_admin($module_name)))
     {
-        $result = $db->sql_query("SELECT * FROM ".$prefix."_reviews WHERE id = '$id'");
-        while ($myrow = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query("SELECT * FROM ".$prefix."_reviews WHERE id = '$id'");
+        while ($myrow = $nuke_db->sql_fetchrow($result)) {
             $id = intval($myrow['id']);
             $date = $myrow['date'];
             $title = $myrow['title'];
@@ -783,7 +783,7 @@ function mod_review($id) {
             $score = intval($myrow['score']);
             $rlanguage = $myrow['rlanguage'];
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         echo "<center><strong>"._REVIEWMOD."</strong></center><br /><br />";
 /*****[BEGIN]******************************************
  [ Mod:     Reviews BBCodes                    v1.0.0 ]
@@ -840,25 +840,25 @@ function mod_review($id) {
 }
 
 function del_review($id_del) {
-    global $admin, $prefix, $db, $module_name;
+    global $admin, $prefix, $nuke_db, $module_name;
 
     $id_del = intval($id_del);
     if (is_mod_admin($module_name)) {
-        $db->sql_query("DELETE FROM ".$prefix."_reviews WHERE id = '$id_del'");
-    $db->sql_query("DELETE FROM ".$prefix."_reviews_comments WHERE rid='$id_del'");
-    redirect("modules.php?name=$module_name");
+        $nuke_db->sql_query("DELETE FROM ".$prefix."_reviews WHERE id = '$id_del'");
+    $nuke_db->sql_query("DELETE FROM ".$prefix."_reviews_comments WHERE rid='$id_del'");
+    nuke_redirect("modules.php?name=$module_name");
     } else {
         echo "ACCESS DENIED";
     }
 }
 
 function del_comment($cid, $id) {
-    global $admin, $prefix, $db, $module_name;
+    global $admin, $prefix, $nuke_db, $module_name;
 
     $cid = intval($cid);
     if (is_mod_admin($module_name)) {
-        $db->sql_query("DELETE FROM ".$prefix."_reviews_comments WHERE cid='$cid'");
-        redirect("modules.php?name=$module_name&rop=showcontent&id=$id");
+        $nuke_db->sql_query("DELETE FROM ".$prefix."_reviews_comments WHERE cid='$cid'");
+        nuke_redirect("modules.php?name=$module_name&rop=showcontent&id=$id");
     } else {
         echo "ACCESS DENIED";
     }

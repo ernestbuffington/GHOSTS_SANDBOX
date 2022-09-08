@@ -38,7 +38,7 @@ get_lang($module_name);
 
 function defaultDisplay() 
 {
-    global $prefix, $cookie, $anonymous, $currentlang, $multilingual, $db, $module_name;
+    global $prefix, $cookie, $anonymous, $currentlang, $multilingual, $nuke_db, $module_name;
 
     include_once(NUKE_BASE_DIR.'header.php');
     title($sitename. '._SUBMITNEWS.');
@@ -69,14 +69,14 @@ function defaultDisplay()
         .'<br /><br />'
         .'<span class="textbold">'._TOPIC.":</span>\n";
     echo "<select name=\"topic\">\n";
-    $result = $db->sql_query("SELECT `topicid`, `topictext` FROM `".$prefix."_topics` ORDER BY `topictext`");
+    $result = $nuke_db->sql_query("SELECT `topicid`, `topictext` FROM `".$prefix."_topics` ORDER BY `topictext`");
     echo "<option value=\"\">"._SELECTTOPIC."</option>\n";
-    while ($row = $db->sql_fetchrow($result)) {
+    while ($row = $nuke_db->sql_fetchrow($result)) {
         $topicid = (int)$row['topicid'];
         $topics = stripslashes(check_html($row['topictext'], "nohtml"));
         echo "<option value=\"$topicid\">$topics</option>\n";
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     echo "</select>\n";
     if ($multilingual) {
         echo '<br /><br /><strong>'._LANGUAGE.": </strong>\n";
@@ -117,7 +117,7 @@ function defaultDisplay()
 
 function PreviewStory($name, $address, $subject, $story, $storyext, $topic, $alanguage, $posttype) 
 {
-    global $user, $cookie, $bgcolor1, $bgcolor2, $anonymous, $prefix, $multilingual, $AllowableHTML, $db, $module_name, $tipath, $userinfo;
+    global $user, $cookie, $bgcolor1, $bgcolor2, $anonymous, $prefix, $multilingual, $AllowableHTML, $nuke_db, $module_name, $tipath, $userinfo;
 
     include_once(NUKE_BASE_DIR.'header.php');
 
@@ -158,7 +158,7 @@ function PreviewStory($name, $address, $subject, $story, $storyext, $topic, $ala
 	else 
 	{
         $warning = '';
-        $row = $db->sql_fetchrow($db->sql_query("SELECT `topicimage`, `topictext` FROM `".$prefix."_topics` WHERE `topicid`='$topic'"));
+        $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `topicimage`, `topictext` FROM `".$prefix."_topics` WHERE `topicid`='$topic'"));
         $topicimage = stripslashes($row['topicimage']);
         $topictext = stripslashes($row['topictext']);
     }
@@ -184,9 +184,9 @@ function PreviewStory($name, $address, $subject, $story, $storyext, $topic, $ala
     echo "<br /><br /><div class=\"textbold\">"._SUBTITLE.":</div><br />\n";
     echo "<input type=\"text\" name=\"subject\" size=\"50\" maxlength=\"80\" value=\"$subject\">\n";
     echo '<br /><br /><div class="textbold">'._TOPIC.": </div><select name=\"topic\">\n";
-    $result2 = $db->sql_query("SELECT `topicid`, `topictext` FROM `".$prefix."_topics` ORDER BY `topictext`");
+    $result2 = $nuke_db->sql_query("SELECT `topicid`, `topictext` FROM `".$prefix."_topics` ORDER BY `topictext`");
     echo '<option VALUE="">'._SELECTTOPIC."</option>\n";
-    while ($row2 = $db->sql_fetchrow($result2)) {
+    while ($row2 = $nuke_db->sql_fetchrow($result2)) {
         $topicid = (int)$row2['topicid'];
         $topics = stripslashes(check_html($row2['topictext'], "nohtml"));
         if ($topicid == $topic) {
@@ -195,7 +195,7 @@ function PreviewStory($name, $address, $subject, $story, $storyext, $topic, $ala
         echo "<option $sel value=\"$topicid\">$topics</option>\n";
         $sel = '';
     }
-    $db->sql_freeresult($result2);
+    $nuke_db->sql_freeresult($result2);
     echo '</select>';
     if ($multilingual) {
         echo '<br /><br /><strong>'._LANGUAGE.": </strong>\n";
@@ -234,7 +234,7 @@ function PreviewStory($name, $address, $subject, $story, $storyext, $topic, $ala
 
 function submitStory($name, $address, $subject, $story, $storyext, $topic, $alanguage, $posttype) 
 {
-    global $user, $EditedMessage, $cookie, $anonymous, $notify, $notify_email, $notify_subject, $notify_message, $notify_from, $prefix, $db, $cache;
+    global $user, $EditedMessage, $cookie, $anonymous, $notify, $notify_email, $notify_subject, $notify_message, $notify_from, $prefix, $nuke_db, $cache;
 
     if (is_user()) 
 	{
@@ -250,7 +250,7 @@ function submitStory($name, $address, $subject, $story, $storyext, $topic, $alan
 	$subject = Fix_Quotes(filter_text($subject, "nohtml"));
     $story = Fix_Quotes(nl2br(check_words($story)));
     $storyext = Fix_Quotes(nl2br(check_words($storyext)));
-    $result = $db->sql_query("INSERT INTO ".$prefix."_queue VALUES (NULL, '$uid', '$name', '$subject', '$story', '$storyext', now(), '$topic', '$alanguage')");
+    $result = $nuke_db->sql_query("INSERT INTO ".$prefix."_queue VALUES (NULL, '$uid', '$name', '$subject', '$story', '$storyext', now(), '$topic', '$alanguage')");
     
 	if(!$result) 
 	{
@@ -264,7 +264,7 @@ function submitStory($name, $address, $subject, $story, $storyext, $topic, $alan
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     if($notify) {
         $notify_message = "$notify_message\n\n\n========================================================\n$subject\n\n\n$story\n\n$storyext\n\n$name";
         evo_mail($notify_email, $notify_subject, $notify_message, "From: $notify_from\nX-Mailer: PHP/" . phpversion());
@@ -279,9 +279,9 @@ function submitStory($name, $address, $subject, $story, $storyext, $topic, $alan
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $result = $db->sql_query("SELECT COUNT(*) AS numrows FROM ".$prefix."_queue");
-        $numwaits = $db->sql_fetchrow($result);
-        $db->sql_freeresult($result);
+        $result = $nuke_db->sql_query("SELECT COUNT(*) AS numrows FROM ".$prefix."_queue");
+        $numwaits = $nuke_db->sql_fetchrow($result);
+        $nuke_db->sql_freeresult($result);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

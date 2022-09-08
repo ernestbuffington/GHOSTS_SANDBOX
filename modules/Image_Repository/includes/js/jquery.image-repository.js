@@ -43,13 +43,13 @@ jquery_prefix(function($)
 //	VERSION CHECKER - START
 //-------------------------------------------------------------------------	
 //-------------------------------------------------------------------------
-//	INSERT THE DEFAULT VALUES FOR THE PROGRESS BAR FOR EACH USER - START
+//	INSERT THE DEFAULT VALUES FOR THE PROGRESS BAR FOR EACH NUKE_USER - START
 //-------------------------------------------------------------------------
 	$('.progress-bar').css('background',(background_color_default == 'nocolor') ? '' : background_color_default);
 	$('.progress-bar').css('border','1px solid ' + border_color_default);
 	$('.progress-bar span').css('background-color',(percent_color_default == 'custom') ? custom_color_default : percent_color_default);
 //-------------------------------------------------------------------------
-//	INSERT THE DEFAULT VALUES FOR THE PROGRESS BAR FOR EACH USER - END
+//	INSERT THE DEFAULT VALUES FOR THE PROGRESS BAR FOR EACH NUKE_USER - END
 //-------------------------------------------------------------------------
 	$('#background_color, #border_color, #percent_color, #custom_color').on('change keyup', function()
 	{
@@ -180,7 +180,7 @@ jquery_prefix(function($)
 				function(r)
 				{
 //-------------------------------------------------------------------------
-//	IF THE USER HAS REACHED HIS QUOTA, REMOVE THE UPLOAD TABLE.
+//	IF THE NUKE_USER HAS REACHED HIS QUOTA, REMOVE THE UPLOAD TABLE.
 //-------------------------------------------------------------------------
 					if((quota_user-parts[1]) < quota_limit)
 					{
@@ -188,7 +188,7 @@ jquery_prefix(function($)
 						$('#image_repository_quota').css('display','none');
 					}
 //-------------------------------------------------------------------------
-//	IF THE USER HAS REACHED HIS QUOTA, REMOVE THE UPLOAD TABLE.
+//	IF THE NUKE_USER HAS REACHED HIS QUOTA, REMOVE THE UPLOAD TABLE.
 //-------------------------------------------------------------------------
 					imagecount--;
 					if(imagecount == 0)

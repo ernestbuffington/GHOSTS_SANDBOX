@@ -32,7 +32,7 @@ if (!defined('MODULE_FILE') || !defined('CNBYA') || $_SERVER['REQUEST_METHOD'] !
     die('You can\'t access this file directly...');
 }
 
-$username = $db->sql_escapestring($_POST['username']);
+$username = $nuke_db->sql_escapestring($_POST['username']);
 
 if (empty($username)) 
 {
@@ -45,9 +45,9 @@ elseif (strlen($username) <= 3)
 } 
 else 
 {
-	$query = $db->sql_numrows($db->sql_query("SELECT username FROM `" . $user_prefix . "_users` WHERE LCASE(username)='" . $username . "'"));
-    $result = $db->sql_query("SELECT `username` FROM `" . $user_prefix . "_users` WHERE LCASE(username) = '".strtolower($username)."'");
-	$totalCount = $db->sql_numrows($result);
+	$query = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT username FROM `" . $nuke_user_prefix . "_users` WHERE LCASE(username)='" . $username . "'"));
+    $result = $nuke_db->sql_query("SELECT `username` FROM `" . $nuke_user_prefix . "_users` WHERE LCASE(username) = '".strtolower($username)."'");
+	$totalCount = $nuke_db->sql_numrows($result);
 
     if ($totalCount == 0) 
 	{
@@ -60,7 +60,7 @@ else
         echo '<span style="color: #FF0000; font-weight: bold;">' . _AVALIABLE . '</span>';
     }
 
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 }
 
 die();

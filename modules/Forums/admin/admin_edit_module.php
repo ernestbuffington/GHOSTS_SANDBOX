@@ -25,7 +25,7 @@
 *
 ***************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 //
 // Let's set the root dir for phpBB
@@ -68,14 +68,14 @@ include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 
 $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
 }
 
 $stats_config = array();
 
-while ($row = $db->sql_fetchrow($result))
+while ($row = $nuke_db->sql_fetchrow($result))
 {
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
@@ -94,7 +94,7 @@ if ($mode == 'mod_edit')
     }
     else
     {
-        message_die(GENERAL_ERROR, 'Unable to edit Module.');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to edit Module.');
     }
 
     $template->set_filenames(array(
@@ -103,17 +103,17 @@ if ($mode == 'mod_edit')
 
     $sql = "SELECT m.*, i.* FROM " . MODULES_TABLE . " m, " . MODULE_INFO_TABLE . " i WHERE i.module_id = m.module_id AND m.module_id = " . $module_id;
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
     }
 
-    if ($db->sql_numrows($result) == 0)
+    if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(GENERAL_MESSAGE, 'Module not found.');
+        message_die(NUKE_GENERAL_MESSAGE, 'Module not found.');
     }
 
-    $mod_info = $db->sql_fetchrow($result);
+    $mod_info = $nuke_db->sql_fetchrow($result);
     $mod_info_changed = FALSE;
 }
 
@@ -125,9 +125,9 @@ if ($submit && $mode == 'mod_edit')
         {
             $sql = "UPDATE " . MODULES_TABLE . " SET update_time = " . intval($HTTP_POST_VARS['update_time']) . " WHERE module_id = " . $module_id;
 
-            if ( !($result = $db->sql_query($sql)) )
+            if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_ERROR, 'Unable to update modules table', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Unable to update modules table', '', __LINE__, __FILE__, $sql);
             }
     
             $mod_info_changed = TRUE;
@@ -139,9 +139,9 @@ if ($submit && $mode == 'mod_edit')
     {
         $sql = "UPDATE " . CACHE_TABLE . " SET module_cache_time = 0, db_cache = '', priority = 0 WHERE module_id = " . $module_id;
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to update modules cache table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to update modules cache table', '', __LINE__, __FILE__, $sql);
         }
     
         $message = ($message == '') ? $message . $lang['Msg_cleared_module_cache'] : $message . '<br />' . $lang['Msg_cleared_module_cache'];
@@ -167,9 +167,9 @@ if ($submit && $mode == 'mod_edit')
     {
         $sql = "UPDATE " . MODULES_TABLE . " SET " . $update_sql . " WHERE module_id = " . $module_id;
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to update Permissions', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to update Permissions', '', __LINE__, __FILE__, $sql);
         }
 
         $message = ($message == '') ? $message . $lang['Msg_permissions_updated'] : $message . '<br />' . $lang['Msg_permissions_updated'];
@@ -180,13 +180,13 @@ if ($submit && $mode == 'mod_edit')
     // Get Module Variables
     $sql = "SELECT * FROM " . MODULE_ADMIN_TABLE . " WHERE module_id = " . $module_id;
 
-    if (!$result = $db->sql_query($sql))
+    if (!$result = $nuke_db->sql_query($sql))
     {
-        message_die(GENERAL_ERROR, 'Could not find Module Admin Table', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not find Module Admin Table', '', __LINE__, __FILE__, $sql);
     }
     
-    $rows = $db->sql_fetchrowset($result);
-    $num_rows = $db->sql_numrows($result);
+    $rows = $nuke_db->sql_fetchrowset($result);
+    $num_rows = $nuke_db->sql_numrows($result);
 
     $admin_update = FALSE;
 
@@ -199,9 +199,9 @@ if ($submit && $mode == 'mod_edit')
                 $sql = "UPDATE " . MODULE_ADMIN_TABLE . " SET config_value = '" . trim($HTTP_POST_VARS[trim($rows[$i]['config_name'])]) . "' 
                 WHERE config_name = '" . trim($rows[$i]['config_name']) . "' AND module_id = " . $module_id;
     
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, 'Unable to update modules cache table', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Unable to update modules cache table', '', __LINE__, __FILE__, $sql);
                 }
                 $admin_update = TRUE;
             }            
@@ -220,7 +220,7 @@ if (isset($HTTP_POST_VARS['add_group']) && $mode == 'mod_edit')
 
     if ( (!$group_id) || (empty($group_id)) )
     {
-        message_die(GENERAL_MESSAGE, 'Wrong Group ID submitted, hacking attempt ?');
+        message_die(NUKE_GENERAL_MESSAGE, 'Wrong Group ID submitted, hacking attempt ?');
     }
 
     if( isset($HTTP_POST_VARS['module']) || isset($HTTP_GET_VARS['module']) )
@@ -229,14 +229,14 @@ if (isset($HTTP_POST_VARS['add_group']) && $mode == 'mod_edit')
     }
     else
     {
-        message_die(GENERAL_ERROR, 'Unable to edit Module.');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to edit Module.');
     }
 
     $sql = "INSERT INTO " . MODULE_GROUP_AUTH_TABLE . " (module_id, group_id) VALUES (" . $module_id . ", " . $group_id . ")";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, "Couldn't insert Group", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't insert Group", "", __LINE__, __FILE__, $sql);
     }
 }
 
@@ -246,7 +246,7 @@ if (isset($HTTP_POST_VARS['delete_group']) && $mode == 'mod_edit')
 
     if ( (!$group_id) || (empty($group_id)) )
     {
-        message_die(GENERAL_MESSAGE, 'Wrong Group ID submitted, hacking attempt ?');
+        message_die(NUKE_GENERAL_MESSAGE, 'Wrong Group ID submitted, hacking attempt ?');
     }
 
     if( isset($HTTP_POST_VARS['module']) || isset($HTTP_GET_VARS['module']) )
@@ -255,14 +255,14 @@ if (isset($HTTP_POST_VARS['delete_group']) && $mode == 'mod_edit')
     }
     else
     {
-        message_die(GENERAL_ERROR, 'Unable to edit Module.');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to edit Module.');
     }
 
     $sql = "DELETE FROM " . MODULE_GROUP_AUTH_TABLE . " WHERE module_id = " . $module_id . " AND group_id = " . $group_id;
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, "Couldn't delete Group", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't delete Group", "", __LINE__, __FILE__, $sql);
     }
 }
 
@@ -274,7 +274,7 @@ if ($mode == 'mod_edit')
     }
     else
     {
-        message_die(GENERAL_ERROR, 'Unable to edit Module.');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to edit Module.');
     }
 
     $template->set_filenames(array(
@@ -285,17 +285,17 @@ if ($mode == 'mod_edit')
     {
         $sql = "SELECT m.*, i.* FROM " . MODULES_TABLE . " m, " . MODULE_INFO_TABLE . " i WHERE i.module_id = m.module_id AND m.module_id = " . $module_id;
 
-        if (!($result = $db->sql_query($sql)) )
+        if (!($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
         }
 
-        if ($db->sql_numrows($result) == 0)
+        if ($nuke_db->sql_numrows($result) == 0)
         {
-            message_die(GENERAL_MESSAGE, 'Module not found.');
+            message_die(NUKE_GENERAL_MESSAGE, 'Module not found.');
         }
 
-        $mod_info = $db->sql_fetchrow($result);
+        $mod_info = $nuke_db->sql_fetchrow($result);
     }
 
     $s_hidden_fields = '<input type="hidden" name="module" value="' . $module_id . '" />';
@@ -316,17 +316,17 @@ if ($mode == 'mod_edit')
     }
 
     $sql = "SELECT group_id, group_name
-    FROM " . GROUPS_TABLE . "
+    FROM " . NUKE_GROUPS_TABLE . "
     WHERE group_single_user = 0
     ORDER BY group_name";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, "Couldn't query Groups Table", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't query Groups Table", "", __LINE__, __FILE__, $sql);
     }
 
-    $num_groups = $db->sql_numrows($result);
-    $group_name = $db->sql_fetchrowset($result);
+    $num_groups = $nuke_db->sql_numrows($result);
+    $group_name = $nuke_db->sql_fetchrowset($result);
 
     $group_ids = array();
     for ($i = 0; $i < $num_groups; $i++)
@@ -335,17 +335,17 @@ if ($mode == 'mod_edit')
     }
 
     $sql = "SELECT g.group_id, g.group_name
-    FROM " . GROUPS_TABLE . " g, " . MODULE_GROUP_AUTH_TABLE . " m
+    FROM " . NUKE_GROUPS_TABLE . " g, " . MODULE_GROUP_AUTH_TABLE . " m
     WHERE m.group_id = g.group_id AND m.module_id = " . intval($mod_info['module_id']) . "
     ORDER BY group_name";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, "Couldn't query Groups Table", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't query Groups Table", "", __LINE__, __FILE__, $sql);
     }
 
-    $rows = $db->sql_fetchrowset($result);
-    $num_rows = $db->sql_numrows($result);
+    $rows = $nuke_db->sql_fetchrowset($result);
+    $num_rows = $nuke_db->sql_numrows($result);
 
     // Rebuild Auth Table, maybe the user have deleted groups
     if (($num_groups > 0) && ($num_rows > 0))
@@ -356,9 +356,9 @@ if ($mode == 'mod_edit')
             {
                 $sql = "DELETE FROM " . MODULE_GROUP_AUTH_TABLE . " WHERE module_id = " . $module_id . " AND group_id = " . $rows[$i]['group_id'];
             
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, "Couldn't delete Group", "", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, "Couldn't delete Group", "", __LINE__, __FILE__, $sql);
                 }
             }
         }
@@ -492,13 +492,13 @@ if ($mode == 'mod_edit')
     // Get Module Variables
     $sql = "SELECT * FROM " . MODULE_ADMIN_TABLE . " WHERE module_id = " . $module_id;
 
-    if (!$result = $db->sql_query($sql))
+    if (!$result = $nuke_db->sql_query($sql))
     {
-        message_die(GENERAL_ERROR, 'Could not find Module Admin Table', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not find Module Admin Table', '', __LINE__, __FILE__, $sql);
     }
     
-    $rows = $db->sql_fetchrowset($result);
-    $num_rows = $db->sql_numrows($result);
+    $rows = $nuke_db->sql_fetchrowset($result);
+    $num_rows = $nuke_db->sql_numrows($result);
 
     if ($num_rows > 0)
     {
@@ -636,17 +636,17 @@ else if ($mode == 'select_module')
 
     $sql = "SELECT m.module_id, i.long_name FROM " . MODULES_TABLE . " m, " . MODULE_INFO_TABLE . " i WHERE i.module_id = m.module_id ORDER BY long_name ASC";
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
     }
 
-    if ($db->sql_numrows($result) == 0)
+    if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(GENERAL_MESSAGE, 'No installed Modules found.');
+        message_die(NUKE_GENERAL_MESSAGE, 'No installed Modules found.');
     }
 
-    $rows = $db->sql_fetchrowset($result);
+    $rows = $nuke_db->sql_fetchrowset($result);
     
     $module_select_field = '<select name="module">';
 

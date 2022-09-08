@@ -19,7 +19,7 @@
       Group Colors                             v1.0.0       10/20/2005
  ************************************************************************/  
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -43,8 +43,8 @@ require($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '
 require($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_arcade.' . $phpEx);
 
 $mode = get_var_gf(array('name' => 'mode','intval' => false,'okvar' => array('user','group'),'default' => ''));
-$user_id = get_var_gf(array('name' => POST_USERS_URL, 'intval' => true, 'default' => 0 ));
-$group_id = get_var_gf(array('name' => POST_GROUPS_URL, 'intval' => true, 'default' => 0 ));
+$user_id = get_var_gf(array('name' => NUKE_POST_USERS_URL, 'intval' => true, 'default' => 0 ));
+$group_id = get_var_gf(array('name' => NUKE_POST_GROUPS_URL, 'intval' => true, 'default' => 0 ));
 
 // ---------------
 // Start Functions
@@ -65,13 +65,13 @@ if (!function_exists(check_auth))
             $result = 0;
             switch($type)
             {
-                case AUTH_ACL:
+                case NUKE_AUTH_ACL:
                     $result = $u_access[$j][$key];
 
-                case AUTH_MOD:
+                case NUKE_AUTH_MOD:
                     $result = $result || $u_access[$j]['auth_mod'];
 
-                case AUTH_ADMIN:
+                case NUKE_AUTH_ADMIN:
                     $result = $result || $is_admin;
                     break;
             }
@@ -100,31 +100,31 @@ if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $user_id ) || ( 
         // Get group_id for this user_id
         //
         $sql = "SELECT g.group_id, u.user_level
-                FROM " . USER_GROUP_TABLE . " ug, " . USERS_TABLE . " u, " . GROUPS_TABLE . " g
+                FROM " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_USERS_TABLE . " u, " . NUKE_GROUPS_TABLE . " g
                 WHERE u.user_id = $user_id 
                 AND ug.user_id = u.user_id 
                 AND g.group_id = ug.group_id 
                 AND g.group_single_user = " . TRUE;
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Could not select info from user/user_group table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not select info from user/user_group table', '', __LINE__, __FILE__, $sql);
         }
 
-        $row = $db->sql_fetchrow($result);
+        $row = $nuke_db->sql_fetchrow($result);
 
         $group_id = $row['group_id'];
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
     }
     
-    $sql = "SELECT arcade_catid FROM " . AUTH_ARCADE_ACCESS_TABLE . " WHERE group_id = $group_id";
-    if ( !($result = $db->sql_query($sql)) )
+    $sql = "SELECT arcade_catid FROM " . NUKE_AUTH_ARCADE_ACCESS_TABLE . " WHERE group_id = $group_id";
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not select info from user/user_group table', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not select info from user/user_group table', '', __LINE__, __FILE__, $sql);
     }
     
     //List categories where the user has already access
     $cat_list = array();
-    while ($row = $db->sql_fetchrow($result))
+    while ($row = $nuke_db->sql_fetchrow($result))
     {
         $cat_list[$row['arcade_catid']] = 1;
     }
@@ -149,75 +149,75 @@ if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $user_id ) || ( 
     
     if (!empty($liste_a_creer))
     {
-        $sql = "INSERT INTO " . AUTH_ARCADE_ACCESS_TABLE . " ( group_id, arcade_catid) VALUES " . $liste_a_creer;
-        if ( !$db->sql_query($sql) )
+        $sql = "INSERT INTO " . NUKE_AUTH_ARCADE_ACCESS_TABLE . " ( group_id, arcade_catid) VALUES " . $liste_a_creer;
+        if ( !$nuke_db->sql_query($sql) )
         {
-            message_die(GENERAL_ERROR, 'Could not update arcade auth table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not update arcade auth table', '', __LINE__, __FILE__, $sql);
         }
     }
     
     if (!empty($liste_a_supprimer))
     {
-        $sql = "DELETE FROM " . AUTH_ARCADE_ACCESS_TABLE . " WHERE arcade_catid IN ( $liste_a_supprimer )";
-        if ( !$db->sql_query($sql) )
+        $sql = "DELETE FROM " . NUKE_AUTH_ARCADE_ACCESS_TABLE . " WHERE arcade_catid IN ( $liste_a_supprimer )";
+        if ( !$nuke_db->sql_query($sql) )
         {
-            message_die(GENERAL_ERROR, 'Could not update arcade auth table', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not update arcade auth table', '', __LINE__, __FILE__, $sql);
         }
     }
     $message = $lang['Arcade_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_arcadeauth'], '<a href="' . append_sid("admin_arcade_auth.$phpEx?mode=$mode") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
-    message_die(GENERAL_MESSAGE, $message);
+    message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id ) ) || ( $mode == 'group' && $group_id ) )
 {
-        // MANAGEMENT OF THE RIGHTS FOR A USER
+        // MANAGEMENT OF THE RIGHTS FOR A NUKE_USER
     if ( isset($HTTP_POST_VARS['username']) )
     {
         $this_userdata = get_userdata($HTTP_POST_VARS['username'], true);
         if ( !is_array($this_userdata) )
         {
-            message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+            message_die(NUKE_GENERAL_MESSAGE, $lang['No_such_user']);
         }
         $user_id = $this_userdata['user_id'];
     }
 
     $sql = "SELECT * 
-        FROM " . ARCADE_CATEGORIES_TABLE . "
+        FROM " . NUKE_ARCADE_CATEGORIES_TABLE . "
         ORDER BY arcade_catorder";
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, "Couldn't obtain arcade categories information", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't obtain arcade categories information", "", __LINE__, __FILE__, $sql);
     }
 
     $arcade_access = array();
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
         $arcade_access[] = $row;
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
 
-    $sql = "SELECT u.user_id, u.username, u.user_level, g.group_id, g.group_name, g.group_single_user FROM " . USERS_TABLE . " u, " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug WHERE ";
+    $sql = "SELECT u.user_id, u.username, u.user_level, g.group_id, g.group_name, g.group_single_user FROM " . NUKE_USERS_TABLE . " u, " . NUKE_GROUPS_TABLE . " g, " . NUKE_USER_GROUP_TABLE . " ug WHERE ";
     $sql .= ( $mode == 'user' ) ? "u.user_id = $user_id AND ug.user_id = u.user_id AND g.group_id = ug.group_id" : "g.group_id = $group_id AND ug.group_id = g.group_id AND u.user_id = ug.user_id";
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, "Couldn't obtain user/group information", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't obtain user/group information", "", __LINE__, __FILE__, $sql);
     }
     $ug_info = array();
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
         $ug_info[] = $row;
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 
     
-    $sql = ( $mode == 'user' ) ? "SELECT aa.arcade_catid FROM " . AUTH_ARCADE_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = 1" : "SELECT arcade_catid FROM " . AUTH_ARCADE_ACCESS_TABLE . " WHERE group_id = $group_id";
-    if ( !($result = $db->sql_query($sql)) )
+    $sql = ( $mode == 'user' ) ? "SELECT aa.arcade_catid FROM " . NUKE_AUTH_ARCADE_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = 1" : "SELECT arcade_catid FROM " . NUKE_AUTH_ARCADE_ACCESS_TABLE . " WHERE group_id = $group_id";
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
     }
 
     $auth_access = array();
-    while($row=$db->sql_fetchrow($result))
+    while($row=$nuke_db->sql_fetchrow($result))
     {
         $auth_access[$row['arcade_catid']]=1;
     }    
@@ -233,7 +233,7 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id 
             $selected1 = ( isset($auth_access[$arcade_access[$i]['arcade_catid']]) ) ? 'selected="selected"' : '';
             $selected0 = ( !isset($auth_access[$arcade_access[$i]['arcade_catid']]) ) ? 'selected="selected"' : '';
             $optionlist_acl =  '<select name="private[' . $arcade_access[$i]['arcade_catid'] . ']">';
-            if ( $mode=='user' && $ug_info[0]['user_level'] == ADMIN )
+            if ( $mode=='user' && $ug_info[0]['user_level'] == NUKE_ADMIN )
             {
                 $optionlist_acl .= '<option value="1" selected="selected" >' . $lang['Allowed_Access'] . '</option>';
             }
@@ -287,7 +287,7 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id 
         $t_usergroup_list = '';
         for($i = 0; $i < count($ug_info); $i++)
         {
-            $ug = ( $mode == 'user' ) ? 'group&amp;' . POST_GROUPS_URL : 'user&amp;' . POST_USERS_URL;
+            $ug = ( $mode == 'user' ) ? 'group&amp;' . NUKE_POST_GROUPS_URL : 'user&amp;' . NUKE_POST_USERS_URL;
 
             $t_usergroup_list .= ( ( !empty($t_usergroup_list) ) ? ', ' : '' ) . '<a href="' . append_sid("admin_ug_auth.$phpEx?mode=$ug=" . $id[$i]) . '">' . $name[$i] . '</a>';
         }
@@ -307,7 +307,7 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id 
     );
 
     $s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="adv" value="' . $adv . '" />';
-    $s_hidden_fields .= ( $mode == 'user' ) ? '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $user_id . '" />' : '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
+    $s_hidden_fields .= ( $mode == 'user' ) ? '<input type="hidden" name="' . NUKE_POST_USERS_URL . '" value="' . $user_id . '" />' : '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
 
     if ( $mode == 'user' )
     {
@@ -376,21 +376,21 @@ else
     else
     {
         $sql = "SELECT group_id, group_name
-            FROM " . GROUPS_TABLE . "
+            FROM " . NUKE_GROUPS_TABLE . "
             WHERE group_single_user <> " . TRUE;
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, "Couldn't get group list", "", __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, "Couldn't get group list", "", __LINE__, __FILE__, $sql);
         }
 
-        if ( $row = $db->sql_fetchrow($result) )
+        if ( $row = $nuke_db->sql_fetchrow($result) )
         {
-            $select_list = '<select name="' . POST_GROUPS_URL . '">';
+            $select_list = '<select name="' . NUKE_POST_GROUPS_URL . '">';
             do
             {
                 $select_list .= '<option value="' . $row['group_id'] . '">' . $row['group_name'] . '</option>';
             }
-            while ( $row = $db->sql_fetchrow($result) );
+            while ( $row = $nuke_db->sql_fetchrow($result) );
             $select_list .= '</select>';
         }
 
@@ -401,7 +401,7 @@ else
 
     $s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" />';
 
-    $l_type = ( $mode == 'user' ) ? 'USER' : 'AUTH';
+    $l_type = ( $mode == 'user' ) ? 'NUKE_USER' : 'AUTH';
 
     $template->assign_vars(array(
         'L_' . $l_type . '_TITLE' => ( $mode == 'user' ) ? $lang['Auth_Arcade_Control_User'] : $lang['Auth_Arcade_Control_Group'],

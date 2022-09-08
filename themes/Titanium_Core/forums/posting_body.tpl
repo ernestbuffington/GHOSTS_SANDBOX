@@ -35,11 +35,11 @@
     <!-- BEGIN switch_not_privmsg --> 
     <!-- IF PARENT_FORUM --> -> <a href="{U_VIEW_PARENT_FORUM}">{PARENT_FORUM_NAME}</a> <!-- ENDIF -->
     -> <a href="{U_VIEW_FORUM}">{FORUM_NAME}</a>
-    <!-- // Begin View Topic Name While Posting MOD -->
+    <!-- // Begin View Topic Name While Posting NUKE_MOD -->
     <!-- BEGIN reply_mode -->
     -> <a href="{U_VIEW_TOPIC}">{TOPIC_SUBJECT}</a>
     <!-- END reply_mode -->
-    <!-- // End View Topic Name While Posting MOD -->
+    <!-- // End View Topic Name While Posting NUKE_MOD -->
     </td>
     <!-- END switch_not_privmsg -->
   </tr>
@@ -61,14 +61,14 @@
     <td class="row2"><input type="text" class="post" name="username" style="width:30%; padding-left:7px; letter-spacing:1px;" tabindex="1" value="{USERNAME}" />&nbsp;<input style="border:1px solid black; cursor:pointer; text-transform: uppercase;" type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}', '_phpbbsearch', 'HEIGHT=250,resizable=yes,WIDTH=400');return false;" /></td>
   </tr>
   <!-- END switch_privmsg -->
-  <!-- Start add - Custom mass PM MOD -->
+  <!-- Start add - Custom mass PM NUKE_MOD -->
   <!-- BEGIN switch_groupmsg -->
   <tr> 
     <td class="row1">{L_USERNAME}</td>
     <td class="row2">{USERNAME}</td>
   </tr>
   <!-- END switch_groupmsg -->
-  <!-- End add - Custom mass PM MOD -->
+  <!-- End add - Custom mass PM NUKE_MOD -->
   <tr> 
     <td class="row1" style="width: 20%">{L_SUBJECT}</td>
     <td class="row2" style="width: 80%"><input type="text" name="subject" size="45" maxlength="60" style="width:98.8%; fpadding-left:7px; letter-spacing:1px;" tabindex="2" class="post" value="{SUBJECT}" /></td>

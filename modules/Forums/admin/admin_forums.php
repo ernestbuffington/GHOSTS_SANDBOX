@@ -73,7 +73,7 @@
 
 
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 
 
@@ -109,25 +109,25 @@ include("../../../includes/functions_admin.php");
 
 $forum_auth_ary = array(
 
-        "auth_view" => AUTH_ALL,
+        "auth_view" => NUKE_AUTH_ALL,
 
-        "auth_read" => AUTH_ALL,
+        "auth_read" => NUKE_AUTH_ALL,
 
-        "auth_post" => AUTH_REG,
+        "auth_post" => NUKE_AUTH_REG,
 
-        "auth_reply" => AUTH_REG,
+        "auth_reply" => NUKE_AUTH_REG,
 
-        "auth_edit" => AUTH_REG,
+        "auth_edit" => NUKE_AUTH_REG,
 
-        "auth_delete" => AUTH_REG,
+        "auth_delete" => NUKE_AUTH_REG,
 
-        "auth_sticky" => AUTH_MOD,
+        "auth_sticky" => NUKE_AUTH_MOD,
 
-        "auth_announce" => AUTH_MOD,
+        "auth_announce" => NUKE_AUTH_MOD,
 
-        "auth_vote" => AUTH_REG,
+        "auth_vote" => NUKE_AUTH_REG,
 
-        "auth_pollcreate" => AUTH_REG
+        "auth_pollcreate" => NUKE_AUTH_REG
 
 );
 
@@ -139,9 +139,9 @@ $forum_auth_ary = array(
 
  ******************************************************/
 
-$forum_auth_ary['auth_attachments'] = AUTH_REG;
+$forum_auth_ary['auth_attachments'] = NUKE_AUTH_REG;
 
-$forum_auth_ary['auth_download'] = AUTH_REG;
+$forum_auth_ary['auth_download'] = NUKE_AUTH_REG;
 
 /*****[END]********************************************
 
@@ -187,7 +187,7 @@ function get_info($mode, $id)
 
 {
 
-        global $db;
+        global $nuke_db;
 
 
 
@@ -197,7 +197,7 @@ function get_info($mode, $id)
 
                 case 'category':
 
-                        $table = CATEGORIES_TABLE;
+                        $table = NUKE_CATEGORIES_TABLE;
 
                         $idfield = 'cat_id';
 
@@ -209,7 +209,7 @@ function get_info($mode, $id)
 
                 case 'forum':
 
-                        $table = FORUMS_TABLE;
+                        $table = NUKE_FORUMS_TABLE;
 
                         $idfield = 'forum_id';
 
@@ -221,7 +221,7 @@ function get_info($mode, $id)
 
                 default:
 
-                        message_die(GENERAL_ERROR, "Wrong mode for generating select list", "", __LINE__, __FILE__);
+                        message_die(NUKE_GENERAL_ERROR, "Wrong mode for generating select list", "", __LINE__, __FILE__);
 
                         break;
 
@@ -231,15 +231,15 @@ function get_info($mode, $id)
 
                 FROM $table";
 
-        if( !$result = $db->sql_query($sql) )
+        if( !$result = $nuke_db->sql_query($sql) )
 
         {
 
-                message_die(GENERAL_ERROR, "Couldn't get Forum/Category information", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't get Forum/Category information", "", __LINE__, __FILE__, $sql);
 
         }
 
-        $count = $db->sql_fetchrow($result);
+        $count = $nuke_db->sql_fetchrow($result);
 
         $count = $count['total'];
 
@@ -253,27 +253,27 @@ function get_info($mode, $id)
 
 
 
-        if( !$result = $db->sql_query($sql) )
+        if( !$result = $nuke_db->sql_query($sql) )
 
         {
 
-                message_die(GENERAL_ERROR, "Couldn't get Forum/Category information", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't get Forum/Category information", "", __LINE__, __FILE__, $sql);
 
         }
 
 
 
-        if( $db->sql_numrows($result) != 1 )
+        if( $nuke_db->sql_numrows($result) != 1 )
 
         {
 
-                message_die(GENERAL_ERROR, "Forum/Category doesn't exist or multiple forums/categories with ID $id", "", __LINE__, __FILE__);
+                message_die(NUKE_GENERAL_ERROR, "Forum/Category doesn't exist or multiple forums/categories with ID $id", "", __LINE__, __FILE__);
 
         }
 
 
 
-        $return = $db->sql_fetchrow($result);
+        $return = $nuke_db->sql_fetchrow($result);
 
         $return['number'] = $count;
 
@@ -287,7 +287,7 @@ function get_list($mode, $id, $select)
 
 {
 
-        global $db;
+        global $nuke_db;
 
 
 
@@ -297,7 +297,7 @@ function get_list($mode, $id, $select)
 
                 case 'category':
 
-                        $table = CATEGORIES_TABLE;
+                        $table = NUKE_CATEGORIES_TABLE;
 
                         $idfield = 'cat_id';
 
@@ -309,7 +309,7 @@ function get_list($mode, $id, $select)
 
                 case 'forum':
 
-                        $table = FORUMS_TABLE;
+                        $table = NUKE_FORUMS_TABLE;
 
                         $idfield = 'forum_id';
 
@@ -321,7 +321,7 @@ function get_list($mode, $id, $select)
 
                 default:
 
-                        message_die(GENERAL_ERROR, "Wrong mode for generating select list", "", __LINE__, __FILE__);
+                        message_die(NUKE_GENERAL_ERROR, "Wrong mode for generating select list", "", __LINE__, __FILE__);
 
                         break;
 
@@ -343,11 +343,11 @@ function get_list($mode, $id, $select)
 
 
 
-        if( !$result = $db->sql_query($sql) )
+        if( !$result = $nuke_db->sql_query($sql) )
 
         {
 
-                message_die(GENERAL_ERROR, "Couldn't get list of Categories/Forums", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't get list of Categories/Forums", "", __LINE__, __FILE__, $sql);
 
         }
 
@@ -357,7 +357,7 @@ function get_list($mode, $id, $select)
 
 
 
-        while( $row = $db->sql_fetchrow($result) )
+        while( $row = $nuke_db->sql_fetchrow($result) )
 
         {
 
@@ -393,21 +393,21 @@ function get_list_cat($id, $parent, $forum_id)
 
 {
 
-	global $db;
+	global $nuke_db;
 
 
 
 	// Get categories
 
-	$sql = 'SELECT * FROM ' . CATEGORIES_TABLE . ' ORDER BY cat_order ASC';
+	$sql = 'SELECT * FROM ' . NUKE_CATEGORIES_TABLE . ' ORDER BY cat_order ASC';
 
 	
 
-	if( !($result = $db->sql_query($sql)) )
+	if( !($result = $nuke_db->sql_query($sql)) )
 
 	{
 
-		message_die(GENERAL_ERROR, "Couldn't get list of categories", '', __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, "Couldn't get list of categories", '', __LINE__, __FILE__, $sql);
 
 	}
 
@@ -417,7 +417,7 @@ function get_list_cat($id, $parent, $forum_id)
 
 	
 
-	while( $row = $db->sql_fetchrow($result) )
+	while( $row = $nuke_db->sql_fetchrow($result) )
 
 	{
 
@@ -427,7 +427,7 @@ function get_list_cat($id, $parent, $forum_id)
 
 
 
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 
 
 
@@ -435,15 +435,15 @@ function get_list_cat($id, $parent, $forum_id)
 
 	$has_sub = false;
 
-	$sql = 'SELECT forum_id, cat_id, forum_name, forum_parent FROM ' . FORUMS_TABLE . ' ORDER BY forum_order ASC';
+	$sql = 'SELECT forum_id, cat_id, forum_name, forum_parent FROM ' . NUKE_FORUMS_TABLE . ' ORDER BY forum_order ASC';
 
 	
 
-	if( !($result = $db->sql_query($sql)) )
+	if( !($result = $nuke_db->sql_query($sql)) )
 
 	{
 
-		message_die(GENERAL_ERROR, "Couldn't get list of forums", '', __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, "Couldn't get list of forums", '', __LINE__, __FILE__, $sql);
 
 	}
 
@@ -453,7 +453,7 @@ function get_list_cat($id, $parent, $forum_id)
 
 	
 
-	while( $row = $db->sql_fetchrow($result) )
+	while( $row = $nuke_db->sql_fetchrow($result) )
 
 	{
 
@@ -477,7 +477,7 @@ function get_list_cat($id, $parent, $forum_id)
 
 	}
 
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 
 
 
@@ -537,7 +537,7 @@ function renumber_order($mode, $cat = 0)
 
 {
 
-        global $db;
+        global $nuke_db;
 
 
 
@@ -547,7 +547,7 @@ function renumber_order($mode, $cat = 0)
 
                 case 'category':
 
-                        $table = CATEGORIES_TABLE;
+                        $table = NUKE_CATEGORIES_TABLE;
 
                         $idfield = 'cat_id';
 
@@ -577,7 +577,7 @@ function renumber_order($mode, $cat = 0)
 
                 case 'forum':
 
-                        $table = FORUMS_TABLE;
+                        $table = NUKE_FORUMS_TABLE;
 
                         $idfield = 'forum_id';
 
@@ -591,7 +591,7 @@ function renumber_order($mode, $cat = 0)
 
                 default:
 
-                        message_die(GENERAL_ERROR, "Wrong mode for generating select list", "", __LINE__, __FILE__);
+                        message_die(NUKE_GENERAL_ERROR, "Wrong mode for generating select list", "", __LINE__, __FILE__);
 
                         break;
 
@@ -611,11 +611,11 @@ function renumber_order($mode, $cat = 0)
 
         $sql .= " ORDER BY $orderfield ASC";
 
-        if( !$result = $db->sql_query($sql) )
+        if( !$result = $nuke_db->sql_query($sql) )
 
         {
 
-                message_die(GENERAL_ERROR, "Couldn't get list of Categories", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't get list of Categories", "", __LINE__, __FILE__, $sql);
 
         }
 
@@ -627,7 +627,7 @@ function renumber_order($mode, $cat = 0)
 
 
 
-        while( $row = $db->sql_fetchrow($result) )
+        while( $row = $nuke_db->sql_fetchrow($result) )
 
         {
 
@@ -637,11 +637,11 @@ function renumber_order($mode, $cat = 0)
 
                         WHERE $idfield = " . $row[$idfield];
 
-                if( !$db->sql_query($sql) )
+                if( !$nuke_db->sql_query($sql) )
 
                 {
 
-                        message_die(GENERAL_ERROR, "Couldn't update order fields", "", __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, "Couldn't update order fields", "", __LINE__, __FILE__, $sql);
 
                 }
 
@@ -699,7 +699,7 @@ if( !empty($HTTP_POST_VARS['password']) )
 {
 	if( !preg_match("#^[A-Za-z0-9]{3,20}$#si", $HTTP_POST_VARS['password']) )
 	{
-		message_die(GENERAL_MESSAGE, $lang['Only_alpha_num_chars']);
+		message_die(NUKE_GENERAL_MESSAGE, $lang['Only_alpha_num_chars']);
 	}
 }
 
@@ -737,7 +737,7 @@ if( !empty($mode) )
 
 
 
-                                $forum_id = intval($HTTP_GET_VARS[POST_FORUM_URL]);
+                                $forum_id = intval($HTTP_GET_VARS[NUKE_POST_FORUM_URL]);
 
 
 
@@ -866,21 +866,21 @@ if( !empty($mode) )
 
                                         $sql = "SELECT *
 
-                                       FROM " . PRUNE_TABLE . "
+                                       FROM " . NUKE_PRUNE_TABLE . "
 
                                        WHERE forum_id = $forum_id";
 
-                                        if(!$pr_result = $db->sql_query($sql))
+                                        if(!$pr_result = $nuke_db->sql_query($sql))
 
                                         {
 
-                                                 message_die(GENERAL_ERROR, "Auto-Prune: Couldn't read auto_prune table.", __LINE__, __FILE__);
+                                                 message_die(NUKE_GENERAL_ERROR, "Auto-Prune: Couldn't read auto_prune table.", __LINE__, __FILE__);
 
                                 }
 
 
 
-                                        $pr_row = $db->sql_fetchrow($pr_result);
+                                        $pr_row = $nuke_db->sql_fetchrow($pr_result);
 
                                 }
 
@@ -922,7 +922,7 @@ if( !empty($mode) )
 
  ******************************************************/
 
-                                $forumstatus = FORUM_UNLOCKED;
+                                $forumstatus = NUKE_FORUM_UNLOCKED;
 								$forum_password = '';
 
 /*****[BEGIN]******************************************
@@ -931,7 +931,7 @@ if( !empty($mode) )
 
  ******************************************************/
 
-								$forumthank = FORUM_UNTHANKABLE;
+								$forumthank = NUKE_FORUM_UNTHANKABLE;
 
 /*****[END]********************************************
 
@@ -1009,7 +1009,7 @@ if( !empty($mode) )
 
 
 
-                        $forumstatus == ( FORUM_LOCKED ) ? $forumlocked = "selected=\"selected\"" : $forumunlocked = "selected=\"selected\"";
+                        $forumstatus == ( NUKE_FORUM_LOCKED ) ? $forumlocked = "selected=\"selected\"" : $forumunlocked = "selected=\"selected\"";
 
 /*****[BEGIN]******************************************
 
@@ -1037,9 +1037,9 @@ if( !empty($mode) )
 
 
 
-                        $statuslist = "<option value=\"" . FORUM_UNLOCKED . "\" $forumunlocked>" . $lang['Status_unlocked'] . "</option>\n";
+                        $statuslist = "<option value=\"" . NUKE_FORUM_UNLOCKED . "\" $forumunlocked>" . $lang['Status_unlocked'] . "</option>\n";
 
-                        $statuslist .= "<option value=\"" . FORUM_LOCKED . "\" $forumlocked>" . $lang['Status_locked'] . "</option>\n";
+                        $statuslist .= "<option value=\"" . NUKE_FORUM_LOCKED . "\" $forumlocked>" . $lang['Status_locked'] . "</option>\n";
 
 						
 
@@ -1087,7 +1087,7 @@ if( !empty($mode) )
 
 
 
-                        $s_hidden_fields = '<input type="hidden" name="mode" value="' . $newmode .'" /><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />';
+                        $s_hidden_fields = '<input type="hidden" name="mode" value="' . $newmode .'" /><input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '" />';
 
 
 
@@ -1331,7 +1331,7 @@ if( !empty($mode) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Can't create a forum without a name");
+                                message_die(NUKE_GENERAL_ERROR, "Can't create a forum without a name");
 
                         }
 
@@ -1339,19 +1339,19 @@ if( !empty($mode) )
 
                         $sql = "SELECT MAX(forum_order) AS max_order
 
-                                FROM " . FORUMS_TABLE . "
+                                FROM " . NUKE_FORUMS_TABLE . "
 
-                                WHERE cat_id = " . intval($HTTP_POST_VARS[POST_CAT_URL]);
+                                WHERE cat_id = " . intval($HTTP_POST_VARS[NUKE_POST_CAT_URL]);
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't get order number from forums table", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't get order number from forums table", "", __LINE__, __FILE__, $sql);
 
                         }
 
-                        $row = $db->sql_fetchrow($result);
+                        $row = $nuke_db->sql_fetchrow($result);
 
 
 
@@ -1363,17 +1363,17 @@ if( !empty($mode) )
 
                         $sql = "SELECT MAX(forum_id) AS max_id
 
-                                FROM " . FORUMS_TABLE;
+                                FROM " . NUKE_FORUMS_TABLE;
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't get order number from forums table", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't get order number from forums table", "", __LINE__, __FILE__, $sql);
 
                         }
 
-                        $row = $db->sql_fetchrow($result);
+                        $row = $nuke_db->sql_fetchrow($result);
 
 
 
@@ -1461,13 +1461,13 @@ if( !empty($mode) )
 
  ******************************************************/
 
-						$list = explode(',', $HTTP_POST_VARS[POST_CAT_URL]);
+						$list = explode(',', $HTTP_POST_VARS[NUKE_POST_CAT_URL]);
 
-						$new_cat = ( count($list) ) ? intval($list[0]) : intval($HTTP_POST_VARS[POST_CAT_URL]);
+						$new_cat = ( count($list) ) ? intval($list[0]) : intval($HTTP_POST_VARS[NUKE_POST_CAT_URL]);
 
 						$new_parent = ( isset($list[1]) ) ? intval($list[1]) : 0;
 
-                        $sql = "INSERT INTO " . FORUMS_TABLE . " (forum_id, forum_name, title_is_link, weblink, forum_link_icon, forum_link_target, forum_color, cat_id, forum_parent, forum_desc, forum_order, forum_status, forum_password, forum_icon, prune_enable" . $field_sql . ", forum_thank)
+                        $sql = "INSERT INTO " . NUKE_FORUMS_TABLE . " (forum_id, forum_name, title_is_link, weblink, forum_link_icon, forum_link_target, forum_color, cat_id, forum_parent, forum_desc, forum_order, forum_status, forum_password, forum_icon, prune_enable" . $field_sql . ", forum_thank)
 
                                 VALUES ('" . $next_id . "', '" . str_replace("\'", "''", $HTTP_POST_VARS['forumname']) . "', " . intval($HTTP_POST_VARS['forum_is_link']) . ", '" . str_replace("\'", "''", $HTTP_POST_VARS['forum_weblink']) . "', '" . str_replace("\'", "''", $HTTP_POST_VARS['forum_link_icon']) . "', " . intval($HTTP_POST_VARS['forum_link_target']) . ", '" . str_replace("\'", "''", $HTTP_POST_VARS['forum_color']) . "', " . $new_cat . ', ' . $new_parent . ", '" . str_replace("\'", "''", $HTTP_POST_VARS['forumdesc']) . "', $next_order, " . intval($HTTP_POST_VARS['forumstatus']) . ", '" . str_replace("\'", "''", $HTTP_POST_VARS['password']) . "', '" . str_replace("\'", "''", $HTTP_POST_VARS['forumicon']) . "', " . intval($HTTP_POST_VARS['prune_enable']) . $value_sql . ", " . intval($HTTP_POST_VARS['forumthank']) . ")";
 
@@ -1485,11 +1485,11 @@ if( !empty($mode) )
 
  ******************************************************/
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't insert row in forums table", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't insert row in forums table", "", __LINE__, __FILE__, $sql);
 
                         }
 
@@ -1505,21 +1505,21 @@ if( !empty($mode) )
 
                                 {
 
-                                        message_die(GENERAL_MESSAGE, $lang['Set_prune_data']);
+                                        message_die(NUKE_GENERAL_MESSAGE, $lang['Set_prune_data']);
 
                                 }
 
 
 
-                                $sql = "INSERT INTO " . PRUNE_TABLE . " (forum_id, prune_days, prune_freq)
+                                $sql = "INSERT INTO " . NUKE_PRUNE_TABLE . " (forum_id, prune_days, prune_freq)
 
                                         VALUES('" . $next_id . "', " . intval($HTTP_POST_VARS['prune_days']) . ", " . intval($HTTP_POST_VARS['prune_freq']) . ")";
 
-                                if( !$result = $db->sql_query($sql) )
+                                if( !$result = $nuke_db->sql_query($sql) )
 
                                 {
 
-                                        message_die(GENERAL_ERROR, "Couldn't insert row in prune table", "", __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, "Couldn't insert row in prune table", "", __LINE__, __FILE__, $sql);
 
                                 }
 
@@ -1531,7 +1531,7 @@ if( !empty($mode) )
 
 
 
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
 
 
 
@@ -1547,13 +1547,13 @@ if( !empty($mode) )
 
  ******************************************************/
 
-						$forum_id = intval($HTTP_POST_VARS[POST_FORUM_URL]);
+						$forum_id = intval($HTTP_POST_VARS[NUKE_POST_FORUM_URL]);
 
 						$row = get_info('forum', $forum_id);
 
-						$list = explode(',', $HTTP_POST_VARS[POST_CAT_URL]);
+						$list = explode(',', $HTTP_POST_VARS[NUKE_POST_CAT_URL]);
 
-						$new_cat = ( count($list) ) ? intval($list[0]) : intval($HTTP_POST_VARS[POST_CAT_URL]);
+						$new_cat = ( count($list) ) ? intval($list[0]) : intval($HTTP_POST_VARS[NUKE_POST_CAT_URL]);
 
 						$new_parent = ( isset($list[1]) ) ? intval($list[1]) : 0;
 
@@ -1565,9 +1565,9 @@ if( !empty($mode) )
 
 							// Move subforums to new category
 
-							$sql = "UPDATE " . FORUMS_TABLE . " SET cat_id='$new_cat' WHERE forum_parent='$forum_id'";
+							$sql = "UPDATE " . NUKE_FORUMS_TABLE . " SET cat_id='$new_cat' WHERE forum_parent='$forum_id'";
 
-							$db->sql_query($sql);
+							$nuke_db->sql_query($sql);
 
 						}
 
@@ -1611,11 +1611,11 @@ if( !empty($mode) )
 
  ******************************************************/
 
-                        $sql = "UPDATE " . FORUMS_TABLE . "
+                        $sql = "UPDATE " . NUKE_FORUMS_TABLE . "
 
                                 SET forum_name = '" . str_replace("\'", "''", $HTTP_POST_VARS['forumname']) . "', title_is_link = " . intval($HTTP_POST_VARS['forum_is_link']) . ", weblink = '" . str_replace("\'", "''", $HTTP_POST_VARS['forum_weblink']) . "', forum_link_icon = '" . str_replace("\'", "''", $HTTP_POST_VARS['forum_link_icon']) . "', forum_link_target = " . intval($HTTP_POST_VARS['forum_link_target']) . ", forum_color = '" . str_replace("\'", "''", $HTTP_POST_VARS['forum_color']) . "', cat_id = $new_cat, forum_parent = $new_parent, forum_desc = '" . str_replace("\'", "''", $HTTP_POST_VARS['forumdesc']) . "', forum_status = " . intval($HTTP_POST_VARS['forumstatus']) . ", forum_password = '" . str_replace("\'", "''", $HTTP_POST_VARS['password']) . "', forum_icon = '" . str_replace("\'", "''", $HTTP_POST_VARS['forumicon']) . "', forum_display_order = " . intval($HTTP_POST_VARS['forum_display_order']) . ", forum_display_sort = " . intval($HTTP_POST_VARS['forum_display_sort']) . ", prune_enable = " . intval($HTTP_POST_VARS['prune_enable']) . ", forum_thank = " . intval($HTTP_POST_VARS['forumthank']) . "
 
-                                WHERE forum_id = " . intval($HTTP_POST_VARS[POST_FORUM_URL]);
+                                WHERE forum_id = " . intval($HTTP_POST_VARS[NUKE_POST_FORUM_URL]);
 
 /*****[END]********************************************
 
@@ -1631,11 +1631,11 @@ if( !empty($mode) )
 
  ******************************************************/
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't update forum information", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't update forum information", "", __LINE__, __FILE__, $sql);
 
                         }
 
@@ -1649,7 +1649,7 @@ if( !empty($mode) )
 
                                 {
 
-                                        message_die(GENERAL_MESSAGE, $lang['Set_prune_data']);
+                                        message_die(NUKE_GENERAL_MESSAGE, $lang['Set_prune_data']);
 
                                 }
 
@@ -1657,29 +1657,29 @@ if( !empty($mode) )
 
                                 $sql = "SELECT *
 
-                                        FROM " . PRUNE_TABLE . "
+                                        FROM " . NUKE_PRUNE_TABLE . "
 
-                                        WHERE forum_id = " . intval($HTTP_POST_VARS[POST_FORUM_URL]);
+                                        WHERE forum_id = " . intval($HTTP_POST_VARS[NUKE_POST_FORUM_URL]);
 
-                                if( !$result = $db->sql_query($sql) )
+                                if( !$result = $nuke_db->sql_query($sql) )
 
                                 {
 
-                                        message_die(GENERAL_ERROR, "Couldn't get forum Prune Information","",__LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, "Couldn't get forum Prune Information","",__LINE__, __FILE__, $sql);
 
                                 }
 
 
 
-                                if( $db->sql_numrows($result) > 0 )
+                                if( $nuke_db->sql_numrows($result) > 0 )
 
                                 {
 
-                                        $sql = "UPDATE " . PRUNE_TABLE . "
+                                        $sql = "UPDATE " . NUKE_PRUNE_TABLE . "
 
                                                 SET        prune_days = " . intval($HTTP_POST_VARS['prune_days']) . ",        prune_freq = " . intval($HTTP_POST_VARS['prune_freq']) . "
 
-                                                 WHERE forum_id = " . intval($HTTP_POST_VARS[POST_FORUM_URL]);
+                                                 WHERE forum_id = " . intval($HTTP_POST_VARS[NUKE_POST_FORUM_URL]);
 
                                 }
 
@@ -1687,19 +1687,19 @@ if( !empty($mode) )
 
                                 {
 
-                                        $sql = "INSERT INTO " . PRUNE_TABLE . " (forum_id, prune_days, prune_freq)
+                                        $sql = "INSERT INTO " . NUKE_PRUNE_TABLE . " (forum_id, prune_days, prune_freq)
 
-                                                VALUES(" . intval($HTTP_POST_VARS[POST_FORUM_URL]) . ", " . intval($HTTP_POST_VARS['prune_days']) . ", " . intval($HTTP_POST_VARS['prune_freq']) . ")";
+                                                VALUES(" . intval($HTTP_POST_VARS[NUKE_POST_FORUM_URL]) . ", " . intval($HTTP_POST_VARS['prune_days']) . ", " . intval($HTTP_POST_VARS['prune_freq']) . ")";
 
                                 }
 
 
 
-                                if( !$result = $db->sql_query($sql) )
+                                if( !$result = $nuke_db->sql_query($sql) )
 
                                 {
 
-                                        message_die(GENERAL_ERROR, "Couldn't Update Forum Prune Information","",__LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, "Couldn't Update Forum Prune Information","",__LINE__, __FILE__, $sql);
 
                                 }
 
@@ -1711,7 +1711,7 @@ if( !empty($mode) )
 
 
 
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
 
 
 
@@ -1727,7 +1727,7 @@ if( !empty($mode) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Can't create a category without a name");
+                                message_die(NUKE_GENERAL_ERROR, "Can't create a category without a name");
 
                         }
 
@@ -1735,17 +1735,17 @@ if( !empty($mode) )
 
                         $sql = "SELECT MAX(cat_order) AS max_order
 
-                                FROM " . CATEGORIES_TABLE;
+                                FROM " . NUKE_CATEGORIES_TABLE;
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't get order number from categories table", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't get order number from categories table", "", __LINE__, __FILE__, $sql);
 
                         }
 
-                        $row = $db->sql_fetchrow($result);
+                        $row = $nuke_db->sql_fetchrow($result);
 
 
 
@@ -1761,15 +1761,15 @@ if( !empty($mode) )
 
                         //
 
-                        $sql = "INSERT INTO " . CATEGORIES_TABLE . " (cat_title, cat_order)
+                        $sql = "INSERT INTO " . NUKE_CATEGORIES_TABLE . " (cat_title, cat_order)
 
                                 VALUES ('" . str_replace("\'", "''", $HTTP_POST_VARS['categoryname']) . "', $next_order)";
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't insert row in categories table", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't insert row in categories table", "", __LINE__, __FILE__, $sql);
 
                         }
 
@@ -1793,7 +1793,7 @@ if( !empty($mode) )
 
 
 
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
 
 
 
@@ -1815,7 +1815,7 @@ if( !empty($mode) )
 
 
 
-                        $cat_id = intval($HTTP_GET_VARS[POST_CAT_URL]);
+                        $cat_id = intval($HTTP_GET_VARS[NUKE_POST_CAT_URL]);
 
 
 
@@ -1833,7 +1833,7 @@ if( !empty($mode) )
 
 
 
-                        $s_hidden_fields = '<input type="hidden" name="mode" value="' . $newmode . '" /><input type="hidden" name="' . POST_CAT_URL . '" value="' . $cat_id . '" />';
+                        $s_hidden_fields = '<input type="hidden" name="mode" value="' . $newmode . '" /><input type="hidden" name="' . NUKE_POST_CAT_URL . '" value="' . $cat_id . '" />';
 
 
 
@@ -1871,17 +1871,17 @@ if( !empty($mode) )
 
                         // Modify a category in the DB
 
-                        $sql = "UPDATE " . CATEGORIES_TABLE . "
+                        $sql = "UPDATE " . NUKE_CATEGORIES_TABLE . "
 
                                 SET cat_title = '" . str_replace("\'", "''", $HTTP_POST_VARS['cat_title']) . "'
 
-                                WHERE cat_id = " . intval($HTTP_POST_VARS[POST_CAT_URL]);
+                                WHERE cat_id = " . intval($HTTP_POST_VARS[NUKE_POST_CAT_URL]);
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't update forum information", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't update forum information", "", __LINE__, __FILE__, $sql);
 
                         }
 
@@ -1905,7 +1905,7 @@ if( !empty($mode) )
 
 
 
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
 
 
 
@@ -1917,7 +1917,7 @@ if( !empty($mode) )
 
                         // Show form to delete a forum
 
-                        $forum_id = intval($HTTP_GET_VARS[POST_FORUM_URL]);
+                        $forum_id = intval($HTTP_GET_VARS[NUKE_POST_FORUM_URL]);
 
 
 
@@ -2017,23 +2017,23 @@ if( !empty($mode) )
 
                                 $sql = "SELECT v.vote_id
 
-                                        FROM " . VOTE_DESC_TABLE . " v, " . TOPICS_TABLE . " t
+                                        FROM " . NUKE_VOTE_DESC_TABLE . " v, " . NUKE_BB_TOPICS_TABLE . " t
 
                                         WHERE t.forum_id = $from_id
 
                                                 AND v.topic_id = t.topic_id";
 
-                                if (!($result = $db->sql_query($sql)))
+                                if (!($result = $nuke_db->sql_query($sql)))
 
                                 {
 
-                                        message_die(GENERAL_ERROR, "Couldn't obtain list of vote ids", "", __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, "Couldn't obtain list of vote ids", "", __LINE__, __FILE__, $sql);
 
                                 }
 
 
 
-                                if ($row = $db->sql_fetchrow($result))
+                                if ($row = $nuke_db->sql_fetchrow($result))
 
                                 {
 
@@ -2047,35 +2047,35 @@ if( !empty($mode) )
 
                                         }
 
-                                        while ($row = $db->sql_fetchrow($result));
+                                        while ($row = $nuke_db->sql_fetchrow($result));
 
 
 
-                                        $sql = "DELETE FROM " . VOTE_DESC_TABLE . "
-
-                                                WHERE vote_id IN ($vote_ids)";
-
-                                        $db->sql_query($sql);
-
-
-
-                                        $sql = "DELETE FROM " . VOTE_RESULTS_TABLE . "
+                                        $sql = "DELETE FROM " . NUKE_VOTE_DESC_TABLE . "
 
                                                 WHERE vote_id IN ($vote_ids)";
 
-                                        $db->sql_query($sql);
+                                        $nuke_db->sql_query($sql);
 
 
 
-                                        $sql = "DELETE FROM " . VOTE_USERS_TABLE . "
+                                        $sql = "DELETE FROM " . NUKE_VOTE_RESULTS_TABLE . "
 
                                                 WHERE vote_id IN ($vote_ids)";
 
-                                        $db->sql_query($sql);
+                                        $nuke_db->sql_query($sql);
+
+
+
+                                        $sql = "DELETE FROM " . NUKE_VOTE_USERS_TABLE . "
+
+                                                WHERE vote_id IN ($vote_ids)";
+
+                                        $nuke_db->sql_query($sql);
 
                                 }
 
-                                $db->sql_freeresult($result);
+                                $nuke_db->sql_freeresult($result);
 
 
 
@@ -2091,53 +2091,53 @@ if( !empty($mode) )
 
                                 $sql = "SELECT *
 
-                                        FROM " . FORUMS_TABLE . "
+                                        FROM " . NUKE_FORUMS_TABLE . "
 
                                         WHERE forum_id IN ($from_id, $to_id)";
 
-                                if( !$result = $db->sql_query($sql) )
+                                if( !$result = $nuke_db->sql_query($sql) )
 
                                 {
 
-                                        message_die(GENERAL_ERROR, "Couldn't verify existence of forums", "", __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, "Couldn't verify existence of forums", "", __LINE__, __FILE__, $sql);
 
                                 }
 
 
 
-                                if($db->sql_numrows($result) != 2)
+                                if($nuke_db->sql_numrows($result) != 2)
 
                                 {
 
-                                        message_die(GENERAL_ERROR, "Ambiguous forum ID's", "", __LINE__, __FILE__);
+                                        message_die(NUKE_GENERAL_ERROR, "Ambiguous forum ID's", "", __LINE__, __FILE__);
 
                                 }
 
-                                $sql = "UPDATE " . TOPICS_TABLE . "
+                                $sql = "UPDATE " . NUKE_BB_TOPICS_TABLE . "
 
                                         SET forum_id = $to_id
 
                                         WHERE forum_id = $from_id";
 
-                                if( !$result = $db->sql_query($sql) )
+                                if( !$result = $nuke_db->sql_query($sql) )
 
                                 {
 
-                                        message_die(GENERAL_ERROR, "Couldn't move topics to other forum", "", __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, "Couldn't move topics to other forum", "", __LINE__, __FILE__, $sql);
 
                                 }
 
-                                $sql = "UPDATE " . POSTS_TABLE . "
+                                $sql = "UPDATE " . NUKE_POSTS_TABLE . "
 
                                         SET        forum_id = $to_id
 
                                         WHERE forum_id = $from_id";
 
-                                if( !$result = $db->sql_query($sql) )
+                                if( !$result = $nuke_db->sql_query($sql) )
 
                                 {
 
-                                        message_die(GENERAL_ERROR, "Couldn't move posts to other forum", "", __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, "Couldn't move posts to other forum", "", __LINE__, __FILE__, $sql);
 
                                 }
 
@@ -2151,7 +2151,7 @@ if( !empty($mode) )
 
                         $sql = "SELECT ug.user_id
 
-                                FROM " . AUTH_ACCESS_TABLE . " a, " . USER_GROUP_TABLE . " ug
+                                FROM " . NUKE_AUTH_ACCESS_TABLE . " a, " . NUKE_USER_GROUP_TABLE . " ug
 
                                 WHERE a.forum_id <> $from_id
 
@@ -2159,17 +2159,17 @@ if( !empty($mode) )
 
                                         AND ug.group_id = a.group_id";
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't obtain moderator list", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't obtain moderator list", "", __LINE__, __FILE__, $sql);
 
                         }
 
 
 
-                        if ($row = $db->sql_fetchrow($result))
+                        if ($row = $nuke_db->sql_fetchrow($result))
 
                         {
 
@@ -2183,13 +2183,13 @@ if( !empty($mode) )
 
                                 }
 
-                                while ($row = $db->sql_fetchrow($result));
+                                while ($row = $nuke_db->sql_fetchrow($result));
 
 
 
                                 $sql = "SELECT ug.user_id
 
-                                        FROM " . AUTH_ACCESS_TABLE . " a, " . USER_GROUP_TABLE . " ug
+                                        FROM " . NUKE_AUTH_ACCESS_TABLE . " a, " . NUKE_USER_GROUP_TABLE . " ug
 
                                         WHERE a.forum_id = $from_id
 
@@ -2199,17 +2199,17 @@ if( !empty($mode) )
 
                                                 AND ug.user_id NOT IN ($user_ids)";
 
-                                if( !$result2 = $db->sql_query($sql) )
+                                if( !$result2 = $nuke_db->sql_query($sql) )
 
                                 {
 
-                                        message_die(GENERAL_ERROR, "Couldn't obtain moderator list", "", __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, "Couldn't obtain moderator list", "", __LINE__, __FILE__, $sql);
 
                                 }
 
 
 
-                                if ($row = $db->sql_fetchrow($result2))
+                                if ($row = $nuke_db->sql_fetchrow($result2))
 
                                 {
 
@@ -2223,41 +2223,41 @@ if( !empty($mode) )
 
                                         }
 
-                                        while ($row = $db->sql_fetchrow($result2));
+                                        while ($row = $nuke_db->sql_fetchrow($result2));
 
 
 
-                                        $sql = "UPDATE " . USERS_TABLE . "
+                                        $sql = "UPDATE " . NUKE_USERS_TABLE . "
 
-                                                SET user_level = " . USER . "
+                                                SET user_level = " . NUKE_USER . "
 
                                                 WHERE user_id IN ($user_ids)
 
-                                                        AND user_level <> " . ADMIN;
+                                                        AND user_level <> " . NUKE_ADMIN;
 
-                                        $db->sql_query($sql);
+                                        $nuke_db->sql_query($sql);
 
                                 }
 
-                                $db->sql_freeresult($result);
+                                $nuke_db->sql_freeresult($result);
 
 
 
                         }
 
-                        $db->sql_freeresult($result2);
+                        $nuke_db->sql_freeresult($result2);
 
 
 
-                        $sql = "DELETE FROM " . FORUMS_TABLE . "
+                        $sql = "DELETE FROM " . NUKE_FORUMS_TABLE . "
 
                                 WHERE forum_id = $from_id";
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't delete forum", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't delete forum", "", __LINE__, __FILE__, $sql);
 
                         }
 
@@ -2271,9 +2271,9 @@ if( !empty($mode) )
 
 						// Move subforums to category
 
-						$sql = "UPDATE " . FORUMS_TABLE . " SET forum_parent = '0' WHERE forum_parent = '$from_id'";
+						$sql = "UPDATE " . NUKE_FORUMS_TABLE . " SET forum_parent = '0' WHERE forum_parent = '$from_id'";
 
-						$db->sql_query($sql);
+						$nuke_db->sql_query($sql);
 
 /*****[END]********************************************
 
@@ -2283,29 +2283,29 @@ if( !empty($mode) )
 
 
 
-                        $sql = "DELETE FROM " . AUTH_ACCESS_TABLE . "
+                        $sql = "DELETE FROM " . NUKE_AUTH_ACCESS_TABLE . "
 
                                 WHERE forum_id = $from_id";
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't delete forum", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't delete forum", "", __LINE__, __FILE__, $sql);
 
                         }
 
 
 
-                        $sql = "DELETE FROM " . PRUNE_TABLE . "
+                        $sql = "DELETE FROM " . NUKE_PRUNE_TABLE . "
 
                                 WHERE forum_id = $from_id";
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't delete forum prune information!", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't delete forum prune information!", "", __LINE__, __FILE__, $sql);
 
                         }
 
@@ -2315,7 +2315,7 @@ if( !empty($mode) )
 
 
 
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
 
 
 
@@ -2331,7 +2331,7 @@ if( !empty($mode) )
 
                         //
 
-                        $cat_id = intval($HTTP_GET_VARS[POST_CAT_URL]);
+                        $cat_id = intval($HTTP_GET_VARS[NUKE_POST_CAT_URL]);
 
 
 
@@ -2351,17 +2351,17 @@ if( !empty($mode) )
 
                                 $sql = "SELECT count(*) as total
 
-                                        FROM ". FORUMS_TABLE;
+                                        FROM ". NUKE_FORUMS_TABLE;
 
-                                if( !$result = $db->sql_query($sql) )
+                                if( !$result = $nuke_db->sql_query($sql) )
 
                                 {
 
-                                        message_die(GENERAL_ERROR, "Couldn't get Forum count", "", __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, "Couldn't get Forum count", "", __LINE__, __FILE__, $sql);
 
                                 }
 
-                                $count = $db->sql_fetchrow($result);
+                                $count = $nuke_db->sql_fetchrow($result);
 
                                 $count = $count['total'];
 
@@ -2371,7 +2371,7 @@ if( !empty($mode) )
 
                                 {
 
-                                        message_die(GENERAL_ERROR, $lang['Must_delete_forums']);
+                                        message_die(NUKE_GENERAL_ERROR, $lang['Must_delete_forums']);
 
                                 }
 
@@ -2465,39 +2465,39 @@ if( !empty($mode) )
 
                                 $sql = "SELECT *
 
-                                        FROM " . CATEGORIES_TABLE . "
+                                        FROM " . NUKE_CATEGORIES_TABLE . "
 
                                         WHERE cat_id IN ($from_id, $to_id)";
 
-                                if( !$result = $db->sql_query($sql) )
+                                if( !$result = $nuke_db->sql_query($sql) )
 
                                 {
 
-                                        message_die(GENERAL_ERROR, "Couldn't verify existence of categories", "", __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, "Couldn't verify existence of categories", "", __LINE__, __FILE__, $sql);
 
                                 }
 
-                                if($db->sql_numrows($result) != 2)
+                                if($nuke_db->sql_numrows($result) != 2)
 
                                 {
 
-                                        message_die(GENERAL_ERROR, "Ambiguous category ID's", "", __LINE__, __FILE__);
+                                        message_die(NUKE_GENERAL_ERROR, "Ambiguous category ID's", "", __LINE__, __FILE__);
 
                                 }
 
 
 
-                                $sql = "UPDATE " . FORUMS_TABLE . "
+                                $sql = "UPDATE " . NUKE_FORUMS_TABLE . "
 
                                         SET cat_id = $to_id
 
                                         WHERE cat_id = $from_id";
 
-                                if( !$result = $db->sql_query($sql) )
+                                if( !$result = $nuke_db->sql_query($sql) )
 
                                 {
 
-                                        message_die(GENERAL_ERROR, "Couldn't move forums to other category", "", __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, "Couldn't move forums to other category", "", __LINE__, __FILE__, $sql);
 
                                 }
 
@@ -2505,17 +2505,17 @@ if( !empty($mode) )
 
 
 
-                        $sql = "DELETE FROM " . CATEGORIES_TABLE ."
+                        $sql = "DELETE FROM " . NUKE_CATEGORIES_TABLE ."
 
                                 WHERE cat_id = $from_id";
 
 
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't delete category", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't delete category", "", __LINE__, __FILE__, $sql);
 
                         }
 
@@ -2539,7 +2539,7 @@ if( !empty($mode) )
 
 
 
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
 
 
 
@@ -2557,7 +2557,7 @@ if( !empty($mode) )
 
                         $move = intval($HTTP_GET_VARS['move']);
 
-                        $forum_id = intval($HTTP_GET_VARS[POST_FORUM_URL]);
+                        $forum_id = intval($HTTP_GET_VARS[NUKE_POST_FORUM_URL]);
 
 
 
@@ -2585,7 +2585,7 @@ if( !empty($mode) )
 
 							{
 
-								$sql = "SELECT forum_id, forum_order FROM " . FORUMS_TABLE . " WHERE cat_id = '$cat_id' AND forum_parent = '0' AND forum_order > '" . $forum_info['forum_order'] . "' ORDER BY forum_order ASC";
+								$sql = "SELECT forum_id, forum_order FROM " . NUKE_FORUMS_TABLE . " WHERE cat_id = '$cat_id' AND forum_parent = '0' AND forum_order > '" . $forum_info['forum_order'] . "' ORDER BY forum_order ASC";
 
 							}
 
@@ -2595,25 +2595,25 @@ if( !empty($mode) )
 
 							{
 
-								$sql = "SELECT forum_id, forum_order FROM " . FORUMS_TABLE . " WHERE cat_id = '$cat_id' AND forum_parent = '0' AND forum_order < '" . $forum_info['forum_order'] . "' ORDER BY forum_order DESC";
+								$sql = "SELECT forum_id, forum_order FROM " . NUKE_FORUMS_TABLE . " WHERE cat_id = '$cat_id' AND forum_parent = '0' AND forum_order < '" . $forum_info['forum_order'] . "' ORDER BY forum_order DESC";
 
 							}
 
 							
 
-							if( !($result = $db->sql_query($sql)) )
+							if( !($result = $nuke_db->sql_query($sql)) )
 
 							{
 
-								message_die(GENERAL_ERROR, "Couldn't change category order", '', __LINE__, __FILE__, $sql);
+								message_die(NUKE_GENERAL_ERROR, "Couldn't change category order", '', __LINE__, __FILE__, $sql);
 
 							}
 
 							
 
-							$row = $db->sql_fetchrow($result);
+							$row = $nuke_db->sql_fetchrow($result);
 
-							$db->sql_freeresult($result);
+							$nuke_db->sql_freeresult($result);
 
 							if($row !== false)
 
@@ -2621,15 +2621,15 @@ if( !empty($mode) )
 
 								// Swap forum orders
 
-								$sql = "UPDATE " . FORUMS_TABLE . " SET forum_order = '" . $row['forum_order'] . "' WHERE forum_id = '$forum_id'";
+								$sql = "UPDATE " . NUKE_FORUMS_TABLE . " SET forum_order = '" . $row['forum_order'] . "' WHERE forum_id = '$forum_id'";
 
-								$db->sql_query($sql);
+								$nuke_db->sql_query($sql);
 
 								
 
-								$sql = "UPDATE " . FORUMS_TABLE . " SET forum_order = '" . $forum_info['forum_order'] . "' WHERE forum_id = '" . $row['forum_id'] . "'";
+								$sql = "UPDATE " . NUKE_FORUMS_TABLE . " SET forum_order = '" . $forum_info['forum_order'] . "' WHERE forum_id = '" . $row['forum_id'] . "'";
 
-								$db->sql_query($sql);
+								$nuke_db->sql_query($sql);
 
 							}
 
@@ -2649,17 +2649,17 @@ if( !empty($mode) )
 
 
 
-                        $sql = "UPDATE " . FORUMS_TABLE . "
+                        $sql = "UPDATE " . NUKE_FORUMS_TABLE . "
 
                                 SET forum_order = forum_order + $move
 
                                 WHERE forum_id = $forum_id";
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't change category order", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't change category order", "", __LINE__, __FILE__, $sql);
 
                         }
 
@@ -2699,21 +2699,21 @@ if( !empty($mode) )
 
                         $move = intval($HTTP_GET_VARS['move']);
 
-                        $cat_id = intval($HTTP_GET_VARS[POST_CAT_URL]);
+                        $cat_id = intval($HTTP_GET_VARS[NUKE_POST_CAT_URL]);
 
 
 
-                        $sql = "UPDATE " . CATEGORIES_TABLE . "
+                        $sql = "UPDATE " . NUKE_CATEGORIES_TABLE . "
 
                                 SET cat_order = cat_order + $move
 
                                 WHERE cat_id = $cat_id";
 
-                        if( !$result = $db->sql_query($sql) )
+                        if( !$result = $nuke_db->sql_query($sql) )
 
                         {
 
-                                message_die(GENERAL_ERROR, "Couldn't change category order", "", __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, "Couldn't change category order", "", __LINE__, __FILE__, $sql);
 
                         }
 
@@ -2745,7 +2745,7 @@ if( !empty($mode) )
 
                 case 'forum_sync':
 
-                        sync('forum', intval($HTTP_GET_VARS[POST_FORUM_URL]));
+                        sync('forum', intval($HTTP_GET_VARS[NUKE_POST_FORUM_URL]));
 
                         $show_index = TRUE;
 
@@ -2757,7 +2757,7 @@ if( !empty($mode) )
 
                 default:
 
-                        message_die(GENERAL_MESSAGE, $lang['No_mode']);
+                        message_die(NUKE_GENERAL_MESSAGE, $lang['No_mode']);
 
                         break;
 
@@ -2821,49 +2821,49 @@ $template->assign_vars(array(
 
 $sql = "SELECT cat_id, cat_title, cat_order
 
-        FROM " . CATEGORIES_TABLE . "
+        FROM " . NUKE_CATEGORIES_TABLE . "
 
         ORDER BY cat_order";
 
-if( !$q_categories = $db->sql_query($sql) )
+if( !$q_categories = $nuke_db->sql_query($sql) )
 
 {
 
-        message_die(GENERAL_ERROR, "Could not query categories list", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Could not query categories list", "", __LINE__, __FILE__, $sql);
 
 }
 
 
 
-if( $total_categories = $db->sql_numrows($q_categories) )
+if( $total_categories = $nuke_db->sql_numrows($q_categories) )
 
 {
 
-        $category_rows = $db->sql_fetchrowset($q_categories);
+        $category_rows = $nuke_db->sql_fetchrowset($q_categories);
 
 
 
         $sql = "SELECT *
 
-                FROM " . FORUMS_TABLE . "
+                FROM " . NUKE_FORUMS_TABLE . "
 
                 ORDER BY cat_id, forum_order";
 
-        if(!$q_forums = $db->sql_query($sql))
+        if(!$q_forums = $nuke_db->sql_query($sql))
 
         {
 
-                message_die(GENERAL_ERROR, "Could not query forums information", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Could not query forums information", "", __LINE__, __FILE__, $sql);
 
         }
 
 
 
-        if( $total_forums = $db->sql_numrows($q_forums) )
+        if( $total_forums = $nuke_db->sql_numrows($q_forums) )
 
         {
 
-                $forum_rows = $db->sql_fetchrowset($q_forums);
+                $forum_rows = $nuke_db->sql_fetchrowset($q_forums);
 
         }
 
@@ -2901,13 +2901,13 @@ if( $total_categories = $db->sql_numrows($q_categories) )
 
 
 
-                        'U_CAT_EDIT' => append_sid("admin_forums.$phpEx?mode=editcat&amp;" . POST_CAT_URL . "=$cat_id"),
+                        'U_CAT_EDIT' => append_sid("admin_forums.$phpEx?mode=editcat&amp;" . NUKE_POST_CAT_URL . "=$cat_id"),
 
-                        'U_CAT_DELETE' => append_sid("admin_forums.$phpEx?mode=deletecat&amp;" . POST_CAT_URL . "=$cat_id"),
+                        'U_CAT_DELETE' => append_sid("admin_forums.$phpEx?mode=deletecat&amp;" . NUKE_POST_CAT_URL . "=$cat_id"),
 
-                        'U_CAT_MOVE_UP' => append_sid("admin_forums.$phpEx?mode=cat_order&amp;move=-15&amp;" . POST_CAT_URL . "=$cat_id"),
+                        'U_CAT_MOVE_UP' => append_sid("admin_forums.$phpEx?mode=cat_order&amp;move=-15&amp;" . NUKE_POST_CAT_URL . "=$cat_id"),
 
-                        'U_CAT_MOVE_DOWN' => append_sid("admin_forums.$phpEx?mode=cat_order&amp;move=15&amp;" . POST_CAT_URL . "=$cat_id"),
+                        'U_CAT_MOVE_DOWN' => append_sid("admin_forums.$phpEx?mode=cat_order&amp;move=15&amp;" . NUKE_POST_CAT_URL . "=$cat_id"),
 
                         'U_VIEWCAT' => ("../../../modules.php?name=Forums&file=index&c=$cat_id"))
 
@@ -2977,7 +2977,7 @@ if( $total_categories = $db->sql_numrows($q_categories) )
 
 					
 
-										'U_VIEWFORUM' => ($forum_rows[$j]['title_is_link']) ? $forum_rows[$j]['weblink'] : ("../../../modules.php?name=Forums&file=viewforum&amp;" . POST_FORUM_URL . "=$forum_id"),
+										'U_VIEWFORUM' => ($forum_rows[$j]['title_is_link']) ? $forum_rows[$j]['weblink'] : ("../../../modules.php?name=Forums&file=viewforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"),
 
 /*****[END]********************************************
 
@@ -2985,15 +2985,15 @@ if( $total_categories = $db->sql_numrows($q_categories) )
 
  ******************************************************/ 
 
-                                        'U_FORUM_EDIT' => append_sid("admin_forums.$phpEx?mode=editforum&amp;" . POST_FORUM_URL . "=$forum_id"),
+                                        'U_FORUM_EDIT' => append_sid("admin_forums.$phpEx?mode=editforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"),
 
-                                        'U_FORUM_DELETE' => append_sid("admin_forums.$phpEx?mode=deleteforum&amp;" . POST_FORUM_URL . "=$forum_id"),
+                                        'U_FORUM_DELETE' => append_sid("admin_forums.$phpEx?mode=deleteforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"),
 
-                                        'U_FORUM_MOVE_UP' => append_sid("admin_forums.$phpEx?mode=forum_order&amp;move=-15&amp;" . POST_FORUM_URL . "=$forum_id"),
+                                        'U_FORUM_MOVE_UP' => append_sid("admin_forums.$phpEx?mode=forum_order&amp;move=-15&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"),
 
-                                        'U_FORUM_MOVE_DOWN' => append_sid("admin_forums.$phpEx?mode=forum_order&amp;move=15&amp;" . POST_FORUM_URL . "=$forum_id"),
+                                        'U_FORUM_MOVE_DOWN' => append_sid("admin_forums.$phpEx?mode=forum_order&amp;move=15&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"),
 
-                                        'U_FORUM_RESYNC' => append_sid("admin_forums.$phpEx?mode=forum_sync&amp;" . POST_FORUM_URL . "=$forum_id"))
+                                        'U_FORUM_RESYNC' => append_sid("admin_forums.$phpEx?mode=forum_sync&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"))
 
                                 );
 
@@ -3043,17 +3043,17 @@ if( $total_categories = $db->sql_numrows($q_categories) )
 
 					
 
-											'U_VIEWFORUM' => ("../../../modules.php?name=Forums&file=viewforum&amp;" . POST_FORUM_URL . "=$forum_id2"),
+											'U_VIEWFORUM' => ("../../../modules.php?name=Forums&file=viewforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
 
-											'U_FORUM_EDIT' => append_sid("admin_forums.$phpEx?mode=editforum&amp;" . POST_FORUM_URL . "=$forum_id2"),
+											'U_FORUM_EDIT' => append_sid("admin_forums.$phpEx?mode=editforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
 
-											'U_FORUM_DELETE' => append_sid("admin_forums.$phpEx?mode=deleteforum&amp;" . POST_FORUM_URL . "=$forum_id2"),
+											'U_FORUM_DELETE' => append_sid("admin_forums.$phpEx?mode=deleteforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
 
-											'U_FORUM_MOVE_UP' => append_sid("admin_forums.$phpEx?mode=forum_order&amp;move=-15&amp;" . POST_FORUM_URL . "=$forum_id2"),
+											'U_FORUM_MOVE_UP' => append_sid("admin_forums.$phpEx?mode=forum_order&amp;move=-15&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
 
-											'U_FORUM_MOVE_DOWN' => append_sid("admin_forums.$phpEx?mode=forum_order&amp;move=15&amp;" . POST_FORUM_URL . "=$forum_id2"),
+											'U_FORUM_MOVE_DOWN' => append_sid("admin_forums.$phpEx?mode=forum_order&amp;move=15&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
 
-											'U_FORUM_RESYNC' => append_sid("admin_forums.$phpEx?mode=forum_sync&amp;" . POST_FORUM_URL . "=$forum_id2"))
+											'U_FORUM_RESYNC' => append_sid("admin_forums.$phpEx?mode=forum_sync&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"))
 
 										);
 

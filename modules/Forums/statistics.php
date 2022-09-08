@@ -38,13 +38,13 @@ global $directory_mode;
 $module_name = basename(dirname(__FILE__));
 require("modules/".$module_name."/nukebb.php");
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 //$phpbb2_root_path = "./";
 
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
-$userdata = session_pagestart($user_ip, PAGE_INDEX);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
 init_userprefs($userdata);
 
 include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
@@ -53,7 +53,7 @@ include($phpbb2_root_path . 'stats_mod/includes/stat_functions.'.$phpEx);
 include($phpbb2_root_path . 'stats_mod/includes/template.'.$phpEx);
 include($phpbb2_root_path . 'stats_mod/core.'.$phpEx);
 
-if (STATS_DEBUG)
+if (STATS_NUKE_DEBUG)
 {
     $m_time = microtime();
     $m_time = explode(" ",$m_time);
@@ -64,18 +64,18 @@ if (STATS_DEBUG)
 $sql = 'SELECT *
         FROM ' . STATS_CONFIG_TABLE;
 
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
 }
 
 $stats_config = array();
 
-while ($row = $db->sql_fetchrow($result))
+while ($row = $nuke_db->sql_fetchrow($result))
 {
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 
 init_core();
 
@@ -88,7 +88,7 @@ else
     $preview_module = -1;
 }
 
-if ($preview_module == -1 || $preview_module == 0 || $userdata['user_level'] != ADMIN)
+if ($preview_module == -1 || $preview_module == 0 || $userdata['user_level'] != NUKE_ADMIN)
 {
     // Get all module informations about activated modules
     $modules = get_modules();
@@ -222,12 +222,12 @@ $sql = "UPDATE " . STATS_CONFIG_TABLE . "
 SET config_value = " . (intval($stats_config['page_views']) + 1) . "
 WHERE (config_name = 'page_views')";
 
-if (!$db->sql_query($sql))
+if (!$nuke_db->sql_query($sql))
 {
-    message_die(GENERAL_ERROR, 'Unable to Update View Counter', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Unable to Update View Counter', '', __LINE__, __FILE__, $sql);
 }
 
-if (STATS_DEBUG)
+if (STATS_NUKE_DEBUG)
 {
     if (!file_exists($phpbb2_root_path . 'modules/cache/explain'))
     {
@@ -241,7 +241,7 @@ if (STATS_DEBUG)
     $stats_endtime = $m_time;
     $stats_totaltime = ($stats_endtime - $stats_starttime);
 
-    $explain = ($userdata['user_level'] == ADMIN) ? $phpbb2_root_path . 'modules/cache/explain/e' . $userdata['user_id'] . '.html' : '';
+    $explain = ($userdata['user_level'] == NUKE_ADMIN) ? $phpbb2_root_path . 'modules/cache/explain/e' . $userdata['user_id'] . '.html' : '';
 
     $template->assign_vars(array(
         'TIME' => $stats_totaltime,

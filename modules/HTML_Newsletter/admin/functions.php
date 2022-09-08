@@ -79,7 +79,7 @@ if ( !$result ) { //Bad SQL call
 
 } else { //Successful SQL call
 
-	while ( $row = $db->sql_fetchrow( $result ) )	{
+	while ( $row = $nuke_db->sql_fetchrow( $result ) )	{
 
 		$msnl_asPHPBBCfg[ $row['config_name'] ] = $row['config_value'];
 
@@ -175,7 +175,7 @@ function msnl_fMenuAdm() {
 
 function msnl_fGetNbrRecipients( $msnl_op, $gid ) {
 
-	global $prefix, $db;
+	global $prefix, $nuke_db;
 
 	$gid = intval( $gid );
 
@@ -185,7 +185,7 @@ function msnl_fGetNbrRecipients( $msnl_op, $gid ) {
 			$sql = "SELECT count(`newsletter`) AS r_cnt FROM `".$prefix."_users` WHERE `newsletter` = '1'";
 			break;
 
-		case "massmail":  //All registered users
+		case "massmail":  //All registered members
 			$sql = "SELECT count(`user_email`) AS r_cnt FROM `".$prefix."_users` WHERE `user_email` > ''";
 			break;
 
@@ -211,7 +211,7 @@ function msnl_fGetNbrRecipients( $msnl_op, $gid ) {
 
 	} else { //Successful SQL call
 
-		$row = $db->sql_fetchrow( $result );
+		$row = $nuke_db->sql_fetchrow( $result );
 
 		$nbrusers = intval( $row['r_cnt'] );
 
@@ -230,7 +230,7 @@ function msnl_fGetNbrRecipients( $msnl_op, $gid ) {
 
 function msnl_fGetSendTo() {
 
-	global $prefix, $db, $msnl_gasModCfg, $msnl_asCSS, $msnl_asHTML;
+	global $prefix, $nuke_db, $msnl_gasModCfg, $msnl_asCSS, $msnl_asHTML;
 
 	$sHTML	= "<div id='msnl_div_sendto'>\n"
 							."<br />"
@@ -257,7 +257,7 @@ function msnl_fGetSendTo() {
 						. msnl_fGetNbrRecipients( "newsletter", NULL ) ." "
 						. _MSNL_ADM_LAB_SUBSCRIBEDUSRS ." )<br />\n";
 
-	//All registered users
+	//All registered members
 	
 	$sHTML	.= msnl_fShowHelp( _MSNL_ADM_HLP_WHOSNDTOALLREG, _MSNL_ADM_LAB_WHOSNDTOALLREG )
 						."<input type=\"radio\" name=\"msnl_sendemail\" value=\"massmail\"";
@@ -353,7 +353,7 @@ function msnl_fGetSendTo() {
 
 function msnl_fGetNSNGroups() {
 
-	global $prefix, $db, $msnl_gasModCfg, $msnl_nsngroupid, $msnl_asHTML, $msnl_asCSS;
+	global $prefix, $nuke_db, $msnl_gasModCfg, $msnl_nsngroupid, $msnl_asHTML, $msnl_asCSS;
 
 	$asNSNGroups	= array();
 
@@ -396,7 +396,7 @@ function msnl_fGetNSNGroups() {
 
 		} else { //Successful SQL call
 
-			while ( $row = $db->sql_fetchrow( $result ) ) {
+			while ( $row = $nuke_db->sql_fetchrow( $result ) ) {
 
 				$gid 			= intval( $row['gid'] );
 
@@ -441,7 +441,7 @@ function msnl_fGetNSNGroups() {
 function msnl_fAddNls( $msnl_iCID, $msnl_sTopic, $msnl_sSender, $msnl_sFilename, 
 											$msnl_sDatesent, $msnl_iView, $msnl_sGroups ) {
 
-	global $prefix, $db;
+	global $prefix, $nuke_db;
 
 	$nid = 0;
 
@@ -478,7 +478,7 @@ function msnl_fAddNls( $msnl_iCID, $msnl_sTopic, $msnl_sSender, $msnl_sFilename,
 
 		} else { //Successful SQL call
 
-			$row = $db->sql_fetchrow( $result1 );
+			$row = $nuke_db->sql_fetchrow( $result1 );
 
 			$nid = intval( $row['nid'] );
 			
@@ -502,7 +502,7 @@ function msnl_fAddNls( $msnl_iCID, $msnl_sTopic, $msnl_sSender, $msnl_sFilename,
 
 function msnl_fSendNls( $emailfile, $msnl_sSender, $sql, $msnl_sEmailaddresses ) {
 
-	global $sitename, $adminmail, $REMOTE_ADDR, $prefix, $db, $admin_file, $msnl_gasModCfg;
+	global $sitename, $adminmail, $REMOTE_ADDR, $prefix, $nuke_db, $admin_file, $msnl_gasModCfg;
 
 	//Define the email headers once since they are the same for each send option.
 
@@ -563,7 +563,7 @@ function msnl_fSendNls( $emailfile, $msnl_sSender, $sql, $msnl_sEmailaddresses )
 	} else { //Actually sending to a selected list of recipients
 
 		$result				= msnl_fSQLCall( $sql );
-		$numofusers		= $db->sql_numrows( $result );
+		$numofusers		= $nuke_db->sql_numrows( $result );
 		$numofusers		= intval( $numofusers );
 
 		if ( $numofusers > MSNL_MAX_BATCH_SIZE ) {
@@ -581,7 +581,7 @@ function msnl_fSendNls( $emailfile, $msnl_sSender, $sql, $msnl_sEmailaddresses )
 
 		$prev_user_id = 1;
 
-		while( $row = $db->sql_fetchrow( $result ) ) { //Cycle through the recipients and send
+		while( $row = $nuke_db->sql_fetchrow( $result ) ) { //Cycle through the recipients and send
 
 			$user_id			= intval( $row['user_id'] );
 
@@ -621,7 +621,7 @@ function msnl_fSendNls( $emailfile, $msnl_sSender, $sql, $msnl_sEmailaddresses )
 
 function msnl_fGetCategories( $iCatID=0, $iInclAll=MSNL_SHOW_ALL_OFF ) {
 
-	global $prefix, $db;
+	global $prefix, $nuke_db;
 
 	$sql		= "SELECT `cid`, `ctitle` FROM `".$prefix."_hnl_categories` ORDER BY `ctitle`";
 
@@ -653,7 +653,7 @@ function msnl_fGetCategories( $iCatID=0, $iInclAll=MSNL_SHOW_ALL_OFF ) {
 
 		//Now build the options
 
-		while (	$row = $db->sql_fetchrow( $result ) ) { 
+		while (	$row = $nuke_db->sql_fetchrow( $result ) ) { 
 
 			$iLstCID		= intval( $row['cid'] );
 			$sLstTitle	= stripslashes( $row['ctitle'] );

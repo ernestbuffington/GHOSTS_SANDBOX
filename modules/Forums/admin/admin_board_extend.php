@@ -19,7 +19,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 if( !empty($setmodules) )
 {
@@ -212,10 +212,10 @@ $sub_name = $sub_keys[$menu_id][$mod_id][$sub_id];
 $submit = isset($HTTP_POST_VARS['submit']);
 
 // get the real value of board_config
-$sql = "SELECT * FROM " . CONFIG_TABLE;
-if ( !$result = $db->sql_query($sql) ) message_die(CRITICAL_ERROR, 'Could not query config information', '', __LINE__, __FILE__, $sql);
+$sql = "SELECT * FROM " . NUKE_CONFIG_TABLE;
+if ( !$result = $nuke_db->sql_query($sql) ) message_die(NUKE_CRITICAL_ERROR, 'Could not query config information', '', __LINE__, __FILE__, $sql);
 $config = array();
-while ($row = $db->sql_fetchrow($result))
+while ($row = $nuke_db->sql_fetchrow($result))
 {
 	$config[ $row['config_name'] ] = $row['config_value'];
 }
@@ -268,14 +268,14 @@ if ($submit)
 					}
 					else
 					{
-						message_die(GENERAL_ERROR, 'Unknown type of config data : ' . $field_name, '', __LINE__, __FILE__, '');
+						message_die(NUKE_GENERAL_ERROR, 'Unknown type of config data : ' . $field_name, '', __LINE__, __FILE__, '');
 					}
 					break;
 			}
 			if ($error)
 			{
 				$message = $error_msg . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid("./admin_board_extend.$phpEx?menu=$menu_id&mod=$mod_id&msub=$sub_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("./index.$phpEx?pane=right") . '">', '</a>');
-				message_die(GENERAL_MESSAGE, $message);
+				message_die(NUKE_GENERAL_MESSAGE, $message);
 			}
 		}
 	}
@@ -287,30 +287,30 @@ if ($submit)
 		if (isset($$field_name))
 		{
 			// update
-			$sql = "UPDATE " . CONFIG_TABLE . " 
+			$sql = "UPDATE " . NUKE_CONFIG_TABLE . " 
 					SET config_value = '" . $$field_name . "'
 					WHERE config_name = '" . $field_name . "'";
-			if ( !$db->sql_query($sql) )
+			if ( !$nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, 'Failed to update general configuration for ' . $field_name, '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Failed to update general configuration for ' . $field_name, '', __LINE__, __FILE__, $sql);
 			}
 		}
 		if ( isset($HTTP_POST_VARS[$field_name . '_over']) && !empty($field['user']) && isset($userdata[ $field['user'] ]) )
 		{
 			// update
-			$sql = "UPDATE " . CONFIG_TABLE . " 
+			$sql = "UPDATE " . NUKE_CONFIG_TABLE . " 
 					SET config_value = '" . intval($HTTP_POST_VARS[$field_name . '_over']) . "'
 					WHERE config_name = '$field_name" . "_over'";
-			if ( !$db->sql_query($sql) )
+			if ( !$nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, 'Failed to update general configuration for ' . $field_name, '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Failed to update general configuration for ' . $field_name, '', __LINE__, __FILE__, $sql);
 			}
 		}
 	}
 
 	// send an update message
 	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid("./admin_board_extend.$phpEx?menu=$menu_id&mod=$mod_id&msub=$sub_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("./index.$phpEx?pane=right") . '">', '</a>');
-	message_die(GENERAL_MESSAGE, $message);
+	message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 
 

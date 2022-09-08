@@ -8,7 +8,7 @@
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2005 by NukeScripts Network       */
 /********************************************************/
-global $db2;
+global $network_db;
 if(!defined('NETWORK_SUPPORT_ADMIN')) { die("Illegal Access Detected!!!"); }
 $pagetitle = "::: "._NETWORK_TITLE." ".$pj_config['version_number']."::: "._NETWORK_MEMBERS.": "._NETWORK_MEMBERLIST;
 include_once(NUKE_BASE_DIR.'header.php');
@@ -20,8 +20,8 @@ CloseTable();
 //echo "<br />";
 pjadmin_menu(_NETWORK_MEMBERS.": "._NETWORK_MEMBERLIST);
 //echo "<br />\n";
-$memberresult = $db2->sql_query("SELECT `member_id`, `member_name` FROM `".$network_prefix."_members` ORDER BY `member_name`");
-$member_total = $db2->sql_numrows($memberresult);
+$memberresult = $network_db->sql_query("SELECT `member_id`, `member_name` FROM `".$network_prefix."_members` ORDER BY `member_name`");
+$member_total = $network_db->sql_numrows($memberresult);
 OpenTable();
 echo "<table width='100%' border='1' cellspacing='0' cellpadding='2'>\n";
 echo "<tr><td colspan='3' width='100%' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_MEMBEROPTIONS."</strong></nobr></td></tr>\n";
@@ -36,7 +36,7 @@ echo "</table>\n";
 echo "<table width='100%' border='1' cellspacing='0' cellpadding='2'>\n";
 echo "<tr><td colspan='2' bgcolor='$bgcolor2' width='100%'><strong>"._NETWORK_MEMBERS."</strong></a></td><td align='center' bgcolor='$bgcolor2'><strong>"._NETWORK_FUNCTIONS."</strong></td></tr>\n";
 if($member_total != 0){
-  while(list($member_id, $member_name) = $db2->sql_fetchrow($memberresult)) {
+  while(list($member_id, $member_name) = $network_db->sql_fetchrow($memberresult)) {
     $pjimage = pjimage("member.png", $module_name);
     echo "<tr><td><img src='$pjimage'></td><td width='100%'>$member_name</td>\n";
     echo "<td align='center'><nobr>[ <a href='".$admin_file.".php?op=MemberEdit&amp;member_id=$member_id'>"._NETWORK_EDIT."</a>";

@@ -65,8 +65,8 @@ echo "<table ${msnl_asCSS['TABLE_adm']}>\n";
 
 echo "<tr ${msnl_asCSS['TR_top']}>"
 			."<td ${msnl_asCSS['TD_hdr_adm']}>"
-				. msnl_fShowHelp( _MSNL_CFG_HLP_DEBUGMODE, _MSNL_CFG_LAB_DEBUGMODE )
-				. _MSNL_CFG_LAB_DEBUGMODE
+				. msnl_fShowHelp( _MSNL_CFG_HLP_NUKE_DEBUGMODE, _MSNL_CFG_LAB_NUKE_DEBUGMODE )
+				. _MSNL_CFG_LAB_NUKE_DEBUGMODE
 				.":&nbsp;"
 			."</td>"
 			."<td>"
@@ -74,15 +74,15 @@ echo "<tr ${msnl_asCSS['TR_top']}>"
 			
 echo "<option value='".MSNL_OFF."'";
 if ( $msnl_gasModCfg['debug_mode'] == MSNL_OFF ) { echo " SELECTED"; }
-echo ">"._MSNL_CFG_LAB_DEBUGMODE_OFF."</option>\n";
+echo ">"._MSNL_CFG_LAB_NUKE_DEBUGMODE_OFF."</option>\n";
 
 echo "<option value='".MSNL_ERROR."'";
 if ( $msnl_gasModCfg['debug_mode'] == MSNL_ERROR ) { echo " SELECTED"; }
-echo ">"._MSNL_CFG_LAB_DEBUGMODE_ERR."</option>\n";
+echo ">"._MSNL_CFG_LAB_NUKE_DEBUGMODE_ERR."</option>\n";
 
 echo "<option value='".MSNL_VERBOSE."'";
 if ( $msnl_gasModCfg['debug_mode'] == MSNL_VERBOSE ) { echo " SELECTED"; }
-echo ">"._MSNL_CFG_LAB_DEBUGMODE_VER."</option>\n";
+echo ">"._MSNL_CFG_LAB_NUKE_DEBUGMODE_VER."</option>\n";
 
 echo "</select></td></tr>\n";
 
@@ -92,8 +92,8 @@ echo "</select></td></tr>\n";
 /* TBD: Need to write the LOGFILE option as yet so comment this out for now
 echo "<tr ${msnl_asCSS['TR_top']}>"
 			."<td ${msnl_asCSS['TD_hdr_adm']}>"
-				.msnl_fShowHelp( _MSNL_CFG_HLP_DEBUGOUTPUT, _MSNL_CFG_LAB_DEBUGOUTPUT )
-				. _MSNL_CFG_LAB_DEBUGOUTPUT
+				.msnl_fShowHelp( _MSNL_CFG_HLP_NUKE_DEBUGOUTPUT, _MSNL_CFG_LAB_NUKE_DEBUGOUTPUT )
+				. _MSNL_CFG_LAB_NUKE_DEBUGOUTPUT
 				.":&nbsp;"
 			."</td>"
 			."<td>"
@@ -101,15 +101,15 @@ echo "<tr ${msnl_asCSS['TR_top']}>"
 			
 echo "<option value='".MSNL_DISPLAY."'";
 if ( $msnl_gasModCfg['debug_output'] == MSNL_DISPLAY ) { echo " SELECTED"; }
-echo ">"._MSNL_CFG_LAB_DEBUGOUTPUT_DIS."</option>\n";
+echo ">"._MSNL_CFG_LAB_NUKE_DEBUGOUTPUT_DIS."</option>\n";
 
 echo "<option value='".MSNL_LOGFILE."'";
 if ( $msnl_gasModCfg['debug_output'] == MSNL_LOGFILE ) { echo " SELECTED"; }
-echo ">"._MSNL_CFG_LAB_DEBUGOUTPUT_LOG."</option>\n";
+echo ">"._MSNL_CFG_LAB_NUKE_DEBUGOUTPUT_LOG."</option>\n";
 
 echo "<option value='".MSNL_BOTH."'";
 if ( $msnl_gasModCfg['debug_output'] == MSNL_BOTH ) { echo " SELECTED"; }
-echo ">"._MSNL_CFG_LAB_DEBUGOUTPUT_BTH."</option>\n";
+echo ">"._MSNL_CFG_LAB_NUKE_DEBUGOUTPUT_BTH."</option>\n";
 
 echo "</select></td></tr>\n";
 */

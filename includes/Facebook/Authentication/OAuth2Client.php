@@ -124,7 +124,7 @@ class OAuth2Client
     /**
      * Generates an authorization URL to begin the process of authenticating a user.
      *
-     * @param string $redirectUrl The callback URL to redirect to.
+     * @param string $nuke_redirectUrl The callback URL to nuke_redirect to.
      * @param string $state       The CSPRNG-generated CSRF value.
      * @param array  $scope       An array of permissions to request.
      * @param array  $params      An array of parameters to generate URL.
@@ -132,14 +132,14 @@ class OAuth2Client
      *
      * @return string
      */
-    public function getAuthorizationUrl($redirectUrl, $state, array $scope = [], array $params = [], $separator = '&')
+    public function getAuthorizationUrl($nuke_redirectUrl, $state, array $scope = [], array $params = [], $separator = '&')
     {
         $params += [
             'client_id' => $this->app->getId(),
             'state' => $state,
             'response_type' => 'code',
             'sdk' => 'php-sdk-' . Facebook::VERSION,
-            'redirect_uri' => $redirectUrl,
+            'nuke_redirect_uri' => $nuke_redirectUrl,
             'scope' => implode(',', $scope)
         ];
 
@@ -150,17 +150,17 @@ class OAuth2Client
      * Get a valid access token from a code.
      *
      * @param string $code
-     * @param string $redirectUri
+     * @param string $nuke_redirectUri
      *
      * @return AccessToken
      *
      * @throws FacebookSDKException
      */
-    public function getAccessTokenFromCode($code, $redirectUri = '')
+    public function getAccessTokenFromCode($code, $nuke_redirectUri = '')
     {
         $params = [
             'code' => $code,
-            'redirect_uri' => $redirectUri,
+            'nuke_redirect_uri' => $nuke_redirectUri,
         ];
 
         return $this->requestAnAccessToken($params);
@@ -190,16 +190,16 @@ class OAuth2Client
      * Get a valid code from an access token.
      *
      * @param AccessToken|string $accessToken
-     * @param string             $redirectUri
+     * @param string             $nuke_redirectUri
      *
      * @return AccessToken
      *
      * @throws FacebookSDKException
      */
-    public function getCodeFromLongLivedAccessToken($accessToken, $redirectUri = '')
+    public function getCodeFromLongLivedAccessToken($accessToken, $nuke_redirectUri = '')
     {
         $params = [
-            'redirect_uri' => $redirectUri,
+            'nuke_redirect_uri' => $nuke_redirectUri,
         ];
 
         $response = $this->sendRequestWithClientParams('/oauth/client_code', $params, $accessToken);

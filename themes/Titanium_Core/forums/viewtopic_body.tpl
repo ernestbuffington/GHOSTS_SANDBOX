@@ -4,7 +4,7 @@
 <tr>
 <td align="center">
 
-<!--MOD GLANCE BEGIN -->{GLANCE_OUTPUT}<!-- MOD GLANCE END -->
+<!--NUKE_MOD GLANCE BEGIN -->{GLANCE_OUTPUT}<!-- NUKE_MOD GLANCE END -->
 
 <!-- PAGINATION START -->
 <table style="width: 100%;" cellspacing="2" cellpadding="2" border="0">

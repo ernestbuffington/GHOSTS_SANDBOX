@@ -92,7 +92,7 @@ define("_FDIS","Not allowed.");
 define("_FTHISMAIL","in this Message");
 define("_FSHOWSIG","Company");
 define("_WHATISSIG","That one is setup in the User Pages.");
-define("_FNOTIFY","Notify me by email when there is a new post.(Only for registered users)");
+define("_FNOTIFY","Notify me by email when there is a new post.(Only for registered members)");
 define("_FPAGED","Pages");
 define("_FAQOUTE","Qoute");
 define("_FAUTHOR","Author");

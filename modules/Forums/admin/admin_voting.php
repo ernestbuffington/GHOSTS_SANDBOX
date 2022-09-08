@@ -29,7 +29,7 @@
       Advanced Username Color                  v1.0.5       07/24/2005
  ************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 if( !empty($setmodules) )
     {
@@ -176,15 +176,15 @@ if( !empty($setmodules) )
 
     // Assign Username array
         $sql = "SELECT DISTINCT u.user_id, u.username" .
-                " FROM " . USERS_TABLE . " AS u , " . VOTE_USERS_TABLE . " AS vv" .
+                " FROM " . NUKE_USERS_TABLE . " AS u , " . NUKE_VOTE_USERS_TABLE . " AS vv" .
                 " WHERE u.user_id = vv.vote_user_id";
 
-        if( !($result = $db->sql_query($sql)) )
+        if( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_ERROR, 'Could not query users.', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not query users.', '', __LINE__, __FILE__, $sql);
             }
 
-        while ( $row = $db->sql_fetchrow($result) )
+        while ( $row = $nuke_db->sql_fetchrow($result) )
             {
                     $user_id = $row['user_id'];
 /*****[BEGIN]******************************************
@@ -199,15 +199,15 @@ if( !empty($setmodules) )
 
     // Assign poll options array
         $sql = "SELECT *" .
-                 " FROM ". VOTE_RESULTS_TABLE .
+                 " FROM ". NUKE_VOTE_RESULTS_TABLE .
                 " ORDER BY vote_id";
 
-        if( !($result = $db->sql_query($sql)) )
+        if( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_ERROR, 'Could not query poll options.', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not query poll options.', '', __LINE__, __FILE__, $sql);
             }
 
-        while ( $row = $db->sql_fetchrow($result) )
+        while ( $row = $nuke_db->sql_fetchrow($result) )
             { 
                 $vote_id = $row['vote_id']; 
                 $vote_option_id = $row['vote_option_id']; 
@@ -219,15 +219,15 @@ if( !empty($setmodules) )
 
     // Assign individual vote results
         $sql = "SELECT vote_id, vote_user_id, vote_cast" .
-                " FROM ". VOTE_USERS_TABLE .
+                " FROM ". NUKE_VOTE_USERS_TABLE .
                 " ORDER BY vote_id"; 
 
-        if( !($result = $db->sql_query($sql)) )
+        if( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_ERROR, 'Could not query vote results.', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not query vote results.', '', __LINE__, __FILE__, $sql);
             }
 
-        while ( $row = $db->sql_fetchrow($result) )
+        while ( $row = $nuke_db->sql_fetchrow($result) )
             { 
                 $vote_id = $row['vote_id']; 
                 $vote_user_id = $row['vote_user_id']; 
@@ -235,19 +235,19 @@ if( !empty($setmodules) )
                 $voter_arr[$vote_id][$vote_user_id] = $vote_cast; 
             }
         $sql ="SELECT *" .
-                " FROM ". VOTE_DESC_TABLE .
+                " FROM ". NUKE_VOTE_DESC_TABLE .
                 " ORDER BY " . $order_by;
 
-        if( !($result = $db->sql_query($sql)) )
+        if( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_ERROR, 'Could not query poll description.', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not query poll description.', '', __LINE__, __FILE__, $sql);
             }
 
-        $num_polls = $db->sql_numrows($result);
+        $num_polls = $nuke_db->sql_numrows($result);
 
         $i = 0;
 
-        while ( $row = $db->sql_fetchrow($result) )
+        while ( $row = $nuke_db->sql_fetchrow($result) )
             { 
                 $topic_row_color = (($i % 2) == 0) ? "row1" : "row2";
                 $vote_id = $row['vote_id']; 
@@ -288,7 +288,7 @@ if( !empty($setmodules) )
                 'COLOR' => $topic_row_color,
                 'LINK' => $root_path . "modules.php?name=Forums&amp;file=viewtopic&amp;t=$topic_id", 
                 'DESCRIPTION' => $vote_text, 
-                'USER' => $user, 
+                'NUKE_USER' => $user, 
                 'ENDDATE' => $vote_end,
                 'VOTE_DURATION' => $vote_duration, 
                 'VOTE_ID' => $vote_id
@@ -306,7 +306,7 @@ if( !empty($setmodules) )
             $template->assign_block_vars("votes.detail", array( 
                 'OPTION' => $option_text, 
                 'RESULT' => $option_result, 
-                'USER' => $user
+                'NUKE_USER' => $user
                 )); 
                         } 
                 }
@@ -318,15 +318,15 @@ if( !empty($setmodules) )
 // Pagination routine
 //
     $sql = "SELECT count(*) AS total" .
-            " FROM " . VOTE_DESC_TABLE .
+            " FROM " . NUKE_VOTE_DESC_TABLE .
             " WHERE vote_id > 0";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Error getting total users', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Error getting total users', '', __LINE__, __FILE__, $sql);
         }
 
-    if ( $total = $db->sql_fetchrow($result) )
+    if ( $total = $nuke_db->sql_fetchrow($result) )
         {
             $total_polls = $total['total'];
             $pagination = generate_pagination("admin_voting.$phpEx?mode=$sort_field&amp;order=$sort_order", $total_polls, $board_config['topics_per_page'], $start). '&nbsp;';

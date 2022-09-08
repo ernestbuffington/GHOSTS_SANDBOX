@@ -24,7 +24,7 @@ if ( !defined('BLOCK_FILE') ) {
     exit;
 }
 
-global $user, $prefix, $db, $nxp_toppost_post, $nxp_toppost_poin;
+global $user, $prefix, $nuke_db, $nxp_toppost_post, $nxp_toppost_poin;
 
 $nxp_toppost_config = array(
      'show_mini' => 5, //number of members to show in block, default=5
@@ -40,8 +40,8 @@ $Q00 = "SELECT rank_id, rank_title
 	FROM " . $prefix . "_bbranks
 	WHERE rank_special = 1 
 	ORDER BY rank_id ASC";
-$R00 = $db->sql_query($Q00);
-while($special_rank_info = $db->sql_fetchrow($R00))
+$R00 = $nuke_db->sql_query($Q00);
+while($special_rank_info = $nuke_db->sql_fetchrow($R00))
 {
 	$nxp_toppost_rank_spec[] = $special_rank_info;
 }
@@ -50,8 +50,8 @@ $Q01 = "SELECT rank_id, rank_title, rank_min
 	FROM " . $prefix . "_bbranks
 	WHERE rank_special = 0
 	ORDER BY rank_min ASC";
-$R01 = $db->sql_query($Q01);
-while($normal_rank_info = $db->sql_fetchrow($R01))
+$R01 = $nuke_db->sql_query($Q01);
+while($normal_rank_info = $nuke_db->sql_fetchrow($R01))
 {
 	$nxp_toppost_rank_norm[] = $normal_rank_info;
 }
@@ -88,9 +88,9 @@ if ($nxp_toppost_config["show_link"] == 1)
 
 $nxp_toppost_count = 1;
 
-$Q02 = "SELECT user_id, username, user_avatar, user_from, user_from_flag, user_posts, user_rank FROM " . $prefix . "_users WHERE `user_id` != ".ANONYMOUS." ORDER BY " . $nxp_toppost_order_by . " LIMIT 0," . $nxp_toppost_show_numb;
-$R02 = $db->sql_query($Q02);
-while($nxp_toppost_user_info = $db->sql_fetchrow($R02))
+$Q02 = "SELECT user_id, username, user_avatar, user_from, user_from_flag, user_posts, user_rank FROM " . $prefix . "_users WHERE `user_id` != ".NUKE_ANONYMOUS." ORDER BY " . $nxp_toppost_order_by . " LIMIT 0," . $nxp_toppost_show_numb;
+$R02 = $nuke_db->sql_query($Q02);
+while($nxp_toppost_user_info = $nuke_db->sql_fetchrow($R02))
 {
 	// Unset all common variables --------------------------------------------------|
 	unset($nxp_toppost_name, $nxp_toppost_avat, $nxp_toppost_from_imag, $nxp_toppost_rank_titl);	
@@ -197,8 +197,8 @@ while($nxp_toppost_user_info = $db->sql_fetchrow($R02))
 		$nxp_toppost_rank_titl = "Unknown Rank";
 	}
 	
-	$tpresult = $db->sql_query("SELECT * FROM ". $prefix ."_bbadvanced_username_color WHERE group_name='$nxp_toppost_rank_titl'");
-	$rowrank = $db->sql_fetchrow($tpresult);
+	$tpresult = $nuke_db->sql_query("SELECT * FROM ". $prefix ."_bbadvanced_username_color WHERE group_name='$nxp_toppost_rank_titl'");
+	$rowrank = $nuke_db->sql_fetchrow($tpresult);
 	
 	$content .= "	<tr>\n";
 	$content .= "		<td align='left' valign='top' width='38' rowspan='4'>\n";

@@ -42,7 +42,7 @@ require_once(NUKE_INCLUDE_DIR.'utf/utf_tools.php');
  * @return Data with slashes
  */
 function slashFunction($function, $data) {
-    global $db;
+    global $nuke_db;
 
     //Error check
     if (empty($data)) return $data;
@@ -53,9 +53,9 @@ function slashFunction($function, $data) {
         case 'mysql_escape_string':
             return mysql_escape_string($data);
         case 'mysqli_real_escape_string':
-            return mysqli_real_escape_string($db->db_connect_id, $data);
+            return mysqli_real_escape_string($nuke_db->db_connect_id, $data);
         case 'mysqli_escape_string':
-            return mysqli_escape_string($db->db_connect_id, $data);
+            return mysqli_escape_string($nuke_db->db_connect_id, $data);
         case 'addslashes':
         default:
             return addslashes($data);
@@ -69,7 +69,7 @@ function slashFunction($function, $data) {
  * @return Data with slashes
  */
 function deepSlash($data) {
-    global $db, $dbtype;
+    global $nuke_db, $nuke_dbtype;
     //If there is no data get out
     if (empty($data)) return $data;
 
@@ -77,12 +77,12 @@ function deepSlash($data) {
     static $function;
     if (empty($function)) {
         //If for some reason there is no DB connector
-        if (!isset($db) || !is_object($db)) {
+        if (!isset($nuke_db) || !is_object($nuke_db)) {
             //Use addslashes
             $function = 'addslashes';
-        } else if ($dbtype == 'mysqli' && function_exists('mysqli_real_escape_string')) {
+        } else if ($nuke_dbtype == 'mysqli' && function_exists('mysqli_real_escape_string')) {
             $function = 'mysqli_real_escape_string';
-        } else if ($dbtype == 'mysqli_escape_string') {
+        } else if ($nuke_dbtype == 'mysqli_escape_string') {
             $function = 'mysqli_escape_string';
         } else if (function_exists('mysql_real_escape_string')) {
             $function = 'mysql_real_escape_string';

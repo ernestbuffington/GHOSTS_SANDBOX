@@ -8,7 +8,7 @@
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2005 by NukeScripts Network       */
 /********************************************************/
-global $db2;
+global $network_db;
 get_lang('Network_Projects');
 if(!defined('NETWORK_SUPPORT_ADMIN')) { die("Illegal Access Detected!!!"); }
 $pagetitle = "::: "._NETWORK_TITLE." ".$pj_config['version_number']."::: "._NETWORK_PROJECTS.": "._NETWORK_REQUESTLIST;
@@ -19,12 +19,12 @@ echo "<br /><br />";
 echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _NETWORK_RETURNMAIN . "</a> ]</div>\n";
 CloseTable();
 //echo "<br />";
-$projectresult = $db2->sql_query("SELECT `project_name`, `project_description`, `status_id`, `priority_id` FROM `".$network_prefix."_projects` WHERE `project_id`='$project_id'");
-list($project_name, $project_description, $status_id, $priority_id) = $db2->sql_fetchrow($projectresult);
+$projectresult = $network_db->sql_query("SELECT `project_name`, `project_description`, `status_id`, `priority_id` FROM `".$network_prefix."_projects` WHERE `project_id`='$project_id'");
+list($project_name, $project_description, $status_id, $priority_id) = $network_db->sql_fetchrow($projectresult);
 pjadmin_menu(_NETWORK_PROJECTS.": "._NETWORK_REQUESTLIST);
 //echo "<br />\n";
-$requestresult = $db2->sql_query("SELECT `request_id`, `request_name`, `type_id`, `status_id` FROM `".$network_prefix."_requests` WHERE `project_id`='$project_id' ORDER BY `request_name`");
-$request_total = $db2->sql_numrows($requestresult);
+$requestresult = $network_db->sql_query("SELECT `request_id`, `request_name`, `type_id`, `status_id` FROM `".$network_prefix."_requests` WHERE `project_id`='$project_id' ORDER BY `request_name`");
+$request_total = $network_db->sql_numrows($requestresult);
 OpenTable();
 echo "<table width='100%' border='1' cellspacing='0' cellpadding='2'>\n";
 echo "<tr><td colspan='2' bgcolor='$bgcolor2' width='100%'><nobr><strong>"._NETWORK_PROJECT."</strong></nobr></td>\n";
@@ -57,7 +57,7 @@ echo "<td align='center' bgcolor='$bgcolor2'><strong>"._NETWORK_STATUS."</strong
 echo "<td align='center' bgcolor='$bgcolor2'><strong>"._NETWORK_TYPE."</strong></td>";
 echo "<td align='center' bgcolor='$bgcolor2'><strong>"._NETWORK_FUNCTIONS."</strong></td></tr>";
 if($request_total != 0){
-  while(list($request_id, $request_name, $type_id, $status_id) = $db2->sql_fetchrow($requestresult)) {
+  while(list($request_id, $request_name, $type_id, $status_id) = $network_db->sql_fetchrow($requestresult)) {
     $pjimage = pjimage("request.png", $module_name);
     echo "<tr><td><img src='$pjimage'></td>";
     echo "<td width='100%'>$request_name</td>";

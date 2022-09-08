@@ -45,8 +45,8 @@ function footmsg()
 	  $total_time, 
 	  $start_time, 
 	     $footmsg, 
-		      $db,
-			 $db2, 
+		      $nuke_db,
+			 $network_db, 
    $queries_count, 
    $usrclearcache, 
         $debugger, 
@@ -56,7 +56,7 @@ function footmsg()
 	       $index,
 	      $prefix,
 		    $user, 
-	 $user_prefix,
+	 $nuke_user_prefix,
 	      $cookie,
 	    $storynum,
    $Default_Theme,
@@ -156,12 +156,12 @@ $total_time .= '</font></strong>';
 endif;
 
 # MariaDB version at bottom of footer START
-$footmsg .= $db->mariadb_version().'<br/>';
+$footmsg .= $nuke_db->mariadb_version().'<br/>';
 # MariaDB version at bottom of footer END
 
 # START Queries Count v2.0.1
 if($queries_count):
-$total_time .= ' | DB Queries: <strong><font color="'.$digits_color.'">' . $db->num_queries;
+$total_time .= ' | DB Queries: <strong><font color="'.$digits_color.'">' . $nuke_db->num_queries;
 $total_time .= '</font></strong>';
 endif;
 # END Queries Count v2.0.1
@@ -182,7 +182,7 @@ if(is_admin()):
      //$interval = strtotime('-1 day');
 	 $interval = strtotime('-1 day');
        if (($last_optimize <= $interval) || ($first_time && $cache->valid && $use_cache)):
-         if ($db->sql_optimize()):
+         if ($nuke_db->sql_optimize()):
            $cache->save('last_optimize', 'config', time());
              $total_time .= "<br />Database Optimized";
          endif;
@@ -207,7 +207,7 @@ endif;
     
 	if (is_admin()) 
 	{
-      echo $db->print_debug();
+      echo $nuke_db->print_debug();
     }
     # END Debugger v1.0.0
 	
@@ -218,7 +218,7 @@ endif;
 		    $strstart = strlen(NUKE_BASE_DIR);
 			$debug_sql = '<span class="genmed" style="font-weight: bold;">SQL Debug:</span><br /><br />';
 			
-			foreach ($db->querylist as $file => $queries) 
+			foreach ($nuke_db->querylist as $file => $queries) 
 			{
 				$file = substr($file, $strstart);
 				if (empty($file)) $file = 'unknown file';
@@ -344,7 +344,7 @@ if (!defined('HOME_FILE') AND defined('MODULE_FILE') AND (file_exists(NUKE_MODUL
 themefooter();
 
 # needed for the forum admin area START
-if (!defined('IN_PHPBB')) 
+if (!defined('IN_PHPBB2')) 
 echo "<div style=\"display:none\" id=\"resizemod\"></div>";
 # needed for the forum admin area END
 
@@ -371,12 +371,12 @@ $cache->resync();
  [ Other:   DB Connectors                      v2.0.0 ]
  [ Other:   Persistent DB Connection           v2.0.0 ]
  ******************************************************/
-if(is_object($db))
-$db->sql_close(); //close local database
-if(is_object($db2))
-$db2->sql_close(); //close network user database
-//if(is_object($db3))
-//$db3->sql_close(); //close music database
+if(is_object($nuke_db))
+$nuke_db->sql_close(); //close local database
+if(is_object($network_db))
+$network_db->sql_close(); //close network user database
+//if(is_object($nuke_db3))
+//$nuke_db3->sql_close(); //close music database
 /*****[END]********************************************
  [ Other:   DB Connectors                      v2.0.0 ]
  [ Other:   Persistent DB Connection           v2.0.0 ]

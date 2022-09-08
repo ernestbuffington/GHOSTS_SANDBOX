@@ -137,8 +137,8 @@ function tz_select($default, $select_name = 'timezone')
 		include_once './includes/honeypot/hp_new_user1.php';
 	}
 
-    $result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field WHERE (need = '2') OR (need = '3') ORDER BY pos");
-        while ($sqlvalue = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field WHERE (need = '2') OR (need = '3') ORDER BY pos");
+        while ($sqlvalue = $nuke_db->sql_fetchrow($result)) {
           $t = $sqlvalue[fid];
           $value2 = explode("::", $sqlvalue[value]);
           if (substr($sqlvalue[name],0,1)=='_') eval( "\$name_exit = $sqlvalue[name];"); else $name_exit = $sqlvalue[name];
@@ -181,7 +181,7 @@ function tz_select($default, $select_name = 'timezone')
     $xd_meta = get_xd_metadata();
     while ( list($code_name, $info) = each($xd_meta) )
     {
-            if ($info['display_register'] == XD_DISPLAY_NORMAL && $info['signup'])
+            if ($info['display_register'] == NUKE_XD_DISPLAY_NORMAL && $info['signup'])
             {
                 $value = isset($xdata[$code_name]) ? str_replace('"', '&quot;', $xdata[$code_name]) : '';
                 $length = ( $info['field_length'] > 0) ? ( $info['field_length'] ) : '';
@@ -222,7 +222,7 @@ function tz_select($default, $select_name = 'timezone')
                         break;
                 }
             }
-            elseif ($info['display_register'] == XD_DISPLAY_ROOT)
+            elseif ($info['display_register'] == NUKE_XD_DISPLAY_ROOT)
             {
                 switch ($code_name) {
                     case "icq":
@@ -297,14 +297,14 @@ function tz_select($default, $select_name = 'timezone')
     closedir($handle);
     if ($thmcount > 1) { echo "<li>"._ASREG6."\n"; }
     $sql = "SELECT custom_title FROM ".$prefix."_modules WHERE active='1' AND view='1' AND inmenu='1'";
-    $result = $db->sql_query($sql);
-    while ($row = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query($sql);
+    while ($row = $nuke_db->sql_fetchrow($result)) {
         $custom_title = $row['custom_title'];
         if (!empty($custom_title)) { echo "<li>"._ACCESSTO." $custom_title\n"; }
     }
     $sql = "SELECT title FROM ".$prefix."_blocks WHERE active='1' AND view='1'";
-    $result = $db->sql_query($sql);
-    while ($row = $db->sql_fetchrow($result)) {
+    $result = $nuke_db->sql_query($sql);
+    while ($row = $nuke_db->sql_fetchrow($result)) {
         $b_title = $row['title'];
         if (!empty($b_title)) { echo "<li>"._ACCESSTO." $b_title\n"; }
     }

@@ -6,7 +6,7 @@
  *   copyright            : (C) 2006 Sergei Sekirin
  *   email                : sergei-vs@mail.ru
  *
- *   Description: lang file for MOD - Admin delete user with all postings
+ *   Description: lang file for NUKE_MOD - Admin delete user with all postings
  *   $Id: userdel.php, v 1.0.5  2006/08/18 sergei-vs Exp $
  *
  ***************************************************************************/

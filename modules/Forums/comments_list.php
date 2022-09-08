@@ -33,7 +33,7 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path .'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 require_once('includes/bbcode.' . $phpEx);
@@ -41,7 +41,7 @@ require_once('includes/bbcode.' . $phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_INDEX, $nukeuser);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX, $nukeuser);
 init_userprefs($userdata);
 //
 // End session management
@@ -61,15 +61,15 @@ if ( !$userdata['session_logged_in'] )
 
 include("includes/page_header.php");
 
-    $comments_sql = "SELECT * FROM " . COMMENTS_TABLE . " WHERE comments_value <> '' ";
+    $comments_sql = "SELECT * FROM " . NUKE_COMMENTS_TABLE . " WHERE comments_value <> '' ";
 
-    if ( !($result_count = $db->sql_query($comments_sql)) )
+    if ( !($result_count = $nuke_db->sql_query($comments_sql)) )
       {
          // Error if it fails...
-         message_die(GENERAL_ERROR, "Couldn't obtain comment count.", "", __LINE__, __FILE__, $sql);
+         message_die(NUKE_GENERAL_ERROR, "Couldn't obtain comment count.", "", __LINE__, __FILE__, $sql);
       }
 
-    $count_rows = $db->sql_fetchrowset($result_count);
+    $count_rows = $nuke_db->sql_fetchrowset($result_count);
     $comments_total= count($count_rows);
 
     $start = ( isset($HTTP_GET_VARS['start']) ) ? intval($HTTP_GET_VARS['start']) : 0;
@@ -90,10 +90,10 @@ $template->set_filenames(array(
             ));
 
 
-$sql = "SELECT g.*, c.*, u.* FROM " . GAMES_TABLE. " g LEFT JOIN " . COMMENTS_TABLE . " c ON g.game_id = c.game_id LEFT JOIN " . USERS_TABLE ." u  ON g.game_highuser=u.user_id WHERE comments_value <> '' ORDER BY game_name ASC LIMIT $start, $comments_perpage";
-            if( !($result = $db->sql_query($sql)) )
+$sql = "SELECT g.*, c.*, u.* FROM " . NUKE_GAMES_TABLE. " g LEFT JOIN " . NUKE_COMMENTS_TABLE . " c ON g.game_id = c.game_id LEFT JOIN " . NUKE_USERS_TABLE ." u  ON g.game_highuser=u.user_id WHERE comments_value <> '' ORDER BY game_name ASC LIMIT $start, $comments_perpage";
+            if( !($result = $nuke_db->sql_query($sql)) )
             {
-            message_die(GENERAL_ERROR, "Error retrieving high score list", '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, "Error retrieving high score list", '', __LINE__, __FILE__, $sql);
             }
 
 //
@@ -103,7 +103,7 @@ $orig_word = array();
 $replacement_word = array();
 obtain_word_list($orig_word, $replacement_word);
 
-while ( $row = $db->sql_fetchrow($result))
+while ( $row = $nuke_db->sql_fetchrow($result))
             {
 
             if ( count($orig_word) )

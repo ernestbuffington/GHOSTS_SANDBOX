@@ -56,7 +56,7 @@ include_once(NUKE_INCLUDE_DIR. 'constants.php');
 
 if(is_mod_admin($module_name)) {
 
-list($uname, $realname, $email, $upass, $ureg) = $db->sql_fetchrow($db->sql_query("SELECT username, realname, user_email, user_password, user_regdate FROM ".$user_prefix."_users_temp WHERE user_id='$act_uid'"));
+list($uname, $realname, $email, $upass, $ureg) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT username, realname, user_email, user_password, user_regdate FROM ".$nuke_user_prefix."_users_temp WHERE user_id='$act_uid'"));
 
     if ($ya_config['servermail'] == 0) {
         $message = _SORRYTO." $sitename "._HASAPPROVE;
@@ -70,32 +70,32 @@ list($uname, $realname, $email, $upass, $ureg) = $db->sql_fetchrow($db->sql_quer
         );
         evo_phpmailer( $email, $subject, $message, $headers );
     }
-    $db->sql_query("DELETE FROM ".$user_prefix."_users_temp WHERE user_id='$act_uid'");
+    $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_users_temp WHERE user_id='$act_uid'");
 
-    $db->sql_query("OPTIMIZE TABLE ".$user_prefix."_users_temp");
-    list($newest_uid) = $db->sql_fetchrow($db->sql_query("SELECT max(user_id) AS newest_uid FROM ".$user_prefix."_users"));
+    $nuke_db->sql_query("OPTIMIZE TABLE ".$nuke_user_prefix."_users_temp");
+    list($newest_uid) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT max(user_id) AS newest_uid FROM ".$nuke_user_prefix."_users"));
     if ($newest_uid == "-1") { $new_uid = 1; } else { $new_uid = $newest_uid+1; }
-    $db->sql_query("INSERT INTO ".$user_prefix."_users (user_id, name, username, user_email, user_regdate, user_password, user_level, user_active, user_avatar, user_avatar_type, user_from) VALUES ('$new_uid', '$realname', '$uname', '$email', '$ureg', '$upass', 1, 1, 'gallery/blank.gif', 3, '')");
+    $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_users (user_id, name, username, user_email, user_regdate, user_password, user_level, user_active, user_avatar, user_avatar_type, user_from) VALUES ('$new_uid', '$realname', '$uname', '$email', '$ureg', '$upass', 1, 1, 'gallery/blank.gif', 3, '')");
 
-    $res = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_value_temp WHERE uid = '$act_uid'");
-    while ($sqlvalue = $db->sql_fetchrow($res)) {
-        $db->sql_query("INSERT INTO ".$user_prefix."_cnbya_value (uid, fid, value) VALUES ('$new_uid', '$sqlvalue[fid]','$sqlvalue[value]')");
+    $res = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_value_temp WHERE uid = '$act_uid'");
+    while ($sqlvalue = $nuke_db->sql_fetchrow($res)) {
+        $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_cnbya_value (uid, fid, value) VALUES ('$new_uid', '$sqlvalue[fid]','$sqlvalue[value]')");
     }
-    $db->sql_query("DELETE FROM ".$user_prefix."_cnbya_value_temp WHERE uid='$act_uid'");
-    $db->sql_query("OPTIMIZE TABLE ".$user_prefix."_cnbya_value_temp");
+    $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_cnbya_value_temp WHERE uid='$act_uid'");
+    $nuke_db->sql_query("OPTIMIZE TABLE ".$nuke_user_prefix."_cnbya_value_temp");
 
-    $sql = "INSERT INTO " . GROUPS_TABLE . " (group_name, group_description, group_single_user, group_moderator)
+    $sql = "INSERT INTO " . NUKE_GROUPS_TABLE . " (group_name, group_description, group_single_user, group_moderator)
             VALUES ('', 'Personal User', '1', '0')";
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
         DisplayError('Could not insert data into groups table<br />'.$sql);
     }
 
-    $group_id = $db->sql_nextid();
+    $group_id = $nuke_db->sql_nextid();
 
-    $sql = "INSERT INTO " . USER_GROUP_TABLE . " (user_id, group_id, user_pending)
+    $sql = "INSERT INTO " . NUKE_USER_GROUP_TABLE . " (user_id, group_id, user_pending)
         VALUES ('$new_uid', '$group_id', '0')";
-    if( !($result = $db->sql_query($sql)) )
+    if( !($result = $nuke_db->sql_query($sql)) )
     {
         DisplayError('Could not insert data into user_group table<br />'.$sql);
     }

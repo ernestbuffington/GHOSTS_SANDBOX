@@ -54,7 +54,7 @@ if ($popup != "1")
         $phpbb2_root_path = NUKE_PHPBB2_DIR;
     }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
@@ -63,7 +63,7 @@ include('includes/bbcode.'.$phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_INDEX);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
 init_userprefs($userdata);
 //
 // End session management
@@ -72,27 +72,27 @@ init_userprefs($userdata);
 /*****[BEGIN]******************************************
  [ Mod:    Forumtitle as Weblink               v1.2.2 ]
  ******************************************************/ 
-$forum_id = ( isset($HTTP_GET_VARS[POST_FORUM_URL]) ) ? intval($HTTP_GET_VARS[POST_FORUM_URL]) : 0;
+$forum_id = ( isset($HTTP_GET_VARS[NUKE_POST_FORUM_URL]) ) ? intval($HTTP_GET_VARS[NUKE_POST_FORUM_URL]) : 0;
 $forum_link = ( isset($HTTP_GET_VARS['forum_link']) ) ? intval($HTTP_GET_VARS['forum_link']) : 0;
 
 if ($forum_link && $forum_id)
 {
-	$sql = "UPDATE " . FORUMS_TABLE . "
+	$sql = "UPDATE " . NUKE_FORUMS_TABLE . "
 		SET forum_link_count = forum_link_count + 1
 		WHERE forum_id = $forum_id";
-	if (!($db->sql_query($sql)))
+	if (!($nuke_db->sql_query($sql)))
 	{
-		message_die(GENERAL_ERROR, 'Could not update link counter', '', __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, 'Could not update link counter', '', __LINE__, __FILE__, $sql);
 	}
 
-	$sql = "SELECT weblink FROM " . FORUMS_TABLE . "
+	$sql = "SELECT weblink FROM " . NUKE_FORUMS_TABLE . "
 		WHERE forum_id = $forum_id";
-	if (!($result = $db->sql_query($sql)))
+	if (!($result = $nuke_db->sql_query($sql)))
 	{
-		message_die(GENERAL_ERROR, 'Could not read forum weblink', '', __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, 'Could not read forum weblink', '', __LINE__, __FILE__, $sql);
 	}
 
-	while ($row = $db->sql_fetchrow($result))
+	while ($row = $nuke_db->sql_fetchrow($result))
 	{
 		$forum_weblink = $row['weblink'];
 	}
@@ -104,7 +104,7 @@ if ($forum_link && $forum_id)
  [ Mod:    Forumtitle as Weblink               v1.2.2 ]
  ******************************************************/ 
 
-$viewcat = ( !empty($HTTP_GET_VARS[POST_CAT_URL]) ) ? $HTTP_GET_VARS[POST_CAT_URL] : -1;
+$viewcat = ( !empty($HTTP_GET_VARS[NUKE_POST_CAT_URL]) ) ? $HTTP_GET_VARS[NUKE_POST_CAT_URL] : -1;
 
 if( isset($HTTP_GET_VARS['mark']) || isset($HTTP_POST_VARS['mark']) )
 {
@@ -131,7 +131,7 @@ if( $mark_read == 'forums' )
 
         $message = $lang['Forums_marked_read'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a> ');
 
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 //
 // End handle marking posts
@@ -198,22 +198,22 @@ else if ( $board_config['global_enable']== 1  &&  $board_config['marquee_disable
  [ Mod:     Global Announcements               v1.2.8 ]
  ******************************************************/
 $sql = "SELECT c.cat_id, c.cat_title, c.cat_order
-        FROM " . CATEGORIES_TABLE . " c
-        ".(($userdata['user_level']!=ADMIN)? "WHERE c.cat_id<>'".HIDDEN_CAT."'" :"" )."
+        FROM " . NUKE_CATEGORIES_TABLE . " c
+        ".(($userdata['user_level']!=NUKE_ADMIN)? "WHERE c.cat_id<>'".NUKE_HIDDEN_CAT."'" :"" )."
         ORDER BY c.cat_order";
 /*****[END]********************************************
  [ Mod:     Global Announcements               v1.2.8 ]
  ******************************************************/
-if( !($result = $db->sql_query($sql)) )
+if( !($result = $nuke_db->sql_query($sql)) )
 {
-        message_die(GENERAL_ERROR, 'Could not query categories list', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query categories list', '', __LINE__, __FILE__, $sql);
 }
 $category_rows = array();
-while ($row = $db->sql_fetchrow($result))
+while ($row = $nuke_db->sql_fetchrow($result))
 {
 	$category_rows[] = $row;
 }
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 
 /*****[BEGIN]******************************************
  [ Mod:    Simple Subforums                    v1.0.1 ]
@@ -226,25 +226,25 @@ $subforums_list = array();
 if( ( $total_categories = count($category_rows) ) )
 {
         $sql = "SELECT f.*, p.post_time, p.post_username, u.username, u.user_id, u.user_avatar, u.user_avatar_type
-                FROM (( " . FORUMS_TABLE . " f
-                LEFT JOIN " . POSTS_TABLE . " p ON p.post_id = f.forum_last_post_id )
-                LEFT JOIN " . USERS_TABLE . " u ON u.user_id = p.poster_id )
+                FROM (( " . NUKE_FORUMS_TABLE . " f
+                LEFT JOIN " . NUKE_POSTS_TABLE . " p ON p.post_id = f.forum_last_post_id )
+                LEFT JOIN " . NUKE_USERS_TABLE . " u ON u.user_id = p.poster_id )
                 ORDER BY f.cat_id, f.forum_order";
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Could not query forums information', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not query forums information', '', __LINE__, __FILE__, $sql);
         }
 
         $forum_data = array();
-        while( $row = $db->sql_fetchrow($result) )
+        while( $row = $nuke_db->sql_fetchrow($result) )
         {
                 $forum_data[] = $row;
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 
         if ( !($total_forums = count($forum_data)) )
         {
-                message_die(GENERAL_MESSAGE, $lang['No_forums']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['No_forums']);
         }
 
     //
@@ -259,21 +259,21 @@ if( ( $total_categories = count($category_rows) ) )
             $userdata['user_lastvisit'] = time() - 5184000;
         }
                 $sql = "SELECT t.forum_id, t.topic_id, p.post_time
-                        FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
+                        FROM " . NUKE_BB_TOPICS_TABLE . " t, " . NUKE_POSTS_TABLE . " p
                         WHERE p.post_id = t.topic_last_post_id
                                 AND p.post_time > " . $userdata['user_lastvisit'] . "
                                 AND t.topic_moved_id = '0'";
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not query new topic information', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not query new topic information', '', __LINE__, __FILE__, $sql);
                 }
 
                 $new_topic_data = array();
-                while( $topic_data = $db->sql_fetchrow($result) )
+                while( $topic_data = $nuke_db->sql_fetchrow($result) )
                 {
                         $new_topic_data[$topic_data['forum_id']][$topic_data['topic_id']] = $topic_data['post_time'];
                 }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         }
 
         //
@@ -282,7 +282,7 @@ if( ( $total_categories = count($category_rows) ) )
         //
         $forum_moderators = array();
         $sql = "SELECT aa.forum_id, u.user_id, u.username
-                FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g, " . USERS_TABLE . " u
+                FROM " . NUKE_AUTH_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g, " . NUKE_USERS_TABLE . " u
                 WHERE aa.auth_mod = " . TRUE . "
                 AND g.group_single_user = '1'
                 AND ug.group_id = aa.group_id
@@ -291,83 +291,83 @@ if( ( $total_categories = count($category_rows) ) )
                 GROUP BY u.user_id, u.username, aa.forum_id
                 ORDER BY aa.forum_id, u.user_id";
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
         }
 
-        while( $row = $db->sql_fetchrow($result) )
+        while( $row = $nuke_db->sql_fetchrow($result) )
         {
 /*****[BEGIN]******************************************
 [ Mod:    Advanced Username Color             v1.0.5 ]
 ******************************************************/
-                $forum_moderators[$row['forum_id']][] = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=" . $row['user_id']) . '">' . UsernameColor($row['username']) . '</a>';
+                $forum_moderators[$row['forum_id']][] = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '">' . UsernameColor($row['username']) . '</a>';
 /*****[END]********************************************
 [ Mod:    Advanced Username Color             v1.0.5 ]
 ******************************************************/
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 
         $sql = "SELECT aa.forum_id, g.group_id, g.group_name
-                FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
+                FROM " . NUKE_AUTH_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g
                 WHERE aa.auth_mod = " . TRUE . "
                 AND g.group_single_user = '0'
-                AND g.group_type <> " . GROUP_HIDDEN . "
+                AND g.group_type <> " . NUKE_GROUP_HIDDEN . "
                 AND ug.group_id = aa.group_id
                 AND g.group_id = aa.group_id
 
                 GROUP BY g.group_id, g.group_name, aa.forum_id
                 ORDER BY aa.forum_id, g.group_id";
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
         }
 
-        while( $row = $db->sql_fetchrow($result) )
+        while( $row = $nuke_db->sql_fetchrow($result) )
         {
-                $forum_moderators[$row['forum_id']][] = '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=" . $row['group_id']) . '">' . GroupColor($row['group_name']) . '</a>';
+                $forum_moderators[$row['forum_id']][] = '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=" . $row['group_id']) . '">' . GroupColor($row['group_name']) . '</a>';
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 		
 /*****[BEGIN]******************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
 		if ( !$board_config['bday_hide'] || $userdata['session_logged_in'] )
 		{
-			// if birthday_display is set to "Display age (but not day or month)" (eg. BIRTHDAY_AGE), we don't display it here,
+			// if birthday_display is set to "Display age (but not day or month)" (eg. NUKE_BIRTHDAY_AGE), we don't display it here,
 			// since this code would make it trivially easy to extrapolate that information.
 			$sql = "SELECT user_id, username, user_birthday, birthday_display, user_level 
-				FROM " . USERS_TABLE . " 
+				FROM " . NUKE_USERS_TABLE . " 
 				WHERE user_birthday >= " . gmdate('md0000',time() + (3600 * $board_config['board_timezone'])) . " 
 					AND user_birthday <= " . gmdate('md9999',time() + (3600 * $board_config['board_timezone']))." 
 					AND user_active = 1 
-					AND birthday_display <> " . BIRTHDAY_NONE . " 
-					AND birthday_display <> " . BIRTHDAY_AGE . " 
+					AND birthday_display <> " . NUKE_BIRTHDAY_NONE . " 
+					AND birthday_display <> " . NUKE_BIRTHDAY_AGE . " 
 				ORDER BY username DESC";
-			if ( !($result = $db->sql_query($sql)) )
+			if ( !($result = $nuke_db->sql_query($sql)) )
 			{
-				message_die(GENERAL_ERROR, 'Could not query members birthday information', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not query members birthday information', '', __LINE__, __FILE__, $sql);
 			}
 	
 			$user_birthdays = array();
-			while ( $row = $db->sql_fetchrow($result) )
+			while ( $row = $nuke_db->sql_fetchrow($result) )
 			{
-				// if birthday_display is set to "Display day and month (but not year)" (eg. BIRTHDAY_DATE), set the year
+				// if birthday_display is set to "Display day and month (but not year)" (eg. NUKE_BIRTHDAY_DATE), set the year
 				// to 0.
-				$bday_year = ( $row['birthday_display'] != BIRTHDAY_DATE ) ? $row['user_birthday'] % 10000 : 0;
+				$bday_year = ( $row['birthday_display'] != NUKE_BIRTHDAY_DATE ) ? $row['user_birthday'] % 10000 : 0;
 				$age = ( $bday_year ) ? ' ('.(gmdate('Y')-$bday_year).')' : '';
 				$color = '';
-				if ( $row['user_level'] == ADMIN )
+				if ( $row['user_level'] == NUKE_ADMIN )
 				{
 					$color = ' style="color:#' . $theme['fontcolor3'] . '"';
 				}
-				else if ( $row['user_level'] == MOD )
+				else if ( $row['user_level'] == NUKE_MOD )
 				{
 					$color = ' style="color:#' . $theme['fontcolor2'] . '"';
 				}
-				$user_birthdays[] = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=" . $row['user_id']) . '"' . $color . '>' . UsernameColor($row['username']) . '</a>' . $age;
+				$user_birthdays[] = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $color . '>' . UsernameColor($row['username']) . '</a>' . $age;
 			}
-			$db->sql_freeresult($result);
+			$nuke_db->sql_freeresult($result);
 	
 			$birthdays = (!empty($user_birthdays)) ?
 				sprintf($lang['Congratulations'],implode(', ',$user_birthdays)) :
@@ -379,35 +379,35 @@ if( ( $total_categories = count($category_rows) ) )
 				$end = gmdate('md0000',strtotime('+1 day') + (3600 * $board_config['board_timezone']));
 				$operator = ($start > $end) ? 'AND' : 'OR';
 				$sql = "SELECT user_id, username, user_birthday, birthday_display, user_level 
-					FROM " . USERS_TABLE . " 
+					FROM " . NUKE_USERS_TABLE . " 
 					WHERE (user_birthday <= $start 
 						$operator user_birthday >= $end)
 						AND user_birthday <> 0 
 						AND user_active = 1 
-						AND birthday_display <> " . BIRTHDAY_NONE . " 
-						AND birthday_display <> " . BIRTHDAY_AGE . " 
+						AND birthday_display <> " . NUKE_BIRTHDAY_NONE . " 
+						AND birthday_display <> " . NUKE_BIRTHDAY_AGE . " 
 					ORDER BY user_birthday ASC, username DESC";
-				if ( !($result = $db->sql_query($sql)) )
+				if ( !($result = $nuke_db->sql_query($sql)) )
 				{
-					message_die(GENERAL_ERROR, 'Could not query upcoming birthday information', '', __LINE__, __FILE__, $sql);
+					message_die(NUKE_GENERAL_ERROR, 'Could not query upcoming birthday information', '', __LINE__, __FILE__, $sql);
 				}
 				$upcoming_birthdays = array();
-				while ( $row = $db->sql_fetchrow($result) )
+				while ( $row = $nuke_db->sql_fetchrow($result) )
 				{
 					$bday_month_day = floor($row['user_birthday'] / 10000);
-					$bday_year_age = ( $row['birthday_display'] != BIRTHDAY_DATE ) ? $row['user_birthday'] - 10000*$bday_month_day : 0;
+					$bday_year_age = ( $row['birthday_display'] != NUKE_BIRTHDAY_DATE ) ? $row['user_birthday'] - 10000*$bday_month_day : 0;
 					$fudge = ( gmdate('md') < $bday_month_day ) ? 0 : 1;
 					$age = ( $bday_year_age ) ? ' ('.(gmdate('Y')-$bday_year_age+$fudge).')' : '';
 					$color = '';
-					if ( $row['user_level'] == ADMIN )
+					if ( $row['user_level'] == NUKE_ADMIN )
 					{
 						$color = ' style="color:#' . $theme['fontcolor3'] . '"';
 					}
-					else if ( $row['user_level'] == MOD )
+					else if ( $row['user_level'] == NUKE_MOD )
 					{
 						$color = ' style="color:#' . $theme['fontcolor2'] . '"';
 						}
-					$upcoming_birthdays[] = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=" . $row['user_id']) . '"' . $color . '>' . UsernameColor($row['username']) . '</a>' . $age;
+					$upcoming_birthdays[] = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $color . '>' . UsernameColor($row['username']) . '</a>' . $age;
 				}
 	
 				$upcoming = (!empty($upcoming_birthdays)) ?
@@ -432,7 +432,7 @@ if( ( $total_categories = count($category_rows) ) )
         // Find which forums are visible for this user
         //
         $is_auth_ary = array();
-        $is_auth_ary = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata, $forum_data);
+        $is_auth_ary = auth(NUKE_AUTH_VIEW, NUKE_AUTH_LIST_ALL, $userdata, $forum_data);
 
         //
         // Start output of page
@@ -457,7 +457,7 @@ if( ( $total_categories = count($category_rows) ) )
  [ Mod:     Number Format Total Posts          v1.0.4 ]
  ******************************************************/
                 'TOTAL_USERS' => sprintf($l_total_user_s, $total_users),
-                'NEWEST_USER' => sprintf($lang['Newest_user'], '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$newest_uid") . '">', $newest_user, '</a>'),
+                'NEWEST_USER' => sprintf($lang['Newest_user'], '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$newest_uid") . '">', $newest_user, '</a>'),
 				
 /*****[BEGIN]******************************************
  [ Mod:    Birthdays                           v3.0.0 ]
@@ -480,7 +480,7 @@ if( ( $total_categories = count($category_rows) ) )
                   'SHOW_LAST_POST_AVATAR' => $board_config['last_post_avatar'],
 
 /*****[BEGIN]******************************************
-[ Mod:    DHTML Collapsible Forum Index MOD     v1.1.1]
+[ Mod:    DHTML Collapsible Forum Index NUKE_MOD     v1.1.1]
 ******************************************************/
 		// 'U_CFI_JSLIB'			=> 'includes/collapsible_forum_index.js',
 		'CFI_COOKIE_NAME'		=> get_cfi_cookie_name(),
@@ -501,7 +501,7 @@ if( ( $total_categories = count($category_rows) ) )
 		'IMG_MINUS'				=> $images['icon_sign_minus'],
 		'SPACER'				=> $phpbb2_root_path . 'images/spacer.gif',
 /*****[END]********************************************
- [ Mod:    DHTML Collapsible Forum Index MOD     v1.1.1]
+ [ Mod:    DHTML Collapsible Forum Index NUKE_MOD     v1.1.1]
  ******************************************************/
 
                 'FORUM_IMG' => $images['forum'],
@@ -571,16 +571,16 @@ if( ( $total_categories = count($category_rows) ) )
                 {
                         $template->assign_block_vars('catrow', array(
 /*****[BEGIN]******************************************
- [ Mod:    DHTML Collapsible Forum Index MOD     v1.1.1]
+ [ Mod:    DHTML Collapsible Forum Index NUKE_MOD     v1.1.1]
  ******************************************************/
 				            'DISPLAY' => (is_category_collapsed($cat_id) ? '' : 'none'),
 /*****[END]********************************************
- [ Mod:    DHTML Collapsible Forum Index MOD     v1.1.1]
+ [ Mod:    DHTML Collapsible Forum Index NUKE_MOD     v1.1.1]
  ******************************************************/
                                 
                             'CAT_ID' => $cat_id,
                             'CAT_DESC' => $category_rows[$i]['cat_title'],
-                            'U_VIEWCAT' => append_sid("index.$phpEx?" . POST_CAT_URL . "=$cat_id"))
+                            'U_VIEWCAT' => append_sid("index.$phpEx?" . NUKE_POST_CAT_URL . "=$cat_id"))
                         );
 
                         if ( $viewcat == $cat_id || $viewcat == -1 )
@@ -606,13 +606,13 @@ if( ( $total_categories = count($category_rows) ) )
                                             $poster_avatar = $board_config['default_avatar_users_url'];
                                             switch( $forum_data[$j]['user_avatar_type'] )
                                             {
-                                                case USER_AVATAR_UPLOAD:
+                                                case NUKE_USER_AVATAR_UPLOAD:
                                                     $poster_avatar = $board_config['avatar_path'] . '/' . $forum_data[$j]['user_avatar'];
                                                     break;
-                                                case USER_AVATAR_REMOTE:
+                                                case NUKE_USER_AVATAR_REMOTE:
                                                     $poster_avatar = resize_avatar($forum_data[$j]['user_avatar']);
                                                     break;
-                                                case USER_AVATAR_GALLERY:
+                                                case NUKE_USER_AVATAR_GALLERY:
                                                     $poster_avatar = $board_config['avatar_gallery_path'] . '/' . (($forum_data[$j]['user_avatar'] 
 													== 'blank.gif' || $forum_data[$j]['user_avatar'] == 'gallery/blank.gif') ? 'blank.png' : $forum_data[$j]['user_avatar']);
                                                     break;
@@ -624,7 +624,7 @@ if( ( $total_categories = count($category_rows) ) )
 
                                                 if ( $is_auth_ary[$forum_id]['auth_view'] )
                                                 {
-                                                        if ( $forum_data[$j]['forum_status'] == FORUM_LOCKED )
+                                                        if ( $forum_data[$j]['forum_status'] == NUKE_FORUM_LOCKED )
                                                         {
                                                                 $folder_image = $images['forum_locked'];
                                                                $folder_alt = $lang['Forum_locked'];
@@ -728,17 +728,17 @@ if( ( $total_categories = count($category_rows) ) )
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                                                                $last_post_username = ( $forum_data[$j]['user_id'] == ANONYMOUS ) ? ( ($forum_data[$j]['post_username'] != '' ) ? $forum_data[$j]['post_username'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '='  . $forum_data[$j]['user_id']) . '">' . UsernameColor($forum_data[$j]['username']) . '</a> ';
+                                                                $last_post_username = ( $forum_data[$j]['user_id'] == NUKE_ANONYMOUS ) ? ( ($forum_data[$j]['post_username'] != '' ) ? $forum_data[$j]['post_username'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $forum_data[$j]['user_id']) . '">' . UsernameColor($forum_data[$j]['username']) . '</a> ';
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
 
-                                                                // $last_post = '<a href="'.append_sid("viewtopic.$phpEx?".POST_POST_URL.'='.$forum_data[$j]['forum_last_post_id']).'#'.$forum_data[$j]['forum_last_post_id'].'"><img src="'.$images['icon_latest_reply'].'" border="0" alt="'.$lang['View_latest_post'].'" title="'.$lang['View_latest_post'].'" /></a>';
-                                                                $last_post = '<a href="'.append_sid("viewtopic.$phpEx?".POST_POST_URL.'='.$forum_data[$j]['forum_last_post_id']).'#'.$forum_data[$j]['forum_last_post_id'].'"><i class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$lang['View_latest_post'].'"></i></a>';
+                                                                // $last_post = '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL.'='.$forum_data[$j]['forum_last_post_id']).'#'.$forum_data[$j]['forum_last_post_id'].'"><img src="'.$images['icon_latest_reply'].'" border="0" alt="'.$lang['View_latest_post'].'" title="'.$lang['View_latest_post'].'" /></a>';
+                                                                $last_post = '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL.'='.$forum_data[$j]['forum_last_post_id']).'#'.$forum_data[$j]['forum_last_post_id'].'"><i class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$lang['View_latest_post'].'"></i></a>';
 /*****[BEGIN]******************************************
  [ Mod:    Simple Subforums                    v1.0.1 ]
  ******************************************************/
-																$last_post_sub = '<a href="' . append_sid("viewtopic.$phpEx?"  . POST_POST_URL . '=' . $forum_data[$j]['forum_last_post_id']) . '#' . $forum_data[$j]['forum_last_post_id'] . '"><img src="' . ($unread_topics ? $images['icon_miniforum_new'] : $images['icon_miniforum']) . '" border="0" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
+																$last_post_sub = '<a href="' . append_sid("viewtopic.$phpEx?"  . NUKE_POST_POST_URL . '=' . $forum_data[$j]['forum_last_post_id']) . '#' . $forum_data[$j]['forum_last_post_id'] . '"><img src="' . ($unread_topics ? $images['icon_miniforum_new'] : $images['icon_miniforum']) . '" border="0" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 /*****[END]********************************************
  [ Mod:    Simple Subforums                    v1.0.1 ]
  ******************************************************/
@@ -782,12 +782,12 @@ if( ( $total_categories = count($category_rows) ) )
 
                                                         $template->assign_block_vars('catrow.forumrow', array(
 /*****[BEGIN]******************************************
- [ Mod:    DHTML Collapsible Forum Index MOD     v1.1.1]
+ [ Mod:    DHTML Collapsible Forum Index NUKE_MOD     v1.1.1]
  ******************************************************/
 								                                'FORUM_ID' => $forum_id,
 							                                	'DISPLAY' => (is_category_collapsed($cat_id) ? 'none' : ''),
 /*****[END]********************************************
- [ Mod:    DHTML Collapsible Forum Index MOD     v1.1.1]
+ [ Mod:    DHTML Collapsible Forum Index NUKE_MOD     v1.1.1]
  ******************************************************/
                                                                 'ROW_COLOR' => '#' . $row_color,
                                                                 'ROW_CLASS' => $row_class,
@@ -849,7 +849,7 @@ if( ( $total_categories = count($category_rows) ) )
 /*****[BEGIN]******************************************
  [ Mod:    Forumtitle as Weblink               v1.2.2 ]
  ******************************************************/ 
-								'U_VIEWFORUM' => ( $forum_data[$j]['title_is_link'] == 1 ) ? append_sid("index.$phpEx?" . POST_FORUM_URL . "=$forum_id&amp;forum_link=1") : append_sid("viewforum.$phpEx?" . POST_FORUM_URL . "=$forum_id"))
+								'U_VIEWFORUM' => ( $forum_data[$j]['title_is_link'] == 1 ) ? append_sid("index.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id&amp;forum_link=1") : append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id"))
 
 							);
 
@@ -902,7 +902,7 @@ if( ( $total_categories = count($category_rows) ) )
 }// if ... total_categories
 else
 {
-        message_die(GENERAL_MESSAGE, $lang['No_forums']);
+        message_die(NUKE_GENERAL_MESSAGE, $lang['No_forums']);
 }
 
 /*****[BEGIN]******************************************
@@ -981,7 +981,7 @@ for( $i = 0; $i < count($subforums_list); $i++ )
 			'UNREAD' => intval($subforums_list[$i]['unread_topics']),	
 			'L_MODERATOR' => $subforums_list[$i]['l_moderators'], 
 			'L_FORUM_FOLDER_ALT' => $subforums_list[$i]['folder_alt'], 	
-			'U_VIEWFORUM' => append_sid("viewforum.$phpEx?" . POST_FORUM_URL . '=' . $forum_data['forum_id'])
+			'U_VIEWFORUM' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . '=' . $forum_data['forum_id'])
 		);
 		$item['HAS_SUBFORUMS'] ++;
 		$item['TOTAL_UNREAD'] += intval($subforums_list[$i]['unread_topics']);

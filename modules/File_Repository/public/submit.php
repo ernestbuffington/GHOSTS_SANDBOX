@@ -14,13 +14,13 @@ if (!defined('MODULE_FILE'))
 
 function _file_repository_submitdownload()
 {
-	global $db, $admin_file, $lang_new, $module_name, $settings, $themes, $userinfo, $admin, $user;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $themes, $userinfo, $admin, $user;
 	OpenTable();
 	_index_navigation_header();
 
-	$result  = $db->sql_query( "SELECT * FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='0' AND `isallowed`='1' ORDER BY `cname`" );
-	$numrows = $db->sql_numrows( $result );
-	$categories = $db->sql_fetchrow( $result );
+	$result  = $nuke_db->sql_query( "SELECT * FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='0' AND `isallowed`='1' ORDER BY `cname`" );
+	$numrows = $nuke_db->sql_numrows( $result );
+	$categories = $nuke_db->sql_fetchrow( $result );
 
 	echo '<br />';
 	echo '<form action="modules.php?name='.$module_name.'&amp;action=submitdownload_save" method="post" enctype="multipart/form-data">'."\n";
@@ -245,42 +245,42 @@ function _file_repository_get_file_information($upload)
 
 function _file_repository_delete_on_client_error($did)
 {
-	global $db, $admin_file, $lang_new, $module_name, $settings;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings;
 	// merge this query into one.
 
 	$did = ($_GET['did']) ? $_GET['did'] : $_POST['did'];
 
-	$row  = $db->sql_fetchrow($db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `did`='".$did."'"));
-	$rowf = $db->sql_fetchrow($db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$row['did']."'"));
+	$row  = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `did`='".$did."'"));
+	$rowf = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$row['did']."'"));
 
-	$db->sql_query("DELETE FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `did`='".$row['did']."'");
-	$db->sql_query("DELETE FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$row['did']."'");
+	$nuke_db->sql_query("DELETE FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `did`='".$row['did']."'");
+	$nuke_db->sql_query("DELETE FROM `"._FILE_REPOSITORY_FILES."` WHERE `did`='".$row['did']."'");
 
-	$result = $db->sql_query("SELECT `pid`, `filename` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$row['did']."'");
-	$countShots = $db->sql_numrows($result);
+	$result = $nuke_db->sql_query("SELECT `pid`, `filename` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$row['did']."'");
+	$countShots = $nuke_db->sql_numrows($result);
 	if($countShots > 0)
 	{
-		while ($row2 = $db->sql_fetchrow($result))
+		while ($row2 = $nuke_db->sql_fetchrow($result))
 		{
 			@unlink(_FILE_REPOSITORY_SCREENS.'thumbs/thumb_100x100_'.$row2['filename']);
 			@unlink(_FILE_REPOSITORY_SCREENS.'thumbs/thumb_190x120_'.$row2['filename']);
 			@unlink(_FILE_REPOSITORY_SCREENS.$row2['filename']);
-			$db->sql_query("DELETE FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `pid`='".$row2['pid']."'");
+			$nuke_db->sql_query("DELETE FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `pid`='".$row2['pid']."'");
 		}
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
 	}
 	@unlink(_FILE_REPOSITORY_DIR.$rowf['filename']);
 }
 
 function _file_repository_save_submitdownload()
 {
-	global $db, $admin_file, $module_name, $userinfo, $settings;
+	global $nuke_db, $admin_file, $module_name, $userinfo, $settings;
 
 	// $_FILES['userfile'] = array();
 
-	$result  = $db->sql_query( "SELECT * FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='0' AND `isallowed`='1' ORDER BY `cname`" );
-	$numrows = $db->sql_numrows( $result );
-	$categories = $db->sql_fetchrow( $result );
+	$result  = $nuke_db->sql_query( "SELECT * FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='0' AND `isallowed`='1' ORDER BY `cname`" );
+	$numrows = $nuke_db->sql_numrows( $result );
+	$categories = $nuke_db->sql_fetchrow( $result );
 
 	if ($numrows > 0 && $settings['users_can_upload'] == true && _check_users_permissions($settings['group_allowed_to_upload']) == true ):
 
@@ -302,8 +302,8 @@ function _file_repository_save_submitdownload()
 		$version      		= (!empty($_POST['version'])) ? $_POST['version'] : '';
 
 		$sql = "INSERT INTO `"._FILE_REPOSITORY_ITEMS."` (`cid`, `author`, `author_email`, `author_website`, `date`, `description`, `did`, `isapproved`, `preview`, `semail`, `sname`, `suid`, `title`, `version`) VALUES ('".$cid."', '".$author."', '".$author_email."', '".$author_website."', now(), '".$description."', NULL, 0, '".$preview."', '".$semail."', '".$sname."', '".$suid."', '".$title."', '".$version."')";
-		$db->sql_query($sql);
-		$did = $db->sql_nextid();
+		$nuke_db->sql_query($sql);
+		$did = $nuke_db->sql_nextid();
 
 		for( $i = 0 ; $i < count($_FILES['userfile']['name']) ; $i++ ):
 
@@ -352,7 +352,7 @@ function _file_repository_save_submitdownload()
 						endif;
 
 						if(count($error_messages) == 0 && $fileupload['name']):
-							$db->sql_query("INSERT INTO `"._FILE_REPOSITORY_FILES."` (`fid`, `did`, `ftitle`, `filename`, `filesize`) VALUES (NULL, '".$did."', '".$fileupload['desc']."', '".$fileupload['name']."', '".$fileupload['size']."')");
+							$nuke_db->sql_query("INSERT INTO `"._FILE_REPOSITORY_FILES."` (`fid`, `did`, `ftitle`, `filename`, `filesize`) VALUES (NULL, '".$did."', '".$fileupload['desc']."', '".$fileupload['name']."', '".$fileupload['size']."')");
 						endif;
 					} 
 
@@ -411,7 +411,7 @@ function _file_repository_save_submitdownload()
 							'aspect_ratio' => true
 						));
 
-						$db->sql_query("INSERT INTO `"._FILE_REPOSITORY_SCREENSHOTS."` (`pid`, `did`, `active`, `filename`, `size`, `submitter`, `title`) VALUES (NULL, '".$did."', 1, '".$userscreen['name']."', '".$userscreen['size']."', '".$userinfo['username']."', '".$userscreen['desc']."')");
+						$nuke_db->sql_query("INSERT INTO `"._FILE_REPOSITORY_SCREENSHOTS."` (`pid`, `did`, `active`, `filename`, `size`, `submitter`, `title`) VALUES (NULL, '".$did."', 1, '".$userscreen['name']."', '".$userscreen['size']."', '".$userinfo['username']."', '".$userscreen['desc']."')");
 
 					endif;
 
@@ -424,11 +424,11 @@ function _file_repository_save_submitdownload()
 		if (count( $error_messages ) > 0):
 			_file_respotiroy_error_messages( $error_messages );
 		else:
-			_redirect('modules.php?name='.$module_name.'&action=submitdownload_success');
+			_nuke_redirect('modules.php?name='.$module_name.'&action=submitdownload_success');
 		endif;
 
 	else:
-		_redirect('modules.php?name='.$module_name);
+		_nuke_redirect('modules.php?name='.$module_name);
 	endif;
 }
 

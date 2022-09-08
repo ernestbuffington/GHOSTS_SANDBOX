@@ -33,7 +33,7 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
@@ -49,21 +49,21 @@ if (isset($HTTP_GET_VARS['gid']) || isset($HTTP_POST_VARS['gid'])) {
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_SCOREBOARD, $nukeuser);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_SCOREBOARD, $nukeuser);
 init_userprefs($userdata);
 //
 // End session management
 //
 include('includes/functions_arcade.' . $phpEx);
 
-$sql = "SELECT arcade_catid FROM " . GAMES_TABLE . " WHERE game_id = '$gid'" ;
+$sql = "SELECT arcade_catid FROM " . NUKE_GAMES_TABLE . " WHERE game_id = '$gid'" ;
 
-if (!($result = $db->sql_query($sql))) {
-        message_die(GENERAL_ERROR, "Could not read the games table", '', __LINE__, __FILE__, $sql);
+if (!($result = $nuke_db->sql_query($sql))) {
+        message_die(NUKE_GENERAL_ERROR, "Could not read the games table", '', __LINE__, __FILE__, $sql);
 }
 
-if (!($row = $db->sql_fetchrow($result)) ) {
-        message_die(GENERAL_MESSAGE, "Category does not exist", '', __LINE__, __FILE__, $sql);
+if (!($row = $nuke_db->sql_fetchrow($result)) ) {
+        message_die(NUKE_GENERAL_MESSAGE, "Category does not exist", '', __LINE__, __FILE__, $sql);
 }
 
 $liste_cat_auth_view = get_arcade_categories($userdata['user_id'], $userdata['user_level'],'view');
@@ -71,46 +71,46 @@ $tbauth_view = array();
 $tbauth_view = explode(',',$liste_cat_auth_view);
 
 if (!in_array($row['arcade_catid'],$tbauth_view)) {
-        message_die(GENERAL_MESSAGE, $lang['game_forbidden']);
+        message_die(NUKE_GENERAL_MESSAGE, $lang['game_forbidden']);
 }
 
 $start = (isset($HTTP_GET_VARS['start'])) ? intval($HTTP_GET_VARS['start']) : 0;
 
 if (!empty($gid)) {
-        $sql = "SELECT * FROM " . SCORES_TABLE . " WHERE game_id = $gid";
+        $sql = "SELECT * FROM " . NUKE_SCORES_TABLE . " WHERE game_id = $gid";
 
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-                message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
         }
 } else {
-        message_die(GENERAL_MESSAGE, 'This game does not exist');
+        message_die(NUKE_GENERAL_MESSAGE, 'This game does not exist');
 }
 
-if (!($score_row = $db->sql_fetchrow($result))) {
-        message_die(GENERAL_MESSAGE, 'There is no score for this game');
+if (!($score_row = $nuke_db->sql_fetchrow($result))) {
+        message_die(NUKE_GENERAL_MESSAGE, 'There is no score for this game');
 }
 
-$score_count = $db->sql_numrows($result) ;
+$score_count = $nuke_db->sql_numrows($result) ;
 
 $sql = "SET OPTION SQL_BIG_SELECTS=1 ";
-$db->sql_query($sql) ;
+$nuke_db->sql_query($sql) ;
 
-$sql = "SELECT COUNT(*) AS num, s.*, u.username, g.game_name FROM " . SCORES_TABLE . " s LEFT JOIN " . SCORES_TABLE . " s2 ON s.score_game<=s2.score_game AND s.game_id = s2.game_id LEFT JOIN " . USERS_TABLE . " u ON s.user_id = u.user_id  LEFT JOIN " . GAMES_TABLE . " g ON g.game_id = s.game_id WHERE s.game_id = $gid AND ((s.score_game < s2.score_game) OR (s.user_id = s2.user_id)) GROUP BY s.user_id ORDER BY s.score_game DESC, s.score_date ASC LIMIT $start, ".$board_config['topics_per_page'];
+$sql = "SELECT COUNT(*) AS num, s.*, u.username, g.game_name FROM " . NUKE_SCORES_TABLE . " s LEFT JOIN " . NUKE_SCORES_TABLE . " s2 ON s.score_game<=s2.score_game AND s.game_id = s2.game_id LEFT JOIN " . NUKE_USERS_TABLE . " u ON s.user_id = u.user_id  LEFT JOIN " . NUKE_GAMES_TABLE . " g ON g.game_id = s.game_id WHERE s.game_id = $gid AND ((s.score_game < s2.score_game) OR (s.user_id = s2.user_id)) GROUP BY s.user_id ORDER BY s.score_game DESC, s.score_date ASC LIMIT $start, ".$board_config['topics_per_page'];
 
-if (!($result = $db->sql_query($sql))) {
-        message_die(GENERAL_ERROR, 'Could not read the scores table', '', __LINE__, __FILE__, $sql);
+if (!($result = $nuke_db->sql_query($sql))) {
+        message_die(NUKE_GENERAL_ERROR, 'Could not read the scores table', '', __LINE__, __FILE__, $sql);
 }
 
 $total_score = 0;
 
-while($row = $db->sql_fetchrow($result)) {
+while($row = $nuke_db->sql_fetchrow($result)) {
         $score_rowset[] = $row;
         $gamename = $row['game_name'] ;
         $total_score++;
 }
 
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 
 //
 // Post URL generation for templating vars

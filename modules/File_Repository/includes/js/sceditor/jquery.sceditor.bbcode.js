@@ -1363,7 +1363,7 @@
 
 			while (elm.firstChild)
 				prePasteContent.appendChild(elm.firstChild);
-// try make pastearea contenteditable and redirect to that? Might work.
+// try make pastearea contenteditable and nuke_redirect to that? Might work.
 // Check the tests if still exist, if not re-0create
 			handlePaste = function (elm, pastearea) {
 				if (elm.childNodes.length > 0 || checkCount > 25)

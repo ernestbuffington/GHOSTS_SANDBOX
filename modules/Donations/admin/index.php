@@ -8,10 +8,10 @@ if (!defined('ADMIN_FILE')) {
     die('Access Denied');
 }
 
-global $prefix, $db, $admin_file, $admdata;
+global $prefix, $nuke_db, $admin_file, $admdata;
 $module_name = basename(dirname(dirname(__FILE__)));
 
-$row = $db->sql_fetchrow($db->sql_query("SELECT title, admins FROM ".$prefix."_modules WHERE title='$module_name'"));
+$row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT title, admins FROM ".$prefix."_modules WHERE title='$module_name'"));
 $admins = explode(",", $row['admins']);
 $auth_user = 0;
 for ($i=0; $i < count($admins); $i++) {

@@ -27,15 +27,15 @@
 
 if(!defined('NUKE_EVO')) exit;
 
-global $prefix, $db;
+global $prefix, $nuke_db;
 
 $sql = "SELECT id, title FROM ".$prefix."_reviews ORDER BY id DESC LIMIT 0,10";
-$result = $db->sql_query($sql);
-while (list($id, $title) = $db->sql_fetchrow($result)) {
+$result = $nuke_db->sql_query($sql);
+while (list($id, $title) = $nuke_db->sql_fetchrow($result)) {
     $id = intval($id);
     $title = stripslashes($title);
     $content .= "<strong><big>&middot;</big></strong>&nbsp;<a href=\"modules.php?name=Reviews&amp;rop=showcontent&amp;id=$id\">$title</a><br />";
 }
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 
 ?>

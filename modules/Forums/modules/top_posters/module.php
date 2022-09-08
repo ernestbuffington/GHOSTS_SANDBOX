@@ -18,7 +18,7 @@
        Advanced Username Color                  v1.0.5       08/08/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -51,7 +51,7 @@ $core->assign_defined_view('align_rows', array(
     'left')
 );
 
-$sql = "SELECT SUM(user_posts) as total_posts FROM " . USERS_TABLE . " WHERE user_id <> " . ANONYMOUS;
+$sql = "SELECT SUM(user_posts) as total_posts FROM " . NUKE_USERS_TABLE . " WHERE user_id <> " . NUKE_ANONYMOUS;
 
 $result = $core->sql_query($sql, 'Unable to retrieve users data');
 $row = $core->sql_fetchrow($result);
@@ -62,8 +62,8 @@ $total_posts = $row['total_posts'];
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
 $sql = "SELECT user_id, user_color_gc, username, user_posts
-FROM " . USERS_TABLE . "
-WHERE (user_id <> " . ANONYMOUS . " ) AND (user_posts > 0)
+FROM " . NUKE_USERS_TABLE . "
+WHERE (user_id <> " . NUKE_ANONYMOUS . " ) AND (user_posts > 0)
 ORDER BY user_posts DESC
 LIMIT " . $core->return_limit;
 /*****[END]********************************************

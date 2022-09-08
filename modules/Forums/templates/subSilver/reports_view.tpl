@@ -37,7 +37,7 @@
     </tr>
     <!-- END postrow -->
     <tr>
-        <td class="catbottom" colspan="5" height="28" align="center"><span class="genmed">{DELETED_REPORTS}</span></td>
+        <td class="catbottom" colspan="5" height="28" align="center"><span class="genmed">{NUKE_DELETED_REPORTS}</span></td>
     </tr>
 </table>
 

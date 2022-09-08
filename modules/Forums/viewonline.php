@@ -46,14 +46,14 @@ if (!defined('MODULE_FILE'))
 
 $module_name = basename(dirname(__FILE__));
 require("modules/".$module_name."/nukebb.php");
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_VIEWONLINE);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_VIEWONLINE);
 init_userprefs($userdata);
 //
 // End session management
@@ -82,21 +82,21 @@ $template->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-    $q = "SELECT forum_id, forum_name FROM ". FORUMS_TABLE ."";
-    $r = $db->sql_query($q);
-    $forums_data = $db->sql_fetchrowset($r);
+    $q = "SELECT forum_id, forum_name FROM ". NUKE_FORUMS_TABLE ."";
+    $r = $nuke_db->sql_query($q);
+    $forums_data = $nuke_db->sql_fetchrowset($r);
 
-    $q = "SELECT username, user_id FROM ". USERS_TABLE ."";
-    $r = $db->sql_query($q);
-    $users_data = $db->sql_fetchrowset($r);
+    $q = "SELECT username, user_id FROM ". NUKE_USERS_TABLE ."";
+    $r = $nuke_db->sql_query($q);
+    $users_data = $nuke_db->sql_fetchrowset($r);
 
-    $q = "SELECT topic_id, topic_title FROM ". TOPICS_TABLE ."";
-    $r = $db->sql_query($q);
-    $topics_data = $db->sql_fetchrowset($r);
+    $q = "SELECT topic_id, topic_title FROM ". NUKE_BB_TOPICS_TABLE ."";
+    $r = $nuke_db->sql_query($q);
+    $topics_data = $nuke_db->sql_fetchrowset($r);
 
-    $q = "SELECT cat_id, cat_title FROM ". CATEGORIES_TABLE ."";
-    $r = $db->sql_query($q);
-    $cats_data = $db->sql_fetchrowset($r);
+    $q = "SELECT cat_id, cat_title FROM ". NUKE_CATEGORIES_TABLE ."";
+    $r = $nuke_db->sql_query($q);
+    $cats_data = $nuke_db->sql_fetchrowset($r);
 /*****[END]********************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
@@ -104,24 +104,24 @@ $template->assign_vars(array(
 //
 // Forum info
 //
-$sql = "SELECT forum_name, forum_id FROM " . FORUMS_TABLE;
-if ( $result = $db->sql_query($sql) )
+$sql = "SELECT forum_name, forum_id FROM " . NUKE_FORUMS_TABLE;
+if ( $result = $nuke_db->sql_query($sql) )
 {
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
         $forum_data[$row['forum_id']] = $row['forum_name'];
     }
 }
 else
 {
-    message_die(GENERAL_ERROR, 'Could not obtain user/online forums information', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain user/online forums information', '', __LINE__, __FILE__, $sql);
 }
 
 //
 // Get auth data
 //
 $is_auth_ary = array();
-$is_auth_ary = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata);
+$is_auth_ary = auth(NUKE_AUTH_VIEW, NUKE_AUTH_LIST_ALL, $userdata);
 
 //
 // Get user list
@@ -132,7 +132,7 @@ $is_auth_ary = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata);
  ******************************************************/
 $sql = "SELECT u.user_id, u.username, u.user_allow_viewonline, u.user_level, s.session_url_qs, s.session_url_ps, s.session_url_specific, s.session_logged_in, s.session_time, s.session_page, s.session_ip
 
-        FROM ".USERS_TABLE." u, ".SESSIONS_TABLE." s
+        FROM ".NUKE_USERS_TABLE." u, ".NUKE_BB_SESSIONS_TABLE." s
 
         WHERE u.user_id = s.session_user_id
 
@@ -144,9 +144,9 @@ $sql = "SELECT u.user_id, u.username, u.user_allow_viewonline, u.user_level, s.s
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
 
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'Could not obtain regd user/online information', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain regd user/online information', '', __LINE__, __FILE__, $sql);
 }
 
 $guest_users = 0;
@@ -157,7 +157,7 @@ $guest_counter = 0;
 $prev_user = 0;
 $prev_ip = '';
 
-while ( $row = $db->sql_fetchrow($result) )
+while ( $row = $nuke_db->sql_fetchrow($result) )
 {
     $view_online = false;
     if ( $row['session_logged_in'] )
@@ -167,11 +167,11 @@ while ( $row = $db->sql_fetchrow($result) )
         {
             $username = $row['username'];
             $style_color = '';
-            if ( $row['user_level'] == ADMIN )
+            if ( $row['user_level'] == NUKE_ADMIN )
             {
                 $username = '<b style="color:#' . $theme['fontcolor3'] . '">' . $username . '</strong>';
             }
-            else if ( $row['user_level'] == MOD )
+            else if ( $row['user_level'] == NUKE_MOD )
             {
                 $username = '<b style="color:#' . $theme['fontcolor2'] . '">' . $username . '</strong>';
             }
@@ -188,7 +188,7 @@ while ( $row = $db->sql_fetchrow($result) )
 /*****[BEGIN]******************************************
  [ Mod:    Hidden Status Viewing               v1.0.0 ]
  ******************************************************/
-                $view_online = ( $userdata['user_level'] == ADMIN || $userdata['user_id'] == $user_id ) ? true : false;
+                $view_online = ( $userdata['user_level'] == NUKE_ADMIN || $userdata['user_id'] == $user_id ) ? true : false;
 /*****[END]********************************************
  [ Mod:    Hidden Status Viewing               v1.0.0 ]
  ******************************************************/
@@ -225,54 +225,54 @@ while ( $row = $db->sql_fetchrow($result) )
         {
             switch( $row['session_page'] )
             {
-                case PAGE_INDEX:
+                case NUKE_PAGE_INDEX:
                     $location = $lang['Forum_index'];
                     $location_url = "modules.php?name=Forums&amp;file=index";
                     break;
 
-                case PAGE_POSTING:
+                case NUKE_PAGE_POSTING:
                     $location = $lang['Posting_message'];
                     $location_url = "modules.php?name=Forums&amp;file=index";
                     break;
 
-                case PAGE_LOGIN:
+                case NUKE_PAGE_LOGIN:
                     $location = $lang['Logging_on'];
                     $location_url = "modules.php?name=Forums&amp;file=index";
                     break;
 
-                case PAGE_SEARCH:
+                case NUKE_PAGE_SEARCH:
                     $location = $lang['Searching_forums'];
                     $location_url = "modules.php?name=Forums&amp;file=search";
                     break;
 
-                case PAGE_PROFILE:
+                case NUKE_PAGE_PROFILE:
                     $location = $lang['Viewing_profile'];
                     $location_url = "modules.php?name=Forums&amp;file=index";
                     break;
 
-                case PAGE_VIEWONLINE:
+                case NUKE_PAGE_VIEWONLINE:
                     $location = $lang['Viewing_online'];
                     $location_url = "modules.php?name=Forums&amp;file=viewonline";
                     break;
 
-                case PAGE_VIEWMEMBERS:
+                case NUKE_PAGE_VIEW_MEMBERS:
                     $location = $lang['Viewing_member_list'];
                     $location_url = "modules.php?name=Memberlist";
                     break;
 
-                case PAGE_PRIVMSGS:
+                case NUKE_PAGE_PRIVMSGS:
                     $location = $lang['Viewing_priv_msgs'];
                     $location_url = "modules.php?name=Private_Messages";
                     break;
 
-                case PAGE_FAQ:
+                case NUKE_PAGE_FAQ:
                     $location = $lang['Viewing_FAQ'];
                     $location_url = "modules.php?name=Forums&file=faq";
                     break;                                
 /*****[BEGIN]******************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/
-                case PAGE_REPUTATION:
+                case NUKE_PAGE_REPUTATION:
                     $location = $lang['Reputation'];
                     $location_url = "reputation.$phpEx";
                     break;
@@ -283,27 +283,27 @@ while ( $row = $db->sql_fetchrow($result) )
 /*****[BEGIN]******************************************
  [ Mod:     Arcade                             v3.0.2 ]
  ******************************************************/
-                case PAGE_GAME: 
+                case NUKE_PAGE_GAME: 
                     $location = $lang['Playing_game']; 
                     $location_url = "arcade.$phpEx"; 
                     break; 
 
-                case PAGE_ARCADES: 
+                case NUKE_PAGE_ARCADES: 
                     $location = $lang['Viewing_arcades']; 
                     $location_url = "arcade.$phpEx"; 
                     break; 
 
-                case PAGE_TOPARCADES: 
+                case NUKE_PAGE_TOPARCADES: 
                     $location = $lang['Viewing_toparcades']; 
                     $location_url = "toparcade.$phpEx"; 
                     break; 
 
-                case PAGE_STATARCADES: 
+                case NUKE_PAGE_STATARCADES: 
                     $location = $lang['watchingstats']; 
                     $location_url = "statarcade.$phpEx"; 
                     break; 
 
-                case PAGE_SCOREBOARD: 
+                case NUKE_PAGE_SCOREBOARD: 
                     $location = $lang['watchingboard']; 
                     $location_url = "arcade.$phpEx"; 
                     break;
@@ -314,7 +314,7 @@ while ( $row = $db->sql_fetchrow($result) )
 /*****[BEGIN]******************************************
  [ Mod:     Staff Site                         v2.0.3 ]
  ******************************************************/
-                case PAGE_STAFF:
+                case NUKE_PAGE_STAFF:
                     $location = $lang['Staff'];
                     $location_url = "modules.php?name=Forums&file=staff";
                     break;
@@ -325,7 +325,7 @@ while ( $row = $db->sql_fetchrow($result) )
 /*****[BEGIN]******************************************
  [ Base:    Recent Topics                      v1.2.4 ]
  ******************************************************/
-                case PAGE_RECENT:
+                case NUKE_PAGE_RECENT:
                     $location = $lang['Recent_topics'];
                     $location_url = "modules.php?name=Forums&file=recent";
                     break;
@@ -336,7 +336,7 @@ while ( $row = $db->sql_fetchrow($result) )
 /*****[START]******************************************
  [ Base:    Who viewed a topic                 v1.0.3 ]
  ******************************************************/
-                case PAGE_TOPIC_VIEW: 
+                case NUKE_PAGE_TOPIC_VIEW: 
                     $location = $lang['Topic_view_count']; 
                     $location_url = "viewtopic_whoview.$phpEx"; 
                     break;
@@ -351,7 +351,7 @@ while ( $row = $db->sql_fetchrow($result) )
         }
         else
         {
-            $location_url = "modules.php?name=Forums&file=viewforum&amp;" . POST_FORUM_URL . "=" . $row['session_page'];
+            $location_url = "modules.php?name=Forums&file=viewforum&amp;" . NUKE_POST_FORUM_URL . "=" . $row['session_page'];
             $location = $forum_data[$row['session_page']];
 
         }
@@ -374,7 +374,7 @@ while ( $row = $db->sql_fetchrow($result) )
             'USERNAME' => $username,
             'LASTUPDATE' => create_date($board_config['default_dateformat'], $row['session_time'], $board_config['board_timezone']),
             'FORUM_LOCATION' => $location,
-            'U_USER_PROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '=' . $user_id),
+            'U_USER_PROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $user_id),
             'U_FORUM_LOCATION' => append_sid($location_url))
         );
         $$which_counter++;

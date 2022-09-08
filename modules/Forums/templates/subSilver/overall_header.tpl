@@ -177,9 +177,9 @@ input.post, textarea.post, select {
     background-color : {T_TD_COLOR2};
 }
 
-/* Start replacement - Advanced time management MOD */
+/* Start replacement - Advanced time management NUKE_MOD */
 /* input { text-indent : 2px; }
-/* End replacement - Advanced time management MOD */
+/* End replacement - Advanced time management NUKE_MOD */
 
 /* The buttons used for bbCode styling in message post */
 input.button {
@@ -235,7 +235,7 @@ var rmw_image_title = '{L_RMW_IMAGE_TITLE}';
 //-->
 </script>
 <!-- END switch_enable_pm_popup -->
-<!-- Start add - Advanced time management MOD -->
+<!-- Start add - Advanced time management NUKE_MOD -->
 <!-- BEGIN switch_send_pc_dateTime -->
 <script type="text/javascript">
 <!-- Start Replace - window.onload = send_pc_dateTime -->
@@ -270,7 +270,7 @@ function send_pc_dateTime() {
 }
 </script>
 <!-- END switch_send_pc_dateTime -->
-<!-- End add - Advanced time management MOD -->
+<!-- End add - Advanced time management NUKE_MOD -->
 </head>
 <body bgcolor="{T_BODY_BGCOLOR}" text="{T_BODY_TEXT}" link="{T_BODY_LINK}" vlink="{T_BODY_VLINK}">
 

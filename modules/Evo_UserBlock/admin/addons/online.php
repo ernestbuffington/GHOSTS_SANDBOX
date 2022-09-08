@@ -22,9 +22,9 @@ if (!defined('ADMIN_FILE')) {
 
 include_once(NUKE_BASE_DIR.'header.php');
 OpenTable();
-echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=evo-userinfo\">" .$lang_evo_userblock['ADMIN']['ADMIN_HEADER']. "</a></div>\n";
+echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=evo-userinfo\">" .$lang_evo_userblock['NUKE_ADMIN']['ADMIN_HEADER']. "</a></div>\n";
 echo "<br /><br />";
-echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" .$lang_evo_userblock['ADMIN']['ADMIN_RETURN']. "</a> ]</div>\n";
+echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" .$lang_evo_userblock['NUKE_ADMIN']['ADMIN_RETURN']. "</a> ]</div>\n";
 CloseTable();
 echo "<br />";
 title(_EVO_USERINFO. "&nbsp;-&nbsp;" .$lang_evo_userblock['ONLINE']['ONLINE']);
@@ -35,7 +35,7 @@ if(!empty($_POST))
     $values = array('show_members' => Fix_Quotes($_POST['show_members']),'show_hv' => Fix_Quotes($_POST['show_hv']), 'scroll' => Fix_Quotes($_POST['scroll']), 'tooltip' => Fix_Quotes($_POST['tooltip']), 'country_flag' => Fix_Quotes($_POST['country_flag']), 'user_level_image' => Fix_Quotes($_POST['user_level_image']));
     evouserinfo_write_addon('online', $values);
     echo "<div align=\"center\">\n";
-    echo $lang_evo_userblock['ADMIN']['SAVED'];
+    echo $lang_evo_userblock['NUKE_ADMIN']['SAVED'];
     echo "</div>";
     global $admin_file;
     echo "<meta http-equiv=\"refresh\" content=\"3;url=$admin_file.php?op=evo-userinfo\">";
@@ -84,7 +84,7 @@ else
     echo $lang_evo_userblock['ONLINE']['USER_LEVEL_IMAGE']."<br />";
     echo evouserinfo_radio($radio);
     echo "<br />";
-    echo "<input type=\"submit\" value=\"".$lang_evo_userblock['ADMIN']['SAVE']."\">";
+    echo "<input type=\"submit\" value=\"".$lang_evo_userblock['NUKE_ADMIN']['SAVE']."\">";
     echo "</form>";
     echo "</div>";
 

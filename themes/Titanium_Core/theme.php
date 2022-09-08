@@ -104,11 +104,11 @@ $define_theme_xtreme_209e,
 	           $ThemeInfo, 
 	   $use_xtreme_voting, 
 $make_xtreme_avatar_small,
-                      $db;
+                      $nuke_db;
 
     list($portaladminname, 
 	              $avatar, 
-				   $email) = $db->sql_ufetchrow("SELECT `username`,`user_avatar`, `user_email` FROM `nuke_users` WHERE `user_id`=$portaladmin", SQL_NUM);
+				   $email) = $nuke_db->sql_ufetchrow("SELECT `username`,`user_avatar`, `user_email` FROM `nuke_users` WHERE `user_id`=$portaladmin", SQL_NUM);
 				   
 # be sure and set your user number in the config.php file.
 //$my_welcome_message = '<a class = "welcome" href="'.$domain.'">Welcome to The 86it Developers Network</a>';

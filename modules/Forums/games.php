@@ -33,7 +33,7 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 require_once('includes/bbcode.'. $phpEx);
@@ -41,7 +41,7 @@ require_once('includes/bbcode.'. $phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_GAME, $nukeuser);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_GAME, $nukeuser);
 init_userprefs($userdata);
 //
 // End session management
@@ -62,7 +62,7 @@ if (!$userdata['session_logged_in']) {
 $arcade_config = array();
 $arcade_config = read_arcade_config();
 
-if($arcade_config['limit_by_posts'] && $userdata['user_level'] != ADMIN){
+if($arcade_config['limit_by_posts'] && $userdata['user_level'] != NUKE_ADMIN){
 $secs = 86400;
 $uid = $userdata['user_id'];
 
@@ -75,18 +75,18 @@ $old_time = $current_time - ($secs * $days);
 //Begin Limit Play mod
 if($arcade_config['limit_type']=='posts')
 {
-$sql = "SELECT * FROM " . POSTS_TABLE . " WHERE poster_id = $uid";
+$sql = "SELECT * FROM " . NUKE_POSTS_TABLE . " WHERE poster_id = $uid";
 }
 else
 {
-$sql = "SELECT * FROM " . POSTS_TABLE . " WHERE poster_id = $uid and post_time BETWEEN $old_time AND $current_time";
+$sql = "SELECT * FROM " . NUKE_POSTS_TABLE . " WHERE poster_id = $uid and post_time BETWEEN $old_time AND $current_time";
 }
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
     }
 
-    $Amount_Of_Posts = $db->sql_numrows( $result );
+    $Amount_Of_Posts = $nuke_db->sql_numrows( $result );
 
 
     if($Amount_Of_Posts < $posts)
@@ -101,7 +101,7 @@ if ( !($result = $db->sql_query($sql)) )
             $message = "You need $posts posts in the last $days days to play the arcade.<br />You need $diff_posts more posts.";
 
         }
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
     }
 }
 //End Limit Play mod
@@ -111,19 +111,19 @@ if (!empty($HTTP_POST_VARS['gid']) || !empty($HTTP_GET_VARS['gid']))
         $gid = (!empty($HTTP_POST_VARS['gid'])) ? intval($HTTP_POST_VARS['gid']) : intval($HTTP_GET_VARS['gid']);
         }
 else    {
-        message_die(GENERAL_ERROR, "No game is specified");
+        message_die(NUKE_GENERAL_ERROR, "No game is specified");
         }
 
-$sql = "SELECT g.* , MAX(s.score_game) AS highscore FROM " . GAMES_TABLE . " g LEFT JOIN " . SCORES_TABLE . " s ON g.game_id = s.game_id WHERE g.game_id = $gid GROUP BY g.game_id, g.game_highscore";
+$sql = "SELECT g.* , MAX(s.score_game) AS highscore FROM " . NUKE_GAMES_TABLE . " g LEFT JOIN " . NUKE_SCORES_TABLE . " s ON g.game_id = s.game_id WHERE g.game_id = $gid GROUP BY g.game_id, g.game_highscore";
 
-if (!($result = $db->sql_query($sql)))
+if (!($result = $nuke_db->sql_query($sql)))
 {
-        message_die(GENERAL_ERROR, "Could not read games table", '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Could not read games table", '', __LINE__, __FILE__, $sql);
 }
 
-if (!($row = $db->sql_fetchrow($result)) )
+if (!($row = $nuke_db->sql_fetchrow($result)) )
 {
-        message_die(GENERAL_ERROR, "This game does not exist", '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "This game does not exist", '', __LINE__, __FILE__, $sql);
 }
 
 $liste_cat_auth_play = get_arcade_categories($userdata['user_id'], $userdata['user_level'],'play');
@@ -132,7 +132,7 @@ $tbauth_play = explode(',',$liste_cat_auth_play);
 
 if (!in_array($row['arcade_catid'],$tbauth_play))
 {
-        message_die(GENERAL_MESSAGE, $lang['game_forbidden']);
+        message_die(NUKE_GENERAL_MESSAGE, $lang['game_forbidden']);
 }
 
 
@@ -140,11 +140,11 @@ $template->set_filenames(array(
         'body' => 'games_body.tpl')
 );
 
-$sql = "DELETE FROM " . GAMEHASH_TABLE . " WHERE hash_date < " . (time() - 72000);
+$sql = "DELETE FROM " . NUKE_GAMEHASH_TABLE . " WHERE hash_date < " . (time() - 72000);
 
-if (!$db->sql_query($sql))
+if (!$nuke_db->sql_query($sql))
 {
-        message_die(GENERAL_ERROR, "Could not delete from game hash table", '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Could not delete from game hash table", '', __LINE__, __FILE__, $sql);
 }
 
 // Type V2 Game Else Type V1
@@ -152,11 +152,11 @@ if ($row['game_type'] == 3) {
         $type_v2 = true;
         $template->assign_block_vars('game_type_V2',array());
         $gamehash_id = md5(uniqid($user_ip));
-        $sql = "INSERT INTO " . GAMEHASH_TABLE . " (gamehash_id , game_id , user_id , hash_date) VALUES ('$gamehash_id' , '$gid' , '" . $userdata['user_id'] . "' , '" . time() . "')";
+        $sql = "INSERT INTO " . NUKE_GAMEHASH_TABLE . " (gamehash_id , game_id , user_id , hash_date) VALUES ('$gamehash_id' , '$gid' , '" . $userdata['user_id'] . "' , '" . time() . "')";
 
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
                 {
-                message_die(GENERAL_ERROR, "Could not delete from game hash table", '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Could not delete from game hash table", '', __LINE__, __FILE__, $sql);
         }
                     }
 elseif ($row['game_type'] == 4 or $row['game_type'] == 5)
@@ -175,17 +175,17 @@ elseif ($row['game_type'] == 4 or $row['game_type'] == 5)
         setcookie('timestarted', time());
 
         $gamehash_id = md5($user_ip);
-        $sql = "INSERT INTO " . GAMEHASH_TABLE . " (gamehash_id , game_id , user_id , hash_date) VALUES ('$gamehash_id' , '$gid' , '" . $userdata['user_id'] . "' , '" . time() . "')";
+        $sql = "INSERT INTO " . NUKE_GAMEHASH_TABLE . " (gamehash_id , game_id , user_id , hash_date) VALUES ('$gamehash_id' , '$gid' , '" . $userdata['user_id'] . "' , '" . time() . "')";
 
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
                 {
-                message_die(GENERAL_ERROR, "Couldn't update hashtable", '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't update hashtable", '', __LINE__, __FILE__, $sql);
         }
 
         }
 else
                 {
-                        message_die(GENERAL_ERROR, "Game Type no longer supported, please contact the admin and have him/her delete it.");
+                        message_die(NUKE_GENERAL_ERROR, "Game Type no longer supported, please contact the admin and have him/her delete it.");
 
                 }
 
@@ -193,8 +193,8 @@ setcookie('arcadepopup', '', time() - 3600);
 setcookie('arcadepopup', '0');
 global $prefix;
 $sql = "SELECT arcade_cattitle FROM `".$prefix."_bbarcade_categories` WHERE arcade_catid = " . $row['arcade_catid'];
-$result = $db->sql_query($sql);
-$ourrow = $db->sql_fetchrow($result);
+$result = $nuke_db->sql_query($sql);
+$ourrow = $nuke_db->sql_fetchrow($result);
 $cat_title = $ourrow['arcade_cattitle'];
 
 $template->assign_vars(array(
@@ -214,21 +214,21 @@ $template->assign_vars(array(
         'URL_SCOREBOARD' => '<nobr><a class="cattitle" href="' . append_sid("scoreboard.$phpEx?gid=$gid") . '">' . $lang['scoreboard'] . '</a></nobr> ')
 );
 
-$sql = "SELECT s.* , u.username, u.user_avatar_type, u.user_allowavatar, u.user_avatar FROM " . SCORES_TABLE . " s LEFT JOIN " . USERS_TABLE . " u ON s.user_id = u.user_id WHERE game_id = $gid ORDER BY s.score_game DESC, s.score_date ASC LIMIT 0,15 ";
+$sql = "SELECT s.* , u.username, u.user_avatar_type, u.user_allowavatar, u.user_avatar FROM " . NUKE_SCORES_TABLE . " s LEFT JOIN " . NUKE_USERS_TABLE . " u ON s.user_id = u.user_id WHERE game_id = $gid ORDER BY s.score_game DESC, s.score_date ASC LIMIT 0,15 ";
 
-if (!($result = $db->sql_query($sql)))
+if (!($result = $nuke_db->sql_query($sql)))
 {
-        message_die(GENERAL_ERROR, "Could not read from scores table", '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Could not read from scores table", '', __LINE__, __FILE__, $sql);
 }
 
-$sql = "SELECT comments_value FROM " . COMMENTS_TABLE . " WHERE game_id = $gid";
+$sql = "SELECT comments_value FROM " . NUKE_COMMENTS_TABLE . " WHERE game_id = $gid";
 
-if( !($result_comment = $db->sql_query($sql)) )
+if( !($result_comment = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, "Error retrieving comment from comment table", '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, "Error retrieving comment from comment table", '', __LINE__, __FILE__, $sql);
 }
 
-$row_comment = $db->sql_fetchrow($result_comment);
+$row_comment = $nuke_db->sql_fetchrow($result_comment);
 
 //
 // Define censored word matches
@@ -253,7 +253,7 @@ $comment='';
 $pos = 0;
 $posreelle = 0;
 $lastscore = 0;
-while ($row = $db->sql_fetchrow($result)) {
+while ($row = $nuke_db->sql_fetchrow($result)) {
         $posreelle++;
 
         if ($posreelle == 1) {
@@ -297,15 +297,15 @@ while ($row = $db->sql_fetchrow($result)) {
 $avatar_img = '';
 if ($user_avatar_type && $user_allowavatar) {
         switch($user_avatar_type) {
-                case USER_AVATAR_UPLOAD:
+                case NUKE_USER_AVATAR_UPLOAD:
                         $avatar_img = ($board_config['allow_avatar_upload']) ? '<img src="' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" border="0" hspace="20" align="center" valign="center" onload="resize_avatar(this)"/>' : '';
                         break;
 
-                case USER_AVATAR_REMOTE:
+                case NUKE_USER_AVATAR_REMOTE:
                         $avatar_img = ($board_config['allow_avatar_remote']) ? '<img src="' . $user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center"  onload="resize_avatar(this)"/>' : '';
                         break;
 
-                case USER_AVATAR_GALLERY:
+                case NUKE_USER_AVATAR_GALLERY:
                         $avatar_img = ($board_config['allow_avatar_local']) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center"  onload="resize_avatar(this)"/>' : '';
                         break;
         }

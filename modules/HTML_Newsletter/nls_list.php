@@ -100,7 +100,7 @@ if ( !$result ) { //Bad SQL call
 	$idx_nl_nbr			= 1;	//Index for number of newsletters displayed within a category
 	$prev_category	= "";	//For determining category breaks
 
-	while ( $row = $db->sql_fetchrow( $result ) ) {
+	while ( $row = $nuke_db->sql_fetchrow( $result ) ) {
 
 		$nid 					= intval($row['nid']);
 		$cid 					= intval($row['cid']);

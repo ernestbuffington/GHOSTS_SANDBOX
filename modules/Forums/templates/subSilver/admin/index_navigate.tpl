@@ -4,7 +4,7 @@
 var menuVersion = "Slide Menu v1.0.0";
 
 /*************************************************************
- *    DHTML Slide Menu for ACP MOD
+ *    DHTML Slide Menu for ACP NUKE_MOD
  *
  *    Copyright (C) 2004, Markus (phpMiX)
  *    This script is released under GPL License.

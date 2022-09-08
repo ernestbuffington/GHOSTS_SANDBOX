@@ -16,7 +16,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -32,7 +32,7 @@ require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 
 //
-// include language file (borrowed mercilessly from CyberAlien's eXtreme Styles MOD)
+// include language file (borrowed mercilessly from CyberAlien's eXtreme Styles NUKE_MOD)
 //
 if(!defined('XD_LANG_INCLUDED'))
 {
@@ -71,7 +71,7 @@ else
 */
 if ($type == 'user')
 {
-	if ( ( $mode == 'edit' || $mode == 'save' ) && ( isset($HTTP_POST_VARS['username']) || isset($HTTP_GET_VARS[POST_USERS_URL]) || isset( $HTTP_POST_VARS[POST_USERS_URL]) ) )
+	if ( ( $mode == 'edit' || $mode == 'save' ) && ( isset($HTTP_POST_VARS['username']) || isset($HTTP_GET_VARS[NUKE_POST_USERS_URL]) || isset( $HTTP_POST_VARS[NUKE_POST_USERS_URL]) ) )
 	{
 		$xd_meta = get_xd_metadata();
 
@@ -80,13 +80,13 @@ if ($type == 'user')
 			$this_userdata = get_userdata($HTTP_POST_VARS['username'], true);
 			if ( !is_array($this_userdata) )
 			{
-				message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+				message_die(NUKE_GENERAL_MESSAGE, $lang['No_such_user']);
 			}
 			$user_id = $this_userdata['user_id'];
 		}
 		else
 		{
-			$user_id = ( isset($HTTP_POST_VARS[POST_USERS_URL]) ) ? intval($HTTP_POST_VARS[POST_USERS_URL]) : intval($HTTP_GET_VARS[POST_USERS_URL]);
+			$user_id = ( isset($HTTP_POST_VARS[NUKE_POST_USERS_URL]) ) ? intval($HTTP_POST_VARS[NUKE_POST_USERS_URL]) : intval($HTTP_GET_VARS[NUKE_POST_USERS_URL]);
 		}
 
 		if ( ! isset($HTTP_POST_VARS['submit']) )
@@ -112,12 +112,12 @@ if ($type == 'user')
 				'L_SUBMIT' => $lang['Submit'],
 				'L_RESET' => $lang['Reset'],
 
-				'AUTH_ALLOW' => XD_AUTH_ALLOW,
-				'AUTH_DENY' => XD_AUTH_DENY,
-				'AUTH_DEFAULT' => XD_AUTH_DEFAULT,
+				'AUTH_ALLOW' => NUKE_XD_AUTH_ALLOW,
+				'AUTH_DENY' => NUKE_XD_AUTH_DENY,
+				'AUTH_DEFAULT' => NUKE_XD_AUTH_DEFAULT,
 
 				'USERNAME' => $username,
-				'S_HIDDEN_FIELDS' => '<input type="hidden" name="'.POST_USERS_URL.'" value="'.$user_id.'" /><input type="hidden" name="mode" value="save" /><input type="hidden" name="type" value="user" />',
+				'S_HIDDEN_FIELDS' => '<input type="hidden" name="'.NUKE_POST_USERS_URL.'" value="'.$user_id.'" /><input type="hidden" name="mode" value="save" /><input type="hidden" name="type" value="user" />',
 				'S_AUTH_ACTION' => append_sid('admin_xdata_auth.'.$phpEx)
 				)
 			);
@@ -125,27 +125,27 @@ if ($type == 'user')
 			while ( list($code_name, $meta) = each($xd_meta) )
 			{
 				$sql = "SELECT xa.auth_value
-						FROM " . XDATA_AUTH_TABLE . " xa, " . USER_GROUP_TABLE . " ug
+						FROM " . NUKE_XDATA_AUTH_TABLE . " xa, " . NUKE_USER_GROUP_TABLE . " ug
 						WHERE xa.field_id = {$meta['field_id']}
 							AND xa.group_id = ug.group_id
 							AND ug.user_id = {$user_id}";
 
-				if ( ! ( $result = $db->sql_query($sql) ) )
+				if ( ! ( $result = $nuke_db->sql_query($sql) ) )
 				{
-	            	message_die(GENERAL_ERROR, $lang['XData_failure_obtaining_user_auth'], "", __LINE__, __FILE__, $sql);
+	            	message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_obtaining_user_auth'], "", __LINE__, __FILE__, $sql);
 				}
 
-				$row = $db->sql_fetchrow($result);
+				$row = $nuke_db->sql_fetchrow($result);
 
-				$auth = isset($row['auth_value']) ? $row['auth_value'] : XD_AUTH_DEFAULT;
+				$auth = isset($row['auth_value']) ? $row['auth_value'] : NUKE_XD_AUTH_DEFAULT;
 
 				$template->assign_block_vars( 'xdata', array(
 					'CODE_NAME' => $code_name,
 					'NAME' => $meta['field_name'],
 
-					'ALLOW_CHECKED' => ( ( $auth == XD_AUTH_ALLOW ) ? 'checked="checked" ' : '' ),
-					'DENY_CHECKED' => ( ( $auth == XD_AUTH_DENY ) ? 'checked="checked" ' : '' ),
-					'DEFAULT_CHECKED' => ( ($auth == XD_AUTH_DEFAULT ) ? 'checked="checked" ' : '')
+					'ALLOW_CHECKED' => ( ( $auth == NUKE_XD_AUTH_ALLOW ) ? 'checked="checked" ' : '' ),
+					'DENY_CHECKED' => ( ( $auth == NUKE_XD_AUTH_DENY ) ? 'checked="checked" ' : '' ),
+					'DEFAULT_CHECKED' => ( ($auth == NUKE_XD_AUTH_DEFAULT ) ? 'checked="checked" ' : '')
 					)
 				);
 
@@ -160,46 +160,46 @@ if ($type == 'user')
 			*/
 
 			$sql = "SELECT g.group_id
-					FROM " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug
+					FROM " . NUKE_GROUPS_TABLE . " g, " . NUKE_USER_GROUP_TABLE . " ug
 			        WHERE g.group_id = ug.group_id AND ug.user_id = $user_id";
 
-			if (!($result = $db->sql_query($sql)))
+			if (!($result = $nuke_db->sql_query($sql)))
 			{
-				message_die(GENERAL_ERROR, $lang['XData_error_obtaining_usergroup'], "", __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_error_obtaining_usergroup'], "", __LINE__, __FILE__, $sql);
 			}
-			$personal_group = $db->sql_fetchrow($result);
+			$personal_group = $nuke_db->sql_fetchrow($result);
 			$personal_group = $personal_group['group_id'];
 
 			while ( list($code_name, $meta) = each($xd_meta) )
 			{
 				$auth = str_replace("\'", "''", htmlspecialchars($HTTP_POST_VARS["xd_$code_name"]) );
 
-	            $sql = "DELETE FROM " . XDATA_AUTH_TABLE . "
+	            $sql = "DELETE FROM " . NUKE_XDATA_AUTH_TABLE . "
 					WHERE group_id = $personal_group
 					AND field_id = {$meta['field_id']}";
 
-	            if (! $db->sql_query($sql) )
+	            if (! $nuke_db->sql_query($sql) )
 				{
-					message_die(GENERAL_ERROR, $lang['XData_error_updating_auth'], "", __LINE__, __FILE__, $sql);
+					message_die(NUKE_GENERAL_ERROR, $lang['XData_error_updating_auth'], "", __LINE__, __FILE__, $sql);
 				}
 
-				if ( $auth != XD_AUTH_DEFAULT )
+				if ( $auth != NUKE_XD_AUTH_DEFAULT )
 				{
 
-					$sql = "INSERT INTO " . XDATA_AUTH_TABLE . "
+					$sql = "INSERT INTO " . NUKE_XDATA_AUTH_TABLE . "
 						(group_id, field_id, auth_value)
 						VALUES ({$personal_group}, {$meta['field_id']}, {$auth})";
 
-					if (! $db->sql_query($sql) )
+					if (! $nuke_db->sql_query($sql) )
 					{
-						message_die(GENERAL_ERROR, $lang['XData_error_updating_auth'], "", __LINE__, __FILE__, $sql);
+						message_die(NUKE_GENERAL_ERROR, $lang['XData_error_updating_auth'], "", __LINE__, __FILE__, $sql);
 					}
 				}
 			}
 
 		    $message = sprintf($lang['XData_success_updating_permissions'],"<a href=\"" . append_sid("admin_xdata_auth.$phpEx?type=user") . "\">","</a>");
 			$message .= sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
-			message_die(GENERAL_MESSAGE, $message);
+			message_die(NUKE_GENERAL_MESSAGE, $message);
 		}
 	}
 	else
@@ -230,7 +230,7 @@ if ($type == 'user')
 }
 elseif ($type == 'group')
 {
-	if ( ( $mode == 'edit' || $mode == 'save' ) && ( isset($HTTP_POST_VARS['group']) || isset($HTTP_GET_VARS[POST_GROUPS_URL]) || isset( $HTTP_POST_VARS[POST_GROUPS_URL]) ) )
+	if ( ( $mode == 'edit' || $mode == 'save' ) && ( isset($HTTP_POST_VARS['group']) || isset($HTTP_GET_VARS[NUKE_POST_GROUPS_URL]) || isset( $HTTP_POST_VARS[NUKE_POST_GROUPS_URL]) ) )
 	{
 
     	$xd_meta = get_xd_metadata();
@@ -241,7 +241,7 @@ elseif ($type == 'group')
 		}
 		else
 		{
-			$group_id = ( isset($HTTP_POST_VARS[POST_GROUPS_URL]) ) ? intval($HTTP_POST_VARS[POST_GROUPS_URL]) : intval($HTTP_GET_VARS[POST_GROUPS_URL]);
+			$group_id = ( isset($HTTP_POST_VARS[NUKE_POST_GROUPS_URL]) ) ? intval($HTTP_POST_VARS[NUKE_POST_GROUPS_URL]) : intval($HTTP_GET_VARS[NUKE_POST_GROUPS_URL]);
 		}
 
 		if ( ! isset($HTTP_POST_VARS['submit']) )
@@ -255,14 +255,14 @@ elseif ($type == 'group')
 				)
 			);
 
-			$sql = "SELECT group_name FROM " . GROUPS_TABLE . "
+			$sql = "SELECT group_name FROM " . NUKE_GROUPS_TABLE . "
 			        WHERE group_id = {$group_id}";
 
-			if (!($result = $db->sql_query($sql)))
+			if (!($result = $nuke_db->sql_query($sql)))
 			{
-				message_die(GENERAL_ERROR, $lang['XData_error_obtaining_group_data'], "", __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, $lang['XData_error_obtaining_group_data'], "", __LINE__, __FILE__, $sql);
 			}
-			$group_name = $db->sql_fetchrow($result);
+			$group_name = $nuke_db->sql_fetchrow($result);
 			$group_name = $group_name['group_name'];
 
 			$template->assign_vars( array(
@@ -277,38 +277,38 @@ elseif ($type == 'group')
 				'L_SUBMIT' => $lang['Submit'],
 				'L_RESET' => $lang['Reset'],
 
-				'AUTH_ALLOW' => XD_AUTH_ALLOW,
-				'AUTH_DENY' => XD_AUTH_DENY,
-				'AUTH_DEFAULT' => XD_AUTH_DEFAULT,
+				'AUTH_ALLOW' => NUKE_XD_AUTH_ALLOW,
+				'AUTH_DENY' => NUKE_XD_AUTH_DENY,
+				'AUTH_DEFAULT' => NUKE_XD_AUTH_DEFAULT,
 
 				'USERNAME' => $group_name,
-				'S_HIDDEN_FIELDS' => '<input type="hidden" name="'.POST_GROUPS_URL.'" value="'.$group_id.'" /><input type="hidden" name="mode" value="save" /><input type="hidden" name="type" value="group" />',
+				'S_HIDDEN_FIELDS' => '<input type="hidden" name="'.NUKE_POST_GROUPS_URL.'" value="'.$group_id.'" /><input type="hidden" name="mode" value="save" /><input type="hidden" name="type" value="group" />',
 				'S_AUTH_ACTION' => append_sid('admin_xdata_auth.'.$phpEx)
 				)
 			);
 
 			while ( list($code_name, $meta) = each($xd_meta) )
 			{
-				$sql = "SELECT xa.auth_value FROM " . XDATA_AUTH_TABLE . " xa
+				$sql = "SELECT xa.auth_value FROM " . NUKE_XDATA_AUTH_TABLE . " xa
 					WHERE xa.field_id = {$meta['field_id']}
 					AND xa.group_id = {$group_id}";
 
-				if ( ! ( $result = $db->sql_query($sql) ) )
+				if ( ! ( $result = $nuke_db->sql_query($sql) ) )
 				{
-	            	message_die(GENERAL_ERROR, $lang['XData_failure_obtaining_user_auth'], "", __LINE__, __FILE__, $sql);
+	            	message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_obtaining_user_auth'], "", __LINE__, __FILE__, $sql);
 				}
 
-				$row = $db->sql_fetchrow($result);
+				$row = $nuke_db->sql_fetchrow($result);
 
-				$auth = isset($row['auth_value']) ? $row['auth_value'] : XD_AUTH_DEFAULT;
+				$auth = isset($row['auth_value']) ? $row['auth_value'] : NUKE_XD_AUTH_DEFAULT;
 
 				$template->assign_block_vars( 'xdata', array(
 					'CODE_NAME' => $code_name,
 					'NAME' => $meta['field_name'],
 
-					'ALLOW_CHECKED' => ( ( $auth == XD_AUTH_ALLOW ) ? 'checked="checked" ' : '' ),
-					'DENY_CHECKED' => ( ( $auth == XD_AUTH_DENY ) ? 'checked="checked" ' : '' ),
-					'DEFAULT_CHECKED' => ( ($auth == XD_AUTH_DEFAULT ) ? 'checked="checked" ' : '')
+					'ALLOW_CHECKED' => ( ( $auth == NUKE_XD_AUTH_ALLOW ) ? 'checked="checked" ' : '' ),
+					'DENY_CHECKED' => ( ( $auth == NUKE_XD_AUTH_DENY ) ? 'checked="checked" ' : '' ),
+					'DEFAULT_CHECKED' => ( ($auth == NUKE_XD_AUTH_DEFAULT ) ? 'checked="checked" ' : '')
 					)
 				);
 
@@ -326,32 +326,32 @@ elseif ($type == 'group')
 			{
 				$auth = htmlspecialchars($HTTP_POST_VARS["xd_$code_name"]);
 
-	            $sql = "DELETE FROM " . XDATA_AUTH_TABLE . "
+	            $sql = "DELETE FROM " . NUKE_XDATA_AUTH_TABLE . "
 					WHERE group_id = $group_id
 					AND field_id = {$meta['field_id']}";
 
-	            if (! $db->sql_query($sql) )
+	            if (! $nuke_db->sql_query($sql) )
 				{
-					message_die(GENERAL_ERROR, $lang['XData_error_updating_auth'], "", __LINE__, __FILE__, $sql);
+					message_die(NUKE_GENERAL_ERROR, $lang['XData_error_updating_auth'], "", __LINE__, __FILE__, $sql);
 				}
 
-				if ( $auth != XD_AUTH_DEFAULT )
+				if ( $auth != NUKE_XD_AUTH_DEFAULT )
 				{
 
-					$sql = "INSERT INTO " . XDATA_AUTH_TABLE . "
+					$sql = "INSERT INTO " . NUKE_XDATA_AUTH_TABLE . "
 						(group_id, field_id, auth_value)
 						VALUES ({$group_id}, {$meta['field_id']}, {$auth})";
 
-					if (! $db->sql_query($sql) )
+					if (! $nuke_db->sql_query($sql) )
 					{
-						message_die(GENERAL_ERROR, $lang['XData_error_updating_auth'], "", __LINE__, __FILE__, $sql);
+						message_die(NUKE_GENERAL_ERROR, $lang['XData_error_updating_auth'], "", __LINE__, __FILE__, $sql);
 					}
 				}
 			}
 
 		    $message = sprintf($lang['XData_success_updating_permissions'],"<a href=\"" . append_sid("admin_xdata_auth.$phpEx?type=user") . "\">","</a>");
 			$message .= sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
-			message_die(GENERAL_MESSAGE, $message);
+			message_die(NUKE_GENERAL_MESSAGE, $message);
 		}
 	}
 	else
@@ -364,21 +364,21 @@ elseif ($type == 'group')
 		$template->set_filenames( array('body' => 'admin/auth_select_body.tpl') );
 
 		$sql = "SELECT group_id, group_name
-			FROM " . GROUPS_TABLE . "
+			FROM " . NUKE_GROUPS_TABLE . "
 			WHERE group_single_user <> " . TRUE;
-		if ( !($result = $db->sql_query($sql)) )
+		if ( !($result = $nuke_db->sql_query($sql)) )
 		{
-			message_die(GENERAL_ERROR, $lang['XData_error_obtaining_group_data'], "", __LINE__, __FILE__, $sql);
+			message_die(NUKE_GENERAL_ERROR, $lang['XData_error_obtaining_group_data'], "", __LINE__, __FILE__, $sql);
 		}
 
-		if ( $row = $db->sql_fetchrow($result) )
+		if ( $row = $nuke_db->sql_fetchrow($result) )
 		{
-			$select_list = '<select name="' . POST_GROUPS_URL . '">';
+			$select_list = '<select name="' . NUKE_POST_GROUPS_URL . '">';
 			do
 			{
 				$select_list .= '<option value="' . $row['group_id'] . '">' . $row['group_name'] . '</option>';
 			}
-			while ( $row = $db->sql_fetchrow($result) );
+			while ( $row = $nuke_db->sql_fetchrow($result) );
 			$select_list .= '</select>';
 		}
 

@@ -38,7 +38,7 @@ if (!defined('ADMIN_FILE')) {
    die('Access Denied');
 }
 
-global $prefix, $db, $admdata;
+global $prefix, $nuke_db, $admdata;
 $module_name = basename(dirname(dirname(__FILE__)));
 if(is_mod_admin($module_name)) {
 
@@ -47,7 +47,7 @@ if(is_mod_admin($module_name)) {
 /*********************************************************/
 
     function FaqAdmin() {
-        global $admin, $bgcolor2, $prefix, $db, $currentlang, $multilingual, $admin_file;
+        global $admin, $bgcolor2, $prefix, $nuke_db, $currentlang, $multilingual, $admin_file;
 
         include_once(NUKE_BASE_DIR.'header.php');
         OpenTable();
@@ -67,8 +67,8 @@ if(is_mod_admin($module_name)) {
         ."<td align=\"center\"><strong>" . _CATEGORIES . "</strong></td>"
         ."<td align=\"center\"><strong>" . _LANGUAGE . "</strong></td>"
         ."<td align=\"center\"><strong>" . _FUNCTIONS . "</strong></td></tr>";
-        $result = $db->sql_query("select id_cat, categories, flanguage from ".$prefix."_faqcategories order by id_cat");
-        while ($row = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query("select id_cat, categories, flanguage from ".$prefix."_faqcategories order by id_cat");
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             $id_cat = $row['id_cat'];
             $categories = $row['categories'];
             $flanguage = $row['flanguage'];
@@ -112,7 +112,7 @@ if(is_mod_admin($module_name)) {
     }
 
     function FaqCatGo($id_cat) {
-        global $admin, $bgcolor2, $prefix, $db, $admin_file;
+        global $admin, $bgcolor2, $prefix, $nuke_db, $admin_file;
 
         include_once(NUKE_BASE_DIR.'header.php');
         OpenTable();
@@ -131,8 +131,8 @@ if(is_mod_admin($module_name)) {
         ."<td align=\"center\">" . _CONTENT . "</td>"
         ."<td align=\"center\">" . _FUNCTIONS . "</td></tr>";
         $id_cat = intval($id_cat);
-        $result = $db->sql_query("select id, question, answer from ".$prefix."_faqanswer where id_cat='$id_cat' order by id");
-        while ($row = $db->sql_fetchrow($result)) {
+        $result = $nuke_db->sql_query("select id, question, answer from ".$prefix."_faqanswer where id_cat='$id_cat' order by id");
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             $id = intval($row['id']);
             $question = $row['question'];
             $answer = $row['answer'];
@@ -140,7 +140,7 @@ if(is_mod_admin($module_name)) {
             echo "<tr><td><i>$question</i><br /><br />$answer_bb"
                 ."</td><td align=\"center\">[ <a href=\"".$admin_file.".php?op=FaqCatGoEdit&amp;id=$id\">" . _EDIT . "</a> | <a href=\"".$admin_file.".php?op=FaqCatGoDel&amp;id=$id&amp;ok=0\">" . _DELETE . "</a> ]</td></tr>";
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         echo "</table>";
         CloseTable();
         echo "<br />";
@@ -167,7 +167,7 @@ if(is_mod_admin($module_name)) {
     }
 
     function FaqCatEdit($id_cat) {
-        global $admin, $db, $multilingual, $admin_file, $prefix;
+        global $admin, $nuke_db, $multilingual, $admin_file, $prefix;
 
         include(NUKE_BASE_DIR.'config.php');
         include_once(NUKE_BASE_DIR.'header.php');
@@ -182,7 +182,7 @@ if(is_mod_admin($module_name)) {
         CloseTable();
         echo "<br />";
         $id_cat = intval($id_cat);
-        $row = $db->sql_fetchrow($db->sql_query("SELECT categories, flanguage from " . $prefix . "_faqcategories where id_cat='$id_cat'"));
+        $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT categories, flanguage from " . $prefix . "_faqcategories where id_cat='$id_cat'"));
         $categories = $row['categories'];
         $flanguage = $row['flanguage'];
         OpenTable();
@@ -214,7 +214,7 @@ if(is_mod_admin($module_name)) {
     }
 
     function FaqCatGoEdit($id) {
-        global $admin, $bgcolor2, $prefix, $db, $admin_file;
+        global $admin, $bgcolor2, $prefix, $nuke_db, $admin_file;
 
         include_once(NUKE_BASE_DIR.'header.php');
         OpenTable();
@@ -228,7 +228,7 @@ if(is_mod_admin($module_name)) {
         CloseTable();
         echo "<br />";
         $id = intval($id);
-        $row = $db->sql_fetchrow($db->sql_query("SELECT question, answer from " . $prefix . "_faqanswer where id='$id'"));
+        $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT question, answer from " . $prefix . "_faqanswer where id='$id'"));
         $question = $row['question'];
         $answer = $row['answer'];
         OpenTable();
@@ -253,49 +253,49 @@ if(is_mod_admin($module_name)) {
         include_once(NUKE_BASE_DIR.'footer.php');
     }
     function FaqCatSave($id_cat, $categories, $flanguage) {
-        global $prefix, $db, $admin_file;
+        global $prefix, $nuke_db, $admin_file;
 
         $categories = Fix_Quotes($categories);
         $id_cat = intval($id_cat);
-        $db->sql_query("update ".$prefix."_faqcategories set categories='$categories', flanguage='$flanguage' where id_cat='$id_cat'");
-        redirect($admin_file.".php?op=FaqAdmin");
+        $nuke_db->sql_query("update ".$prefix."_faqcategories set categories='$categories', flanguage='$flanguage' where id_cat='$id_cat'");
+        nuke_redirect($admin_file.".php?op=FaqAdmin");
     }
 
     function FaqCatGoSave($id, $question, $answer) {
-        global $prefix, $db, $admin_file;
+        global $prefix, $nuke_db, $admin_file;
 
         $question = Fix_Quotes($question);
         $answer = Fix_Quotes($answer);
         $id = intval($id);
-        $db->sql_query("update ".$prefix."_faqanswer set question='$question', answer='$answer' where id='$id'");
-        redirect($admin_file.".php?op=FaqAdmin");
+        $nuke_db->sql_query("update ".$prefix."_faqanswer set question='$question', answer='$answer' where id='$id'");
+        nuke_redirect($admin_file.".php?op=FaqAdmin");
     }
 
     function FaqCatAdd($categories, $flanguage) {
-        global $prefix, $db, $admin_file;
+        global $prefix, $nuke_db, $admin_file;
 
         $categories = Fix_Quotes($categories);
-        $db->sql_query("insert into ".$prefix."_faqcategories values (NULL, '$categories', '$flanguage')");
-        redirect($admin_file.".php?op=FaqAdmin");
+        $nuke_db->sql_query("insert into ".$prefix."_faqcategories values (NULL, '$categories', '$flanguage')");
+        nuke_redirect($admin_file.".php?op=FaqAdmin");
     }
 
     function FaqCatGoAdd($id_cat, $question, $answer) {
-        global $prefix, $db, $admin_file;
+        global $prefix, $nuke_db, $admin_file;
 
         $question = Fix_Quotes($question);
         $answer = Fix_Quotes($answer);
-        $db->sql_query("insert into ".$prefix."_faqanswer values (NULL, '$id_cat', '$question', '$answer')");
-        redirect($admin_file.".php?op=FaqCatGo&id_cat=$id_cat");
+        $nuke_db->sql_query("insert into ".$prefix."_faqanswer values (NULL, '$id_cat', '$question', '$answer')");
+        nuke_redirect($admin_file.".php?op=FaqCatGo&id_cat=$id_cat");
     }
 
     function FaqCatDel($id_cat, $ok=0) {
-        global $prefix, $db, $admin_file;
+        global $prefix, $nuke_db, $admin_file;
 
         if($ok==1) {
             $id_cat = intval($id_cat);
-            $db->sql_query("delete from ".$prefix."_faqcategories where id_cat='$id_cat'");
-            $db->sql_query("delete from ".$prefix."_faqanswer where id_cat='$id_cat'");
-            redirect($admin_file.".php?op=FaqAdmin");
+            $nuke_db->sql_query("delete from ".$prefix."_faqcategories where id_cat='$id_cat'");
+            $nuke_db->sql_query("delete from ".$prefix."_faqanswer where id_cat='$id_cat'");
+            nuke_redirect($admin_file.".php?op=FaqAdmin");
         } else {
             include_once(NUKE_BASE_DIR.'header.php');
             OpenTable();
@@ -317,12 +317,12 @@ if(is_mod_admin($module_name)) {
     }
 
     function FaqCatGoDel($id, $ok=0) {
-        global $prefix, $db, $admin_file;
+        global $prefix, $nuke_db, $admin_file;
 
         if($ok==1) {
             $id = intval($id);
-            $db->sql_query("delete from ".$prefix."_faqanswer where id='$id'");
-            redirect($admin_file.".php?op=FaqAdmin");
+            $nuke_db->sql_query("delete from ".$prefix."_faqanswer where id='$id'");
+            nuke_redirect($admin_file.".php?op=FaqAdmin");
         } else {
             include_once(NUKE_BASE_DIR.'header.php');
             OpenTable();

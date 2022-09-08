@@ -10,7 +10,7 @@
 /* This program's license is General Public License     */
 /* http://www.gnu.org/licenses/gpl.txt                  */
 /********************************************************/
-global $admin_file, $admin, $key, $deletecat, $db, $prefix, $sql, $upgrade_test, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $bgcolorhide, $zetheme;
+global $admin_file, $admin, $key, $deletecat, $nuke_db, $prefix, $sql, $upgrade_test, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $bgcolorhide, $zetheme;
 
 //fixed by Ernest Allen Buffington PHP 5
 if (!preg_match("/".$admin_file.".php/", $_SERVER['PHP_SELF'])) 
@@ -21,9 +21,9 @@ if (!preg_match("/".$admin_file.".php/", $_SERVER['PHP_SELF']))
 
 $aid = trim($aid);
 
-$result = $db->sql_query("select name, radminsuper from ".$prefix."_authors where aid='$aid'");
+$result = $nuke_db->sql_query("select name, radminsuper from ".$prefix."_authors where aid='$aid'");
 
-$row = $db->sql_fetchrow($result);
+$row = $nuke_db->sql_fetchrow($result);
 
 if ($row['radminsuper']!=1) 
 {
@@ -586,7 +586,7 @@ $zetheme=get_theme();
 function index() 
 {
 	       global $admin_file, 
-		                  $db, 
+		                  $nuke_db, 
 						 $sql, 
 				      $prefix, 
 					$bgcolor1, 
@@ -719,11 +719,11 @@ if ($old_school_imagedropdown==0)
 	
 	$sql = "SELECT title FROM ".$prefix."_modules ORDER BY title ASC";
 	
-	$modulesaffiche= $db->sql_query($sql);
+	$modulesaffiche= $nuke_db->sql_query($sql);
 	
 	$menu_counter=0;
 	
-	while ($tempo = $db->sql_fetchrow($modulesaffiche)) 
+	while ($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) 
 	{
 		$modules[$menu_counter]= $tempo['title'];
 		$menu_counter++;
@@ -731,11 +731,11 @@ if ($old_school_imagedropdown==0)
 
 	$sql2= "SELECT id, groupmenu, module, url, url_text, image, new, new_days, class, bold, sublevel, date_debut, date_fin, days FROM ".$prefix."_menu_categories ORDER BY id ASC";
 	
-	$result2= $db->sql_query($sql2);
+	$result2= $nuke_db->sql_query($sql2);
 
 	$menu_counter=0;
 	
-	$row2=$db->sql_fetchrow($result2); 
+	$row2=$nuke_db->sql_fetchrow($result2); 
 	
 	$categorie=$row2['groupmenu'];
 	
@@ -767,7 +767,7 @@ if ($old_school_imagedropdown==0)
 
 	$menu_counter2=$categorie;
 
-	while ($row2 = $db->sql_fetchrow($result2)) 
+	while ($row2 = $nuke_db->sql_fetchrow($result2)) 
 	{ 
 	  $categorie=$row2['groupmenu'];
 	  
@@ -817,7 +817,7 @@ if ($old_school_imagedropdown==0)
 	//nuke_menu
 	$sql = "SELECT groupmenu, name, image, lien, hr, center, bgcolor, invisible, class, new, bold, listbox, dynamic, date_debut, date_fin, days FROM ".$prefix."_menu ORDER BY groupmenu ASC";
 	
-	$result = $db->sql_query($sql);
+	$result = $nuke_db->sql_query($sql);
 	
 	if (!$result) {die("<div class=\"red\" align=\"center\" style=\"font-size:16px\"><strong><br>"._MENU_NOTABLEPB."<br></strong></div>");}
 
@@ -840,7 +840,7 @@ if ($old_school_imagedropdown==0)
 	   echo "<tr><td colspan=4>"._MENU_NOTABLEPB."</td></tr>";
 	}
 	
-	while ($row = $db->sql_fetchrow($result)) 
+	while ($row = $nuke_db->sql_fetchrow($result)) 
 	{  
 	   $groupmenu[$key] = $row['groupmenu'];
 	   $catname[$key] = $row['name'];
@@ -1386,7 +1386,7 @@ function send()
 	      $menuformfirstclass, 
 		     $menuformdynamic, 
 			        $sublevel, 
-					      $db, 
+					      $nuke_db, 
 					  $prefix, 
 					     $sql,
 				  $admin_file;
@@ -1440,19 +1440,19 @@ for ($i=0; $i<=$menuformkeymenu; $i++)
 	}
 }
 
-$db->sql_query("DELETE FROM ".$prefix."_menu");
-$db->sql_query("DELETE FROM ".$prefix."_menu_categories");
+$nuke_db->sql_query("DELETE FROM ".$prefix."_menu");
+$nuke_db->sql_query("DELETE FROM ".$prefix."_menu_categories");
 
-global $db, $prefix;
+global $nuke_db, $prefix;
 $sql="SELECT * FROM ".$prefix."_modules LIMIT 1";
-$result=$db->sql_query($sql);
-$row=$db->sql_fetchrow($result);
+$result=$nuke_db->sql_query($sql);
+$row=$nuke_db->sql_fetchrow($result);
 if(isset($row['mod_group']))
 {
-    global $db, $prefix;
+    global $nuke_db, $prefix;
 	$sql2="SELECT * FROM ".prefix."_users LIMIT 1";
-	$result2=$db->sql_query($sql2);
-	$row2=$db->sql_fetchrow($result2);
+	$result2=$nuke_db->sql_query($sql2);
+	$row2=$nuke_db->sql_fetchrow($result2);
 	$managment_group=(isset($row2['points'])) ? 1 : 0 ;
 }
 else 
@@ -1544,7 +1544,7 @@ for ($i=0; $i<=$menuformkeymenu; $i++)
 					'".$menu_schedule_date_fin[$i][$j]."', 
 					'".$menu_schedule_days[$i][$j]."')";
 			
-			$db->sql_query($sql);
+			$nuke_db->sql_query($sql);
 			
 		}
 		
@@ -1596,7 +1596,7 @@ for ($i=0; $i<=$menuformkeymenu; $i++)
 				'".$menu_schedule_date_fin_cat[$i]."', 
 				'".$menu_schedule_days_cat[$i]."')";
 		
-		$db->sql_query($sql);
+		$nuke_db->sql_query($sql);
 		
 	} 
 }
@@ -1637,7 +1637,7 @@ VALUES (99,
 		0, 
 		NULL)";
 
-$db->sql_query($sql);
+$nuke_db->sql_query($sql);
 
 include_once("header.php");
 OpenTable();
@@ -1670,7 +1670,7 @@ function edit()
  $menu_category_class, 
      $menu_link_class, 
 	   $menu_new_days, 
-	              $db, 
+	              $nuke_db, 
 			  $prefix, 
 		 $urlofimages, 
 		  $admin_file,
@@ -1786,7 +1786,7 @@ function edit()
 }
 
 function menu_schedule() {
-	global $key, $z, $modulename, $link_name, $lienlien, $image, $new_days, $categoryclass, $link_class, $catname, $catimage, $bgcolor1, $bgcolor3, $bgcolor2, $bgcolor4, $zetheme, $menu_edit_posted, $menu_category_class, $menu_link_class, $menu_new_days, $db, $prefix, $urlofimages;
+	global $key, $z, $modulename, $link_name, $lienlien, $image, $new_days, $categoryclass, $link_class, $catname, $catimage, $bgcolor1, $bgcolor3, $bgcolor2, $bgcolor4, $zetheme, $menu_edit_posted, $menu_category_class, $menu_link_class, $menu_new_days, $nuke_db, $prefix, $urlofimages;
 	global $admin_file;
 	if (!isset($admin_file)) {$admin_file="admin";}
 	
@@ -2051,7 +2051,7 @@ function menu_schedule() {
 function deletecat() {//pour supprimer une catégorie (fonction appelée par le clic sur "supprimer" dans une ligne du formulaire)
 	global $admin_file;
 	if (!isset($admin_file)) {$admin_file="admin";}
-	global $deletecat, $key, $confirm, $catname, $db, $prefix;
+	global $deletecat, $key, $confirm, $catname, $nuke_db, $prefix;
 	if ($confirm<>"YES") {
 		include_once ("header.php");
 		GraphicAdmin();
@@ -2066,8 +2066,8 @@ function deletecat() {//pour supprimer une catégorie (fonction appelée par le cl
 	}
 	else {
 		$confirm="NO";
-		$db->sql_query("DELETE FROM ".$prefix."_menu WHERE groupmenu='$deletecat'");
-		$db->sql_query("DELETE FROM ".$prefix."_menu_categories WHERE groupmenu='$deletecat'");
+		$nuke_db->sql_query("DELETE FROM ".$prefix."_menu WHERE groupmenu='$deletecat'");
+		$nuke_db->sql_query("DELETE FROM ".$prefix."_menu_categories WHERE groupmenu='$deletecat'");
 		index();
 	}
 }

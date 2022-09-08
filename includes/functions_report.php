@@ -29,23 +29,23 @@
       Advanced Username Color                  v1.0.5       08/30/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
 
-//define('REPORT_POST_NEW', 1);
-//define('REPORT_POST_CLOSED', 2);
+//define('NUKE_REPORT_POST_NEW', 1);
+//define('NUKE_REPORT_POST_CLOSED', 2);
 
 function insert_report($post_id, $comments)
 {
-    global $db, $userdata;
+    global $nuke_db, $userdata;
 
-    $sql = "INSERT INTO " . POST_REPORTS_TABLE . " (post_id, reporter_id, report_time, report_status, report_comments)
-        VALUES ($post_id, " . $userdata['user_id'] . ", " . time() . ", " . REPORT_POST_NEW . ", '" . str_replace("\'", "''", $comments) . "')";
-    if ( !$db->sql_query($sql) )
+    $sql = "INSERT INTO " . NUKE_POST_REPORTS_TABLE . " (post_id, reporter_id, report_time, report_status, report_comments)
+        VALUES ($post_id, " . $userdata['user_id'] . ", " . time() . ", " . NUKE_REPORT_POST_NEW . ", '" . str_replace("\'", "''", $comments) . "')";
+    if ( !$nuke_db->sql_query($sql) )
     {
-        message_die(GENERAL_ERROR, 'Could not insert report', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not insert report', '', __LINE__, __FILE__, $sql);
     }
 
     return;
@@ -53,14 +53,14 @@ function insert_report($post_id, $comments)
 
 function email_report($forum_id, $post_id, $topic_title, $comments)
 {
-    global $db, $phpEx, $userdata, $board_config, $lang;
+    global $nuke_db, $phpEx, $userdata, $board_config, $lang;
 
     //
     // Obtain list of moderators of each forum
     // First users, then groups ... broken into two queries
     //
     $sql = "SELECT u.user_email
-        FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g, " . USERS_TABLE . " u
+        FROM " . NUKE_AUTH_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g, " . NUKE_USERS_TABLE . " u
         WHERE aa.forum_id = $forum_id
             AND aa.auth_mod = " . TRUE . "
             AND g.group_single_user = 1
@@ -70,34 +70,34 @@ function email_report($forum_id, $post_id, $topic_title, $comments)
             AND u.user_report_optout = 0
         GROUP BY u.user_id, u.username
         ORDER BY u.user_id";
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
     }
 
     $moderators = array();
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
         $moderators[] = $row['user_email'];
     }
 
     $sql = "SELECT g.group_id
-        FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
+        FROM " . NUKE_AUTH_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g
         WHERE aa.forum_id = $forum_id
             AND aa.auth_mod = " . TRUE . "
             AND g.group_single_user = 0
-            AND g.group_type <> ". GROUP_HIDDEN ."
+            AND g.group_type <> ". NUKE_GROUP_HIDDEN ."
             AND ug.group_id = aa.group_id
             AND g.group_id = aa.group_id
         GROUP BY g.group_id, g.group_name
         ORDER BY g.group_id";
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not query forum group moderator information', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query forum group moderator information', '', __LINE__, __FILE__, $sql);
     }
 
     $groups = array();
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
         $groups[] = $row['group_id'];
     }
@@ -105,18 +105,18 @@ function email_report($forum_id, $post_id, $topic_title, $comments)
     if ( count($groups) )
     {
         $sql = "SELECT u.user_email
-            FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g, " . USERS_TABLE . " u
+            FROM " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g, " . NUKE_USERS_TABLE . " u
             WHERE ug.group_id = g.group_id
                 AND g.group_single_user = 0
                 AND g.group_id IN (" . implode(',', $groups) . ")
                 AND ug.user_id = u.user_id
                 AND u.user_report_optout = 0";
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
         }
 
-        while( $row = $db->sql_fetchrow($result) )
+        while( $row = $nuke_db->sql_fetchrow($result) )
         {
             if ( !in_array($row['user_email'], $moderators) )
             {
@@ -126,15 +126,15 @@ function email_report($forum_id, $post_id, $topic_title, $comments)
     }
 
     // get admins and email them
-    $sql = "SELECT user_email FROM " . USERS_TABLE . "
-        WHERE user_level = " . ADMIN . "
+    $sql = "SELECT user_email FROM " . NUKE_USERS_TABLE . "
+        WHERE user_level = " . NUKE_ADMIN . "
         AND user_report_optout = 0";
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not query forum admin information', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query forum admin information', '', __LINE__, __FILE__, $sql);
     }
 
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
         if ( !in_array($row['user_email'], $moderators) )
         {
@@ -182,7 +182,7 @@ function email_report($forum_id, $post_id, $topic_title, $comments)
     //     'EMAIL_SIG'        => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
     //     'REPORT_URL'    => urldecode($report_url),
 
-    //     'U_VIEW_POST'    => urldecode($server_url . POST_POST_URL . '=' . $post_id . '#' . $post_id))
+    //     'U_VIEW_POST'    => urldecode($server_url . NUKE_POST_POST_URL . '=' . $post_id . '#' . $post_id))
     // );
     // $emailer->send();
     // $emailer->reset();
@@ -197,7 +197,7 @@ function email_report($forum_id, $post_id, $topic_title, $comments)
     $content = str_replace( '{COMMENTS}', $comments, $content );
     $content = str_replace( '{EMAIL_SIG}', ((!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : ''), $content );
     $content = str_replace( '{REPORT_URL}', '<a href="'.$report_url.'">'.$report_url.'</a>', $content );
-    $content = str_replace( '{U_VIEW_POST}', '<a href="'.$server_url . POST_POST_URL . '=' . $post_id . '#' . $post_id.'">'.$server_url . POST_POST_URL . '=' . $post_id . '#' . $post_id.'</a>', $content );
+    $content = str_replace( '{U_VIEW_POST}', '<a href="'.$server_url . NUKE_POST_POST_URL . '=' . $post_id . '#' . $post_id.'">'.$server_url . NUKE_POST_POST_URL . '=' . $post_id . '#' . $post_id.'</a>', $content );
 
     // $headers = array( 'Content-Type: text/html; charset=UTF-8', 'From: '.$board_config['board_email'], 'Reply-To: '.$board_config['board_email'], 'Return-Path: '.$board_config['board_email'] );
 
@@ -224,9 +224,9 @@ function email_report($forum_id, $post_id, $topic_title, $comments)
     return;
 }
 
-function show_reports($status = REPORT_POST_NEW)
+function show_reports($status = NUKE_REPORT_POST_NEW)
 {
-    global $db, $board_config, $template, $lang, $phpEx, $userdata;
+    global $nuke_db, $board_config, $template, $lang, $phpEx, $userdata;
 
     // find the forums where the user is a moderator
     $forum_ids = array();
@@ -246,7 +246,7 @@ function show_reports($status = REPORT_POST_NEW)
     // get the reports from the user's moderated forums
 
     $sql = "SELECT pr.*, u.username, t.topic_title, f.forum_id, f.forum_name
-        FROM " . POST_REPORTS_TABLE . " pr, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
+        FROM " . NUKE_POST_REPORTS_TABLE . " pr, " . NUKE_USERS_TABLE . " u, " . NUKE_POSTS_TABLE . " p, " . NUKE_BB_TOPICS_TABLE . " t, " . NUKE_FORUMS_TABLE . " f
         WHERE u.user_id = pr.reporter_id
             AND pr.post_id = p.post_id
             AND p.topic_id = t.topic_id
@@ -255,14 +255,14 @@ function show_reports($status = REPORT_POST_NEW)
             $where_sql2
         ORDER BY report_time DESC";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not query reports', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query reports', '', __LINE__, __FILE__, $sql);
     }
 
     $i = 0;
 
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
 
         $comments_temp = array();
@@ -282,7 +282,7 @@ function show_reports($status = REPORT_POST_NEW)
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-            'REPORTER'            => '<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['reporter_id'] . '">' . UsernameColor($row['username']) . '</a>',
+            'REPORTER'            => '<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;' . NUKE_POST_USERS_URL . '=' . $row['reporter_id'] . '">' . UsernameColor($row['username']) . '</a>',
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -293,10 +293,10 @@ function show_reports($status = REPORT_POST_NEW)
             'LAST_ACTION'                => $last_action,
             'LAST_ACTION_COMMENTS'  => $last_action_comments,
 
-            'L_CLOSE_REPORT'    => ( $row['report_status'] == REPORT_POST_NEW ) ? $lang['Close'] : $lang['Open'],
+            'L_CLOSE_REPORT'    => ( $row['report_status'] == NUKE_REPORT_POST_NEW ) ? $lang['Close'] : $lang['Open'],
 
-            'U_VIEW_POST'        => append_sid('viewtopic.' . $phpEx . '?' . POST_POST_URL . '=' . $row['post_id'] . '#' . $row['post_id']),
-            'U_CLOSE_REPORT'    => ( $row['report_status'] == REPORT_POST_NEW ) ? append_sid('viewpost_reports.' . $phpEx . '?mode=closereport&amp;report=' . $row['report_id']) : append_sid('viewpost_reports.' . $phpEx . '?mode=openreport&amp;report=' . $row['report_id']))
+            'U_VIEW_POST'        => append_sid('viewtopic.' . $phpEx . '?' . NUKE_POST_POST_URL . '=' . $row['post_id'] . '#' . $row['post_id']),
+            'U_CLOSE_REPORT'    => ( $row['report_status'] == NUKE_REPORT_POST_NEW ) ? append_sid('viewpost_reports.' . $phpEx . '?mode=closereport&amp;report=' . $row['report_id']) : append_sid('viewpost_reports.' . $phpEx . '?mode=openreport&amp;report=' . $row['report_id']))
         );
 
         $i++;
@@ -313,12 +313,12 @@ function show_reports($status = REPORT_POST_NEW)
     if ( !empty($delete_ids) )
     {
         // delete the specific reports
-        $sql = "DELETE FROM " . POST_REPORTS_TABLE . "
+        $sql = "DELETE FROM " . NUKE_POST_REPORTS_TABLE . "
             WHERE report_id IN (" . implode(',', $delete_ids) . ")";
 
-        if ( !$db->sql_query($sql) )
+        if ( !$nuke_db->sql_query($sql) )
         {
-            message_die(GENERAL_ERROR, 'Could not delete reports', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not delete reports', '', __LINE__, __FILE__, $sql);
         }
         $deleted_reports = sprintf($lang['Non_existent_posts'], count($delete_ids));
     }
@@ -328,7 +328,7 @@ function show_reports($status = REPORT_POST_NEW)
     }
 
     $template->assign_vars(array(
-        'DELETED_REPORTS'    => $deleted_reports)
+        'NUKE_DELETED_REPORTS'    => $deleted_reports)
     );
 
     return;
@@ -336,15 +336,15 @@ function show_reports($status = REPORT_POST_NEW)
 
 function report_flood()
 {
-    global $db, $board_config, $userdata;
+    global $nuke_db, $board_config, $userdata;
 
-    $sql = "SELECT MAX(report_time) AS latest_time FROM " . POST_REPORTS_TABLE . "
+    $sql = "SELECT MAX(report_time) AS latest_time FROM " . NUKE_POST_REPORTS_TABLE . "
         WHERE reporter_id = " . $userdata['user_id'];
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not get most recent report', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get most recent report', '', __LINE__, __FILE__, $sql);
     }
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
 
     $current_time = time();
     if ( ($current_time - $row['latest_time']) < $board_config['flood_interval'] )
@@ -358,9 +358,9 @@ function report_flood()
 }
 
 // get the number of open/closed reports
-function reports_count($status = REPORT_POST_NEW)
+function reports_count($status = NUKE_REPORT_POST_NEW)
 {
-    global $db;
+    global $nuke_db;
 
     $forum_ids = array();
     $forum_ids = get_forums_auth_mod();
@@ -378,17 +378,17 @@ function reports_count($status = REPORT_POST_NEW)
 
     // get the number of open reports for all the forums the user is a moderator
     $sql = "SELECT COUNT(pr.report_id) as total
-        FROM " . POST_REPORTS_TABLE . " pr, " . POSTS_TABLE . " p
+        FROM " . NUKE_POST_REPORTS_TABLE . " pr, " . NUKE_POSTS_TABLE . " p
         WHERE pr.report_status = " . intval($status) . "
             AND pr.post_id = p.post_id
             " . $where_sql;
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not get reports count', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get reports count', '', __LINE__, __FILE__, $sql);
     }
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     return ( $row['total'] ) ? $row['total'] : 0;
 }
@@ -396,18 +396,18 @@ function reports_count($status = REPORT_POST_NEW)
 // check if a post has already been reported
 function report_exists($post_id)
 {
-    global $db;
+    global $nuke_db;
 
     // maybe we have to check if the report is closed too in order to reopen it after the 2nd report
-    $sql = "SELECT report_id FROM " . POST_REPORTS_TABLE . "
+    $sql = "SELECT report_id FROM " . NUKE_POST_REPORTS_TABLE . "
         WHERE post_id = $post_id
-        AND report_status = " . REPORT_POST_NEW;
+        AND report_status = " . NUKE_REPORT_POST_NEW;
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not get report', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get report', '', __LINE__, __FILE__, $sql);
     }
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
 
     return ( $row ) ? TRUE : FALSE;
 }
@@ -415,16 +415,16 @@ function report_exists($post_id)
 // get the already stored report comments
 function get_report_comments($report_id)
 {
-    global $db;
+    global $nuke_db;
 
-    $sql = "SELECT last_action_comments FROM " . POST_REPORTS_TABLE . "
+    $sql = "SELECT last_action_comments FROM " . NUKE_POST_REPORTS_TABLE . "
         WHERE report_id = " . $report_id;
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not get report comments', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not get report comments', '', __LINE__, __FILE__, $sql);
     }
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
 
     return ( $row['last_action_comments'] && $row['last_action_comments'] != '' ) ? $row['last_action_comments'] : '';
 }
@@ -434,7 +434,7 @@ function get_forums_auth_mod()
 {
     global $userdata;
 
-    $auth = auth(AUTH_MOD, AUTH_LIST_ALL, $userdata);
+    $auth = auth(NUKE_AUTH_MOD, NUKE_AUTH_LIST_ALL, $userdata);
 
     // create an array to store the moderated forums
     $forums_auth = array();
@@ -453,31 +453,31 @@ function get_forums_auth_mod()
 // create the comments from the reports
 function create_comments($row)
 {
-    global $db, $board_config, $lang, $phpEx;
+    global $nuke_db, $board_config, $lang, $phpEx;
 
         // find if we have a last action user_id and last action time
         if ( $row['last_action_user_id'] != 0 && $row['last_action_time'] != 0 )
         {
-            $sql2 = "SELECT username FROM " . USERS_TABLE . "
+            $sql2 = "SELECT username FROM " . NUKE_USERS_TABLE . "
                 WHERE user_id = " . $row['last_action_user_id'];
 
-            if ( !($result2 = $db->sql_query($sql2)) )
+            if ( !($result2 = $nuke_db->sql_query($sql2)) )
             {
-                message_die(GENERAL_ERROR, 'Could not get last action user id information', '', __LINE__, __FILE__, $sql2);
+                message_die(NUKE_GENERAL_ERROR, 'Could not get last action user id information', '', __LINE__, __FILE__, $sql2);
             }
 
-            $row2 = $db->sql_fetchrow($result2);
+            $row2 = $nuke_db->sql_fetchrow($result2);
 
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-            $last_action_user = '<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['last_action_user_id'] . '">' . UsernameColor($row2['username']) . '</a>';
+            $last_action_user = '<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;' . NUKE_POST_USERS_URL . '=' . $row['last_action_user_id'] . '">' . UsernameColor($row2['username']) . '</a>';
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
             $last_action_date = create_date($board_config['default_dateformat'], $row['last_action_time'], $board_config['board_timezone']);
 
-            if ( $row['report_status'] == REPORT_POST_NEW )
+            if ( $row['report_status'] == NUKE_REPORT_POST_NEW )
             {
                 $last_action = sprintf($lang['Opened_by_user_on_date'], $last_action_user, $last_action_date);
             }
@@ -490,7 +490,7 @@ function create_comments($row)
         }
         else
         {
-            $last_action = ( $row['report_status'] == REPORT_POST_NEW ) ? $lang['Opened'] : $lang['Closed'];
+            $last_action = ( $row['report_status'] == NUKE_REPORT_POST_NEW ) ? $lang['Opened'] : $lang['Closed'];
             $last_action_comments = '';
         }
 
@@ -509,35 +509,35 @@ function create_comments($row)
 // find which reports have their posts non-existent
 function get_reports_with_no_posts()
 {
-    global $db;
+    global $nuke_db;
 
-    $sql = "SELECT pr.post_id FROM " . POST_REPORTS_TABLE . ' pr, ' . POSTS_TABLE . " p
+    $sql = "SELECT pr.post_id FROM " . NUKE_POST_REPORTS_TABLE . ' pr, ' . NUKE_POSTS_TABLE . " p
         WHERE pr.post_id = p.post_id";
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not query reports', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query reports', '', __LINE__, __FILE__, $sql);
     }
 
     // create an array with all the common post_ids of the reports and posts table
     $common_post_ids = array();
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
         $common_post_ids[] = $row['post_id'];
     }
 
     // get all the post_ids from the reports table
     $sql = "SELECT report_id, post_id
-        FROM " . POST_REPORTS_TABLE ;
+        FROM " . NUKE_POST_REPORTS_TABLE ;
 
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Could not query reports', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not query reports', '', __LINE__, __FILE__, $sql);
     }
 
     // find which reports exist in the reports table but do not exist in the posts table
     $delete_ids = array();
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
         if ( !in_array($row['post_id'], $common_post_ids) )
         {

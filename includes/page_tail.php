@@ -29,7 +29,7 @@
       Report Posts                             v1.2.3       08/30/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -38,14 +38,14 @@ if (!defined('IN_PHPBB'))
 // Show the overall footer.
 //
 global $popup, $admin_file, $cache;
-$admin_link = ( $userdata['user_level'] == ADMIN ) ? '<a href="modules/Forums/admin/index.php">' . $lang['Admin_panel'] . '</a><br /><br />' : '';
+$admin_link = ( $userdata['user_level'] == NUKE_ADMIN ) ? '<a href="modules/Forums/admin/index.php">' . $lang['Admin_panel'] . '</a><br /><br />' : '';
 
 /*****[BEGIN]******************************************
  [ Mod:     Report Posts                       v1.2.3 ]
  ******************************************************/
 include_once('includes/functions_report.'.$phpEx);
 
-if ( $userdata['user_level'] >= ADMIN )
+if ( $userdata['user_level'] >= NUKE_ADMIN )
 {
     $open_reports = reports_count();
     if ( $open_reports == 0 )
@@ -93,7 +93,7 @@ if ($popup != 1) {
     include_once("footer.php");
 } else {
      $cache->resync();
-     $db->sql_close();
+     $nuke_db->sql_close();
 }
 
 //

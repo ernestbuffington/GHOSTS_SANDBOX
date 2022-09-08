@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -114,7 +114,7 @@ function split_words($entry, $mode = 'post')
 
 function add_search_words($mode, $post_id, $post_text, $post_title = '')
 {
-        global $db, $phpbb2_root_path, $board_config, $lang;
+        global $nuke_db, $phpbb2_root_path, $board_config, $lang;
 
         $stopword_array = @file($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
         $synonym_array = @file($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . "/search_synonyms.txt");
@@ -173,14 +173,14 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
                         case 'oracle':
                         case 'db2':
                                 $sql = "SELECT word_id, word_text
-                                        FROM " . SEARCH_WORD_TABLE . "
+                                        FROM " . NUKE_SEARCH_WORD_TABLE . "
                                         WHERE word_text IN ($word_text_sql)";
-                                if ( !($result = $db->sql_query($sql)) )
+                                if ( !($result = $nuke_db->sql_query($sql)) )
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not select words', '', __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not select words', '', __LINE__, __FILE__, $sql);
                                 }
 
-                                while ( $row = $db->sql_fetchrow($result) )
+                                while ( $row = $nuke_db->sql_fetchrow($result) )
                                 {
                                         $check_words[$row['word_text']] = $row['word_id'];
                                 }
@@ -211,11 +211,11 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
                                                 $value_sql .= ( ( $value_sql != '' ) ? ' UNION ALL ' : '' ) . "SELECT '" . $word[$i] . "', 0";
                                                 break;
                                         default:
-                                                $sql = "INSERT INTO " . SEARCH_WORD_TABLE . " (word_text, word_common)
+                                                $sql = "INSERT INTO " . NUKE_SEARCH_WORD_TABLE . " (word_text, word_common)
                                                         VALUES ('" . $word[$i] . "', '0')";
-                                                if( !$db->sql_query($sql) )
+                                                if( !$nuke_db->sql_query($sql) )
                                                 {
-                                                        message_die(GENERAL_ERROR, 'Could not insert new word', '', __LINE__, __FILE__, $sql);
+                                                        message_die(NUKE_GENERAL_ERROR, 'Could not insert new word', '', __LINE__, __FILE__, $sql);
                                                 }
                                                 break;
                                 }
@@ -229,19 +229,19 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
                                 case 'mysql':
                                 case 'mysql4':
                                 case 'mysqli':
-                                        $sql = "INSERT IGNORE INTO " . SEARCH_WORD_TABLE . " (word_text, word_common)
+                                        $sql = "INSERT IGNORE INTO " . NUKE_SEARCH_WORD_TABLE . " (word_text, word_common)
                                                 VALUES $value_sql";
                                         break;
                                 case 'mssql':
                                 case 'mssql-odbc':
-                                        $sql = "INSERT INTO " . SEARCH_WORD_TABLE . " (word_text, word_common)
+                                        $sql = "INSERT INTO " . NUKE_SEARCH_WORD_TABLE . " (word_text, word_common)
                                                 $value_sql";
                                         break;
                         }
 
-                        if ( !$db->sql_query($sql) )
+                        if ( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not insert new word', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not insert new word', '', __LINE__, __FILE__, $sql);
                         }
                 }
         }
@@ -252,15 +252,15 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 
                 if ( $match_sql != '' )
                 {
-                        $sql = "INSERT INTO " . SEARCH_MATCH_TABLE . " (post_id, word_id, title_match)
+                        $sql = "INSERT INTO " . NUKE_SEARCH_MATCH_TABLE . " (post_id, word_id, title_match)
                                 SELECT $post_id, word_id, $title_match
-                                        FROM " . SEARCH_WORD_TABLE . "
+                                        FROM " . NUKE_SEARCH_WORD_TABLE . "
                                         WHERE word_text IN ($match_sql)
 					                    AND word_common <> 1";
 
-                        if ( !$db->sql_query($sql) )
+                        if ( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not insert new word matches', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not insert new word matches', '', __LINE__, __FILE__, $sql);
                         }
                 }
         }
@@ -278,16 +278,16 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 //
 function remove_common($mode, $fraction, $word_id_list = array())
 {
-        global $db;
+        global $nuke_db;
 
         $sql = "SELECT COUNT(post_id) AS total_posts
-                FROM " . POSTS_TABLE;
-        if ( !($result = $db->sql_query($sql)) )
+                FROM " . NUKE_POSTS_TABLE;
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-                message_die(GENERAL_ERROR, 'Could not obtain post count', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not obtain post count', '', __LINE__, __FILE__, $sql);
         }
 
-        $row = $db->sql_fetchrow($result);
+        $row = $nuke_db->sql_fetchrow($result);
 
         if ( $row['total_posts'] >= 100 )
         {
@@ -302,7 +302,7 @@ function remove_common($mode, $fraction, $word_id_list = array())
                         }
 
                         $sql = "SELECT m.word_id
-                                FROM " . SEARCH_MATCH_TABLE . " m, " . SEARCH_WORD_TABLE . " w
+                                FROM " . NUKE_SEARCH_MATCH_TABLE . " m, " . NUKE_SEARCH_WORD_TABLE . " w
                                 WHERE w.word_text IN ($word_id_sql)
                                         AND m.word_id = w.word_id
                                 GROUP BY m.word_id
@@ -311,38 +311,38 @@ function remove_common($mode, $fraction, $word_id_list = array())
                 else
                 {
                         $sql = "SELECT word_id
-                                FROM " . SEARCH_MATCH_TABLE . "
+                                FROM " . NUKE_SEARCH_MATCH_TABLE . "
                                 GROUP BY word_id
                                 HAVING COUNT(word_id) > $common_threshold";
                 }
 
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not obtain common word list', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not obtain common word list', '', __LINE__, __FILE__, $sql);
                 }
 
                 $common_word_id = '';
-                while ( $row = $db->sql_fetchrow($result) )
+                while ( $row = $nuke_db->sql_fetchrow($result) )
                 {
                         $common_word_id .= ( ( $common_word_id != '' ) ? ', ' : '' ) . $row['word_id'];
                 }
-                $db->sql_freeresult($result);
+                $nuke_db->sql_freeresult($result);
 
                 if ( $common_word_id != '' )
                 {
-                        $sql = "UPDATE " . SEARCH_WORD_TABLE . "
+                        $sql = "UPDATE " . NUKE_SEARCH_WORD_TABLE . "
                                 SET word_common = " . TRUE . "
                                 WHERE word_id IN ($common_word_id)";
-                        if ( !$db->sql_query($sql) )
+                        if ( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not delete word list entry', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not delete word list entry', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $sql = "DELETE FROM " . SEARCH_MATCH_TABLE . "
+                        $sql = "DELETE FROM " . NUKE_SEARCH_MATCH_TABLE . "
                                 WHERE word_id IN ($common_word_id)";
-                        if ( !$db->sql_query($sql) )
+                        if ( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not delete word match entry', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not delete word match entry', '', __LINE__, __FILE__, $sql);
                         }
                 }
         }
@@ -352,7 +352,7 @@ function remove_common($mode, $fraction, $word_id_list = array())
 
 function remove_search_post($post_id_sql)
 {
-        global $db;
+        global $nuke_db;
 
         $words_removed = false;
 
@@ -362,74 +362,74 @@ function remove_search_post($post_id_sql)
                 case 'mysql4':
                 case 'mysqli':
                         $sql = "SELECT word_id
-                                FROM " . SEARCH_MATCH_TABLE . "
+                                FROM " . NUKE_SEARCH_MATCH_TABLE . "
                                 WHERE post_id IN ($post_id_sql)
                                 GROUP BY word_id";
-                        if ( $result = $db->sql_query($sql) )
+                        if ( $result = $nuke_db->sql_query($sql) )
                         {
                                 $word_id_sql = '';
-                                while ( $row = $db->sql_fetchrow($result) )
+                                while ( $row = $nuke_db->sql_fetchrow($result) )
                                 {
                                         $word_id_sql .= ( $word_id_sql != '' ) ? ', ' . $row['word_id'] : $row['word_id'];
                                 }
 
                                 $sql = "SELECT word_id
-                                        FROM " . SEARCH_MATCH_TABLE . "
+                                        FROM " . NUKE_SEARCH_MATCH_TABLE . "
                                         WHERE word_id IN ($word_id_sql)
                                         GROUP BY word_id
                                         HAVING COUNT(word_id) = 1";
-                                if ( $result = $db->sql_query($sql) )
+                                if ( $result = $nuke_db->sql_query($sql) )
                                 {
                                         $word_id_sql = '';
-                                        while ( $row = $db->sql_fetchrow($result) )
+                                        while ( $row = $nuke_db->sql_fetchrow($result) )
                                         {
                                                 $word_id_sql .= ( $word_id_sql != '' ) ? ', ' . $row['word_id'] : $row['word_id'];
                                         }
 
                                         if ( $word_id_sql != '' )
                                         {
-                                                $sql = "DELETE FROM " . SEARCH_WORD_TABLE . "
+                                                $sql = "DELETE FROM " . NUKE_SEARCH_WORD_TABLE . "
                                                         WHERE word_id IN ($word_id_sql)";
-                                                if ( !$db->sql_query($sql) )
+                                                if ( !$nuke_db->sql_query($sql) )
                                                 {
-                                                        message_die(GENERAL_ERROR, 'Could not delete word list entry', '', __LINE__, __FILE__, $sql);
+                                                        message_die(NUKE_GENERAL_ERROR, 'Could not delete word list entry', '', __LINE__, __FILE__, $sql);
                                                 }
 
-                                                $words_removed = $db->sql_affectedrows();
+                                                $words_removed = $nuke_db->sql_affectedrows();
                                         }
                                 }
                         }
                         break;
 
                 default:
-                        $sql = "DELETE FROM " . SEARCH_WORD_TABLE . "
+                        $sql = "DELETE FROM " . NUKE_SEARCH_WORD_TABLE . "
                                 WHERE word_id IN (
                                         SELECT word_id
-                                        FROM " . SEARCH_MATCH_TABLE . "
+                                        FROM " . NUKE_SEARCH_MATCH_TABLE . "
                                         WHERE word_id IN (
                                                 SELECT word_id
-                                                FROM " . SEARCH_MATCH_TABLE . "
+                                                FROM " . NUKE_SEARCH_MATCH_TABLE . "
                                                 WHERE post_id IN ($post_id_sql)
                                                 GROUP BY word_id
                                         )
                                         GROUP BY word_id
                                         HAVING COUNT(word_id) = 1
                                 )";
-                        if ( !$db->sql_query($sql) )
+                        if ( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not delete old words from word table', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not delete old words from word table', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $words_removed = $db->sql_affectedrows();
+                        $words_removed = $nuke_db->sql_affectedrows();
 
                         break;
         }
 
-        $sql = "DELETE FROM " . SEARCH_MATCH_TABLE . "
+        $sql = "DELETE FROM " . NUKE_SEARCH_MATCH_TABLE . "
                 WHERE post_id IN ($post_id_sql)";
-        if ( !$db->sql_query($sql) )
+        if ( !$nuke_db->sql_query($sql) )
         {
-                message_die(GENERAL_ERROR, 'Error in deleting post', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Error in deleting post', '', __LINE__, __FILE__, $sql);
         }
 
         return $words_removed;
@@ -440,7 +440,7 @@ function remove_search_post($post_id_sql)
 //
 function username_search($search_match)
 {
-        global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb2_root_path, $starttime, $gen_simple_header;
+        global $nuke_db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb2_root_path, $starttime, $gen_simple_header;
 
         $gen_simple_header = TRUE;
 
@@ -450,27 +450,27 @@ function username_search($search_match)
         $username_search = preg_replace('/\*/', '%', phpbb_clean_username($search_match));
 
                 $sql = "SELECT username
-                        FROM " . USERS_TABLE . "
-                        WHERE username LIKE '" . str_replace("\'", "''", $username_search) . "' AND user_id <> " . ANONYMOUS . "
+                        FROM " . NUKE_USERS_TABLE . "
+                        WHERE username LIKE '" . str_replace("\'", "''", $username_search) . "' AND user_id <> " . NUKE_ANONYMOUS . "
                         ORDER BY username";
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not obtain search results', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not obtain search results', '', __LINE__, __FILE__, $sql);
                 }
 
-                if ( $row = $db->sql_fetchrow($result) )
+                if ( $row = $nuke_db->sql_fetchrow($result) )
                 {
                         do
                         {
                                 $username_list .= '<option value="' . $row['username'] . '">' . $row['username'] . '</option>';
                         }
-                        while ( $row = $db->sql_fetchrow($result) );
+                        while ( $row = $nuke_db->sql_fetchrow($result) );
                 }
                 else
                 {
                         $username_list .= '<option>' . $lang['No_match']. '</option>';
                 }
-                $db->sql_freeresult($result);
+                $nuke_db->sql_freeresult($result);
         }
 
         $page_title = $lang['Search'];

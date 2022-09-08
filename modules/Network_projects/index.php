@@ -21,7 +21,7 @@
       Networked                     v11.11.11  10/08/2017
 	  Converted To Network Support             10/08/2017	  
  ********************************************************/
-global $db2;
+global $network_db;
 
 if (!defined('MODULE_FILE'))
 { 

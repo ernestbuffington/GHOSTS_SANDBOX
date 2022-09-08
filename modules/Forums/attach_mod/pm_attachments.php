@@ -13,7 +13,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -35,7 +35,7 @@ class attach_pm extends attach_parent
 
         $this->attach_parent();
         $this->pm_delete_attachments = (isset($HTTP_POST_VARS['pm_delete_attach'])) ? true : false;
-        $this->page = PAGE_PRIVMSGS;
+        $this->page = NUKE_PAGE_PRIVMSGS;
     }
 
     function attach_pm()
@@ -63,7 +63,7 @@ class attach_pm extends attach_parent
     */
     function insert_attachment_pm($a_privmsgs_id)
     {
-        global $db, $mode, $attach_config, $privmsg_sent_id, $userdata, $to_userdata, $HTTP_POST_VARS;
+        global $nuke_db, $mode, $attach_config, $privmsg_sent_id, $userdata, $to_userdata, $HTTP_POST_VARS;
 
         $a_privmsgs_id = (int) $a_privmsgs_id;
 
@@ -80,13 +80,13 @@ class attach_pm extends attach_parent
 
 			if ((sizeof($this->attachment_list) > 0 || $this->post_attach) && !isset($HTTP_POST_VARS['update_attachment']))
             {
-                $sql = 'UPDATE ' . PRIVMSGS_TABLE . '
+                $sql = 'UPDATE ' . NUKE_PRIVMSGS_TABLE . '
                     SET privmsgs_attachment = 1
                     WHERE privmsgs_id = ' . (int) $a_privmsgs_id;
 
-                if (!$db->sql_query($sql))
+                if (!$nuke_db->sql_query($sql))
                 {
-                    message_die(GENERAL_ERROR, 'Unable to update Private Message Table.', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Unable to update Private Message Table.', '', __LINE__, __FILE__, $sql);
                 }
             }
         }
@@ -97,21 +97,21 @@ class attach_pm extends attach_parent
     */
     function duplicate_attachment_pm($switch_attachment, $original_privmsg_id, $new_privmsg_id)
     {
-        global $db, $privmsg, $folder;
+        global $nuke_db, $privmsg, $folder;
 
-        if (($privmsg['privmsgs_type'] == PRIVMSGS_NEW_MAIL || $privmsg['privmsgs_type'] == PRIVMSGS_UNREAD_MAIL) && $folder == 'inbox' && intval($switch_attachment) == 1)
+        if (($privmsg['privmsgs_type'] == NUKE_PRIVMSGS_NEW_MAIL || $privmsg['privmsgs_type'] == NUKE_PRIVMSGS_UNREAD_MAIL) && $folder == 'inbox' && intval($switch_attachment) == 1)
         {
             $sql = 'SELECT *
                 FROM ' . ATTACHMENTS_TABLE . '
                 WHERE privmsgs_id = ' . (int) $original_privmsg_id;
 
-            if (!($result = $db->sql_query($sql)))
+            if (!($result = $nuke_db->sql_query($sql)))
             {
-                message_die(GENERAL_ERROR, 'Couldn\'t query Attachment Table', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query Attachment Table', '', __LINE__, __FILE__, $sql);
             }
-            $rows = $db->sql_fetchrowset($result);
-            $num_rows = $db->sql_numrows($result);
-            $db->sql_freeresult($result);
+            $rows = $nuke_db->sql_fetchrowset($result);
+            $num_rows = $nuke_db->sql_numrows($result);
+            $nuke_db->sql_freeresult($result);
 
             if ($num_rows > 0)
             {
@@ -127,19 +127,19 @@ class attach_pm extends attach_parent
 
                     $sql = 'INSERT INTO ' . ATTACHMENTS_TABLE . ' ' . attach_mod_sql_build_array('INSERT', $sql_ary);
 
-                    if (!($result = $db->sql_query($sql)))
+                    if (!($result = $nuke_db->sql_query($sql)))
                     {
-                        message_die(GENERAL_ERROR, 'Couldn\'t store Attachment for sent Private Message', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Couldn\'t store Attachment for sent Private Message', '', __LINE__, __FILE__, $sql);
                     }
                 }
 
-                $sql = 'UPDATE ' . PRIVMSGS_TABLE . '
+                $sql = 'UPDATE ' . NUKE_PRIVMSGS_TABLE . '
                     SET privmsgs_attachment = 1
                     WHERE privmsgs_id = ' . (int) $new_privmsg_id;
 
-                if (!($db->sql_query($sql)))
+                if (!($nuke_db->sql_query($sql)))
                 {
-                    message_die(GENERAL_ERROR, 'Unable to update Private Message Table.', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Unable to update Private Message Table.', '', __LINE__, __FILE__, $sql);
                 }
             }
         }
@@ -162,7 +162,7 @@ class attach_pm extends attach_parent
 
             if ($delete_all && $confirm)
             {
-                delete_attachment($delete_sql_id, 0, PAGE_PRIVMSGS);
+                delete_attachment($delete_sql_id, 0, NUKE_PAGE_PRIVMSGS);
             }
         }
     }
@@ -172,9 +172,9 @@ class attach_pm extends attach_parent
     */
     function display_attach_box_limits()
     {
-        global $folder, $attach_config, $board_config, $template, $lang, $userdata, $db;
+        global $folder, $attach_config, $board_config, $template, $lang, $userdata, $nuke_db;
 
-        if (!$attach_config['allow_pm_attach'] && $userdata['user_level'] != ADMIN)
+        if (!$attach_config['allow_pm_attach'] && $userdata['user_level'] != NUKE_ADMIN)
         {
             return;
         }
@@ -207,7 +207,7 @@ class attach_pm extends attach_parent
     */
     function privmsgs_attachment_mod($mode)
     {
-        global $attach_config, $template, $lang, $userdata, $HTTP_POST_VARS, $phpbb2_root_path, $phpEx, $db;
+        global $attach_config, $template, $lang, $userdata, $HTTP_POST_VARS, $phpbb2_root_path, $phpEx, $nuke_db;
         global $confirm, $delete, $delete_all, $post_id, $privmsgs_id, $privmsg_id, $submit, $refresh, $mark_list, $folder;
 
         if ($folder != 'outbox')
@@ -230,7 +230,7 @@ class attach_pm extends attach_parent
 
         $post_id = $privmsgs_id;
 
-        $result = $this->handle_attachments($mode, PAGE_PRIVMSGS);
+        $result = $this->handle_attachments($mode, NUKE_PAGE_PRIVMSGS);
 
         if ($result === false)
         {
@@ -244,7 +244,7 @@ class attach_pm extends attach_parent
             if (!$userdata['session_logged_in'])
             {
                 $header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')) ) ? 'Refresh: 0; URL=' : 'Location: ';
-                redirect(append_sid("login.$phpEx?redirect=privmsg&amp;folder=inbox", true));
+                nuke_redirect(append_sid("login.$phpEx?nuke_redirect=privmsg&amp;folder=inbox", true));
                 exit;
             }
 
@@ -258,7 +258,7 @@ class attach_pm extends attach_parent
 
                 if (($this->pm_delete_attachments || $confirm) && !$delete_all)
                 {
-                    delete_attachment($delete_sql_id, 0, PAGE_PRIVMSGS);
+                    delete_attachment($delete_sql_id, 0, NUKE_PAGE_PRIVMSGS);
                 }
             }
         }

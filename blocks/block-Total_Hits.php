@@ -30,14 +30,14 @@
 
 if(!defined('NUKE_EVO')) exit;
 
-global $db, $evoconfig, $startdate;
+global $nuke_db, $evoconfig, $startdate;
 
 function block_Hits_cache($block_cachetime) {
-    global $db, $cache;
+    global $nuke_db, $cache;
     if ((($blockcache = $cache->load('hits', 'blocks')) === false) || empty($blockcache) || intval($blockcache[0]['stat_created']) < (time() - intval($block_cachetime))) {
-        $result = $db->sql_ufetchrow('SELECT `count` FROM `'._COUNTER_TABLE.'` WHERE `type`="total" AND `var`="hits" LIMIT 1');
+        $result = $nuke_db->sql_ufetchrow('SELECT `count` FROM `'._COUNTER_TABLE.'` WHERE `type`="total" AND `var`="hits" LIMIT 1');
         $blockcache[1]['count'] = $result['count'];
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         $blockcache[0]['stat_created'] = time();
         $cache->save('hits', 'blocks', $blockcache);
     }

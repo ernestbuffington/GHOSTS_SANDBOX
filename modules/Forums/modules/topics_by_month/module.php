@@ -13,7 +13,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -26,7 +26,7 @@ $core->start_module(true);
 $core->set_content('values');
 
 $sql = "SELECT YEAR(FROM_UNIXTIME(topic_time)) as year_topic, MONTH(FROM_UNIXTIME(topic_time)) as month_topic, COUNT(*) AS num_topics 
-FROM " . TOPICS_TABLE . " 
+FROM " . NUKE_BB_TOPICS_TABLE . " 
 GROUP BY YEAR(FROM_UNIXTIME(topic_time)), MONTH(FROM_UNIXTIME(topic_time)), topic_id 
 ORDER BY topic_time";
 

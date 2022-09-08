@@ -46,7 +46,7 @@
 	  Arcade                                   v3.0.2       05/29/2009
  ************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -97,7 +97,7 @@ else
 //
 // Begin program
 //
-if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) || isset($HTTP_GET_VARS[POST_USERS_URL]) || isset( $HTTP_POST_VARS[POST_USERS_URL]) ) )
+if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) || isset($HTTP_GET_VARS[NUKE_POST_USERS_URL]) || isset( $HTTP_POST_VARS[NUKE_POST_USERS_URL]) ) )
 {
 /*****[BEGIN]******************************************
  [ Mod:    Attachment Mod                      v2.4.1 ]
@@ -115,7 +115,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 
                 if (!($this_userdata = get_userdata($user_id)))
                 {
-                        message_die(GENERAL_MESSAGE, $lang['No_user_id_specified'] );
+                        message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_id_specified'] );
                 }
 
 /*****[BEGIN]******************************************
@@ -129,159 +129,159 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
         if( $HTTP_POST_VARS['deleteuser'] && ( $userdata['user_id'] != $user_id ) )
                 {
                         $sql = "SELECT g.group_id
-                                FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
+                                FROM " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g
                                 WHERE ug.user_id = '$user_id'
                                         AND g.group_id = ug.group_id
                                         AND g.group_single_user = 1";
-                        if( !($result = $db->sql_query($sql)) )
+                        if( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not obtain group information for this user', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not obtain group information for this user', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $row = $db->sql_fetchrow($result);
+                        $row = $nuke_db->sql_fetchrow($result);
 
-                        $sql = "UPDATE " . POSTS_TABLE . "
-                                SET poster_id = " . DELETED . ", post_username = '" . str_replace("\\'", "''", addslashes($this_userdata['username'])) . "'
+                        $sql = "UPDATE " . NUKE_POSTS_TABLE . "
+                                SET poster_id = " . NUKE_DELETED . ", post_username = '" . str_replace("\\'", "''", addslashes($this_userdata['username'])) . "'
                                 WHERE poster_id = '$user_id'";
-                        if( !$db->sql_query($sql) )
+                        if( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not update posts for this user', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not update posts for this user', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $sql = "UPDATE " . TOPICS_TABLE . "
-                                SET topic_poster = " . DELETED . "
+                        $sql = "UPDATE " . NUKE_BB_TOPICS_TABLE . "
+                                SET topic_poster = " . NUKE_DELETED . "
                                 WHERE topic_poster = '$user_id'";
-                        if( !$db->sql_query($sql) )
+                        if( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not update topics for this user', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not update topics for this user', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $sql = "UPDATE " . VOTE_USERS_TABLE . "
-                                SET vote_user_id = " . DELETED . "
+                        $sql = "UPDATE " . NUKE_VOTE_USERS_TABLE . "
+                                SET vote_user_id = " . NUKE_DELETED . "
                                 WHERE vote_user_id = '$user_id'";
-                        if( !$db->sql_query($sql) )
+                        if( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not update votes for this user', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not update votes for this user', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $sql = "UPDATE " . GROUPS_TABLE . "
+                        $sql = "UPDATE " . NUKE_GROUPS_TABLE . "
             				SET group_moderator = " . $userdata['user_id'] . "
             				WHERE group_moderator = $user_id";
-            			if( !$db->sql_query($sql) )
+            			if( !$nuke_db->sql_query($sql) )
             			{
-            				message_die(GENERAL_ERROR, 'Could not update group moderators', '', __LINE__, __FILE__, $sql);
+            				message_die(NUKE_GENERAL_ERROR, 'Could not update group moderators', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $sql = "DELETE FROM " . USERS_TABLE . "
+                        $sql = "DELETE FROM " . NUKE_USERS_TABLE . "
                                 WHERE user_id = '$user_id'";
-                        if( !$db->sql_query($sql) )
+                        if( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not delete user', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not delete user', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $sql = "DELETE FROM " . USER_GROUP_TABLE . "
+                        $sql = "DELETE FROM " . NUKE_USER_GROUP_TABLE . "
                                 WHERE user_id = '$user_id'";
-                        if( !$db->sql_query($sql) )
+                        if( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not delete user from user_group table', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not delete user from user_group table', '', __LINE__, __FILE__, $sql);
                         }
 
                         if (intval($row['group_id']) > 0)
                         {
-                        $sql = "DELETE FROM " . GROUPS_TABLE . "
+                        $sql = "DELETE FROM " . NUKE_GROUPS_TABLE . "
                                 WHERE group_id = " . $row['group_id'];
-                        if( !$db->sql_query($sql) )
+                        if( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not delete group for this user', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not delete group for this user', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $sql = "DELETE FROM " . AUTH_ACCESS_TABLE . "
+                        $sql = "DELETE FROM " . NUKE_AUTH_ACCESS_TABLE . "
                                 WHERE group_id = " . $row['group_id'];
-                        if( !$db->sql_query($sql) )
+                        if( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not delete group for this user', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not delete group for this user', '', __LINE__, __FILE__, $sql);
                           }
                         }
 
-                        $sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
+                        $sql = "DELETE FROM " . NUKE_TOPICS_WATCH_TABLE . "
                                 WHERE user_id = '$user_id'";
-                        if ( !$db->sql_query($sql) )
+                        if ( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not delete user from topic watch table', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not delete user from topic watch table', '', __LINE__, __FILE__, $sql);
                         }
 
 /*****[BEGIN]******************************************
  [ Mod:     Arcade                             v3.0.2 ]
  ******************************************************/
-                                                $sql = "DELETE FROM " . SCORES_TABLE . " WHERE user_id = $user_id";
+                                                $sql = "DELETE FROM " . NUKE_SCORES_TABLE . " WHERE user_id = $user_id";
 
-                                                if ( !$db->sql_query($sql) )
+                                                if ( !$nuke_db->sql_query($sql) )
                                                 {
-                                                                message_die(GENERAL_ERROR, 'Could not delete scores from table', '', __LINE__, __FILE__, $sql);
+                                                                message_die(NUKE_GENERAL_ERROR, 'Could not delete scores from table', '', __LINE__, __FILE__, $sql);
                                                 }
 
-                                                $sql = "SELECT * FROM " . GAMES_TABLE . " WHERE game_highuser = $user_id";
+                                                $sql = "SELECT * FROM " . NUKE_GAMES_TABLE . " WHERE game_highuser = $user_id";
 
-                                                if( !($result = $db->sql_query($sql)) )
+                                                if( !($result = $nuke_db->sql_query($sql)) )
                                                 {
-                                                                message_die(GENERAL_ERROR, 'Could not read games table', '', __LINE__, __FILE__, $sql);
+                                                                message_die(NUKE_GENERAL_ERROR, 'Could not read games table', '', __LINE__, __FILE__, $sql);
                                                 }
 
-                                                while ( $row_games = $db->sql_fetchrow($result) ) {
-                                                                $sql2 = "SELECT * FROM " . SCORES_TABLE . " WHERE game_id = " . $row_games['game_id'] . " ORDER BY score_game DESC, score_date ASC LIMIT 0,1";
+                                                while ( $row_games = $nuke_db->sql_fetchrow($result) ) {
+                                                                $sql2 = "SELECT * FROM " . NUKE_SCORES_TABLE . " WHERE game_id = " . $row_games['game_id'] . " ORDER BY score_game DESC, score_date ASC LIMIT 0,1";
 
-                                                                if( !($result2 = $db->sql_query($sql2)) )
+                                                                if( !($result2 = $nuke_db->sql_query($sql2)) )
                                                                 {
-                                                                                message_die(GENERAL_ERROR, 'Could not select scores', '', __LINE__, __FILE__, $sql2);
+                                                                                message_die(NUKE_GENERAL_ERROR, 'Could not select scores', '', __LINE__, __FILE__, $sql2);
                                                                 }
 
                                                                 $game_highuser = 0 ;
                                                                 $game_highscore = 0 ;
                                                                 $game_highdate = 0 ;
 
-                                                                if ( $row_high = $db->sql_fetchrow($result2) )
+                                                                if ( $row_high = $nuke_db->sql_fetchrow($result2) )
                                                                 {
                                                                                 $game_highuser = $row_high['user_id'] ;
                                                                                 $game_highscore = $row_high['score_game'] ;
                                                                                 $game_highdate =  $row_high['score_date'] ;
                                                                 }
 
-                                                                $sql2 = "UPDATE " . GAMES_TABLE . " SET game_highuser = $game_highuser , game_highdate = $game_highdate , game_highscore = $game_highscore WHERE game_id = " . $row_games['game_id'];
+                                                                $sql2 = "UPDATE " . NUKE_GAMES_TABLE . " SET game_highuser = $game_highuser , game_highdate = $game_highdate , game_highscore = $game_highscore WHERE game_id = " . $row_games['game_id'];
 
-                                                                if ( !$db->sql_query($sql2) )
+                                                                if ( !$nuke_db->sql_query($sql2) )
                                                                 {
-                                                                                message_die(GENERAL_ERROR, 'Could not update games table', '', __LINE__, __FILE__, $sql2);
+                                                                                message_die(NUKE_GENERAL_ERROR, 'Could not update games table', '', __LINE__, __FILE__, $sql2);
                                                                 }
 
-                                                                $sql2 = "UPDATE " . COMMENTS_TABLE. " SET comments_value = '' WHERE game_id = " . $row_games['game_id'];
-                                                                if (!$db->sql_query($sql2))
+                                                                $sql2 = "UPDATE " . NUKE_COMMENTS_TABLE. " SET comments_value = '' WHERE game_id = " . $row_games['game_id'];
+                                                                if (!$nuke_db->sql_query($sql2))
                                                                 {
-                                                                                message_die(GENERAL_ERROR, 'Could not delete from comments table', '', __LINE__, __FILE__, $sql2);
+                                                                                message_die(NUKE_GENERAL_ERROR, 'Could not delete from comments table', '', __LINE__, __FILE__, $sql2);
                                                                 }
                                                 }
 /*****[END]********************************************
  [ Mod:     Arcade                             v3.0.2 ]
  ******************************************************/
 
-                        $sql = "DELETE FROM " . BANLIST_TABLE . "
+                        $sql = "DELETE FROM " . NUKE_BANLIST_TABLE . "
                                 WHERE ban_userid = '$user_id'";
-                        if ( !$db->sql_query($sql) )
+                        if ( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not delete user from banlist table', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not delete user from banlist table', '', __LINE__, __FILE__, $sql);
                         }
 
-						 $sql = "DELETE FROM " . SESSIONS_TABLE . "
+						 $sql = "DELETE FROM " . NUKE_BB_SESSIONS_TABLE . "
 							WHERE session_user_id = $user_id";
-						 if ( !$db->sql_query($sql) )
+						 if ( !$nuke_db->sql_query($sql) )
 						 {
-							message_die(GENERAL_ERROR, 'Could not delete sessions for this user', '', __LINE__, __FILE__, $sql);
+							message_die(NUKE_GENERAL_ERROR, 'Could not delete sessions for this user', '', __LINE__, __FILE__, $sql);
 						 }
 
-						 $sql = "DELETE FROM " . SESSIONS_KEYS_TABLE . "
+						 $sql = "DELETE FROM " . NUKE_BB_SESSIONS_KEYS_TABLE . "
 							WHERE user_id = $user_id";
-						 if ( !$db->sql_query($sql) )
+						 if ( !$nuke_db->sql_query($sql) )
 						 {
-							message_die(GENERAL_ERROR, 'Could not delete auto-login keys for this user', '', __LINE__, __FILE__, $sql);
+							message_die(NUKE_GENERAL_ERROR, 'Could not delete auto-login keys for this user', '', __LINE__, __FILE__, $sql);
 						 }
 
 /*****[BEGIN]******************************************
@@ -289,25 +289,25 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  ******************************************************/
                         $sql = "DELETE FROM ".$prefix."_bbuser_group
                                 WHERE user_id = '$user_id'";
-                        if ( !$db->sql_query($sql) )
+                        if ( !$nuke_db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not delete user from inital user group table', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not delete user from inital user group table', '', __LINE__, __FILE__, $sql);
                         }
 /*****[END]********************************************
  [ Mod:     Initial Usergroup                  v1.0.1 ]
  ******************************************************/
 
                         $sql = "SELECT privmsgs_id
-                                FROM " . PRIVMSGS_TABLE . "
+                                FROM " . NUKE_PRIVMSGS_TABLE . "
                                 WHERE privmsgs_from_userid = '$user_id'
                                         OR privmsgs_to_userid = '$user_id'";
-                        if ( !($result = $db->sql_query($sql)) )
+                        if ( !($result = $nuke_db->sql_query($sql)) )
                         {
-                                message_die(GENERAL_ERROR, 'Could not select all users private messages', '', __LINE__, __FILE__, $sql);
+                                message_die(NUKE_GENERAL_ERROR, 'Could not select all users private messages', '', __LINE__, __FILE__, $sql);
                         }
 
                         // This little bit of code directly from the private messaging section.
-                        while ( $row_privmsgs = $db->sql_fetchrow($result) )
+                        while ( $row_privmsgs = $nuke_db->sql_fetchrow($result) )
                         {
                                 $mark_list[] = $row_privmsgs['privmsgs_id'];
                         }
@@ -316,25 +316,25 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                         {
                                 $delete_sql_id = implode(', ', $mark_list);
 
-                                $delete_text_sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
+                                $delete_text_sql = "DELETE FROM " . NUKE_PRIVMSGS_TEXT_TABLE . "
                                         WHERE privmsgs_text_id IN ($delete_sql_id)";
-                                $delete_sql = "DELETE FROM " . PRIVMSGS_TABLE . "
+                                $delete_sql = "DELETE FROM " . NUKE_PRIVMSGS_TABLE . "
                                         WHERE privmsgs_id IN ($delete_sql_id)";
 
-                                if ( !$db->sql_query($delete_sql) )
+                                if ( !$nuke_db->sql_query($delete_sql) )
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not delete private message info', '', __LINE__, __FILE__, $delete_sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not delete private message info', '', __LINE__, __FILE__, $delete_sql);
                                 }
 
-                                if ( !$db->sql_query($delete_text_sql) )
+                                if ( !$nuke_db->sql_query($delete_text_sql) )
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not delete private message text', '', __LINE__, __FILE__, $delete_text_sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not delete private message text', '', __LINE__, __FILE__, $delete_text_sql);
                                 }
                         }
 
                         $message = $lang['User_deleted'] . '<br /><br />' . sprintf($lang['Click_return_useradmin'], '<a href="' . append_sid("admin_users.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
 
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
                 }
 
                 $username = ( !empty($HTTP_POST_VARS['username']) ) ? phpbb_clean_username($HTTP_POST_VARS['username']) : '';
@@ -569,7 +569,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                         if ( !isset($HTTP_POST_VARS['cancelavatar']))
                         {
                                 $user_avatar = $user_avatar_category . '/' . $user_avatar_local;
-                                $user_avatar_type = USER_AVATAR_GALLERY;
+                                $user_avatar_type = NUKE_USER_AVATAR_GALLERY;
                         }
                 }
         }
@@ -661,7 +661,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 				}
 		
 				$user_birthday = sprintf('%02d%02d%04d',$bday_month,$bday_day,$bday_year);
-				$user_birthday2 = ( $birthday_display != BIRTHDAY_DATE && $birthday_display != BIRTHDAY_NONE && !$empty_month && !$empty_day && !$empty_year ) ? sprintf('%04d%02d%02d',$bday_year,$bday_month,$bday_day) : 'NULL';
+				$user_birthday2 = ( $birthday_display != NUKE_BIRTHDAY_DATE && $birthday_display != NUKE_BIRTHDAY_NONE && !$empty_month && !$empty_day && !$empty_year ) ? sprintf('%04d%02d%02d',$bday_year,$bday_month,$bday_day) : 'NULL';
 		
 				if ( $birthday_greeting && !( $board_config['bday_greeting'] & 1<<($birthday_greeting-1) ) )
 				{
@@ -710,7 +710,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                 $xd_meta = get_xd_metadata();
                 while ( list($code_name, $meta) = each($xd_meta) )
                 {
-                    if ( $meta['handle_input'] && ( ( $mode == 'register' && $meta['default_auth'] == XD_AUTH_ALLOW ) || xdata_auth($code_name, $userdata['user_id']) ) )
+                    if ( $meta['handle_input'] && ( ( $mode == 'register' && $meta['default_auth'] == NUKE_XD_AUTH_ALLOW ) || xdata_auth($code_name, $userdata['user_id']) ) )
                     {
                         if ( ($meta['field_length'] > 0) && (strlen($xdata[$code_name]) > $meta['field_length']) )
                         {
@@ -750,14 +750,14 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                 $avatar_sql = "";
                 if( isset($HTTP_POST_VARS['avatardel']) )
                 {
-                        if( $this_userdata['user_avatar_type'] == USER_AVATAR_UPLOAD && $this_userdata['user_avatar'] != "" )
+                        if( $this_userdata['user_avatar_type'] == NUKE_USER_AVATAR_UPLOAD && $this_userdata['user_avatar'] != "" )
                         {
                                 if( @file_exists(@phpbb_realpath('./../' . $board_config['avatar_path'] . "/" . $this_userdata['user_avatar'])) )
 					            {
                						@unlink('./../' . $board_config['avatar_path'] . "/" . $this_userdata['user_avatar']);
                                 }
                         }
-                        $avatar_sql = ", user_avatar = '', user_avatar_type = " . USER_AVATAR_NONE;
+                        $avatar_sql = ", user_avatar = '', user_avatar_type = " . NUKE_USER_AVATAR_NONE;
                 }
                 else if( ( $user_avatar_loc != "" || !empty($user_avatar_url) ) && !$error )
                 {
@@ -818,7 +818,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 
                                                                 $avatar_filename = $user_id . $imgtype;
 
-                                                                if( $this_userdata['user_avatar_type'] == USER_AVATAR_UPLOAD && $this_userdata['user_avatar'] != "" )
+                                                                if( $this_userdata['user_avatar_type'] == NUKE_USER_AVATAR_UPLOAD && $this_userdata['user_avatar'] != "" )
                                                                 {
                                                                         if( @file_exists(@phpbb_realpath("./../" . $board_config['avatar_path'] . "/" . $this_userdata['user_avatar'])) )
                                                                         {
@@ -827,7 +827,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                                                                 }
                                                                 @copy($user_avatar_loc, "./../" . $board_config['avatar_path'] . "/$avatar_filename");
 
-                                                                $avatar_sql = ", user_avatar = '$avatar_filename', user_avatar_type = " . USER_AVATAR_UPLOAD;
+                                                                $avatar_sql = ", user_avatar = '$avatar_filename', user_avatar_type = " . NUKE_USER_AVATAR_UPLOAD;
                                                         }
                                                         else
                                                         {
@@ -927,7 +927,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 
                                                                                 $avatar_filename = $user_id . $imgtype;
 
-                                                                                if( $this_userdata['user_avatar_type'] == USER_AVATAR_UPLOAD && $this_userdata['user_avatar'] != "")
+                                                                                if( $this_userdata['user_avatar_type'] == NUKE_USER_AVATAR_UPLOAD && $this_userdata['user_avatar'] != "")
                                                                                 {
                                                                                         if( file_exists(@phpbb_realpath("./../" . $board_config['avatar_path'] . "/" . $this_userdata['user_avatar'])) )
                                                                                         {
@@ -937,7 +937,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                                                                                 @copy($tmp_filename, "./../" . $board_config['avatar_path'] . "/$avatar_filename");
                                                                                 @unlink($tmp_filename);
 
-                                                                                $avatar_sql = ", user_avatar = '$avatar_filename', user_avatar_type = " . USER_AVATAR_UPLOAD;
+                                                                                $avatar_sql = ", user_avatar = '$avatar_filename', user_avatar_type = " . NUKE_USER_AVATAR_UPLOAD;
                                                                         }
                                                                         else
                                                                         {
@@ -953,7 +953,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                                                                         // Error writing file
                                                                         //
                                                                         @unlink($tmp_filename);
-                                                                        message_die(GENERAL_ERROR, "Could not write avatar file to local storage. Please contact the board administrator with this message", "", __LINE__, __FILE__);
+                                                                        message_die(NUKE_GENERAL_ERROR, "Could not write avatar file to local storage. Please contact the board administrator with this message", "", __LINE__, __FILE__);
                                                                 }
                                                         }
                                                 }
@@ -999,7 +999,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 
                         if( preg_match("#^(http:\/\/[a-z0-9\-]+?\.([a-z0-9\-]+\.)*[a-z]+\/.*?\.(gif|jpg|png)$)#is", $user_avatar_remoteurl) )
                         {
-                                $avatar_sql = ", user_avatar = '" . str_replace("\'", "''", $user_avatar_remoteurl) . "', user_avatar_type = " . USER_AVATAR_REMOTE;
+                                $avatar_sql = ", user_avatar = '" . str_replace("\'", "''", $user_avatar_remoteurl) . "', user_avatar_type = " . NUKE_USER_AVATAR_REMOTE;
                         }
                         else
                         {
@@ -1010,7 +1010,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                 else 
 				if( $user_avatar_local != "" && empty($avatar_sql) && !$error )
                 {
-                        $avatar_sql = ", user_avatar = '" . str_replace("\'", "''", phpbb_ltrim(basename($user_avatar_category), "'") . '/' . phpbb_ltrim(basename($user_avatar_local), "'")) . "', user_avatar_type = " . USER_AVATAR_GALLERY;
+                        $avatar_sql = ", user_avatar = '" . str_replace("\'", "''", phpbb_ltrim(basename($user_avatar_category), "'") . '/' . phpbb_ltrim(basename($user_avatar_local), "'")) . "', user_avatar_type = " . NUKE_USER_AVATAR_GALLERY;
                 }
 
                 //
@@ -1033,7 +1033,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  [ Mod:    Users Reputations Systems           v1.0.0 ]
  [ Mod:    Admin User Notes                    v1.0.0 ]
  ******************************************************/
-                        $sql = "UPDATE " . USERS_TABLE . "
+                        $sql = "UPDATE " . NUKE_USERS_TABLE . "
                                 SET " . $username_sql . $passwd_sql . "user_email = '" . str_replace("\'", "''", $email) . "', user_reputation = '" . str_replace("\'", "''", $reputation) . "', user_birthday = $user_birthday, user_birthday2 = $user_birthday2, birthday_display = $birthday_display, birthday_greeting = $birthday_greeting, user_website = '" . str_replace("\'", "''", $website) . "', user_occ = '" . str_replace("\'", "''", $occupation) . "', user_from = '" . str_replace("\'", "''", $location) . "', user_from_flag = '$user_flag', user_interests = '" . str_replace("\'", "''", $interests) . "', user_glance_show = '" . str_replace("\'", "''", $glance_show) . "', user_sig = '" . str_replace("\'", "''", $signature) . "', user_admin_notes = '" . str_replace("\'", "''", $user_admin_notes) . "', user_viewemail = $viewemail, user_facebook = '" . str_replace("\'", "''", $facebook) . "', user_attachsig = '$attachsig', user_sig_bbcode_uid = '$signature_bbcode_uid', user_allowsmile = '$allowsmilies', user_showavatars = '$showavatars', user_showsignatures = '$showsignatures', user_allowhtml = '$allowhtml', user_allowavatar = '$user_allowavatar', user_allowbbcode = '$allowbbcode', user_allow_viewonline = '$allowviewonline', user_notify = '$notifyreply', user_allow_pm = '$user_allowpm', user_notify_pm = '$notifypm', user_popup_pm = '$popuppm', user_wordwrap = '$user_wordwrap', user_lang = '" . str_replace("\'", "''", $user_lang) . "', theme = '$user_style', user_timezone = '$user_timezone', user_time_mode = '$time_mode', user_dst_time_lag = '$dst_time_lag', user_dateformat = '" . str_replace("\'", "''", $user_dateformat) . "', user_show_quickreply = '$user_show_quickreply', user_quickreply_mode = '$user_quickreply_mode', user_open_quickreply = $user_open_quickreply, user_active = '$user_status', user_hide_images = '$hide_images', user_rank = '$user_rank', user_rank2 = '$user_rank2', user_rank3 = '$user_rank3', user_rank4 = '$user_rank4', user_rank5 = '$user_rank5', user_gender = '$gender', user_posts='$user_posts'" . $avatar_sql . "
                                 WHERE user_id = '$user_id'";
 /*****[END]********************************************
@@ -1051,28 +1051,28 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  [ Mod:    Users Reputations Systems           v1.0.0 ]
  [ Mod:    Admin User Notes                    v1.0.0 ]
  ******************************************************/
-                        if( $result = $db->sql_query($sql) )
+                        if( $result = $nuke_db->sql_query($sql) )
                         {
                                 if( isset($rename_user) )
                                 {
-                                        $sql = "UPDATE " . GROUPS_TABLE . "
+                                        $sql = "UPDATE " . NUKE_GROUPS_TABLE . "
                                                 SET group_name = '".str_replace("\'", "''", $rename_user)."'
                                                 WHERE group_name = '".str_replace("'", "''", $this_userdata['username'] )."'";
-                                        if( !$result = $db->sql_query($sql) )
+                                        if( !$result = $nuke_db->sql_query($sql) )
                                         {
-                                                message_die(GENERAL_ERROR, 'Could not rename users group', '', __LINE__, __FILE__, $sql);
+                                                message_die(NUKE_GENERAL_ERROR, 'Could not rename users group', '', __LINE__, __FILE__, $sql);
                                         }
                                 }
 
                                 // Delete user session, to prevent the user navigating the forum (if logged in) when disabled
                                 if (!$user_status)
                                 {
-                                        $sql = "DELETE FROM " . SESSIONS_TABLE . "
+                                        $sql = "DELETE FROM " . NUKE_BB_SESSIONS_TABLE . "
                                                 WHERE session_user_id = " . $user_id;
 
-                                        if ( !$db->sql_query($sql) )
+                                        if ( !$nuke_db->sql_query($sql) )
                                         {
-                                                message_die(GENERAL_ERROR, 'Error removing user session', '', __LINE__, __FILE__, $sql);
+                                                message_die(NUKE_GENERAL_ERROR, 'Error removing user session', '', __LINE__, __FILE__, $sql);
                                         }
                                 }
 
@@ -1101,12 +1101,12 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                         }
                         else
                         {
-                            message_die(GENERAL_ERROR, 'Admin_user_fail', '', __LINE__, __FILE__, $sql);
+                            message_die(NUKE_GENERAL_ERROR, 'Admin_user_fail', '', __LINE__, __FILE__, $sql);
                         }
 
                         $message .= '<br /><br />' . sprintf($lang['Click_return_useradmin'], '<a href="' . append_sid("admin_users.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
 
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
                 }
                 else
                 {
@@ -1175,13 +1175,13 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
         }
         else if( !isset( $HTTP_POST_VARS['submit'] ) && $mode != 'save' && !isset( $HTTP_POST_VARS['avatargallery'] ) && !isset( $HTTP_POST_VARS['submitavatar'] ) && !isset( $HTTP_POST_VARS['cancelavatar'] ) )
         {
-                if( isset( $HTTP_GET_VARS[POST_USERS_URL]) || isset( $HTTP_POST_VARS[POST_USERS_URL]) )
+                if( isset( $HTTP_GET_VARS[NUKE_POST_USERS_URL]) || isset( $HTTP_POST_VARS[NUKE_POST_USERS_URL]) )
                 {
-                        $user_id = ( isset( $HTTP_POST_VARS[POST_USERS_URL]) ) ? intval( $HTTP_POST_VARS[POST_USERS_URL]) : intval( $HTTP_GET_VARS[POST_USERS_URL]);
+                        $user_id = ( isset( $HTTP_POST_VARS[NUKE_POST_USERS_URL]) ) ? intval( $HTTP_POST_VARS[NUKE_POST_USERS_URL]) : intval( $HTTP_GET_VARS[NUKE_POST_USERS_URL]);
                         $this_userdata = get_userdata($user_id);
                         if( !$this_userdata )
                         {
-                                message_die(GENERAL_MESSAGE, $lang['No_user_id_specified'] );
+                                message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_id_specified'] );
                         }
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v1.0.3 ]
@@ -1196,7 +1196,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                         $this_userdata = get_userdata($HTTP_POST_VARS['username'], true);
                         if( !$this_userdata )
                         {
-                                message_die(GENERAL_MESSAGE, $lang['No_user_id_specified'] );
+                                message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_id_specified'] );
                         }
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v1.0.3 ]
@@ -1623,19 +1623,19 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                 {
                         switch( $user_avatar_type )
                         {
-                                case USER_AVATAR_UPLOAD:
+                                case NUKE_USER_AVATAR_UPLOAD:
                                         $avatar = '<img src="../../../' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" />';
                                         break;
 /*****[BEGIN]******************************************
  [ Mod:     Remote Avatar Resize               v2.0.0 ]
  ******************************************************/
-                                case USER_AVATAR_REMOTE:
+                                case NUKE_USER_AVATAR_REMOTE:
                                         $avatar = resize_avatar($user_avatar);
                                         break;
 /*****[END]********************************************
  [ Mod:     Remote Avatar Resize               v2.0.0 ]
  ******************************************************/
-                                case USER_AVATAR_GALLERY:
+                                case NUKE_USER_AVATAR_GALLERY:
                                         $avatar = '<img src="../../../' . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="" />';
                                         break;
                         }
@@ -1645,12 +1645,12 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                         $avatar = "";
                 }
 
-                $sql = "SELECT * FROM " . RANKS_TABLE . "
+                $sql = "SELECT * FROM " . NUKE_RANKS_TABLE . "
                         WHERE rank_special = '1'
                         ORDER BY rank_title";
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not obtain ranks data', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not obtain ranks data', '', __LINE__, __FILE__, $sql);
                 }
 
 /*****[BEGIN]******************************************
@@ -1689,7 +1689,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 /*****[END]********************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/ 
-                while( $row = $db->sql_fetchrow($result) )
+                while( $row = $nuke_db->sql_fetchrow($result) )
                 {
                         $rank = $row['rank_title'];
                         $rank_id = $row['rank_id'];
@@ -1722,9 +1722,9 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                 while ( list($code_name, $info) = each($xd_meta) )
                 {
 
-                	if ( xdata_auth($code_name, $userdata['user_id']) || intval($userdata['user_level']) == ADMIN )
+                	if ( xdata_auth($code_name, $userdata['user_id']) || intval($userdata['user_level']) == NUKE_ADMIN )
                 	{
-                		if ($info['display_register'] == XD_DISPLAY_NORMAL)
+                		if ($info['display_register'] == NUKE_XD_DISPLAY_NORMAL)
                 		{
                 			$template->assign_block_vars('xdata', array(
                 				'CODE_NAME' => $code_name,
@@ -1776,7 +1776,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                 					break;
                 			}
                 		}
-                		elseif ($info['display_register'] == XD_DISPLAY_ROOT)
+                		elseif ($info['display_register'] == NUKE_XD_DISPLAY_ROOT)
                 		{
                             $template->assign_block_vars('xdata',
                 	 	  		array(
@@ -1902,14 +1902,14 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  [ Mod:     Member Country Flags               v2.0.7 ]
  ******************************************************/
 				$sql = "SELECT *
-					FROM " . FLAG_TABLE . "
+					FROM " . NUKE_FLAG_TABLE . "
 					ORDER BY flag_id";
-				if(!$flags_result = $db->sql_query($sql))
+				if(!$flags_result = $nuke_db->sql_query($sql))
 				{
-					message_die(GENERAL_ERROR, "Couldn't obtain flags information.", "", __LINE__, __FILE__, $sql);
+					message_die(NUKE_GENERAL_ERROR, "Couldn't obtain flags information.", "", __LINE__, __FILE__, $sql);
 				}
-				$flag_row = $db->sql_fetchrowset($ranksresult);
-				$num_flags = $db->sql_numrows($ranksresult) ;
+				$flag_row = $nuke_db->sql_fetchrowset($ranksresult);
+				$num_flags = $nuke_db->sql_numrows($ranksresult) ;
 
 			
 				$flag_start_image = 'blank' ;
@@ -2002,21 +2002,21 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 						'BDAY_MONTH' => ($bday_month != 0) ? $bday_month : $lang['Default_Month'],
 						'BDAY_DAY' => ($bday_day != 0) ? $bday_day : $lang['Default_Day'],
 						'BDAY_YEAR' => ($bday_year != 0) ? $bday_year : $lang['Default_Year'],
-						'BIRTHDAY_ALL' => BIRTHDAY_ALL,
-						'BIRTHDAY_ALL_SELECTED' => ( $birthday_display == BIRTHDAY_ALL ) ? ' selected="selected"' : '',
-						'BIRTHDAY_DATE' => BIRTHDAY_DATE,
-						'BIRTHDAY_DATE_SELECTED' => ( $birthday_display == BIRTHDAY_DATE ) ? ' selected="selected"' : '',
-						'BIRTHDAY_AGE' => BIRTHDAY_AGE,
-						'BIRTHDAY_AGE_SELECTED' => ( $birthday_display == BIRTHDAY_AGE ) ? ' selected="selected"' : '',
-						'BIRTHDAY_NONE' => BIRTHDAY_NONE,
-						'BIRTHDAY_NONE_SELECTED' => ( $birthday_display == BIRTHDAY_NONE ) ? ' selected="selected"' : '',
+						'NUKE_BIRTHDAY_ALL' => NUKE_BIRTHDAY_ALL,
+						'BIRTHDAY_ALL_SELECTED' => ( $birthday_display == NUKE_BIRTHDAY_ALL ) ? ' selected="selected"' : '',
+						'NUKE_BIRTHDAY_DATE' => NUKE_BIRTHDAY_DATE,
+						'BIRTHDAY_DATE_SELECTED' => ( $birthday_display == NUKE_BIRTHDAY_DATE ) ? ' selected="selected"' : '',
+						'NUKE_BIRTHDAY_AGE' => NUKE_BIRTHDAY_AGE,
+						'BIRTHDAY_AGE_SELECTED' => ( $birthday_display == NUKE_BIRTHDAY_AGE ) ? ' selected="selected"' : '',
+						'NUKE_BIRTHDAY_NONE' => NUKE_BIRTHDAY_NONE,
+						'BIRTHDAY_NONE_SELECTED' => ( $birthday_display == NUKE_BIRTHDAY_NONE ) ? ' selected="selected"' : '',
 						'BDAY_NONE_ENABLED' => ( !$birthday_greeting ) ? ' checked="checked"' : '',
-						'BDAY_EMAIL' => BIRTHDAY_EMAIL,
-						'BDAY_EMAIL_ENABLED' => ( $birthday_greeting == BIRTHDAY_EMAIL ) ? ' checked="checked"' : '',
-						'BDAY_PM' => BIRTHDAY_PM,
-						'BDAY_PM_ENABLED' => ( $birthday_greeting == BIRTHDAY_PM ) ? ' checked="checked"' : '', 
-						'BDAY_POPUP' => BIRTHDAY_POPUP,
-						'BDAY_POPUP_ENABLED' => ( $birthday_greeting == BIRTHDAY_POPUP ) ? ' checked="checked"' : '',
+						'BDAY_EMAIL' => NUKE_BIRTHDAY_EMAIL,
+						'BDAY_EMAIL_ENABLED' => ( $birthday_greeting == NUKE_BIRTHDAY_EMAIL ) ? ' checked="checked"' : '',
+						'BDAY_PM' => NUKE_BIRTHDAY_PM,
+						'BDAY_PM_ENABLED' => ( $birthday_greeting == NUKE_BIRTHDAY_PM ) ? ' checked="checked"' : '', 
+						'BDAY_POPUP' => NUKE_BIRTHDAY_POPUP,
+						'BDAY_POPUP_ENABLED' => ( $birthday_greeting == NUKE_BIRTHDAY_POPUP ) ? ' checked="checked"' : '',
 /*****[END]********************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
@@ -2312,15 +2312,15 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 				if ( $board_config['bday_greeting'] != 0 )
 				{
 					$template->assign_block_vars('birthdays_greeting',array());
-					if ($board_config['bday_greeting'] & (1<<(BIRTHDAY_EMAIL-1)))
+					if ($board_config['bday_greeting'] & (1<<(NUKE_BIRTHDAY_EMAIL-1)))
 					{
 						$template->assign_block_vars('birthdays_greeting.birthdays_email',array());
 					}
-					if ($board_config['bday_greeting'] & (1<<(BIRTHDAY_PM-1)))
+					if ($board_config['bday_greeting'] & (1<<(NUKE_BIRTHDAY_PM-1)))
 					{
 							$template->assign_block_vars('birthdays_greeting.birthdays_pm',array());
 					}
-					if ($board_config['bday_greeting'] & (1<<(BIRTHDAY_POPUP-1)))
+					if ($board_config['bday_greeting'] & (1<<(NUKE_BIRTHDAY_POPUP-1)))
 					{
 						$template->assign_block_vars('birthdays_greeting.birthdays_popup',array());
 					}

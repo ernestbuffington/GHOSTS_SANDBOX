@@ -85,7 +85,7 @@ function log_write($file, $output, $title = 'General Error') {
 }
 
 function log_size($file) {
-    global $db, $prefix;
+    global $nuke_db, $prefix;
 
     $filename = NUKE_INCLUDE_DIR.'log/' . $file . '.log';
     if(!is_file($filename)) {
@@ -105,7 +105,7 @@ function log_size($file) {
         return -1;
     }
     $file_num = substr_count($content, "\n");
-    $row_log = $db->sql_ufetchrow('SELECT ' . $file . '_log_lines FROM '.$prefix.'_config');
+    $row_log = $nuke_db->sql_ufetchrow('SELECT ' . $file . '_log_lines FROM '.$prefix.'_config');
     if($row_log[0] != $file_num) {
         return 1;
     }

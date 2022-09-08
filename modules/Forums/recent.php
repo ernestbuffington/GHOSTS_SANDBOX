@@ -26,7 +26,7 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 /*****[BEGIN]******************************************
@@ -46,7 +46,7 @@ $set_mode = 'today';      // set default mode ('today', 'yesterday', 'last24', '
 $set_days = '3';          // set default days (used for lastXdays mode)
 // ############         Edit above         ########################################
 
-$userdata = session_pagestart($user_ip, PAGE_RECENT);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_RECENT);
 init_userprefs($userdata);
 
 $start = ( isset($HTTP_GET_VARS['start']) ) ? intval($HTTP_GET_VARS['start']) : 0;
@@ -72,20 +72,20 @@ else
 $page_title = $lang['Recent_topics'];
 include("includes/page_header.php");
 
-$sql_auth = "SELECT * FROM ". FORUMS_TABLE;
-if( !$result_auth = $db->sql_query($sql_auth) )
+$sql_auth = "SELECT * FROM ". NUKE_FORUMS_TABLE;
+if( !$result_auth = $nuke_db->sql_query($sql_auth) )
 {
-    message_die(GENERAL_ERROR, 'could not query forums information.', '', __LINE__, __FILE__, $sql_auth);
+    message_die(NUKE_GENERAL_ERROR, 'could not query forums information.', '', __LINE__, __FILE__, $sql_auth);
 }
 $forums = array();
-while( $row_auth = $db->sql_fetchrow($result_auth) )
+while( $row_auth = $nuke_db->sql_fetchrow($result_auth) )
 {
     $forums[] = $row_auth;
 }
-$db->sql_freeresult($result_auth);
+$nuke_db->sql_freeresult($result_auth);
 
 $is_auth_ary = array();
-$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+$is_auth_ary = auth(NUKE_AUTH_ALL, NUKE_AUTH_LIST_ALL, $userdata);
 
 $except_forums = '\'start\'';
 for( $f = 0; $f < count($forums); $f++ )
@@ -106,7 +106,7 @@ for( $f = 0; $f < count($forums); $f++ )
 $where_forums = ( $special_forums == '0' ) ? 't.forum_id NOT IN ('. $except_forums .')' : 't.forum_id NOT IN ('. $except_forums .') AND t.forum_id IN ('. $forum_ids .')';
 
 $sql_start = "SELECT t.*, p.poster_id, p.post_username AS last_poster_name, p.post_id, p.post_time, f.forum_name, f.forum_id, u.username AS last_poster, u.user_id AS last_poster_id, u2.username AS first_poster, u2.user_id AS first_poster_id, p2.post_username AS first_poster_name
-           FROM (". TOPICS_TABLE ." t, ". POSTS_TABLE ." p, ". POSTS_TABLE ." p2,  ". FORUMS_TABLE ." f, ". USERS_TABLE ." u, ". USERS_TABLE ." u2)
+           FROM (". NUKE_BB_TOPICS_TABLE ." t, ". NUKE_POSTS_TABLE ." p, ". NUKE_POSTS_TABLE ." p2,  ". NUKE_FORUMS_TABLE ." f, ". NUKE_USERS_TABLE ." u, ". NUKE_USERS_TABLE ." u2)
            WHERE
             (p2.post_id = t.topic_first_post_id
             AND p.forum_id = f.forum_id
@@ -151,7 +151,7 @@ switch( $mode )
     case 'lastXdays':
         if(!$amount_days || !ctype_digit($amount_days)) {
             $message = 'You must enter a valid day<br /><br />'. sprintf($lang['Recent_click_return'], '<a href="'. append_sid("recent.$phpEx") .'">', '</a>') .'<br />'. sprintf($lang['Click_return_index'], '<a href="'. append_sid("index.$phpEx") .'">', '</a>');
-            message_die(GENERAL_MESSAGE, $message);
+            message_die(NUKE_GENERAL_MESSAGE, $message);
             break;
         }
         $sql = $sql_start ."UNIX_TIMESTAMP(NOW()) - p.post_time < 86400 * $amount_days". $sql_end;
@@ -162,19 +162,19 @@ switch( $mode )
 
     default:
         $message = $lang['Recent_wrong_mode'] .'<br /><br />'. sprintf($lang['Recent_click_return'], '<a href="'. append_sid("recent.$phpEx") .'">', '</a>') .'<br />'. sprintf($lang['Click_return_index'], '<a href="'. append_sid("index.$phpEx") .'">', '</a>');
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
         break;
 }
-if( !$result = $db->sql_query($sql) )
+if( !$result = $nuke_db->sql_query($sql) )
 {
-    message_die(GENERAL_ERROR, 'could not obtain main information.', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'could not obtain main information.', '', __LINE__, __FILE__, $sql);
 }
 $line = array();
-while( $row = $db->sql_fetchrow($result) )
+while( $row = $nuke_db->sql_fetchrow($result) )
 {
     $line[] = $row;
 }
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
         
 $template->set_filenames(array('body' => 'recent_body.tpl'));
 
@@ -187,9 +187,9 @@ $tracking_forums = ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] .'_f']
 for( $i = 0; $i < count($line); $i++ )
 {
     $forum_id = $line[$i]['forum_id'];
-    $forum_url = append_sid("viewforum.$phpEx?". POST_FORUM_URL ."=$forum_id");
+    $forum_url = append_sid("viewforum.$phpEx?". NUKE_POST_FORUM_URL ."=$forum_id");
     $topic_id = $line[$i]['topic_id'];
-    $topic_url = append_sid("viewtopic.$phpEx?". POST_TOPIC_URL ."=$topic_id");
+    $topic_url = append_sid("viewtopic.$phpEx?". NUKE_POST_TOPIC_URL ."=$topic_id");
 
     $word_censor = ( count($orig_word) ) ? preg_replace($orig_word, $replacement_word, $line[$i]['topic_title']) : $line[$i]['topic_title'];
     $topic_title = ( strlen($line[$i]['topic_title']) < $topic_length ) ? $word_censor : substr(stripslashes($word_censor), 0, $topic_length) .'...';
@@ -203,9 +203,9 @@ for( $i = 0; $i < count($line); $i++ )
  [ Mod:     Smilies in Topic Titles            v1.0.0 ]
  ******************************************************/
 
-    $topic_type =  ( $line[$i]['topic_type'] == POST_ANNOUNCE ) ? $lang['Topic_Announcement'] .' ': '';
-    $topic_type .= ( $line[$i]['topic_type'] == POST_GLOBAL_ANNOUNCE ) ? $lang['Topic_global_announcement'] .' ': '';
-    $topic_type .= ( $line[$i]['topic_type'] == POST_STICKY ) ? $lang['Topic_Sticky'] .' ': '';
+    $topic_type =  ( $line[$i]['topic_type'] == NUKE_POST_ANNOUNCE ) ? $lang['Topic_Announcement'] .' ': '';
+    $topic_type .= ( $line[$i]['topic_type'] == NUKE_POST_GLOBAL_ANNOUNCE ) ? $lang['Topic_global_announcement'] .' ': '';
+    $topic_type .= ( $line[$i]['topic_type'] == NUKE_POST_STICKY ) ? $lang['Topic_Sticky'] .' ': '';
     $topic_type .= ( $line[$i]['topic_vote'] ) ? $lang['Topic_Poll'] .' ': '';
 
     $views = $line[$i]['topic_views'];
@@ -217,7 +217,7 @@ for( $i = 0; $i < count($line); $i++ )
         $times = '1';
         for( $j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'] )
         {
-            $goto_page .= '<a href="'. append_sid("viewtopic.$phpEx?". POST_TOPIC_URL ."=". $topic_id ."&amp;start=$j") .'">'. $times .'</a>';
+            $goto_page .= '<a href="'. append_sid("viewtopic.$phpEx?". NUKE_POST_TOPIC_URL ."=". $topic_id ."&amp;start=$j") .'">'. $times .'</a>';
             if( $times == '1' && $total_pages > '4' )
             {
                 $goto_page .= ' ... ';
@@ -237,22 +237,22 @@ for( $i = 0; $i < count($line); $i++ )
         $goto_page = '';
     }
 
-    if( $line[$i]['topic_status'] == TOPIC_LOCKED )
+    if( $line[$i]['topic_status'] == NUKE_TOPIC_LOCKED )
     {
         $folder = $images['folder_locked'];
         $folder_new = $images['folder_locked_new'];
     }
-    else if( $line[$i]['topic_type'] == POST_ANNOUNCE )
+    else if( $line[$i]['topic_type'] == NUKE_POST_ANNOUNCE )
     {
         $folder = $images['folder_announce'];
         $folder_new = $images['folder_announce_new'];
     }
-    else if( $line[$i]['topic_type'] == POST_GLOBAL_ANNOUNCE )
+    else if( $line[$i]['topic_type'] == NUKE_POST_GLOBAL_ANNOUNCE )
     {
         $folder = $images['folder_global_announce'];
         $folder_new = $images['folder_global_announce_new'];
     }
-    else if( $line[$i]['topic_type'] == POST_STICKY )
+    else if( $line[$i]['topic_type'] == NUKE_POST_STICKY )
     {
         $folder = $images['folder_sticky'];
         $folder_new = $images['folder_sticky_new'];
@@ -305,33 +305,33 @@ for( $i = 0; $i < count($line); $i++ )
                 {
                     $folder_image = $folder_new;
                     $folder_alt = $lang['New_posts'];
-                    $newest_img = '<a href="'. append_sid("viewtopic.$phpEx?". POST_TOPIC_URL ."=$topic_id&amp;view=newest") .'"><img src="'. $images['icon_newest_reply'] .'" alt="'. $lang['View_newest_post'] .'" title="'. $lang['View_newest_post'] .'" border="0" /></a> ';
+                    $newest_img = '<a href="'. append_sid("viewtopic.$phpEx?". NUKE_POST_TOPIC_URL ."=$topic_id&amp;view=newest") .'"><img src="'. $images['icon_newest_reply'] .'" alt="'. $lang['View_newest_post'] .'" title="'. $lang['View_newest_post'] .'" border="0" /></a> ';
                 }
                 else
                 {
                     $folder_image = $folder;
-                    $folder_alt = ( $line[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+                    $folder_alt = ( $line[$i]['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
                     $newest_img = '';
                 }
             }
             else
             {
                 $folder_image = $folder_new;
-                $folder_alt = ( $line[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['New_posts'];
-                $newest_img = '<a href="'. append_sid("viewtopic.$phpEx?". POST_TOPIC_URL ."=$topic_id&amp;view=newest") .'"><img src="'. $images['icon_newest_reply'] .'" alt="'. $lang['View_newest_post'] .'" title="'. $lang['View_newest_post'] .'" border="0" /></a> ';
+                $folder_alt = ( $line[$i]['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['New_posts'];
+                $newest_img = '<a href="'. append_sid("viewtopic.$phpEx?". NUKE_POST_TOPIC_URL ."=$topic_id&amp;view=newest") .'"><img src="'. $images['icon_newest_reply'] .'" alt="'. $lang['View_newest_post'] .'" title="'. $lang['View_newest_post'] .'" border="0" /></a> ';
             }
         }
         else 
         {
             $folder_image = $folder;
-            $folder_alt = ( $line[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+            $folder_alt = ( $line[$i]['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
             $newest_img = '';
         }
     }
     else
     {
         $folder_image = $folder;
-        $folder_alt = ( $line[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+        $folder_alt = ( $line[$i]['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
         $newest_img = '';
     }
             
@@ -339,7 +339,7 @@ for( $i = 0; $i < count($line); $i++ )
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-    $first_author = ( $line[$i]['first_poster_id'] != ANONYMOUS ) ? '<a href="'. append_sid("profile.$phpEx?mode=viewprofile&amp;". POST_USERS_URL .'='. $line[$i]['first_poster_id']) .'">' . UsernameColor($line[$i]['first_poster']) .'</a>' : ( ($line[$i]['first_poster_name'] != '' ) ? $line[$i]['first_poster_name'] : $lang['Guest'] );
+    $first_author = ( $line[$i]['first_poster_id'] != NUKE_ANONYMOUS ) ? '<a href="'. append_sid("profile.$phpEx?mode=viewprofile&amp;". NUKE_POST_USERS_URL .'='. $line[$i]['first_poster_id']) .'">' . UsernameColor($line[$i]['first_poster']) .'</a>' : ( ($line[$i]['first_poster_name'] != '' ) ? $line[$i]['first_poster_name'] : $lang['Guest'] );
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -347,11 +347,11 @@ for( $i = 0; $i < count($line); $i++ )
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-    $last_author = ( $line[$i]['last_poster_id'] != ANONYMOUS ) ? '<a href="'. append_sid("profile.$phpEx?mode=viewprofile&amp;". POST_USERS_URL .'='. $line[$i]['last_poster_id']) .'">' . UsernameColor($line[$i]['last_poster']) .'</a>' : ( ($line[$i]['last_poster_name'] != '' ) ? $line[$i]['last_poster_name'] : $lang['Guest'] );
+    $last_author = ( $line[$i]['last_poster_id'] != NUKE_ANONYMOUS ) ? '<a href="'. append_sid("profile.$phpEx?mode=viewprofile&amp;". NUKE_POST_USERS_URL .'='. $line[$i]['last_poster_id']) .'">' . UsernameColor($line[$i]['last_poster']) .'</a>' : ( ($line[$i]['last_poster_name'] != '' ) ? $line[$i]['last_poster_name'] : $lang['Guest'] );
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-    $last_url = '<a href="'. append_sid("viewtopic.$phpEx?". POST_POST_URL .'='. $line[$i]['topic_last_post_id']) .'#'. $line[$i]['topic_last_post_id'] .'"><img src="'. $images['icon_latest_reply'] .'" alt="'. $lang['View_latest_post'] .'" title="'. $lang['View_latest_post'] .'" border="0" /></a>';
+    $last_url = '<a href="'. append_sid("viewtopic.$phpEx?". NUKE_POST_POST_URL .'='. $line[$i]['topic_last_post_id']) .'#'. $line[$i]['topic_last_post_id'] .'"><img src="'. $images['icon_latest_reply'] .'" alt="'. $lang['View_latest_post'] .'" title="'. $lang['View_latest_post'] .'" border="0" /></a>';
 
     $template->assign_block_vars('recent', array(
         'ROW_CLASS' => ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'],
@@ -376,13 +376,13 @@ for( $i = 0; $i < count($line); $i++ )
     ));
 }
 
-$sql = "SELECT count(t.topic_id) AS total_topics FROM ". TOPICS_TABLE ." t , ". POSTS_TABLE ." p
+$sql = "SELECT count(t.topic_id) AS total_topics FROM ". NUKE_BB_TOPICS_TABLE ." t , ". NUKE_POSTS_TABLE ." p
            WHERE $where_count AND p.post_id = t.topic_last_post_id";
-if( !($result = $db->sql_query($sql)) )
+if( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'error getting total topics.', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'error getting total topics.', '', __LINE__, __FILE__, $sql);
 }
-if( $total = $db->sql_fetchrow($result) )
+if( $total = $nuke_db->sql_fetchrow($result) )
 {
     $total_topics = $total['total_topics'];
     $pagination = generate_pagination("recent.$phpEx?amount_days=$amount_days&amp;mode=$mode", $total_topics, $topic_limit, $start) .'&nbsp;';

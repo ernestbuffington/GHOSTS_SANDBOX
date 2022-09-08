@@ -27,7 +27,7 @@ if (!defined('ADMIN_FILE')) {
     die ('Illegal File Access');
 }
 
-global $prefix, $db, $admdata;
+global $prefix, $nuke_db, $admdata;
 
 //Clear log is fine you have to be an admin to gain access to it
 
@@ -89,7 +89,7 @@ if (is_mod_admin())
 
     function log_clear($file) 
     {
-        global $db, $prefix, $admin_file, $cache, $admlang;
+        global $nuke_db, $prefix, $admin_file, $cache, $admlang;
 
         echo "<div align='center'>";
         echo "".$admlang['logs']['cleared']."<br /><br />";
@@ -103,7 +103,7 @@ if (is_mod_admin())
                 fwrite($handle, "");
                 fclose($handle);
                 $sql_log = "UPDATE ".$prefix."_config SET " . $file . "_log_lines='0'";
-                if(!$db->sql_query($sql_log)) {
+                if(!$nuke_db->sql_query($sql_log)) {
                    die(mysql_error());
                 }
 /*****[BEGIN]******************************************

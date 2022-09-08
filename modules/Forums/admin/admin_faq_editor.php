@@ -23,7 +23,7 @@
        Board Rules                             v2.0.0       06/26/2005
  ************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -112,7 +112,7 @@ function array_to_faq($blocks, $quests)
 
 /* okay here we go! */
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 define('Q', 0);
 define('A', 1);
 
@@ -513,7 +513,7 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
     }
     else
     {
-        message_die(GENERAL_ERROR, $lang['faq_write_file_explain'], $lang['faq_write_file'], __LINE__, __FILE__);
+        message_die(NUKE_GENERAL_ERROR, $lang['faq_write_file_explain'], $lang['faq_write_file'], __LINE__, __FILE__);
     }
 }
 

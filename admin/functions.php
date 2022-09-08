@@ -65,7 +65,7 @@ endif;
 
 function login() 
 {
-	global $admin_file, $db, $prefix, $admlang;
+	global $admin_file, $nuke_db, $prefix, $admlang;
 
 	title_and_meta_tags();
 	get_header();
@@ -218,9 +218,9 @@ function login()
 
 function deleteNotice($id) 
 {
-	global $prefix, $db, $admin_file, $cache;
+	global $prefix, $nuke_db, $admin_file, $cache;
 	$id = intval($id);
-	$db->sql_query("DELETE FROM `".$prefix."_reviews_add` WHERE `id` = '$id'");
+	$nuke_db->sql_query("DELETE FROM `".$prefix."_reviews_add` WHERE `id` = '$id'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -228,7 +228,7 @@ function deleteNotice($id)
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-	redirect($admin_file.".php?op=reviews");
+	nuke_redirect($admin_file.".php?op=reviews");
 }
 
 function adminmenu($url, $title, $image) 
@@ -370,14 +370,14 @@ function track_evo_version()
  ******************************************************/
 function GraphicAdmin($pos=1)
 {
-	global $aid, $admingraphic, $cache, $language, $admin, $prefix, $user_prefix, $db, $counter, $admin_file, $admin_pos, $radminsuper, $admlang;   
+	global $aid, $admingraphic, $cache, $language, $admin, $prefix, $nuke_user_prefix, $nuke_db, $counter, $admin_file, $admin_pos, $radminsuper, $admlang;   
 	
 	if ($pos != $admin_pos)
 	return;
 
 	$radminsuper = is_mod_admin();
 
-	list($waiting_users) = $db->sql_ufetchrow("select count(user_id) from `".USERS_TEMP_TABLE."`");
+	list($waiting_users) = $nuke_db->sql_ufetchrow("select count(user_id) from `".NUKE_USERS_TEMP_TABLE."`");
 
 	OpenTable();
 	echo '<table style="width: 100%;" border="0" cellpadding="4" cellspacing="1">';
@@ -558,9 +558,9 @@ function GraphicAdmin($pos=1)
 	echo '  </tr>';
 	echo '  <tr>'."\n";
 	update_modules();
-	$result = $db->sql_query("SELECT `title` FROM `".$prefix."_modules` ORDER BY `title` ASC");
+	$result = $nuke_db->sql_query("SELECT `title` FROM `".$prefix."_modules` ORDER BY `title` ASC");
 	$count = 0;
-	while($row = $db->sql_fetchrow($result)) 
+	while($row = $nuke_db->sql_fetchrow($result)) 
 	{
 		if (is_mod_admin($row['title'])) 
 		{
@@ -573,7 +573,7 @@ function GraphicAdmin($pos=1)
 			$count++;
 		}
 	}
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 	if ($count == 0)
 	{
 		echo '    <td class="row1" style="text-align:center;">';
@@ -589,9 +589,9 @@ function GraphicAdmin($pos=1)
 	/**
 	 * Load up the new theme admin panels
 	 */
-	$result2 = $db->sql_query("SELECT `theme_name` FROM `".$prefix."_themes` ORDER BY `theme_name` ASC");
-	$themes_row = $db->sql_fetchrowset( $result2 );
-	$db->sql_freeresult($result2);
+	$result2 = $nuke_db->sql_query("SELECT `theme_name` FROM `".$prefix."_themes` ORDER BY `theme_name` ASC");
+	$themes_row = $nuke_db->sql_fetchrowset( $result2 );
+	$nuke_db->sql_freeresult($result2);
 
 	if (count($themes_row) > 0 ):
 
@@ -631,11 +631,11 @@ function GraphicAdmin($pos=1)
  ******************************************************/
 	global $admin_fc_status, $admin_fc_attempts, $admin_fc_timeout;
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$fc = $db->sql_ufetchrow("SELECT * FROM `". $prefix ."_admin_fc` WHERE fc_ip = '$ip'");
+	$fc = $nuke_db->sql_ufetchrow("SELECT * FROM `". $prefix ."_admin_fc` WHERE fc_ip = '$ip'");
 	if (!empty($fc['fc_ip']))
 	{
-		$db->sql_query("DELETE FROM ".$prefix."_admin_fc WHERE fc_ip = '$ip'");
-		$db->sql_query("OPTIMIZE TABLE ".$prefix."_admin_fc");
+		$nuke_db->sql_query("DELETE FROM ".$prefix."_admin_fc WHERE fc_ip = '$ip'");
+		$nuke_db->sql_query("OPTIMIZE TABLE ".$prefix."_admin_fc");
 	}
 /*****[END]********************************************
  [ Mod:     Advanced Security Code Control     v1.0.0 ]
@@ -729,21 +729,21 @@ function track_evo_version_bs()
 
 function administration_panel( $pos = 1 )
 {
-	global $aid, $admingraphic, $cache, $language, $admin, $prefix, $user_prefix, $db, $counter, $admin_file, $admin_pos, $radminsuper, $admlang;   
+	global $aid, $admingraphic, $cache, $language, $admin, $prefix, $nuke_user_prefix, $nuke_db, $counter, $admin_file, $admin_pos, $radminsuper, $admlang;   
 
 	$radminsuper = is_mod_admin();
 
 	$queries = dburow("SELECT
-		(SELECT COUNT(user_id) FROM `".USERS_TABLE."` WHERE user_id > 1) AS registered_users,
-		(SELECT COUNT(user_id) FROM `".USERS_TEMP_TABLE."`) AS waiting_users,
-		(SELECT COUNT(user_id) FROM `".USERS_TABLE."` WHERE user_level = '-1' AND user_id > '1') AS deactivated_users,
+		(SELECT COUNT(user_id) FROM `".NUKE_USERS_TABLE."` WHERE user_id > 1) AS registered_users,
+		(SELECT COUNT(user_id) FROM `".NUKE_USERS_TEMP_TABLE."`) AS waiting_users,
+		(SELECT COUNT(user_id) FROM `".NUKE_USERS_TABLE."` WHERE user_level = '-1' AND user_id > '1') AS deactivated_users,
 		(SELECT COUNT(id) FROM `"._HONEYPOT_TABLE."`) AS bots_stopped,
 		(SELECT COUNT(cid) FROM `"._FILE_REPOSITORY_CATEGORIES."`) AS total_categories,
 		(SELECT COUNT(did) FROM `"._FILE_REPOSITORY_ITEMS."`) AS total_downloads,
 		(SELECT COUNT(cid) FROM `"._FILE_REPOSITORY_ITEMS."` WHERE isbroken=1) AS broken_downloads,
-		(SELECT COUNT(forum_id) FROM `".FORUMS_TABLE."`) AS total_forums,
-		(SELECT COUNT(topic_id) FROM `".TOPICS_TABLE."`) AS total_topics,
-		(SELECT COUNT(post_id) FROM `".POSTS_TABLE."`) AS total_posts
+		(SELECT COUNT(forum_id) FROM `".NUKE_FORUMS_TABLE."`) AS total_forums,
+		(SELECT COUNT(topic_id) FROM `".NUKE_BB_TOPICS_TABLE."`) AS total_topics,
+		(SELECT COUNT(post_id) FROM `".NUKE_POSTS_TABLE."`) AS total_posts
 	");
 
 	$adminlog = track_admin_intrusions_bs();
@@ -972,9 +972,9 @@ function administration_panel( $pos = 1 )
 			<?php
 
 			update_modules();
-			$result = $db->sql_query("SELECT `title` FROM `".$prefix."_modules` ORDER BY `title` ASC");
+			$result = $nuke_db->sql_query("SELECT `title` FROM `".$prefix."_modules` ORDER BY `title` ASC");
 			$count = 0;
-			while($row = $db->sql_fetchrow($result)) 
+			while($row = $nuke_db->sql_fetchrow($result)) 
 			{
 				if (is_mod_admin($row['title'])) 
 				{
@@ -991,7 +991,7 @@ function administration_panel( $pos = 1 )
 					$count++;
 				}
 			}
-			$db->sql_freeresult($result);
+			$nuke_db->sql_freeresult($result);
 
 			?>
 
@@ -1006,9 +1006,9 @@ function administration_panel( $pos = 1 )
 		 */
 		if ( is_mod_admin('super') ): 
 
-			$result2 = $db->sql_query("SELECT `theme_name` FROM `".$prefix."_themes` ORDER BY `theme_name` ASC");
-			$themes_row = $db->sql_fetchrowset( $result2 );
-			$db->sql_freeresult($result2);
+			$result2 = $nuke_db->sql_query("SELECT `theme_name` FROM `".$prefix."_themes` ORDER BY `theme_name` ASC");
+			$themes_row = $nuke_db->sql_fetchrowset( $result2 );
+			$nuke_db->sql_freeresult($result2);
 
 			if ( count( $themes_row ) > 0 ): ?>
 
@@ -1042,11 +1042,11 @@ function administration_panel( $pos = 1 )
  [ Mod:     Advanced Security Code Control     v1.0.0 ]
  ******************************************************/
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$fc = $db->sql_ufetchrow("SELECT * FROM `"._FAILED_LOGIN_INFO_TABLE."` WHERE fc_ip = '$ip'");
+	$fc = $nuke_db->sql_ufetchrow("SELECT * FROM `"._FAILED_LOGIN_INFO_TABLE."` WHERE fc_ip = '$ip'");
 	if (!empty($fc['fc_ip']))
 	{
-		$db->sql_query("DELETE FROM "._FAILED_LOGIN_INFO_TABLE." WHERE fc_ip = '$ip'");
-		$db->sql_query("OPTIMIZE TABLE "._FAILED_LOGIN_INFO_TABLE);
+		$nuke_db->sql_query("DELETE FROM "._FAILED_LOGIN_INFO_TABLE." WHERE fc_ip = '$ip'");
+		$nuke_db->sql_query("OPTIMIZE TABLE "._FAILED_LOGIN_INFO_TABLE);
 	}
 /*****[END]********************************************
  [ Mod:     Advanced Security Code Control     v1.0.0 ]

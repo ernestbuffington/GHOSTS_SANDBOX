@@ -65,7 +65,7 @@ if (!defined('ADMIN_FILE')) {
    die ('Illegal File Access');
 }
 
-global $admin, $keysommaire, $currentlang, $deletecat, $db, $prefix, $sql, $upgrade_test, $bgcolor1, $zetheme, $admin_file, $admdata, $cache;
+global $admin, $keysommaire, $currentlang, $deletecat, $nuke_db, $prefix, $sql, $upgrade_test, $bgcolor1, $zetheme, $admin_file, $admdata, $cache;
 
 if ($admdata['radminsuper'] == 1) {
 
@@ -186,7 +186,7 @@ $zetheme=get_theme();
 
 function index() {
 
-global $db, $sql, $prefix, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $textcolor1, $keysommaire, $deletecat, $upgrade_test, $urlofimages; 
+global $nuke_db, $sql, $prefix, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $textcolor1, $keysommaire, $deletecat, $upgrade_test, $urlofimages; 
 global $admin_file, $more_js;
 
 include_once(NUKE_BASE_DIR.'header.php');
@@ -221,19 +221,19 @@ OpenTable();
 
 // on va mettre la liste des modules dans la variable $modules
 $sql = "SELECT title FROM ".$prefix."_modules ORDER BY title ASC";
-$modulesaffiche= $db->sql_query($sql);
+$modulesaffiche= $nuke_db->sql_query($sql);
 $compteur=0;
-while ($tempo = $db->sql_fetchrow($modulesaffiche)) {
+while ($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) {
     $modules[$compteur]= $tempo['title'];
     $compteur++;
 }
 
 // on va mettre les donnes de la table nuke_sommaire_categories dans les variables adquates.
     $sql2= "SELECT id, groupmenu, module, url, url_text, image, new, new_days, class, bold FROM ".$prefix."_sommaire_categories ORDER BY id ASC";
-    $result2= $db->sql_query($sql2);
+    $result2= $nuke_db->sql_query($sql2);
 
     $compteur=0;
-    $row2=$db->sql_fetchrow($result2); //on rcupre la premire ligne de la table, et on affecte aux variables.
+    $row2=$nuke_db->sql_fetchrow($result2); //on rcupre la premire ligne de la table, et on affecte aux variables.
     $categorie=$row2['groupmenu'];
     $moduleinthisgroup[$categorie][$compteur]=$row2['module'];
     $linkinthisgroup[$categorie][$compteur]=$row2['url'];
@@ -247,7 +247,7 @@ while ($tempo = $db->sql_fetchrow($modulesaffiche)) {
     $compteur2=$categorie; 
 //        echo "{$moduleinthisgroup[$categorie][$compteur]}<br />{$linkinthisgroup[$categorie][$compteur]}<br />{$linktextinthisgroup[$categorie][$compteur]}<br />{$imageinthisgroup[$categorie][$compteur]}<br />";
     
-    while ($row2 = $db->sql_fetchrow($result2)) { //ensuite on fait la mme chose pour toutes les autres lignes.
+    while ($row2 = $nuke_db->sql_fetchrow($result2)) { //ensuite on fait la mme chose pour toutes les autres lignes.
         $categorie=$row2['groupmenu'];
         if ($compteur2==$categorie) { //permet de savoir si on a chang de catgorie (groupmenu diffrent) : dans ce cas on remet le 2me compteur  0.
             $compteur++;
@@ -283,7 +283,7 @@ echo "<head><style type=\"text/css\">"
 
 // on rcupre la table nuke_sommaire
     $sql = "SELECT groupmenu, name, image, lien, hr, center, bgcolor, invisible, class, new, bold, listbox, dynamic FROM ".$prefix."_sommaire ORDER BY groupmenu ASC";
-    $result = $db->sql_query($sql);
+    $result = $nuke_db->sql_query($sql);
     if (!$result) {die("<div class=\"red\" align=\"center\" style=\"font-size:16px\"><strong><br />"._SOMNOTABLEPB."<br /></strong></div>");}
     
 
@@ -301,7 +301,7 @@ echo "<head><style type=\"text/css\">"
 // on va afficher le tableau d'administration : une ligne pour chaque catgorie rentre dans la table, + une dernire ligne pour ajouter une catgorie.
     $keysommaire=0;
     if (!$result) {echo "<tr><td colspan=4>"._SOMNOTABLEPB."</td></tr>";}
-    while ($row = $db->sql_fetchrow($result)) {  // on crit une ligne du formulaire avec les donnes de nuke_sommaire pour chaque ligne de nuke_sommaire
+    while ($row = $nuke_db->sql_fetchrow($result)) {  // on crit une ligne du formulaire avec les donnes de nuke_sommaire pour chaque ligne de nuke_sommaire
         $groupmenu[$keysommaire] = $row['groupmenu'];
         $catname[$keysommaire] = $row['name'];
         $image[$keysommaire] = $row['image'];
@@ -600,7 +600,7 @@ $checkdynamic = ($dynamic[0]=="on") ? "checked" : "" ;
 
 
 function send() { // fonction appele quand on clique 'OK' sur le formulaire
-    global $sommaireformkeysommaire, $sommaireformgroupmenu, $sommaireformname, $sommaireformimage, $sommaireformlien, $sommaireformingroup, $sommaireformmoduleimage, $sommaireformmodulelink, $sommaireformmodulelinktext, $sommaireformcenter, $sommaireformhr, $sommaireformbgcolor,$sommaireformradio, $sommaireformclass, $sommaireformbold, $sommaireformnew , $sommaireformlistbox, $sommaireformeachcategoryclass, $sommaireformmodulegras, $sommaireformmodulenew, $sommaireformnew_type, $sommaireformnew_days, $sommaireformmodulenew_days, $sommaireformfirstnew_days, $sommaireformmoduleclass, $sommaireformclassformodules, $sommaireformfirstclass, $sommaireformdynamic, $db, $prefix, $sql;
+    global $sommaireformkeysommaire, $sommaireformgroupmenu, $sommaireformname, $sommaireformimage, $sommaireformlien, $sommaireformingroup, $sommaireformmoduleimage, $sommaireformmodulelink, $sommaireformmodulelinktext, $sommaireformcenter, $sommaireformhr, $sommaireformbgcolor,$sommaireformradio, $sommaireformclass, $sommaireformbold, $sommaireformnew , $sommaireformlistbox, $sommaireformeachcategoryclass, $sommaireformmodulegras, $sommaireformmodulenew, $sommaireformnew_type, $sommaireformnew_days, $sommaireformmodulenew_days, $sommaireformfirstnew_days, $sommaireformmoduleclass, $sommaireformclassformodules, $sommaireformfirstclass, $sommaireformdynamic, $nuke_db, $prefix, $sql;
 global $admin_file, $cache, $more_js;
 
 //    global $sommaireformmoduleimage0_0, $sommaireformmoduleimage0_1, $sommaireformmoduleimage0_2, $sommaireformmoduleimage1_0, $sommaireformmoduleimage1_1, $sommaireformmoduleimage1_2;
@@ -663,19 +663,19 @@ global $admin_file, $cache, $more_js;
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/    
-    $db->sql_query("DELETE FROM ".$prefix."_sommaire");
-    $db->sql_query("DELETE FROM ".$prefix."_sommaire_categories");
+    $nuke_db->sql_query("DELETE FROM ".$prefix."_sommaire");
+    $nuke_db->sql_query("DELETE FROM ".$prefix."_sommaire_categories");
 
 //dtection de nuke v.7 : y a-t-il une gestion des groupes?
-global $user_prefix;
+global $nuke_user_prefix;
 $sql="SELECT * FROM ".$prefix."_modules LIMIT 1";
-$result=$db->sql_query($sql);
-$row=$db->sql_fetchrow($result);
+$result=$nuke_db->sql_query($sql);
+$row=$nuke_db->sql_fetchrow($result);
 // echo  mysqli_connect_error();
 if(isset($row['mod_group'])){
-    $sql2="SELECT * FROM ".$user_prefix."_users LIMIT 1";
-    $result2=$db->sql_query($sql2);
-    $row2=$db->sql_fetchrow($result2);
+    $sql2="SELECT * FROM ".$nuke_user_prefix."_users LIMIT 1";
+    $result2=$nuke_db->sql_query($sql2);
+    $row2=$nuke_db->sql_fetchrow($result2);
     // echo  mysqli_connect_error();
     $gestiongroupe=(isset($row2['points'])) ? 1 : 0 ;
 }
@@ -703,7 +703,7 @@ else {
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
                 $sql="INSERT INTO ".$prefix."_sommaire_categories (groupmenu, module, url, url_text, image, new, new_days, class, bold) VALUES ('$sommaireformgroupmenu[$i]', '".$sommaireformingroup[$i][$j]."', '".$sommaireformmodulelink[$i][$j]."', '".$sommaireformmodulelinktext[$i][$j]."', '".$sommaireformmoduleimage[$i][$j]."', '".$sommaireformmodulenew[$i][$j]."', '".$zenew_days."', '".$zeclass."', '".$sommaireformmodulegras[$i][$j]."')";
-                $db->sql_query($sql);
+                $nuke_db->sql_query($sql);
             }
             elseif ($sommaireformingroup[$i][$j] =="SOMMAIRE_HR") {
 /*****[BEGIN]******************************************
@@ -718,7 +718,7 @@ else {
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
                 $sql="INSERT INTO ".$prefix."_sommaire_categories (groupmenu, module, url, url_text, image, new, new_days, class, bold) VALUES ('$sommaireformgroupmenu[$i]', '".$sommaireformingroup[$i][$j]."', '', '' , '', '".$sommaireformmodulenew[$i][$j]."', '".$zenew_days."',  '".$zeclass."', '".$sommaireformmodulegras[$i][$j]."')";
-                $db->sql_query($sql);
+                $nuke_db->sql_query($sql);
             }
             else if ($sommaireformingroup[$i][$j] !="Aucun") { //sinon, (si il y a un module) on insre le nom du module, et pas de lien.
 /*****[BEGIN]******************************************
@@ -733,7 +733,7 @@ else {
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
                 $sql="INSERT INTO ".$prefix."_sommaire_categories (groupmenu, module, url, url_text, image, new, new_days, class, bold) VALUES ('$sommaireformgroupmenu[$i]', '".$sommaireformingroup[$i][$j]."', '', '' , '".$sommaireformmoduleimage[$i][$j]."', '".$sommaireformmodulenew[$i][$j]."', '".$zenew_days."',  '".$zeclass."', '".$sommaireformmodulegras[$i][$j]."')";
-                $db->sql_query($sql);
+                $nuke_db->sql_query($sql);
                 //
             }
         // --> si 'Aucun' est slectionn dans les modules, on n'insre aucune donne !
@@ -767,7 +767,7 @@ else {
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
             $sql="INSERT INTO ".$prefix."_sommaire (groupmenu, name, image, lien, hr, center, bgcolor, invisible, class, bold, new, listbox, dynamic) VALUES ('$sommaireformgroupmenu[$i]', '$sommaireformname[$i]', '$sommaireformimage[$i]', '$sommaireformlien[$i]', '$sommaireformhr[$i]', '$sommaireformcenter[$i]', '$sommaireformbgcolor[$i]', '$invisible', '$zeclass', '$sommaireformbold[$i]', '$sommaireformnew[$i]', '$sommaireformlistbox[$i]', '$sommaireformdynamic')";
-            $db->sql_query($sql);
+            $nuke_db->sql_query($sql);
             // 
         } //end for 2
     }// end for 1 : toutes les catgories et leur contenu sont rentres dans la DB
@@ -784,7 +784,7 @@ else {
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
     $sql="INSERT INTO ".$prefix."_sommaire (groupmenu, name, image, lien, hr, center, bgcolor, invisible, class, bold, new, listbox, dynamic) VALUES ('$sommaireformgroupmenu[99]', NULL, NULL, NULL, NULL,NULL,NULL,NULL,NULL, NULL, NULL, NULL, NULL)";
-    $db->sql_query($sql);
+    $nuke_db->sql_query($sql);
 //    echo "<br />$sommaireformgroupmenu[99]&nbsp;";
     include_once(NUKE_BASE_DIR.'header.php'); 
     OpenTable();
@@ -802,7 +802,7 @@ else {
 }
 
 function edit() {
-global $keysommaire, $z, $modulename, $lienname, $lienlien, $image, $new_days, $categoryclass, $lienclass, $catname, $catimage, $bgcolor1, $bgcolor3, $bgcolor2, $bgcolor4, $zetheme, $sommaireeditposted, $somcategoryclass, $somlienclass, $somnew_days, $db, $prefix, $urlofimages;
+global $keysommaire, $z, $modulename, $lienname, $lienlien, $image, $new_days, $categoryclass, $lienclass, $catname, $catimage, $bgcolor1, $bgcolor3, $bgcolor2, $bgcolor4, $zetheme, $sommaireeditposted, $somcategoryclass, $somlienclass, $somnew_days, $nuke_db, $prefix, $urlofimages;
 global $admin_file;
     if ($sommaireeditposted!="ok") {
         if ($catimage<>"noimg" && !preg_match("#.swf#i",$catimage) && $som_center<>"on") {
@@ -828,7 +828,7 @@ global $admin_file;
         $lienname = str_replace("[SOMSYMBOLEinterro]","?",$lienname);
         include("themes/$zetheme/theme.php");
         echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">
-        <html lang=\""._LANGCODE."\">
+        <html lang=\""._NUKE_LANGCODE."\">
         <head><title>"._SOMEDITLINKTITLE."</title>
         <link rel=\"StyleSheet\" href=\"themes/$zetheme/style/style.css\" type=\"text/css\"></head>
         <body>
@@ -907,7 +907,7 @@ global $admin_file;
  =======================================================================*/
 
         echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">
-        <html lang=\""._LANGCODE."\">
+        <html lang=\""._NUKE_LANGCODE."\">
         <head><title>"._SOMEDITLINKTITLE."</title>
         <link rel=\"StyleSheet\" href=\"themes/$zetheme/style/style.css\" type=\"text/css\"></head>
         <body>";
@@ -919,7 +919,7 @@ global $admin_file;
 
 function deletecat() { //pour supprimer une catgorie (fonction appele par le clic sur "supprimer" dans une ligne du formulaire)
 global $admin_file, $more_js;
-    global $deletecat, $keysommaire, $confirm, $catname, $db, $prefix, $cache;
+    global $deletecat, $keysommaire, $confirm, $catname, $nuke_db, $prefix, $cache;
     if ($confirm<>"YES") {
         include_once(NUKE_BASE_DIR.'header.php');
         OpenTable();
@@ -949,8 +949,8 @@ global $admin_file, $more_js;
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $db->sql_query("DELETE FROM ".$prefix."_sommaire WHERE groupmenu='$deletecat'");
-        $db->sql_query("DELETE FROM ".$prefix."_sommaire_categories WHERE groupmenu='$deletecat'");
+        $nuke_db->sql_query("DELETE FROM ".$prefix."_sommaire WHERE groupmenu='$deletecat'");
+        $nuke_db->sql_query("DELETE FROM ".$prefix."_sommaire_categories WHERE groupmenu='$deletecat'");
         // 
         index();
     }

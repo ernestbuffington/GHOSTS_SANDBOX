@@ -24,7 +24,7 @@
 *
 ***************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 $aprvmUtil = new aprvmUtils();
 $aprvmUtil->modVersion = '1.6.0';
@@ -87,15 +87,15 @@ $topics_per_pg = max(1, $board_config['aprvmRows']); //Just in case someone manu
 $page_title = $lang['Private_Messages'];
 $order_types = array('DESC', 'ASC');
 $sort_types = array('privmsgs_date', 'privmsgs_subject', 'privmsgs_from_userid', 'privmsgs_to_userid', 'privmsgs_type');
-$pmtypes = array(PRIVMSGS_ALL_MAIL, PRIVMSGS_READ_MAIL, PRIVMSGS_NEW_MAIL, PRIVMSGS_SENT_MAIL, PRIVMSGS_SAVED_IN_MAIL, PRIVMSGS_SAVED_OUT_MAIL, PRIVMSGS_UNREAD_MAIL);
+$pmtypes = array(PRIVMSGS_ALL_MAIL, NUKE_PRIVMSGS_READ_MAIL, NUKE_PRIVMSGS_NEW_MAIL, NUKE_PRIVMSGS_SENT_MAIL, NUKE_PRIVMSGS_SAVED_IN_MAIL, NUKE_PRIVMSGS_SAVED_OUT_MAIL, NUKE_PRIVMSGS_UNREAD_MAIL);
 /*
 // Private messaging defintions from constants.php for reference
-define('PRIVMSGS_READ_MAIL', 0);
-define('PRIVMSGS_NEW_MAIL', 1);
-define('PRIVMSGS_SENT_MAIL', 2);
-define('PRIVMSGS_SAVED_IN_MAIL', 3);
-define('PRIVMSGS_SAVED_OUT_MAIL', 4);
-define('PRIVMSGS_UNREAD_MAIL', 5);
+define('NUKE_PRIVMSGS_READ_MAIL', 0);
+define('NUKE_PRIVMSGS_NEW_MAIL', 1);
+define('NUKE_PRIVMSGS_SENT_MAIL', 2);
+define('NUKE_PRIVMSGS_SAVED_IN_MAIL', 3);
+define('NUKE_PRIVMSGS_SAVED_OUT_MAIL', 4);
+define('NUKE_PRIVMSGS_UNREAD_MAIL', 5);
 */
 
 /*******************************************************************************************
@@ -146,17 +146,17 @@ switch($pmaction)
     {
         if ($view_id == '')
         {
-            message_die(GENERAL_ERROR, $lang['No_Message_ID'], '', __LINE__, __FILE__);
+            message_die(NUKE_GENERAL_ERROR, $lang['No_Message_ID'], '', __LINE__, __FILE__);
         }
         $sql = 'SELECT pm.*, pmt.*
-           FROM ' . PRIVMSGS_TABLE . "$archive_text pm, " . PRIVMSGS_TEXT_TABLE . " pmt
+           FROM ' . NUKE_PRIVMSGS_TABLE . "$archive_text pm, " . NUKE_PRIVMSGS_TEXT_TABLE . " pmt
            WHERE pm.privmsgs_id = pmt.privmsgs_text_id
            AND pmt.privmsgs_text_id = $view_id";
-        if(!$result = $db->sql_query($sql))
+        if(!$result = $nuke_db->sql_query($sql))
         {
-            message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__);
+            message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__);
         }
-        $privmsg = $db->sql_fetchrow($result);
+        $privmsg = $nuke_db->sql_fetchrow($result);
         /************************/
         /* Just stole all the phpBB code for message processing :) And edited a ton of it out since we are all admins here */
         /**********************/
@@ -213,51 +213,51 @@ switch($pmaction)
         {
             // Build user sql list
             $user_id_sql_list = '';
-            $sql = 'SELECT user_id FROM '. USERS_TABLE .'
-               WHERE user_id <> '. ANONYMOUS;
-            if(!$result = $db->sql_query($sql))
+            $sql = 'SELECT user_id FROM '. NUKE_USERS_TABLE .'
+               WHERE user_id <> '. NUKE_ANONYMOUS;
+            if(!$result = $nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, $lang['Error_Other_Table'], '', __LINE__, __FILE__);
+                message_die(NUKE_GENERAL_ERROR, $lang['Error_Other_Table'], '', __LINE__, __FILE__);
             }
-            while($row = $db->sql_fetchrow($result))
+            while($row = $nuke_db->sql_fetchrow($result))
             {
                 $user_id_sql_list .= ($user_id_sql_list != '') ? ', '.$row['user_id'] : $row['user_id'];
             }
             
             // Get orphan PM ids
             $priv_msgs_id_sql_list = '';
-            $sql = 'SELECT privmsgs_id FROM '. PRIVMSGS_TABLE ."$archive_text
+            $sql = 'SELECT privmsgs_id FROM '. NUKE_PRIVMSGS_TABLE ."$archive_text
                 WHERE privmsgs_to_userid NOT IN ($user_id_sql_list)";
             //print $sql;
-            if(!$result = $db->sql_query($sql))
+            if(!$result = $nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
             }
-            while ($row = $db->sql_fetchrow($result))
+            while ($row = $nuke_db->sql_fetchrow($result))
             {
                 $priv_msgs_id_sql_list .= ($priv_msgs_id_sql_list != '') ? ', '.$row['privmsgs_id'] : $row['privmsgs_id'];
             }
             if ($priv_msgs_id_sql_list != '')
             {
-                $sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
+                $sql = "DELETE FROM " . NUKE_PRIVMSGS_TEXT_TABLE . "
                       WHERE privmsgs_text_id IN ($priv_msgs_id_sql_list)";
                 //print $sql;
-                if(!$db->sql_query($sql))
+                if(!$nuke_db->sql_query($sql))
                 {
-                    message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
                 }
                 
-                $sql = "DELETE FROM " . PRIVMSGS_TABLE . "$archive_text
+                $sql = "DELETE FROM " . NUKE_PRIVMSGS_TABLE . "$archive_text
                       WHERE privmsgs_id  IN ($priv_msgs_id_sql_list)";
                 //print $sql;
-                if(!$db->sql_query($sql))
+                if(!$nuke_db->sql_query($sql))
                 {
-                    message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
                 }
             }
             
             $status_message .= $lang['Removed_Old'];
-            $status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysqli' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $db->sql_affectedrows()) : '';
+            $status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysqli' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $nuke_db->sql_affectedrows()) : '';
         }
     }
     case 'remove_sent':
@@ -266,62 +266,62 @@ switch($pmaction)
         {
             // Get sent PM ids
             $priv_msgs_id_sql_list = '';
-            $sql = 'SELECT privmsgs_id FROM '. PRIVMSGS_TABLE ."$archive_text
-                WHERE privmsgs_type = ". PRIVMSGS_SENT_MAIL;
-            if(!$result = $db->sql_query($sql))
+            $sql = 'SELECT privmsgs_id FROM '. NUKE_PRIVMSGS_TABLE ."$archive_text
+                WHERE privmsgs_type = ". NUKE_PRIVMSGS_SENT_MAIL;
+            if(!$result = $nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
             }
-            while ($row = $db->sql_fetchrow($result))
+            while ($row = $nuke_db->sql_fetchrow($result))
             {
                 $priv_msgs_id_sql_list .= ($priv_msgs_id_sql_list != '') ? ', '.$row['privmsgs_id'] : $row['privmsgs_id'];
             }
             if ($priv_msgs_id_sql_list != '')
             {
-                $sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
+                $sql = "DELETE FROM " . NUKE_PRIVMSGS_TEXT_TABLE . "
                       WHERE privmsgs_text_id IN ($priv_msgs_id_sql_list)";
                 //print $sql;
-                if(!$db->sql_query($sql))
+                if(!$nuke_db->sql_query($sql))
                 {
-                    message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
                 }
                 
-                $sql = "DELETE FROM " . PRIVMSGS_TABLE . "$archive_text
+                $sql = "DELETE FROM " . NUKE_PRIVMSGS_TABLE . "$archive_text
                       WHERE privmsgs_id  IN ($priv_msgs_id_sql_list)";
                 //print $sql;
-                if(!$db->sql_query($sql))
+                if(!$nuke_db->sql_query($sql))
                 {
-                    message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
                 }
             }
             
             $status_message .= $lang['Removed_Sent'];
-            $status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysqli' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $db->sql_affectedrows()) : '';
+            $status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysqli' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $nuke_db->sql_affectedrows()) : '';
         }
     }
     case 'remove_all':
     {
         if ($pmaction == 'remove_all')
         {
-            $sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE;
-            if(!$db->sql_query($sql))
+            $sql = "DELETE FROM " . NUKE_PRIVMSGS_TEXT_TABLE;
+            if(!$nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
             }
             
-            $sql = "DELETE FROM " . PRIVMSGS_TABLE;
-            if(!$db->sql_query($sql))
+            $sql = "DELETE FROM " . NUKE_PRIVMSGS_TABLE;
+            if(!$nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
             }
             
             $status_message .= $lang['Removed_All'];
-            $status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysqli' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $db->sql_affectedrows()) : '';
+            $status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysqli' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $nuke_db->sql_affectedrows()) : '';
         }
     }
     default:
     {
-        $sql = 'SELECT pm.*, pmt.* FROM ' . PRIVMSGS_TABLE . "$archive_text pm, " . PRIVMSGS_TEXT_TABLE . " pmt
+        $sql = 'SELECT pm.*, pmt.* FROM ' . NUKE_PRIVMSGS_TABLE . "$archive_text pm, " . NUKE_PRIVMSGS_TEXT_TABLE . " pmt
                WHERE pm.privmsgs_id = pmt.privmsgs_text_id
                $pmtype_text
                $filter_from_text
@@ -329,13 +329,13 @@ switch($pmaction)
                ORDER BY $sort $order
                LIMIT $start, $topics_per_pg";
         
-        if(!$result = $db->sql_query($sql))
+        if(!$result = $nuke_db->sql_query($sql))
         {
-            message_die(GENERAL_ERROR, $lang['Error_Posts_Archive_Table'], '', __LINE__, __FILE__);
+            message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Archive_Table'], '', __LINE__, __FILE__);
         }
         
         $i = 0;
-        while($row = $db->sql_fetchrow($result))
+        while($row = $nuke_db->sql_fetchrow($result))
         {
             $view_url = (!$board_config['aprvmView']) ? append_sid($aprvmUtil->urlStart.'&pmaction=view_message&view_id='.$row['privmsgs_id']) : '#';
             $onclick_url = ($board_config['aprvmView']) ? "JavaScript:window.open('" . append_sid($aprvmUtil->urlStart.'&pmaction=view_message&view_id=' . $row['privmsgs_id']) . "', '_privmsg', 'HEIGHT=450,resizable=yes,WIDTH=550')" : '';
@@ -495,7 +495,7 @@ class aprvmUtils
     
     function setupConfig()
     {
-        global $board_config, $db, $HTTP_GET_VARS, $status_message, $lang, $cache;
+        global $board_config, $nuke_db, $HTTP_GET_VARS, $status_message, $lang, $cache;
 
         $configList = array('aprvmArchive', 'aprvmVersion', 'aprvmView', 'aprvmRows', 'aprvmIP');
         $configLangs = array('aprvmArchive' => $lang['Archive_Feature'],
@@ -509,10 +509,10 @@ class aprvmUtils
         //Also do an array check to make sure our config is in our config list array to update
         if (isset($HTTP_GET_VARS['config_name']) && in_array($HTTP_GET_VARS['config_name'], $configList))
         {
-            $sql = 'UPDATE '. CONFIG_TABLE . "
+            $sql = 'UPDATE '. NUKE_CONFIG_TABLE . "
                     set config_value = '{$HTTP_GET_VARS['config_value']}'
                     WHERE config_name = '{$HTTP_GET_VARS['config_name']}'";
-            $db->sql_query($sql);
+            $nuke_db->sql_query($sql);
             
             $board_config[$HTTP_GET_VARS['config_name']] = $HTTP_GET_VARS['config_value'];
 /*****[BEGIN]******************************************
@@ -530,11 +530,11 @@ class aprvmUtils
         {
             if (!isset($board_config[$val]))
             {
-                $sql = 'INSERT INTO '. CONFIG_TABLE . "
+                $sql = 'INSERT INTO '. NUKE_CONFIG_TABLE . "
                     (config_name, config_value)
                     VALUES
                     ('$val', '{$configDefaults[$num]}')";
-                $db->sql_query($sql);
+                $nuke_db->sql_query($sql);
                 $board_config[$val] = $configDefaults[$num];
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -551,11 +551,11 @@ class aprvmUtils
         //If archive is enabled, check to see if the archive table exists
         if ($board_config['aprvmArchive'])
         {
-            $sql = 'SELECT privmsgs_id FROM ' . PRIVMSGS_TABLE .$this->archiveText;
-            if(!$result = $db->sql_query($sql))
+            $sql = 'SELECT privmsgs_id FROM ' . NUKE_PRIVMSGS_TABLE .$this->archiveText;
+            if(!$result = $nuke_db->sql_query($sql))
             {
                 //Cheap way for checking if the archive table exists
-                $errorMessage = $db->sql_error();
+                $errorMessage = $nuke_db->sql_error();
                 if (strpos($errorMessage['message'], 'exist') !== false)
                 {
                     $this->doArchiveTable();
@@ -566,10 +566,10 @@ class aprvmUtils
         //Check to see if board_config has the right version we are running
         if ($board_config['aprvmVersion'] != $this->modVersion)
         {
-            $sql = 'UPDATE '. CONFIG_TABLE . "
+            $sql = 'UPDATE '. NUKE_CONFIG_TABLE . "
                     set config_value = '{$this->modVersion}'
                     WHERE config_name = 'aprvmVersion'";
-            $db->sql_query($sql);
+            $nuke_db->sql_query($sql);
             $board_config['aprvmVersion'] = $this->modVersion;
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -584,27 +584,27 @@ class aprvmUtils
 
     function resync($type, $user_id, $num = 1)
     {
-        global $db;
+        global $nuke_db;
 
-        if (($type == PRIVMSGS_NEW_MAIL || $type == PRIVMSGS_UNREAD_MAIL))
+        if (($type == NUKE_PRIVMSGS_NEW_MAIL || $type == NUKE_PRIVMSGS_UNREAD_MAIL))
         {
             // Update appropriate counter
             switch ($type)
             {
-                case PRIVMSGS_NEW_MAIL:
+                case NUKE_PRIVMSGS_NEW_MAIL:
                 $sql = "user_new_privmsg = user_new_privmsg - $num";
                 break;
-                case PRIVMSGS_UNREAD_MAIL:
+                case NUKE_PRIVMSGS_UNREAD_MAIL:
                 $sql = "user_unread_privmsg = user_unread_privmsg - $num";
                 break;
             }
 
-            $sql = "UPDATE " . USERS_TABLE . "
+            $sql = "UPDATE " . NUKE_USERS_TABLE . "
                 SET $sql 
                 WHERE user_id = $user_id";
-            if ( !$db->sql_query($sql) )
+            if ( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
             }
         }
     }
@@ -646,7 +646,7 @@ class aprvmUtils
 
     function id_2_name($id, $mode = 'user')
     {
-        global $db;
+        global $nuke_db;
 
         static $nameCache; //Stores names we've already sent a query for
                            //Has array sections ['user'] and ['reverse']
@@ -667,14 +667,14 @@ class aprvmUtils
                     return $nameCache['user'][$id];
                 }
                 
-                $sql = 'SELECT username FROM ' . USERS_TABLE . "
+                $sql = 'SELECT username FROM ' . NUKE_USERS_TABLE . "
                    WHERE user_id = $id";
 
-                if(!$result = $db->sql_query($sql))
+                if(!$result = $nuke_db->sql_query($sql))
                 {
-                    message_die(GENERAL_ERROR, $lang['Error_Other_Table'], '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, $lang['Error_Other_Table'], '', __LINE__, __FILE__, $sql);
                 }
-                $row = $db->sql_fetchrow($result);
+                $row = $nuke_db->sql_fetchrow($result);
                 //Setupcache
                 $nameCache['user'][$row['user_id']] = $row['username'];
                 $nameCache['reverse'][$row['username']] = $row['user_id'];
@@ -687,14 +687,14 @@ class aprvmUtils
                 {
                     return $nameCache['reverse'][$id];
                 }
-                $sql = 'SELECT user_id FROM ' . USERS_TABLE . "
+                $sql = 'SELECT user_id FROM ' . NUKE_USERS_TABLE . "
                    WHERE username = '$id'";
 
-                if(!$result = $db->sql_query($sql))
+                if(!$result = $nuke_db->sql_query($sql))
                 {
-                    message_die(GENERAL_ERROR, $lang['Error_Other_Table'], '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, $lang['Error_Other_Table'], '', __LINE__, __FILE__, $sql);
                 }
-                $row = $db->sql_fetchrow($result);
+                $row = $nuke_db->sql_fetchrow($result);
                 if (empty($row['user_id']))
                 {
                     return 0;
@@ -713,20 +713,20 @@ class aprvmUtils
     
     function do_pagination($mode = 'normal')
     {
-        global $db, $filter_from_text, $filter_to_text, $filter_from, $filter_to, $lang, $template, $order;
+        global $nuke_db, $filter_from_text, $filter_to_text, $filter_from, $filter_to, $lang, $template, $order;
         global $mode, $pmtype, $sort, $pmtype_text, $archive_text, $start, $archive_start, $topics_per_pg, $phpEx;
 
-        $sql = 'SELECT count(*) AS total FROM ' . PRIVMSGS_TABLE . $this->inArchiveText." pm
+        $sql = 'SELECT count(*) AS total FROM ' . NUKE_PRIVMSGS_TABLE . $this->inArchiveText." pm
            WHERE 1
            $pmtype_text
            $filter_from_text
            $filter_to_text";
 
-        if(!$result = $db->sql_query($sql))
+        if(!$result = $nuke_db->sql_query($sql))
         {
-            message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
         }
-        $total = $db->sql_fetchrow($result);
+        $total = $nuke_db->sql_fetchrow($result);
         $total_pms = ($total['total'] > 0) ? $total['total'] : 1;
 
         $pagination = generate_pagination($this->urlPage, $total_pms, $topics_per_pg, $start)."&nbsp;";
@@ -758,7 +758,7 @@ class aprvmUtils
         }
         else
         {
-            message_die(GENERAL_ERROR, "Unable to find a suitable language file for $filename!", '');
+            message_die(NUKE_GENERAL_ERROR, "Unable to find a suitable language file for $filename!", '');
         }
         return true;
     }
@@ -779,7 +779,7 @@ class aprvmUtils
     
     function doArchiveTable()
     {
-        global $db, $status_message, $lang, $prefix;
+        global $nuke_db, $status_message, $lang, $prefix;
         
         switch (SQL_LAYER)
         {
@@ -809,9 +809,9 @@ class aprvmUtils
 
         foreach($create as $sql)
         {
-            if(!$result = $db->sql_query($sql))
+            if(!$result = $nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, $lang['Error_Posts_Archive_Table'], '', __LINE__, __FILE__);
+                message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Archive_Table'], '', __LINE__, __FILE__);
             }
         }
         $status_message .= $lang['Archive_Table_Inserted'];
@@ -840,7 +840,7 @@ class aprvmManager
 
     function doArchive()
     {
-        global $lang, $db, $status_message, $aprvmUtil;
+        global $lang, $nuke_db, $status_message, $aprvmUtil;
         
         if (!count($this->archiveQueue)) return;
         
@@ -850,22 +850,22 @@ class aprvmManager
             $postList .= ($postList != '') ? ', '.$post_id : $post_id;
         }
         
-        $sql = 'SELECT * FROM ' . PRIVMSGS_TABLE . "
+        $sql = 'SELECT * FROM ' . NUKE_PRIVMSGS_TABLE . "
                WHERE privmsgs_id IN ($postList)";
-        if(!$result = $db->sql_query($sql))
+        if(!$result = $nuke_db->sql_query($sql))
         {
-            message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
         }
-        while ($row = $db->sql_fetchrow($result))
+        while ($row = $nuke_db->sql_fetchrow($result))
         {
-            $sql = 'INSERT INTO ' . PRIVMSGS_TABLE . $aprvmUtil->archiveText.' VALUES
+            $sql = 'INSERT INTO ' . NUKE_PRIVMSGS_TABLE . $aprvmUtil->archiveText.' VALUES
                (' . $row['privmsgs_id'] . ', ' . $row['privmsgs_type'] . ", '" . addslashes($row['privmsgs_subject']) . "', " .
                 $row['privmsgs_from_userid'] . ', ' . $row['privmsgs_to_userid'] . ', ' . $row['privmsgs_date'] . ", '" .
                 $row['privmsgs_ip'] . "', " . $row['privmsgs_enable_bbcode'] . ', ' . $row['privmsgs_enable_html'] . ', ' .
                 $row['privmsgs_enable_smilies'] . ', ' . $row['privmsgs_attach_sig'] . ')';
-            if(!$db->sql_query($sql))
+            if(!$nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, $lang['Error_Posts_Text_Table'], '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Text_Table'], '', __LINE__, __FILE__, $sql);
             }
             else
             {
@@ -873,18 +873,18 @@ class aprvmManager
                 $this->syncNums[$row['privmsgs_to_userid']][$row['privmsgs_type']]++;
             }
         }
-        $sql = 'DELETE FROM ' . PRIVMSGS_TABLE . "
+        $sql = 'DELETE FROM ' . NUKE_PRIVMSGS_TABLE . "
                   WHERE privmsgs_id IN ($postList)";
-        if(!$db->sql_query($sql))
+        if(!$nuke_db->sql_query($sql))
         {
-            message_die(GENERAL_ERROR, $lang['Error_Posts_Text_Table'], '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Text_Table'], '', __LINE__, __FILE__, $sql);
         }
 
     }
     
     function doDelete()
     {
-        global $board_config, $HTTP_POST_VARS, $db, $lang, $status_message, $aprvmUtil, $mode;
+        global $board_config, $HTTP_POST_VARS, $nuke_db, $lang, $status_message, $aprvmUtil, $mode;
         
         if (!count($this->deleteQueue)) return;
 
@@ -894,13 +894,13 @@ class aprvmManager
             if ($board_config['aprvmArchive'] && isset($HTTP_POST_VARS['archive_id_' . $post_id]))
             {
                 /* This query isn't really needed, but makes the hey we deleted this title isntead of id show up */
-                $sql = 'SELECT privmsgs_subject FROM ' . PRIVMSGS_TABLE . $aprvmUtil->archiveText . " 
+                $sql = 'SELECT privmsgs_subject FROM ' . NUKE_PRIVMSGS_TABLE . $aprvmUtil->archiveText . " 
                        WHERE privmsgs_id = $post_id";
-                if(!$result = $db->sql_query($sql))
+                if(!$result = $nuke_db->sql_query($sql))
                 {
-                    message_die(GENERAL_ERROR, $lang['Error_Posts_Archive_Table'], '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Archive_Table'], '', __LINE__, __FILE__, $sql);
                 }
-                $row = $db->sql_fetchrow($result);
+                $row = $nuke_db->sql_fetchrow($result);
                 $status_message .= sprintf($lang['Archived_Message_No_Delete'], $row['privmsgs_subject']);
             }
             else
@@ -909,13 +909,13 @@ class aprvmManager
             }
         }
 
-            $sql = 'SELECT privmsgs_subject, privmsgs_to_userid, privmsgs_type FROM ' . PRIVMSGS_TABLE . $aprvmUtil->inArchiveText."
+            $sql = 'SELECT privmsgs_subject, privmsgs_to_userid, privmsgs_type FROM ' . NUKE_PRIVMSGS_TABLE . $aprvmUtil->inArchiveText."
                WHERE privmsgs_id IN ($postList)";
-            if(!$result = $db->sql_query($sql))
+            if(!$result = $nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
             }
-            while ($row = $db->sql_fetchrow($result))
+            while ($row = $nuke_db->sql_fetchrow($result))
             {
                 $status_message .= sprintf($lang['Deleted_Message'], $row['privmsgs_subject']);
 
@@ -925,18 +925,18 @@ class aprvmManager
                 }
             }
 
-            $sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
+            $sql = "DELETE FROM " . NUKE_PRIVMSGS_TEXT_TABLE . "
                       WHERE privmsgs_text_id IN ($postList)";
-            if(!$db->sql_query($sql))
+            if(!$nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
             }
 
-            $sql = "DELETE FROM " . PRIVMSGS_TABLE . $aprvmUtil->inArchiveText." 
+            $sql = "DELETE FROM " . NUKE_PRIVMSGS_TABLE . $aprvmUtil->inArchiveText." 
                       WHERE privmsgs_id IN ($postList)";
-            if(!$db->sql_query($sql))
+            if(!$nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
             }
     }
 

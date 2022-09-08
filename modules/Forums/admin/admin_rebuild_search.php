@@ -20,7 +20,7 @@
  *
  ***************************************************************************/
 
-define ('IN_PHPBB', true);
+define ('IN_PHPBB2', true);
 
 if ( !empty($setmodules) )
 {
@@ -141,13 +141,13 @@ if ( isset($HTTP_GET_VARS['cancel_button']) || isset($HTTP_POST_VARS['cancel_but
     SET rebuild_session_status = " . REBUILD_SEARCH_ABORTED . "
     WHERE rebuild_session_id = " . get_last_rebuild_session_id();
 
-  if ( !$db->sql_query($sql) )
+  if ( !$nuke_db->sql_query($sql) )
   {
-    message_die(GENERAL_ERROR, 'Could not update rebuild session status', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not update rebuild session status', '', __LINE__, __FILE__, $sql);
   }
 
   $message =  sprintf($lang['Rebuild_search_aborted'], $end_post_id).'<br /><br />'.sprintf($lang['Click_return_rebuild_search'], '<a href="'.append_sid("admin_rebuild_search.$phpEx").'">', '</a>');
-  message_die(GENERAL_MESSAGE, $message);
+  message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 
 // from which post to start processing
@@ -272,7 +272,7 @@ if ( $mode == 'submit' )
   if ( $session_posts_processing <= 0 || $post_limit <= 0 || $refresh_rate < 0 || $time_limit <=0 )
   {
     $message =  $lang['Wrong_input'].'<br /><br />'.sprintf($lang['Click_return_rebuild_search'], '<a href="'.append_sid("admin_rebuild_search.$phpEx").'">', '</a>');
-    message_die(GENERAL_MESSAGE, $message);
+    message_die(NUKE_GENERAL_MESSAGE, $message);
   }
 }
 
@@ -303,7 +303,7 @@ if ( $mode == 'submit' || $mode == 'refresh' )
   }
 
   // get the db sizes
-  list($db_size, $search_tables_size) = get_db_sizes();
+  list($nuke_db_size, $search_tables_size) = get_db_sizes();
 
   //
   // start the cycle timer
@@ -312,14 +312,14 @@ if ( $mode == 'submit' || $mode == 'refresh' )
 
   // get the post subject/text of each post
   $sql = "SELECT post_id, post_subject, post_text
-    FROM " . POSTS_TEXT_TABLE . "
+    FROM " . NUKE_POSTS_TEXT_TABLE . "
       WHERE post_id >= $start
       ORDER BY post_id ASC
       LIMIT $post_limit";
 
-  if( !($result = $db->sql_query($sql)) )
+  if( !($result = $nuke_db->sql_query($sql)) )
   {
-    message_die(GENERAL_ERROR, 'Could not obtain posts', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain posts', '', __LINE__, __FILE__, $sql);
   }
 
   // insert the words of each post into the search tables
@@ -331,7 +331,7 @@ if ( $mode == 'submit' || $mode == 'refresh' )
   $timer_expired = false;
 
   $num_rows = 0;
-  while ( ($row = $db->sql_fetchrow($result)) && ($timer_expired == false) )
+  while ( ($row = $nuke_db->sql_fetchrow($result)) && ($timer_expired == false) )
   {
     // used for calculating loop duration and changing the timer condition
     $start_temp_time = time();
@@ -409,9 +409,9 @@ if ( $mode == 'submit' || $mode == 'refresh' )
         WHERE rebuild_session_id = " . get_last_rebuild_session_id();
     }
 
-    if ( !$db->sql_query($sql) )
+    if ( !$nuke_db->sql_query($sql) )
     {
-      message_die(GENERAL_ERROR, 'Could not insert/update rebuild search data', '', __LINE__, __FILE__, $sql);
+      message_die(NUKE_GENERAL_ERROR, 'Could not insert/update rebuild search data', '', __LINE__, __FILE__, $sql);
     }
   }
 
@@ -473,21 +473,21 @@ if ( $mode == 'submit' || $mode == 'refresh' )
       WHERE rebuild_session_id = " . get_last_rebuild_session_id() . "
         AND end_post_id = " . get_latest_post_id();
 
-    if ( !$db->sql_query($sql) )
+    if ( !$nuke_db->sql_query($sql) )
     {
-      message_die(GENERAL_ERROR, 'Could not update rebuild session status', '', __LINE__, __FILE__, $sql);
+      message_die(NUKE_GENERAL_ERROR, 'Could not update rebuild session status', '', __LINE__, __FILE__, $sql);
     }
 
     // optimize all search tables when finished
-    $table_ary = array(SEARCH_TABLE, SEARCH_WORD_TABLE, SEARCH_MATCH_TABLE);
+    $table_ary = array(NUKE_SEARCH_TABLE_RESULTS, NUKE_SEARCH_WORD_TABLE, NUKE_SEARCH_MATCH_TABLE);
 
     foreach ($table_ary as $table)
     {
       $sql = "OPTIMIZE TABLE " . $table;
 
-      if ( !$db->sql_query($sql) )
+      if ( !$nuke_db->sql_query($sql) )
       {
-        message_die(GENERAL_ERROR, 'Could not optimize table', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not optimize table', '', __LINE__, __FILE__, $sql);
       }
     }
 
@@ -505,7 +505,7 @@ if ( $mode == 'submit' || $mode == 'refresh' )
   $total_percent = ($total_posts_processed / $total_posts) * 100;
 
   // get the db sizes
-  list($db_size, $search_tables_size) = get_db_sizes();
+  list($nuke_db_size, $search_tables_size) = get_db_sizes();
 
   // calculate the final (estimated) values
   $final_search_tables_size = '';
@@ -516,9 +516,9 @@ if ( $mode == 'submit' || $mode == 'refresh' )
     $start_search_tables_size = get_rebuild_session_details('last', 'search_size');
     $final_search_tables_size = $start_search_tables_size + round(($search_tables_size - $start_search_tables_size) * (100 / $session_percent));
 
-    if ( is_numeric($db_size) )
+    if ( is_numeric($nuke_db_size) )
     {
-      $final_db_size = $db_size + ($final_search_tables_size - $search_tables_size);
+      $final_db_size = $nuke_db_size + ($final_search_tables_size - $search_tables_size);
     }
   }
 
@@ -587,7 +587,7 @@ if ( $mode == 'submit' || $mode == 'refresh' )
 
     'SEARCH_TABLES_SIZE'    => create_db_size($search_tables_size),
     'FINAL_SEARCH_TABLES_SIZE' => create_db_size($final_search_tables_size),
-    'DB_SIZE'           => create_db_size($db_size),
+    'DB_SIZE'           => create_db_size($nuke_db_size),
     'FINAL_DB_SIZE'       => create_db_size($final_db_size),
 
     'START_POST'    => get_rebuild_session_details('last', 'start_post_id'),

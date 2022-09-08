@@ -148,13 +148,13 @@ function SendSite()
 		/*
     	 *	If the user fails to complete the reCaptcha, redirec them back for another try.
     	 */
-		redirect("modules.php?name=$module_name&recap=1");
+		nuke_redirect("modules.php?name=$module_name&recap=1");
 	elseif (empty($fname) || empty($fmail) || empty($yname) || empty($ymail)):
 
 		/*
-    	 *	The user failed to provide the required fields, Let's redirect them and they can try again.
+    	 *	The user failed to provide the required fields, Let's nuke_redirect them and they can try again.
     	 */
-		redirect("modules.php?name=$module_name");
+		nuke_redirect("modules.php?name=$module_name");
 	else:
 
 		/**
@@ -170,7 +170,7 @@ function SendSite()
       	/*
     	 *	OK, we are done here, redirewct the user back to the homepage.
     	 */
-		redirect("modules.php?name=$module_name&op=SiteSent&fname=$fname");
+		nuke_redirect("modules.php?name=$module_name&op=SiteSent&fname=$fname");
 
     endif;
 }

@@ -8,7 +8,7 @@
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2005 by NukeScripts Network       */
 /********************************************************/
-global $db2;
+global $network_db;
 if(!defined('SUPPORT_NETWORK')) { die("Illegal Access Detected!!!"); }
 $pagetitle = "::: "._NETWORK_TITLE." ".$pj_config['version_number']." ::: "._NETWORK_VIEWTASK." ::: ";
 include_once(NUKE_BASE_DIR.'header.php');
@@ -62,10 +62,10 @@ if($task['date_finished'] > 0){
 }
 echo "<tr><td bgcolor='$bgcolor2' colspan='3'><nobr><strong>"._NETWORK_TASKMEMBERS."</strong></nobr></td>\n";
 echo "<td bgcolor='$bgcolor2' align='center' colspan='2'><nobr><strong>"._NETWORK_POSITION."</strong></nobr></td></tr>\n";
-$memberresult = $db2->sql_query("SELECT `member_id`, `position_id` FROM `".$network_prefix."_tasks_members` WHERE `task_id`='$task_id' ORDER BY member_id");
-$member_total = $db2->sql_numrows($memberresult);
+$memberresult = $network_db->sql_query("SELECT `member_id`, `position_id` FROM `".$network_prefix."_tasks_members` WHERE `task_id`='$task_id' ORDER BY member_id");
+$member_total = $network_db->sql_numrows($memberresult);
 if($member_total != 0){
-  while(list($member_id, $position_id) = $db2->sql_fetchrow($memberresult)) {
+  while(list($member_id, $position_id) = $network_db->sql_fetchrow($memberresult)) {
     $member = pjmember_info($member_id);
     $position = pjmemberposition_info($position_id);
     $pjimage = pjimage("member.png", $module_name);

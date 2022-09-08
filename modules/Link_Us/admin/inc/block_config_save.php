@@ -29,7 +29,7 @@
 -=[Mod]=-
  ************************************************************************/
 		
-		$db->sql_query("UPDATE `".$prefix."_link_us_config` SET `my_image`='$my_image', `fade_effect`='$fade_effect', `marquee`='$marquee', `marquee_direction`='$marquee_direction', `marquee_scroll`='$marquee_scroll', `block_height`='$block_height', `show_clicks`='$show_clicks', `button_seperate`='$button_seperate'");
-        redirect($admin_file.'.php?op=lu_block_config');
+		$nuke_db->sql_query("UPDATE `".$prefix."_link_us_config` SET `my_image`='$my_image', `fade_effect`='$fade_effect', `marquee`='$marquee', `marquee_direction`='$marquee_direction', `marquee_scroll`='$marquee_scroll', `block_height`='$block_height', `show_clicks`='$show_clicks', `button_seperate`='$button_seperate'");
+        nuke_redirect($admin_file.'.php?op=lu_block_config');
 
 ?>

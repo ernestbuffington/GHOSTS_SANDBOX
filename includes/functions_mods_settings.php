@@ -40,19 +40,19 @@ function mods_settings_get_lang($key)
 //---------------------------------------------------------------
 function init_board_config_key($key, $value, $force=false)
 {
-	global $db, $board_config, $cache;
+	global $nuke_db, $board_config, $cache;
 	if (!isset($board_config[$key]))
 	{
 		$board_config[$key] = $value;
-		$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name,config_value) VALUES('$key','$value')";
-		if ( !$db->sql_query($sql) ) message_die(GENERAL_ERROR, 'Could not add key ' . $key . ' in config table', '', __LINE__, __FILE__, $sql);
+		$sql = "INSERT INTO " . NUKE_CONFIG_TABLE . " (config_name,config_value) VALUES('$key','$value')";
+		if ( !$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not add key ' . $key . ' in config table', '', __LINE__, __FILE__, $sql);
 		$cache->delete('board_config', 'config');
 	}
 	else if ($force)
 	{
 		$board_config[$key] = $value;
-		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='$value' WHERE config_name='$key'";
-		if ( !$db->sql_query($sql) ) message_die(GENERAL_ERROR, 'Could not add key ' . $key . ' in config table', '', __LINE__, __FILE__, $sql);
+		$sql = "UPDATE " . NUKE_CONFIG_TABLE . " SET config_value='$value' WHERE config_name='$key'";
+		if ( !$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not add key ' . $key . ' in config table', '', __LINE__, __FILE__, $sql);
 		$cache->delete('board_config', 'config');
 	}
 }
@@ -91,7 +91,7 @@ function user_board_config_key($key, $user_field='', $over_field='')
 	}
 
 	// overwrite with the user data only if not overwrite sat, not anonymous, and logged in
-	if (!intval($board_config[$over_field]) && ($userdata['user_id'] != ANONYMOUS) && $userdata['session_logged_in'])
+	if (!intval($board_config[$over_field]) && ($userdata['user_id'] != NUKE_ANONYMOUS) && $userdata['session_logged_in'])
 	{
 		$board_config[$key] = $userdata[$user_field];
 	}

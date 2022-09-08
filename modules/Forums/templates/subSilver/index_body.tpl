@@ -1,9 +1,9 @@
 <table width="100%" cellspacing="0" cellpadding="4" border="0" align="center">
    <tr>
       <td width="100%" colspan="2" valign="top">
-      <!-- MOD GLANCE BEGIN -->
+      <!-- NUKE_MOD GLANCE BEGIN -->
       {GLANCE_OUTPUT}
-      <!-- MOD GLANCE END -->
+      <!-- NUKE_MOD GLANCE END -->
    </tr>
 </table>
 <table width="100%" cellspacing="0" cellpadding="2" border="0" align="center">

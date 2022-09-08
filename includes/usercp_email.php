@@ -69,7 +69,7 @@
       Nuke Patched                             v3.1.0       06/26/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -81,46 +81,46 @@ if (!$board_config['board_email_form'])
  [ Base:    Nuke Patched                       v3.1.0 ]
  ******************************************************/
         $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", $_SERVER["SERVER_SOFTWARE"]) ) ? "Refresh: 0; URL=" : "Location: ";
-        redirect(append_sid("index.$phpEx", true));
+        nuke_redirect(append_sid("index.$phpEx", true));
         exit;
 /*****[END]********************************************
  [ Base:    Nuke Patched                       v3.1.0 ]
  ******************************************************/
 }
 
-if ( !empty($HTTP_GET_VARS[POST_USERS_URL]) || !empty($HTTP_POST_VARS[POST_USERS_URL]) )
+if ( !empty($HTTP_GET_VARS[NUKE_POST_USERS_URL]) || !empty($HTTP_POST_VARS[NUKE_POST_USERS_URL]) )
 {
-        $user_id = ( !empty($HTTP_GET_VARS[POST_USERS_URL]) ) ? intval($HTTP_GET_VARS[POST_USERS_URL]) : intval($HTTP_POST_VARS[POST_USERS_URL]);
+        $user_id = ( !empty($HTTP_GET_VARS[NUKE_POST_USERS_URL]) ) ? intval($HTTP_GET_VARS[NUKE_POST_USERS_URL]) : intval($HTTP_POST_VARS[NUKE_POST_USERS_URL]);
 }
 else
 {
-        message_die(GENERAL_MESSAGE, $lang['No_user_specified']);
+        message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_specified']);
 }
 
 if ( !$userdata['session_logged_in'] )
 {
-        redirect( append_sid("login.$phpEx?redirect=profile.$phpEx&mode=email&" . POST_USERS_URL . "=$user_id", true));
+        nuke_redirect( append_sid("login.$phpEx?nuke_redirect=profile.$phpEx&mode=email&" . NUKE_POST_USERS_URL . "=$user_id", true));
         exit;
 }
 
 $sql = "SELECT username, user_email, user_viewemail, user_lang
-        FROM " . USERS_TABLE . "
+        FROM " . NUKE_USERS_TABLE . "
         WHERE user_id = '$user_id'";
-if ( $result = $db->sql_query($sql) )
+if ( $result = $nuke_db->sql_query($sql) )
 {
-        if ( $row = $db->sql_fetchrow($result) )
+        if ( $row = $nuke_db->sql_fetchrow($result) )
 	{
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 
         $username = $row['username'];
         $user_email = $row['user_email'];
         $user_lang = $row['user_lang'];
 
-        if ( $row['user_viewemail'] || $userdata['user_level'] == ADMIN )
+        if ( $row['user_viewemail'] || $userdata['user_level'] == NUKE_ADMIN )
         {
                 if ( time() - $userdata['user_emailtime'] < $board_config['flood_interval'] )
                 {
-                        message_die(GENERAL_MESSAGE, $lang['Flood_email_limit']);
+                        message_die(NUKE_GENERAL_MESSAGE, $lang['Flood_email_limit']);
                 }
 
                 if ( isset($HTTP_POST_VARS['submit']) )
@@ -149,12 +149,12 @@ if ( $result = $db->sql_query($sql) )
 
                         if ( !$error )
                         {
-                                $sql = "UPDATE " . USERS_TABLE . "
+                                $sql = "UPDATE " . NUKE_USERS_TABLE . "
                                         SET user_emailtime = " . time() . "
                                         WHERE user_id = " . $userdata['user_id'];
-                                if ( $result = $db->sql_query($sql) )
+                                if ( $result = $nuke_db->sql_query($sql) )
                                 {
-                                        $db->sql_freeresult($result);
+                                        $nuke_db->sql_freeresult($result);
                                         include("includes/emailer.php");
                                         $emailer = new emailer($board_config['smtp_delivery']);
 
@@ -206,11 +206,11 @@ if ( $result = $db->sql_query($sql) )
 
                                         $message = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'],  '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
 
-                                        message_die(GENERAL_MESSAGE, $message);
+                                        message_die(NUKE_GENERAL_MESSAGE, $message);
                                 }
                                 else
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not update last email time', '', __LINE__, __FILE__, $sql);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not update last email time', '', __LINE__, __FILE__, $sql);
                                 }
                         }
                 }
@@ -237,7 +237,7 @@ if ( $result = $db->sql_query($sql) )
                         'USERNAME' => $username,
 
                         'S_HIDDEN_FIELDS' => '',
-                        'S_POST_ACTION' => append_sid("profile.$phpEx?mode=email&amp;" . POST_USERS_URL . "=$user_id"),
+                        'S_POST_ACTION' => append_sid("profile.$phpEx?mode=email&amp;" . NUKE_POST_USERS_URL . "=$user_id"),
 
                         'L_SEND_EMAIL_MSG' => $lang['Send_email_msg'],
                         'L_RECIPIENT' => $lang['Recipient'],
@@ -258,17 +258,17 @@ if ( $result = $db->sql_query($sql) )
         }
         else
         {
-                message_die(GENERAL_MESSAGE, $lang['User_prevent_email']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['User_prevent_email']);
         }
 }
 	else
 	{
-		message_die(GENERAL_MESSAGE, $lang['User_not_exist']);
+		message_die(NUKE_GENERAL_MESSAGE, $lang['User_not_exist']);
 	}
 }
 else
 {
-	message_die(GENERAL_ERROR, 'Could not select user data', '', __LINE__, __FILE__, $sql);
+	message_die(NUKE_GENERAL_ERROR, 'Could not select user data', '', __LINE__, __FILE__, $sql);
 }
 
 ?>

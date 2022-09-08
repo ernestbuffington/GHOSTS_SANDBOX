@@ -8,16 +8,16 @@
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2005 by NukeScripts Network       */
 /********************************************************/
-global $db2;
+global $network_db;
 get_lang('Network_Projects');
 if(!defined('NETWORK_SUPPORT_ADMIN')) { die("Illegal Access Detected!!!"); }
 for($i = 0; $i < count($delete_member_ids); $i++){
-  $db2->sql_query("DELETE FROM `".$network_prefix."_projects_members` WHERE `member_id`='".$delete_member_ids[$i]."' AND `project_id`='$project_id'");
+  $network_db->sql_query("DELETE FROM `".$network_prefix."_projects_members` WHERE `member_id`='".$delete_member_ids[$i]."' AND `project_id`='$project_id'");
 }
 for($i = 0; $i < count($member_ids); $i++){
-  $db2->sql_query("UPDATE `".$network_prefix."_projects_members` SET `position_id`='".$position_ids[$i]."' WHERE `project_id`='$project_id' AND `member_id`='".$member_ids[$i]."'");
+  $network_db->sql_query("UPDATE `".$network_prefix."_projects_members` SET `position_id`='".$position_ids[$i]."' WHERE `project_id`='$project_id' AND `member_id`='".$member_ids[$i]."'");
 }
-$db2->sql_query("OPTIMIZE TABLE `".$network_prefix."_projects_members`");
+$network_db->sql_query("OPTIMIZE TABLE `".$network_prefix."_projects_members`");
 header("Location: ".$admin_file.".php?op=ProjectEdit&project_id=$project_id");
 
 ?>

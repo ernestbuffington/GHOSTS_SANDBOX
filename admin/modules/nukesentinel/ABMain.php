@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -214,7 +214,7 @@ echo '<option value="1"'.$seldos2.'>'._AB_ON.'</option>'."\n";
 echo '</select></td></tr>'."\n";
 echo '<tr><td align="center" colspan="2"><strong>'._AB_ADMINISTRATIVE.'</strong></td></tr>'."\n";
 echo '<tr><td valign="top">'.help_img(_AB_HELP_007).' '._AB_ADMINAUTH.':</td>'."\n";
-$apass = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_admins` WHERE `password_md5`='' OR `password`='' OR `password_crypt`=''"));
+$apass = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_admins` WHERE `password_md5`='' OR `password`='' OR `password_crypt`=''"));
 $sapi_name = strtolower(php_sapi_name());
 $selauth1 = $selauth2 = $selauth3 = "";
 if($ip_sets['http_auth'] == 1) { $selauth2 = ' selected="selected"'; }

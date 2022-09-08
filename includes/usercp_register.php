@@ -51,7 +51,7 @@
 	  Birthdays                                v3.0.0
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 exit('Hacking attempt');
 
 $unhtml_specialchars_match = array('#&gt;#', '#&lt;#', '#&quot;#', '#&amp;#');
@@ -88,7 +88,7 @@ $verification = null;
  # Mod: YA Merge v1.0.0 START
  if($mode === 'register' && isset($check_num)): 
 	# Check the users verification check number, if it doesn't match trigger an error
-	$verified = $db->sql_query(
+	$verified = $nuke_db->sql_query(
 		sprintf('SELECT username, 
 		                realname, 
 					  user_email, 
@@ -96,12 +96,12 @@ $verification = null;
 				   user_password 
 				   
 				 FROM %s_users_temp 
-				 WHERE check_num = "%s"', $user_prefix, $db->sql_escapestring($check_num)));
+				 WHERE check_num = "%s"', $nuke_user_prefix, $nuke_db->sql_escapestring($check_num)));
 				 
-	if(!$verified || $db->sql_numrows($verified) === 0) 
-	message_die(GENERAL_ERROR, sprintf($lang['Error_Check_Num'], append_sid('modules.php?name=Your_Account&op=new_user')));
+	if(!$verified || $nuke_db->sql_numrows($verified) === 0) 
+	message_die(NUKE_GENERAL_ERROR, sprintf($lang['Error_Check_Num'], append_sid('modules.php?name=Your_Account&op=new_user')));
 	# The user exists, lets keep moving on
-	$verification = $db->sql_fetchrow($verified);
+	$verification = $nuke_db->sql_fetchrow($verified);
 	$template->assign_block_vars('switch_silent_password', array());
  else: 
 	$template->assign_block_vars('switch_ya_merge', array());
@@ -111,13 +111,13 @@ $verification = null;
 # Mod: Initial Usergroup v1.0.1 START
 function init_group($uid) 
 {
-	global $prefix, $db, $board_config;
+	global $prefix, $nuke_db, $board_config;
 
 	if($board_config['initial_group_id'] != "0" && $board_config['initial_group_id'] != NULL): 
 		$initialusergroup = intval($board_config['initial_group_id']);
 		if($initialusergroup == 0) 
 		return;
-		$db->sql_query("INSERT INTO ".$prefix."_bbuser_group (group_id, user_id, user_pending) VALUES ('$initialusergroup', $uid, '0')");
+		$nuke_db->sql_query("INSERT INTO ".$prefix."_bbuser_group (group_id, user_id, user_pending) VALUES ('$initialusergroup', $uid, '0')");
 		add_group_attributes($uid, $initialusergroup);
 	endif;
 }
@@ -133,7 +133,7 @@ function change_post_msg($message,$ya_username)
 
 function send_pm($new_uid,$ya_username)
 {
-	global $db, $prefix, $user_prefix, $board_config;
+	global $nuke_db, $prefix, $nuke_user_prefix, $board_config;
 
 	if($board_config['welcome_pm'] != '1') 
 	return; 
@@ -142,11 +142,11 @@ function send_pm($new_uid,$ya_username)
 
 	$sql = "SELECT * FROM ".$prefix."_welcome_pm";
 
-	if(!($result = $db->sql_query($sql)))
+	if(!($result = $nuke_db->sql_query($sql)))
     echo "Could not obtain private message";
 	
-	$row = $db->sql_fetchrow($result);
-	$db->sql_freeresult($result);
+	$row = $nuke_db->sql_fetchrow($result);
+	$nuke_db->sql_freeresult($result);
 	$message = $row['msg'];
 	$subject = $row['subject'];
 	
@@ -165,10 +165,10 @@ function send_pm($new_uid,$ya_username)
 										        privmsgs_date ) 
 			VALUES ('1', '".$subject."', '2', '".$new_uid."', ".$privmsgs_date.")";
 	
-	if(!$db->sql_query($sql))
+	if(!$nuke_db->sql_query($sql))
 	echo "Could not insert private message sent info";
 
-	$privmsg_sent_id = $db->sql_nextid();
+	$privmsg_sent_id = $nuke_db->sql_nextid();
 	$privmsg_message = addslashes($privmsg_message);
 
 	$sql = "INSERT INTO ".$prefix."_bbprivmsgs_text (privmsgs_text_id, 
@@ -176,14 +176,14 @@ function send_pm($new_uid,$ya_username)
 												        privmsgs_text) 
 			VALUES ('".$privmsg_sent_id."', '".$bbcode_uid."', '".$privmsg_message."')";
 			
-	if(!$db->sql_query($sql))
+	if(!$nuke_db->sql_query($sql))
     echo "Could not insert private message sent text";
 
-	$sql = "UPDATE ".$user_prefix."_users
+	$sql = "UPDATE ".$nuke_user_prefix."_users
 			SET user_new_privmsg = user_new_privmsg + 1,  user_last_privmsg = '".time()."'
 			WHERE user_id = $new_uid";
 	
-	if(!($result = $db->sql_query($sql)))
+	if(!($result = $nuke_db->sql_query($sql)))
     echo "Could not update users table";
 
 }
@@ -433,7 +433,7 @@ $mode == 'register' ):
 
 		if(!isset($HTTP_POST_VARS['cancelavatar'])):
 			$user_avatar = $user_avatar_category . '/' . $user_avatar_local;
-			$user_avatar_type = USER_AVATAR_GALLERY;
+			$user_avatar_type = NUKE_USER_AVATAR_GALLERY;
 		endif;
 	endif;
 endif;
@@ -443,7 +443,7 @@ endif;
 # and ensure that they were trying to register a second time
 # (Prevents double registrations)
 if($verification !== null && ($userdata['session_logged_in'] || $username === $userdata['username'])) 
-message_die(GENERAL_MESSAGE, $lang['Username_taken'], '', __LINE__, __FILE__);
+message_die(NUKE_GENERAL_MESSAGE, $lang['Username_taken'], '', __LINE__, __FILE__);
 
 # Did the user submit? In this case build a query to update the users profile in the DB
 if(isset($HTTP_POST_VARS['submit'])):
@@ -483,10 +483,10 @@ if(isset($HTTP_POST_VARS['submit'])):
 			WHERE confirm_id = '$confirm_id'
 			AND session_id = '" . $userdata['session_id'] . "'";
 			
-			if(!($result = $db->sql_query($sql)))
-			message_die(GENERAL_ERROR, 'Could not obtain confirmation code', '', __LINE__, __FILE__, $sql);
+			if(!($result = $nuke_db->sql_query($sql)))
+			message_die(NUKE_GENERAL_ERROR, 'Could not obtain confirmation code', '', __LINE__, __FILE__, $sql);
 
-			if($row = $db->sql_fetchrow($result)):
+			if($row = $nuke_db->sql_fetchrow($result)):
 				if($row['code'] != $confirm_code):
 					$error = TRUE;
 					$error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $lang['Confirm_code_wrong'];
@@ -494,14 +494,14 @@ if(isset($HTTP_POST_VARS['submit'])):
 					$sql = 'DELETE FROM ' . CONFIRM_TABLE . "
 						WHERE confirm_id = '$confirm_id'
 						AND session_id = '" . $userdata['session_id'] . "'";
-					if (!$db->sql_query($sql))
-						message_die(GENERAL_ERROR, 'Could not delete confirmation code', '', __LINE__, __FILE__, $sql);
+					if (!$nuke_db->sql_query($sql))
+						message_die(NUKE_GENERAL_ERROR, 'Could not delete confirmation code', '', __LINE__, __FILE__, $sql);
 				endif;
 			else:
 				$error = TRUE;
 				$error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $lang['Confirm_code_wrong'];
 			endif;
-			$db->sql_freeresult($result);
+			$nuke_db->sql_freeresult($result);
 		endif;
 	endif;
 
@@ -523,14 +523,14 @@ if(isset($HTTP_POST_VARS['submit'])):
 			if($mode == 'editprofile'):
 			
 				$sql = "SELECT user_password
-				FROM " . USERS_TABLE . "
+				FROM " . NUKE_USERS_TABLE . "
 				WHERE user_id = '$user_id'";
 				
-				if(!($result = $db->sql_query($sql)))
-				message_die(GENERAL_ERROR, 'Could not obtain user_password information', '', __LINE__, __FILE__, $sql);
+				if(!($result = $nuke_db->sql_query($sql)))
+				message_die(NUKE_GENERAL_ERROR, 'Could not obtain user_password information', '', __LINE__, __FILE__, $sql);
 
-				$row = $db->sql_fetchrow($result);
-				$db->sql_freeresult($result);
+				$row = $nuke_db->sql_fetchrow($result);
+				$nuke_db->sql_freeresult($result);
                 
 				# Base: Evolution Functions v1.5.0 START
 				if($row['user_password'] != md5($cur_password)):
@@ -565,14 +565,14 @@ if(isset($HTTP_POST_VARS['submit'])):
 
 		if($mode == 'editprofile'):
 			$sql = "SELECT user_password
-			FROM " . USERS_TABLE . "
+			FROM " . NUKE_USERS_TABLE . "
 			WHERE user_id = '$user_id'";
 			
-			if(!($result = $db->sql_query($sql)))
-			message_die(GENERAL_ERROR, 'Could not obtain user_password information', '', __LINE__, __FILE__, $sql);
+			if(!($result = $nuke_db->sql_query($sql)))
+			message_die(NUKE_GENERAL_ERROR, 'Could not obtain user_password information', '', __LINE__, __FILE__, $sql);
 
-			$row = $db->sql_fetchrow($result);
-			$db->sql_freeresult($result);
+			$row = $nuke_db->sql_fetchrow($result);
+			$nuke_db->sql_freeresult($result);
             
 			# Base: Evolution Functions v1.5.0 START
 			if($row['user_password'] != md5($cur_password)):
@@ -642,9 +642,9 @@ if(isset($HTTP_POST_VARS['submit'])):
 
 	$user_birthday = sprintf('%02d%02d%04d',$bday_month,$bday_day,$bday_year);
 	$user_birthday2 = ($birthday_display 
-	                   != BIRTHDAY_DATE 
+	                   != NUKE_BIRTHDAY_DATE 
 	                   && $birthday_display 
-	                   != BIRTHDAY_NONE 
+	                   != NUKE_BIRTHDAY_NONE 
 					   && !$empty_month 
 					   && !$empty_day 
 					   && !$empty_year) ? sprintf('%04d%02d%02d',$bday_year,$bday_month,$bday_day) : 'NULL';
@@ -674,8 +674,8 @@ if(isset($HTTP_POST_VARS['submit'])):
 
 			if($meta['handle_input'] 
 			&& (($mode == 'register' 
-			&& $meta['default_auth'] == XD_AUTH_ALLOW) 
-			|| ($mode != 'register' ? xdata_auth($code_name, $user_id) : 0) || $userdata['user_level'] == ADMIN )):
+			&& $meta['default_auth'] == NUKE_XD_AUTH_ALLOW) 
+			|| ($mode != 'register' ? xdata_auth($code_name, $user_id) : 0) || $userdata['user_level'] == NUKE_ADMIN )):
 			
 				if(($meta['field_length'] > 0) && (strlen($xdata[$code_name]) > $meta['field_length'])):
 					$error = TRUE;
@@ -702,7 +702,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 						$xdata_bbcode_uid = ( $allowbbcode ) ? make_bbcode_uid() : '';
 						
 						if ($allowbbcode && !empty($xdata_bbcode_uid)): 
-						$db->sql_query('UPDATE `'.USERS_TABLE.'` SET xdata_bbcode="'.$xdata_bbcode_uid.'" WHERE `user_id` ='.$userdata['user_id']);
+						$nuke_db->sql_query('UPDATE `'.NUKE_USERS_TABLE.'` SET xdata_bbcode="'.$xdata_bbcode_uid.'" WHERE `user_id` ='.$userdata['user_id']);
 						endif;
 				    else: 
 					    $xdata_bbcode_uid = $userdata['xdata_bbcode'];
@@ -765,11 +765,11 @@ if(isset($HTTP_POST_VARS['submit'])):
 	if(!$error)
 	{
 		if(empty($avatar_sql))
-		$avatar_sql = ( $mode == 'editprofile' ) ? '' : "'', " . USER_AVATAR_NONE;
+		$avatar_sql = ( $mode == 'editprofile' ) ? '' : "'', " . NUKE_USER_AVATAR_NONE;
 
 		if($mode == 'editprofile')
 		{
-			if($email != $userdata['user_email'] && $board_config['require_activation'] != USER_ACTIVATION_NONE && $userdata['user_level'] != ADMIN):
+			if($email != $userdata['user_email'] && $board_config['require_activation'] != NUKE_USER_ACTIVATION_NONE && $userdata['user_level'] != NUKE_ADMIN):
 				$user_active = 0;
 				$user_actkey = gen_rand_string(true);
 				$key_len = 54 - ( strlen($server_url) );
@@ -801,7 +801,7 @@ if(isset($HTTP_POST_VARS['submit'])):
             # Mod: Member Country Flags v2.0.7 START
             # Mod: Gender v1.2.6 START
             # Mod: Birthdays v3.0.0 START
-			$sql = "UPDATE ".USERS_TABLE."
+			$sql = "UPDATE ".NUKE_USERS_TABLE."
 			SET ".$username_sql.$passwd_sql." user_email = '".str_replace("\'", "''", $email)."', ".$birthday_sql
 			."birthday_display = $birthday_display, birthday_greeting = $birthday_greeting, user_facebook = '"
 			.str_replace("\'", "''", str_replace(' ', '+', $facebook))."', user_website = '".str_replace("\'", "''", $website)
@@ -830,8 +830,8 @@ if(isset($HTTP_POST_VARS['submit'])):
             # Mod: Gender v1.2.6 END
             # Mod: Birthdays v3.0.0 END
 
-			if(!($result = $db->sql_query($sql))):
-				message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
+			if(!($result = $nuke_db->sql_query($sql))):
+				message_die(NUKE_GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
 			else: 
 				global $userinfo;
 				$userinfo['theme'] = $user_style;
@@ -856,7 +856,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 				include("includes/emailer.php");
 				$emailer = new emailer($board_config['smtp_delivery']);
 
-				 if($board_config['require_activation'] != USER_ACTIVATION_ADMIN)
+				 if($board_config['require_activation'] != NUKE_USER_ACTIVATION_ADMIN)
 				 {
 					 $emailer->from($board_config['board_email']);
 					 $emailer->replyto($board_config['board_email']);
@@ -870,23 +870,23 @@ if(isset($HTTP_POST_VARS['submit'])):
 						 'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
 						 'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
 
-						 'U_ACTIVATE' => $server_url . '&mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey)
+						 'U_ACTIVATE' => $server_url . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey)
 					 );
 					 $emailer->send();
 					 $emailer->reset();
 				 }
-				 elseif($board_config['require_activation'] == USER_ACTIVATION_ADMIN)
+				 elseif($board_config['require_activation'] == NUKE_USER_ACTIVATION_ADMIN)
 				 {
 					 $sql = 'SELECT user_email, user_lang
-						 FROM ' . USERS_TABLE . '
-						 WHERE user_level = ' . ADMIN;
+						 FROM ' . NUKE_USERS_TABLE . '
+						 WHERE user_level = ' . NUKE_ADMIN;
 
-					 if ( !($result = $db->sql_query($sql)) )
+					 if ( !($result = $nuke_db->sql_query($sql)) )
 					 {
-						 message_die(GENERAL_ERROR, 'Could not select Administrators', '', __LINE__, __FILE__, $sql);
+						 message_die(NUKE_GENERAL_ERROR, 'Could not select Administrators', '', __LINE__, __FILE__, $sql);
 					 }
 
-					 while ($row = $db->sql_fetchrow($result))
+					 while ($row = $nuke_db->sql_fetchrow($result))
 					 {
 						 $emailer->from($board_config['board_email']);
 						 $emailer->replyto($board_config['board_email']);
@@ -899,20 +899,20 @@ if(isset($HTTP_POST_VARS['submit'])):
 							 'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
 							 'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']),
 
-							 'U_ACTIVATE' => $server_url . '&mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey)
+							 'U_ACTIVATE' => $server_url . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey)
 						 );
 						 $emailer->send();
 						 $emailer->reset();
 					 }
-					 $db->sql_freeresult($result);
+					 $nuke_db->sql_freeresult($result);
 				 }
 				//evcz mod=>logout
 				global $userinfo;
 				$r_uid = $userinfo['user_id'];
 				$r_username = $userinfo['username'];
 				setcookie("user");
-				$db->sql_query("DELETE FROM ".$prefix."_session WHERE uname='$r_username'");
-				$db->sql_query("DELETE FROM ".$prefix."_bbsessions WHERE session_user_id='$r_uid'");
+				$nuke_db->sql_query("DELETE FROM ".$prefix."_session WHERE uname='$r_username'");
+				$nuke_db->sql_query("DELETE FROM ".$prefix."_bbsessions WHERE session_user_id='$r_uid'");
 				$user = "";
 				//fine evcz mod=>logout
 				if (is_active("Forums")) 
@@ -928,7 +928,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 				else:
 					$message = $lang['Profile_updated'].'<br /><br />'.sprintf($lang['Click_return_index'],  '<a href="index.php">', '</a>');
 				endif;
-				# redirect(append_sid('profile.php?mode=viewprofile&amp;u='.$userdata['user_id']));
+				# nuke_redirect(append_sid('profile.php?mode=viewprofile&amp;u='.$userdata['user_id']));
 			endif;
 
 			
@@ -939,20 +939,20 @@ if(isset($HTTP_POST_VARS['submit'])):
 				$message_title = '';
 			endif;
 
-			message_die(GENERAL_MESSAGE, $message, $message_title);
+			message_die(NUKE_GENERAL_MESSAGE, $message, $message_title);
 		}
 		else
 		{
 			$sql = "SELECT MAX(user_id) AS total
-			FROM ".USERS_TABLE;
+			FROM ".NUKE_USERS_TABLE;
 
-			if(!($result = $db->sql_query($sql)))
-			message_die(GENERAL_ERROR, 'Could not obtain next user_id information', '', __LINE__, __FILE__, $sql);
+			if(!($result = $nuke_db->sql_query($sql)))
+			message_die(NUKE_GENERAL_ERROR, 'Could not obtain next user_id information', '', __LINE__, __FILE__, $sql);
 
-			if(!($row = $db->sql_fetchrow($result)))
-			message_die(GENERAL_ERROR, 'Could not obtain next user_id information', '', __LINE__, __FILE__, $sql);
+			if(!($row = $nuke_db->sql_fetchrow($result)))
+			message_die(NUKE_GENERAL_ERROR, 'Could not obtain next user_id information', '', __LINE__, __FILE__, $sql);
 
-			$db->sql_freeresult($result);
+			$nuke_db->sql_freeresult($result);
 			$user_id = $row['total'] + 1;
 
 		    # Get current date
@@ -970,7 +970,7 @@ if(isset($HTTP_POST_VARS['submit'])):
  [ Mod:     Gender                             v1.2.6 ]
  [ Mod:     Birthdays                          v3.0.0 ]
  ******************************************************/
-			$sql = "INSERT INTO " . USERS_TABLE . " (user_id, 
+			$sql = "INSERT INTO " . NUKE_USERS_TABLE . " (user_id, 
 			                                        username, 
 												user_regdate, 
 											   user_password, 
@@ -1082,7 +1082,7 @@ if(isset($HTTP_POST_VARS['submit'])):
  [ Mod:     Super Quick Reply                  v1.3.2 ]
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
-			if ( $board_config['require_activation'] == USER_ACTIVATION_SELF || $board_config['require_activation'] == USER_ACTIVATION_ADMIN || $coppa )
+			if ( $board_config['require_activation'] == NUKE_USER_ACTIVATION_SELF || $board_config['require_activation'] == NUKE_USER_ACTIVATION_ADMIN || $coppa )
 			{
 				$user_actkey = gen_rand_string(true);
 				$key_len = 54 - (strlen($server_url));
@@ -1094,29 +1094,29 @@ if(isset($HTTP_POST_VARS['submit'])):
 			{
 				$sql .= "1, '')";
 			}
-			if ( !($result = $db->sql_query($sql)) )
+			if ( !($result = $nuke_db->sql_query($sql)) )
 			{
-				message_die(GENERAL_ERROR, 'Could not insert data into users table', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not insert data into users table', '', __LINE__, __FILE__, $sql);
 			}
 
-			$sql = "INSERT INTO " . GROUPS_TABLE . " (group_name, group_description, group_single_user, group_moderator)
+			$sql = "INSERT INTO " . NUKE_GROUPS_TABLE . " (group_name, group_description, group_single_user, group_moderator)
 			VALUES ('', 'Personal User', '1', '0')";
-			if ( !($result = $db->sql_query($sql)) )
+			if ( !($result = $nuke_db->sql_query($sql)) )
 			{
-				message_die(GENERAL_ERROR, 'Could not insert data into groups table', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not insert data into groups table', '', __LINE__, __FILE__, $sql);
 			}
 
-			$group_id = $db->sql_nextid();
+			$group_id = $nuke_db->sql_nextid();
 
-			$sql = "INSERT INTO " . USER_GROUP_TABLE . " (user_id, group_id, user_pending)
+			$sql = "INSERT INTO " . NUKE_USER_GROUP_TABLE . " (user_id, group_id, user_pending)
 				VALUES ('$user_id', '$group_id', '0')";
-			if( !($result = $db->sql_query($sql)) )
+			if( !($result = $nuke_db->sql_query($sql)) )
 			{
-				message_die(GENERAL_ERROR, 'Could not insert data into user_group table', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not insert data into user_group table', '', __LINE__, __FILE__, $sql);
 			}
 
 			// Delete the temporary user now if we are going through the verification stage of registration
-			$db->sql_query(sprintf('DELETE FROM %s_users_temp WHERE username = "%s"', $user_prefix, $username));
+			$nuke_db->sql_query(sprintf('DELETE FROM %s_users_temp WHERE username = "%s"', $nuke_user_prefix, $username));
 
 /*****[BEGIN]******************************************
  [ Mod:     Initial Usergroup                  v1.0.1 ]
@@ -1150,12 +1150,12 @@ if(isset($HTTP_POST_VARS['submit'])):
 				$message = $lang['COPPA'];
 				$email_template = 'coppa_welcome_inactive';
 			}
-			else if ( $board_config['require_activation'] == USER_ACTIVATION_SELF )
+			else if ( $board_config['require_activation'] == NUKE_USER_ACTIVATION_SELF )
 			{
 				$message = $lang['Account_inactive'];
 				$email_template = 'user_welcome_inactive';
 			}
-			else if ( $board_config['require_activation'] == USER_ACTIVATION_ADMIN )
+			else if ( $board_config['require_activation'] == NUKE_USER_ACTIVATION_ADMIN )
 			{
 				$message = $lang['Account_inactive_admin'];
 				$email_template = 'admin_welcome_inactive';
@@ -1166,18 +1166,18 @@ if(isset($HTTP_POST_VARS['submit'])):
 				$email_template = 'user_welcome';
 			}
 
-			if ( $board_config['require_activation'] == USER_ACTIVATION_ADMIN )
+			if ( $board_config['require_activation'] == NUKE_USER_ACTIVATION_ADMIN )
 			{
 				$sql = "SELECT user_email, user_lang
-				FROM " . USERS_TABLE . "
-				WHERE user_level = " . ADMIN;
+				FROM " . NUKE_USERS_TABLE . "
+				WHERE user_level = " . NUKE_ADMIN;
 
-				if ( !($result = $db->sql_query($sql)) )
+				if ( !($result = $nuke_db->sql_query($sql)) )
 				{
-					message_die(GENERAL_ERROR, 'Could not select Administrators', '', __LINE__, __FILE__, $sql);
+					message_die(NUKE_GENERAL_ERROR, 'Could not select Administrators', '', __LINE__, __FILE__, $sql);
 				}
 
-				while ($row = $db->sql_fetchrow($result))
+				while ($row = $nuke_db->sql_fetchrow($result))
 				{
 					$emailer->from($board_config['board_email']);
 					$emailer->replyto($board_config['board_email']);
@@ -1190,15 +1190,15 @@ if(isset($HTTP_POST_VARS['submit'])):
 					'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
 					'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']),
 
-					'U_ACTIVATE' => $server_url . '&mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey)
+					'U_ACTIVATE' => $server_url . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey)
 					);
 					$emailer->send();
 					$emailer->reset();
 				}
-				$db->sql_freeresult($result);
+				$nuke_db->sql_freeresult($result);
 			}
 			$message = $message . '<br /><br />' . sprintf($lang['Click_return_index'],  '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
-			message_die(GENERAL_MESSAGE, $message);
+			message_die(NUKE_GENERAL_MESSAGE, $message);
 		} // if mode == register
 	}
 endif; // End of submit
@@ -1377,7 +1377,7 @@ else if ( $mode == 'editprofile' && !isset($HTTP_POST_VARS['avatargallery']) && 
 	$allowviewonline = $userdata['user_allow_viewonline'];
 
 	$user_avatar = ( $userdata['user_allowavatar'] ) ? $userdata['user_avatar'] : '';
-	$user_avatar_type = ( $userdata['user_allowavatar'] ) ? $userdata['user_avatar_type'] : USER_AVATAR_NONE;
+	$user_avatar_type = ( $userdata['user_allowavatar'] ) ? $userdata['user_avatar_type'] : NUKE_USER_AVATAR_NONE;
 
 	$user_style = $userdata['theme'];
 /*****[BEGIN]******************************************
@@ -1498,18 +1498,18 @@ else
 		switch( $user_avatar_type )
 		{
 			# user_allowavatar = 1
-			case USER_AVATAR_UPLOAD:
+			case NUKE_USER_AVATAR_UPLOAD:
 				$avatar_img = ( $board_config['allow_avatar_upload'] ) ? '<img style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" border="0" />' : '';
 				break;
 
 			# user_allowavatar = 2
-			case USER_AVATAR_REMOTE:
+			case NUKE_USER_AVATAR_REMOTE:
 				// $avatar_img = resize_avatar($user_avatar);
 				$avatar_img = '<img style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="' . resize_avatar($user_avatar) . '" alt="" border="0" />';
 				break;
 
 			# user_allowavatar = 3
-			case USER_AVATAR_GALLERY:
+			case NUKE_USER_AVATAR_GALLERY:
 				$avatar_img = ( $board_config['allow_avatar_local'] ) ? '<img style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="' . $board_config['avatar_gallery_path'] . '/' . (($user_avatar == 'blank.gif' || $user_avatar == 'gallery/blank.gif') ? 'blank.png' : $user_avatar) . '" alt="" border="0" />' : '';
 				break;
 		}
@@ -1655,7 +1655,7 @@ else
 	switch ( $can_disable_mass_pm )
 	{
 		case 'A':
-			if ( $userdata['user_level'] == ADMIN )
+			if ( $userdata['user_level'] == NUKE_ADMIN )
 			{
 				$template->assign_block_vars('switch_can_disable_mass_pm', array());
 			} else
@@ -1665,7 +1665,7 @@ else
 		break;
 
 		case 'M':
-			if ( $userdata['user_level'] == ADMIN || $userdata['user_level'] == MOD )
+			if ( $userdata['user_level'] == NUKE_ADMIN || $userdata['user_level'] == NUKE_MOD )
 			{
 				$template->assign_block_vars('switch_can_disable_mass_pm', array());
 			} else
@@ -1690,10 +1690,10 @@ else
 /*****[BEGIN]******************************************
  [ Mod:     Member Country Flags               v2.0.7 ]
  ******************************************************/
-	$sql = "SELECT * FROM `".FLAG_TABLE."` ORDER BY `flag_name`";
-	if ( !$flags_result = $db->sql_query( $sql ) )
+	$sql = "SELECT * FROM `".NUKE_FLAG_TABLE."` ORDER BY `flag_name`";
+	if ( !$flags_result = $nuke_db->sql_query( $sql ) )
 	{
-		message_die(GENERAL_ERROR, "Couldn't obtain flags information.", "", __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, "Couldn't obtain flags information.", "", __LINE__, __FILE__, $sql);
 	}
 
 	$default_flag_image = 'unknown.png';
@@ -1702,7 +1702,7 @@ else
 
 	$flag_select  = '<select class="user_from_flag_select" name="user_flag">';
 	$flag_select .= '	<option value="blank"'.$selected.'>'.$lang['Select_Country'].'</option>';
-	while ( $flag_row = $db->sql_fetchrow($flags_result) ):
+	while ( $flag_row = $nuke_db->sql_fetchrow($flags_result) ):
 
 		/**
 		 *	coding added to add new reponsive theme support
@@ -1745,9 +1745,9 @@ else
 	while ( list($code_name, $info) = each($xd_meta) )
 	{
 
-		if ( xdata_auth($code_name, $userdata['user_id']) || intval($userdata['user_level']) == ADMIN )
+		if ( xdata_auth($code_name, $userdata['user_id']) || intval($userdata['user_level']) == NUKE_ADMIN )
 		{
-			if ($info['display_register'] == XD_DISPLAY_NORMAL)
+			if ($info['display_register'] == NUKE_XD_DISPLAY_NORMAL)
 			{
 				$template->assign_block_vars('xdata', array(
 					'CODE_NAME' => $code_name,
@@ -1809,7 +1809,7 @@ else
  ******************************************************/
 				}
 			}
-			elseif ($info['display_register'] == XD_DISPLAY_ROOT)
+			elseif ($info['display_register'] == NUKE_XD_DISPLAY_ROOT)
 			{
 				$template->assign_block_vars('xdata',
 					array(
@@ -1862,46 +1862,46 @@ else
 	if (!empty($board_config['enable_confirm']) && $mode == 'register')
 	{
 		$sql = 'SELECT session_id
-			FROM ' . SESSIONS_TABLE;
-		if (!($result = $db->sql_query($sql)))
+			FROM ' . NUKE_BB_SESSIONS_TABLE;
+		if (!($result = $nuke_db->sql_query($sql)))
 		{
-			message_die(GENERAL_ERROR, 'Could not select session data', '', __LINE__, __FILE__, $sql);
+			message_die(NUKE_GENERAL_ERROR, 'Could not select session data', '', __LINE__, __FILE__, $sql);
 		}
 
-		if ($row = $db->sql_fetchrow($result))
+		if ($row = $nuke_db->sql_fetchrow($result))
 		{
 			$confirm_sql = '';
 			do
 			{
 				$confirm_sql .= (($confirm_sql != '') ? ', ' : '') . "'" . $row['session_id'] . "'";
 			}
-			while ($row = $db->sql_fetchrow($result));
+			while ($row = $nuke_db->sql_fetchrow($result));
 
 			$sql = 'DELETE FROM ' .  CONFIRM_TABLE . "
 				WHERE session_id NOT IN ($confirm_sql)";
-			if (!$db->sql_query($sql))
+			if (!$nuke_db->sql_query($sql))
 			{
-				message_die(GENERAL_ERROR, 'Could not delete stale confirm data', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not delete stale confirm data', '', __LINE__, __FILE__, $sql);
 			}
 		}
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
 
 		$sql = 'SELECT COUNT(session_id) AS attempts
 			FROM ' . CONFIRM_TABLE . "
 			WHERE session_id = '" . $userdata['session_id'] . "'";
-		if (!($result = $db->sql_query($sql)))
+		if (!($result = $nuke_db->sql_query($sql)))
 		{
-			message_die(GENERAL_ERROR, 'Could not obtain confirm code count', '', __LINE__, __FILE__, $sql);
+			message_die(NUKE_GENERAL_ERROR, 'Could not obtain confirm code count', '', __LINE__, __FILE__, $sql);
 		}
 
-		if ($row = $db->sql_fetchrow($result))
+		if ($row = $nuke_db->sql_fetchrow($result))
 		{
 			if ($row['attempts'] > 3)
 			{
-				message_die(GENERAL_MESSAGE, $lang['Too_many_registers']);
+				message_die(NUKE_GENERAL_MESSAGE, $lang['Too_many_registers']);
 			}
 		}
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
 
 		// Generate the required confirmation code
 		// NB 0 (zero) could get confused with O (the letter) so we make change it
@@ -1912,9 +1912,9 @@ else
 
 		$sql = 'INSERT INTO ' . CONFIRM_TABLE . " (confirm_id, session_id, code)
 			VALUES ('$confirm_id', '". $userdata['session_id'] . "', '$code')";
-		if (!$db->sql_query($sql))
+		if (!$nuke_db->sql_query($sql))
 		{
-			message_die(GENERAL_ERROR, 'Could not insert new confirm code information', '', __LINE__, __FILE__, $sql);
+			message_die(NUKE_GENERAL_ERROR, 'Could not insert new confirm code information', '', __LINE__, __FILE__, $sql);
 		}
 
 		unset($code);
@@ -1970,21 +1970,21 @@ else
 				'BDAY_DAY' => ($bday_day != 0) ? $bday_day : '',
 				'BDAY_YEAR' => ($bday_year != 0) ? $bday_year : '',
 
-				'BIRTHDAY_ALL' => BIRTHDAY_ALL,
-				'BIRTHDAY_ALL_SELECTED' => ( $birthday_display == BIRTHDAY_ALL ) ? ' selected="selected"' : '',
-				'BIRTHDAY_DATE' => BIRTHDAY_DATE,
-				'BIRTHDAY_DATE_SELECTED' => ( $birthday_display == BIRTHDAY_DATE ) ? ' selected="selected"' : '',
-				'BIRTHDAY_AGE' => BIRTHDAY_AGE,
-				'BIRTHDAY_AGE_SELECTED' => ( $birthday_display == BIRTHDAY_AGE ) ? ' selected="selected"' : '',
-				'BIRTHDAY_NONE' => BIRTHDAY_NONE,
-				'BIRTHDAY_NONE_SELECTED' => ( $birthday_display == BIRTHDAY_NONE ) ? ' selected="selected"' : '',
+				'NUKE_BIRTHDAY_ALL' => NUKE_BIRTHDAY_ALL,
+				'BIRTHDAY_ALL_SELECTED' => ( $birthday_display == NUKE_BIRTHDAY_ALL ) ? ' selected="selected"' : '',
+				'NUKE_BIRTHDAY_DATE' => NUKE_BIRTHDAY_DATE,
+				'BIRTHDAY_DATE_SELECTED' => ( $birthday_display == NUKE_BIRTHDAY_DATE ) ? ' selected="selected"' : '',
+				'NUKE_BIRTHDAY_AGE' => NUKE_BIRTHDAY_AGE,
+				'BIRTHDAY_AGE_SELECTED' => ( $birthday_display == NUKE_BIRTHDAY_AGE ) ? ' selected="selected"' : '',
+				'NUKE_BIRTHDAY_NONE' => NUKE_BIRTHDAY_NONE,
+				'BIRTHDAY_NONE_SELECTED' => ( $birthday_display == NUKE_BIRTHDAY_NONE ) ? ' selected="selected"' : '',
 				'BDAY_NONE_ENABLED' => ( !$birthday_greeting ) ? ' checked="checked"' : '',
-				'BDAY_EMAIL' => BIRTHDAY_EMAIL,
-				'BDAY_EMAIL_ENABLED' => ( $birthday_greeting == BIRTHDAY_EMAIL ) ? ' checked="checked"' : '',
-				'BDAY_PM' => BIRTHDAY_PM,
-				'BDAY_PM_ENABLED' => ( $birthday_greeting == BIRTHDAY_PM ) ? ' checked="checked"' : '',
-				'BDAY_POPUP' => BIRTHDAY_POPUP,
-				'BDAY_POPUP_ENABLED' => ( $birthday_greeting == BIRTHDAY_POPUP ) ? ' checked="checked"' : '',
+				'BDAY_EMAIL' => NUKE_BIRTHDAY_EMAIL,
+				'BDAY_EMAIL_ENABLED' => ( $birthday_greeting == NUKE_BIRTHDAY_EMAIL ) ? ' checked="checked"' : '',
+				'BDAY_PM' => NUKE_BIRTHDAY_PM,
+				'BDAY_PM_ENABLED' => ( $birthday_greeting == NUKE_BIRTHDAY_PM ) ? ' checked="checked"' : '',
+				'BDAY_POPUP' => NUKE_BIRTHDAY_POPUP,
+				'BDAY_POPUP_ENABLED' => ( $birthday_greeting == NUKE_BIRTHDAY_POPUP ) ? ' checked="checked"' : '',
 /*****[END]********************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
@@ -2447,15 +2447,15 @@ else
 		if ( $board_config['bday_greeting'] != 0 )
 		{
 			$template->assign_block_vars('birthdays_greeting',array());
-			if ($board_config['bday_greeting'] & (1<<(BIRTHDAY_EMAIL-1)))
+			if ($board_config['bday_greeting'] & (1<<(NUKE_BIRTHDAY_EMAIL-1)))
 			{
 				$template->assign_block_vars('birthdays_greeting.birthdays_email',array());
 			}
-			if ($board_config['bday_greeting'] & (1<<(BIRTHDAY_PM-1)))
+			if ($board_config['bday_greeting'] & (1<<(NUKE_BIRTHDAY_PM-1)))
 			{
 				$template->assign_block_vars('birthdays_greeting.birthdays_pm',array());
 			}
-			if ($board_config['bday_greeting'] & (1<<(BIRTHDAY_POPUP-1)))
+			if ($board_config['bday_greeting'] & (1<<(NUKE_BIRTHDAY_POPUP-1)))
 			{
 				$template->assign_block_vars('birthdays_greeting.birthdays_popup',array());
 			}

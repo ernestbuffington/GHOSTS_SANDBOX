@@ -28,7 +28,7 @@
  ************************************************************************/
  if(!defined('NUKE_EVO')) exit;
 
-       global $db, 
+       global $nuke_db, 
 		   $admin, 
 		    $user, 
 	      $prefix, 
@@ -41,7 +41,7 @@
       $userpoints, 
              $uid;
 			 
-      global $user_prefix, $def_module, $currentlang, $cache;			 
+      global $nuke_user_prefix, $def_module, $currentlang, $cache;			 
 
 
 if(file_exists(NUKE_LANGUAGE_DIR.'Menu/lang-'.$currentlang.'.php')) 
@@ -67,8 +67,8 @@ $div=0;
 if(!($row = $cache->load('menu_row', 'block'))) 
 {
   $sql="SELECT t1.invisible, t2.main_module FROM ".$prefix."_menu AS t1, ".$prefix."_main AS t2 LIMIT 1";
-  $result = $db->sql_query($sql);
-  $row = $db->sql_fetchrow($result);
+  $result = $nuke_db->sql_query($sql);
+  $row = $nuke_db->sql_fetchrow($result);
   $cache->save('menu_row', 'block', $row);
 }
 /*****[END]********************************************
@@ -97,7 +97,7 @@ $imgnew="new.gif";
 if(($is_user == 1) && ($detectPM == 1))
 {
   $uid=intval($uid); 
-  $newpms = $db->sql_fetchrow($db->sql_query("SELECT COUNT(*) FROM " . $prefix . "_bbprivmsgs 
+  $newpms = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT COUNT(*) FROM " . $prefix . "_bbprivmsgs 
   WHERE privmsgs_to_userid='$uid' AND (privmsgs_type='5' OR privmsgs_type='1')")); 
 }
 
@@ -107,9 +107,9 @@ if(($is_user == 1) && ($detectPM == 1))
    else
      $sql = "SELECT * FROM ".$prefix."_modules WHERE active='1' AND inmenu='1' AND `title` NOT LIKE '~l~%' ORDER BY custom_title ASC";   
    
-   $modulesaffiche = $db->sql_query($sql);
+   $modulesaffiche = $nuke_db->sql_query($sql);
 
-   while($tempo = $db->sql_fetchrow($modulesaffiche)) 
+   while($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) 
    {
         $tempoA[] = $tempo;
     }
@@ -163,9 +163,9 @@ if (!($row2A = $cache->load('menu_row2', 'block')))
 					new_days, 
 					   class, bold FROM ".$prefix."_menu_categories ORDER BY id ASC";
 
-    $result2 = $db->sql_query($sql2);
+    $result2 = $nuke_db->sql_query($sql2);
 
-    while($row2 = $db->sql_fetchrow($result2)) 
+    while($row2 = $nuke_db->sql_fetchrow($result2)) 
 	{
         $row2A[] = $row2;
     } 
@@ -226,8 +226,8 @@ $sql="SELECT t1.invisible,
                t1.dynamic, 
 		   t2.main_module FROM ".$prefix."_menu AS t1, ".$prefix."_main AS t2 WHERE t1.groupmenu=99 limit 1";
 
-         $result = $db->sql_query($sql);
-            $row = $db->sql_fetchrow($result);
+         $result = $nuke_db->sql_query($sql);
+            $row = $nuke_db->sql_fetchrow($result);
     $main_module = $row['main_module'];
 $general_dynamic = ($row['dynamic'] == 'on') ? 1 : 0 ;
  $type_invisible = $row['invisible'];
@@ -240,10 +240,10 @@ $managment_group = 0;
 # this is the start of the Portal menu
 $sql = "SELECT * FROM ".$prefix."_modules WHERE active='1' AND inmenu='1' ORDER BY custom_title ASC";
 	
-$modulesaffiche = $db->sql_query($sql);
+$modulesaffiche = $nuke_db->sql_query($sql);
   $menu_counter = 0;
 	
-	while ($tempo = $db->sql_fetchrow($modulesaffiche)) 
+	while ($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) 
 	{
 		   $module[$menu_counter] = $tempo['title'];
 	  $customtitle[$menu_counter] = (stripslashes($tempo['custom_title'])); //strip the fucking slashes
@@ -280,7 +280,7 @@ $modulesaffiche = $db->sql_query($sql);
 						
 						FROM ".$prefix."_menu_categories ORDER BY id ASC";
 						
-	$result2 = $db->sql_query($sql2);
+	$result2 = $nuke_db->sql_query($sql2);
 	
 	 $menu_counter = 0;
 	$totalcompteur = 0;
@@ -290,7 +290,7 @@ $modulesaffiche = $db->sql_query($sql);
 	
 	$now=time(); 
 	
-	while ($row2 = $db->sql_fetchrow($result2)) 
+	while ($row2 = $nuke_db->sql_fetchrow($result2)) 
 	{
 	   if(strpos($row2['days'],'8')!== false || $now<$row2['date_debut'] || ($row2['date_fin'] > 0 && $now>$row2['date_fin'])) 
 	   {
@@ -561,7 +561,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 # MAIN MENU 
 	$dynamictest=0;
 	
-	global $prefix, $db;
+	global $prefix, $nuke_db;
 
     $sql = "SELECT groupmenu, 
 	                    name, 
@@ -582,7 +582,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 	
 	FROM ".$prefix."_menu ORDER BY groupmenu ASC";
     
-	$result = $db->sql_query($sql);
+	$result = $nuke_db->sql_query($sql);
 	
 	global $textcolor1,
 	       $textcolor2,
@@ -602,7 +602,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 	
     list($portaladminname, 
 	              $avatar, 
-				   $email) = $db->sql_ufetchrow("SELECT `username`,`user_avatar`, `user_email` FROM `".$prefix."_users` WHERE `user_id`='$portaladmin'", SQL_NUM);
+				   $email) = $nuke_db->sql_ufetchrow("SELECT `username`,`user_avatar`, `user_email` FROM `".$prefix."_users` WHERE `user_id`='$portaladmin'", SQL_NUM);
 
     $content .= "\n\n\n";
 	
@@ -644,7 +644,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 	
 	$classpointeur = 0;
     
-	while ($row = $db->sql_fetchrow($result)) 
+	while ($row = $nuke_db->sql_fetchrow($result)) 
 	{  
 		                $som_groupmenu = $row['groupmenu'];
 		                     $som_name = str_replace("&amp;nbsp;","&nbsp;",$row['name']); 
@@ -1318,8 +1318,8 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				{
 				    $where = (preg_match("/^cid=[0-9]*$/",$temponomdumodule[2])) ? " WHERE $temponomdumodule[2]" : "";
 					$sqlimgnew = "SELECT date FROM ".$prefix."_nsngd_downloads".$where." order by date desc limit 1";
-					$resultimgnew = $db->sql_query($sqlimgnew);
-					$rowimgnew = $db->sql_fetchrow($resultimgnew);
+					$resultimgnew = $nuke_db->sql_query($sqlimgnew);
+					$rowimgnew = $nuke_db->sql_fetchrow($resultimgnew);
 				
 					if($rowimgnew['date']) 
 					{
@@ -1338,8 +1338,8 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				{
                     $where = (preg_match("/^cid=[0-9]*$/",$temponomdumodule[2])) ? " WHERE $temponomdumodule[2]" : "";
                     $sqlimgnew = "SELECT date FROM ".$prefix."_links_links".$where." ORDER BY date DESC LIMIT 1";
-                    $resultimgnew = $db->sql_query($sqlimgnew);
-                    $rowimgnew = $db->sql_fetchrow($resultimgnew);
+                    $resultimgnew = $nuke_db->sql_query($sqlimgnew);
+                    $rowimgnew = $nuke_db->sql_fetchrow($resultimgnew);
                 
 				    if ($rowimgnew['date']) 
 					{
@@ -1358,8 +1358,8 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				{
 				    $where = (preg_match("/^cid=[0-9]*$/",$temponomdumodule[2])) ? " WHERE $temponomdumodule[2]" : "";
 					$sqlimgnew="SELECT date FROM ".$prefix."_pages".$where." order by date desc limit 1";
-					$resultimgnew=$db->sql_query($sqlimgnew);
-					$rowimgnew = $db->sql_fetchrow($resultimgnew);
+					$resultimgnew=$nuke_db->sql_query($sqlimgnew);
+					$rowimgnew = $nuke_db->sql_fetchrow($resultimgnew);
 				
 					if($rowimgnew['date']) 
 					{
@@ -1378,8 +1378,8 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				{
 					$where = "";
 					$sqlimgnew="SELECT date FROM ".$prefix."_reviews".$where." order by date desc limit 1";
-					$resultimgnew=$db->sql_query($sqlimgnew);
-					$rowimgnew = $db->sql_fetchrow($resultimgnew);
+					$resultimgnew=$nuke_db->sql_query($sqlimgnew);
+					$rowimgnew = $nuke_db->sql_fetchrow($resultimgnew);
 				
 					if($rowimgnew['date']) 
 					{
@@ -1396,15 +1396,15 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				else # News module
 				if($nomdumodule == "Blog" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") 
 				{
-				    global $db, $prefix;
+				    global $nuke_db, $prefix;
 					
 				    $where = (preg_match("/^cid=[0-9]*$/",$temponomdumodule[2])) ? " WHERE ".str_replace("new_","",$temponomdumodule[1])."" : "";
 				
 					$sqlimgnew="SELECT datePublished FROM ".$prefix."_stories".$where." order by datePublished desc limit 1";
 				
-					$resultimgnew=$db->sql_query($sqlimgnew);
+					$resultimgnew=$nuke_db->sql_query($sqlimgnew);
 				
-					$rowimgnew = $db->sql_fetchrow($resultimgnew);
+					$rowimgnew = $nuke_db->sql_fetchrow($resultimgnew);
 				
 					if($rowimgnew['datePublished']) 
 					{
@@ -1421,15 +1421,15 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				else # Blog module
 				if($nomdumodule == "Blog" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") 
 				{
-				    global $db, $prefix;
+				    global $nuke_db, $prefix;
 					
 					$where = (preg_match("/^new_topic=[0-9]*$/",$temponomdumodule[1])) ? " WHERE ".str_replace("new_","",$temponomdumodule[1])."" : "";
 
 					$sqlimgnew="SELECT datePublished FROM ".$prefix."_stories".$where." order by datePublished desc limit 1";
 				
-					$resultimgnew=$db->sql_query($sqlimgnew);
+					$resultimgnew=$nuke_db->sql_query($sqlimgnew);
 				
-					$rowimgnew = $db->sql_fetchrow($resultimgnew);
+					$rowimgnew = $nuke_db->sql_fetchrow($resultimgnew);
 				
 					if($rowimgnew['datePublished']) 
 					{
@@ -1702,9 +1702,9 @@ if( $showadmin==1 && $is_admin===1 && $horizontal!=1)
 	."<select name=\"somlistboxinvisibles\" onchange=\"menu_listbox(this.options[this.selectedIndex].value)\">"
 	."<option value=\"select\">"._MENU_SELECTALINK."";
 	$sql = "SELECT * FROM ".$prefix."_modules WHERE active='1' AND inmenu='0' ORDER BY title ASC";
-	$result = $db->sql_query($sql);
+	$result = $nuke_db->sql_query($sql);
 	
-	while ($row = $db->sql_fetchrow($result)) 
+	while ($row = $nuke_db->sql_fetchrow($result)) 
 	{
 		$module[$key]=$row['title'];
 		$mn_title = $row['title'];
@@ -1724,9 +1724,9 @@ if( $showadmin==1 && $is_admin===1 && $horizontal!=1)
 				."<option value=\"select\">"._MENU_SELECTALINK."";
 	
 	$sql = "SELECT title, custom_title FROM ".$prefix."_modules WHERE active='0' ORDER BY title ASC";
-	$result = $db->sql_query($sql);
+	$result = $nuke_db->sql_query($sql);
 
-	while ($row = $db->sql_fetchrow($result)) 
+	while ($row = $nuke_db->sql_fetchrow($result)) 
 	{
 		$module[$key]=$row['title'];
 		$key++;
@@ -1778,13 +1778,13 @@ if( $showadmin==1 && $is_admin===1 && $horizontal!=1)
 	    if($modlist[$i] != "") 
 		{
 			$sql = "SELECT mid FROM ".$prefix."_modules WHERE title='$modlist[$i]'";
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
+			$result = $nuke_db->sql_query($sql);
+			$row = $nuke_db->sql_fetchrow($result);
 			$mid = $row['mid'];
 		
 			if($mid == "") 
 			{
-			    $db->sql_query("INSERT INTO ".$prefix."_modules (mid, title, custom_title, active, view, inmenu) VALUES (NULL, '$modlist[$i]', '$modlist[$i]', '0', '0', '1')");
+			    $nuke_db->sql_query("INSERT INTO ".$prefix."_modules (mid, title, custom_title, active, view, inmenu) VALUES (NULL, '$modlist[$i]', '$modlist[$i]', '0', '0', '1')");
 			}
 	    }
 	}
@@ -1792,7 +1792,7 @@ if( $showadmin==1 && $is_admin===1 && $horizontal!=1)
 
 function menu_is_user($user, $managment_group) 
 {
-    global $prefix, $db, $uid, $userpoints;
+    global $prefix, $nuke_db, $uid, $userpoints;
 
     if(!is_array($user)) 
 	{
@@ -1828,9 +1828,9 @@ function menu_is_user($user, $managment_group)
 		  die("There Seems To Be A problem!!");
 		}
         
-		$result = $db->sql_query($sql);
+		$result = $nuke_db->sql_query($sql);
         
-		$row = $db->sql_fetchrow($result);
+		$row = $nuke_db->sql_fetchrow($result);
         
 		$pass = $row['user_password'];
         

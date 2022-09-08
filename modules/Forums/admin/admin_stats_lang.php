@@ -24,7 +24,7 @@
 *
 ***************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 //
 // Let's set the root dir for phpBB
@@ -70,14 +70,14 @@ include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 
 $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
 }
 
 $stats_config = array();
 
-while ($row = $db->sql_fetchrow($result))
+while ($row = $nuke_db->sql_fetchrow($result))
 {
     $stats_config[$row['config_name']] = trim($row['config_value']);
 }
@@ -103,7 +103,7 @@ if (($new_lang_submit) && ($new_language != ''))
 {
     if (!strstr($new_language, 'lang_'))
     {
-        message_die(GENERAL_MESSAGE, 'Please specify a valid Language to be created');
+        message_die(NUKE_GENERAL_MESSAGE, 'Please specify a valid Language to be created');
     }
 
     $installed_languages = get_all_installed_languages();
@@ -112,7 +112,7 @@ if (($new_lang_submit) && ($new_language != ''))
     {
         if (in_array($new_language, $installed_languages))
         {
-            message_die(GENERAL_MESSAGE, 'The Language ' . $new_language . ' already exist.');
+            message_die(NUKE_GENERAL_MESSAGE, 'The Language ' . $new_language . ' already exist.');
         }
 
         if (in_array('lang_english', $installed_languages))
@@ -234,12 +234,12 @@ if ($mode == 'select')
 
     $sql = "SELECT m.*, i.* FROM " . MODULES_TABLE . " m, " . MODULE_INFO_TABLE . " i WHERE i.module_id = m.module_id";
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
     }
 
-    $modules = $db->sql_fetchrowset($result);
+    $modules = $nuke_db->sql_fetchrowset($result);
 
     for ($i = 0; $i < count($provided_languages); $i++)
     {
@@ -290,7 +290,7 @@ if ($mode == 'select')
         
         if ($language == '')
         {
-            message_die(GENERAL_MESSAGE, 'Invalid Call, Hacking Attempt ?');
+            message_die(NUKE_GENERAL_MESSAGE, 'Invalid Call, Hacking Attempt ?');
         }
         
         $current_modules = array();

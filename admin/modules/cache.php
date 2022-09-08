@@ -24,7 +24,7 @@ if (!defined('ADMIN_FILE'))
 die ("Illegal File Access");
 
 define('CACHE_ADMIN', true);
-global $prefix, $db, $evoconfig;
+global $prefix, $nuke_db, $evoconfig;
 
 function cache_header() 
 {
@@ -196,30 +196,30 @@ function delete_cache($file, $name) {
             if ($cache->delete($file, $name)) {
                 echo "<center>\n";
                 echo "<strong>" . _CACHE_FILE_DELETE_SUCC . "</strong><br /><br />\n";
-                redirect("$admin_file.php?op=cache");
+                nuke_redirect("$admin_file.php?op=cache");
                 echo "</center>\n";
             } else {
                 echo "<center>\n";
                 echo "<strong>" . _CACHE_FILE_DELETE_FAIL . "</strong><br /><br />\n";
-                redirect("$admin_file.php?op=cache");
+                nuke_redirect("$admin_file.php?op=cache");
                 echo "</center>\n";
             }
     } elseif (empty($file) && (!empty($name))) {
             if ($cache->delete('', $name)) {
                 echo "<center>\n";
                 echo "<strong>" . _CACHE_CAT_DELETE_SUCC . "</strong><br /><br />\n";
-                redirect("$admin_file.php?op=cache");
+                nuke_redirect("$admin_file.php?op=cache");
                 echo "</center>\n";
             } else {
                 echo "<center>\n";
                 echo "<strong>" . _CACHE_CAT_DELETE_FAIL . "</strong><br /><br />\n";
-                redirect("$admin_file.php?op=cache");
+                nuke_redirect("$admin_file.php?op=cache");
                 echo "</center>\n";
             }
     } else {
             echo "<center>\n";
             echo "<strong>" . _CACHE_INVALID . "</strong><br /><br />\n";
-            redirect("$admin_file.php?op=cache");
+            nuke_redirect("$admin_file.php?op=cache");
             echo "</center>\n";
     }
     CloseTable();
@@ -251,22 +251,22 @@ function cache_view($file, $name) {
 }
 
 function clear_cache() {
-    global $db, $prefix, $admin_file, $cache;
+    global $nuke_db, $prefix, $admin_file, $cache;
     
     OpenTable();
     
     if ($cache->clear()) {
         // Update the last cleared time stamp
-        $db->sql_query("UPDATE `" . $prefix . "_evolution` SET evo_value='" . time() . "' WHERE evo_field='cache_last_cleared'");
+        $nuke_db->sql_query("UPDATE `" . $prefix . "_evolution` SET evo_value='" . time() . "' WHERE evo_field='cache_last_cleared'");
         
         echo "<center>\n";
         echo "<strong>" . _CACHE_CLEARED_SUCC . "</strong><br /><br />\n";
-        redirect("$admin_file.php?op=cache");
+        nuke_redirect("$admin_file.php?op=cache");
         echo "</center>\n";
     } else {
         echo "<center>\n";
         echo "<strong>" . _CACHE_CLEARED_FAIL . "</strong><br /><br />\n";
-        redirect("$admin_file.php?op=cache");
+        nuke_redirect("$admin_file.php?op=cache");
         echo "</center>\n";
     }
     
@@ -274,22 +274,22 @@ function clear_cache() {
 }
 
 function usrclearcache($opt) {
-    global $prefix, $db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $cache;
     $opt = intval($opt);
     if($opt == 1 || $opt == 0) {
-        $db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='" . $opt . "' WHERE evo_field='usrclearcache'");
+        $nuke_db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='" . $opt . "' WHERE evo_field='usrclearcache'");
         $cache->delete('evoconfig');
         OpenTable();
             echo "<center>\n";
             echo "<strong>" . _CACHE_PREF_UPDATED_SUCC . "</strong><br /><br />\n";
-            redirect("$admin_file.php?op=cache");
+            nuke_redirect("$admin_file.php?op=cache");
             echo "</center>\n";
         CloseTable();
     } else {
         OpenTable();
             echo "<center>\n";
             echo "<strong>" . _CACHE_INVALID . "</strong><br /><br />\n";
-            redirect("$admin_file.php?op=cache");
+            nuke_redirect("$admin_file.php?op=cache");
             echo "</center>\n";
         CloseTable();
     }
@@ -301,7 +301,7 @@ function howto_enable_cache() {
         echo "<center>\n";
         echo "<strong>" . _CACHE_ENABLE_HOW . "</strong><br />";
         echo "<br />\n";
-        redirect("$admin_file.php?op=cache");
+        nuke_redirect("$admin_file.php?op=cache");
         echo "</center>\n";
     CloseTable();
 }

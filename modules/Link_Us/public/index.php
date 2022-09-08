@@ -50,7 +50,7 @@ echo '<br />';
 
 if ($config['button_standard'] == 1){
     $num = 0;
-    $result = $db->sql_query("SELECT `id`, 
+    $result = $nuke_db->sql_query("SELECT `id`, 
 	                          `site_name`, 
 							   `site_url`, 
 							 `site_image`, 
@@ -59,7 +59,7 @@ if ($config['button_standard'] == 1){
 							`site_status`, 
 							 `date_added` FROM `".$prefix."_link_us` WHERE `site_status` = '1' AND `button_type` = '1'");
     
-	$numrows = $db->sql_numrows($result);
+	$numrows = $nuke_db->sql_numrows($result);
 
     if($numrows == 0)
 	{
@@ -71,7 +71,7 @@ if ($config['button_standard'] == 1){
 		{
             echo "<table border='0' cellpadding='2' cellspacing='5' width='100%'>";
         
-		    while(list($id, $site_name, $site_url, $site_image, $site_description, $site_hits, $site_status, $date_added) = $db->sql_fetchrow($result)) 
+		    while(list($id, $site_name, $site_url, $site_image, $site_description, $site_hits, $site_status, $date_added) = $nuke_db->sql_fetchrow($result)) 
 			{
 
                 if ($num == 0) { echo "<tr>"; }
@@ -127,7 +127,7 @@ if ($config['button_standard'] == 1){
                 $num++;
                 if ($num == 2) { echo "</tr>"; $num = 0; }
             }
-            $db->sql_freeresult($result);
+            $nuke_db->sql_freeresult($result);
             if ($num ==1) { echo "<td width='50%'>&nbsp;</td></tr></table>"; } else { echo "</tr></table>"; }
         }
     }
@@ -135,7 +135,7 @@ if ($config['button_standard'] == 1){
 
 if ($config['button_banner'] == 1){
     $num = 0;
-    $result = $db->sql_query("SELECT `id`, 
+    $result = $nuke_db->sql_query("SELECT `id`, 
 	                          `site_name`, 
 							   `site_url`, 
 							 `site_image`, 
@@ -144,7 +144,7 @@ if ($config['button_banner'] == 1){
 							`site_status`, 
 							 `date_added` FROM `".$prefix."_link_us` WHERE `site_status` = '1' AND `button_type` = '2'");
     
-	$numrows = $db->sql_numrows($result);
+	$numrows = $nuke_db->sql_numrows($result);
 
     if ($numrows > 0) {
         echo "<br /><br />";
@@ -153,7 +153,7 @@ if ($config['button_banner'] == 1){
 
         echo "</table>";
         echo "<table border='0' cellpadding='2' cellspacing='5' width='100%'>";
-        while(list($id, $site_name, $site_url, $site_image, $site_description, $site_hits, $site_status, $date_added) = $db->sql_fetchrow($result)) {
+        while(list($id, $site_name, $site_url, $site_image, $site_description, $site_hits, $site_status, $date_added) = $nuke_db->sql_fetchrow($result)) {
             if ($num == 0) { echo "<tr>"; }
             echo "<td width='50%' valign='top'>";
             OpenTable();
@@ -177,15 +177,15 @@ if ($config['button_banner'] == 1){
             $num++;
             if ($num == 1) { echo "</tr>"; $num = 0; }
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         if ($num ==1) { echo "<td width='50%'>&nbsp;</td></tr></table>"; } else { echo "</tr></table>"; }
     }
 }
 
 if ($config['button_resource'] == 1){
     $num = 0;
-    $result = $db->sql_query("SELECT `id`, `site_name`, `site_url`, `site_image`, `site_description`, `site_hits`, `site_status`, `date_added` FROM `".$prefix."_link_us` WHERE `site_status` = '1' AND `button_type` = '3'");
-    $numrows = $db->sql_numrows($result);
+    $result = $nuke_db->sql_query("SELECT `id`, `site_name`, `site_url`, `site_image`, `site_description`, `site_hits`, `site_status`, `date_added` FROM `".$prefix."_link_us` WHERE `site_status` = '1' AND `button_type` = '3'");
+    $numrows = $nuke_db->sql_numrows($result);
 
     if ($numrows > 0) {
         echo "<br /><br />";
@@ -193,7 +193,7 @@ if ($config['button_resource'] == 1){
         echo "<tr><th width='100%'>".$lang_new[$module_name]['RESOURCES']."</th></tr>";
         echo "</table>";
         echo "<table border='0' cellpadding='2' cellspacing='5' width='100%'>";
-        while(list($id, $site_name, $site_url, $site_image, $site_description, $site_hits, $site_status, $date_added) = $db->sql_fetchrow($result)) {
+        while(list($id, $site_name, $site_url, $site_image, $site_description, $site_hits, $site_status, $date_added) = $nuke_db->sql_fetchrow($result)) {
             if ($num == 0) { echo "<tr>"; }
             echo "<td width='25%' valign='top'>";
             OpenTable();
@@ -218,7 +218,7 @@ if ($config['button_resource'] == 1){
             $num++;
             if ($num == 4) { echo "</tr>"; $num = 0; }
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         if ($num == 1) { echo "<td width='25%'>&nbsp;</td></tr></table>"; } else { echo "</tr></table>"; }
     }
 }

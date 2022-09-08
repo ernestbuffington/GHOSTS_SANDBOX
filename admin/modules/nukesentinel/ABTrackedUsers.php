@@ -9,7 +9,7 @@
 /* By: NukeScripts Network (webmaster@nukescripts.net)  */
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2008 by NukeScripts Network       */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 $pagetitle = _AB_NUKESENTINEL.": "._AB_TRACKEDUSERS;
@@ -42,7 +42,7 @@ if(preg_match("#All(.*)Modules#", $showmodule) || !$showmodule ) {
 } else {
   $modfilter="WHERE page LIKE '%name=$showmodule%'";
 }
-$totalselected = $db->sql_numrows($db->sql_query("SELECT `username`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 1"));
+$totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT `username`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 1"));
 if($totalselected > 0) {
   $selcolumn3 = $selcolumn4 = $selcolumn5 = $seldirection1 = $seldirection2='';
   echo "<table summary='' width='100%' cellpadding='2' cellspacing='2' bgcolor='$bgcolor2' border='0'>\n";
@@ -110,8 +110,8 @@ if($totalselected > 0) {
   echo "<td align='center'><strong>"._AB_LASTVIEWED."</strong></td>\n";
   echo "<td align='center'><strong>"._AB_HITS."</strong></td>\n";
   echo "<td align='center'><strong>"._AB_FUNCTIONS."</strong></td>\n</tr>\n";
-  $result = $db->sql_query("SELECT `user_id`, `username`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 2 ORDER BY $column $direction LIMIT $min, $perpage");
-  while(list($userid,$username,$lastview,$hits) = $db->sql_fetchrow($result)){
+  $result = $nuke_db->sql_query("SELECT `user_id`, `username`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 2 ORDER BY $column $direction LIMIT $min, $perpage");
+  while(list($userid,$username,$lastview,$hits) = $nuke_db->sql_fetchrow($result)){
     echo "<tr onmouseover=\"this.style.backgroundColor='$bgcolor2'\" onmouseout=\"this.style.backgroundColor='$bgcolor1'\" bgcolor='$bgcolor1'>";
     echo "<td>";
     if($userid != 1) {
@@ -121,7 +121,7 @@ if($totalselected > 0) {
       echo "$anonymous";
     }
     echo "</td>";
-    $trackedips = $db->sql_numrows($db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$userid'"));
+    $trackedips = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$userid'"));
     echo "<td align='center'><a href='".$admin_file.".php?op=ABTrackedUsersIPs&amp;user_id=$userid' target='_blank'>$trackedips</a></td>\n";
     echo "<td align='center'>".date("Y-m-d \@ H:i:s",$lastview)."</td>";
     echo "<td align='center'>$hits</td>";

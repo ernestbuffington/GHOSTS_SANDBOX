@@ -8,16 +8,16 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if(!defined('NUKE_EVO')) exit;
 
-global $db, $prefix, $ab_config, $currentlang;
+global $nuke_db, $prefix, $ab_config, $currentlang;
 
 function block_Sentinel_Center_cache($block_cachetime) 
 {
-    global $db, $prefix, $cache;
+    global $nuke_db, $prefix, $cache;
     if ((($blockcache = cache_load('sentinel_center', 'blocks')) === false) || empty($blockcache) || intval($blockcache[0]['stat_created']) < (time() - intval($block_cachetime))) {
         $result = dburow('SELECT COUNT(ip_addr) AS `count` FROM `'.$prefix.'_nsnst_blocked_ips`');
         $blockcache[1]['count'] = $result['count'];

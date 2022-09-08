@@ -7,18 +7,18 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://www.nukescripts.net)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if(!defined('NUKE_EVO')) exit;
 
-global $block_title, $db, $prefix, $ab_config, $currentlang;
+global $block_title, $nuke_db, $prefix, $ab_config, $currentlang;
 
 $block_title = 'NukeSentinel Security';
 $content = '';
-$result = $db->sql_query('SELECT `reason` FROM `'.$prefix.'_nsnst_blocked_ips`');
-$total_ips = $db->sql_numrows($result);
-$db->sql_freeresult($result);
+$result = $nuke_db->sql_query('SELECT `reason` FROM `'.$prefix.'_nsnst_blocked_ips`');
+$total_ips = $nuke_db->sql_numrows($result);
+$nuke_db->sql_freeresult($result);
 
 $total_ips+=109729; 
 

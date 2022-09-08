@@ -1,6 +1,6 @@
 <script language="Javascript" type="text/javascript">
     //
-    // Taking from the Attachment MOD of Acyd Burn
+    // Taking from the Attachment NUKE_MOD of Acyd Burn
     //
     function select(status)
     {

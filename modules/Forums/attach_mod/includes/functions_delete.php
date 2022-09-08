@@ -22,7 +22,7 @@
 */
 function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, $user_id = 0)
 {
-    global $db;
+    global $nuke_db;
 
     // Generate Array, if it's not an array
     if ($post_id_array === 0 && $attach_id_array === 0 && $page === 0)
@@ -53,7 +53,7 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
         }
     
         // Get the post_ids to fill the array
-        if ($page == PAGE_PRIVMSGS)
+        if ($page == NUKE_PAGE_PRIVMSGS)
         {
             $p_id = 'privmsgs_id';
         }
@@ -67,24 +67,24 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
                 WHERE attach_id IN (' . implode(', ', $attach_id_array) . ")
             GROUP BY $p_id";
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Could not select ids', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not select ids', '', __LINE__, __FILE__, $sql);
         }
 
-        $num_post_list = $db->sql_numrows($result);
+        $num_post_list = $nuke_db->sql_numrows($result);
 
         if ($num_post_list == 0)
         {
-            $db->sql_freeresult($result);
+            $nuke_db->sql_freeresult($result);
             return;
         }
 
-        while ($row = $db->sql_fetchrow($result))
+        while ($row = $nuke_db->sql_fetchrow($result))
         {
             $post_id_array[] = intval($row[$p_id]);
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
     }
         
     if (!is_array($post_id_array))
@@ -122,7 +122,7 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
         $attach_id_array = array();
 
         // Get the attach_ids to fill the array
-        if ($page == PAGE_PRIVMSGS)
+        if ($page == NUKE_PAGE_PRIVMSGS)
         {
             $whereclause = 'WHERE privmsgs_id IN (' . implode(', ', $post_id_array) . ')';
         }
@@ -135,24 +135,24 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
             FROM ' . ATTACHMENTS_TABLE . " $whereclause 
             GROUP BY attach_id";
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Could not select Attachment Ids', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Could not select Attachment Ids', '', __LINE__, __FILE__, $sql);
         }
 
-        $num_attach_list = $db->sql_numrows($result);
+        $num_attach_list = $nuke_db->sql_numrows($result);
 
         if ($num_attach_list == 0)
         {
-            $db->sql_freeresult($result);
+            $nuke_db->sql_freeresult($result);
             return;
         }
 
-        while ($row = $db->sql_fetchrow($result))
+        while ($row = $nuke_db->sql_fetchrow($result))
         {
             $attach_id_array[] = (int) $row['attach_id'];
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
     }
     
     if (!is_array($attach_id_array))
@@ -179,7 +179,7 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
         return;
     }
 
-    if ($page == PAGE_PRIVMSGS)
+    if ($page == NUKE_PAGE_PRIVMSGS)
     {
         $sql_id = 'privmsgs_id';
         if ($user_id)
@@ -187,39 +187,39 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
             $post_id_array_2 = array();
 
             $sql = 'SELECT privmsgs_id, privmsgs_type, privmsgs_to_userid, privmsgs_from_userid
-                FROM ' . PRIVMSGS_TABLE . '
+                FROM ' . NUKE_PRIVMSGS_TABLE . '
                 WHERE privmsgs_id IN (' . implode(', ', $post_id_array) . ')';
-            if ( !($result = $db->sql_query($sql)) )
+            if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_ERROR, 'Couldn\'t get Privmsgs Type', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Couldn\'t get Privmsgs Type', '', __LINE__, __FILE__, $sql);
             }
 
-            while ($row = $db->sql_fetchrow($result))
+            while ($row = $nuke_db->sql_fetchrow($result))
             {
                 $privmsgs_type = $row['privmsgs_type'];
                                 
-                if ($privmsgs_type == PRIVMSGS_READ_MAIL || $privmsgs_type == PRIVMSGS_NEW_MAIL || $privmsgs_type == PRIVMSGS_UNREAD_MAIL)
+                if ($privmsgs_type == NUKE_PRIVMSGS_READ_MAIL || $privmsgs_type == NUKE_PRIVMSGS_NEW_MAIL || $privmsgs_type == NUKE_PRIVMSGS_UNREAD_MAIL)
                 {
                     if ($row['privmsgs_to_userid'] == $user_id)
                     {
                         $post_id_array_2[] = $row['privmsgs_id'];
                     }
                 }
-                else if ($privmsgs_type == PRIVMSGS_SENT_MAIL)
+                else if ($privmsgs_type == NUKE_PRIVMSGS_SENT_MAIL)
                 {
                     if ($row['privmsgs_from_userid'] == $user_id)
                     {
                         $post_id_array_2[] = $row['privmsgs_id'];
                     }
                 }
-                else if ($privmsgs_type == PRIVMSGS_SAVED_OUT_MAIL)
+                else if ($privmsgs_type == NUKE_PRIVMSGS_SAVED_OUT_MAIL)
                 {
                     if ($row['privmsgs_from_userid'] == $user_id)
                     {
                         $post_id_array_2[] = $row['privmsgs_id'];
                     }
                 }
-                else if ($privmsgs_type == PRIVMSGS_SAVED_IN_MAIL)
+                else if ($privmsgs_type == NUKE_PRIVMSGS_SAVED_IN_MAIL)
                 {
                     if ($row['privmsgs_to_userid'] == $user_id)
                     {
@@ -227,7 +227,7 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
                     }
                 }
             }
-            $db->sql_freeresult($result);
+            $nuke_db->sql_freeresult($result);
             $post_id_array = $post_id_array_2;
         }
     }
@@ -242,9 +242,9 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
             WHERE attach_id IN (' . implode(', ', $attach_id_array) . ") 
                 AND $sql_id IN (" . implode(', ', $post_id_array) . ')';
 
-        if ( !($db->sql_query($sql)) )   
+        if ( !($nuke_db->sql_query($sql)) )   
         {
-            message_die(GENERAL_ERROR, $lang['Error_deleted_attachments'], '', __LINE__, __FILE__, $sql);   
+            message_die(NUKE_GENERAL_ERROR, $lang['Error_deleted_attachments'], '', __LINE__, __FILE__, $sql);   
         } 
     
 		for ($i = 0; $i < sizeof($attach_id_array); $i++)
@@ -253,13 +253,13 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
                 FROM ' . ATTACHMENTS_TABLE . ' 
                     WHERE attach_id = ' . (int) $attach_id_array[$i];
             
-            if ( !($result = $db->sql_query($sql)) )
+            if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_ERROR, 'Could not select Attachment Ids', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not select Attachment Ids', '', __LINE__, __FILE__, $sql);
             }
             
-            $num_rows = $db->sql_numrows($result);
-            $db->sql_freeresult($result);
+            $num_rows = $nuke_db->sql_numrows($result);
+            $nuke_db->sql_freeresult($result);
 
             if ($num_rows == 0)
             {
@@ -267,18 +267,18 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
                     FROM ' . ATTACHMENTS_DESC_TABLE . '
                     WHERE attach_id = ' . (int) $attach_id_array[$i];
     
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, 'Couldn\'t query attach description table', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query attach description table', '', __LINE__, __FILE__, $sql);
                 }
                 
-                $num_rows = $db->sql_numrows($result);
+                $num_rows = $nuke_db->sql_numrows($result);
 
                 if ($num_rows != 0)
                 {
                     $num_attach = $num_rows;
-                    $attachments = $db->sql_fetchrowset($result);
-                    $db->sql_freeresult($result);
+                    $attachments = $nuke_db->sql_fetchrowset($result);
+                    $nuke_db->sql_freeresult($result);
 
                     // delete attachments
                     for ($j = 0; $j < $num_attach; $j++)
@@ -293,22 +293,22 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
                         $sql = 'DELETE FROM ' . ATTACHMENTS_DESC_TABLE . '
                             WHERE attach_id = ' . (int) $attachments[$j]['attach_id'];
 
-                        if ( !($db->sql_query($sql)) )
+                        if ( !($nuke_db->sql_query($sql)) )
                         {
-                            message_die(GENERAL_ERROR, $lang['Error_deleted_attachments'], '', __LINE__, __FILE__, $sql);
+                            message_die(NUKE_GENERAL_ERROR, $lang['Error_deleted_attachments'], '', __LINE__, __FILE__, $sql);
                         }
                     }
                 }
                 else
                 {
-                    $db->sql_freeresult($result);
+                    $nuke_db->sql_freeresult($result);
                 }
             }
         }
     }
 
     // Now Sync the Topic/PM
-    if ($page == PAGE_PRIVMSGS)
+    if ($page == NUKE_PAGE_PRIVMSGS)
     {
 		for ($i = 0; $i < sizeof($post_id_array); $i++)
         {
@@ -316,22 +316,22 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
                 FROM ' . ATTACHMENTS_TABLE . ' 
                 WHERE privmsgs_id = ' . (int) $post_id_array[$i];
 
-            if ( !($result = $db->sql_query($sql)) )
+            if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_ERROR, 'Couldn\'t query Attachments Table', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query Attachments Table', '', __LINE__, __FILE__, $sql);
             }
             
-            $num_rows = $db->sql_numrows($result);
-            $db->sql_freeresult($result);
+            $num_rows = $nuke_db->sql_numrows($result);
+            $nuke_db->sql_freeresult($result);
 
             if ($num_rows == 0)
             {
-                $sql = 'UPDATE ' . PRIVMSGS_TABLE . ' SET privmsgs_attachment = 0 
+                $sql = 'UPDATE ' . NUKE_PRIVMSGS_TABLE . ' SET privmsgs_attachment = 0 
                     WHERE privmsgs_id = ' . $post_id_array[$i];
 
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, 'Couldn\'t update Private Message Attachment Switch', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Couldn\'t update Private Message Attachment Switch', '', __LINE__, __FILE__, $sql);
                 }
             }
         }
@@ -341,20 +341,20 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
 		if (sizeof($post_id_array))
         {
             $sql = 'SELECT topic_id 
-                FROM ' . POSTS_TABLE . ' 
+                FROM ' . NUKE_POSTS_TABLE . ' 
                 WHERE post_id IN (' . implode(', ', $post_id_array) . ') 
                 GROUP BY topic_id';
         
-            if ( !($result = $db->sql_query($sql)) )
+            if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_ERROR, 'Couldn\'t select Topic ID', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Couldn\'t select Topic ID', '', __LINE__, __FILE__, $sql);
             }
     
-            while ($row = $db->sql_fetchrow($result))
+            while ($row = $nuke_db->sql_fetchrow($result))
             {
                 attachment_sync_topic($row['topic_id']);
             }
-            $db->sql_freeresult($result);
+            $nuke_db->sql_freeresult($result);
         }
     }
 }

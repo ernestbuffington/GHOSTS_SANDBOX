@@ -76,7 +76,7 @@ if ( !$result ) { //Bad SQL call
 
 } else { //Successful SQL call
 
-	$row = $db->sql_fetchrow( $result ); 
+	$row = $nuke_db->sql_fetchrow( $result ); 
 
 	$msnl_iCnt	= intval( $row['msnl_cnt'] );
 
@@ -108,7 +108,7 @@ if ( !$result1 ) { //Bad SQL call
 	echo "<input type='hidden' name='msnl_cid' value='$msnl_iCID'>\n";
 	echo "</div>\n";
 
-	$row1 = $db->sql_fetchrow( $result1 ); 
+	$row1 = $nuke_db->sql_fetchrow( $result1 ); 
 
 	$msnl_asRec['ctitle']						= stripslashes( check_html( $row1['ctitle'], "nohtml" ) );
 	$msnl_asRec['cdescription']			= stripslashes( check_html( $row1['cdescription'], "nohtml" ) );

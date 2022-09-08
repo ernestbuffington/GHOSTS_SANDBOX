@@ -38,7 +38,7 @@
 	  Birthdays                                v3.0.0
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
 	die('Hacking attempt');
 }
@@ -74,7 +74,7 @@ function user_avatar_delete($avatar_type, $avatar_file)
 		global $board_config, $userdata;
 	$avatar_file = basename($avatar_file);
 
-		if ( $avatar_type == USER_AVATAR_UPLOAD && !empty($avatar_file) )
+		if ( $avatar_type == NUKE_USER_AVATAR_UPLOAD && !empty($avatar_file) )
 		{
 				if ( @file_exists(@phpbb_realpath('./' . $board_config['avatar_path'] . '/' . $avatar_file)) )
 				{
@@ -82,7 +82,7 @@ function user_avatar_delete($avatar_type, $avatar_file)
 				}
 		}
 
-		return ", user_avatar = '', user_avatar_type = " . USER_AVATAR_NONE;
+		return ", user_avatar = '', user_avatar_type = " . NUKE_USER_AVATAR_NONE;
 }
 
 function user_avatar_gallery($mode, &$error, &$error_msg, $avatar_filename, $avatar_category)
@@ -104,7 +104,7 @@ function user_avatar_gallery($mode, &$error, &$error_msg, $avatar_filename, $ava
 
 	if ( file_exists(@phpbb_realpath($board_config['avatar_gallery_path'] . '/' . $avatar_category . '/' . $avatar_filename)) && ($mode == 'editprofile') )
 	{
-		$return = ", user_avatar = '" . str_replace("\'", "''", $avatar_category . '/' . $avatar_filename) . "', user_avatar_type = " . USER_AVATAR_GALLERY;
+		$return = ", user_avatar = '" . str_replace("\'", "''", $avatar_category . '/' . $avatar_filename) . "', user_avatar_type = " . NUKE_USER_AVATAR_GALLERY;
 	}
 	else
 	{
@@ -131,7 +131,7 @@ function user_avatar_url($mode, &$error, &$error_msg, $avatar_filename)
 				return;
 		}
 
-		return ( $mode == 'editprofile' ) ? ", user_avatar = '" . str_replace("\'", "''", $avatar_filename) . "', user_avatar_type = " . USER_AVATAR_REMOTE : '';
+		return ( $mode == 'editprofile' ) ? ", user_avatar = '" . str_replace("\'", "''", $avatar_filename) . "', user_avatar_type = " . NUKE_USER_AVATAR_REMOTE : '';
 
 }
 
@@ -188,7 +188,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 			// if ( $avatar_image[0] > 0 && $avatar_image[1] > 0 && $avatar_image[0] <= $board_config['avatar_max_width'] && $avatar_image[1] <= $board_config['avatar_max_height'] ):
 			if ( $avatar_image[0] > 0 && $avatar_image[1] > 0 && $avatar_image[0] <= $board_config['avatar_max_width'] && $avatar_image[1] <= $board_config['avatar_max_height'] && in_array($imageMime, $allowedAvatarTypes) ):
 
-				if ( $mode == 'editprofile' && $current_type == USER_AVATAR_UPLOAD && !empty($current_avatar) )
+				if ( $mode == 'editprofile' && $current_type == NUKE_USER_AVATAR_UPLOAD && !empty($current_avatar) )
 				{
 					user_avatar_delete($current_type, $current_avatar);
 				}
@@ -208,13 +208,13 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 
 			if (!is_uploaded_file($avatar_filename))
 			{
-				message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
+				message_die(NUKE_GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
 			}
 
 			move_uploaded_file($avatar_filename, trailingslashit($board_config['avatar_path']).$new_filename);
 
 		endif;
-		$avatar_sql = ( $mode == 'editprofile' ) ? ", user_avatar = '$new_filename', user_avatar_type = " . USER_AVATAR_UPLOAD : "'$new_filename', " . USER_AVATAR_UPLOAD;
+		$avatar_sql = ( $mode == 'editprofile' ) ? ", user_avatar = '$new_filename', user_avatar_type = " . NUKE_USER_AVATAR_UPLOAD : "'$new_filename', " . NUKE_USER_AVATAR_UPLOAD;
 	}
 	else
 	{
@@ -258,7 +258,7 @@ function display_avatar_gallery($mode, $category, $user_id, $email, $current_ema
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
 {
-		global $board_config, $db, $template, $lang, $images, $theme, $phpbb2_root_path, $phpEx, $userdata;
+		global $board_config, $nuke_db, $template, $lang, $images, $theme, $phpbb2_root_path, $phpEx, $userdata;
 
 		$dir = @opendir($board_config['avatar_gallery_path']);
 

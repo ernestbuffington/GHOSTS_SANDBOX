@@ -173,7 +173,7 @@ define("_STAFF","Staff");
 define("_THANKSBROKEN","Thank you for helping to maintain this directory's integrity.");
 define("_THANKSFORINFO","Thanks for the information.");
 define("_LOOKTOREQUEST","We'll look into your request shortly.");
-define("_ONLYREGUSERSMODIFY","Only registered users can suggest links modifications. Please <a href=\"modules.php?name=Your_Account\">register or login</a>.");
+define("_ONLYREGUSERSMODIFY","Only registered members can suggest links modifications. Please <a href=\"modules.php?name=Your_Account\">register or login</a>.");
 define("_REQUESTLINKMOD","Request Link Modification");
 define("_LINKID","Link ID");
 define("_SENDREQUEST","Send Request");

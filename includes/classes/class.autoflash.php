@@ -24,7 +24,7 @@
 
 class swfheader {
 
-	var $debug ;				// Output DEBUG info
+	var $debug ;				// Output NUKE_DEBUG info
 	var $fname ;				// SWF file analyzed
 	var $magic ;				// Magic in a SWF file (FWS or CWS)
 	var $compressed ;		    // Flag to indicate a compressed file (CWS)
@@ -61,7 +61,7 @@ class swfheader {
 		$this->frames = 0;
 		$this->fps[] = Array() ;
 		
-		if ($this->debug) echo "DEBUG: Data values initialized<br>" ;
+		if ($this->debug) echo "NUKE_DEBUG: Data values initialized<br>" ;
 	  }
 
 	//---------------------------------------------------------------------------
@@ -71,30 +71,30 @@ class swfheader {
 		$this->fname = $filename ;
 		$fp = @fopen($filename,"rb") ;
 		if ($fp) {
-			if ($this->debug) echo "DEBUG: Opened " . $this->fname . "<br>" ;
+			if ($this->debug) echo "NUKE_DEBUG: Opened " . $this->fname . "<br>" ;
 			// Read MAGIC FIELD
 			$this->magic = fread($fp,3) ;
 			if ($this->magic!="FWS" && $this->magic!="CWS") {
-				if ($this->debug) echo "DEBUG: " . $this->fname . " is not a valid/supported SWF file<br>" ;
+				if ($this->debug) echo "NUKE_DEBUG: " . $this->fname . " is not a valid/supported SWF file<br>" ;
 				$this->valid =  0 ;
 			} else {
 				// Compression
 				if (substr($this->magic,0,1)=="C") $this->compressed = true ;
 				else $this->compressed = false ;
-				if ($this->debug) echo "DEBUG: Read MAGIC signature: " . $this->magic . "<br>" ;
+				if ($this->debug) echo "NUKE_DEBUG: Read MAGIC signature: " . $this->magic . "<br>" ;
 				// Version
 				$this->version = ord(fread($fp,1)) ;
-				if ($this->debug) echo "DEBUG: Read VERSION: " . $this->version . "<br>" ;
+				if ($this->debug) echo "NUKE_DEBUG: Read VERSION: " . $this->version . "<br>" ;
 				// Size
 				$lg = 0 ;
 				// 4 LSB-MSB
 				for ($i=0;$i<4;$i++) {
 					$t = ord(fread($fp,1)) ;
-					if ($this->debug) echo "DEBUG: Partial SIZE read: " . ($t<<(8*$i)) . "<br>" ;
+					if ($this->debug) echo "NUKE_DEBUG: Partial SIZE read: " . ($t<<(8*$i)) . "<br>" ;
 					$lg += ($t<<(8*$i)) ;
 					}
 				$this->size = $lg ;
-				if ($this->debug) echo "DEBUG: Total SIZE: " . $this->size . "<br>" ;
+				if ($this->debug) echo "NUKE_DEBUG: Total SIZE: " . $this->size . "<br>" ;
 				// RECT... we will "simulate" a stream from now on... read remaining file
 				$buffer = fread($fp,$this->size) ;
 				if ($this->compressed) {
@@ -105,7 +105,7 @@ class swfheader {
 				$buffer = substr($buffer,1) ;
 				$cbyte 	= $b ;
 				$bits 	= $b>>3 ;
-				if ($this->debug) echo "DEBUG: RECT field size: " . $bits . " bits<br>" ;
+				if ($this->debug) echo "NUKE_DEBUG: RECT field size: " . $bits . " bits<br>" ;
 				$cval 	= "" ;
 				// Current byte
 				$cbyte &= 7 ;
@@ -136,7 +136,7 @@ class swfheader {
 					$c 		= 1 ;
 					$val 	= 0 ;
 					// Reverse string to allow for SUM(2^n*$atom)
-					if ($this->debug) echo "DEBUG: RECT binary value: " . $cval  ;
+					if ($this->debug) echo "NUKE_DEBUG: RECT binary value: " . $cval  ;
 					$tval = strrev($cval) ;
 					for ($n=0;$n<strlen($tval);$n++) {
 						$atom = substr($tval,$n,1) ;
@@ -172,7 +172,7 @@ class swfheader {
 					$buffer = substr($buffer,1) ;
 					$this->fps[] = $t ;
 					}
-				if ($this->debug) echo "DEBUG: Frame rate: " . $this->fps[1] . "." . $this->fps[0] . "<br>" ;
+				if ($this->debug) echo "NUKE_DEBUG: Frame rate: " . $this->fps[1] . "." . $this->fps[0] . "<br>" ;
 				// Frames
 				$this->frames = 0 ;
 				for ($i=0;$i<2;$i++) {
@@ -180,14 +180,14 @@ class swfheader {
 					$buffer = substr($buffer,1) ;
 					$this->frames += ($t<<(8*$i)) ;
 					}
-				if ($this->debug) echo "DEBUG: Frames: " . $this->frames . "<br>" ;
+				if ($this->debug) echo "NUKE_DEBUG: Frames: " . $this->frames . "<br>" ;
 				fclose($fp) ;
-				if ($this->debug) echo "DEBUG: Finished processing " . $this->fname . "<br>" ;
+				if ($this->debug) echo "NUKE_DEBUG: Finished processing " . $this->fname . "<br>" ;
 				$this->valid =  1 ;
 	  		}
 		} else {
 			$this->valid = 0 ;
-			if ($this->debug) echo "DEBUG: Failed to open " . $this->fname . "<br>" ;
+			if ($this->debug) echo "NUKE_DEBUG: Failed to open " . $this->fname . "<br>" ;
 		  }
 		return $this->valid ;
 	  }

@@ -40,7 +40,7 @@ define('INDEX_FILE', true);
 
 $topics = 1;
 automated_news();
-if ($topic == 0 OR empty($topic)) { redirect("modules.php?name=$module_name"); }
+if ($topic == 0 OR empty($topic)) { nuke_redirect("modules.php?name=$module_name"); }
 
 switch ($op) {
 
@@ -68,15 +68,15 @@ switch ($op) {
             echo "//  End -->\n";
             echo "</script>\n";
         }
-        $db->sql_query("UPDATE ".$prefix."_topics SET counter=counter+1 WHERE topicid='$topic'");
-        $result = $db->sql_query("SELECT * FROM ".$prefix."_stories WHERE topic='$topic' $querylang");
-        $totalarticles = $db->sql_numrows($result);
-        $result = $db->sql_query("SELECT * FROM ".$prefix."_stories WHERE topic='$topic' $querylang ORDER BY sid DESC LIMIT $min,$storynum");
+        $nuke_db->sql_query("UPDATE ".$prefix."_topics SET counter=counter+1 WHERE topicid='$topic'");
+        $result = $nuke_db->sql_query("SELECT * FROM ".$prefix."_stories WHERE topic='$topic' $querylang");
+        $totalarticles = $nuke_db->sql_numrows($result);
+        $result = $nuke_db->sql_query("SELECT * FROM ".$prefix."_stories WHERE topic='$topic' $querylang ORDER BY sid DESC LIMIT $min,$storynum");
         if($neconfig["columns"] == 1) { // DUAL
             echo "<table border='0' cellpadding='0' cellspacing='0' width='100%'>\n";
         }
         $a = 0;
-        while ($artinfo = $db->sql_fetchrow($result)) {
+        while ($artinfo = $nuke_db->sql_fetchrow($result)) {
             formatTimestamp($artinfo["time"]);
             $subject = stripslashes(check_html($subject, "nohtml"));
             $artinfo["hometext"] = decode_bbcode(set_smilies(stripslashes($artinfo["hometext"])), 1, true);
@@ -167,8 +167,8 @@ switch ($op) {
             $morelink .= "$the_icons";
             $sid = $artinfo["sid"];
             if ($artinfo["catid"] != 0) {
-                $result3 = $db->sql_query("SELECT title FROM ".$prefix."_stories_cat WHERE catid='".$artinfo["catid"]."'");
-                $catinfo = $db->sql_fetchrow($result3);
+                $result3 = $nuke_db->sql_query("SELECT title FROM ".$prefix."_stories_cat WHERE catid='".$artinfo["catid"]."'");
+                $catinfo = $nuke_db->sql_fetchrow($result3);
                 $morelink .= " | <a href='modules.php?name=$module_name&amp;file=categories&amp;op=newindex&amp;catid=".$artinfo["catid"]."'>".$catinfo["title"]."</a>";
             }
             if ($artinfo["score"] != 0) {
@@ -201,7 +201,7 @@ switch ($op) {
  ******************************************************/
             }
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         if($neconfig["columns"] == 1) { // DUAL
             if ($a ==1) { echo "<td width='50%'>&nbsp;</td></tr>\n"; } else { echo "</tr>\n"; }
             echo "</table>\n";

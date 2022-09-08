@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -16,7 +16,7 @@ if (!defined('NUKESENTINEL_ADMIN')) {
 }
 
 if(!get_magic_quotes_runtime()) { $string = addslashes($string); }
-$testnum1 = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_strings` WHERE `string`='".$string."' AND `sid`!='".$sid."'"));
+$testnum1 = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_strings` WHERE `string`='".$string."' AND `sid`!='".$sid."'"));
 if($testnum1 > 0) {
   include_once(NUKE_BASE_DIR.'header.php');
   OpenTable();
@@ -48,8 +48,8 @@ if($testnum1 > 0) {
   CloseTable();
   include_once(NUKE_BASE_DIR.'footer.php');
 } else {
-  $getIPs = $db->sql_fetchrow($db->sql_query("SELECT * FROM `".$prefix."_nsnst_strings` WHERE `sid`='".$sid."' LIMIT 0,1"));
-  $db->sql_query("UPDATE `".$prefix."_nsnst_strings` SET `string`='".$string."' WHERE `sid`='".$sid."'");
+  $getIPs = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_strings` WHERE `sid`='".$sid."' LIMIT 0,1"));
+  $nuke_db->sql_query("UPDATE `".$prefix."_nsnst_strings` SET `string`='".$string."' WHERE `sid`='".$sid."'");
   $list_string = explode("\r\n", $ab_config['list_string']);
   $list_string = str_replace($getIPs['string'], $string, $list_string);
   rsort($list_string);

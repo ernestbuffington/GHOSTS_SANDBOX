@@ -31,7 +31,7 @@
 
 	global $userinfo, $identify;
 
-	list($uid, $name, $email) = $db->sql_fetchrow($db->sql_query("SELECT `user_id`, `username`, `user_email`, `user_website` FROM `".$prefix."_users` WHERE `username`='".$userinfo['username']."'"));
+	list($uid, $name, $email) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `user_id`, `username`, `user_email`, `user_website` FROM `".$prefix."_users` WHERE `username`='".$userinfo['username']."'"));
 	$ip = $identify->get_ip();
 
 	OpenTable();

@@ -8,7 +8,7 @@
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2005 by NukeScripts Network       */
 /********************************************************/
-global $db2;
+global $network_db;
 if(!defined('SUPPORT_NETWORK')) { die("Illegal Access Detected!!!"); }
 $report_id = intval($report_id);
 $report = pjreport_info($report_id);

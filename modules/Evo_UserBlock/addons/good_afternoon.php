@@ -29,8 +29,8 @@ function evouserinfo_create_date($format, $gmepoch, $tz)
     
 	static $translate;
     
-    if (!defined('ANONYMOUS')) {
-        define('ANONYMOUS', 1);
+    if (!defined('NUKE_ANONYMOUS')) {
+        define('NUKE_ANONYMOUS', 1);
         define('MANUAL', 0);
         define('MANUAL_DST', 1);
         define('SERVER_SWITCH', 2);
@@ -50,7 +50,7 @@ function evouserinfo_create_date($format, $gmepoch, $tz)
     }
 
 
-    if ( $userdata['user_id'] != ANONYMOUS )
+    if ( $userdata['user_id'] != NUKE_ANONYMOUS )
     {
         switch ( $userdata['user_time_mode'] )
         {

@@ -15,7 +15,7 @@ if (!defined('IN_FILE_REPOSITORY'))
 
 function _file_repository_extensions ()
 {
-	global $db, $admin_file, $lang_new, $module_name, $settings;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings;
 	_admin_navigation_menu ();
 	echo '<table style="width: 100%;" border="0" cellpadding="4" cellspacing="1" class="forumline">'."\n";
 	echo '  <tr'._bgColor(2).'>'."\n";
@@ -31,9 +31,9 @@ function _file_repository_extensions ()
 	echo '  </tr>';
 
 	$sql = "SELECT `eid`, `extension`, `file`, `image` FROM `"._FILE_REPOSITORY_EXTENSIONS."` ORDER BY `eid` ASC";
-	$result = $db->sql_query($sql);
+	$result = $nuke_db->sql_query($sql);
 	$count = 1;
-	while( $row = $db->sql_fetchrow($result) ):
+	while( $row = $nuke_db->sql_fetchrow($result) ):
 
 		echo '  <tr'._bgColor(1).'>';
 		echo '    <td'._tdcss(FALSE,'center',_sc()).'>'.$count.'</td>';
@@ -45,7 +45,7 @@ function _file_repository_extensions ()
 		$count++;
 
 	endwhile;
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 
 	echo '  <tr'._bgColor(2).'>'."\n";
 	echo '    <td'._tdcss(FALSE,'center',_sf(),5).'>&nbsp;</td>'."\n";

@@ -1,9 +1,9 @@
 <table width="100%" cellspacing="0" cellpadding="4" border="0" align="center">
    <tr>
       <td width="100%" colspan="2" valign="top">
-      <!-- MOD GLANCE BEGIN -->
+      <!-- NUKE_MOD GLANCE BEGIN -->
       {GLANCE_OUTPUT}
-      <!-- MOD GLANCE END -->
+      <!-- NUKE_MOD GLANCE END -->
    </tr>
 </table>
 <form method="post" action="{S_POST_DAYS_ACTION}">
@@ -86,10 +86,10 @@
           <td width="20" align="center"><img src="{FOLDER_IMG}" alt="{L_NO_NEW_POSTS}" /></td>
           <td class="gensmall">{L_NO_NEW_POSTS}</td>
           <td>&nbsp;&nbsp;</td>
-          <!-- Start replacement - Global announcement MOD -->
+          <!-- Start replacement - Global announcement NUKE_MOD -->
           <td width="20" align="center"><img src="{FOLDER_GLOBAL_ANNOUNCE_IMG}" alt="{L_GLOBAL_ANNOUNCEMENT}" /></td>
           <td class="gensmall">{L_GLOBAL_ANNOUNCEMENT}</td>
-          <!-- End replacement - Global announcement MOD -->
+          <!-- End replacement - Global announcement NUKE_MOD -->
         </tr>
         <tr>
           <td width="20" align="center"><img src="{FOLDER_HOT_NEW_IMG}" alt="{L_NEW_POSTS_HOT}" /></td>
@@ -98,10 +98,10 @@
           <td width="20" align="center"><img src="{FOLDER_HOT_IMG}" alt="{L_NO_NEW_POSTS_HOT}" /></td>
           <td class="gensmall">{L_NO_NEW_POSTS_HOT}</td>
           <td>&nbsp;&nbsp;</td>
-          <!-- Start replacement - Global announcement MOD -->
+          <!-- Start replacement - Global announcement NUKE_MOD -->
           <td width="20" align="center"><img src="{FOLDER_ANNOUNCE_IMG}" alt="{L_ANNOUNCEMENT}" /></td>
           <td class="gensmall">{L_ANNOUNCEMENT}</td>
-          <!-- End replacement - Global announcement MOD -->
+          <!-- End replacement - Global announcement NUKE_MOD -->
         </tr>
         <tr>
           <td width="20" align="center"><img src="{FOLDER_LOCKED_NEW_IMG}" alt="{L_NEW_POSTS_LOCKED}" /></td>
@@ -109,11 +109,11 @@
           <td>&nbsp;&nbsp;</td>
           <td width="20" align="center"><img src="{FOLDER_LOCKED_IMG}" alt="{L_NO_NEW_POSTS_LOCKED}" /></td>
           <td class="gensmall">{L_NO_NEW_POSTS_LOCKED}</td>
-          <!-- Start add - Global announcement MOD -->
+          <!-- Start add - Global announcement NUKE_MOD -->
           <td>&nbsp;&nbsp;</td>
           <td width="20" align="center"><img src="{FOLDER_STICKY_IMG}" alt="{L_STICKY}" /></td>
           <td class="gensmall">{L_STICKY}</td>
-          <!-- End add - Global announcement MOD -->
+          <!-- End add - Global announcement NUKE_MOD -->
         </tr>
         </table></td>
         <td align="right"><span class="gensmall">{S_AUTH_LIST}</span></td>

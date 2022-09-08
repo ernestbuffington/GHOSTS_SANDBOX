@@ -9,7 +9,7 @@
 /* By: NukeScripts Network (webmaster@nukescripts.net)  */
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2008 by NukeScripts Network       */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n";
@@ -24,10 +24,10 @@ echo "<h1 align='center'>$pagetitle</h1>\n";
 if(!$column or $column=="") $column = "date";
 if(!$direction or $direction=="") $direction = "desc";
 $tid=intval($tid);
-$totalselected = $db->sql_numrows($db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$user_id'"));
+$totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$user_id'"));
 if($totalselected > 0) {
-  $result = $db->sql_query("SELECT `ip_long` FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$user_id' AND `ip_addr`='$ip_addr' LIMIT 0,1");
-  list($ip_long) = $db->sql_fetchrow($result);
+  $result = $nuke_db->sql_query("SELECT `ip_long` FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$user_id' AND `ip_addr`='$ip_addr' LIMIT 0,1");
+  list($ip_long) = $nuke_db->sql_fetchrow($result);
   # default values if none set
   echo "<center><strong>$ip_addr ($ip_long)</strong></center><br />";
   echo "<table summary='' align='center' cellpadding='2' cellspacing='2' border='2'>\n";
@@ -56,14 +56,14 @@ if($totalselected > 0) {
   echo "<tr>";
   echo "<td width='70%'><strong>"._AB_PAGEVIEWED."</strong></td>";
   echo "<td width='30%'><strong>"._AB_HITDATE."</strong></td>";
-  $result = $db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$user_id' ORDER BY $column $direction");
-  while(list($ltid, $page,$date_time) = $db->sql_fetchrow($result)){
+  $result = $nuke_db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$user_id' ORDER BY $column $direction");
+  while(list($ltid, $page,$date_time) = $nuke_db->sql_fetchrow($result)){
     echo "<tr>\n";
     echo "<td><a href=\"$page\">$page</a></td>\n";
     echo "<td>".date("Y-m-d \@ H:i:s",$date_time)."</td>\n";
     echo "</tr>\n";
   }
-  $db->sql_freeresult($result);
+  $nuke_db->sql_freeresult($result);
   echo "</table>";
   // End Page Stats
 } else {

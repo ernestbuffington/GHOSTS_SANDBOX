@@ -8,7 +8,7 @@
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2005 by NukeScripts Network       */
 /********************************************************/
-global $db2;
+global $network_db;
 if(!defined('SUPPORT_NETWORK')) { die("Illegal Access Detected!!!"); }
 $project_id = intval($project_id);
 $project = pjproject_info($project_id);
@@ -31,15 +31,15 @@ if($project['allowreports'] > 0) {
   echo "<tr><td align='center' colspan='2' class='title'>"._NETWORK_INPUTNOTE."</td></tr>\n";
   echo "<tr><td bgcolor='$bgcolor2'>"._NETWORK_PROJECT.":</td>\n";
   echo "<td><select name='project_id'>\n";
-  $projectlist = $db2->sql_query("SELECT `project_id`, `project_name` FROM `".$network_prefix."_projects` ORDER BY `project_name`");
-  while(list($s_project_id, $s_project_name) = $db2->sql_fetchrow($projectlist)){
+  $projectlist = $network_db->sql_query("SELECT `project_id`, `project_name` FROM `".$network_prefix."_projects` ORDER BY `project_name`");
+  while(list($s_project_id, $s_project_name) = $network_db->sql_fetchrow($projectlist)){
     if($s_project_id == $project_id){ $sel = "selected"; } else { $sel = ""; }
     echo "<option value='$s_project_id' $sel>$s_project_name</option>\n";
   }
   echo "</select></td></tr>\n";        
   echo "<tr><td bgcolor='$bgcolor2'>"._NETWORK_TYPE.":</td><td><select name='type_id'>\n";
-  $typelist = $db2->sql_query("SELECT `type_id`, `type_name` FROM `".$network_prefix."_reports_types` ORDER BY `type_name`");
-  while(list($s_type_id, $s_type_name) = $db2->sql_fetchrow($typelist)){
+  $typelist = $network_db->sql_query("SELECT `type_id`, `type_name` FROM `".$network_prefix."_reports_types` ORDER BY `type_name`");
+  while(list($s_type_id, $s_type_name) = $network_db->sql_fetchrow($typelist)){
     if($s_type_id == $type_id){ $sel = "selected"; } else { $sel = ""; }
     echo "<option value='$s_type_id' $sel>$s_type_name</option>\n";
   }

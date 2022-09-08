@@ -59,12 +59,8 @@ global $theme_name;
 
 echo "\n\n/* Universal/css/body.php Fly Kit for PHP-Nuke Titanium - Design Themes On The Fly */\n"; 
 echo "/* When we are done we will move this code to style.css */\n\n"; 
-
 global $screen_width, $screen_height, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4;
-
 ?>
-
-
 /*---------------------------------------------------------------*/
 /* Full Screen Video Background v1.0                             */
 /*                                                               */
@@ -115,11 +111,6 @@ top right,                   /* this positions the first image - TheGhost add 8/
 bottom left;                 /* this positions the second image - TheGhost add 8/2/2019 */
 background-repeat:
 no-repeat;                   /* this applies to both images - TheGhost add 8/2/2019 */ 
-}
-
-body7 {
-background: url(<?php echo BODY_BACKGROUND; ?>);
-<?php echo BODY_CONTAIN; ?>
 }
 <?
 

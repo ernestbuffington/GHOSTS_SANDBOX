@@ -18,7 +18,7 @@ require_once('mainfile.php');
 
 if(is_mod_admin($module_name)) 
 {
-	global $db, $admin_file, $currentlang, $userinfo;
+	global $nuke_db, $admin_file, $currentlang, $userinfo;
 //-------------------------------------------------------------------------
 //  INCLUDE THE LANGUAGE FILE FOR THE MODULE.
 //-------------------------------------------------------------------------
@@ -34,7 +34,7 @@ if(is_mod_admin($module_name))
 		OpenTable();
 	endif;
 //-------------------------------------------------------------------------
-//	GLOBALISE THE SETTINGS THROUGHT THE ADMIN PANEL
+//	GLOBALISE THE SETTINGS THROUGHT THE NUKE_ADMIN PANEL
 //-------------------------------------------------------------------------
 	// $settings = _settings();
 //-------------------------------------------------------------------------
@@ -84,10 +84,10 @@ if(is_mod_admin($module_name))
 else
 {
 //---------------------------------------------------------------------
-//	IF THE PERSON TRYING TO ACCESS THIS FILE IS NOT AN ADMIN,
+//	IF THE PERSON TRYING TO ACCESS THIS FILE IS NOT AN NUKE_ADMIN,
 //	REDIRECT THEM BACK THE MAIN INDEX, JUST GET RID OF THEM LOL.
 //---------------------------------------------------------------------
-	_redirect('modules.php?name='.$module_name);
+	_nuke_redirect('modules.php?name='.$module_name);
 //---------------------------------------------------------------------
 }
 

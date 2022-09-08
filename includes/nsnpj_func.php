@@ -17,7 +17,7 @@
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
     exit('Access Denied');
 }
-global $db2;
+global $network_db;
 define('NETWORK_SUPPORT_FUNC', true);
 // Load required scripts
 
@@ -39,10 +39,10 @@ else
 function pjget_configs()
 {
   if(defined('network')):
-  global $network_prefix, $db2;
-  $configresult = $db2->sql_query("SELECT `config_name`, `config_value` FROM `".$network_prefix."_config`");
+  global $network_prefix, $network_db;
+  $configresult = $network_db->sql_query("SELECT `config_name`, `config_value` FROM `".$network_prefix."_config`");
   
-  while(list($config_name, $config_value) = $db2->sql_fetchrow($configresult)) 
+  while(list($config_name, $config_value) = $network_db->sql_fetchrow($configresult)) 
   {
     $config[$config_name] = $config_value;
   }
@@ -155,73 +155,73 @@ function pjprogress($percent) {
 }
 
 function pjmember_info($member_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $member_id = intval($member_id);
-  $member = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_members` WHERE `member_id`='$member_id'"));
+  $member = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_members` WHERE `member_id`='$member_id'"));
   return $member;
 }
 
 function pjmemberposition_info($position_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $position_id = intval($position_id);
-  $position = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_members_positions` WHERE `position_id`='$position_id'"));
+  $position = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_members_positions` WHERE `position_id`='$position_id'"));
   return $position;
 }
 
 function pjproject_info($project_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $project_id = intval($project_id);
-  $project = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_projects` WHERE `project_id`='$project_id'"));
+  $project = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_projects` WHERE `project_id`='$project_id'"));
   return $project;
 }
 
 function pjprojectpriority_info($priority_id)
 {
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $priority_id = intval($priority_id);
-  $priority = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_projects_priorities` WHERE `priority_id`='$priority_id'"));
+  $priority = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_projects_priorities` WHERE `priority_id`='$priority_id'"));
   return $priority;
 }
 
 function pjprojectstatus_info($status_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $status_id = intval($status_id);
-  $status = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_projects_status` WHERE `status_id`='$status_id'"));
+  $status = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_projects_status` WHERE `status_id`='$status_id'"));
   return $status;
 }
 
 function pjtask_info($task_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $task_id = intval($task_id);
-  $task = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_tasks` WHERE `task_id`='$task_id'"));
+  $task = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_tasks` WHERE `task_id`='$task_id'"));
   return $task;
 }
 
 function pjtaskpriority_info($priority_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $priority_id = intval($priority_id);
-  $priority = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_tasks_priorities` WHERE `priority_id`='$priority_id'"));
+  $priority = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_tasks_priorities` WHERE `priority_id`='$priority_id'"));
   return $priority;
 }
 
 function pjtaskstatus_info($status_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $status_id = intval($status_id);
-  $status = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_tasks_status` WHERE `status_id`='$status_id'"));
+  $status = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_tasks_status` WHERE `status_id`='$status_id'"));
   return $status;
 }
 
 function pjprojectpercent_info($project_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $project_id = intval($project_id);
-  $project = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_projects` WHERE `project_id`='$project_id'"));
-  $percentresult = $db2->sql_query("SELECT `task_percent`, `priority_id` FROM `".$network_prefix."_tasks` WHERE `project_id`='$project_id'");
-  $percentnumber = $db2->sql_numrows($percentresult);
+  $project = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_projects` WHERE `project_id`='$project_id'"));
+  $percentresult = $network_db->sql_query("SELECT `task_percent`, `priority_id` FROM `".$network_prefix."_tasks` WHERE `project_id`='$project_id'");
+  $percentnumber = $network_db->sql_numrows($percentresult);
   if($project['project_percent'] == 0 AND $percentnumber > 0) 
   {
     $percentoverall = $percentfactor = 0;
   
-    while(list($task_percent, $priority_id) = $db2->sql_fetchrow($percentresult)) 
+    while(list($task_percent, $priority_id) = $network_db->sql_fetchrow($percentresult)) 
 	{
       $taskpriority = pjtaskpriority_info($priority_id);
     
@@ -249,20 +249,20 @@ function pjencode_email($email_address){
 
 function pjsave_config($config_name, $config_value)
 {
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   
-  $resultnum = $db2->sql_numrows($db2->sql_query("SELECT * FROM `".$network_prefix."_config` WHERE `config_name`='$config_name'"));
+  $resultnum = $network_db->sql_numrows($network_db->sql_query("SELECT * FROM `".$network_prefix."_config` WHERE `config_name`='$config_name'"));
   
   if($resultnum < 1) 
   {
-    $db2->sql_query("INSERT INTO `".$network_prefix."_config` (`config_name`, `config_value`) VALUES ('$config_name', '$config_value')");
+    $network_db->sql_query("INSERT INTO `".$network_prefix."_config` (`config_name`, `config_value`) VALUES ('$config_name', '$config_value')");
   } 
   else 
   {
-    $db2->sql_query("UPDATE `".$network_prefix."_config` SET `config_value`='$config_value' WHERE `config_name`='$config_name'");
+    $network_db->sql_query("UPDATE `".$network_prefix."_config` SET `config_value`='$config_value' WHERE `config_name`='$config_name'");
   }
    
-   $db2->sql_query("OPTIMIZE TABLE `".$network_prefix."_config`");
+   $network_db->sql_query("OPTIMIZE TABLE `".$network_prefix."_config`");
 }
 
 function pjunhtmlentities($string) {
@@ -272,60 +272,60 @@ function pjunhtmlentities($string) {
 }
 
 function pjreport_info($report_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $report_id = intval($report_id);
-  $report = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_reports` WHERE `report_id`='$report_id'"));
+  $report = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_reports` WHERE `report_id`='$report_id'"));
   return $report;
 }
 
 function pjreportcomment_info($comment_id)
 {
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $comment_id = intval($comment_id);
-  $reportcomment = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_reports_comments` WHERE `comment_id`='$comment_id'"));
+  $reportcomment = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_reports_comments` WHERE `comment_id`='$comment_id'"));
   return $reportcomment;
 }
 
 function pjreportstatus_info($status_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $status_id = intval($status_id);
-  $reportstatus = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_reports_status` WHERE `status_id`='$status_id'"));
+  $reportstatus = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_reports_status` WHERE `status_id`='$status_id'"));
   return $reportstatus;
 }
 
 function pjreporttype_info($type_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $type_id = intval($type_id);
-  $reporttype = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_reports_types` WHERE `type_id`='$type_id'"));
+  $reporttype = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_reports_types` WHERE `type_id`='$type_id'"));
   return $reporttype;
 }
 
 function pjrequest_info($request_id)
 {
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $request_id = intval($request_id);
-  $request = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_requests` WHERE `request_id`='$request_id'"));
+  $request = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_requests` WHERE `request_id`='$request_id'"));
   return $request;
 }
 
 function pjrequestcomment_info($comment_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $comment_id = intval($comment_id);
-  $requestcomment = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_requests_comments` WHERE `comment_id`='$comment_id'"));
+  $requestcomment = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_requests_comments` WHERE `comment_id`='$comment_id'"));
   return $requestcomment;
 }
 
 function pjrequeststatus_info($status_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $status_id = intval($status_id);
-  $requeststatus = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_requests_status` WHERE `status_id`='$status_id'"));
+  $requeststatus = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_requests_status` WHERE `status_id`='$status_id'"));
   return $requeststatus;
 }
 
 function pjrequesttype_info($type_id){
-  global $network_prefix, $db2;
+  global $network_prefix, $network_db;
   $type_id = intval($type_id);
-  $requesttype = $db2->sql_fetchrow($db2->sql_query("SELECT * FROM `".$network_prefix."_requests_types` WHERE `type_id`='$type_id'"));
+  $requesttype = $network_db->sql_fetchrow($network_db->sql_query("SELECT * FROM `".$network_prefix."_requests_types` WHERE `type_id`='$type_id'"));
   return $requesttype;
 }
 

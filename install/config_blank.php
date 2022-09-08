@@ -19,39 +19,39 @@
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
     exit('Access Denied');
 }
-
+global $nuke_dbhost, $nuke_dbname, $nuke_dbuname, $prefix; 
 /*----[ Welcome! ] ---------------------------------------
 | Welcome to Nuke-Evolution, an advanced content          |
 | management system based on PHP-Nuke                     |
 ---------------------------------------------------------*/
 
-/*----[ $dbhost ] ----------------------------------------
+/*----[ $dbhost_a ] ---------------------------------------
 | Your database host, normally 'localhost'                |
 |                                                         |
 | Default: localhost                                      |
 ---------------------------------------------------------*/
-$dbhost = '%dbhost%';
-/*----[ $dbname ] ----------------------------------------
+$nuke_dbhost = '%dbhost%';
+/*----[ $dbname_a ] ---------------------------------------
 | The name of your database that will hold Evo's tables   |
 |                                                         |
 | Default: xxx_evo                                        |
 ---------------------------------------------------------*/
-$dbname = '%dbname%';
+$nuke_dbname = '%dbname%';
 
-/*----[ $dbuname ] ---------------------------------------
+/*----[ $dbuname_a ] --------------------------------------
 | The username linked to your database, must have correct |
 | permissions                                             |
 |                                                         |
 | Default: xxx_evo                                        |
 ---------------------------------------------------------*/
-$dbuname = '%dbuname%';
+$nuke_dbuname = '%dbuname%';
 
-/*----[ $dbpass ] ----------------------------------------
+/*----[ $dbpass_a ] ---------------------------------------
 | The password associated with your db usersname          |
 |                                                         |
 | Default: null                                           |
 ---------------------------------------------------------*/
-$dbpass = '%dbpass%';
+$nuke_dbpass = '%dbpass%';
 
 /*----[ $dbtype ] ----------------------------------------
 | The type of SQL server you prefer to use                |
@@ -62,7 +62,7 @@ $dbpass = '%dbpass%';
 |                                                         |
 | Default: mysql                                          |
 ---------------------------------------------------------*/
-$dbtype = '%dbtype%';
+$nuke_dbtype = '%dbtype%';
 
 /*----[ $prefix ] ----------------------------------------
 | The prefix for your Nuke-Evolution tables               |
@@ -77,7 +77,7 @@ $prefix = '%prefix%';
 |                                                         |
 | Default: nuke                                           |
 ---------------------------------------------------------*/
-$user_prefix = '%user_prefix%';
+$nuke_user_prefix = '%user_prefix%';
 
 /*----[ $admin_file ] ------------------------------------
 | The filename of your Admin File                         |
@@ -158,5 +158,4 @@ $persistency = false;
 /* Congratulations! Now you have the webs best portal installed!     */
 /* Thanks for choosing Nuke- Evolution: The Future of the Web!       */
 /*********************************************************************/
-
 ?>

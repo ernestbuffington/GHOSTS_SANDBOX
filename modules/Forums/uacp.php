@@ -43,7 +43,7 @@ if ($popup != "1")
     {
         $phpbb2_root_path = NUKE_PHPBB2_DIR;
     }
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
@@ -51,29 +51,29 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 $sid = get_var('sid', '');
 
 // Start session management
-$userdata = session_pagestart($user_ip, PAGE_PROFILE);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_PROFILE);
 init_userprefs($userdata);
 // End session management
 
 // session id check
 if ($sid == '' || $sid != $userdata['session_id'])
 {
-    message_die(GENERAL_ERROR, 'Invalid_session');
+    message_die(NUKE_GENERAL_ERROR, 'Invalid_session');
 }
 
 // Obtain initial var settings
-$user_id = get_var(POST_USERS_URL, 0);
+$user_id = get_var(NUKE_POST_USERS_URL, 0);
 
 if (!$user_id)
 {
-    message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_id_specified']);
 }
 
 $profiledata = get_userdata($user_id);
 
-if ($profiledata['user_id'] != $userdata['user_id'] && $userdata['user_level'] != ADMIN)
+if ($profiledata['user_id'] != $userdata['user_id'] && $userdata['user_level'] != NUKE_ADMIN)
 {
-    message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['Not_Authorised']);
 }
 
 $page_title = $lang['User_acp_title'];
@@ -177,11 +177,11 @@ if ($confirm && sizeof($delete_id_list) > 0)
             WHERE attach_id = ' . intval($delete_id_list[$i]) . '
                 AND (user_id_1 = ' . intval($profiledata['user_id']) . '
                     OR user_id_2 = ' . intval($profiledata['user_id']) . ')';
-        $result = $db->sql_query($sql);
+        $result = $nuke_db->sql_query($sql);
         if ($result)
         {
-            $row = $db->sql_fetchrow($result);
-            $db->sql_freeresult($result);
+            $row = $nuke_db->sql_fetchrow($result);
+            $nuke_db->sql_freeresult($result);
 
             if ($row['post_id'] != 0)
             {
@@ -189,7 +189,7 @@ if ($confirm && sizeof($delete_id_list) > 0)
             }
             else
             {
-                delete_attachment(0, intval($delete_id_list[$i]), PAGE_PRIVMSGS, intval($profiledata['user_id']));
+                delete_attachment(0, intval($delete_id_list[$i]), NUKE_PAGE_PRIVMSGS, intval($profiledata['user_id']));
             }
         }
     }
@@ -200,7 +200,7 @@ else if ($delete && sizeof($delete_id_list) > 0)
     $hidden_fields = '<input type="hidden" name="view" value="' . $view . '" />';
     $hidden_fields .= '<input type="hidden" name="mode" value="' . $mode . '" />';
     $hidden_fields .= '<input type="hidden" name="order" value="' . $sort_order . '" />';
-    $hidden_fields .= '<input type="hidden" name="' . POST_USERS_URL . '" value="' . intval($profiledata['user_id']) . '" />';
+    $hidden_fields .= '<input type="hidden" name="' . NUKE_POST_USERS_URL . '" value="' . intval($profiledata['user_id']) . '" />';
     $hidden_fields .= '<input type="hidden" name="start" value="' . $start . '" />';
     $hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
 
@@ -241,7 +241,7 @@ $total_rows = 0;
     
 $username = $profiledata['username'];
 
-$s_hidden = '<input type="hidden" name="' . POST_USERS_URL . '" value="' . intval($profiledata['user_id']) . '" />';
+$s_hidden = '<input type="hidden" name="' . NUKE_POST_USERS_URL . '" value="' . intval($profiledata['user_id']) . '" />';
 $s_hidden .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
 
 // Assign Template Vars
@@ -281,14 +281,14 @@ $sql = "SELECT attach_id
     WHERE user_id_1 = " . intval($profiledata['user_id']) . " OR user_id_2 = " . intval($profiledata['user_id']) . "
     GROUP BY attach_id";
         
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
 }
         
-$attach_ids = $db->sql_fetchrowset($result);
-$num_attach_ids = $db->sql_numrows($result);
-$db->sql_freeresult($result);
+$attach_ids = $nuke_db->sql_fetchrowset($result);
+$num_attach_ids = $nuke_db->sql_numrows($result);
+$nuke_db->sql_freeresult($result);
 
 $total_rows = $num_attach_ids;
 
@@ -308,14 +308,14 @@ if ($num_attach_ids > 0)
         WHERE a.attach_id IN (" . implode(', ', $attach_id) . ") " .
         $order_by;
         
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, "Couldn't query attachments", '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't query attachments", '', __LINE__, __FILE__, $sql);
     }
 
-    $attachments = $db->sql_fetchrowset($result);
-    $num_attach = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $attachments = $nuke_db->sql_fetchrowset($result);
+    $num_attach = $nuke_db->sql_numrows($result);
+    $nuke_db->sql_freeresult($result);
 }
 
 if (sizeof($attachments) > 0)
@@ -333,31 +333,31 @@ if (sizeof($attachments) > 0)
             FROM ' . ATTACHMENTS_TABLE . '
             WHERE attach_id = ' . (int) $attachments[$i]['attach_id'];
 
-        if (!($result = $db->sql_query($sql)))
+        if (!($result = $nuke_db->sql_query($sql)))
         {
-            message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
         }
 
-        $ids = $db->sql_fetchrowset($result);
-        $num_ids = $db->sql_numrows($result);
-        $db->sql_freeresult($result);
+        $ids = $nuke_db->sql_fetchrowset($result);
+        $num_ids = $nuke_db->sql_numrows($result);
+        $nuke_db->sql_freeresult($result);
 
         for ($j = 0; $j < $num_ids; $j++)
         {
             if ($ids[$j]['post_id'] != 0)
             {
                 $sql = "SELECT t.topic_title
-					FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
+					FROM " . NUKE_BB_TOPICS_TABLE . " t, " . NUKE_POSTS_TABLE . " p
                     WHERE p.post_id = " . (int) $ids[$j]['post_id'] . " AND p.topic_id = t.topic_id
                     GROUP BY t.topic_id, t.topic_title";
 
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, 'Couldn\'t query topic', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Couldn\'t query topic', '', __LINE__, __FILE__, $sql);
                 }
 
-                $row = $db->sql_fetchrow($result);
-                $db->sql_freeresult($result);
+                $row = $nuke_db->sql_fetchrow($result);
+                $nuke_db->sql_freeresult($result);
 
                 $post_title = $row['topic_title'];
 
@@ -366,7 +366,7 @@ if (sizeof($attachments) > 0)
                     $post_title = substr($post_title, 0, 30) . '...';
                 }
 
-                $view_topic = append_sid('viewtopic.' . $phpEx . '?' . POST_POST_URL . '=' . $ids[$j]['post_id'] . '#' . $ids[$j]['post_id']);
+                $view_topic = append_sid('viewtopic.' . $phpEx . '?' . NUKE_POST_POST_URL . '=' . $ids[$j]['post_id'] . '#' . $ids[$j]['post_id']);
 
                 $post_titles[] = '<a href="' . $view_topic . '" target="_blank">' . $post_title . '</a>';
             }
@@ -375,42 +375,42 @@ if (sizeof($attachments) > 0)
                 $desc = '';
 
                 $sql = "SELECT privmsgs_type, privmsgs_to_userid, privmsgs_from_userid
-                    FROM " . PRIVMSGS_TABLE . "
+                    FROM " . NUKE_PRIVMSGS_TABLE . "
                     WHERE privmsgs_id = " . (int) $ids[$j]['privmsgs_id'];
 
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                    message_die(GENERAL_ERROR, 'Couldn\'t get Privmsgs Type', '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, 'Couldn\'t get Privmsgs Type', '', __LINE__, __FILE__, $sql);
                 }
 
-                if ($db->sql_numrows($result) != 0)
+                if ($nuke_db->sql_numrows($result) != 0)
                 {
-                    $row = $db->sql_fetchrow($result);
+                    $row = $nuke_db->sql_fetchrow($result);
                     $privmsgs_type = $row['privmsgs_type'];
                                 
 
-                    if ($privmsgs_type == PRIVMSGS_READ_MAIL || $privmsgs_type == PRIVMSGS_NEW_MAIL || $privmsgs_type == PRIVMSGS_UNREAD_MAIL)
+                    if ($privmsgs_type == NUKE_PRIVMSGS_READ_MAIL || $privmsgs_type == NUKE_PRIVMSGS_NEW_MAIL || $privmsgs_type == NUKE_PRIVMSGS_UNREAD_MAIL)
                     {
                         if ($row['privmsgs_to_userid'] == $profiledata['user_id'])
                         {
                             $desc = $lang['Private_Message'] . ' (' . $lang['Inbox'] . ')';
                         }
                     }
-                    else if ($privmsgs_type == PRIVMSGS_SENT_MAIL)
+                    else if ($privmsgs_type == NUKE_PRIVMSGS_SENT_MAIL)
                     {
                         if ($row['privmsgs_from_userid'] == $profiledata['user_id'])
                         {
                             $desc = $lang['Private_Message'] . ' (' . $lang['Sentbox'] . ')';
                         }
                     }
-                    else if ($privmsgs_type == PRIVMSGS_SAVED_OUT_MAIL)
+                    else if ($privmsgs_type == NUKE_PRIVMSGS_SAVED_OUT_MAIL)
                     {
                         if ($row['privmsgs_from_userid'] == $profiledata['user_id'])
                         {
                             $desc = $lang['Private_Message'] . ' (' . $lang['Savebox'] . ')';
                         }
                     }
-                    else if ($privmsgs_type == PRIVMSGS_SAVED_IN_MAIL)
+                    else if ($privmsgs_type == NUKE_PRIVMSGS_SAVED_IN_MAIL)
                     {
                         if ($row['privmsgs_to_userid'] == $profiledata['user_id'])
                         {
@@ -423,7 +423,7 @@ if (sizeof($attachments) > 0)
                         $post_titles[] = $desc;
                     }
                 }
-                $db->sql_freeresult($result);
+                $nuke_db->sql_freeresult($result);
             }
         }
 
@@ -464,7 +464,7 @@ if (sizeof($attachments) > 0)
                 'S_DELETE_BOX'        => $delete_box,
                 'S_HIDDEN'            => $hidden_field,
                 'U_VIEW_ATTACHMENT'    => append_sid('download.' . $phpEx . '?id=' . $attachments[$i]['attach_id']))
-    //            'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_sid("../viewtopic." . $phpEx . "?" . POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : '')
+    //            'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_sid("../viewtopic." . $phpEx . "?" . NUKE_POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : '')
             );
         }
     }
@@ -473,7 +473,7 @@ if (sizeof($attachments) > 0)
 // Generate Pagination
 if ($do_pagination && $total_rows > $board_config['topics_per_page'])
 {
-    $pagination = generate_pagination('uacp.' . $phpEx . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $userdata['session_id'], $total_rows, $board_config['topics_per_page'], $start).'&nbsp;';
+    $pagination = generate_pagination('uacp.' . $phpEx . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . NUKE_POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $userdata['session_id'], $total_rows, $board_config['topics_per_page'], $start).'&nbsp;';
 
     $template->assign_vars(array(
         'PAGINATION'    => $pagination,

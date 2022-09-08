@@ -64,20 +64,20 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
 
 $sql = "SELECT user_active, user_id, username, user_email, user_newpasswd, user_lang, user_actkey
-        FROM " . USERS_TABLE . "
-        WHERE user_id = " . intval($HTTP_GET_VARS[POST_USERS_URL]);
-if ( !($result = $db->sql_query($sql)) )
+        FROM " . NUKE_USERS_TABLE . "
+        WHERE user_id = " . intval($HTTP_GET_VARS[NUKE_POST_USERS_URL]);
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-        message_die(GENERAL_ERROR, 'Could not obtain user information', '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Could not obtain user information', '', __LINE__, __FILE__, $sql);
 }
 
-if ( $row = $db->sql_fetchrow($result) )
+if ( $row = $nuke_db->sql_fetchrow($result) )
 {
         if ( $row['user_active'] && empty($row['user_actkey']) )
         {
@@ -85,32 +85,32 @@ if ( $row = $db->sql_fetchrow($result) )
                         'META' => '<meta http-equiv="refresh" content="10;url=' . append_sid("index.$phpEx") . '">')
                 );
 
-                message_die(GENERAL_MESSAGE, $lang['Already_activated']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['Already_activated']);
         }
         else if ((trim($row['user_actkey']) == trim($HTTP_GET_VARS['act_key'])) && (!empty($row['user_actkey'])))
         {
-            if (intval($board_config['require_activation']) == USER_ACTIVATION_ADMIN && $row['user_newpasswd'] == '')
+            if (intval($board_config['require_activation']) == NUKE_USER_ACTIVATION_ADMIN && $row['user_newpasswd'] == '')
             {
                 if (!$userdata['session_logged_in'])
                 {
-                    redirect(append_sid('login.' . $phpEx . '?redirect=profile.' . $phpEx . '&mode=activate&' . POST_USERS_URL . '=' . $row['user_id'] . '&act_key=' . trim($HTTP_GET_VARS['act_key'])));
+                    nuke_redirect(append_sid('login.' . $phpEx . '?nuke_redirect=profile.' . $phpEx . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $row['user_id'] . '&act_key=' . trim($HTTP_GET_VARS['act_key'])));
                 }
-                else if ($userdata['user_level'] != ADMIN)
+                else if ($userdata['user_level'] != NUKE_ADMIN)
                 {
-                    message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+                    message_die(NUKE_GENERAL_MESSAGE, $lang['Not_Authorised']);
                 }
             }
                 $sql_update_pass = ( !empty($row['user_newpasswd']) ) ? ", user_password = '" . str_replace("\'", "''", $row['user_newpasswd']) . "', user_newpasswd = ''" : '';
 
-                $sql = "UPDATE " . USERS_TABLE . "
+                $sql = "UPDATE " . NUKE_USERS_TABLE . "
                         SET user_active = 1, user_actkey = ''" . $sql_update_pass . "
                         WHERE user_id = " . $row['user_id'];
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
                 {
-                        message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql_update);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql_update);
                 }
 
-                if ( intval($board_config['require_activation']) == USER_ACTIVATION_ADMIN && empty($sql_update_pass) )
+                if ( intval($board_config['require_activation']) == NUKE_USER_ACTIVATION_ADMIN && empty($sql_update_pass) )
                 {
                         include("includes/emailer.php");
                         $emailer = new emailer($board_config['smtp_delivery']);
@@ -135,7 +135,7 @@ if ( $row = $db->sql_fetchrow($result) )
                                 'META' => '<meta http-equiv="refresh" content="10;url=' . append_sid("index.$phpEx") . '">')
                         );
 
-                        message_die(GENERAL_MESSAGE, $lang['Account_active_admin']);
+                        message_die(NUKE_GENERAL_MESSAGE, $lang['Account_active_admin']);
                 }
                 else
                 {
@@ -144,17 +144,17 @@ if ( $row = $db->sql_fetchrow($result) )
                         );
 
                         $message = ( $sql_update_pass == '' ) ? $lang['Account_active'] : $lang['Password_activated'];
-                        message_die(GENERAL_MESSAGE, $message);
+                        message_die(NUKE_GENERAL_MESSAGE, $message);
                 }
         }
         else
         {
-                message_die(GENERAL_MESSAGE, $lang['Wrong_activation']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['Wrong_activation']);
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 }
 else
 {
-        message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+        message_die(NUKE_GENERAL_MESSAGE, $lang['No_such_user']);
 }
 ?>

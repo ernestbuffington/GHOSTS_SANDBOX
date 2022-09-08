@@ -15,7 +15,7 @@ if (!defined('MODULE_FILE') || !defined('_IMAGE_REPOSITORY_INDEX') )
 
 function main()
 {
-	global $db, $lang_new, $module_name, $userinfo, $nukeurl, $settings, $mysettings, $myimages;
+	global $nuke_db, $lang_new, $module_name, $userinfo, $nukeurl, $settings, $mysettings, $myimages;
 	OpenTable();
 	echo '<br />';
 	index_navigation_header();
@@ -39,7 +39,7 @@ function main()
 //-------------------------------------------------------------------------
 //	THIS IS THE PAGINATION CLASS.
 //-------------------------------------------------------------------------	
-	$result = $db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$userinfo['user_id']."' ORDER BY `uploaded` DESC LIMIT ".$limit1.", ".$limit2);
+	$result = $nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$userinfo['user_id']."' ORDER BY `uploaded` DESC LIMIT ".$limit1.", ".$limit2);
 	$quotainfo = _quota_percentages($userinfo['user_id']);
 	echo '<table style="width:100%;'.(($quotainfo['total_size'] >= $quotainfo['quota']) ? ' display:none;' : '').'" border="0" cellpadding="4" cellspacing="1" class="forumline" id="image_repository_upload">'."\n";
 	echo '  <tr>'."\n";
@@ -59,8 +59,8 @@ function main()
 	echo '  </tr>'."\n";
 	echo '</table>'."\n";	
 //-------------------------------------------------------------------------
-//	SHOW THE USER THAT THEIR QUOTA HAS BEEN REACHED.
-//  IF THE USER HAS MAXED OUT THEIR QUOTA, REMOVE THE UPLOAD TABLE.
+//	SHOW THE NUKE_USER THAT THEIR QUOTA HAS BEEN REACHED.
+//  IF THE NUKE_USER HAS MAXED OUT THEIR QUOTA, REMOVE THE UPLOAD TABLE.
 //-------------------------------------------------------------------------	
 	echo '<table style="width:100%;'.(($quotainfo['total_size'] >= $quotainfo['quota']) ? '' : ' display:none;').'" border="0" cellpadding="4" cellspacing="1" class="forumline" id="image_repository_quota">'."\n";
 	echo '  <tr>'."\n";
@@ -74,8 +74,8 @@ function main()
 	echo '  </tr>'."\n";
 	echo '</table>'."\n";
 //-------------------------------------------------------------------------
-//	SHOW THE USER THAT THEIR QUOTA HAS BEEN REACHED.
-//  IF THE USER HAS MAXED OUT THEIR QUOTA, REMOVE THE UPLOAD TABLE.
+//	SHOW THE NUKE_USER THAT THEIR QUOTA HAS BEEN REACHED.
+//  IF THE NUKE_USER HAS MAXED OUT THEIR QUOTA, REMOVE THE UPLOAD TABLE.
 //-------------------------------------------------------------------------	
 	echo '<br />';	
 	echo '<table width="100%" border="0" cellpadding="4" cellspacing="1" class="forumline" id="imagetable">'."\n";
@@ -85,19 +85,19 @@ function main()
 //-------------------------------------------------------------------------
 //	SHOW THAT NO IMAGES CURRENTLY EXIST IN THEIR DATABASE.
 //-------------------------------------------------------------------------	
-	echo '  <tr id="noimages" '.(($db->sql_numrows($result) == 0) ? '' : 'style="display:none;"').'>'."\n";
+	echo '  <tr id="noimages" '.(($nuke_db->sql_numrows($result) == 0) ? '' : 'style="display:none;"').'>'."\n";
 	echo '    <td'.tablecss(FALSE,'center','row1',2).'>'._string_to_upper($lang_new[$module_name]['IMAGE_NONE']).'</td>'."\n";
 	echo '  </tr>'."\n";
 //-------------------------------------------------------------------------
 //	SHOW THAT NO IMAGES CURRENTLY EXIST IN THEIR DATABASE.
 //-------------------------------------------------------------------------	
-	echo '  <tr id="imagelist" '.(($db->sql_numrows($result) == 0) ? 'style="display:none;"' : '').'>'."\n";
+	echo '  <tr id="imagelist" '.(($nuke_db->sql_numrows($result) == 0) ? 'style="display:none;"' : '').'>'."\n";
 	echo '    <td'.tablecss('15%','center','catBottom').'>'._string_to_upper($lang_new[$module_name]['IMAGE']).'</td>'."\n";
 	echo '    <td'.tablecss('85%','center','catBottom').'>'._string_to_upper($lang_new[$module_name]['CODES']).'</td>'."\n";
 	echo '  </tr>'."\n";	
-	if($db->sql_numrows($result) > 0)
+	if($nuke_db->sql_numrows($result) > 0)
 	{
-		while($row = $db->sql_fetchrow($result))
+		while($row = $nuke_db->sql_fetchrow($result))
 		{	
 			echo '	<tr class="imagethumbs" id="image-'.$row['pid'].'">'."\n";	
 //-------------------------------------------------------------------------
@@ -119,7 +119,7 @@ function main()
 				$imagesize_info = @getimagesize(_IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER.'/'.$row['filename']);
 				if(file_exists(_IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER_THUMBS.'/thumb_'.$row['filename']) && ($imagesize_info[0] < _IREPOSITORY_THUMBWIDTH || $imagesize_info[0] < _IREPOSITORY_THUMBHEIGHT) && $row['bypass_thumb'] == 0)
 				{
-					$db->sql_query("UPDATE `"._IMAGE_REPOSITORY_UPLOADS."` SET `bypass_thumb`='1' WHERE `pid`='".$row['pid']."' && `submitter`='".$userinfo['user_id']."'");
+					$nuke_db->sql_query("UPDATE `"._IMAGE_REPOSITORY_UPLOADS."` SET `bypass_thumb`='1' WHERE `pid`='".$row['pid']."' && `submitter`='".$userinfo['user_id']."'");
 					echo '    <td'.tablecss(FALSE,'center','row1').' id="thumbnail_holder'.$row['pid'].'">';
 					echo '      <div class="thumbnail_border"><img class="thumbnail_border" src="'._IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER_THUMBS.'/thumb_'.$row['filename'].'" /></div>';
 					echo '    </td>'."\n"; 
@@ -168,7 +168,7 @@ function main()
 			echo '    </td>'."\n";			
 			echo '  </tr>'."\n";
 		}
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
 	}
 //-------------------------------------------------------------------------
 //	HERE WE HAVE THE PAGINATION LINKS, IF THE CURRENT IMAGE COUNT DOES NOT,
@@ -223,7 +223,7 @@ function main()
 
 function uploadmyimage()
 {
-	global $db, $lang_new, $module_name, $userinfo, $settings;
+	global $nuke_db, $lang_new, $module_name, $userinfo, $settings;
 //-------------------------------------------------------------------------
 //	CHECK IF IT'S AN AJAX REQUEST, EXIT IF NOT.
 //-------------------------------------------------------------------------
@@ -233,7 +233,7 @@ function uploadmyimage()
 //	CHECK IF IT'S AN AJAX REQUEST, EXIT IF NOT.
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
-//	ALERT THE USER, IF THEY HAVE REACHED THEIR ALLOTTED QUOTA.
+//	ALERT THE NUKE_USER, IF THEY HAVE REACHED THEIR ALLOTTED QUOTA.
 //-------------------------------------------------------------------------
     $quotainfo = _quota_percentages($userinfo['user_id']);
     if($quotainfo['total_size'] > $quotainfo['quota'])
@@ -241,7 +241,7 @@ function uploadmyimage()
     	die(json_encode(array('error' => sprintf($lang_new[$module_name]['QUOTA_REACHED'],$userinfo['username']))));
     }
 //-------------------------------------------------------------------------
-//	ALERT THE USER, IF THEY HAVE REACHED THEIR ALLOTTED QUOTA.
+//	ALERT THE NUKE_USER, IF THEY HAVE REACHED THEIR ALLOTTED QUOTA.
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 //	DO A QUICK CHECK TO MAKE SURE THE FILE BE UPLOADED IS AN IMAGE.
@@ -261,12 +261,12 @@ function uploadmyimage()
 //	DO A QUICK CHECK TO MAKE SURE THE FILE BE UPLOADED IS AN IMAGE.
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
-//	MAKE SURE THE IMAGE DOES NOT EXCEED THE SPECIFIED MAX SIZE IN ADMIN.
+//	MAKE SURE THE IMAGE DOES NOT EXCEED THE SPECIFIED MAX SIZE IN NUKE_ADMIN.
 //-------------------------------------------------------------------------
 	if($_FILES['myimage']['size'] > $settings['max_upload'])
 		die(json_encode(array('error' => sprintf($lang_new[$module_name]['IMAGE_SIZE_ERROR'],_calculate_size($settings['max_upload'])))));
 //-------------------------------------------------------------------------
-//	MAKE SURE THE IMAGE DOES NOT EXCEED THE SPECIFIED MAX SIZE IN ADMIN.
+//	MAKE SURE THE IMAGE DOES NOT EXCEED THE SPECIFIED MAX SIZE IN NUKE_ADMIN.
 //-------------------------------------------------------------------------
 	$ext 				= substr($_FILES['myimage']['name'], strpos($_FILES['myimage']['name'], '.')+1, strlen($_FILES['myimage']['name']));
 	$randomise 			= _random_string().'.'.strtolower($ext);
@@ -276,13 +276,13 @@ function uploadmyimage()
 //-------------------------------------------------------------------------
 //	GENERATE A THUMBNAIL FOR USE IN THE FORUMS.
 //-------------------------------------------------------------------------
-		$db->sql_query("INSERT INTO `"._IMAGE_REPOSITORY_UPLOADS."` (`pid`,`filename`,`submitter`,`image`,`size`,`screensize`,`uploaded`) VALUES (NULL,'".$randomise."','".$userinfo['user_id']."','".$randomise."','".$_FILES['myimage']['size']."','".$natural_size."','".time()."')");
+		$nuke_db->sql_query("INSERT INTO `"._IMAGE_REPOSITORY_UPLOADS."` (`pid`,`filename`,`submitter`,`image`,`size`,`screensize`,`uploaded`) VALUES (NULL,'".$randomise."','".$userinfo['user_id']."','".$randomise."','".$_FILES['myimage']['size']."','".$natural_size."','".time()."')");
 		if($image_size_info[0] > _IREPOSITORY_THUMBWIDTH || $image_size_info[1] > _IREPOSITORY_THUMBHEIGHT)
 		{
 			_createthumb(_IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER.'/'.$randomise, _IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER_THUMBS.'/thumb_'.$randomise, array('width' => _IREPOSITORY_THUMBWIDTH, 'height' => _IREPOSITORY_THUMBHEIGHT, 'aspect_ratio' => TRUE));
 		} else {				
 			@copy(_IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER.'/'.$randomise, _IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER_THUMBS.'/thumb_'.$randomise);
-			$db->sql_query("UPDATE `"._IMAGE_REPOSITORY_UPLOADS."` SET `bypass_thumb`='1' WHERE `pid`='".$db->sql_nextid()."' && `submitter`='".$userinfo['user_id']."'");
+			$nuke_db->sql_query("UPDATE `"._IMAGE_REPOSITORY_UPLOADS."` SET `bypass_thumb`='1' WHERE `pid`='".$nuke_db->sql_nextid()."' && `submitter`='".$userinfo['user_id']."'");
 		}
 //-------------------------------------------------------------------------
 //	GENERATE A THUMBNAIL FOR USE IN THE FORUMS.
@@ -296,7 +296,7 @@ function uploadmyimage()
 			'size' 			=> $_FILES['myimage']['size'], 
 			'resolution'	=> $natural_size, 
 			'uploaded'		=> formatTimestamp_to_date('D M d, Y g:i a', time(), $userinfo['user_timezone']), 
-			'nextid' 		=> $db->sql_nextid()
+			'nextid' 		=> $nuke_db->sql_nextid()
 		);
 		die(json_encode($response));
 //-------------------------------------------------------------------------
@@ -315,8 +315,8 @@ function uploadmyimage()
 
 function generatemythumb()
 {
-	global $db, $lang_new, $module_name, $userinfo;
-	$row = $db->sql_fetchrow($db->sql_query("SELECT `filename`, `submItter` FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `pid`='".$_POST['pid']."'"));
+	global $nuke_db, $lang_new, $module_name, $userinfo;
+	$row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `filename`, `submItter` FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `pid`='".$_POST['pid']."'"));
 //-------------------------------------------------------------------------
 //	CHECK WHOEVER IS TRYING TO GENERATE THUMB, OWNS THE IMAGE
 //-------------------------------------------------------------------------
@@ -360,8 +360,8 @@ function generatemythumb()
 
 function deletemyimage()
 {
-	global $db, $lang_new, $module_name, $userinfo;
-	$row  = $db->sql_fetchrow($db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `pid`='".$_POST['pid']."'"));
+	global $nuke_db, $lang_new, $module_name, $userinfo;
+	$row  = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `pid`='".$_POST['pid']."'"));
 	if(is_admin() || $userinfo['user_id'] == $row['submitter'])
 	{
 //-------------------------------------------------------------------------
@@ -371,8 +371,8 @@ function deletemyimage()
 		if(@unlink(_IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER.'/'.$row['filename']))
 		{
 			@unlink(_IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER.'/thumbs/thumb_'.$row['filename']);
-			$db->sql_query("DELETE FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `pid`='".$row['pid']."'");
-			$db->sql_optimize(_IMAGE_REPOSITORY_UPLOADS);
+			$nuke_db->sql_query("DELETE FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `pid`='".$row['pid']."'");
+			$nuke_db->sql_optimize(_IMAGE_REPOSITORY_UPLOADS);
 		}
 //-------------------------------------------------------------------------
 //	AWWW, YOU WANT TO DELETE THE IMAGE, OKIES, LETS REMOVE THE FILE,
@@ -391,9 +391,9 @@ function deletemyimage()
 
 function modal_code_popup()
 {
-	global $db, $lang_new, $module_name, $userinfo, $nukeurl;
-	$result = $db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$userinfo['user_id']."' && `pid`='".$_GET['pid']."'");
-	$row = $db->sql_fetchrow($result);
+	global $nuke_db, $lang_new, $module_name, $userinfo, $nukeurl;
+	$result = $nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$userinfo['user_id']."' && `pid`='".$_GET['pid']."'");
+	$row = $nuke_db->sql_fetchrow($result);
 	OpenTable();
 	echo '<table style="width: 700px;" border="0" cellpadding="4" cellspacing="1" class="forumline">'."\n";
 	echo '	<tr>'."\n";
@@ -441,17 +441,17 @@ function modal_code_popup()
 	CloseTable();
 }
 //-------------------------------------------------------------------------
-//	USER SETTINGS, LET'S THE MODIFY THE LOOK OF THE PERENTAGE BAR
+//	NUKE_USER SETTINGS, LET'S THE MODIFY THE LOOK OF THE PERENTAGE BAR
 //-------------------------------------------------------------------------
 function mysettings()
 {
-	global $db, $lang_new, $module_name, $userinfo, $settings, $mysettings;
+	global $nuke_db, $lang_new, $module_name, $userinfo, $settings, $mysettings;
 	if($_POST['submit'] && $_POST['uid'] == $userinfo['user_id'])
 	{
 //-------------------------------------------------------------------------
 //	OK, LETS UPDATE THE USERS SETTINGS.
 //-------------------------------------------------------------------------
-		$db->sql_query("UPDATE `"._IMAGE_REPOSITORY_USERS."` SET `border_color`='".$_POST['border_color']."', `background_color`='".$_POST['background_color']."', `percent_color`='".$_POST['percent_color']."', `custom_color`='".$_POST['custom_color']."' WHERE `uid` = '".$userinfo['user_id']."'");
+		$nuke_db->sql_query("UPDATE `"._IMAGE_REPOSITORY_USERS."` SET `border_color`='".$_POST['border_color']."', `background_color`='".$_POST['background_color']."', `percent_color`='".$_POST['percent_color']."', `custom_color`='".$_POST['custom_color']."' WHERE `uid` = '".$userinfo['user_id']."'");
 //-------------------------------------------------------------------------
 //	OK, LETS UPDATE THE USERS SETTINGS.
 //-------------------------------------------------------------------------
@@ -460,16 +460,16 @@ function mysettings()
 //-------------------------------------------------------------------------
 		if(is_admin())
 		{
-			$db->sql_query("UPDATE `"._IMAGE_REPOSITORY_SETTINGS."` SET `config_value`='"._calculate_bytesize($_POST['quota'])."' WHERE `config_name`='quota'");
-			$db->sql_query("UPDATE `"._IMAGE_REPOSITORY_SETTINGS."` SET `config_value`='"._calculate_bytesize($_POST['max_upload'])."' WHERE `config_name`='max_upload'");
-			$db->sql_query("UPDATE `"._IMAGE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['spacing']."' WHERE `config_name`='spacing'");
-			$db->sql_query("UPDATE `"._IMAGE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['perpage']."' WHERE `config_name`='perpage'");
-			$db->sql_query("UPDATE `"._IMAGE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['admin_perpage']."' WHERE `config_name`='admin_perpage'");
+			$nuke_db->sql_query("UPDATE `"._IMAGE_REPOSITORY_SETTINGS."` SET `config_value`='"._calculate_bytesize($_POST['quota'])."' WHERE `config_name`='quota'");
+			$nuke_db->sql_query("UPDATE `"._IMAGE_REPOSITORY_SETTINGS."` SET `config_value`='"._calculate_bytesize($_POST['max_upload'])."' WHERE `config_name`='max_upload'");
+			$nuke_db->sql_query("UPDATE `"._IMAGE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['spacing']."' WHERE `config_name`='spacing'");
+			$nuke_db->sql_query("UPDATE `"._IMAGE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['perpage']."' WHERE `config_name`='perpage'");
+			$nuke_db->sql_query("UPDATE `"._IMAGE_REPOSITORY_SETTINGS."` SET `config_value`='".$_POST['admin_perpage']."' WHERE `config_name`='admin_perpage'");
 		}
 //-------------------------------------------------------------------------
 //	UPDATE THE ADMINISTRATION SETTINGS, ONLY ADMINS CAN DO THIS.
 //-------------------------------------------------------------------------
-		_redirect('modules.php?name='.$module_name.'&op=settings');
+		_nuke_redirect('modules.php?name='.$module_name.'&op=settings');
 	}
 
 	OpenTable();
@@ -501,7 +501,7 @@ function mysettings()
 	echo '  </tr>'."\n";
 //-------------------------------------------------------------------------
 //	MOVED THE ADMINISTRATION SETTINGS TO HERE TO SAVE ON THE AMOUNT OF,
-//	FILES IN THE PACKAGE, THEY ARE ONLY VISIBLE TO THOSE LOGGED IN AS ADMIN
+//	FILES IN THE PACKAGE, THEY ARE ONLY VISIBLE TO THOSE LOGGED IN AS NUKE_ADMIN
 //-------------------------------------------------------------------------
 	if(is_admin())
 	{
@@ -535,7 +535,7 @@ function mysettings()
 	}
 //-------------------------------------------------------------------------
 //	MOVED THE ADMINISTRATION SETTINGS TO HERE TO SAVE ON THE AMOUNT OF,
-//	FILES IN THE PACKAGE, THEY ARE ONLY VISIBLE TO THOSE LOGGED IN AS ADMIN
+//	FILES IN THE PACKAGE, THEY ARE ONLY VISIBLE TO THOSE LOGGED IN AS NUKE_ADMIN
 //-------------------------------------------------------------------------
 	echo '  <tr>'."\n";
 	echo '    <td'.tablecss(FALSE,'center','catBottom',3).'>'.submitbuttoncss(FALSE,$lang_new[$module_name]['SAVE_SETTINGS']).'</td>'."\n";
@@ -546,11 +546,11 @@ function mysettings()
 	CloseTable();
 }
 //-------------------------------------------------------------------------
-//	USER SETTINGS, LET'S THE MODIFY THE LOOK OF THE PERENTAGE BAR
+//	NUKE_USER SETTINGS, LET'S THE MODIFY THE LOOK OF THE PERENTAGE BAR
 //-------------------------------------------------------------------------
 function myquota()
 {
-	global $db, $lang_new, $module_name, $userinfo, $settings;
+	global $nuke_db, $lang_new, $module_name, $userinfo, $settings;
 	$quotainfo = _quota_percentages($userinfo['user_id']);
 	OpenTable();
 	index_navigation_header();
@@ -561,7 +561,7 @@ function myquota()
 //-------------------------------------------------------------------------
 //	IF THIS IS EVOLUTION XTREME, USE JQUERY NOCONFLICT
 //-------------------------------------------------------------------------
-	if(function_exists('redirect'))
+	if(function_exists('nuke_redirect'))
 		echo '	nuke_jq(document).ready(function($)';
 	else
 		echo '	$(document).ready(function($)';
@@ -595,16 +595,16 @@ function myquota()
 
 function manage_users()
 {
-	global $db, $lang_new, $module_name, $settings;
+	global $nuke_db, $lang_new, $module_name, $settings;
 //-------------------------------------------------------------------------
-//	DENY ANYONE WHO ISNT AN ADMIN.
+//	DENY ANYONE WHO ISNT AN NUKE_ADMIN.
 //-------------------------------------------------------------------------	
 	if(!is_admin())
-		_redirect('modules.php?name='.$module_name);
+		_nuke_redirect('modules.php?name='.$module_name);
 //-------------------------------------------------------------------------
-//	DENY ANYONE WHO ISNT AN ADMIN.
+//	DENY ANYONE WHO ISNT AN NUKE_ADMIN.
 //-------------------------------------------------------------------------	
-	$total  	= $db->sql_numrows($db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_USERS."`"));
+	$total  	= $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_USERS."`"));
 //-------------------------------------------------------------------------
 //	PAGINATION CLASS, LETS GET IT SETUP.
 //-------------------------------------------------------------------------	
@@ -635,37 +635,37 @@ function manage_users()
 //-------------------------------------------------------------------------
 	if($_POST['quota'])
 	{
-		$db->sql_query("UPDATE `"._IMAGE_REPOSITORY_USERS."` SET `quota`='"._calculate_bytesize($_POST['quota'])."' WHERE `uid`='".$_POST['uid']."'");
-		_redirect('modules.php?name='.$module_name.'&op=users'.(($_POST['page']) ? '&page='.$_POST['page'] : ''));
+		$nuke_db->sql_query("UPDATE `"._IMAGE_REPOSITORY_USERS."` SET `quota`='"._calculate_bytesize($_POST['quota'])."' WHERE `uid`='".$_POST['uid']."'");
+		_nuke_redirect('modules.php?name='.$module_name.'&op=users'.(($_POST['page']) ? '&page='.$_POST['page'] : ''));
 	}
 //-------------------------------------------------------------------------
 //	LETS UPDATE THE SELECTED USERS QUOTA.
 //-------------------------------------------------------------------------	
-	$result 	= $db->sql_query("SELECT * FROM ("._IMAGE_REPOSITORY_USERS." s, "._USERS_TABLE." u) WHERE u.user_id = s.uid ".$alpha_where_first."ORDER BY u.`username` ASC LIMIT ".$limit1.", ".$limit2);
+	$result 	= $nuke_db->sql_query("SELECT * FROM ("._IMAGE_REPOSITORY_USERS." s, "._USERS_TABLE." u) WHERE u.user_id = s.uid ".$alpha_where_first."ORDER BY u.`username` ASC LIMIT ".$limit1.", ".$limit2);
 	OpenTable();
 	index_navigation_header();
 	echo '<table width="100%" border="0" cellpadding="4" cellspacing="1" class="forumline">'."\n";	
 	echo '	<tr>'."\n";
 	echo '    <td'.tablecss(FALSE,'center','catBottom',5).'>'._string_to_upper($lang_new[$module_name]['USERS']).'</td>'."\n";
 	echo '  </tr>'."\n".'<tr>'."\n";
-	echo '	  <td'.tablecss(FALSE,'center','row1',5).'>'.(($db->sql_numrows($result) > 0) ? _alphabetlist() : $lang_new[$module_name]['USER_NONE']).'</td>'."\n";
-	echo '  </tr>'."\n".'<tr '.(($db->sql_numrows($result) > 0) ? '' : 'style="display:none;"').'>'."\n";
-	echo '	  <td'.tablecss('20%',FALSE,'catBottom').'>'.$lang_new[$module_name]['USER'].'</td>'."\n";
+	echo '	  <td'.tablecss(FALSE,'center','row1',5).'>'.(($nuke_db->sql_numrows($result) > 0) ? _alphabetlist() : $lang_new[$module_name]['USER_NONE']).'</td>'."\n";
+	echo '  </tr>'."\n".'<tr '.(($nuke_db->sql_numrows($result) > 0) ? '' : 'style="display:none;"').'>'."\n";
+	echo '	  <td'.tablecss('20%',FALSE,'catBottom').'>'.$lang_new[$module_name]['NUKE_USER'].'</td>'."\n";
 	echo '	  <td'.tablecss('20%',FALSE,'catBottom').'>'.$lang_new[$module_name]['IMAGECOUNT'].'</td>'."\n";
 	echo '	  <td'.tablecss('20%',FALSE,'catBottom').'>'.$lang_new[$module_name]['QUOTA_USED'].'</td>'."\n";
 	echo '	  <td'.tablecss('20%',FALSE,'catBottom').'>'.$lang_new[$module_name]['QUOTA_LEFT'].'</td>'."\n";
 	echo '	  <td'.tablecss('20%','center','catBottom').'>'.$lang_new[$module_name]['OPTIONS'].'</td>'."\n";
 	echo '  </tr>'."\n";
 	$i = 0;
-	while($row = $db->sql_fetchrow($result))
+	while($row = $nuke_db->sql_fetchrow($result))
 	{
 		$row['username'] = (function_exists('UsernameColor')) ? UsernameColor($row['username']) : $row['username'];
 		$quotainfo = _quota_percentages($row['uid']);
 		if($row['uid'] > 1)
 		{
-			$image_count = $db->sql_numrows($db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$row['uid']."'"));	
+			$image_count = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$row['uid']."'"));	
 			echo '  <tr id="user-'.$row['uid'].'">'."\n";
-			if(function_exists('redirect'))
+			if(function_exists('nuke_redirect'))
 				echo '	  <td'.tablecss('20%',FALSE,'row1').'><a href="modules.php?name=Profile&amp;mode=viewprofile&amp;u='.$row['user_id'].'" target="_BLANK">'.$row['username'].'</a></td>'."\n";
 			else
 				echo '	  <td'.tablecss('20%',FALSE,'row1').'><a href="modules.php?name=Your_Account&amp;op=userinfo&amp;username='.$row['username'].'" target="_BLANK">'.$row['username'].'</a></td>'."\n";
@@ -676,7 +676,7 @@ function manage_users()
 			echo '  </tr>'."\n";
 		}
 	}
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 	echo '  <tr>'."\n";
 	echo '    <td'.tablecss(FALSE,'right','catBottom',5).'>';
 //-------------------------------------------------------------------------
@@ -721,18 +721,18 @@ function manage_users()
 
 function manage_users_images()
 {
-	global $db, $lang_new, $module_name, $settings;
+	global $nuke_db, $lang_new, $module_name, $settings;
 	OpenTable();
 	index_navigation_header();
 //-------------------------------------------------------------------------
-//	DENY ANYONE WHO ISNT AN ADMIN.
+//	DENY ANYONE WHO ISNT AN NUKE_ADMIN.
 //-------------------------------------------------------------------------	
 	if(!is_admin())
-		_redirect('modules.php?name='.$module_name);
+		_nuke_redirect('modules.php?name='.$module_name);
 //-------------------------------------------------------------------------
-//	DENY ANYONE WHO ISNT AN ADMIN.
+//	DENY ANYONE WHO ISNT AN NUKE_ADMIN.
 //-------------------------------------------------------------------------	
-	$result = $db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$_GET['uid']."' ORDER BY `uploaded` DESC");
+	$result = $nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$_GET['uid']."' ORDER BY `uploaded` DESC");
 	echo '<table width="100%" border="0" cellpadding="4" cellspacing="1" class="forumline">'."\n";
 	echo '  <tr>';
 	echo '    <td'.tablecss(FALSE,'center','catHead',5).'>'._string_to_upper(sprintf($lang_new[$module_name]['IMAGES_SUBMITTED'],_submitter($_GET['uid']))).'</td>';
@@ -744,7 +744,7 @@ function manage_users_images()
 	echo '    <td'.tablecss('20%','center','catHead').'>'._string_to_upper($lang_new[$module_name]['IMAGE_SIZE']).'</td>';
 	echo '    <td'.tablecss('20%','center','catHead').'>'._string_to_upper($lang_new[$module_name]['OPTIONS']).'</td>';
 	echo '  </tr>';
-	while($uploadinfo = $db->sql_fetchrow($result))
+	while($uploadinfo = $nuke_db->sql_fetchrow($result))
 	{
 		echo '  <tr id="user-image-'.$uploadinfo['pid'].'">';
 		echo '    <td'.tablecss('20%','center','row1').'><a'.linkcss().get_image_viewer().' href="'._IREPOSITORY_DIR.'/'.($uploadinfo['submitter']+10000).'/'.$uploadinfo['filename'].'">'.$lang_new[$module_name]['VIEW'].'</a></td>';
@@ -763,19 +763,19 @@ function manage_users_images()
 
 function admin_delete_image()
 {
-	global $db, $lang_new, $module_name;		
+	global $nuke_db, $lang_new, $module_name;		
 	if(is_admin())
 	{
 //-------------------------------------------------------------------------
 //	AWWW, YOU WANT TO DELETE THE IMAGE, OKIES, LETS REMOVE THE FILE,
 //	FROM THE DATABASE, AND REMOVE ANY TRACE OF IT.
 //-------------------------------------------------------------------------	
-		$row  = $db->sql_fetchrow($db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `pid`='".$_POST['pid']."'"));
+		$row  = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `pid`='".$_POST['pid']."'"));
 		if(@unlink(_IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER.'/'.$row['filename']))
 		{
 			@unlink(_IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER.'/thumbs/thumb_'.$row['filename']);
-			$db->sql_query("DELETE FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `pid`='".$row['pid']."'");
-			$db->sql_optimize(_IMAGE_REPOSITORY_UPLOADS);
+			$nuke_db->sql_query("DELETE FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `pid`='".$row['pid']."'");
+			$nuke_db->sql_optimize(_IMAGE_REPOSITORY_UPLOADS);
 		}
 		die(json_encode(array('pid' => $row['pid'])));
 //-------------------------------------------------------------------------
@@ -795,28 +795,28 @@ function admin_delete_image()
 
 function admin_delete_user()
 {
-	global $db;
+	global $nuke_db;
 	if(is_admin())
 	{
-		$result = $db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$_POST['user']."'");
-		while($row = $db->sql_fetchrow($result))
+		$result = $nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$_POST['user']."'");
+		while($row = $nuke_db->sql_fetchrow($result))
 		{
 			if(file_exists(_IREPOSITORY_DIR.($_POST['user']+10000).'/'.$row['filename']))
 			{
 				@unlink(_IREPOSITORY_DIR.($_POST['user']+10000).'/'.$row['filename']);
 				@unlink(_IREPOSITORY_DIR.($_POST['user']+10000).'/thumbs/thumb_'.$row['filename']);
-				$db->sql_query("DELETE FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `pid`='".$row['pid']."'");
+				$nuke_db->sql_query("DELETE FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `pid`='".$row['pid']."'");
 			}
 		}
-		$db->sql_query("DELETE FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$_POST['user']."'");
-		$db->sql_freeresult($result);
+		$nuke_db->sql_query("DELETE FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$_POST['user']."'");
+		$nuke_db->sql_freeresult($result);
 		die(json_encode(array('user' => $_POST['user'])));
 	}
 }
 
 function image_forum_upload()
 {
-	global $db, $lang_new, $module_name, $userinfo, $settings;
+	global $nuke_db, $lang_new, $module_name, $userinfo, $settings;
 //-------------------------------------------------------------------------
 //	CHECK IF IT'S AN AJAX REQUEST, EXIT IF NOT.
 //-------------------------------------------------------------------------
@@ -826,7 +826,7 @@ function image_forum_upload()
 //	CHECK IF IT'S AN AJAX REQUEST, EXIT IF NOT.
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
-//	ALERT THE USER, IF THEY HAVE REACHED THEIR ALLOTTED QUOTA.
+//	ALERT THE NUKE_USER, IF THEY HAVE REACHED THEIR ALLOTTED QUOTA.
 //-------------------------------------------------------------------------
     $quotainfo = _quota_percentages($userinfo['user_id']);
     if($quotainfo['total_size'] > $quotainfo['quota'])
@@ -834,7 +834,7 @@ function image_forum_upload()
     	die(json_encode(array('error' => sprintf($lang_new[$module_name]['QUOTA_REACHED'],$userinfo['username']))));
     }
 //-------------------------------------------------------------------------
-//	ALERT THE USER, IF THEY HAVE REACHED THEIR ALLOTTED QUOTA.
+//	ALERT THE NUKE_USER, IF THEY HAVE REACHED THEIR ALLOTTED QUOTA.
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
 //	DO A QUICK CHECK TO MAKE SURE THE FILE BE UPLOADED IS AN IMAGE.
@@ -854,12 +854,12 @@ function image_forum_upload()
 //	DO A QUICK CHECK TO MAKE SURE THE FILE BE UPLOADED IS AN IMAGE.
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
-//	MAKE SURE THE IMAGE DOES NOT EXCEED THE SPECIFIED MAX SIZE IN ADMIN.
+//	MAKE SURE THE IMAGE DOES NOT EXCEED THE SPECIFIED MAX SIZE IN NUKE_ADMIN.
 //-------------------------------------------------------------------------
 	if($_FILES['forum-image-upload']['size'] > $settings['max_upload'])
 		die(json_encode(array('error' => sprintf($lang_new[$module_name]['IMAGE_SIZE_ERROR'], _calculate_size($settings['max_upload'])))));
 //-------------------------------------------------------------------------
-//	MAKE SURE THE IMAGE DOES NOT EXCEED THE SPECIFIED MAX SIZE IN ADMIN.
+//	MAKE SURE THE IMAGE DOES NOT EXCEED THE SPECIFIED MAX SIZE IN NUKE_ADMIN.
 //-------------------------------------------------------------------------
 	$ext 			= substr($_FILES['forum-image-upload']['name'], strpos($_FILES['forum-image-upload']['name'], '.')+1, strlen($_FILES['forum-image-upload']['name']));
 	$randomise 		= _random_string().'.'.strtolower($ext);
@@ -869,13 +869,13 @@ function image_forum_upload()
 //-------------------------------------------------------------------------
 //	GENERATE A THUMBNAIL FOR USE IN THE FORUMS.
 //-------------------------------------------------------------------------
-		$db->sql_query("INSERT INTO `"._IMAGE_REPOSITORY_UPLOADS."` (`pid`,`filename`,`submitter`,`image`,`size`,`screensize`,`uploaded`) VALUES (NULL,'".$randomise."','".$userinfo['user_id']."','".$randomise."','".$_FILES['forum-image-upload']['size']."','".$natural_size."','".time()."')");
+		$nuke_db->sql_query("INSERT INTO `"._IMAGE_REPOSITORY_UPLOADS."` (`pid`,`filename`,`submitter`,`image`,`size`,`screensize`,`uploaded`) VALUES (NULL,'".$randomise."','".$userinfo['user_id']."','".$randomise."','".$_FILES['forum-image-upload']['size']."','".$natural_size."','".time()."')");
 		if($image_size_info[0] > _IREPOSITORY_THUMBWIDTH || $image_size_info[1] > _IREPOSITORY_THUMBHEIGHT)
 		{
 			_createthumb('modules/'.$_POST['modname'].'/files/'.$_POST['user'].'/'.$randomise, 'modules/'.$_POST['modname'].'/files/'.$_POST['user'].'/thumbs/thumb_'.$randomise, array('width' => _IREPOSITORY_THUMBWIDTH, 'height' => _IREPOSITORY_THUMBHEIGHT, 'aspect_ratio' => TRUE));
 		} else {				
 			@copy('modules/'.$_POST['modname'].'/files/'.$_POST['user'].'/'.$randomise, 'modules/'.$_POST['modname'].'/files/'.$_POST['user'].'/thumbs/thumb_'.$randomise);
-			$db->sql_query("UPDATE `"._IMAGE_REPOSITORY_UPLOADS."` SET `bypass_thumb`='1' WHERE `pid`='".$db->sql_nextid()."' && `submitter`='".$userinfo['user_id']."'");
+			$nuke_db->sql_query("UPDATE `"._IMAGE_REPOSITORY_UPLOADS."` SET `bypass_thumb`='1' WHERE `pid`='".$nuke_db->sql_nextid()."' && `submitter`='".$userinfo['user_id']."'");
 		}
 //-------------------------------------------------------------------------
 //	GENERATE A THUMBNAIL FOR USE IN THE FORUMS.
@@ -891,7 +891,7 @@ function image_forum_upload()
 }
 
 //-------------------------------------------------------------------------
-//	IF THE USER VISITING IS NOT A REGISTERED MEMBER, SUGGEST THEY REGISTER
+//	IF THE NUKE_USER VISITING IS NOT A REGISTERED MEMBER, SUGGEST THEY REGISTER
 //-------------------------------------------------------------------------
 if(!is_user())
 {
@@ -901,7 +901,7 @@ if(!is_user())
 	echo '  <tr>'."\n";
 	echo '    <td'.tablecss(FALSE,'center','catHead',2).'>'.$lang_new[$module_name]['ATTENTION'].'</td>'."\n";
 	echo '  </tr>'."\n".'<tr>'."\n";
-	echo '    <td'.tablecss(FALSE,'center','row1',2).'>'.$lang_new[$module_name]['ANONYMOUS'].'</td>'."\n";
+	echo '    <td'.tablecss(FALSE,'center','row1',2).'>'.$lang_new[$module_name]['NUKE_ANONYMOUS'].'</td>'."\n";
 	echo '  </tr>'."\n".'<tr>'."\n";
 	echo '    <td'.tablecss(FALSE,'center','catBottom',2).'>&nbsp;</td>'."\n";
 	echo '  </tr>'."\n";
@@ -909,7 +909,7 @@ if(!is_user())
 	CloseTable();
 } 
 //-------------------------------------------------------------------------
-//	IF THE USER VISITING IS NOT A REGISTERED MEMBER, SUGGEST THEY REGISTER
+//	IF THE NUKE_USER VISITING IS NOT A REGISTERED MEMBER, SUGGEST THEY REGISTER
 //-------------------------------------------------------------------------
 else 
 {

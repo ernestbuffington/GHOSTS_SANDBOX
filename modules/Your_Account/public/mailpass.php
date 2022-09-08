@@ -38,9 +38,9 @@ if (!defined('CNBYA')) {
 }
 
     if (!empty($username) AND empty($user_email)) {
-        $sql = "SELECT username, user_email, user_password, user_level FROM ".$user_prefix."_users WHERE username='$username' LIMIT 1";
+        $sql = "SELECT username, user_email, user_password, user_level FROM ".$nuke_user_prefix."_users WHERE username='$username' LIMIT 1";
     } elseif (empty($username) AND !empty($user_email)) {
-        $sql = "SELECT username, user_email, user_password, user_level FROM ".$user_prefix."_users WHERE user_email='$user_email' LIMIT 1";
+        $sql = "SELECT username, user_email, user_password, user_level FROM ".$nuke_user_prefix."_users WHERE user_email='$user_email' LIMIT 1";
     } else {
         include_once(NUKE_BASE_DIR.'header.php');
 // removed by menelaos dot hetnet dot nl
@@ -52,8 +52,8 @@ if (!defined('CNBYA')) {
         include_once(NUKE_BASE_DIR.'footer.php');
         exit;
     }
-    $result = $db->sql_query($sql);
-    if($db->sql_numrows($result) == 0) {
+    $result = $nuke_db->sql_query($sql);
+    if($nuke_db->sql_numrows($result) == 0) {
         include_once(NUKE_BASE_DIR.'header.php');
 
 // removed by menelaos dot hetnet dot nl
@@ -73,7 +73,7 @@ if (!defined('CNBYA')) {
 /*****[END]********************************************
  [ Base:    NukeSentinel                      v2.5.00 ]
  ******************************************************/
-            $row = $db->sql_fetchrow($result);
+            $row = $nuke_db->sql_fetchrow($result);
             $user_name = $row['username'];
             $user_email = $row['user_email'];
             $user_password = $row['user_password'];
@@ -123,13 +123,13 @@ if (!defined('CNBYA')) {
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
                     if (!empty($username)) {
-                        $query = "UPDATE ".$user_prefix."_users SET user_password='$cryptpass' WHERE username='$username'";
+                        $query = "UPDATE ".$nuke_user_prefix."_users SET user_password='$cryptpass' WHERE username='$username'";
                     } else if (!empty($user_email)) {
-                        $query = "UPDATE ".$user_prefix."_users SET user_password='$cryptpass' WHERE user_email='$user_email'";
+                        $query = "UPDATE ".$nuke_user_prefix."_users SET user_password='$cryptpass' WHERE user_email='$user_email'";
                     }
                     include_once(NUKE_BASE_DIR.'header.php');
                     OpenTable();
-                    if (!$db->sql_query($query)) { echo "<center>"._UPDATEFAILED."</center><br />"; }
+                    if (!$nuke_db->sql_query($query)) { echo "<center>"._UPDATEFAILED."</center><br />"; }
                     echo "<center><strong>"._PASSWORD4." ";
                     if (!empty($username)) { echo "'$user_name'"; } else if (!empty($user_email)) { echo "'$user_email'"; }
                     echo " "._MAILED."</strong><br /><br />"._GOBACK."</center>";
@@ -186,7 +186,7 @@ if (!defined('CNBYA')) {
                 include_once(NUKE_BASE_DIR.'header.php');
                 title(_USERREGLOGIN);
                 OpenTable();
-                echo "<center><span class='title'>"._ACCDELETED."</span></center>\n";
+                echo "<center><span class='title'>"._ACCNUKE_DELETED."</span></center>\n";
                 CloseTable();
                 include_once(NUKE_BASE_DIR.'footer.php');
             }

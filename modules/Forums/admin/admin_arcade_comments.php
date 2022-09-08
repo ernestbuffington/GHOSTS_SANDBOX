@@ -18,7 +18,7 @@
       Advanced Username Color                  v1.0.5       01/30/2006
  ************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -45,17 +45,17 @@ $mode = $HTTP_GET_VARS['mode'];
     $comment_text = preg_replace(array('#&(?!(\#[0-9]+;))#', '#<#', '#>#'), array('&amp;', '&lt;', '&gt;'),$comment_text);
         
     //Enters Comment into the DB
-    $sql = "UPDATE " . COMMENTS_TABLE . " SET comments_value = '$comment_text' WHERE game_id = $game_id";
-    if( !$result = $db->sql_query($sql) )
+    $sql = "UPDATE " . NUKE_COMMENTS_TABLE . " SET comments_value = '$comment_text' WHERE game_id = $game_id";
+    if( !$result = $nuke_db->sql_query($sql) )
     {
-        message_die(GENERAL_ERROR, "Couldn't insert row in comments table", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't insert row in comments table", "", __LINE__, __FILE__, $sql);
     }
         
     //Comment Updated/Added Successfully
     $message = "Comment sucessfully updated."; 
       $message .= "<br /><br />Click <a href=\"admin_arcade_comments.php\">here</a> to return to comments configuration."; 
     $message .= "<meta http-equiv=\"refresh\" content=\"5;URL=admin_arcade_comments.php\">";
-      message_die(GENERAL_MESSAGE, $message); 
+      message_die(NUKE_GENERAL_MESSAGE, $message); 
 
     }
     
@@ -70,13 +70,13 @@ $mode = $HTTP_GET_VARS['mode'];
 
     
     //Gets comments from database
-    $sql = "SELECT g.game_id, g.game_name, c.* FROM " . GAMES_TABLE. " g LEFT JOIN " . COMMENTS_TABLE . " c ON g.game_id = c.game_id WHERE g.game_id = $gid";
-    if( !($result = $db->sql_query($sql)) )
+    $sql = "SELECT g.game_id, g.game_name, c.* FROM " . NUKE_GAMES_TABLE. " g LEFT JOIN " . NUKE_COMMENTS_TABLE . " c ON g.game_id = c.game_id WHERE g.game_id = $gid";
+    if( !($result = $nuke_db->sql_query($sql)) )
             {
-            message_die(GENERAL_ERROR, "Error retrieving comment list", '', __LINE__, __FILE__, $sql); 
+            message_die(NUKE_GENERAL_ERROR, "Error retrieving comment list", '', __LINE__, __FILE__, $sql); 
             }
 
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
 
     $template->assign_vars(array(
             'GAME_ID' => $row['game_id'],
@@ -91,15 +91,15 @@ $mode = $HTTP_GET_VARS['mode'];
 
     }
  
-    $comments_sql = "SELECT * FROM " . COMMENTS_TABLE . " WHERE comments_value <> ''"; 
+    $comments_sql = "SELECT * FROM " . NUKE_COMMENTS_TABLE . " WHERE comments_value <> ''"; 
 
-    if ( !($result_count = $db->sql_query($comments_sql)) ) 
+    if ( !($result_count = $nuke_db->sql_query($comments_sql)) ) 
       { 
          // Error if it fails... 
-         message_die(GENERAL_ERROR, "Couldn't obtain comment count.", "", __LINE__, __FILE__, $sql); 
+         message_die(NUKE_GENERAL_ERROR, "Couldn't obtain comment count.", "", __LINE__, __FILE__, $sql); 
       }
     
-    $count_rows = $db->sql_fetchrowset($result_count);
+    $count_rows = $nuke_db->sql_fetchrowset($result_count);
     $count_rows = array();
     $comments_total= count($count_rows);
 
@@ -111,15 +111,15 @@ $template->set_filenames(array(
    'body' => 'admin/admin_arcade_comments_body.tpl')); 
 
                 
-$sql = "SELECT g.*, c.*, u.* FROM " . GAMES_TABLE. " g LEFT JOIN " . COMMENTS_TABLE . " c ON g.game_id = c.game_id LEFT JOIN " . USERS_TABLE ." u ON g.game_highuser=u.user_id WHERE comments_value <> '' ORDER BY game_name ASC LIMIT $start, $comments_perpage";
-            if( !($result = $db->sql_query($sql)) )
+$sql = "SELECT g.*, c.*, u.* FROM " . NUKE_GAMES_TABLE. " g LEFT JOIN " . NUKE_COMMENTS_TABLE . " c ON g.game_id = c.game_id LEFT JOIN " . NUKE_USERS_TABLE ." u ON g.game_highuser=u.user_id WHERE comments_value <> '' ORDER BY game_name ASC LIMIT $start, $comments_perpage";
+            if( !($result = $nuke_db->sql_query($sql)) )
             {
-            message_die(GENERAL_ERROR, "Error retrieving high score list", '', __LINE__, __FILE__, $sql); 
+            message_die(NUKE_GENERAL_ERROR, "Error retrieving high score list", '', __LINE__, __FILE__, $sql); 
             }
     
     
 
-while ( $row = $db->sql_fetchrow($result))
+while ( $row = $nuke_db->sql_fetchrow($result))
             {
             
             $template->assign_block_vars('commentrow', array(

@@ -27,7 +27,7 @@
     <tr>    
         <td align="center" valign="top" class="{colors.ROW_CLASS}">
             <span class="genmed">
-                {colors.USER}
+                {colors.NUKE_USER}
             </span>
         </td>
         <td align="left" valign="top" class="{colors.ROW_CLASS}">

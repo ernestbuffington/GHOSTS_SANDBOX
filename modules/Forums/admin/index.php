@@ -39,7 +39,7 @@
 	  Arcade                                   v3.0.2       05/29/2009
  ************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 //
 // Load default header
@@ -71,20 +71,20 @@ function inarray($needle, $haystack)
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
     $q = "SELECT forum_id, forum_name
-          FROM ". FORUMS_TABLE ."";
-    $forums_data = $db->sql_ufetchrowset($q);
+          FROM ". NUKE_FORUMS_TABLE ."";
+    $forums_data = $nuke_db->sql_ufetchrowset($q);
 
     $q = "SELECT username, user_id
-          FROM ". USERS_TABLE ."";
-    $users_data = $db->sql_ufetchrowset($q);
+          FROM ". NUKE_USERS_TABLE ."";
+    $users_data = $nuke_db->sql_ufetchrowset($q);
 
     $q = "SELECT topic_id, topic_title
-          FROM ". TOPICS_TABLE ."";
-    $topics_data = $db->sql_ufetchrowset($q);
+          FROM ". NUKE_BB_TOPICS_TABLE ."";
+    $topics_data = $nuke_db->sql_ufetchrowset($q);
 
     $q = "SELECT cat_id, cat_title
-          FROM ". CATEGORIES_TABLE ."";
-    $cats_data = $db->sql_ufetchrowset($q);
+          FROM ". NUKE_CATEGORIES_TABLE ."";
+    $cats_data = $nuke_db->sql_ufetchrowset($q);
 /*****[END]********************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
@@ -307,97 +307,97 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
  [ Mod:    Advance Admin Index Stats           v1.0.0 ]
  ******************************************************/
 $sql = "SELECT COUNT(user_id) AS total
-                    FROM " . USERS_TABLE . "
+                    FROM " . NUKE_USERS_TABLE . "
                     WHERE user_active = 0
-                        AND user_id <> " . ANONYMOUS;
-                if ( !($result = $db->sql_query($sql)) )
+                        AND user_id <> " . NUKE_ANONYMOUS;
+                if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                    message_die(GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
             }
-                if ( $row = $db->sql_fetchrow($result) )
+                if ( $row = $nuke_db->sql_fetchrow($result) )
             {
                     $total_deactivated_users = $row['total'];
             }
                 else
             {
-                    message_die(GENERAL_ERROR,"Couldn't update pending information!", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR,"Couldn't update pending information!", __LINE__, __FILE__, $sql);
             }
-                $db->sql_freeresult($result);
+                $nuke_db->sql_freeresult($result);
                 $deactivated_names = '';
             $sql = "SELECT username
-                    FROM " . USERS_TABLE . "
+                    FROM " . NUKE_USERS_TABLE . "
                     WHERE user_active = 0
-                        AND user_id <> " . ANONYMOUS . "
+                        AND user_id <> " . NUKE_ANONYMOUS . "
                     ORDER BY username";
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                    message_die(GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
             }
-                while ( $row = $db->sql_fetchrow($result) )
+                while ( $row = $nuke_db->sql_fetchrow($result) )
             {
                     $deactivated_names .= (($deactivated_names == '') ? '' : ', ') . UsernameColor($row['username']);
             }
-                $db->sql_freeresult($result);
+                $nuke_db->sql_freeresult($result);
 $sql = "SELECT COUNT(user_id) AS total
-                    FROM " . USERS_TABLE . "
-                    WHERE user_level = " . MOD . "
-                        AND user_id <> " . ANONYMOUS;
-                if ( !($result = $db->sql_query($sql)) )
+                    FROM " . NUKE_USERS_TABLE . "
+                    WHERE user_level = " . NUKE_MOD . "
+                        AND user_id <> " . NUKE_ANONYMOUS;
+                if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                    message_die(GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
             }
-                if ( $row = $db->sql_fetchrow($result) )
+                if ( $row = $nuke_db->sql_fetchrow($result) )
             {
                     $total_moderators = $row['total'];
             }
                 else
             {
-                    message_die(GENERAL_ERROR,"Couldn't update pending information!", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR,"Couldn't update pending information!", __LINE__, __FILE__, $sql);
             }
-                $db->sql_freeresult($result);
+                $nuke_db->sql_freeresult($result);
                 $moderator_names = '';
             $sql = "SELECT username
-                    FROM " . USERS_TABLE . "
-                    WHERE user_level = " . MOD . "
-                        AND user_id <> " . ANONYMOUS . "
+                    FROM " . NUKE_USERS_TABLE . "
+                    WHERE user_level = " . NUKE_MOD . "
+                        AND user_id <> " . NUKE_ANONYMOUS . "
                     ORDER BY username";
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                    message_die(GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
             }
-                while ( $row = $db->sql_fetchrow($result) )
+                while ( $row = $nuke_db->sql_fetchrow($result) )
             {
                     $moderator_names .= (($moderator_names == '') ? '' : ', ') . UsernameColor($row['username']);
             }
-                $db->sql_freeresult($result);
+                $nuke_db->sql_freeresult($result);
 $sql = "SELECT COUNT(user_id) AS total
-                    FROM " . USERS_TABLE . "
-                    WHERE user_level = " . ADMIN . "
-                        AND user_id <> " . ANONYMOUS;
-                if ( !($result = $db->sql_query($sql)) )
+                    FROM " . NUKE_USERS_TABLE . "
+                    WHERE user_level = " . NUKE_ADMIN . "
+                        AND user_id <> " . NUKE_ANONYMOUS;
+                if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                    message_die(GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
             }
-                if ( $row = $db->sql_fetchrow($result) )
+                if ( $row = $nuke_db->sql_fetchrow($result) )
             {
                     $total_administrators = $row['total'];
             }
                 else
             {
-                    message_die(GENERAL_ERROR,"Couldn't update pending information!", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR,"Couldn't update pending information!", __LINE__, __FILE__, $sql);
             }
-                $db->sql_freeresult($result);
+                $nuke_db->sql_freeresult($result);
                 $administrator_names = '';
             $sql = "SELECT username
-                    FROM " . USERS_TABLE . "
-                    WHERE user_level = " . ADMIN . "
-                        AND user_id <> " . ANONYMOUS . "
+                    FROM " . NUKE_USERS_TABLE . "
+                    WHERE user_level = " . NUKE_ADMIN . "
+                        AND user_id <> " . NUKE_ANONYMOUS . "
                     ORDER BY username";
-                if ( !($result = $db->sql_query($sql)) )
+                if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                    message_die(GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
             }
-                while ( $row = $db->sql_fetchrow($result) )
+                while ( $row = $nuke_db->sql_fetchrow($result) )
             {
                     $administrator_names .= (($administrator_names == '') ? '' : ', ') . UsernameColor($row['username']);
             }
@@ -474,36 +474,36 @@ $sql = "SELECT COUNT(user_id) AS total
         if( preg_match("/^mysql/", SQL_LAYER) )
         {
                 $sql = "SELECT VERSION() AS mysql_version";
-                if($result = $db->sql_query($sql))
+                if($result = $nuke_db->sql_query($sql))
                 {
-                        $row = $db->sql_fetchrow($result);
+                        $row = $nuke_db->sql_fetchrow($result);
                         $version = $row['mysql_version'];
 
                         if( preg_match("/^(3\.23|4\.|5\.)/", $version) )
                         {
-                                $db_name = ( preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)|(5\.)/", $version) ) ? "`$dbname`" : $dbname;
+                                $nuke_db_name = ( preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)|(5\.)/", $version) ) ? "`$nuke_dbname`" : $nuke_dbname;
 
                                 $sql = "SHOW TABLE STATUS
-                                        FROM " . $db_name;
-                                if($result = $db->sql_query($sql))
+                                        FROM " . $nuke_db_name;
+                                if($result = $nuke_db->sql_query($sql))
                                 {
-                                        $tabledata_ary = $db->sql_fetchrowset($result);
+                                        $tabledata_ary = $nuke_db->sql_fetchrowset($result);
 
-                                        $dbsize = 0;
+                                        $nuke_dbsize = 0;
                                         for($i = 0; $i < count($tabledata_ary); $i++)
                                         {
                                                 if( $tabledata_ary[$i]['Type'] != "MRG_MyISAM" )
                                                 {
-                                                        if( $table_prefix != "" )
+                                                        if( $phpbb2_table_prefix != "" )
                                                         {
-                                                                if( strstr($tabledata_ary[$i]['Name'], $table_prefix) )
+                                                                if( strstr($tabledata_ary[$i]['Name'], $phpbb2_table_prefix) )
                                                                 {
-                                                                        $dbsize += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
+                                                                        $nuke_dbsize += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
                                                                 }
                                                         }
                                                         else
                                                         {
-                                                                $dbsize += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
+                                                                $nuke_dbsize += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
                                                         }
                                                 }
                                         }
@@ -511,59 +511,59 @@ $sql = "SELECT COUNT(user_id) AS total
                         }
                         else
                         {
-                                $dbsize = $lang['Not_available'];
+                                $nuke_dbsize = $lang['Not_available'];
                         }
                 }
                 else
                 {
-                        $dbsize = $lang['Not_available'];
+                        $nuke_dbsize = $lang['Not_available'];
                 }
         }
         else if( preg_match("/^mssql/", SQL_LAYER) )
         {
                 $sql = "SELECT ((SUM(size) * 8.0) * 1024.0) as dbsize
                         FROM sysfiles";
-                if( $result = $db->sql_query($sql) )
+                if( $result = $nuke_db->sql_query($sql) )
                 {
-                        $dbsize = ( $row = $db->sql_fetchrow($result) ) ? intval($row['dbsize']) : $lang['Not_available'];
+                        $nuke_dbsize = ( $row = $nuke_db->sql_fetchrow($result) ) ? intval($row['dbsize']) : $lang['Not_available'];
                 }
                 else
                 {
-                        $dbsize = $lang['Not_available'];
+                        $nuke_dbsize = $lang['Not_available'];
                 }
         }
         else
         {
-                $dbsize = $lang['Not_available'];
+                $nuke_dbsize = $lang['Not_available'];
         }
 
-        if ( is_integer($dbsize) )
+        if ( is_integer($nuke_dbsize) )
         {
-                if( $dbsize >= 1048576 )
+                if( $nuke_dbsize >= 1048576 )
                 {
-                        $dbsize = sprintf("%.2f MB", ( $dbsize / 1048576 ));
+                        $nuke_dbsize = sprintf("%.2f MB", ( $nuke_dbsize / 1048576 ));
                 }
-                else if( $dbsize >= 1024 )
+                else if( $nuke_dbsize >= 1024 )
                 {
-                        $dbsize = sprintf("%.2f KB", ( $dbsize / 1024 ));
+                        $nuke_dbsize = sprintf("%.2f KB", ( $nuke_dbsize / 1024 ));
                 }
                 else
                 {
-                        $dbsize = sprintf("%.2f Bytes", $dbsize);
+                        $nuke_dbsize = sprintf("%.2f Bytes", $nuke_dbsize);
                 }
         }
 /*****[BEGIN]******************************************
  [ Mod:    Advance Admin Index Stats           v1.0.0 ]
  ******************************************************/
 $sql = "SELECT VERSION() AS mysql_version";
-                $result = $db->sql_query($sql);
+                $result = $nuke_db->sql_query($sql);
                 if ( !$result )
             {
-                    message_die(GENERAL_ERROR,"Couldn't obtain MySQL Version", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR,"Couldn't obtain MySQL Version", __LINE__, __FILE__, $sql);
             }
-                $row = $db->sql_fetchrow($result);
+                $row = $nuke_db->sql_fetchrow($result);
                 $mysql_version = $row['mysql_version'];
-                $db->sql_freeresult($result);
+                $nuke_db->sql_freeresult($result);
 /*****[END]********************************************
  [ Mod:    Advance Admin Index Stats           v1.0.0 ]
  ******************************************************/
@@ -576,7 +576,7 @@ $sql = "SELECT VERSION() AS mysql_version";
                 "TOPICS_PER_DAY" => $topics_per_day,
                 "USERS_PER_DAY" => $users_per_day,
                 "AVATAR_DIR_SIZE" => $avatar_dir_size,
-                "DB_SIZE" => $dbsize,
+                "DB_SIZE" => $nuke_dbsize,
 /*****[BEGIN]******************************************
  [ Mod:    Advance Admin Index Stats           v1.0.0 ]
  ******************************************************/
@@ -606,42 +606,42 @@ $sql = "SELECT VERSION() AS mysql_version";
  [ Mod:    Online Time                         v1.0.0 ]
  ******************************************************/
         $sql = "SELECT u.user_id, u.username, u.user_session_time, u.user_session_page, s.session_url_qs, s.session_url_ps, s.session_url_specific, s.session_logged_in, s.session_ip, s.session_start
-                FROM " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
+                FROM " . NUKE_USERS_TABLE . " u, " . NUKE_BB_SESSIONS_TABLE . " s
                 WHERE s.session_logged_in = " . TRUE . "
                         AND u.user_id = s.session_user_id
-                        AND u.user_id <> " . ANONYMOUS . "
+                        AND u.user_id <> " . NUKE_ANONYMOUS . "
                         AND s.session_time >= " . ( time() - $board_config['online_time'] ) . "
                 ORDER BY u.user_session_time DESC";
 /*****[END]********************************************
  [ Mod:    Online Time                         v1.0.0 ]
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-        $onlinerow_reg = $db->sql_ufetchrowset($sql);
+        $onlinerow_reg = $nuke_db->sql_ufetchrowset($sql);
 /*****[BEGIN]******************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
         $sql = "SELECT session_page, session_logged_in, session_time, session_ip, session_start, session_url_qs, session_url_ps, session_url_specific
-                FROM " . SESSIONS_TABLE . "
+                FROM " . NUKE_BB_SESSIONS_TABLE . "
                 WHERE session_logged_in = 0
                         AND session_time >= " . ( time() - 300 ) . "
                 ORDER BY session_time DESC";
 /*****[END]********************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-        $onlinerow_guest = $db->sql_ufetchrowset($sql);
+        $onlinerow_guest = $nuke_db->sql_ufetchrowset($sql);
 
         $sql = "SELECT forum_name, forum_id
-                FROM " . FORUMS_TABLE;
-        if($forums_result = $db->sql_query($sql))
+                FROM " . NUKE_FORUMS_TABLE;
+        if($forums_result = $nuke_db->sql_query($sql))
         {
-                while($forumsrow = $db->sql_fetchrow($forums_result))
+                while($forumsrow = $nuke_db->sql_fetchrow($forums_result))
                 {
                         $forum_data[$forumsrow['forum_id']] = $forumsrow['forum_name'];
                 }
         }
         else
         {
-                message_die(GENERAL_ERROR, "Couldn't obtain user/online forums information.", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't obtain user/online forums information.", "", __LINE__, __FILE__, $sql);
         }
 
         $reg_userid_ary = array();
@@ -664,7 +664,7 @@ $sql = "SELECT VERSION() AS mysql_version";
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
 
-                                if( $onlinerow_reg[$i]['user_allow_viewonline'] || $userdata['user_level'] == ADMIN )
+                                if( $onlinerow_reg[$i]['user_allow_viewonline'] || $userdata['user_level'] == NUKE_ADMIN )
                                 {
                                         $registered_users++;
                                         $hidden = FALSE;
@@ -679,46 +679,46 @@ $sql = "SELECT VERSION() AS mysql_version";
                                 {
                                         switch($onlinerow_reg[$i]['user_session_page'])
                                         {
-                                                case PAGE_INDEX:
+                                                case NUKE_PAGE_INDEX:
                                                         $location = $lang['Forum_index'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
-                                                case PAGE_POSTING:
+                                                case NUKE_PAGE_POSTING:
                                                         $location = $lang['Posting_message'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
-                                                case PAGE_LOGIN:
+                                                case NUKE_PAGE_LOGIN:
                                                         $location = $lang['Logging_on'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
-                                                case PAGE_SEARCH:
+                                                case NUKE_PAGE_SEARCH:
                                                         $location = $lang['Searching_forums'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
-                                                case PAGE_PROFILE:
+                                                case NUKE_PAGE_PROFILE:
                                                         $location = $lang['Viewing_profile'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
-                                                case PAGE_VIEWONLINE:
+                                                case NUKE_PAGE_VIEWONLINE:
                                                         $location = $lang['Viewing_online'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
-                                                case PAGE_VIEWMEMBERS:
+                                                case NUKE_PAGE_VIEW_MEMBERS:
                                                         $location = $lang['Viewing_member_list'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
-                                                case PAGE_PRIVMSGS:
+                                                case NUKE_PAGE_PRIVMSGS:
                                                         $location = $lang['Viewing_priv_msgs'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
-                                                case PAGE_FAQ:
+                                                case NUKE_PAGE_FAQ:
                                                         $location = $lang['Viewing_FAQ'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
 /*****[BEGIN]******************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/
-                                                case PAGE_REPUTATION:
+                                                case NUKE_PAGE_REPUTATION:
                                                         $location = $lang['Reputation'];
                                                         $location_url = "reputation.$phpEx";
                                                         break;
@@ -728,23 +728,23 @@ $sql = "SELECT VERSION() AS mysql_version";
 /*****[BEGIN]******************************************
  [ Mod:     Arcade                             v3.0.2 ]
  ******************************************************/
-                                                case PAGE_GAME:
+                                                case NUKE_PAGE_GAME:
                                                         $location = $lang['Playing_game'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
-                                                case PAGE_ARCADES:
+                                                case NUKE_PAGE_ARCADES:
                                                         $location = $lang['Viewing_arcades'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
-                                                case PAGE_TOPARCADES:
+                                                case NUKE_PAGE_TOPARCADES:
                                                         $location = $lang['Viewing_toparcades'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
-                                                case PAGE_STATARCADES:
+                                                case NUKE_PAGE_STATARCADES:
                                                         $location = $lang['watchingstats'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
-                                                case PAGE_SCOREBOARD:
+                                                case NUKE_PAGE_SCOREBOARD:
                                                         $location = $lang['watchingboard'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
@@ -755,7 +755,7 @@ $sql = "SELECT VERSION() AS mysql_version";
 /*****[BEGIN]******************************************
  [ Mod:     Staff Site                         v2.0.3 ]
  ******************************************************/
-                                                case PAGE_STAFF:
+                                                case NUKE_PAGE_STAFF:
                                                         $location = $lang['Staff'];
                                                         $location_url = "../staff.$phpEx";
                                                         break;
@@ -766,7 +766,7 @@ $sql = "SELECT VERSION() AS mysql_version";
 /*****[BEGIN]******************************************
  [ Base:    Recent Topics                      v1.2.4 ]
  ******************************************************/
-                                                case PAGE_RECENT:
+                                                case NUKE_PAGE_RECENT:
                                                         $location = $lang['Recent_topics'];
                                                         $location_url = "../recent.$phpEx";
                                                         break;
@@ -780,7 +780,7 @@ $sql = "SELECT VERSION() AS mysql_version";
                                 }
                                 else
                                 {
-                                        $location_url = append_sid("admin_forums.$phpEx?mode=editforum&amp;" . POST_FORUM_URL . "=" . $onlinerow_reg[$i]['user_session_page']);
+                                        $location_url = append_sid("admin_forums.$phpEx?mode=editforum&amp;" . NUKE_POST_FORUM_URL . "=" . $onlinerow_reg[$i]['user_session_page']);
                                         $location = $forum_data[$onlinerow_reg[$i]['user_session_page']];
                                 }
 /*****[BEGIN]******************************************
@@ -807,7 +807,7 @@ $sql = "SELECT VERSION() AS mysql_version";
                                         "IP_ADDRESS" => $reg_ip,
 
                                         "U_WHOIS_IP" => "http://dnsstuff.com/tools/whois.ch?cache=off&ip=$reg_ip",
-                                        "U_USER_PROFILE" => append_sid("admin_users.$phpEx?mode=edit&amp;" . POST_USERS_URL . "=" . $onlinerow_reg[$i]['user_id']),
+                                        "U_USER_PROFILE" => append_sid("admin_users.$phpEx?mode=edit&amp;" . NUKE_POST_USERS_URL . "=" . $onlinerow_reg[$i]['user_id']),
                                         "U_FORUM_LOCATION" => append_sid($location_url))
                                 );
                         }
@@ -838,46 +838,46 @@ $sql = "SELECT VERSION() AS mysql_version";
                         {
                                 switch( $onlinerow_guest[$i]['session_page'] )
                                 {
-                                        case PAGE_INDEX:
+                                        case NUKE_PAGE_INDEX:
                                                 $location = $lang['Forum_index'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
-                                        case PAGE_POSTING:
+                                        case NUKE_PAGE_POSTING:
                                                 $location = $lang['Posting_message'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
-                                        case PAGE_LOGIN:
+                                        case NUKE_PAGE_LOGIN:
                                                 $location = $lang['Logging_on'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
-                                        case PAGE_SEARCH:
+                                        case NUKE_PAGE_SEARCH:
                                                 $location = $lang['Searching_forums'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
-                                        case PAGE_PROFILE:
+                                        case NUKE_PAGE_PROFILE:
                                                 $location = $lang['Viewing_profile'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
-                                        case PAGE_VIEWONLINE:
+                                        case NUKE_PAGE_VIEWONLINE:
                                                 $location = $lang['Viewing_online'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
-                                        case PAGE_VIEWMEMBERS:
+                                        case NUKE_PAGE_VIEW_MEMBERS:
                                                 $location = $lang['Viewing_member_list'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
-                                        case PAGE_PRIVMSGS:
+                                        case NUKE_PAGE_PRIVMSGS:
                                                 $location = $lang['Viewing_priv_msgs'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
-                                        case PAGE_FAQ:
+                                        case NUKE_PAGE_FAQ:
                                                 $location = $lang['Viewing_FAQ'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
 /*****[BEGIN]******************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/
-                                        case PAGE_REPUTATION:
+                                        case NUKE_PAGE_REPUTATION:
                                                 $location = $lang['Reputation'];
                                                 $location_url = "reputation.$phpEx";
                                                 break;
@@ -887,23 +887,23 @@ $sql = "SELECT VERSION() AS mysql_version";
 /*****[BEGIN]******************************************
  [ Mod:     Arcade                             v3.0.2 ]
  ******************************************************/
-                                        case PAGE_GAME:
+                                        case NUKE_PAGE_GAME:
                                                 $location = $lang['Playing_game'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
-                                        case PAGE_ARCADES:
+                                        case NUKE_PAGE_ARCADES:
                                                 $location = $lang['Viewing_arcades'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
-                                        case PAGE_TOPARCADES:
+                                        case NUKE_PAGE_TOPARCADES:
                                                 $location = $lang['Viewing_toparcades'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
-                                        case PAGE_STATARCADES:
+                                        case NUKE_PAGE_STATARCADES:
                                                 $location = $lang['watchingstats'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
-                                        case PAGE_SCOREBOARD:
+                                        case NUKE_PAGE_SCOREBOARD:
                                                 $location = $lang['watchingboard'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
@@ -914,7 +914,7 @@ $sql = "SELECT VERSION() AS mysql_version";
 /*****[BEGIN]******************************************
  [ Mod:     Staff Site                         v2.0.3 ]
  ******************************************************/
-                                        case PAGE_STAFF:
+                                        case NUKE_PAGE_STAFF:
                                                 $location = $lang['Staff'];
                                                 $location_url = "../staff.$phpEx";
                                                 break;
@@ -925,7 +925,7 @@ $sql = "SELECT VERSION() AS mysql_version";
 /*****[BEGIN]******************************************
  [ Base:    Recent Topics                      v1.2.4 ]
  ******************************************************/
-                                        case PAGE_RECENT:
+                                        case NUKE_PAGE_RECENT:
                                                 $location = $lang['Recent_topics'];
                                                 $location_url = "../recent.$phpEx";
                                                 break;
@@ -939,7 +939,7 @@ $sql = "SELECT VERSION() AS mysql_version";
                         }
                         else
                         {
-                                $location_url = append_sid("admin_forums.$phpEx?mode=editforum&amp;" . POST_FORUM_URL . "=" . $onlinerow_guest[$i]['session_page']);
+                                $location_url = append_sid("admin_forums.$phpEx?mode=editforum&amp;" . NUKE_POST_FORUM_URL . "=" . $onlinerow_guest[$i]['session_page']);
                                 $location = $forum_data[$onlinerow_guest[$i]['session_page']];
                         }
 
@@ -993,16 +993,16 @@ $sql = "SELECT VERSION() AS mysql_version";
     {
         if ( isset($board_config['version_check_delay']) )
         {
-            $sql = 'UPDATE ' . CONFIG_TABLE . '
+            $sql = 'UPDATE ' . NUKE_CONFIG_TABLE . '
                         SET config_value = ' . $now . '
                         WHERE config_name = \'version_check_delay\'';
         }
         else
         {
-            $sql = 'INSERT INTO ' . CONFIG_TABLE . '(config_name, config_value)
+            $sql = 'INSERT INTO ' . NUKE_CONFIG_TABLE . '(config_name, config_value)
                         VALUES(\'version_check_delay\', ' . $now . ')';
         }
-        $db->sql_query($sql);
+        $nuke_db->sql_query($sql);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -1121,7 +1121,7 @@ else
 /*****[END]********************************************
  [ Mod:     Log Moderator Actions              v1.1.6 ]
  ******************************************************/
-        $db->sql_close();
+        $nuke_db->sql_close();
         exit;
 
 }

@@ -78,7 +78,7 @@ if ($popup != "1"){
 
 
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 include($phpbb2_root_path . 'extension.inc');
 
@@ -143,8 +143,8 @@ $orig_word = $replacement_word = array();
 //
 // Set topic type
 //
-$topic_type = ( !empty($HTTP_POST_VARS['topictype']) ) ? intval($HTTP_POST_VARS['topictype']) : POST_NORMAL;
-$topic_type = ( in_array($topic_type, array(POST_NORMAL, POST_STICKY, POST_ANNOUNCE, POST_GLOBAL_ANNOUNCE)) ) ? $topic_type : POST_NORMAL;
+$topic_type = ( !empty($HTTP_POST_VARS['topictype']) ) ? intval($HTTP_POST_VARS['topictype']) : NUKE_POST_NORMAL;
+$topic_type = ( in_array($topic_type, array(NUKE_POST_NORMAL, NUKE_POST_STICKY, NUKE_POST_ANNOUNCE, NUKE_POST_GLOBAL_ANNOUNCE)) ) ? $topic_type : NUKE_POST_NORMAL;
 
 //
 // If the mode is set to topic review then output
@@ -158,46 +158,46 @@ if ( $mode == 'topicreview' )
 }
 else if ( $mode == 'smilies' )
 {
-	generate_smilies('window', PAGE_POSTING);
+	generate_smilies('window', NUKE_PAGE_POSTING);
 	exit;
 }
 
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_POSTING);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_POSTING);
 init_userprefs($userdata);
 //
 // End session management
 //
 
 //
-// Was cancel pressed? If so then redirect to the appropriate
+// Was cancel pressed? If so then nuke_redirect to the appropriate
 // page, no point in continuing with any further checks
 //
 if ( isset($HTTP_POST_VARS['cancel']) )
 {
 	if ( $post_id )
 	{
-			$redirect = "viewtopic.$phpEx?" . POST_POST_URL . "=$post_id";
+			$nuke_redirect = "viewtopic.$phpEx?" . NUKE_POST_POST_URL . "=$post_id";
 			$post_append = "#$post_id";
 	}
 	else if ( $topic_id )
 	{
-			$redirect = "viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id";
+			$nuke_redirect = "viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id";
 			$post_append = '';
 	}
 	else if ( $forum_id )
 	{
-			$redirect = "viewforum.$phpEx?" . POST_FORUM_URL . "=$forum_id";
+			$nuke_redirect = "viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id";
 			$post_append = '';
 	}
 	else
 	{
-			$redirect = "index.$phpEx";
+			$nuke_redirect = "index.$phpEx";
 			$post_append = '';
 	}
-	redirect(append_sid($redirect, true) . $post_append);
+	nuke_redirect(append_sid($nuke_redirect, true) . $post_append);
 	exit;
 }
 
@@ -211,18 +211,18 @@ switch( $mode )
 /*****[BEGIN]******************************************
  [ Mod:     Global Announcements               v1.2.8 ]
 ******************************************************/
-		if ( $topic_type == POST_GLOBAL_ANNOUNCE )
+		if ( $topic_type == NUKE_POST_GLOBAL_ANNOUNCE )
 		{
 		   $is_auth_type = 'auth_globalannounce';
 		} else
 /*****[END]********************************************
  [ Mod:     Global Announcements               v1.2.8 ]
 ******************************************************/
-		if ( $topic_type == POST_ANNOUNCE )
+		if ( $topic_type == NUKE_POST_ANNOUNCE )
 		{
 				$is_auth_type = 'auth_announce';
 		}
-		else if ( $topic_type == POST_STICKY )
+		else if ( $topic_type == NUKE_POST_STICKY )
 		{
 				$is_auth_type = 'auth_sticky';
 		}
@@ -265,7 +265,7 @@ switch( $mode )
  ******************************************************/
 
 	default:
-		message_die(GENERAL_MESSAGE, $lang['No_post_mode']);
+		message_die(NUKE_GENERAL_MESSAGE, $lang['No_post_mode']);
 		break;
 
 }
@@ -294,7 +294,7 @@ switch ( $mode )
 
 				{
 
-						message_die(GENERAL_MESSAGE, $lang['Forum_not_exist']);
+						message_die(NUKE_GENERAL_MESSAGE, $lang['Forum_not_exist']);
 
 				}
 
@@ -302,7 +302,7 @@ switch ( $mode )
 
 				$sql = "SELECT *
 
-						FROM " . FORUMS_TABLE . "
+						FROM " . NUKE_FORUMS_TABLE . "
 
 						WHERE forum_id = '$forum_id'";
 
@@ -330,7 +330,7 @@ switch ( $mode )
 
 				{
 
-						message_die(GENERAL_MESSAGE, $lang['No_topic_id']);
+						message_die(NUKE_GENERAL_MESSAGE, $lang['No_topic_id']);
 
 				}
 
@@ -338,7 +338,7 @@ switch ( $mode )
 
 				$sql = "SELECT f.*, t.topic_status, t.topic_title, t.topic_type
 
-						FROM (" . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t)
+						FROM (" . NUKE_FORUMS_TABLE . " f, " . NUKE_BB_TOPICS_TABLE . " t)
 
 						WHERE t.topic_id = '$topic_id'
 
@@ -360,7 +360,7 @@ switch ( $mode )
 
 				{
 
-						message_die(GENERAL_MESSAGE, $lang['No_post_id']);
+						message_die(NUKE_GENERAL_MESSAGE, $lang['No_post_id']);
 
 				}	
 
@@ -378,7 +378,7 @@ switch ( $mode )
 
  ******************************************************/
 
-				$from_sql = ( !$submit ) ? ", " . POSTS_TEXT_TABLE . " pt, " . USERS_TABLE . " u" : '';
+				$from_sql = ( !$submit ) ? ", " . NUKE_POSTS_TEXT_TABLE . " pt, " . NUKE_USERS_TABLE . " u" : '';
 
 				$where_sql = ( !$submit ) ? "AND pt.post_id = p.post_id AND u.user_id = p.poster_id" : '';
 
@@ -390,7 +390,7 @@ switch ( $mode )
 
 				$sql = "SELECT f.*, t.topic_id, t.topic_status, t.topic_glance_priority, t.topic_type, t.topic_first_post_id, t.topic_last_post_id, t.topic_vote, p.post_id, p.poster_id" . $select_sql . "
 
-						FROM (" . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f" . $from_sql . ")
+						FROM (" . NUKE_POSTS_TABLE . " p, " . NUKE_BB_TOPICS_TABLE . " t, " . NUKE_FORUMS_TABLE . " f" . $from_sql . ")
 
 						WHERE p.post_id = '$post_id'
 
@@ -412,17 +412,17 @@ switch ( $mode )
 
 		default:
 
-				message_die(GENERAL_MESSAGE, $lang['No_valid_mode']);
+				message_die(NUKE_GENERAL_MESSAGE, $lang['No_valid_mode']);
 
 }
 
 
 
-if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result)) )
+if ( ($result = $nuke_db->sql_query($sql)) && ($post_info = $nuke_db->sql_fetchrow($result)) )
 
 {
 
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
 
 
 
@@ -454,7 +454,7 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
 
 
-		$is_auth = auth(AUTH_ALL, $forum_id, $userdata, $post_info);
+		$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata, $post_info);
 
 
 
@@ -496,9 +496,9 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
  ******************************************************/
 
-				$sql = "UPDATE " . TOPICS_TABLE . "
+				$sql = "UPDATE " . NUKE_BB_TOPICS_TABLE . "
 
-				SET topic_status = " . TOPIC_UNLOCKED . "
+				SET topic_status = " . NUKE_TOPIC_UNLOCKED . "
 
 				WHERE topic_id = " . $t_id . "
 
@@ -524,9 +524,9 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
  ******************************************************/
 
-				$sql = "UPDATE " . TOPICS_TABLE . "
+				$sql = "UPDATE " . NUKE_BB_TOPICS_TABLE . "
 
-				SET topic_status = " . TOPIC_LOCKED . "
+				SET topic_status = " . NUKE_TOPIC_LOCKED . "
 
 				WHERE topic_id = " . $t_id . "
 
@@ -540,11 +540,11 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
 			{
 
-				if ( !($result = $db->sql_query($sql)) )
+				if ( !($result = $nuke_db->sql_query($sql)) )
 
 				{
 
-					message_die(GENERAL_ERROR, 'Could not update topics table', '', __LINE__, __FILE__, $sql);
+					message_die(NUKE_GENERAL_ERROR, 'Could not update topics table', '', __LINE__, __FILE__, $sql);
 
 				}
 
@@ -560,19 +560,19 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
 
 
-		if ( $post_info['forum_status'] == FORUM_LOCKED && !$is_auth['auth_mod'])
+		if ( $post_info['forum_status'] == NUKE_FORUM_LOCKED && !$is_auth['auth_mod'])
 
 		{
 
-		   message_die(GENERAL_MESSAGE, $lang['Forum_locked']);
+		   message_die(NUKE_GENERAL_MESSAGE, $lang['Forum_locked']);
 
 		}
 
-		else if ( $mode != 'newtopic' && $mode != 'thank' && $post_info['topic_status'] == TOPIC_LOCKED && !$is_auth['auth_mod'])
+		else if ( $mode != 'newtopic' && $mode != 'thank' && $post_info['topic_status'] == NUKE_TOPIC_LOCKED && !$is_auth['auth_mod'])
 
 		{
 
-		   message_die(GENERAL_MESSAGE, $lang['Topic_locked']);
+		   message_die(NUKE_GENERAL_MESSAGE, $lang['Topic_locked']);
 
 		}
 
@@ -622,7 +622,7 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
 						$sql = "SELECT *
 
-								FROM (" . VOTE_DESC_TABLE . " vd, " . VOTE_RESULTS_TABLE . " vr)
+								FROM (" . NUKE_VOTE_DESC_TABLE . " vd, " . NUKE_VOTE_RESULTS_TABLE . " vr)
 
 								WHERE vd.topic_id = '$topic_id'
 
@@ -630,11 +630,11 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
 								ORDER BY vr.vote_option_id";
 
-						if ( !($result = $db->sql_query($sql)) )
+						if ( !($result = $nuke_db->sql_query($sql)) )
 
 						{
 
-								message_die(GENERAL_ERROR, 'Could not obtain vote data for this topic', '', __LINE__, __FILE__, $sql);
+								message_die(NUKE_GENERAL_ERROR, 'Could not obtain vote data for this topic', '', __LINE__, __FILE__, $sql);
 
 						}
 
@@ -644,7 +644,7 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
 						$poll_results_sum = 0;
 
-						if ( $row = $db->sql_fetchrow($result) )
+						if ( $row = $nuke_db->sql_fetchrow($result) )
 
 						{
 
@@ -678,11 +678,11 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
 								}
 
-								while ( $row = $db->sql_fetchrow($result) );
+								while ( $row = $nuke_db->sql_fetchrow($result) );
 
 						}
 
-						$db->sql_freeresult($result);
+						$nuke_db->sql_freeresult($result);
 
 
 
@@ -712,11 +712,11 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
 						$message = ( $delete || $mode == 'delete' ) ? $lang['Delete_own_posts'] : $lang['Edit_own_posts'];
 
-						$message .= '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
+						$message .= '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
 
 
 
-						message_die(GENERAL_MESSAGE, $message);
+						message_die(NUKE_GENERAL_MESSAGE, $message);
 
 				}
 
@@ -724,7 +724,7 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
 				{
 
-						message_die(GENERAL_MESSAGE, $lang['Cannot_delete_replied']);
+						message_die(NUKE_GENERAL_MESSAGE, $lang['Cannot_delete_replied']);
 
 				}
 
@@ -732,7 +732,7 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
 				{
 
-						message_die(GENERAL_MESSAGE, $lang['Cannot_delete_poll']);
+						message_die(NUKE_GENERAL_MESSAGE, $lang['Cannot_delete_poll']);
 
 				}
 
@@ -754,7 +754,7 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
 		{
 
-			$post_data['topic_type'] = POST_NORMAL;
+			$post_data['topic_type'] = NUKE_POST_NORMAL;
 
 		}
 
@@ -774,7 +774,7 @@ if ( ($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result
 
 	{
 
-		message_die(GENERAL_MESSAGE, $lang['No_such_post']);
+		message_die(NUKE_GENERAL_MESSAGE, $lang['No_such_post']);
 
 	}
 
@@ -786,7 +786,7 @@ else
 
 {
 
-		message_die(GENERAL_MESSAGE, $lang['No_such_post']);
+		message_die(NUKE_GENERAL_MESSAGE, $lang['No_such_post']);
 
 }
 
@@ -794,7 +794,7 @@ else
 
 //
 
-// The user is not authed, if they're not logged in then redirect
+// The user is not authed, if they're not logged in then nuke_redirect
 
 // them, else show them an error message
 
@@ -808,7 +808,7 @@ if ( !$is_auth[$is_auth_type] )
 
 		{
 
-				message_die(GENERAL_MESSAGE, sprintf($lang['Sorry_' . $is_auth_type], $is_auth[$is_auth_type . "_type"]));
+				message_die(NUKE_GENERAL_MESSAGE, sprintf($lang['Sorry_' . $is_auth_type], $is_auth[$is_auth_type . "_type"]));
 
 		}
 
@@ -820,7 +820,7 @@ if ( !$is_auth[$is_auth_type] )
 
 				case 'newtopic':
 
-						$redirect = "mode=newtopic&" . POST_FORUM_URL . "=" . $forum_id;
+						$nuke_redirect = "mode=newtopic&" . NUKE_POST_FORUM_URL . "=" . $forum_id;
 
 						break;
 
@@ -842,7 +842,7 @@ if ( !$is_auth[$is_auth_type] )
 
 				case 'topicreview':
 
-						$redirect = "mode=reply&" . POST_TOPIC_URL . "=" . $topic_id;
+						$nuke_redirect = "mode=reply&" . NUKE_POST_TOPIC_URL . "=" . $topic_id;
 
 						break;
 
@@ -850,7 +850,7 @@ if ( !$is_auth[$is_auth_type] )
 
 				case 'editpost':
 
-						$redirect = "mode=quote&" . POST_POST_URL ."=" . $post_id;
+						$nuke_redirect = "mode=quote&" . NUKE_POST_POST_URL ."=" . $post_id;
 
 						break;
 
@@ -858,11 +858,11 @@ if ( !$is_auth[$is_auth_type] )
 
 
 
-		// not needed anymore due to function redirect()
+		// not needed anymore due to function nuke_redirect()
 
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
 
-		redirect(append_sid("login.$phpEx?redirect=posting.$phpEx&" . $redirect, true));
+		nuke_redirect(append_sid("login.$phpEx?nuke_redirect=posting.$phpEx&" . $nuke_redirect, true));
 
 		exit;
 
@@ -871,22 +871,22 @@ if ( !$is_auth[$is_auth_type] )
 /*****[BEGIN]******************************************
  [ Mod:    Password Protect Forums             v0.5.1 ]
  ******************************************************/
-if( !$is_auth['auth_mod'] && $userdata['user_level'] != ADMIN )
+if( !$is_auth['auth_mod'] && $userdata['user_level'] != NUKE_ADMIN )
 {
-	$redirect = str_replace("&amp;", "&", preg_replace('#.*?([a-z]+?\.' . $phpEx . '.*?)$#i', '\1', htmlspecialchars($HTTP_SERVER_VARS['REQUEST_URI'])));
+	$nuke_redirect = str_replace("&amp;", "&", preg_replace('#.*?([a-z]+?\.' . $phpEx . '.*?)$#i', '\1', htmlspecialchars($HTTP_SERVER_VARS['REQUEST_URI'])));
 	if( $HTTP_POST_VARS['cancel'] )
 	{
-		redirect(append_sid("index.$phpEx"));
+		nuke_redirect(append_sid("index.$phpEx"));
 	}
 	else if( $HTTP_POST_VARS['pass_login'] )
 	{
 		if( $post_info['topic_password'] != '' )
 		{
-			password_check('topic', $topic_id, $HTTP_POST_VARS['password'], $redirect);
+			password_check('topic', $topic_id, $HTTP_POST_VARS['password'], $nuke_redirect);
 		}
 		else if( $post_info['forum_password'] != '' )
 		{
-			password_check('forum', $forum_id, $HTTP_POST_VARS['password'], $redirect);
+			password_check('forum', $forum_id, $HTTP_POST_VARS['password'], $nuke_redirect);
 		}
 	}
 
@@ -895,7 +895,7 @@ if( !$is_auth['auth_mod'] && $userdata['user_level'] != ADMIN )
 		$passdata = ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_tpass']) ) ? unserialize(stripslashes($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_tpass'])) : '';
 		if( $passdata[$topic_id] != md5($post_info['topic_password']) )
 		{
-			password_box('topic', $redirect);
+			password_box('topic', $nuke_redirect);
 		}
 	}
 	else if( $post_info['forum_password'] != '' )
@@ -903,7 +903,7 @@ if( !$is_auth['auth_mod'] && $userdata['user_level'] != ADMIN )
 		$passdata = ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_fpass']) ) ? unserialize(stripslashes($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_fpass'])) : '';
 		if( $passdata[$forum_id] != md5($post_info['forum_password']) )
 		{
-			password_box('forum', $redirect);
+			password_box('forum', $nuke_redirect);
 		}
 	}
 }
@@ -927,7 +927,7 @@ else
 
 {
 
-		$html_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_html']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? $board_config['allow_html'] : $userdata['user_allowhtml'] );
+		$html_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_html']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == NUKE_ANONYMOUS ) ? $board_config['allow_html'] : $userdata['user_allowhtml'] );
 
 }
 
@@ -945,7 +945,7 @@ else
 
 {
 
-		$bbcode_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_bbcode']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? $board_config['allow_bbcode'] : $userdata['user_allowbbcode'] );
+		$bbcode_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_bbcode']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == NUKE_ANONYMOUS ) ? $board_config['allow_bbcode'] : $userdata['user_allowbbcode'] );
 
 }
 
@@ -963,7 +963,7 @@ else
 
 {
 
-		$smilies_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_smilies']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? $board_config['allow_smilies'] : $userdata['user_allowsmile'] );
+		$smilies_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_smilies']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == NUKE_ANONYMOUS ) ? $board_config['allow_smilies'] : $userdata['user_allowsmile'] );
 
 }
 
@@ -987,25 +987,25 @@ else
 
 				$sql = "SELECT topic_id
 
-						FROM " . TOPICS_WATCH_TABLE . "
+						FROM " . NUKE_TOPICS_WATCH_TABLE . "
 
 						WHERE topic_id = '$topic_id'
 
 								AND user_id = " . $userdata['user_id'];
 
-				if ( !($result = $db->sql_query($sql)) )
+				if ( !($result = $nuke_db->sql_query($sql)) )
 
 				{
 
-						message_die(GENERAL_ERROR, 'Could not obtain topic watch information', '', __LINE__, __FILE__, $sql);
+						message_die(NUKE_GENERAL_ERROR, 'Could not obtain topic watch information', '', __LINE__, __FILE__, $sql);
 
 				}
 
 
 
-				$notify_user = ( $db->sql_fetchrow($result) ) ? TRUE : $userdata['user_notify'];
+				$notify_user = ( $nuke_db->sql_fetchrow($result) ) ? TRUE : $userdata['user_notify'];
 
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
 
 		}
 
@@ -1021,7 +1021,7 @@ else
 
 
 
-$attach_sig = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['attach_sig']) ) ? TRUE : 0 ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? 0 : $userdata['user_attachsig'] );
+$attach_sig = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['attach_sig']) ) ? TRUE : 0 ) : ( ( $userdata['user_id'] == NUKE_ANONYMOUS ) ? 0 : $userdata['user_attachsig'] );
 
 
 
@@ -1063,7 +1063,7 @@ if ( ( $delete || $poll_delete || $mode == 'delete' ) && !$confirm )
 
 		//
 
-		$s_hidden_fields = '<input type="hidden" name="' . POST_POST_URL . '" value="' . $post_id . '" />';
+		$s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_POST_URL . '" value="' . $post_id . '" />';
 
 		$s_hidden_fields .= ( $delete || $mode == "delete" ) ? '<input type="hidden" name="mode" value="delete" />' : '<input type="hidden" name="mode" value="poll_delete" />';
 
@@ -1133,7 +1133,7 @@ else if ( $mode == 'thank' )
 
 {
 
-	$topic_id = intval($HTTP_GET_VARS[POST_TOPIC_URL]);
+	$topic_id = intval($HTTP_GET_VARS[NUKE_POST_TOPIC_URL]);
 
 		if ( !($userdata['session_logged_in']) )
 
@@ -1141,9 +1141,9 @@ else if ( $mode == 'thank' )
 
 			$message = $lang['thanks_not_logged'];
 
-			$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
+			$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
 
-			message_die(GENERAL_MESSAGE, $message);
+			message_die(NUKE_GENERAL_MESSAGE, $message);
 
 		}
 
@@ -1151,7 +1151,7 @@ else if ( $mode == 'thank' )
 
 		{
 
-			message_die(GENERAL_MESSAGE, 'No topic Selected');
+			message_die(NUKE_GENERAL_MESSAGE, 'No topic Selected');
 
 		}
 
@@ -1167,17 +1167,17 @@ else if ( $mode == 'thank' )
 
 		$sql = "SELECT `topic_poster`
 
-				FROM " . TOPICS_TABLE . " 
+				FROM " . NUKE_BB_TOPICS_TABLE . " 
 
 				WHERE topic_id = $topic_id
 
 				AND topic_poster = $userid";
 
-		if ( !($result = $db->sql_query($sql)) )
+		if ( !($result = $nuke_db->sql_query($sql)) )
 
 		{
 
-			message_die(GENERAL_ERROR, "Couldn't check for topic starter", '', __LINE__, __FILE__, $sql);
+			message_die(NUKE_GENERAL_ERROR, "Couldn't check for topic starter", '', __LINE__, __FILE__, $sql);
 
 					
 
@@ -1185,15 +1185,15 @@ else if ( $mode == 'thank' )
 
 
 
-		if ( ($topic_starter_check = $db->sql_fetchrow($result)) )
+		if ( ($topic_starter_check = $nuke_db->sql_fetchrow($result)) )
 
 		{
 
 			$message = $lang['t_starter'];
 
-			$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
+			$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
 
-			message_die(GENERAL_MESSAGE, $message);
+			message_die(NUKE_GENERAL_MESSAGE, $message);
 
 		}
 
@@ -1203,37 +1203,37 @@ else if ( $mode == 'thank' )
 
 		$sql = "SELECT `topic_id`
 
-				FROM " . THANKS_TABLE . " 
+				FROM " . NUKE_THANKS_TABLE . " 
 
 				WHERE topic_id = $topic_id
 
 				AND user_id = $userid";
 
-		if ( !($result = $db->sql_query($sql)) )
+		if ( !($result = $nuke_db->sql_query($sql)) )
 
 		{
 
-			message_die(GENERAL_ERROR, "Couldn't check for previous thanks", '', __LINE__, __FILE__, $sql);
+			message_die(NUKE_GENERAL_ERROR, "Couldn't check for previous thanks", '', __LINE__, __FILE__, $sql);
 
 					
 
 		}
 
-		if ( !($thankfull_check = $db->sql_fetchrow($result)) )
+		if ( !($thankfull_check = $nuke_db->sql_fetchrow($result)) )
 
 		{
 
 			// Insert thanks if he/she hasn't
 
-			$sql = "INSERT INTO " . THANKS_TABLE . " (topic_id, user_id, thanks_time) 
+			$sql = "INSERT INTO " . NUKE_THANKS_TABLE . " (topic_id, user_id, thanks_time) 
 
 			VALUES ('" . $topic_id . "', '" . $userid . "', " . $thanks_date . ") ";
 
-			if ( !($result = $db->sql_query($sql)) )
+			if ( !($result = $nuke_db->sql_query($sql)) )
 
 			{
 
-				message_die(GENERAL_ERROR, "Could not insert thanks information", '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, "Could not insert thanks information", '', __LINE__, __FILE__, $sql);
 
 					
 
@@ -1255,17 +1255,17 @@ else if ( $mode == 'thank' )
 
 		$template->assign_vars(array(
 
-			'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id") . '">')
+			'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">')
 
 		);
 
 
 
-		$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
+		$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
 
 		
 
-		message_die(GENERAL_MESSAGE, $message);	
+		message_die(NUKE_GENERAL_MESSAGE, $message);	
 
 }
 
@@ -1295,7 +1295,7 @@ else if ( $mode == 'vote' )
 
 				$sql = "SELECT vd.vote_id
 
-						FROM (" . VOTE_DESC_TABLE . " vd, " . VOTE_RESULTS_TABLE . " vr)
+						FROM (" . NUKE_VOTE_DESC_TABLE . " vd, " . NUKE_VOTE_RESULTS_TABLE . " vr)
 
 						WHERE vd.topic_id = '$topic_id'
 
@@ -1305,17 +1305,17 @@ else if ( $mode == 'vote' )
 
 						GROUP BY vd.vote_id";
 
-				if ( !($result = $db->sql_query($sql)) )
+				if ( !($result = $nuke_db->sql_query($sql)) )
 
 				{
 
-						message_die(GENERAL_ERROR, 'Could not obtain vote data for this topic', '', __LINE__, __FILE__, $sql);
+						message_die(NUKE_GENERAL_ERROR, 'Could not obtain vote data for this topic', '', __LINE__, __FILE__, $sql);
 
 				}
 
 
 
-				if ( $vote_info = $db->sql_fetchrow($result) )
+				if ( $vote_info = $nuke_db->sql_fetchrow($result) )
 
 				{
 
@@ -1325,27 +1325,27 @@ else if ( $mode == 'vote' )
 
 						$sql = "SELECT *
 
-								FROM " . VOTE_USERS_TABLE . "
+								FROM " . NUKE_VOTE_USERS_TABLE . "
 
 								WHERE vote_id = '$vote_id'
 
 										AND vote_user_id = " . $userdata['user_id'];
 
-			if ( !($result2 = $db->sql_query($sql)) )
+			if ( !($result2 = $nuke_db->sql_query($sql)) )
 
 						{
 
-								message_die(GENERAL_ERROR, 'Could not obtain user vote data for this topic', '', __LINE__, __FILE__, $sql);
+								message_die(NUKE_GENERAL_ERROR, 'Could not obtain user vote data for this topic', '', __LINE__, __FILE__, $sql);
 
 						}
 
 
 
-			if ( !($row = $db->sql_fetchrow($result2)) )
+			if ( !($row = $nuke_db->sql_fetchrow($result2)) )
 
 						{
 
-								$sql = "UPDATE " . VOTE_RESULTS_TABLE . "
+								$sql = "UPDATE " . NUKE_VOTE_RESULTS_TABLE . "
 
 										SET vote_result = vote_result + 1
 
@@ -1353,11 +1353,11 @@ else if ( $mode == 'vote' )
 
 												AND vote_option_id = '$vote_option_id'";
 
-								if ( !$db->sql_query($sql) )
+								if ( !$nuke_db->sql_query($sql) )
 
 								{
 
-										message_die(GENERAL_ERROR, 'Could not update poll result', '', __LINE__, __FILE__, $sql);
+										message_die(NUKE_GENERAL_ERROR, 'Could not update poll result', '', __LINE__, __FILE__, $sql);
 
 								}
 
@@ -1369,7 +1369,7 @@ else if ( $mode == 'vote' )
 
  ******************************************************/
 
-								$sql = "INSERT INTO " . VOTE_USERS_TABLE . " (vote_id, vote_user_id, vote_user_ip, vote_cast)
+								$sql = "INSERT INTO " . NUKE_VOTE_USERS_TABLE . " (vote_id, vote_user_id, vote_user_ip, vote_cast)
 
 										VALUES ('$vote_id', " . $userdata['user_id'] . ", '$user_ip', '$vote_option_id')";
 
@@ -1379,11 +1379,11 @@ else if ( $mode == 'vote' )
 
  ******************************************************/
 
-								if ( !$db->sql_query($sql) )
+								if ( !$nuke_db->sql_query($sql) )
 
 								{
 
-										message_die(GENERAL_ERROR, "Could not insert user_id for poll", "", __LINE__, __FILE__, $sql);
+										message_die(NUKE_GENERAL_ERROR, "Could not insert user_id for poll", "", __LINE__, __FILE__, $sql);
 
 								}
 
@@ -1401,7 +1401,7 @@ else if ( $mode == 'vote' )
 
 						}
 
-			$db->sql_freeresult($result2);
+			$nuke_db->sql_freeresult($result2);
 
 				}
 
@@ -1413,19 +1413,19 @@ else if ( $mode == 'vote' )
 
 				}
 
-		$db->sql_freeresult($result);
+		$nuke_db->sql_freeresult($result);
 
 
 
 				$template->assign_vars(array(
 
-						'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id") . '">')
+						'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">')
 
 				);
 
-				$message .=  '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
+				$message .=  '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
 
-				message_die(GENERAL_MESSAGE, $message);
+				message_die(NUKE_GENERAL_MESSAGE, $message);
 
 		}
 
@@ -1433,7 +1433,7 @@ else if ( $mode == 'vote' )
 
 		{
 
-				redirect(append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id", true));
+				nuke_redirect(append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id", true));
 
 		}
 
@@ -1547,7 +1547,7 @@ else if ( $submit || $confirm )
 
 								$t_id = ( !isset($post_info['topic_id']) ) ? $topic_id : $post_info['topic_id'];
 
-								$sqlA = "UPDATE " . TOPICS_TABLE . "
+								$sqlA = "UPDATE " . NUKE_BB_TOPICS_TABLE . "
 
 								SET topic_glance_priority = " . $topic_glance_priority . "
 
@@ -1555,11 +1555,11 @@ else if ( $submit || $confirm )
 
 								AND topic_moved_id = '0'";
 
-							   if ( !($resultA = $db->sql_query($sqlA)) )
+							   if ( !($resultA = $nuke_db->sql_query($sqlA)) )
 
 								{
 
-									message_die(GENERAL_ERROR, 'Could not update topics table', '', __LINE__, __FILE__, $sql);
+									message_die(NUKE_GENERAL_ERROR, 'Could not update topics table', '', __LINE__, __FILE__, $sql);
 
 								}
 
@@ -1667,7 +1667,7 @@ else if ( $submit || $confirm )
 
 								$t_id = ( !isset($post_info['topic_id']) ) ? $topic_id : $post_info['topic_id'];
 
-								$sqlA = "UPDATE " . TOPICS_TABLE . "
+								$sqlA = "UPDATE " . NUKE_BB_TOPICS_TABLE . "
 
 								SET topic_glance_priority = " . $topic_glance_priority . "
 
@@ -1675,11 +1675,11 @@ else if ( $submit || $confirm )
 
 								AND topic_moved_id = '0'";
 
-							   if ( !($resultA = $db->sql_query($sqlA)) )
+							   if ( !($resultA = $nuke_db->sql_query($sqlA)) )
 
 								{
 
-									message_die(GENERAL_ERROR, 'Could not update topics table', '', __LINE__, __FILE__, $sql);
+									message_die(NUKE_GENERAL_ERROR, 'Could not update topics table', '', __LINE__, __FILE__, $sql);
 
 								}
 
@@ -1705,7 +1705,7 @@ else if ( $submit || $confirm )
 
 					{
 
-						message_die(GENERAL_MESSAGE, $error_msg);
+						message_die(NUKE_GENERAL_MESSAGE, $error_msg);
 
 					}
 
@@ -1783,8 +1783,8 @@ else if ( $submit || $confirm )
  ******************************************************/
 				if ( ( $error_msg == '' ) && ( $lock ) && ( $mode == 'newtopic' ) )
 				{
-					$sql = "UPDATE " . TOPICS_TABLE . "
-					SET topic_status = " . TOPIC_LOCKED . "
+					$sql = "UPDATE " . NUKE_BB_TOPICS_TABLE . "
+					SET topic_status = " . NUKE_TOPIC_LOCKED . "
 					WHERE topic_id = " . $topic_id . "
 					AND topic_moved_id = 0";
 
@@ -1796,9 +1796,9 @@ else if ( $submit || $confirm )
  [ Mod:     Log Moderator Actions              v1.1.6 ]
  ******************************************************/
 
-					if ( !($result = $db->sql_query($sql)) )
+					if ( !($result = $nuke_db->sql_query($sql)) )
 						{
-						message_die(GENERAL_ERROR, 'Could not update topics table', '', __LINE__, __FILE__, $sql);
+						message_die(NUKE_GENERAL_ERROR, 'Could not update topics table', '', __LINE__, __FILE__, $sql);
 					}
 				}
 /*****[END]********************************************
@@ -1824,7 +1824,7 @@ else if ( $submit || $confirm )
 				$template->assign_vars(array(
 						'META' => $return_meta)
 				);
-				message_die(GENERAL_MESSAGE, $return_message);
+				message_die(NUKE_GENERAL_MESSAGE, $return_message);
 		}
 }
 
@@ -1919,11 +1919,11 @@ if( $refresh || isset($HTTP_POST_VARS['del_poll_option']) || $error_msg != '' )
 				$valid = FALSE;
 				if( $userdata['session_logged_in'] ) {
 					$sql = "SELECT p.poster_id, p.topic_id
-						FROM " . POSTS_TABLE . " p
+						FROM " . NUKE_POSTS_TABLE . " p
 						WHERE p.topic_id = $topic_id
 						AND p.poster_id = " . $userdata['user_id'];
-					$resultat = $db->sql_query($sql);
-					$valid = $db->sql_numrows($resultat) ? TRUE : FALSE;}
+					$resultat = $nuke_db->sql_query($sql);
+					$valid = $nuke_db->sql_numrows($resultat) ? TRUE : FALSE;}
 
 				if( $attach_sig && $user_sig != '' && $userdata['user_sig_bbcode_uid'] )
 				{
@@ -2093,11 +2093,11 @@ else
  ******************************************************/
 if( !$userdata['session_logged_in'] ) {$message = hide_in_quote($message);}
 else { $sql = "SELECT p.poster_id, p.topic_id
-FROM " . POSTS_TABLE . " p
+FROM " . NUKE_POSTS_TABLE . " p
 WHERE p.topic_id = $topic_id
 AND p.poster_id = " . $userdata['user_id'];
-$resultat = $db->sql_query($sql);
-if(!$db->sql_numrows($resultat)) {$message = hide_in_quote($message);}
+$resultat = $nuke_db->sql_query($sql);
+if(!$nuke_db->sql_numrows($resultat)) {$message = hide_in_quote($message);}
 				}
 /*****[END]********************************************
  [ Mod:    Hide Mod                            v1.2.0 ]
@@ -2194,7 +2194,7 @@ if(!$db->sql_numrows($resultat)) {$message = hide_in_quote($message);}
 				}
 				else
 				{
-						$username = ( $post_info['user_id'] == ANONYMOUS && !empty($post_info['post_username']) ) ? $post_info['post_username'] : '';
+						$username = ( $post_info['user_id'] == NUKE_ANONYMOUS && !empty($post_info['post_username']) ) ? $post_info['post_username'] : '';
 				}
 		}
 }
@@ -2246,7 +2246,7 @@ else
 		$smilies_status = $lang['Smilies_are_OFF'];
 }
 
-if( !$userdata['session_logged_in'] || ( $mode == 'editpost' && $post_info['poster_id'] == ANONYMOUS ) )
+if( !$userdata['session_logged_in'] || ( $mode == 'editpost' && $post_info['poster_id'] == NUKE_ANONYMOUS ) )
 {
 		$template->assign_block_vars('switch_username_select', array());
 }
@@ -2256,7 +2256,7 @@ if( !$userdata['session_logged_in'] || ( $mode == 'editpost' && $post_info['post
 //
 if ( $userdata['session_logged_in'] && $is_auth['auth_read'] )
 {
-		if ( $mode != 'editpost' || ( $mode == 'editpost' && $post_info['poster_id'] != ANONYMOUS ) )
+		if ( $mode != 'editpost' || ( $mode == 'editpost' && $post_info['poster_id'] != NUKE_ANONYMOUS ) )
 		{
 				$template->assign_block_vars('switch_notify_checkbox', array());
 		}
@@ -2275,7 +2275,7 @@ if ( $mode == 'editpost' && ( ( $is_auth['auth_delete'] && $post_data['last_post
  ******************************************************/
 if ( ( $mode == 'editpost' || $mode == 'reply' || $mode == 'quote' || $mode == 'newtopic' ) && ( $is_auth['auth_mod'] ) )
 {
-	if ( $post_info['topic_status'] == TOPIC_LOCKED )
+	if ( $post_info['topic_status'] == NUKE_TOPIC_LOCKED )
 	{
 		$template->assign_block_vars('switch_unlock_topic', array());
 
@@ -2284,7 +2284,7 @@ if ( ( $mode == 'editpost' || $mode == 'reply' || $mode == 'quote' || $mode == '
 			'S_UNLOCK_CHECKED' => ( $unlock ) ? 'checked="checked"' : '')
 		);
 	}
-	else if ( $post_info['topic_status'] == TOPIC_UNLOCKED )
+	else if ( $post_info['topic_status'] == NUKE_TOPIC_UNLOCKED )
 	{
 		$template->assign_block_vars('switch_lock_topic', array());
 
@@ -2338,8 +2338,8 @@ if ( $mode == 'newtopic' || ( $mode == 'editpost' && $post_data['first_post'] ) 
 
 	if( $is_auth['auth_sticky'] )
 	{
-		$topic_type_toggle .= '<input type="radio" name="topictype" value="' . POST_STICKY . '"';
-		if ( $post_data['topic_type'] == POST_STICKY || $topic_type == POST_STICKY )
+		$topic_type_toggle .= '<input type="radio" name="topictype" value="' . NUKE_POST_STICKY . '"';
+		if ( $post_data['topic_type'] == NUKE_POST_STICKY || $topic_type == NUKE_POST_STICKY )
 		{
 			$topic_type_toggle .= ' checked="checked"';
 		}
@@ -2352,8 +2352,8 @@ if ( $mode == 'newtopic' || ( $mode == 'editpost' && $post_data['first_post'] ) 
 
 	if( $is_auth['auth_announce'] )
 	{
-		$topic_type_toggle .= '<input type="radio" name="topictype" value="' . POST_ANNOUNCE . '"';
-		if ( $post_data['topic_type'] == POST_ANNOUNCE || $topic_type == POST_ANNOUNCE )
+		$topic_type_toggle .= '<input type="radio" name="topictype" value="' . NUKE_POST_ANNOUNCE . '"';
+		if ( $post_data['topic_type'] == NUKE_POST_ANNOUNCE || $topic_type == NUKE_POST_ANNOUNCE )
 		{
 			$topic_type_toggle .= ' checked="checked"';
 		}
@@ -2366,8 +2366,8 @@ if ( $mode == 'newtopic' || ( $mode == 'editpost' && $post_data['first_post'] ) 
 
 	if( $is_auth['auth_globalannounce'] )
 	{
-		$topic_type_toggle .= '<input type="radio" name="topictype" value="' . POST_GLOBAL_ANNOUNCE . '"';
-		if ( $post_data['topic_type'] == POST_GLOBAL_ANNOUNCE || $topic_type == POST_GLOBAL_ANNOUNCE )
+		$topic_type_toggle .= '<input type="radio" name="topictype" value="' . NUKE_POST_GLOBAL_ANNOUNCE . '"';
+		if ( $post_data['topic_type'] == NUKE_POST_GLOBAL_ANNOUNCE || $topic_type == NUKE_POST_GLOBAL_ANNOUNCE )
 		{
 			$topic_type_toggle .= ' checked="checked"';
 		}
@@ -2383,7 +2383,7 @@ if ( $mode == 'newtopic' || ( $mode == 'editpost' && $post_data['first_post'] ) 
 	 */	
 	if ( $topic_type_toggle != '' ):
 	
-		$topic_type_toggle = '<input type="radio" name="topictype" value="' . POST_NORMAL .'"' . ( ( $post_data['topic_type'] == POST_NORMAL || $topic_type == POST_NORMAL ) ? ' checked="checked"' : '' ) . ' /> ' . $lang['Post_Normal'] . '&nbsp;&nbsp;' . $topic_type_toggle;
+		$topic_type_toggle = '<input type="radio" name="topictype" value="' . NUKE_POST_NORMAL .'"' . ( ( $post_data['topic_type'] == NUKE_POST_NORMAL || $topic_type == NUKE_POST_NORMAL ) ? ' checked="checked"' : '' ) . ' /> ' . $lang['Post_Normal'] . '&nbsp;&nbsp;' . $topic_type_toggle;
 		$show_topic_select = TRUE;
 
 	endif;
@@ -2396,22 +2396,22 @@ switch( $mode )
 {
 	case 'newtopic':
 		$page_title = $lang['Post_a_new_topic'];
-		$hidden_form_fields .= '<input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />';
+		$hidden_form_fields .= '<input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '" />';
 		break;
 
 	case 'reply':
 		$page_title = $lang['Post_a_reply'];
-		$hidden_form_fields .= '<input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '" />';
+		$hidden_form_fields .= '<input type="hidden" name="' . NUKE_POST_TOPIC_URL . '" value="' . $topic_id . '" />';
 		break;
 
 	case 'editpost':
 		$page_title = $lang['Edit_Post'];
-		$hidden_form_fields .= '<input type="hidden" name="' . POST_POST_URL . '" value="' . $post_id . '" />';
+		$hidden_form_fields .= '<input type="hidden" name="' . NUKE_POST_POST_URL . '" value="' . $post_id . '" />';
 		break;
 }
 
 // Generate smilies listing for page output
-generate_smilies('inline', PAGE_POSTING);
+generate_smilies('inline', NUKE_PAGE_POSTING);
 
 /*--FNA #6--*/
 
@@ -2449,7 +2449,7 @@ if( $parent_id )
 		{
 			$template->assign_vars(array(
 				'PARENT_FORUM'			=> 1,
-				'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?" . POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
+				'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
 				'PARENT_FORUM_NAME'		=> $all_forums[$i]['forum_name'],
 				));
 		}
@@ -2474,11 +2474,11 @@ $template->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:     View Topic Name While Posting      v1.0.5 ]
  ******************************************************/
-		'U_VIEW_TOPIC' => append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id"),
+		'U_VIEW_TOPIC' => append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id"),
 /*****[END]********************************************
  [ Mod:     View Topic Name While Posting      v1.0.5 ]
  ******************************************************/
-		'U_VIEW_FORUM' => append_sid("viewforum.$phpEx?" . POST_FORUM_URL . "=$forum_id"))
+		'U_VIEW_FORUM' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id"))
 );
 
 //
@@ -2528,8 +2528,8 @@ $template->assign_vars(array(
 		'L_DELETE_POST' => $lang['Delete_post'],
 		'L_STYLES_TIP' => $lang['Styles_tip'],
 
-		'U_VIEWTOPIC' => ( $mode == 'reply' ) ? append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;postorder=desc") : '',
-		'U_REVIEW_TOPIC' => ( $mode == 'reply' ) ? append_sid("posting.$phpEx?mode=topicreview&amp;" . POST_TOPIC_URL . "=$topic_id&popup=1") : '',
+		'U_VIEWTOPIC' => ( $mode == 'reply' ) ? append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;postorder=desc") : '',
+		'U_REVIEW_TOPIC' => ( $mode == 'reply' ) ? append_sid("posting.$phpEx?mode=topicreview&amp;" . NUKE_POST_TOPIC_URL . "=$topic_id&popup=1") : '',
 
 		'S_HTML_CHECKED' => ( !$html_on ) ? 'checked="checked"' : '',
 		'S_BBCODE_CHECKED' => ( !$bbcode_on ) ? 'checked="checked"' : '',
@@ -2547,10 +2547,10 @@ $template->assign_vars(array(
 		'S_SHOW_TYPE_STICKY' => $show_sticky,
 		'S_SHOW_TYPE_ANNOUNCE' => $show_announce,
 		'S_SHOW_TYPE_GLOBAL_ANNOUNCE' => $show_global_announce,
-		'S_IS_NORMAL' => ( $post_data['topic_type'] == POST_NORMAL || $topic_type == POST_NORMAL ) ? ' selected="selected"' : '',
-		'S_IS_STICKY' => ( $post_data['topic_type'] == POST_STICKY || $topic_type == POST_STICKY ) ? ' selected="selected"' : '',
-		'S_IS_ANNOUNCE' => ( $post_data['topic_type'] == POST_ANNOUNCE || $topic_type == POST_ANNOUNCE ) ? ' selected="selected"' : '',
-		'S_IS_GLOBAL_ANNOUNCE' => ( $post_data['topic_type'] == POST_GLOBAL_ANNOUNCE || $topic_type == POST_GLOBAL_ANNOUNCE ) ? ' selected="selected"' : '',
+		'S_IS_NORMAL' => ( $post_data['topic_type'] == NUKE_POST_NORMAL || $topic_type == NUKE_POST_NORMAL ) ? ' selected="selected"' : '',
+		'S_IS_STICKY' => ( $post_data['topic_type'] == NUKE_POST_STICKY || $topic_type == NUKE_POST_STICKY ) ? ' selected="selected"' : '',
+		'S_IS_ANNOUNCE' => ( $post_data['topic_type'] == NUKE_POST_ANNOUNCE || $topic_type == NUKE_POST_ANNOUNCE ) ? ' selected="selected"' : '',
+		'S_IS_GLOBAL_ANNOUNCE' => ( $post_data['topic_type'] == NUKE_POST_GLOBAL_ANNOUNCE || $topic_type == NUKE_POST_GLOBAL_ANNOUNCE ) ? ' selected="selected"' : '',
 		'L_TYPE_NORMAL_TOPIC' => $lang['Post_Normal'],
 		'L_TYPE_STICKY_TOPIC' => $lang['Post_Sticky'],
 		'L_TYPE_ANNOUNCE_TOPIC' => $lang['Post_Announcement'],
@@ -2580,19 +2580,19 @@ for ($i = 0; $i < count($icones); $i++)
 	switch ($icones[$i]['auth'])
 	{
 
-		case AUTH_ADMIN:
-			if ( $userdata['user_level'] == ADMIN )
+		case NUKE_AUTH_ADMIN:
+			if ( $userdata['user_level'] == NUKE_ADMIN )
 			{
 				$icones_sort[] = $i;
 			}
 			break;
-		case AUTH_MOD:
+		case NUKE_AUTH_MOD:
 			if ( $is_auth['auth_mod'] )
 			{
 				$icones_sort[] = $i;
 			}
 			break;
-		case AUTH_REG:
+		case NUKE_AUTH_REG:
 			if ( $userdata['session_logged_in'] )
 			{
 				$icones_sort[] = $i;

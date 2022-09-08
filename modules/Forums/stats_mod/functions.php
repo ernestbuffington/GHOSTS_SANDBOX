@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -34,7 +34,7 @@ class StatisticsFUNCTIONS
 {
     // forum auth variables <- forum_auth()
 //    var $auth_loaded = FALSE;
-//    var $previous_auth = AUTH_VIEW;
+//    var $previous_auth = NUKE_AUTH_VIEW;
     var $auth_data_sql = '';
 
     // Sort multi-dimensional array
@@ -103,9 +103,9 @@ class StatisticsFUNCTIONS
 /*    //
     // Forum Auth (Returns an Forum SQL ID String)
     //
-    function forum_auth($userdata, $auth = AUTH_VIEW)
+    function forum_auth($userdata, $auth = NUKE_AUTH_VIEW)
     {
-        global $db;
+        global $nuke_db;
 
         if (($this->auth_loaded) && ($this->previous_auth == $auth))
         {
@@ -114,17 +114,17 @@ class StatisticsFUNCTIONS
         
         $this->auth_data_sql = '';
 
-        $is_auth_ary = auth($auth, AUTH_LIST_ALL, $userdata);
+        $is_auth_ary = auth($auth, NUKE_AUTH_LIST_ALL, $userdata);
 
         $sql = 'SELECT forum_id 
-        FROM ' . FORUMS_TABLE;
+        FROM ' . NUKE_FORUMS_TABLE;
 
-        if ( !($result = $db->sql_query($sql)) )
+        if ( !($result = $nuke_db->sql_query($sql)) )
         {
-            message_die(GENERAL_ERROR, 'Couldn\'t retrieve forum_id data', '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Couldn\'t retrieve forum_id data', '', __LINE__, __FILE__, $sql);
         }
 
-        while ( $row = $db->sql_fetchrow($result)) 
+        while ( $row = $nuke_db->sql_fetchrow($result)) 
         {
             if ($is_auth_ary[$row['forum_id']]['auth_view'])
             {
@@ -142,11 +142,11 @@ class StatisticsFUNCTIONS
     //
     function init_auth_settings($userdata)
     {
-        global $db;
+        global $nuke_db;
 
         $this->auth_data_sql = array();
 
-        $auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+        $auth_ary = auth(NUKE_AUTH_ALL, NUKE_AUTH_LIST_ALL, $userdata);
 
         @reset($auth_ary);
 

@@ -93,7 +93,7 @@
             </script>
             <a href="{votes.LINK}">{votes.DESCRIPTION}</a></span><br />
         </td> 
-        <td class="{votes.COLOR}" border="1"><span class="gensmall">{votes.USER}</span></td> 
+        <td class="{votes.COLOR}" border="1"><span class="gensmall">{votes.NUKE_USER}</span></td> 
         <td class="{votes.COLOR}" border="1" align="center" width="120"><span class="gensmall">{votes.VOTE_DURATION}</span></td> 
     </tr> 
     <tr id="vote{votes.VOTE_ID}_switch" style="display:none;"> 
@@ -102,7 +102,7 @@
 <!-- BEGIN detail --> 
     <tr> 
         <td class="row1">{votes.detail.OPTION} ({votes.detail.RESULT})</td> 
-        <td class="row3"><span class="gensmall">{votes.detail.USER}</span></td> 
+        <td class="row3"><span class="gensmall">{votes.detail.NUKE_USER}</span></td> 
     </tr> 
 <!-- END detail --> 
 </table> 

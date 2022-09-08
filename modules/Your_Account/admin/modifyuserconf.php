@@ -71,11 +71,11 @@ if(is_mod_admin($module_name)) {
 /*****[END]********************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
-            $db->sql_query("UPDATE ".$user_prefix."_users SET username='$chng_uname', name='$chng_name', user_email='$chng_email', femail='$chng_femail', user_website='$chng_url', user_from='$chng_user_from', user_occ='$chng_user_occ', user_interests='$chng_user_interests', user_viewemail='$chng_user_viewemail', user_avatar='$chng_avatar', user_sig='$chng_user_sig', user_password='$cpass', newsletter='$chng_newsletter' WHERE user_id='$chng_uid'");
-            if ($Version_Num > 6.9) { $db->sql_query("UPDATE ".$user_prefix."_users SET points='$chng_points' WHERE user_id='$chng_uid'"); }
+            $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET username='$chng_uname', name='$chng_name', user_email='$chng_email', femail='$chng_femail', user_website='$chng_url', user_from='$chng_user_from', user_occ='$chng_user_occ', user_interests='$chng_user_interests', user_viewemail='$chng_user_viewemail', user_avatar='$chng_avatar', user_sig='$chng_user_sig', user_password='$cpass', newsletter='$chng_newsletter' WHERE user_id='$chng_uid'");
+            if ($Version_Num > 6.9) { $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET points='$chng_points' WHERE user_id='$chng_uid'"); }
         } else {
-            $db->sql_query("UPDATE ".$user_prefix."_users SET username='$chng_uname', name='$chng_name', user_email='$chng_email', femail='$chng_femail', user_website='$chng_url', user_from='$chng_user_from', user_occ='$chng_user_occ', user_interests='$chng_user_interests', user_viewemail='$chng_user_viewemail', user_avatar='$chng_avatar', user_sig='$chng_user_sig', newsletter='$chng_newsletter' WHERE user_id='$chng_uid'");
-            if ($Version_Num > 6.9) { $db->sql_query("UPDATE ".$user_prefix."_users SET points='$chng_points' WHERE user_id='$chng_uid'"); }
+            $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET username='$chng_uname', name='$chng_name', user_email='$chng_email', femail='$chng_femail', user_website='$chng_url', user_from='$chng_user_from', user_occ='$chng_user_occ', user_interests='$chng_user_interests', user_viewemail='$chng_user_viewemail', user_avatar='$chng_avatar', user_sig='$chng_user_sig', newsletter='$chng_newsletter' WHERE user_id='$chng_uid'");
+            if ($Version_Num > 6.9) { $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET points='$chng_points' WHERE user_id='$chng_uid'"); }
         }
 
         if (is_array($nfield)):
@@ -85,14 +85,14 @@ if(is_mod_admin($module_name)) {
                 foreach ($nfield as $key => $var) 
                 {
                     $nfield[$key] = ya_fixtext($nfield[$key]);
-                    if (($db->sql_numrows($db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_value WHERE fid='$key' AND uid = '$chng_uid'"))) == 0) 
+                    if (($nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_value WHERE fid='$key' AND uid = '$chng_uid'"))) == 0) 
                     {
-                        $sql = "INSERT INTO ".$user_prefix."_cnbya_value (uid, fid, value) VALUES ('$chng_uid', '$key','$nfield[$key]')";
-                        $db->sql_query($sql);
+                        $sql = "INSERT INTO ".$nuke_user_prefix."_cnbya_value (uid, fid, value) VALUES ('$chng_uid', '$key','$nfield[$key]')";
+                        $nuke_db->sql_query($sql);
                     }
                     else 
                     {
-                        $db->sql_query("UPDATE ".$user_prefix."_cnbya_value SET value='$nfield[$key]' WHERE fid='$key' AND uid = '$chng_uid'");
+                        $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_cnbya_value SET value='$nfield[$key]' WHERE fid='$key' AND uid = '$chng_uid'");
                     }
                 }
             }

@@ -69,7 +69,7 @@ if (!defined('CNBYA')) {
         include_once(NUKE_BASE_DIR.'footer.php');
     } elseif (is_user()) {
         global $cookie;
-        redirect("modules.php?name=$module_name&op=userinfo&username=$cookie[1]");
+        nuke_redirect("modules.php?name=$module_name&op=userinfo&username=$cookie[1]");
     }
 
 ?>

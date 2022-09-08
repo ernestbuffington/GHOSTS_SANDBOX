@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 global $prefix, $nuke_config, $admin_file, $ab_config;
@@ -55,7 +55,7 @@ define('_AB_ADDSTRING','Add String');
 define('_AB_ADDSTRINGERROR','ERROR: Problem adding string');
 define('_AB_ADMIN','Admin');
 define('_AB_ADMINAUTH','Admin Auth');
-define('_AB_ADMINBLOCKER','ADMIN Blocker Settings');
+define('_AB_ADMINBLOCKER','NUKE_ADMIN Blocker Settings');
 define('_AB_ADMINISTRATION','Administration');
 define('_AB_ADMINISTRATIVE','Administrative Settings');
 define('_AB_ADMINLIST','Admin Contacts');
@@ -181,7 +181,7 @@ define('_AB_EXPIRES','Expires');
 define('_AB_EXPIRESIN','Expires in');
 define('_AB_EXPIRESINS','Expressed in number of days.');
 define('_AB_FALSEADMIN','You have attempted to use a False Admin cookie to access this site!');
-define('_AB_FILEDELETED','File has been deleted');
+define('_AB_FILENUKE_DELETED','File has been deleted');
 define('_AB_FILTERBLOCKER','Filters Blocker Settings');
 define('_AB_FINISHCHECK','Finish Overlap Check');
 define('_AB_FLAG','Flag');

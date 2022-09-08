@@ -164,9 +164,9 @@ input.post, textarea.post, select {
     background-color : {T_TD_COLOR2};
 }
 
-/* Start replacement - Advanced time management MOD */
+/* Start replacement - Advanced time management NUKE_MOD */
 /* input { text-indent : 2px; }
-/* End replacement - Advanced time management MOD */
+/* End replacement - Advanced time management NUKE_MOD */
 
 /* The buttons used for bbCode styling in message post */
 input.button {

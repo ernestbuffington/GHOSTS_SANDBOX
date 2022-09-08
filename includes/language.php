@@ -195,7 +195,7 @@ if (empty($currentlang)) {
     $currentlang = 'english';
 }
 
-define('_LANGCODE', array_search($currentlang, $browserlang));
+define('_NUKE_LANGCODE', array_search($currentlang, $browserlang));
 unset($browserlang);
 
 include_lang($currentlang);

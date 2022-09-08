@@ -71,7 +71,7 @@ if (isset($_POST['download_file']) && !empty($_SESSION['configData']) && !$_POST
 }
 
 if ($step >= 5){
-    if (!$server_check = mysqli_connect($_SESSION['dbhost'], $_SESSION['dbuser'], $_SESSION['dbpass'], $_SESSION['dbname'])){
+    if (!$server_check = mysqli_connect($_SESSION['dbhost_a'], $_SESSION['dbuser_a'], $_SESSION['dbpass_a'], $_SESSION['dbname_a'])){
         die ($install_lang['couldnt_connect'] . mysqli_error($server_check));
     }
 }
@@ -256,7 +256,7 @@ if ($step == 1){
 		echo '<center><div style="color:#D29A2B;"><strong>'.$nuke_name.' '.$install_lang['installer_heading'].' '.$step.' '.$install_lang['installer_heading2'].' '.$total_steps.'</strong></div></center>';
 		echo '<fieldset><legend>'.$install_lang['mysql_info'].'</legend>';
 		echo '  <dl>';
-		echo '    <dt><label>'.$install_lang['dbhost'].'</label></dt>';
+		echo '    <dt><label>'.$install_lang['dbhost_a'].'</label></dt>';
 		echo '    <dd><input type="text" value="localhost" name="dbhost" size="50" class="input" /></dd>';
 		echo '  </dl>';
 		echo '  <dl>';

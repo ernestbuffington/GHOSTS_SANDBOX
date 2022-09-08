@@ -41,9 +41,9 @@ if (!defined('CNBYA')) {
     $ya_username = trim(check_html($ya_username, 'nohtml'));
     $check_num = trim(check_html($check_num, 'nohtml'));
     $ya_time = intval($ya_time);
-    $result = $db->sql_query("SELECT * FROM ".$user_prefix."_users_temp WHERE username='$ya_username' AND check_num='$check_num' AND time='$ya_time'");
-    if ($db->sql_numrows($result) == 1) {
-        $row = $db->sql_fetchrow($result);
+    $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users_temp WHERE username='$ya_username' AND check_num='$check_num' AND time='$ya_time'");
+    if ($nuke_db->sql_numrows($result) == 1) {
+        $row = $nuke_db->sql_fetchrow($result);
         $username = $row['username'];
         $user_email = $row['user_email'];
         $user_regdate = $row['user_regdate'];
@@ -66,23 +66,23 @@ if (!defined('CNBYA')) {
         $user_viewemail = intval($user_viewemail);
         $user_allow_viewonline = intval($user_allow_viewonline);
         $user_timezone = intval($user_timezone);
-        list($latest_uid) = $db->sql_fetchrow($db->sql_query("SELECT max(user_id) AS latest_uid FROM ".$user_prefix."_users"));
+        list($latest_uid) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT max(user_id) AS latest_uid FROM ".$nuke_user_prefix."_users"));
         if ($latest_uid == "-1") { $new_uid = 1; } else { $new_uid = $latest_uid+1; }
         $lv = time();
-        $db->sql_query("LOCK TABLES ".$user_prefix."_users WRITE");
-        $db->sql_query("INSERT INTO ".$user_prefix."_users (user_id, user_avatar, user_avatar_type, user_lang, user_lastvisit, umode) VALUES ($new_uid, 'gallery/blank.gif', '3', '$language', '$lv', 'nested')");
-        $db->sql_query("UPDATE ".$user_prefix."_users SET username='$username', name='$realname', user_email='$user_email', femail='$femail', user_website='$user_website', user_from='$user_from', user_occ='$user_occ', user_interests='$user_interests', newsletter='$newsletter', user_viewemail='$user_viewemail', user_allow_viewonline='$user_allow_viewonline', user_timezone='$user_timezone', user_dateformat='$user_dateformat', user_sig='$user_sig', bio='$bio', user_password='$user_password', user_regdate='$user_regdate' WHERE user_id='$new_uid'");
-        $db->sql_query("UNLOCK TABLES");
-        $db->sql_query("DELETE FROM ".$user_prefix."_users_temp WHERE username='$username'");
+        $nuke_db->sql_query("LOCK TABLES ".$nuke_user_prefix."_users WRITE");
+        $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_users (user_id, user_avatar, user_avatar_type, user_lang, user_lastvisit, umode) VALUES ($new_uid, 'gallery/blank.gif', '3', '$language', '$lv', 'nested')");
+        $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET username='$username', name='$realname', user_email='$user_email', femail='$femail', user_website='$user_website', user_from='$user_from', user_occ='$user_occ', user_interests='$user_interests', newsletter='$newsletter', user_viewemail='$user_viewemail', user_allow_viewonline='$user_allow_viewonline', user_timezone='$user_timezone', user_dateformat='$user_dateformat', user_sig='$user_sig', bio='$bio', user_password='$user_password', user_regdate='$user_regdate' WHERE user_id='$new_uid'");
+        $nuke_db->sql_query("UNLOCK TABLES");
+        $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_users_temp WHERE username='$username'");
 
-        $res = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_value_temp WHERE uid = '$row[user_id]'");
-        while ($sqlvalue = $db->sql_fetchrow($res)) {
-         $db->sql_query("INSERT INTO ".$user_prefix."_cnbya_value (uid, fid, value) VALUES ('$new_uid', '$sqlvalue[fid]','$sqlvalue[value]')");
+        $res = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_value_temp WHERE uid = '$row[user_id]'");
+        while ($sqlvalue = $nuke_db->sql_fetchrow($res)) {
+         $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_cnbya_value (uid, fid, value) VALUES ('$new_uid', '$sqlvalue[fid]','$sqlvalue[value]')");
         }
-        $db->sql_query("DELETE FROM ".$user_prefix."_cnbya_value_temp WHERE uid='$row[user_id]'");
-        $db->sql_query("OPTIMIZE TABLE ".$user_prefix."_cnbya_value_temp");
+        $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_cnbya_value_temp WHERE uid='$row[user_id]'");
+        $nuke_db->sql_query("OPTIMIZE TABLE ".$nuke_user_prefix."_cnbya_value_temp");
 
-        $db->sql_query("OPTIMIZE TABLE ".$user_prefix."_users_temp");
+        $nuke_db->sql_query("OPTIMIZE TABLE ".$nuke_user_prefix."_users_temp");
         include_once(NUKE_BASE_DIR.'header.php');
 /*****[BEGIN]******************************************
  [ Mod:     Welcome PM                         v2.0.0 ]
@@ -93,8 +93,8 @@ if (!defined('CNBYA')) {
  ******************************************************/
         title(""._ACTIVATIONYES."");
         OpenTable();
-        $result = $db->sql_query("SELECT * FROM ".$user_prefix."_users WHERE username='$username' AND user_password='$user_password'");
-        if ($db->sql_numrows($result) == 1) {
+        $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE username='$username' AND user_password='$user_password'");
+        if ($nuke_db->sql_numrows($result) == 1) {
 /*****[BEGIN]******************************************
  [ Mod:     Welcome PM                         v2.0.0 ]
  ******************************************************/
@@ -102,7 +102,7 @@ if (!defined('CNBYA')) {
 /*****[END]********************************************
  [ Mod:     Welcome PM                         v2.0.0 ]
  ******************************************************/
-            $userinfo = $db->sql_fetchrow($result);
+            $userinfo = $nuke_db->sql_fetchrow($result);
             yacookie($userinfo['user_id'],$userinfo['username'],$userinfo['user_password'],$userinfo['storynum'],$userinfo['umode'],$userinfo['uorder'],$userinfo['thold'],$userinfo['noscore'],$userinfo['ublockon'],$userinfo['theme'],$userinfo['commentmax']);
 /*****[BEGIN]******************************************
  [ Mod:     Initial Usergroup                  v1.0.1 ]

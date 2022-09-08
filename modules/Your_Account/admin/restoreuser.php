@@ -41,7 +41,7 @@ if (!defined('CNBYA')) {
 
 if(is_mod_admin($module_name)) {
 
-    list($hisname) = $db->sql_fetchrow($db->sql_query("SELECT username FROM ".$user_prefix."_users WHERE user_id='$chng_uid'"));
+    list($hisname) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT username FROM ".$nuke_user_prefix."_users WHERE user_id='$chng_uid'"));
     $pagetitle = ": "._USERADMIN." - "._RESTOREUSER;
     include_once(NUKE_BASE_DIR.'header.php');
 	OpenTable();

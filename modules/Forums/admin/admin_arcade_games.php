@@ -13,7 +13,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -36,19 +36,19 @@ require($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '
 
 function resynch_arcade_categorie($catid)
 {
-  global $db;
+  global $nuke_db;
   
-  $sql = "SELECT COUNT(*) AS nbelmt FROM " . GAMES_TABLE . " WHERE arcade_catid = $catid";
-  if( !$result = $db->sql_query($sql) )
+  $sql = "SELECT COUNT(*) AS nbelmt FROM " . NUKE_GAMES_TABLE . " WHERE arcade_catid = $catid";
+  if( !$result = $nuke_db->sql_query($sql) )
   {
-    message_die(GENERAL_ERROR, "Could not read the games table", "", __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, "Could not read the games table", "", __LINE__, __FILE__, $sql);
   }
-  $row = $db->sql_fetchrow($result);
+  $row = $nuke_db->sql_fetchrow($result);
   $nbelmt = $row['nbelmt'];
-  $sql = "UPDATE " . ARCADE_CATEGORIES_TABLE . " SET arcade_nbelmt = $nbelmt WHERE arcade_catid = $catid";
-  if( !$result = $db->sql_query($sql) )
+  $sql = "UPDATE " . NUKE_ARCADE_CATEGORIES_TABLE . " SET arcade_nbelmt = $nbelmt WHERE arcade_catid = $catid";
+  if( !$result = $nuke_db->sql_query($sql) )
   {
-    message_die(GENERAL_ERROR, "Could not update the arcade categories table", "", __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, "Could not update the arcade categories table", "", __LINE__, __FILE__, $sql);
   }
 }
 
@@ -72,15 +72,15 @@ if ( $mode == 'resynch')
 if ( $mode == 'movedel')
 {
     $to_catid = get_var_gf(array('name'=>'to_catid', 'intval'=>true ));
-    $sql = "UPDATE " . GAMES_TABLE . " SET arcade_catid = $to_catid WHERE arcade_catid = $arcade_catid";
-    if( !$db->sql_query($sql) )
+    $sql = "UPDATE " . NUKE_GAMES_TABLE . " SET arcade_catid = $to_catid WHERE arcade_catid = $arcade_catid";
+    if( !$nuke_db->sql_query($sql) )
     {
-      message_die(GENERAL_ERROR, "Could not read the games table", "", __LINE__, __FILE__, $sql);
+      message_die(NUKE_GENERAL_ERROR, "Could not read the games table", "", __LINE__, __FILE__, $sql);
     }
-    $sql = "DELETE FROM " . ARCADE_CATEGORIES_TABLE . " WHERE arcade_catid = $arcade_catid";
-    if( !$db->sql_query($sql) )
+    $sql = "DELETE FROM " . NUKE_ARCADE_CATEGORIES_TABLE . " WHERE arcade_catid = $arcade_catid";
+    if( !$nuke_db->sql_query($sql) )
     {
-      message_die(GENERAL_ERROR, "Could not read the arcade categories table", "", __LINE__, __FILE__, $sql);
+      message_die(NUKE_GENERAL_ERROR, "Could not read the arcade categories table", "", __LINE__, __FILE__, $sql);
     }
     resynch_arcade_categorie($to_catid);
 }
@@ -91,30 +91,30 @@ if ( $mode == 'movedel')
 if ( $mode == 'delete')
 {
   // If the category is empty one removes it
-  $sql = "SELECT COUNT(*) AS nb FROM " . GAMES_TABLE . " WHERE arcade_catid = $arcade_catid";
-  if( !$result = $db->sql_query($sql) )
+  $sql = "SELECT COUNT(*) AS nb FROM " . NUKE_GAMES_TABLE . " WHERE arcade_catid = $arcade_catid";
+  if( !$result = $nuke_db->sql_query($sql) )
   {
-    message_die(GENERAL_ERROR, "Could not read the games table", "", __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, "Could not read the games table", "", __LINE__, __FILE__, $sql);
   }
-  $row = $db->sql_fetchrow($result);  
+  $row = $nuke_db->sql_fetchrow($result);  
   if ( $row['nb'] == 0 )
   {
-    $sql = "DELETE FROM " . ARCADE_CATEGORIES_TABLE . " WHERE arcade_catid = $arcade_catid";
-    if( !$result = $db->sql_query($sql) )
+    $sql = "DELETE FROM " . NUKE_ARCADE_CATEGORIES_TABLE . " WHERE arcade_catid = $arcade_catid";
+    if( !$result = $nuke_db->sql_query($sql) )
       {
-      message_die(GENERAL_ERROR, "Could not delete the category", "", __LINE__, __FILE__, $sql);
+      message_die(NUKE_GENERAL_ERROR, "Could not delete the category", "", __LINE__, __FILE__, $sql);
     }
   }
   else
   {
 
-      $sql = "SELECT arcade_catid, arcade_cattitle FROM " . ARCADE_CATEGORIES_TABLE ;
-      if( !$result = $db->sql_query($sql) )
+      $sql = "SELECT arcade_catid, arcade_cattitle FROM " . NUKE_ARCADE_CATEGORIES_TABLE ;
+      if( !$result = $nuke_db->sql_query($sql) )
       {
-         message_die(GENERAL_ERROR, "Could not read the arcade category table", "", __LINE__, __FILE__, $sql);
+         message_die(NUKE_GENERAL_ERROR, "Could not read the arcade category table", "", __LINE__, __FILE__, $sql);
       }
       $liste_cat = '';
-      while( $row = $db->sql_fetchrow($result))
+      while( $row = $nuke_db->sql_fetchrow($result))
       {
          if($row['arcade_catid']!=$arcade_catid)
          {  
@@ -127,7 +127,7 @@ if ( $mode == 'delete')
       }
       if (empty($liste_cat))
       {
-         message_die(GENERAL_ERROR, "Impossible to remove the category, it is not empty.");
+         message_die(NUKE_GENERAL_ERROR, "Impossible to remove the category, it is not empty.");
       }
 
           $template->set_filenames(array(
@@ -163,25 +163,25 @@ if ( $mode == 'editcreate')
     $arcade_catauth = get_var_gf(array('name' => 'arcade_catauth', 'intval' => true, 'okvar' => array(0,1,2,3,4,5,6), 'default' => 0, 'method' => 'POST'));
     if( trim(empty($arcade_cattitle)))
     {
-        message_die(GENERAL_ERROR, "Impossible to create a category without name");
+        message_die(NUKE_GENERAL_ERROR, "Impossible to create a category without name");
     }
 
     $sql = "SELECT MAX(arcade_catorder) AS max_order
-            FROM " . ARCADE_CATEGORIES_TABLE;
-            if( !$result = $db->sql_query($sql) )
+            FROM " . NUKE_ARCADE_CATEGORIES_TABLE;
+            if( !$result = $nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Impossible to obtain the last sequence number of the table arcade_categories", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Impossible to obtain the last sequence number of the table arcade_categories", "", __LINE__, __FILE__, $sql);
             }
-            $row = $db->sql_fetchrow($result);
+            $row = $nuke_db->sql_fetchrow($result);
 
             $max_order = $row['max_order'];
             $next_order = $max_order + 10;
 
-            $sql = "INSERT INTO " . ARCADE_CATEGORIES_TABLE . " ( arcade_cattitle, arcade_nbelmt, arcade_catorder )
+            $sql = "INSERT INTO " . NUKE_ARCADE_CATEGORIES_TABLE . " ( arcade_cattitle, arcade_nbelmt, arcade_catorder )
                     VALUES ('" . str_replace("\'","''",$arcade_cattitle) . "', 0, $next_order)" ;
-            if( !$db->sql_query($sql) )
+            if( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Couldn't update arcade_categories table", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Couldn't update arcade_categories table", "", __LINE__, __FILE__, $sql);
             }
 }
 
@@ -191,16 +191,16 @@ if ( $mode == 'editsave')
     $arcade_catauth   = get_var_gf(array('name' => 'arcade_catauth', 'intval' => true, 'okvar' => array(0,1,2,3,4,5,6), 'default' => 0, 'method' => 'POST'));
     if( trim(empty($arcade_cattitle)))
     {
-        message_die(GENERAL_ERROR, "Impossible to create a category without name");
+        message_die(NUKE_GENERAL_ERROR, "Impossible to create a category without name");
     }
 
-    $sql = "UPDATE " . ARCADE_CATEGORIES_TABLE . "
+    $sql = "UPDATE " . NUKE_ARCADE_CATEGORIES_TABLE . "
             SET arcade_cattitle = '" . str_replace("\'","''",$arcade_cattitle) . "', arcade_catauth = $arcade_catauth
             WHERE arcade_catid = '$arcade_catid'";
 
-    if( !$db->sql_query($sql) )
+    if( !$nuke_db->sql_query($sql) )
     {
-        message_die(GENERAL_ERROR, "Couldn't update arcade_categories table", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't update arcade_categories table", "", __LINE__, __FILE__, $sql);
     }
 }
 
@@ -210,13 +210,13 @@ if ( $mode == 'move')
     $arcade_catorder = get_var_gf(array('name' => 'arcade_catorder', 'intval' => true, 'method' => 'GET'));
     $catorder2 = get_var_gf(array('name' => 'catorder2', 'intval' => true, 'method' => 'GET'));
 
-    $sql = "UPDATE " . ARCADE_CATEGORIES_TABLE . "
+    $sql = "UPDATE " . NUKE_ARCADE_CATEGORIES_TABLE . "
             SET arcade_catorder = $arcade_catorder + $catorder2 - arcade_catorder
             WHERE arcade_catid = '$arcade_catid' OR arcade_catid = '$catid2'";
 
-    if( !$db->sql_query($sql) )
+    if( !$nuke_db->sql_query($sql) )
     {
-        message_die(GENERAL_ERROR, "Couldn't update arcade_categories table", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Couldn't update arcade_categories table", "", __LINE__, __FILE__, $sql);
     }
 }
 
@@ -225,12 +225,12 @@ if ( $mode == 'move')
 /-----------------------------------------------*/
 if ( $mode == 'edit')
 {
-    $sql = "SELECT arcade_cattitle, arcade_catauth FROM " . ARCADE_CATEGORIES_TABLE . " WHERE arcade_catid = '$arcade_catid'";
-            if( !$result = $db->sql_query($sql) )
+    $sql = "SELECT arcade_cattitle, arcade_catauth FROM " . NUKE_ARCADE_CATEGORIES_TABLE . " WHERE arcade_catid = '$arcade_catid'";
+            if( !$result = $nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Impossible to obtain the infos table arcade_categories", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Impossible to obtain the infos table arcade_categories", "", __LINE__, __FILE__, $sql);
             }
-            $row = $db->sql_fetchrow($result);
+            $row = $nuke_db->sql_fetchrow($result);
 
     $template->set_filenames(array(
         "body" => "admin/arcade_catedit_body.tpl")
@@ -317,12 +317,12 @@ if ( $mode == 'new' )
 
 
 $sql = "SELECT *
-        FROM " . ARCADE_CATEGORIES_TABLE . 
+        FROM " . NUKE_ARCADE_CATEGORIES_TABLE . 
       " ORDER BY arcade_catorder ASC ";
         
-if(!$result = $db->sql_query($sql))
+if(!$result = $nuke_db->sql_query($sql))
 {
-    message_die(CRITICAL_ERROR, "Could not query arcade_categorie in admin_arcade", "", __LINE__, __FILE__, $sql);
+    message_die(NUKE_CRITICAL_ERROR, "Could not query arcade_categorie in admin_arcade", "", __LINE__, __FILE__, $sql);
 }
 
 $template->set_filenames(array(
@@ -354,7 +354,7 @@ $template->assign_vars(array(
 );
 
 $liste_cat = array();
-while( $row = $db->sql_fetchrow($result) )
+while( $row = $nuke_db->sql_fetchrow($result) )
 {
   $liste_cat[] = $row;
 }

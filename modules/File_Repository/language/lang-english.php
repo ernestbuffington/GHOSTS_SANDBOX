@@ -20,7 +20,7 @@ $lang_new[$module_name]['ADMINISTRATION']					= 'Main Administration';
 $lang_new[$module_name]['ADMINISTRATION_MODULE'] 			= $lang_new[$module_name]['MODULE'].' Administration';
 $lang_new[$module_name]['ADMINISTRATORS']					= 'Administrators';
 $lang_new[$module_name]['ALL_VISITORS'] 					= 'All Visitors';
-$lang_new[$module_name]['ANONYMOUS'] 						= 'Anonymous Users can access File Repository';
+$lang_new[$module_name]['NUKE_ANONYMOUS'] 						= 'Anonymous Users can access File Repository';
 
 $lang_new[$module_name]['APPROVED'] 						= 'Approve this Download';
 

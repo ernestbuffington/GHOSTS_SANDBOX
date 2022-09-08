@@ -46,12 +46,12 @@
 	  Users Reputations Systems                v1.0.0       05/24/2009
 	  Theme Simplifications (Arcade)           v1.0.0       05/29/2009
  ************************************************************************/
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 exit('Hacking attempt');
 
 define('HEADER_INC', TRUE);
 
-global $name, $sitename, $is_inline_review, $prefix, $db, $cache, $ThemeSel;
+global $name, $sitename, $is_inline_review, $prefix, $nuke_db, $cache, $ThemeSel;
 
 OpenTable();
 
@@ -60,8 +60,8 @@ if(!file_exists(@phpbb_realpath($phpbb2_root_path.'language/lang_'.$board_config
 include_once($phpbb2_root_path . 'language/lang_english/lang_adv_time.' . $phpEx);
 else
 include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx);
-if(($userdata['user_id'] != ANONYMOUS && $userdata['user_time_mode'] >= 4)
-|| ($userdata['user_id'] == ANONYMOUS && $board_config['default_time_mode'] >= 4)):
+if(($userdata['user_id'] != NUKE_ANONYMOUS && $userdata['user_time_mode'] >= 4)
+|| ($userdata['user_id'] == NUKE_ANONYMOUS && $board_config['default_time_mode'] >= 4)):
     global $pc_dateTime, $HTTP_SESSION_VARS, $HTTP_GET_VARS;
     if(!isset($pc_dateTime['pc_timezoneOffset']) && !isset($HTTP_GET_VARS['pc_tzo'])):
         $template->assign_block_vars('switch_send_pc_dateTime', array());
@@ -84,12 +84,12 @@ $template->set_filenames(array(
 
 # Generate logged in/logged out status
 if($userdata['session_logged_in']):
-  $u_login_logout = 'modules.php?name=Your_Account&amp;op=logout&amp;redirect=Forums';
+  $u_login_logout = 'modules.php?name=Your_Account&amp;op=logout&amp;nuke_redirect=Forums';
   # Mod: Advanced Username Color v1.0.5 START
   $l_login_logout = $lang['Logout'];
   # Mod: Advanced Username Color v1.0.5 END
 else:
-  $u_login_logout = 'modules.php?name=Your_Account&amp;redirect=index';
+  $u_login_logout = 'modules.php?name=Your_Account&amp;nuke_redirect=index';
   $l_login_logout = $lang['Login'];
 endif;
 
@@ -113,7 +113,7 @@ if(defined('SHOW_ONLINE'))
 		 s.session_logged_in, 
 		        s.session_ip
            
-		   FROM ".USERS_TABLE." u, ".SESSIONS_TABLE." s
+		   FROM ".NUKE_USERS_TABLE." u, ".NUKE_BB_SESSIONS_TABLE." s
            WHERE u.user_id = s.session_user_id
            AND s.session_time >= ".(time() - $board_config['online_time'])."
            AND u.user_allow_viewonline = 1
@@ -121,8 +121,8 @@ if(defined('SHOW_ONLINE'))
            ORDER BY u.username ASC, s.session_ip ASC";
    # Mod: Online Time v1.0.0 END
 
-   if(!($result = $db->sql_query($sql)))
-   message_die(GENERAL_ERROR, 'Could not obtain user/online information', '', __LINE__, __FILE__, $sql);
+   if(!($result = $nuke_db->sql_query($sql)))
+   message_die(NUKE_GENERAL_ERROR, 'Could not obtain user/online information', '', __LINE__, __FILE__, $sql);
 
    $userlist_ary = array();
    $userlist_visible = array();
@@ -130,7 +130,7 @@ if(defined('SHOW_ONLINE'))
    $prev_user_id = 0;
    $prev_user_ip = $prev_session_ip = '';
 
-   while( $row = $db->sql_fetchrow($result)):
+   while( $row = $nuke_db->sql_fetchrow($result)):
      # User is logged in and therefor not a guest
      if($row['session_logged_in']):
        # Skip multiple sessions for one user
@@ -139,14 +139,14 @@ if(defined('SHOW_ONLINE'))
           $row['username'] = UsernameColor($row['username']);
           # Mod: Advanced Username Color v1.0.5 END
           if($row['user_allow_viewonline']):
-            $user_online_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=".$row['user_id']).'">'.$row['username'].'</a>';
+            $user_online_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.$row['username'].'</a>';
             $logged_visible_online++;
           else:
-            $user_online_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=".$row['user_id']).'"><i>'.$row['username'].'</i></a>';
+            $user_online_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'"><i>'.$row['username'].'</i></a>';
             $logged_hidden_online++;
           endif;
           # Mod: Hidden Status Viewing v1.0.0 START
-          if($row['user_allow_viewonline'] || $userdata['user_level'] == ADMIN || $userdata['user_id'] == $row['user_id'])
+          if($row['user_allow_viewonline'] || $userdata['user_level'] == NUKE_ADMIN || $userdata['user_id'] == $row['user_id'])
           $online_userlist .= ( $online_userlist != '' ) ? ', ' . $user_online_link : $user_online_link;
           # Mod: Hidden Status Viewing v1.0.0 END
        endif;
@@ -158,7 +158,7 @@ if(defined('SHOW_ONLINE'))
      endif;
        $prev_session_ip = $row['session_ip'];
    endwhile;
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
 
         if(empty($online_userlist))
         $online_userlist = $lang['None'];
@@ -169,17 +169,17 @@ if(defined('SHOW_ONLINE'))
         if($total_online_users > $board_config['record_online_users']):
            $board_config['record_online_users'] = $total_online_users;
            $board_config['record_online_date'] = time();
-           $sql = "UPDATE " . CONFIG_TABLE . "
+           $sql = "UPDATE " . NUKE_CONFIG_TABLE . "
                    SET config_value = '$total_online_users'
                    WHERE config_name = 'record_online_users'";
-		   if(!$db->sql_query($sql))
-           message_die(GENERAL_ERROR, 'Could not update online user record (nr of users)', '', __LINE__, __FILE__, $sql);
+		   if(!$nuke_db->sql_query($sql))
+           message_die(NUKE_GENERAL_ERROR, 'Could not update online user record (nr of users)', '', __LINE__, __FILE__, $sql);
 
-           $sql = "UPDATE ".CONFIG_TABLE."
+           $sql = "UPDATE ".NUKE_CONFIG_TABLE."
                    SET config_value = '".$board_config['record_online_date']."'
                    WHERE config_name = 'record_online_date'";
-           if(!$db->sql_query($sql))
-           message_die(GENERAL_ERROR, 'Could not update online user record (date)', '', __LINE__, __FILE__, $sql);
+           if(!$nuke_db->sql_query($sql))
+           message_die(NUKE_GENERAL_ERROR, 'Could not update online user record (date)', '', __LINE__, __FILE__, $sql);
            # Base: Caching System v3.0.0 START
            $cache->delete('board_config', 'config');
            # Base: Caching System v3.0.0 END
@@ -230,29 +230,29 @@ $sql = "SELECT user_id,
             user_level, 
 	 user_session_time
      
-	    FROM ".USERS_TABLE."
+	    FROM ".NUKE_USERS_TABLE."
         WHERE user_id > 0
         ORDER BY IF(user_level=1,3,user_level) DESC, username ASC";
 
-if(!($result = $db->sql_query($sql)))
-message_die(GENERAL_ERROR, 'Could not obtain user/day information', '', __LINE__, __FILE__, $sql);
+if(!($result = $nuke_db->sql_query($sql)))
+message_die(NUKE_GENERAL_ERROR, 'Could not obtain user/day information', '', __LINE__, __FILE__, $sql);
 
 $day_userlist = '';
 
 $day_users = 0;
 
-while($row = $db->sql_fetchrow($result)):
+while($row = $nuke_db->sql_fetchrow($result)):
 	if($row['user_allow_viewonline']):
       # Mod: Advanced Username Color v1.0.5 START
-	  $user_day_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
+	  $user_day_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
       # Mod: Advanced Username Color v1.0.5 END
 	else:
       # Mod: Advanced Username Color v1.0.5 START
-	  $user_day_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=".$row['user_id']).'"><i>'.UsernameColor($row['username']).'</i></a>';
+	  $user_day_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'"><i>'.UsernameColor($row['username']).'</i></a>';
       # Mod: Advanced Username Color v1.0.5 END
 	endif;
 	
-	if($row['user_allow_viewonline'] || $userdata['user_level'] == ADMIN):
+	if($row['user_allow_viewonline'] || $userdata['user_level'] == NUKE_ADMIN):
 		if($row['user_session_time'] >= (time() - $users_list_delay * 3600 )):
 			$day_userlist .= ( $day_userlist <> '' ) ? ', ' . $user_day_link : $user_day_link;
 			$day_users++;
@@ -270,11 +270,11 @@ if(($userdata['session_logged_in']) && (empty($gen_simple_header))):
       $l_message_new = ( $userdata['user_new_privmsg'] == 1 ) ? $lang['New_pm'] : $lang['New_pms'];
       $l_privmsgs_text = sprintf($l_message_new, $userdata['user_new_privmsg']);
       if($userdata['user_last_privmsg'] > $userdata['user_lastvisit']):
-         $sql = "UPDATE ".USERS_TABLE."
+         $sql = "UPDATE ".NUKE_USERS_TABLE."
                  SET user_last_privmsg = ".$userdata['user_lastvisit']."
                  WHERE user_id = ".$userdata['user_id'];
-         if(!$db->sql_query($sql))
-         message_die(GENERAL_ERROR, 'Could not update private message new/read time for user', '', __LINE__, __FILE__, $sql);
+         if(!$nuke_db->sql_query($sql))
+         message_die(NUKE_GENERAL_ERROR, 'Could not update private message new/read time for user', '', __LINE__, __FILE__, $sql);
          # Mod: Suppress Popup v1.0.0 START
          if(isset($_REQUEST["suppress"]))
          $suppress = 1;
@@ -349,16 +349,16 @@ $template->assign_block_vars('colors',array(
 # Mod: Advanced Username Color v1.0.5 END
 
 # Mod: Quick Search v3.0.1 START
-$sql = "SELECT * FROM ".QUICKSEARCH_TABLE."
+$sql = "SELECT * FROM ".NUKE_QUICK_SEARCH_TABLE."
         ORDER BY search_name";
 
-if(!$result = $db->sql_query($sql))
-message_die(GENERAL_ERROR, "Couldn't obtain quick search data", "", __LINE__, __FILE__, $sql);
+if(!$result = $nuke_db->sql_query($sql))
+message_die(NUKE_GENERAL_ERROR, "Couldn't obtain quick search data", "", __LINE__, __FILE__, $sql);
 
-$search_count = $db->sql_numrows($result);
+$search_count = $nuke_db->sql_numrows($result);
 $search_rows = array();
-$search_rows = $db->sql_fetchrowset($result);
-$db->sql_freeresult($result);
+$search_rows = $nuke_db->sql_fetchrowset($result);
+$nuke_db->sql_freeresult($result);
 $search_list = '<option value="forum_search" selected="selected">'.$board_config['sitename'].'</option>';
 $checkSearch = '';
 
@@ -411,7 +411,7 @@ $gfx = "<br />".security_code($gfxchk, 'small')."<br />";
 # Mod: Advanced Security Code Control v1.0.0 END
 
 # Mod: Advanced Time Management v2.2.0 START
-if($userdata['user_id'] != ANONYMOUS):
+if($userdata['user_id'] != NUKE_ANONYMOUS):
   switch($userdata['user_time_mode']):
      case MANUAL_DST:
      $time_message = sprintf($lang['All_times'], $l_timezone) . $lang['dst_enabled_mode'];
@@ -653,7 +653,7 @@ $template->assign_vars(array(
 );
 
 # Mod: Disable Board Admin Override v0.1.1 START
-if($userdata['user_level'] == ADMIN): 
+if($userdata['user_level'] == NUKE_ADMIN): 
   if($board_config['board_disable'] == 1) 
   $template->assign_block_vars('boarddisabled', array());
 endif;
@@ -679,13 +679,13 @@ $starttime = ( $board_config['bday_lookahead'] > 0 ) ? strtotime('-'.$board_conf
 # the greeting will be sent up to seven days after the birthday
 if($userdata['birthday_greeting'] != 0 && ($userdata['user_next_birthday'] < gmdate('Y',$current_time)+1) 
 && $userdata['user_birthday'] >= gmdate('md0000',$starttime) && $userdata['user_birthday'] <= gmdate('md9999',$current_time)):
-   $sql = "UPDATE ".USERS_TABLE. "
+   $sql = "UPDATE ".NUKE_USERS_TABLE. "
 		   SET user_next_birthday = ".(gmdate('Y',$current_time)+1)."
 		   WHERE user_id = ".$userdata['user_id'];
-   if(!$db->sql_query($sql))
-   message_die(GENERAL_ERROR, 'Could not update birthday information', '', __LINE__, __FILE__, $sql);
+   if(!$nuke_db->sql_query($sql))
+   message_die(NUKE_GENERAL_ERROR, 'Could not update birthday information', '', __LINE__, __FILE__, $sql);
    switch($userdata['birthday_greeting']):
-	  case BIRTHDAY_EMAIL:
+	  case NUKE_BIRTHDAY_EMAIL:
 	  include('includes/emailer.'.$phpEx);
 	  $emailer = new emailer($board_config['smtp_delivery']);
   	  $emailer->from($board_config['board_email']);
@@ -700,10 +700,10 @@ if($userdata['birthday_greeting'] != 0 && ($userdata['user_next_birthday'] < gmd
 	  $emailer->send();
 	  $emailer->reset();
 	  break;
-	  case BIRTHDAY_PM:
+	  case NUKE_BIRTHDAY_PM:
 	  # PM support is not currently enabled.
 	  break;
-	  case BIRTHDAY_POPUP:
+	  case NUKE_BIRTHDAY_POPUP:
 	  $template->assign_block_vars('switch_birthday_popup',array());
 	endswitch;
 endif;
@@ -760,17 +760,17 @@ $template->pparse('overall_header');
 
 # Mod: Disable Board Admin Override v0.1.1 START
 # Mod: Disable Board Message v1.0.0 START
-if($userdata['user_level'] != ADMIN && $board_config['board_disable'] && !defined("IN_ADMIN") && !defined("IN_LOGIN")):
+if($userdata['user_level'] != NUKE_ADMIN && $board_config['board_disable'] && !defined("IN_ADMIN") && !defined("IN_LOGIN")):
     if($board_config['board_disable_msg'] != "")
-    message_die(GENERAL_MESSAGE, $board_config['board_disable_msg'], 'Information');
+    message_die(NUKE_GENERAL_MESSAGE, $board_config['board_disable_msg'], 'Information');
     else
-    message_die(GENERAL_MESSAGE, 'Board_disable', 'Information');
+    message_die(NUKE_GENERAL_MESSAGE, 'Board_disable', 'Information');
 else:
-    if($userdata['user_level'] == ADMIN && $board_config['board_disable_adminview'] != '1' && $board_config['board_disable'] && !defined("IN_ADMIN") && !defined("IN_LOGIN")):
+    if($userdata['user_level'] == NUKE_ADMIN && $board_config['board_disable_adminview'] != '1' && $board_config['board_disable'] && !defined("IN_ADMIN") && !defined("IN_LOGIN")):
       if($board_config['board_disable_msg'] != "")
-      message_die(GENERAL_MESSAGE, $board_config['board_disable_msg'], 'Information');
+      message_die(NUKE_GENERAL_MESSAGE, $board_config['board_disable_msg'], 'Information');
       else
-      message_die(GENERAL_MESSAGE, 'Board_disable', 'Information');
+      message_die(NUKE_GENERAL_MESSAGE, 'Board_disable', 'Information');
     endif;
 endif;
 # Mod: Disable Board Admin Override v0.1.1 END

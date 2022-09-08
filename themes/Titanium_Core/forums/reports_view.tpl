@@ -32,7 +32,7 @@
   </tr>
   <!-- END postrow -->
   <!-- <tr>
-    <td class="catbottom acenter" colspan="5">{DELETED_REPORTS}</td>
+    <td class="catbottom acenter" colspan="5">{NUKE_DELETED_REPORTS}</td>
   </tr> -->
 </table>
 

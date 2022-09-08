@@ -1,7 +1,7 @@
 <?php
 /***************************************************************************
  *                            userdel.php
- *   MOD: Admin delete user with all postings
+ *   NUKE_MOD: Admin delete user with all postings
  *                            -------------------
  *   begin                : Saturday, Feb 28, 2006
  *   copyright            : (C) 2006 Sergei Sekirin
@@ -26,7 +26,7 @@ else
 {
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
-define('IN_PHPBB', true); 
+define('IN_PHPBB2', true); 
 
 
 
@@ -38,7 +38,7 @@ include("includes/functions_userdel.php");
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_PROFILE);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_PROFILE);
 init_userprefs($userdata);
 //
 // End session management
@@ -49,10 +49,10 @@ init_userprefs($userdata);
 // Authorized ?
 //
 
-$if_admin = ($userdata['user_level'] == ADMIN );
+$if_admin = ($userdata['user_level'] == NUKE_ADMIN );
 if ( !$if_admin )
 {
-	message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+	message_die(NUKE_GENERAL_MESSAGE, $lang['Not_Authorised']);
 }
 //
 include($phpbb2_root_path.'language/lang_' . $userdata['user_lang'] . '/lang_user_delete.'.$phpEx);
@@ -67,7 +67,7 @@ if( isset( $HTTP_POST_VARS['user_deleted_id'] ) || isset( $HTTP_GET_VARS['user_d
 }
 else
 {
-	message_die(GENERAL_MESSAGE, 'Poster is not specifyed');
+	message_die(NUKE_GENERAL_MESSAGE, 'Poster is not specifyed');
 }
 
 
@@ -96,7 +96,7 @@ switch( $mode )
         //--->
 
 	default:
-		message_die(GENERAL_MESSAGE, $lang['No_post_mode']);
+		message_die(NUKE_GENERAL_MESSAGE, $lang['No_post_mode']);
 		break;
 }
 
@@ -113,13 +113,13 @@ if ( isset($HTTP_POST_VARS['cancel']) )
 {
 	if ( $user_deleted_id )
 	{
-		$redirect = "profile.$phpEx?mode=viewprofile&". POST_USERS_URL ."=$user_deleted_id";
+		$nuke_redirect = "profile.$phpEx?mode=viewprofile&". NUKE_POST_USERS_URL ."=$user_deleted_id";
 	}
 	else
 	{
-		$redirect = "index.$phpEx";
+		$nuke_redirect = "index.$phpEx";
 	}
-	redirect(append_sid($redirect, true));
+	nuke_redirect(append_sid($nuke_redirect, true));
 }
 
 
@@ -127,13 +127,13 @@ if ( isset($HTTP_POST_VARS['cancel']) )
 // Level check - not allowed deletion of Admins and Moders
 //
 $sql = "SELECT user_id, user_level, username
-	FROM " . USERS_TABLE . "
+	FROM " . NUKE_USERS_TABLE . "
 	WHERE user_id = $user_deleted_id";
-	$result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Could not get user information", "", __LINE__, __FILE__, $sql);
-	$row = $db->sql_fetchrow($result);
+	$result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Could not get user information", "", __LINE__, __FILE__, $sql);
+	$row = $nuke_db->sql_fetchrow($result);
 	if ($row['user_id'] == '')
 	{
-	    message_die(GENERAL_MESSAGE, $lang['User_not_exist']);
+	    message_die(NUKE_GENERAL_MESSAGE, $lang['User_not_exist']);
 	}
     $user_name = $row['username'];
 
@@ -142,27 +142,27 @@ $sql = "SELECT user_id, user_level, username
 // Count topics of User
 //
 $sql = "SELECT count(*) AS total
-	FROM " . TOPICS_TABLE . "
+	FROM " . NUKE_BB_TOPICS_TABLE . "
     WHERE topic_poster = $user_deleted_id";
-	$result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Error getting total topics", "", __LINE__, __FILE__, $sql);
- 	  if ( $total = $db->sql_fetchrow($result) )
+	$result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Error getting total topics", "", __LINE__, __FILE__, $sql);
+ 	  if ( $total = $nuke_db->sql_fetchrow($result) )
 	  {
 		  $total_topics = $total['total'];
       }
-	  $db->sql_freeresult($result);
+	  $nuke_db->sql_freeresult($result);
 
 //
 // Count posts of User
 //
 	$sql = "SELECT count(*) AS total2
-	FROM " . POSTS_TABLE . "
+	FROM " . NUKE_POSTS_TABLE . "
     WHERE poster_id = $user_deleted_id";
-	$result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Error getting total posts", "", __LINE__, __FILE__, $sql);
-	  if ( $total2 = $db->sql_fetchrow($result) )
+	$result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Error getting total posts", "", __LINE__, __FILE__, $sql);
+	  if ( $total2 = $nuke_db->sql_fetchrow($result) )
 	  {
 		  $total_posts = $total2['total2'];
       }
-	  $db->sql_freeresult($result);
+	  $nuke_db->sql_freeresult($result);
 
 //
 // Confirm
@@ -212,25 +212,25 @@ make_jumpbox('viewforum.'.$phpEx);
 $user_id = $user_deleted_id;
 if (!($deleted_userdata = get_userdata($user_id)))
 {
-	message_die(GENERAL_MESSAGE, 'User is unknown!');
+	message_die(NUKE_GENERAL_MESSAGE, 'User is unknown!');
 }
 $username=$deleted_userdata['username'];
 
 
 /*##############################################################################
- 		START - SECTION 1 -  DELETE USER STARTED TOPICS
+ 		START - SECTION 1 -  DELETE NUKE_USER STARTED TOPICS
 //############################################################################# */
 
 if ((($mode == 2) || ($mode == 3) || ($mode == 4)) && ($total_topics > 0))
 {
   // Get User started topics
       $sql = "SELECT topic_id, forum_id, topic_title
-	  FROM " . TOPICS_TABLE . "
+	  FROM " . NUKE_BB_TOPICS_TABLE . "
       WHERE topic_poster = " . $user_id;
-	  $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not get USER topics!", "", __LINE__, __FILE__, $sql);
-      if (($usertopic_ids_count = $db->sql_numrows($result)) > '0')
+	  $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not get NUKE_USER topics!", "", __LINE__, __FILE__, $sql);
+      if (($usertopic_ids_count = $nuke_db->sql_numrows($result)) > '0')
       {
-         $top_ids = $db->sql_fetchrowset($result);
+         $top_ids = $nuke_db->sql_fetchrowset($result);
 	     // Massive topic_id
 	     $topics_sql = '';
          $user_topic_titles = '';
@@ -253,13 +253,13 @@ if ((($mode == 2) || ($mode == 3) || ($mode == 4)) && ($total_topics > 0))
          // Get posts in User Topics
          //
          $sql = 'SELECT post_id, topic_id
-         FROM ' . POSTS_TABLE . '
+         FROM ' . NUKE_POSTS_TABLE . '
          WHERE topic_id IN (' . $topics_sql . ')
          ORDER BY topic_id';
-	  	 $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not Get posts in User Topics", "", __LINE__, __FILE__, $sql);
-         if (( $userposts_ids_count = $db->sql_numrows($result)) > '0' )
+	  	 $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not Get posts in User Topics", "", __LINE__, __FILE__, $sql);
+         if (( $userposts_ids_count = $nuke_db->sql_numrows($result)) > '0' )
          {
-            $post_ids = $db->sql_fetchrowset($result);
+            $post_ids = $nuke_db->sql_fetchrowset($result);
             // List of posts
             $posts_sql = '';
             $deleted_posts_in_u_topics_id = '';
@@ -272,63 +272,63 @@ if ((($mode == 2) || ($mode == 3) || ($mode == 4)) && ($total_topics > 0))
             }
             // Output
             $template->assign_block_vars('deleted_posts_in_user_topics', array(
-	  	 		'DELETED_POSTS_IN_U_TOPICS' => $deleted_posts_in_u_topics_id,
-            	'L_DELETED_POSTS_IN_U_TOPICS' => $lang['deleted_posts_in_user_topics']
+	  	 		'NUKE_DELETED_POSTS_IN_U_TOPICS' => $deleted_posts_in_u_topics_id,
+            	'L_NUKE_DELETED_POSTS_IN_U_TOPICS' => $lang['deleted_posts_in_user_topics']
          		));
 
             // Get IDs of users, whose posts are deleted in User Topics
             $sql = 'SELECT poster_id
-            FROM ' . POSTS_TABLE . '
+            FROM ' . NUKE_POSTS_TABLE . '
             WHERE poster_id != ' . $user_id. '
             AND post_id IN (' . $posts_sql . ')';
- 	  	 	$result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not get users of posts, deleted in this User topics!", "", __LINE__, __FILE__, $sql);
-            if (($num_rows = $db->sql_numrows($result)) > '0'); //Resync will be later!!!
+ 	  	 	$result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not get users of posts, deleted in this User topics!", "", __LINE__, __FILE__, $sql);
+            if (($num_rows = $nuke_db->sql_numrows($result)) > '0'); //Resync will be later!!!
             {
-            	$user_rows = $db->sql_fetchrowset($result);
+            	$user_rows = $nuke_db->sql_fetchrowset($result);
             }
 
             //
             // ----------------  Begin delete  -----------------
             //
 
-            $sql = 'DELETE FROM ' . POSTS_TEXT_TABLE . '
+            $sql = 'DELETE FROM ' . NUKE_POSTS_TEXT_TABLE . '
             WHERE post_id IN (' . $posts_sql . ')';
- 	  	 	$result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not delete post texts!", "", __LINE__, __FILE__, $sql);
+ 	  	 	$result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not delete post texts!", "", __LINE__, __FILE__, $sql);
 
-            $sql = 'DELETE FROM ' . POSTS_TABLE . '
+            $sql = 'DELETE FROM ' . NUKE_POSTS_TABLE . '
             WHERE topic_id IN (' . $topics_sql . ')';
- 	  	 	$result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not delete posts!", "", __LINE__, __FILE__, $sql);
+ 	  	 	$result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not delete posts!", "", __LINE__, __FILE__, $sql);
 
             // Count deleted
-            $deleted_posts_in_usertopics = $db->sql_affectedrows();
+            $deleted_posts_in_usertopics = $nuke_db->sql_affectedrows();
 
             $template->assign_block_vars('num_deleted_posts_in_usertopics', array(
-                'NUM_DELETED_POSTS_IN_U_TOPICS' => $deleted_posts_in_usertopics,
-                'L_NUM_DELETED_POSTS_IN_U_TOPICS' => $lang['num_deleted_posts_in_usertopics']
+                'NUM_NUKE_DELETED_POSTS_IN_U_TOPICS' => $deleted_posts_in_usertopics,
+                'L_NUM_NUKE_DELETED_POSTS_IN_U_TOPICS' => $lang['num_deleted_posts_in_usertopics']
                 ));
 
-            $sql = 'DELETE FROM ' . TOPICS_TABLE . '
+            $sql = 'DELETE FROM ' . NUKE_BB_TOPICS_TABLE . '
 	        WHERE topic_poster = ' . $user_id;
- 	  	 	$result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not delete topics!", "", __LINE__, __FILE__, $sql);
+ 	  	 	$result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not delete topics!", "", __LINE__, __FILE__, $sql);
 	        // Count deleted
-	        $deleted_user_topics = $db->sql_affectedrows();
+	        $deleted_user_topics = $nuke_db->sql_affectedrows();
 
 	        $template->assign_block_vars('num_of_deleted_user_topics', array(
-	        	'NUM_OF_DELETED_TOPICS' => $deleted_user_topics,
-	            'L_NUM_OF_DELETED_TOPICS' => $lang['num_of_deleted_user_topics']
+	        	'NUM_OF_NUKE_DELETED_TOPICS' => $deleted_user_topics,
+	            'L_NUM_OF_NUKE_DELETED_TOPICS' => $lang['num_of_deleted_user_topics']
 	            ));
 
             //
             // Get forums where deleted last posts
             //
             $sql = 'SELECT forum_id, forum_name
-            FROM ' . FORUMS_TABLE . '
+            FROM ' . NUKE_FORUMS_TABLE . '
             WHERE forum_last_post_id IN (' . $posts_sql . ')';
- 	  	 	$result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not get forums last post info!", "", __LINE__, __FILE__, $sql);
+ 	  	 	$result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not get forums last post info!", "", __LINE__, __FILE__, $sql);
 
-            if (( $num_of_recync_forums = $db->sql_numrows($result)) > '0' )
+            if (( $num_of_recync_forums = $nuke_db->sql_numrows($result)) > '0' )
             {
-	        	$recync_forums = $db->sql_fetchrowset($result);
+	        	$recync_forums = $nuke_db->sql_fetchrowset($result);
 	              // Resync forums
 	            $recynced_forums1 = '';
 	            foreach($recync_forums as $val)
@@ -362,11 +362,11 @@ if ((($mode == 2) || ($mode == 3) || ($mode == 4)) && ($total_topics > 0))
 
                 // Get their names
                 $sql = 'SELECT user_id, username
-                FROM ' . USERS_TABLE . '
+                FROM ' . NUKE_USERS_TABLE . '
                 WHERE user_id IN (' . $user_rows_sql . ')';
- 	  	 		$result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not get users info!", "", __LINE__, __FILE__, $sql);
-                $num_users = $db->sql_numrows($result);
-                $users_recync = $db->sql_fetchrowset($result);
+ 	  	 		$result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not get users info!", "", __LINE__, __FILE__, $sql);
+                $num_users = $nuke_db->sql_numrows($result);
+                $users_recync = $nuke_db->sql_fetchrowset($result);
 
                 $recynced_users1 = '';
                 for( $i = 0; $i < $num_users; $i++ )
@@ -393,19 +393,19 @@ if ((($mode == 2) || ($mode == 3) || ($mode == 4)) && ($total_topics > 0))
 
 
 //##############################################################################
-//   START - SECTION 2 - DELETE TOPICS WHERE POSTS OF THE USER AND NOTHING MORE
+//   START - SECTION 2 - DELETE TOPICS WHERE POSTS OF THE NUKE_USER AND NOTHING MORE
 //##############################################################################
 
 //Get topics
 if (($mode == 3) || ($mode == 4))
 {
 	$sql = "SELECT topic_id
-	FROM " . POSTS_TABLE . "
+	FROM " . NUKE_POSTS_TABLE . "
 	WHERE poster_id = $user_id";
-	  $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not get posts of User!", "", __LINE__, __FILE__, $sql);
-	  if ( ( $user_posts_in_other_topics = $db->sql_numrows($result)) > '0' )
+	  $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not get posts of User!", "", __LINE__, __FILE__, $sql);
+	  if ( ( $user_posts_in_other_topics = $nuke_db->sql_numrows($result)) > '0' )
 	  {
-	        $otheruserpost_ids = $db->sql_fetchrowset($result);
+	        $otheruserpost_ids = $nuke_db->sql_fetchrowset($result);
 	        // List
 	        $topics_with_u_posts_sql = '';
 	        foreach($otheruserpost_ids as $val)
@@ -416,10 +416,10 @@ if (($mode == 3) || ($mode == 4))
 	        // Get topics
 	        //
 	        $sql = "SELECT topic_id
-	        FROM " . TOPICS_TABLE . "
+	        FROM " . NUKE_BB_TOPICS_TABLE . "
 	        WHERE topic_id IN (" . $topics_with_u_posts_sql . ")";
-	        $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not get topics whith user posts!", "", __LINE__, __FILE__, $sql);
-	        $topics_with_user_posts = $db->sql_fetchrowset($result);
+	        $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not get topics whith user posts!", "", __LINE__, __FILE__, $sql);
+	        $topics_with_user_posts = $nuke_db->sql_fetchrowset($result);
 
 	        // Check if posts of one User - which deleted
 	        $topics_with_posts_of_user_only_sql = '';
@@ -427,17 +427,17 @@ if (($mode == 3) || ($mode == 4))
 	        foreach($topics_with_user_posts as $val)
 	        {
 	            $sql = "SELECT post_id
-	            FROM " . POSTS_TABLE . "
+	            FROM " . NUKE_POSTS_TABLE . "
 	            WHERE topic_id = " . $val['topic_id'];
-	            $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Could not query posts in topic!", "", __LINE__, __FILE__, $sql);
-	            $all_topic_posts_count = $db->sql_numrows($result);
+	            $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Could not query posts in topic!", "", __LINE__, __FILE__, $sql);
+	            $all_topic_posts_count = $nuke_db->sql_numrows($result);
 
 	            $sql = "SELECT post_id
-	            FROM " . POSTS_TABLE . "
+	            FROM " . NUKE_POSTS_TABLE . "
 	            WHERE topic_id = " . $val['topic_id'] . "
 	            AND poster_id = " . $user_id;
-	            $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Could not query user posts topic", "", __LINE__, __FILE__, $sql);
-	            $user_topic_posts_count = $db->sql_numrows($result);
+	            $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Could not query user posts topic", "", __LINE__, __FILE__, $sql);
+	            $user_topic_posts_count = $nuke_db->sql_numrows($result);
 
 	            if ($all_topic_posts_count == $user_topic_posts_count)
 	            {
@@ -452,11 +452,11 @@ if (($mode == 3) || ($mode == 4))
 	        if (!empty($topics_with_posts_of_user_only_sql))
 	        {
 	          $sql = "SELECT topic_id, topic_title, forum_id
-	            FROM " . TOPICS_TABLE . "
+	            FROM " . NUKE_BB_TOPICS_TABLE . "
 	            WHERE topic_id IN (" . $topics_with_posts_of_user_only_sql . ")";
-	            $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not get topics where only User posts!", "", __LINE__, __FILE__, $sql);
-	            $topics_with_user_posts_num = $db->sql_numrows($result);
-	            $topics_with_user_posts = $db->sql_fetchrowset($result);
+	            $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not get topics where only User posts!", "", __LINE__, __FILE__, $sql);
+	            $topics_with_user_posts_num = $nuke_db->sql_numrows($result);
+	            $topics_with_user_posts = $nuke_db->sql_fetchrowset($result);
 
                 $deleted_topics2_titles = '';
                 $topics2_del_sql = '';
@@ -471,11 +471,11 @@ if (($mode == 3) || ($mode == 4))
                 }
 
 	          $sql = "SELECT post_id, topic_id
-	            FROM " . POSTS_TABLE . "
+	            FROM " . NUKE_POSTS_TABLE . "
 	            WHERE topic_id IN (" . $topics2_del_sql . ")";
-	            $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not get posts of User in topics where they are only!", "", __LINE__, __FILE__, $sql);
-	            $posts_in_topics_with_only_user_posts_num = $db->sql_numrows($result);
-	            $posts_in_topics_with_only_user_posts = $db->sql_fetchrowset($result);
+	            $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not get posts of User in topics where they are only!", "", __LINE__, __FILE__, $sql);
+	            $posts_in_topics_with_only_user_posts_num = $nuke_db->sql_numrows($result);
+	            $posts_in_topics_with_only_user_posts = $nuke_db->sql_fetchrowset($result);
 
                 $deleted_posts_in_u_topics2_id = '';
                 $posts2_del_sql = '';
@@ -494,43 +494,43 @@ if (($mode == 3) || ($mode == 4))
                 //
                 //###################  Now delete ########################
                 //
-                $sql = 'DELETE FROM ' . POSTS_TEXT_TABLE . '
+                $sql = 'DELETE FROM ' . NUKE_POSTS_TEXT_TABLE . '
                 WHERE post_id IN (' . $posts2_del_sql . ')';
-                $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not delete posts!", "", __LINE__, __FILE__, $sql);
+                $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not delete posts!", "", __LINE__, __FILE__, $sql);
 
-                $sql = 'DELETE FROM ' . POSTS_TABLE . '
+                $sql = 'DELETE FROM ' . NUKE_POSTS_TABLE . '
                 WHERE post_id IN (' . $posts2_del_sql . ')';
-                $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not delete post!", "", __LINE__, __FILE__, $sql);
+                $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not delete post!", "", __LINE__, __FILE__, $sql);
                 // Count deleted
-                $num_deleted_posts_in_usertopics2 = $db->sql_affectedrows();
+                $num_deleted_posts_in_usertopics2 = $nuke_db->sql_affectedrows();
 
-                $sql = 'DELETE FROM ' . TOPICS_TABLE . '
+                $sql = 'DELETE FROM ' . NUKE_BB_TOPICS_TABLE . '
                 WHERE topic_id IN (' . $topics2_del_sql . ')';
-                $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not delete topics where only User posts!", "", __LINE__, __FILE__, $sql);
+                $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not delete topics where only User posts!", "", __LINE__, __FILE__, $sql);
                 // Count deleted
-                $deleted_user_topics2 = $db->sql_affectedrows();
+                $deleted_user_topics2 = $nuke_db->sql_affectedrows();
 
                 $template->assign_block_vars('topics_where_only_this_user_posts', array(
-                    'L_DELETED_TOPICS2' => $lang['deleted_user_topics2'],
-                    'LIST_DELETED_TOPICS2' => $deleted_topics2_titles,
-                    'TOTAL_DELETED_TOPICS2' => $deleted_user_topics2,
+                    'L_NUKE_DELETED_TOPICS2' => $lang['deleted_user_topics2'],
+                    'LIST_NUKE_DELETED_TOPICS2' => $deleted_topics2_titles,
+                    'TOTAL_NUKE_DELETED_TOPICS2' => $deleted_user_topics2,
                     'L_TOTAL' => $lang['Total'],
 
-                    'LIST_DELETED_POSTS_IN_U_TOPICS2' => $deleted_posts_in_u_topics2,
-                    'TOTAL_DELETED_POSTS_IN_U_TOPICS2' => $num_deleted_posts_in_usertopics2,
-                    'L_DELETED_POSTS_IN_U_TOPICS2' => $lang['deleted_posts_in_usertopics2']
+                    'LIST_NUKE_DELETED_POSTS_IN_U_TOPICS2' => $deleted_posts_in_u_topics2,
+                    'TOTAL_NUKE_DELETED_POSTS_IN_U_TOPICS2' => $num_deleted_posts_in_usertopics2,
+                    'L_NUKE_DELETED_POSTS_IN_U_TOPICS2' => $lang['deleted_posts_in_usertopics2']
                     ));
 
                 //
 	            // Get forums to resync last posts
 	            //
 	            $sql = 'SELECT forum_id, forum_name
-	            FROM ' . FORUMS_TABLE . '
+	            FROM ' . NUKE_FORUMS_TABLE . '
 	            WHERE forum_last_post_id IN (' . $posts2_del_sql . ')';
-	            $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not get forums last posts!", "", __LINE__, __FILE__, $sql);
-	            if (( $num_of_recync_forums2 = $db->sql_numrows($result)) > '0' )
+	            $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not get forums last posts!", "", __LINE__, __FILE__, $sql);
+	            if (( $num_of_recync_forums2 = $nuke_db->sql_numrows($result)) > '0' )
 	            {
-                    $recync_forums2 = $db->sql_fetchrowset($result);
+                    $recync_forums2 = $nuke_db->sql_fetchrowset($result);
                     // Переназначение  последнего поста форума (forum_last_post_id)
                     $recynced_forums2 = '';
                     foreach($recync_forums2 as $val)
@@ -558,12 +558,12 @@ if (($mode == 3) || ($mode == 4))
     // Get User posts from other topics
     //
     $sql = "SELECT post_id, topic_id
-    FROM " . POSTS_TABLE . "
+    FROM " . NUKE_POSTS_TABLE . "
     WHERE poster_id = $user_id";
-    $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not get User posts in other topics!", "", __LINE__, __FILE__, $sql);
-    if ( ( $user_posts_in_other_topics = $db->sql_numrows($result)) > '0' )
+    $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not get User posts in other topics!", "", __LINE__, __FILE__, $sql);
+    if ( ( $user_posts_in_other_topics = $nuke_db->sql_numrows($result)) > '0' )
     {
-	        $otheruserpost_ids = $db->sql_fetchrowset($result);
+	        $otheruserpost_ids = $nuke_db->sql_fetchrowset($result);
 	        // List of posts
 	        $otheruserpost_ids_sql = '';
 	        foreach($otheruserpost_ids as $val)
@@ -579,21 +579,21 @@ if (($mode == 3) || ($mode == 4))
 	               forum_postscount_decrease_by_post_id($val['post_id']);
 	         }
 
-	        $sql = 'DELETE FROM ' . POSTS_TABLE . '
+	        $sql = 'DELETE FROM ' . NUKE_POSTS_TABLE . '
 	        WHERE post_id IN (' . $otheruserpost_ids_sql .')';
-	        $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not delete post of User in other topic!", "", __LINE__, __FILE__, $sql);
+	        $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not delete post of User in other topic!", "", __LINE__, __FILE__, $sql);
 	        //Count deleted
-	        $deleted_userposts = $db->sql_affectedrows();
+	        $deleted_userposts = $nuke_db->sql_affectedrows();
 
 
-	        $sql = 'DELETE FROM ' . POSTS_TEXT_TABLE . '
+	        $sql = 'DELETE FROM ' . NUKE_POSTS_TEXT_TABLE . '
 	        WHERE post_id IN (' . $otheruserpost_ids_sql .')';
-	        $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not delete post of User in other topic!", "", __LINE__, __FILE__, $sql);
-	        $deleted_user_postеxts = $db->sql_affectedrows();
+	        $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not delete post of User in other topic!", "", __LINE__, __FILE__, $sql);
+	        $deleted_user_postеxts = $nuke_db->sql_affectedrows();
 
 	        $template->assign_block_vars('all_other_user_posts_in_other_topics', array(
                 'L_OTHER_POSTS' => $lang['all_other_uposts'],
-                'LIST_DELETED_OTHER_POSTS' => $deleted_posts_in_other_topics_list,
+                'LIST_NUKE_DELETED_OTHER_POSTS' => $deleted_posts_in_other_topics_list,
 
                 'L_TOTAL' => $lang['Total'],
 	            'NUM_OF_OTHER_POSTS' => $deleted_userposts
@@ -603,13 +603,13 @@ if (($mode == 3) || ($mode == 4))
 	        // Get topics where deleted posts were last posts ( to resync )
 	        //
 	        $sql = 'SELECT topic_id, topic_title
-	        FROM ' . TOPICS_TABLE . '
+	        FROM ' . NUKE_BB_TOPICS_TABLE . '
 	        WHERE topic_last_post_id IN (' . $otheruserpost_ids_sql . ')
 	        OR topic_first_post_id IN (' . $otheruserpost_ids_sql . ')';
-	        $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Get topics where deleted posts were last posts ( to resync )!", "", __LINE__, __FILE__, $sql);
-	        if (( $num_topics_with_deleted_fl_posts = $db->sql_numrows($result)) > '0' )
+	        $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Get topics where deleted posts were last posts ( to resync )!", "", __LINE__, __FILE__, $sql);
+	        if (( $num_topics_with_deleted_fl_posts = $nuke_db->sql_numrows($result)) > '0' )
 	        {
-	           $topicscync_ids = $db->sql_fetchrowset($result);
+	           $topicscync_ids = $nuke_db->sql_fetchrowset($result);
 	           // Resync topics
                $topics_recynced_first_or_last_posts_list = '';
 	           foreach($topicscync_ids as $val)
@@ -631,12 +631,12 @@ if (($mode == 3) || ($mode == 4))
 	        // Resync forums last post
 	        //
 	        $sql = 'SELECT forum_id, forum_name
-	        FROM ' . FORUMS_TABLE . '
+	        FROM ' . NUKE_FORUMS_TABLE . '
 	        WHERE forum_last_post_id IN (' . $otheruserpost_ids_sql . ')';
-	        $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Can not get forum last posts ( to resync )!", "", __LINE__, __FILE__, $sql);
-	        if (( $num_of_recync_forums3 = $db->sql_numrows($result)) > '0' )
+	        $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Can not get forum last posts ( to resync )!", "", __LINE__, __FILE__, $sql);
+	        if (( $num_of_recync_forums3 = $nuke_db->sql_numrows($result)) > '0' )
 	        {
-	            $recync_forums3 = $db->sql_fetchrowset($result);
+	            $recync_forums3 = $nuke_db->sql_fetchrowset($result);
 	            // Переназначение  последнего поста форума (forum_last_post_id)
 	            $recynced_forums3 = '';
 	            foreach( $recync_forums3 as $val  )
@@ -666,25 +666,25 @@ if (($mode == 3) || ($mode == 4))
 
 
 /* #############################################################################
-           START - SECTION 3 - DELETE ONLY USER without his (her) postings
+           START - SECTION 3 - DELETE ONLY NUKE_USER without his (her) postings
 ###############################################################################*/
 
 if ($mode == 1)
 {
-  	$sql = "UPDATE " . POSTS_TABLE . "
-       	SET poster_id = " . DELETED . ", post_username = '$username'
+  	$sql = "UPDATE " . NUKE_POSTS_TABLE . "
+       	SET poster_id = " . NUKE_DELETED . ", post_username = '$username'
        	WHERE poster_id = $user_id";
-	    $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Could not update posts for this user!", "", __LINE__, __FILE__, $sql);
+	    $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Could not update posts for this user!", "", __LINE__, __FILE__, $sql);
 
-    $sql = "UPDATE " . TOPICS_TABLE . "
-        SET topic_poster = " . DELETED . "
+    $sql = "UPDATE " . NUKE_BB_TOPICS_TABLE . "
+        SET topic_poster = " . NUKE_DELETED . "
         WHERE topic_poster = $user_id";
-	    $result = $db->sql_query($sql) or message_die(GENERAL_ERROR, "Could not update topics for this user!", "", __LINE__, __FILE__, $sql);
+	    $result = $nuke_db->sql_query($sql) or message_die(NUKE_GENERAL_ERROR, "Could not update topics for this user!", "", __LINE__, __FILE__, $sql);
 }
 
 /* #############################################################################
 
-           START - SECTION 4 - DELETE THE USER
+           START - SECTION 4 - DELETE THE NUKE_USER
 ( this code taken directly from admin_users.php of phpBB 2.0.19 - no changes in code was made)
 
 ###############################################################################*/
@@ -692,34 +692,34 @@ if ($mode == 1)
 if ($mode != 4)
 	{
 			$sql = "SELECT g.group_id
-				FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
+				FROM " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g
 				WHERE ug.user_id = $user_id
 					AND g.group_id = ug.group_id
 					AND g.group_single_user = 1";
-			if( !($result = $db->sql_query($sql)) )
+			if( !($result = $nuke_db->sql_query($sql)) )
 			{
-				message_die(GENERAL_ERROR, 'Could not obtain group information for this user', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not obtain group information for this user', '', __LINE__, __FILE__, $sql);
 			}
 
-			$row = $db->sql_fetchrow($result);
+			$row = $nuke_db->sql_fetchrow($result);
 
-			$sql = "UPDATE " . VOTE_USERS_TABLE . "
-				SET vote_user_id = " . DELETED . "
+			$sql = "UPDATE " . NUKE_VOTE_USERS_TABLE . "
+				SET vote_user_id = " . NUKE_DELETED . "
 				WHERE vote_user_id = $user_id";
-			if( !$db->sql_query($sql) )
+			if( !$nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, 'Could not update votes for this user', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not update votes for this user', '', __LINE__, __FILE__, $sql);
 			}
 
 			$sql = "SELECT group_id
-				FROM " . GROUPS_TABLE . "
+				FROM " . NUKE_GROUPS_TABLE . "
 				WHERE group_moderator = $user_id";
-			if( !($result = $db->sql_query($sql)) )
+			if( !($result = $nuke_db->sql_query($sql)) )
 			{
-				message_die(GENERAL_ERROR, 'Could not select groups where user was moderator', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not select groups where user was moderator', '', __LINE__, __FILE__, $sql);
 			}
 
-			while ( $row_group = $db->sql_fetchrow($result) )
+			while ( $row_group = $nuke_db->sql_fetchrow($result) )
 			{
 				$group_moderator[] = $row_group['group_id'];
 			}
@@ -728,82 +728,82 @@ if ($mode != 4)
 			{
 				$update_moderator_id = implode(', ', $group_moderator);
 
-				$sql = "UPDATE " . GROUPS_TABLE . "
+				$sql = "UPDATE " . NUKE_GROUPS_TABLE . "
 					SET group_moderator = " . $userdata['user_id'] . "
 					WHERE group_moderator IN ($update_moderator_id)";
-				if( !$db->sql_query($sql) )
+				if( !$nuke_db->sql_query($sql) )
 				{
-					message_die(GENERAL_ERROR, 'Could not update group moderators', '', __LINE__, __FILE__, $sql);
+					message_die(NUKE_GENERAL_ERROR, 'Could not update group moderators', '', __LINE__, __FILE__, $sql);
 				}
 			}
 
-			$sql = "DELETE FROM " . USERS_TABLE . "
+			$sql = "DELETE FROM " . NUKE_USERS_TABLE . "
 				WHERE user_id = $user_id";
-			if( !$db->sql_query($sql) )
+			if( !$nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, 'Could not delete user', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not delete user', '', __LINE__, __FILE__, $sql);
 			}
 
-			$sql = "DELETE FROM " . USER_GROUP_TABLE . "
+			$sql = "DELETE FROM " . NUKE_USER_GROUP_TABLE . "
 				WHERE user_id = $user_id";
-			if( !$db->sql_query($sql) )
+			if( !$nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, 'Could not delete user from user_group table', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not delete user from user_group table', '', __LINE__, __FILE__, $sql);
 			}
 
-			$sql = "DELETE FROM " . GROUPS_TABLE . "
+			$sql = "DELETE FROM " . NUKE_GROUPS_TABLE . "
 				WHERE group_id = " . $row['group_id'];
-			if( !$db->sql_query($sql) )
+			if( !$nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, 'Could not delete group for this user', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not delete group for this user', '', __LINE__, __FILE__, $sql);
 			}
 
-			$sql = "DELETE FROM " . AUTH_ACCESS_TABLE . "
+			$sql = "DELETE FROM " . NUKE_AUTH_ACCESS_TABLE . "
 				WHERE group_id = " . $row['group_id'];
-			if( !$db->sql_query($sql) )
+			if( !$nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, 'Could not delete group for this user', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not delete group for this user', '', __LINE__, __FILE__, $sql);
 			}
 
-			$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
+			$sql = "DELETE FROM " . NUKE_TOPICS_WATCH_TABLE . "
 				WHERE user_id = $user_id";
-			if ( !$db->sql_query($sql) )
+			if ( !$nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, 'Could not delete user from topic watch table', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not delete user from topic watch table', '', __LINE__, __FILE__, $sql);
 			}
 
-			$sql = "DELETE FROM " . BANLIST_TABLE . "
+			$sql = "DELETE FROM " . NUKE_BANLIST_TABLE . "
 				WHERE ban_userid = $user_id";
-			if ( !$db->sql_query($sql) )
+			if ( !$nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, 'Could not delete user from banlist table', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not delete user from banlist table', '', __LINE__, __FILE__, $sql);
 			}
 
-			$sql = "DELETE FROM " . SESSIONS_TABLE . "
+			$sql = "DELETE FROM " . NUKE_BB_SESSIONS_TABLE . "
 				WHERE session_user_id = $user_id";
-			if ( !$db->sql_query($sql) )
+			if ( !$nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, 'Could not delete sessions for this user', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not delete sessions for this user', '', __LINE__, __FILE__, $sql);
 			}
 
-			$sql = "DELETE FROM " . SESSIONS_KEYS_TABLE . "
+			$sql = "DELETE FROM " . NUKE_BB_SESSIONS_KEYS_TABLE . "
 				WHERE user_id = $user_id";
-			if ( !$db->sql_query($sql) )
+			if ( !$nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, 'Could not delete auto-login keys for this user', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not delete auto-login keys for this user', '', __LINE__, __FILE__, $sql);
 			}
 
 			$sql = "SELECT privmsgs_id
-				FROM " . PRIVMSGS_TABLE . "
+				FROM " . NUKE_PRIVMSGS_TABLE . "
 				WHERE privmsgs_from_userid = $user_id
 					OR privmsgs_to_userid = $user_id";
-			if ( !($result = $db->sql_query($sql)) )
+			if ( !($result = $nuke_db->sql_query($sql)) )
 			{
-				message_die(GENERAL_ERROR, 'Could not select all users private messages', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not select all users private messages', '', __LINE__, __FILE__, $sql);
 			}
 
 			// This little bit of code directly from the private messaging section.
-			while ( $row_privmsgs = $db->sql_fetchrow($result) )
+			while ( $row_privmsgs = $nuke_db->sql_fetchrow($result) )
 			{
 				$mark_list[] = $row_privmsgs['privmsgs_id'];
 			}
@@ -812,19 +812,19 @@ if ($mode != 4)
 			{
 				$delete_sql_id = implode(', ', $mark_list);
 
-				$delete_text_sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
+				$delete_text_sql = "DELETE FROM " . NUKE_PRIVMSGS_TEXT_TABLE . "
 					WHERE privmsgs_text_id IN ($delete_sql_id)";
-				$delete_sql = "DELETE FROM " . PRIVMSGS_TABLE . "
+				$delete_sql = "DELETE FROM " . NUKE_PRIVMSGS_TABLE . "
 					WHERE privmsgs_id IN ($delete_sql_id)";
 
-				if ( !$db->sql_query($delete_sql) )
+				if ( !$nuke_db->sql_query($delete_sql) )
 				{
-					message_die(GENERAL_ERROR, 'Could not delete private message info', '', __LINE__, __FILE__, $delete_sql);
+					message_die(NUKE_GENERAL_ERROR, 'Could not delete private message info', '', __LINE__, __FILE__, $delete_sql);
 				}
 
-				if ( !$db->sql_query($delete_text_sql) )
+				if ( !$nuke_db->sql_query($delete_text_sql) )
 				{
-					message_die(GENERAL_ERROR, 'Could not delete private message text', '', __LINE__, __FILE__, $delete_text_sql);
+					message_die(NUKE_GENERAL_ERROR, 'Could not delete private message text', '', __LINE__, __FILE__, $delete_text_sql);
 				}
 			}
     }

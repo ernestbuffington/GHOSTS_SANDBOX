@@ -47,7 +47,7 @@
         <input type="radio" name="initial_group" value="{S_GROUP_INITIAL_YES_TYPE}" {S_GROUP_INITIAL_YES_CHECKED} /> {L_YES} &nbsp;&nbsp;<input type="radio" name="initial_group" value="{S_GROUP_INITIAL_NO_TYPE}" {S_GROUP_INITIAL_NO_CHECKED} /> {L_NO}</td>
     </tr>
     <!-- End add - Initial Usergroup Mod -->
-    <!-- Start add - Custom mass PM MOD -->
+    <!-- Start add - Custom mass PM NUKE_MOD -->
     <tr> 
       <td class="row1" width="38%"><span class="gen">{L_GROUP_ALLOW_PM}:</span><br />
       <span class="gensmall">{L_GROUP_ALLOW_PM_EXPLAIN}</span></td>
@@ -60,7 +60,7 @@
       </td> 
     </tr>
 
-    <!-- End add - Custom mass PM MOD -->
+    <!-- End add - Custom mass PM NUKE_MOD -->
     <tr> 
       <td class="row1" width="38%">{L_GROUP_COLOR}</td>
       <td class="row2" width="62%">{GROUP_COLOR}</td>
@@ -70,7 +70,7 @@
       <td class="row2" width="62%">{GROUP_RANK}</td>
     </tr>
 
-	<!-- Start add - Enhanced BBGroups MOD -->
+	<!-- Start add - Enhanced BBGroups NUKE_MOD -->
         <tr>
            <td class="row1" width="38%">{L_MAX_INBOX}</td>
            <td class="row2" width="62%"><input type="text" class="post" name="max_inbox" maxlength="10" size="10" value="{MAX_INBOX}" /><input type="checkbox" name="override_max_inbox" value="{OVERRIDE_MAX_INBOX}">{L_OVERRIDE_MAX}</td>
@@ -83,7 +83,7 @@
            <td class="row1" width="38%">{L_MAX_SAVEBOX}</td>
            <td class="row2" width="62%"><input type="text" class="post" name="max_savebox" maxlength="10" size="10" value="{MAX_SAVEBOX}" /><input type="checkbox" name="override_max_savebox" value="{OVERRIDE_MAX_SAVEBOX}">{L_OVERRIDE_MAX}</td>
         </tr>
-	<!-- End add - Enhanced BBGroups MOD -->
+	<!-- End add - Enhanced BBGroups NUKE_MOD -->
 
     <!-- BEGIN group_edit -->
 

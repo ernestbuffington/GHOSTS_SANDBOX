@@ -18,7 +18,7 @@
       Advanced Username Color                  v1.0.5       09/20/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -79,16 +79,16 @@ $template->set_filenames(array(
 
 // Start of Top 10 Arcade Players
 
-$sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, u.user_level FROM " . GAMES_TABLE . " g, " . USERS_TABLE . " u WHERE g.game_highuser = u.user_id AND g.game_highuser <> 0 GROUP BY g.game_highuser ORDER BY nbvictoires DESC LIMIT 0,10";
+$sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, u.user_level FROM " . NUKE_GAMES_TABLE . " g, " . NUKE_USERS_TABLE . " u WHERE g.game_highuser = u.user_id AND g.game_highuser <> 0 GROUP BY g.game_highuser ORDER BY nbvictoires DESC LIMIT 0,10";
 
-    if( !($result = $db->sql_query($sql)) )
+    if( !($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(CRITICAL_ERROR, "Could not query games information", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_CRITICAL_ERROR, "Could not query games information", "", __LINE__, __FILE__, $sql);
     }
 
     $place=0;
     $nbvictprec=0;
-    while ( $row = $db->sql_fetchrow($result) )
+    while ( $row = $nuke_db->sql_fetchrow($result) )
     {
         if ($nbvictprec<>$row['nbvictoires'])
         {
@@ -96,12 +96,12 @@ $sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, 
          $nbvictprec=$row['nbvictoires'];
         }
         /*$style_color = '';
-        if ( $row['user_level'] == ADMIN )
+        if ( $row['user_level'] == NUKE_ADMIN )
         {
             $row['username'] = '<strong>' . $row['username'] . '</strong>';
             $style_color = 'style="color:#' . $theme['fontcolor3'] . '"';
         }
-        else if ( $row['user_level'] == MOD )
+        else if ( $row['user_level'] == NUKE_MOD )
         {
             $row['username'] = '<strong>' . $row['username'] . '</strong>';
             $style_color = 'style="color:#' . $theme['fontcolor2'] . '"';
@@ -113,7 +113,7 @@ $sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, 
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-        $user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'>' . $row['username'] . '</a>';
+        $user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'>' . $row['username'] . '</a>';
 
         $template->assign_block_vars('player_row', array(
             'CLASSEMENT' => $place,
@@ -126,13 +126,13 @@ $sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, 
 
 // Start of Last 5 highscores
 
-   $sql = " SELECT g.* , u.username FROM " . GAMES_TABLE . " g, " . USERS_TABLE . " u WHERE g.game_highuser = u.user_id ORDER BY game_highdate DESC LIMIT 0,5  ";
+   $sql = " SELECT g.* , u.username FROM " . NUKE_GAMES_TABLE . " g, " . NUKE_USERS_TABLE . " u WHERE g.game_highuser = u.user_id ORDER BY game_highdate DESC LIMIT 0,5  ";
 
-   if ( !($result = $db->sql_query($sql)) )
+   if ( !($result = $nuke_db->sql_query($sql)) )
    {
-      message_die(GENERAL_ERROR, 'Could not query the games/users table', '', __LINE__, __FILE__, $sql);
+      message_die(NUKE_GENERAL_ERROR, 'Could not query the games/users table', '', __LINE__, __FILE__, $sql);
    }
-   while($rowArcade = $db->sql_fetchrow($result))
+   while($rowArcade = $nuke_db->sql_fetchrow($result))
    {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
@@ -143,7 +143,7 @@ $sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, 
  ******************************************************/
     $class = ($class == 'row1') ? 'row2' : 'row1' ;
     $last_scoregame = '<a href="' . append_sid("games.$phpEx?gid=" . $rowArcade['game_id']) . '">' . $rowArcade['game_name'] . '</a>';
-    $last_scoreuser = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=" . $rowArcade['game_highuser']) . '">' . $rowArcade['username'] . '</a>';
+    $last_scoreuser = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $rowArcade['game_highuser']) . '">' . $rowArcade['username'] . '</a>';
     $last_score = number_format($rowArcade['game_highscore']);
 
         $template->assign_block_vars('arcaderow2.bestscore2',array(
@@ -156,13 +156,13 @@ $sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, 
 
 // Last Recorded Score
 
-   $sql = " SELECT u.user_id, u.username, s.game_id, s.score_game, s.score_date, g.game_name FROM " . SCORES_TABLE . " s, " . USERS_TABLE . " u, " . GAMES_TABLE . " g WHERE s.user_id = u.user_id AND s.game_id = g.game_id ORDER BY score_date DESC LIMIT 0,1";
+   $sql = " SELECT u.user_id, u.username, s.game_id, s.score_game, s.score_date, g.game_name FROM " . NUKE_SCORES_TABLE . " s, " . NUKE_USERS_TABLE . " u, " . NUKE_GAMES_TABLE . " g WHERE s.user_id = u.user_id AND s.game_id = g.game_id ORDER BY score_date DESC LIMIT 0,1";
 
-   if ( !($result = $db->sql_query($sql)) )
+   if ( !($result = $nuke_db->sql_query($sql)) )
    {
-      message_die(GENERAL_ERROR, 'Could not query the scores/users table', '', __LINE__, __FILE__, $sql);
+      message_die(NUKE_GENERAL_ERROR, 'Could not query the scores/users table', '', __LINE__, __FILE__, $sql);
    }
-   if($rowScore = $db->sql_fetchrow($result))
+   if($rowScore = $nuke_db->sql_fetchrow($result))
    {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
@@ -173,7 +173,7 @@ $sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, 
  ******************************************************/
       $last_scoregame = '<a href="' . append_sid("games.$phpEx?gid=" . $rowScore['game_id']) . '">' . $rowScore['game_name'] . '</a>';
       $last_scoredate = create_date($board_config['default_dateformat'], $rowScore['score_date'], $board_config['board_timezone']);
-      $last_scoreuser = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=" . $rowScore['user_id']) . '">' . $rowScore['username'] . '</a>';
+      $last_scoreuser = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $rowScore['user_id']) . '">' . $rowScore['username'] . '</a>';
       $last_score = number_format($rowScore['score_game']);
 
       $template->assign_block_vars('arcaderow3.score3',array(
@@ -184,18 +184,18 @@ $sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, 
 
 // Start User Rank
 $sql = "SELECT *
-    FROM " . RANKS_TABLE . "
+    FROM " . NUKE_RANKS_TABLE . "
     ORDER BY rank_special, rank_min";
-if ( !($result = $db->sql_query($sql)) )
+if ( !($result = $nuke_db->sql_query($sql)) )
 {
-    message_die(GENERAL_ERROR, 'Could not obtain ranks information', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain ranks information', '', __LINE__, __FILE__, $sql);
 }
 
-while ( $row = $db->sql_fetchrow($result) )
+while ( $row = $nuke_db->sql_fetchrow($result) )
 {
     $ranksrow[] = $row;
 }
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 
 $poster_rank = '';
 $rank_image = '';
@@ -228,12 +228,12 @@ else
 // End User Rank
 
 // Calculates the users total number of arcade victories
-$sql = "SELECT COUNT(*) AS nbvictoires FROM " . GAMES_TABLE . " WHERE game_highuser = " . $userdata['user_id'];
-if( !$result = $db->sql_query($sql))
+$sql = "SELECT COUNT(*) AS nbvictoires FROM " . NUKE_GAMES_TABLE . " WHERE game_highuser = " . $userdata['user_id'];
+if( !$result = $nuke_db->sql_query($sql))
 {
-    message_die(GENERAL_ERROR, 'Could not obtain games information', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain games information', '', __LINE__, __FILE__, $sql);
 }
-$row = $db->sql_fetchrow($result);
+$row = $nuke_db->sql_fetchrow($result);
 $nbvictoires = $row['nbvictoires'];
 // Ends calculation the users total number of arcade victories
 
@@ -243,13 +243,13 @@ if ( $userdata['user_avatar_type'] && $userdata['user_allowavatar'] )
 {
     switch( $userdata['user_avatar_type'] )
     {
-        case USER_AVATAR_UPLOAD:
+        case NUKE_USER_AVATAR_UPLOAD:
             $avatar_img = ( $board_config['allow_avatar_upload'] ) ? '<img src="' . $board_config['avatar_path'] . '/' . $userdata['user_avatar'] . '" alt="" border="0" onload="resize_avatar(this)"/>' : '';
             break;
-        case USER_AVATAR_REMOTE:
+        case NUKE_USER_AVATAR_REMOTE:
             $avatar_img = ( $board_config['allow_avatar_remote'] ) ? '<img src="' . $userdata['user_avatar'] . '" alt="" border="0" onload="resize_avatar(this)"/>' : '';
             break;
-        case USER_AVATAR_GALLERY:
+        case NUKE_USER_AVATAR_GALLERY:
             $avatar_img = ( $board_config['allow_avatar_local'] ) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $userdata['user_avatar'] . '" alt="" border="0" onload="resize_avatar(this)"/>' : '';
             break;
     }
@@ -261,21 +261,21 @@ IF ( empty($avatar_img) )
 // Finished avatar
 
 //Total times playing Arcade
-$sql = "SELECT SUM(score_set) AS games_played FROM " . SCORES_TABLE . " WHERE user_id = " . $userdata['user_id'];
-if( !$result = $db->sql_query($sql))
+$sql = "SELECT SUM(score_set) AS games_played FROM " . NUKE_SCORES_TABLE . " WHERE user_id = " . $userdata['user_id'];
+if( !$result = $nuke_db->sql_query($sql))
 {
-    message_die(GENERAL_ERROR, 'Could not obtain games information', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain games information', '', __LINE__, __FILE__, $sql);
 }
-$row = $db->sql_fetchrow($result);
+$row = $nuke_db->sql_fetchrow($result);
 $games_played = $row['games_played'];
 
 //Total time playing Arcade
-$sql = "SELECT SUM(score_time) AS games_time FROM " . SCORES_TABLE . " WHERE user_id = " . $userdata['user_id'];
-if( !$result = $db->sql_query($sql))
+$sql = "SELECT SUM(score_time) AS games_time FROM " . NUKE_SCORES_TABLE . " WHERE user_id = " . $userdata['user_id'];
+if( !$result = $nuke_db->sql_query($sql))
 {
-    message_die(GENERAL_ERROR, 'Could not obtain games information', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain games information', '', __LINE__, __FILE__, $sql);
 }
-$row = $db->sql_fetchrow($result);
+$row = $nuke_db->sql_fetchrow($result);
 $games_time = sec2hms($row['games_time']);
 
 

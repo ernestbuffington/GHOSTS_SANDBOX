@@ -33,7 +33,7 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 require($phpbb2_root_path . 'gf_funcs/gen_funcs.' . $phpEx);
@@ -43,7 +43,7 @@ $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOF
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_TOPARCADES, $nukeuser);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_TOPARCADES, $nukeuser);
 init_userprefs($userdata);
 //
 // End session management
@@ -81,13 +81,13 @@ if (empty($liste_cat_auth)) {
         $liste_cat_auth = "''";
 }
 
-$sql = "SELECT COUNT(*) AS nbtot FROM " . GAMES_TABLE . " WHERE arcade_catid IN ($liste_cat_auth)";
+$sql = "SELECT COUNT(*) AS nbtot FROM " . NUKE_GAMES_TABLE . " WHERE arcade_catid IN ($liste_cat_auth)";
 
-if (!($result = $db->sql_query($sql))) {
-        message_die(GENERAL_ERROR, "Could not read the games table", '', __LINE__, __FILE__, $sql);
+if (!($result = $nuke_db->sql_query($sql))) {
+        message_die(NUKE_GENERAL_ERROR, "Could not read the games table", '', __LINE__, __FILE__, $sql);
 }
 
-if ($row=$db->sql_fetchrow($result)) {
+if ($row=$nuke_db->sql_fetchrow($result)) {
         $total_games = $row['nbtot'];
 } else {
         $total_games = 0;
@@ -97,15 +97,15 @@ if ($row=$db->sql_fetchrow($result)) {
 $start = get_var_gf(array('name'=>'start', 'intval'=>true));
 $limit_sql = " LIMIT $start," . $games_par_page;
 
-$sql = "SELECT distinct game_id , game_name FROM " . GAMES_TABLE . " WHERE arcade_catid IN ($liste_cat_auth) ORDER BY game_name ASC $limit_sql";
+$sql = "SELECT distinct game_id , game_name FROM " . NUKE_GAMES_TABLE . " WHERE arcade_catid IN ($liste_cat_auth) ORDER BY game_name ASC $limit_sql";
 
-if (!($result = $db->sql_query($sql))) {
-        message_die(GENERAL_ERROR, "Could not read the games table", '', __LINE__, __FILE__, $sql);
+if (!($result = $nuke_db->sql_query($sql))) {
+        message_die(NUKE_GENERAL_ERROR, "Could not read the games table", '', __LINE__, __FILE__, $sql);
 }
 
 $fini = false;
 
-if (!$row = $db->sql_fetchrow($result)) {
+if (!$row = $nuke_db->sql_fetchrow($result)) {
         $fini=true;
 }
 
@@ -123,13 +123,13 @@ while ((!$fini) ) {
                         $pos = 0;
                         $posreelle = 0;
                         $lastscore = 0;
-                        $sql2 = "SELECT s.* , u.username FROM " . SCORES_TABLE . " s LEFT JOIN " . USERS_TABLE . " u ON u.user_id = s.user_id WHERE s.game_id = " . $row['game_id'] . " ORDER BY s.score_game DESC, s.score_date ASC LIMIT 0,5";
+                        $sql2 = "SELECT s.* , u.username FROM " . NUKE_SCORES_TABLE . " s LEFT JOIN " . NUKE_USERS_TABLE . " u ON u.user_id = s.user_id WHERE s.game_id = " . $row['game_id'] . " ORDER BY s.score_game DESC, s.score_date ASC LIMIT 0,5";
 
-                        if (!($result2 = $db->sql_query($sql2))) {
-                                message_die(GENERAL_ERROR, "Could not read from the scores/users tables", '', __LINE__, __FILE__, $sql);
+                        if (!($result2 = $nuke_db->sql_query($sql2))) {
+                                message_die(NUKE_GENERAL_ERROR, "Could not read from the scores/users tables", '', __LINE__, __FILE__, $sql);
                         }
 
-                        while($row2 = $db->sql_fetchrow($result2)) {
+                        while($row2 = $nuke_db->sql_fetchrow($result2)) {
                                 $posreelle++;
 
                                 if ($lastscore != $row2['score_game']) {
@@ -149,7 +149,7 @@ while ((!$fini) ) {
                                 );
                         }
 
-                        if (!($row = $db->sql_fetchrow($result))) {
+                        if (!($row = $nuke_db->sql_fetchrow($result))) {
                                 $fini = true;
                         }
                 }

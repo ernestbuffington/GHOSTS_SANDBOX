@@ -4,7 +4,7 @@
 <tr>
 <td align="center">
 
-<!--MOD GLANCE BEGIN -->{GLANCE_OUTPUT}<!-- MOD GLANCE END -->
+<!--NUKE_MOD GLANCE BEGIN -->{GLANCE_OUTPUT}<!-- NUKE_MOD GLANCE END -->
 <form method="post" action="{S_POST_DAYS_ACTION}">
 <table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
   <tr> 
@@ -145,13 +145,13 @@
           <td>&nbsp;{L_NO_NEW_POSTS}
           </td>
           <td>&nbsp;&nbsp;</td>
-          <!-- Start replacement - Global announcement MOD -->
+          <!-- Start replacement - Global announcement NUKE_MOD -->
           <td width="20" align="center"><p>
 			<img src="{FOLDER_GLOBAL_ANNOUNCE_IMG}" alt="{L_GLOBAL_ANNOUNCEMENT}" width="32" height="32" /></p>
           </td>
           <td>&nbsp;
             {L_GLOBAL_ANNOUNCEMENT}           </td>
-          <!-- End replacement - Global announcement MOD -->
+          <!-- End replacement - Global announcement NUKE_MOD -->
 
         </tr>
         <tr>
@@ -167,13 +167,13 @@
           <td>&nbsp;{L_NO_NEW_POSTS_HOT}
           </td>
           <td>&nbsp;&nbsp;</td>
-          <!-- Start replacement - Global announcement MOD -->
+          <!-- Start replacement - Global announcement NUKE_MOD -->
           <td width="20" align="center"><p>
 			<img src="{FOLDER_ANNOUNCE_IMG}" alt="{L_ANNOUNCEMENT}" width="32" height="32" /></p>
           </td>
           <td>&nbsp;
             {L_ANNOUNCEMENT}           </td>
-          <!-- End replacement - Global announcement MOD -->
+          <!-- End replacement - Global announcement NUKE_MOD -->
         </tr>
         <tr>
           <td width="20" align="center"><p>
@@ -183,13 +183,13 @@
           <td width="20" align="center">
 			<img src="{FOLDER_LOCKED_IMG}" alt="{L_NO_NEW_POSTS_LOCKED}" width="32" height="32" /></td>
           <td>&nbsp;{L_NO_NEW_POSTS_LOCKED}</td>
-          <!-- Start add - Global announcement MOD -->
+          <!-- Start add - Global announcement NUKE_MOD -->
           <td>&nbsp;&nbsp;</td>
           <td width="20" align="center">
 			<img src="{FOLDER_STICKY_IMG}" alt="{L_STICKY}" width="32" height="32" /></td>
           <td>&nbsp;
             {L_STICKY}</td>
-          <!-- End add - Global announcement MOD -->
+          <!-- End add - Global announcement NUKE_MOD -->
         </tr>
         </table></td>
         <td class="aright">{S_AUTH_LIST}</td>

@@ -13,21 +13,21 @@
 
 require_once('../../mainfile.php');
 global $admin_file, $currentlang, $prefix;
-	$result3 = $db->sql_query("SHOW TABLES LIKE '".$prefix."_discord_config'");
-	$tableExists = $db->sql_numrows($result3);
+	$result3 = $nuke_db->sql_query("SHOW TABLES LIKE '".$prefix."_discord_config'");
+	$tableExists = $nuke_db->sql_numrows($result3);
 	if ($tableExists != 0){
 function dis_config()
 {
-	global $db;
+	global $nuke_db;
 	static $disconfig;
 
 	if(isset($disconfig) && is_array($disconfig))
 		return $disconfig;
 
-	$result = $db->sql_query("SELECT `config_value`, `config_name` FROM `nuke_discord_config`");
-	while ($row = $db->sql_fetchrow($result))
+	$result = $nuke_db->sql_query("SELECT `config_value`, `config_name` FROM `nuke_discord_config`");
+	while ($row = $nuke_db->sql_fetchrow($result))
 		$disconfig[$row['config_name']] = $row['config_value'];
-	$db->sql_freeresult($result);
+	$nuke_db->sql_freeresult($result);
 	return $disconfig;
 }
 $disconfig 	= dis_config();
@@ -193,7 +193,7 @@ if ($discord->channels) {
 										if ($side == 0){
 											echo '<span class="admin">'._DISCORD_ADM.'</span>' , PHP_EOL;
 										}else{
-											echo '&nbsp;<img class="admin" src="./discord/images/admin.png" alt="Admin" title="ADMIN">' , PHP_EOL;
+											echo '&nbsp;<img class="admin" src="./discord/images/admin.png" alt="Admin" title="NUKE_ADMIN">' , PHP_EOL;
 										}
 									}
 								if ($side == 0){

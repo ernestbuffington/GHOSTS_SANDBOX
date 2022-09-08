@@ -22,28 +22,28 @@ if(!defined('NUKE_EVO')) {
     exit;
 }
 
-global $admin_file, $db, $prefix, $cache;
+global $admin_file, $nuke_db, $prefix, $cache;
 
 $module_name = basename(dirname(dirname(__FILE__)));
 
 if(is_active($module_name)) {
     $content .= "<div align=\"left\"><strong><u><span class=\"content\">"._AWL."</span>:</u></strong></div>";
     if(($numbrokenl = $cache->load('numbrokenl', 'submissions')) === false) {
-        $result = $db->sql_query("SELECT COUNT(*) FROM ".$prefix."_links_modrequest WHERE brokenlink='1'");
-        list($numbrokenl) = $db->sql_fetchrow($result, SQL_NUM);
-        $db->sql_freeresult($result);
+        $result = $nuke_db->sql_query("SELECT COUNT(*) FROM ".$prefix."_links_modrequest WHERE brokenlink='1'");
+        list($numbrokenl) = $nuke_db->sql_fetchrow($result, SQL_NUM);
+        $nuke_db->sql_freeresult($result);
         $cache->save('numbrokenl', 'submissions', $numbrokenl);
     }
     if(($nummodreql = $cache->load('nummodreql', 'submissions')) === false) {
-        $result = $db->sql_query("SELECT COUNT(*) FROM ".$prefix."_links_modrequest WHERE brokenlink='0'");
-        list($nummodreql) = $db->sql_fetchrow($result, SQL_NUM);
-        $db->sql_freeresult($result);
+        $result = $nuke_db->sql_query("SELECT COUNT(*) FROM ".$prefix."_links_modrequest WHERE brokenlink='0'");
+        list($nummodreql) = $nuke_db->sql_fetchrow($result, SQL_NUM);
+        $nuke_db->sql_freeresult($result);
         $cache->save('nummodreql', 'submissions', $nummodreql);
     }
     if(($numwaitl = $cache->load('numwaitl', 'submissions')) === false) {
-        $result = $db->sql_query("SELECT COUNT(*) FROM ".$prefix."_links_newlink");
-        list($numwaitl) = $db->sql_fetchrow($result, SQL_NUM);
-        $db->sql_freeresult($result);
+        $result = $nuke_db->sql_query("SELECT COUNT(*) FROM ".$prefix."_links_newlink");
+        list($numwaitl) = $nuke_db->sql_fetchrow($result, SQL_NUM);
+        $nuke_db->sql_freeresult($result);
         $cache->save('numwaitl', 'submissions', $numwaitl);
     }
     $content .= "<img src=\"images/arrow.gif\" alt=\"\" />&nbsp;<a href=\"".$admin_file.".php?op=LinksListBrokenLinks\">"._BROKENLINKS."</a>:&nbsp;<strong>$numbrokenl</strong><br />";

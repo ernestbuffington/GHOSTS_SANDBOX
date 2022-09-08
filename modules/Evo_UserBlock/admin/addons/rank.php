@@ -24,9 +24,9 @@ if (!defined('ADMIN_FILE')) {
 
 get_header();
 OpenTable();
-echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=evo-userinfo\">" .$lang_evo_userblock['ADMIN']['ADMIN_HEADER']. "</a></div>\n";
+echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=evo-userinfo\">" .$lang_evo_userblock['NUKE_ADMIN']['ADMIN_HEADER']. "</a></div>\n";
 echo "<br /><br />";
-echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" .$lang_evo_userblock['ADMIN']['ADMIN_RETURN']. "</a> ]</div>\n";
+echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" .$lang_evo_userblock['NUKE_ADMIN']['ADMIN_RETURN']. "</a> ]</div>\n";
 CloseTable();
 echo "<br />";
 title(_EVO_USERINFO. "&nbsp;-&nbsp;" .$lang_evo_userblock['ONLINE']['RANK']);
@@ -38,7 +38,7 @@ OpenTable();
 		$values = array('show_title' => Fix_Quotes($_POST['show_title']),'show_2nd' => Fix_Quotes($_POST['show_2nd']),'show_3rd' => Fix_Quotes($_POST['show_3rd']),'show_4th' => Fix_Quotes($_POST['show_4th']),'show_5th' => Fix_Quotes($_POST['show_5th']));
 	    evouserinfo_write_addon('rank', $values);
 	    echo "<div align=\"center\">\n";
-	    echo $lang_evo_userblock['ADMIN']['SAVED'];
+	    echo $lang_evo_userblock['NUKE_ADMIN']['SAVED'];
 	    echo "</div>";
 	    global $admin_file;
 	    echo "<meta http-equiv=\"refresh\" content=\"3;url=$admin_file.php?op=evo-userinfo\">";
@@ -80,7 +80,7 @@ OpenTable();
 
 
 	    echo "<br />";
-	    echo "<input type=\"submit\" value=\"".$lang_evo_userblock['ADMIN']['SAVE']."\">";
+	    echo "<input type=\"submit\" value=\"".$lang_evo_userblock['NUKE_ADMIN']['SAVE']."\">";
 	    echo "</form>";
 	    echo "</div>";
 	}

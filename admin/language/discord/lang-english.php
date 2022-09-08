@@ -50,7 +50,7 @@ define('_DISCORD_INSTALL','I see that you don\'t have this currently installed o
 define('_DISCORD_INSTALL2','The reason I am asking you to agree to install before I proceed is because I will delete the table if there is one already and I want you to know that before you proceed.');
 define('_DISCORD_INSTALL3','I also wanted to inform you though this script is reading the info from your Discords servers API and no information except for the URL to the API is being stored on your website.<br>There may be some mods/bots that may come out to allow you to show more information, but this system will never store any sensitive information that could jeopardize your Discords server.');
 define('_DISCORD_INSTALLING', 'I am currently performing the database installation, please don\'t change page while I am installing. This will take a few seconds');
-define('_DISCORD_COMPLETE', 'Installation is now complete. I will redirect you back to the module in a few moments.');
+define('_DISCORD_COMPLETE', 'Installation is now complete. I will nuke_redirect you back to the module in a few moments.');
 define('_DISCORD_BINSTALL', 'INSTALL');
 define('_DISCORD_BAGREE', 'I agree to allow this system to install.');
 define('_DISCORD_DROPTABLE', 'Checking if table existed. . . <br>If there was one, it\'s not there anymore.<br>');

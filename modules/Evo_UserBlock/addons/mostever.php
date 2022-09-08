@@ -23,31 +23,31 @@ global $evouserinfo_addons, $evouserinfo_mostever;
 
 function evouserinfo_get_mostonline () 
 {
-    global $db, $prefix;    
-    $result = $db->sql_query("SELECT total, members, nonmembers FROM ".$prefix."_mostonline");
-    $mostonline = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    global $nuke_db, $prefix;    
+    $result = $nuke_db->sql_query("SELECT total, members, nonmembers FROM ".$prefix."_mostonline");
+    $mostonline = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
 
     $out['total'] = (is_integer(intval($mostonline['total']))) ? intval($mostonline['total']) : 0;
     $out['members'] = (is_integer(intval($mostonline['members']))) ? intval($mostonline['members']) : 0;
     $out['nonmembers'] = (is_integer(intval($mostonline['nonmembers']))) ? intval($mostonline['nonmembers']) : 0;
 
-    $result = $db->sql_query("SELECT COUNT(*) FROM `".$prefix."_session` WHERE `guest`='0' OR `guest`='2'");
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $result = $nuke_db->sql_query("SELECT COUNT(*) FROM `".$prefix."_session` WHERE `guest`='0' OR `guest`='2'");
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
     $users = $row[0];
 
-    $result = $db->sql_query("SELECT COUNT(*) FROM `".$prefix."_session` WHERE `guest`='1' OR `guest`='3'");
-    $row = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $result = $nuke_db->sql_query("SELECT COUNT(*) FROM `".$prefix."_session` WHERE `guest`='1' OR `guest`='3'");
+    $row = $nuke_db->sql_fetchrow($result);
+    $nuke_db->sql_freeresult($result);
     $guests = $row[0];
 
     $total = $users + $guests;
     
     if ($total > $out['total']):
 
-        $db->sql_query("DELETE FROM `".$prefix."_mostonline` WHERE `total`='".$out['total']."' LIMIT 1");
-        $db->sql_query("INSERT INTO `".$prefix."_mostonline` VALUES ('".$total."','".$users."','".$guests."')");
+        $nuke_db->sql_query("DELETE FROM `".$prefix."_mostonline` WHERE `total`='".$out['total']."' LIMIT 1");
+        $nuke_db->sql_query("INSERT INTO `".$prefix."_mostonline` VALUES ('".$total."','".$users."','".$guests."')");
 
     endif;
 

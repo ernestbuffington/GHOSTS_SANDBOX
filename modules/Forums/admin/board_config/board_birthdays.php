@@ -68,9 +68,9 @@ $bday_lock_no = ( !$new['bday_lock'] ) ? "checked=\"checked\"" : "";
 $bday_hide_yes = ( $new['bday_hide'] ) ? "checked=\"checked\"" : "";
 $bday_hide_no = ( !$new['bday_hide'] ) ? "checked=\"checked\"" : "";
 
-$bday_email_enabled = ( $new['bday_greeting'] & 1<<(BIRTHDAY_EMAIL-1) ) ? "checked=\"checked\"" : "";
-$bday_pm_enabled = ( $new['bday_greeting'] & 1<<(BIRTHDAY_PM-1) ) ? "checked=\"checked\"" : "disabled=\"disabled\"";
-$bday_popup_enabled = ( $new['bday_greeting'] & 1<<(BIRTHDAY_POPUP-1) ) ? "checked=\"checked\"" : "";
+$bday_email_enabled = ( $new['bday_greeting'] & 1<<(NUKE_BIRTHDAY_EMAIL-1) ) ? "checked=\"checked\"" : "";
+$bday_pm_enabled = ( $new['bday_greeting'] & 1<<(NUKE_BIRTHDAY_PM-1) ) ? "checked=\"checked\"" : "disabled=\"disabled\"";
+$bday_popup_enabled = ( $new['bday_greeting'] & 1<<(NUKE_BIRTHDAY_POPUP-1) ) ? "checked=\"checked\"" : "";
 
 
 
@@ -132,9 +132,9 @@ $template->assign_vars(array(
 	"BDAY_MAX" => $new['bday_max'],
 	"BDAY_HIDE_YES" => $bday_hide_yes,
 	"BDAY_HIDE_NO" => $bday_hide_no,
-	"BDAY_EMAIL" => BIRTHDAY_EMAIL,
-	"BDAY_PM" => BIRTHDAY_PM,
-	"BDAY_POPUP" => BIRTHDAY_POPUP,
+	"BDAY_EMAIL" => NUKE_BIRTHDAY_EMAIL,
+	"BDAY_PM" => NUKE_BIRTHDAY_PM,
+	"BDAY_POPUP" => NUKE_BIRTHDAY_POPUP,
 	"BDAY_EMAIL_ENABLED" => $bday_email_enabled,
 	"BDAY_PM_ENABLED" => $bday_pm_enabled,
 	"BDAY_POPUP_ENABLED" => $bday_popup_enabled

@@ -49,7 +49,7 @@ $msnl_sModuleNm	= "HTML_Newsletter";	//If you change the module directory, chang
 * Initialize and assign key module variables.
 ************************************************************************/
 
-global $db, $prefix;
+global $nuke_db, $prefix;
 
 @require_once( "./modules/$msnl_sModuleNm/functions.php" );
 @require_once( "./modules/$msnl_sModuleNm/config.php" );
@@ -67,7 +67,7 @@ $msnl_iAuthUser	= 0;
 
 $sql 						= "SELECT `name`, `radminsuper` FROM `".$prefix."_authors` WHERE `aid`='$aid'";
 $result 				= msnl_fSQLCall( $sql );
-$row						= $db->sql_fetchrow( $result );
+$row						= $nuke_db->sql_fetchrow( $result );
 
 if ( $row['radminsuper'] == 1 ) {  //No need to go any further - we have a super admin
 
@@ -79,7 +79,7 @@ if ( $row['radminsuper'] == 1 ) {  //No need to go any further - we have a super
 
 		$sql 						= "SELECT `name`, `radminsuper`, `radminnewsletter` FROM `".$prefix."_authors` WHERE `aid`='$aid'";
 		$result1 				= msnl_fSQLCall( $sql );
-		$row1						= $db->sql_fetchrow( $result1 );
+		$row1						= $nuke_db->sql_fetchrow( $result1 );
 
 		if ( $row1['radminsuper'] == 1 || $row1['radminnewsletter'] == 1 ) {
 		
@@ -91,7 +91,7 @@ if ( $row['radminsuper'] == 1 ) {  //No need to go any further - we have a super
 
 		$sql						= "SELECT `title`, `admins` FROM `".$prefix."_modules` WHERE `title`='$msnl_sModuleNm'";
 		$result1 				= msnl_fSQLCall( $sql );
-		$row1						= $db->sql_fetchrow( $result1 );
+		$row1						= $nuke_db->sql_fetchrow( $result1 );
 
 		$msnl_asAdmins	= explode( ",", $row1['admins'] );
 

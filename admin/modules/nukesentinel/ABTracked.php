@@ -9,7 +9,7 @@
 /* By: NukeScripts Network (webmaster@nukescripts.net)  */
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2008 by NukeScripts Network       */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 $pagetitle = _AB_NUKESENTINEL.": "._AB_TRACKEDIPS;
@@ -42,7 +42,7 @@ if(preg_match("#All(.*)Modules#", $showmodule) || !$showmodule ) {
 } else {
   $modfilter="WHERE page LIKE '%name=$showmodule%'";
 }
-$totalselected = $db->sql_numrows($db->sql_query("SELECT `username`, `ip_addr`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 1,2"));
+$totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT `username`, `ip_addr`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 1,2"));
 if($totalselected > 0) {
 	$selcolumn1=$selcolumn2=$selcolumn3=$selcolumn4=$selcolumn5=$selcolumn6='';
 	$seldirection1=$seldirection2='';
@@ -112,8 +112,8 @@ if($totalselected > 0) {
   echo "<td align='center'><strong>"._AB_LASTVIEWED."</strong></td>\n";
   echo "<td align='center'><strong>"._AB_HITS."</strong></td>\n";
   echo "<td align='center'><strong>"._AB_FUNCTIONS."</strong></td>\n</tr>\n";
-  $result = $db->sql_query("SELECT `user_id`, `username`, `ip_addr`, MAX(`date`), COUNT(*), MIN(`tid`), `c2c` FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 2,3 ORDER BY $column $direction LIMIT $min, $perpage");
-  while(list($userid,$username,$ipaddr,$lastview,$hits,$tid,$c2c) = $db->sql_fetchrow($result)){
+  $result = $nuke_db->sql_query("SELECT `user_id`, `username`, `ip_addr`, MAX(`date`), COUNT(*), MIN(`tid`), `c2c` FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 2,3 ORDER BY $column $direction LIMIT $min, $perpage");
+  while(list($userid,$username,$ipaddr,$lastview,$hits,$tid,$c2c) = $nuke_db->sql_fetchrow($result)){
     echo "<tr onmouseover=\"this.style.backgroundColor='$bgcolor2'\" onmouseout=\"this.style.backgroundColor='$bgcolor1'\" bgcolor='$bgcolor1'>";
     echo "<td>";
     if($userid != 1) {

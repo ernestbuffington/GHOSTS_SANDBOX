@@ -42,7 +42,7 @@ $module_name = basename(dirname(__FILE__));
 get_lang($module_name);
 include_once(NUKE_MODULES_DIR.$module_name.'/includes/functions.php');
 
-global $prefix, $db, $user_prefix, $ya_config, $thmcount;
+global $prefix, $nuke_db, $nuke_user_prefix, $ya_config, $thmcount;
 
 // menelaos: removed because it is already called in /modules/Your_Account/includes/mainfileend.php
 $ya_config = ya_get_configs();

@@ -8,17 +8,17 @@
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2005 by NukeScripts Network       */
 /********************************************************/
-global $db2;
+global $network_db;
 if(!defined('SUPPORT_NETWORK')) { die("Illegal Access Detected!!!"); }
 $pagetitle = "::: "._NETWORK_TITLE." ".$pj_config['version_number']." ::: "._NETWORK_TASKMAP." ::: ";
 include_once(NUKE_BASE_DIR.'header.php');
-$projectresult = $db2->sql_query("SELECT `project_id` FROM `".$network_prefix."_projects` ORDER BY `weight`");
-while(list($project_id) = $db2->sql_fetchrow($projectresult)) {
+$projectresult = $network_db->sql_query("SELECT `project_id` FROM `".$network_prefix."_projects` ORDER BY `weight`");
+while(list($project_id) = $network_db->sql_fetchrow($projectresult)) {
   $project = pjprojectpercent_info($project_id);
   $projectstatus = pjprojectstatus_info($project['status_id']);
   $projectpriority = pjprojectpriority_info($project['priority_id']);
-  $memberresult = $db2->sql_query("SELECT `member_id` FROM `".$network_prefix."_projects_members` WHERE `project_id`='$project_id' ORDER BY `member_id`");
-  $member_total = $db2->sql_numrows($membersresult);
+  $memberresult = $network_db->sql_query("SELECT `member_id` FROM `".$network_prefix."_projects_members` WHERE `project_id`='$project_id' ORDER BY `member_id`");
+  $member_total = $network_db->sql_numrows($membersresult);
   OpenTable();
   echo '<div align="center"><strong>'._NETWORK_TITLE." v".$pj_config['version_number']." ::: "._NETWORK_TASKMAP." ::: ".'</strong></div>';
   echo '<div align="center">';
@@ -56,12 +56,12 @@ while(list($project_id) = $db2->sql_fetchrow($projectresult)) {
   echo "<td align='center'><nobr>$wbprogress</nobr></td>\n";
   echo "<td align='center'><nobr>$member_total</nobr></td></tr>\n";
   echo "<tr><td width='100%' bgcolor='$bgcolor2' colspan='7'><strong>"._NETWORK_PROJECTTASKS."</strong></td></tr>\n";
-  $taskresult = $db2->sql_query("SELECT `task_id`, `task_name`, `task_percent`, `priority_id`, `status_id` FROM `".$network_prefix."_tasks` WHERE `project_id`='$project_id' ORDER BY `task_name`");
-  $task_total = $db2->sql_numrows($taskresult);
+  $taskresult = $network_db->sql_query("SELECT `task_id`, `task_name`, `task_percent`, `priority_id`, `status_id` FROM `".$network_prefix."_tasks` WHERE `project_id`='$project_id' ORDER BY `task_name`");
+  $task_total = $network_db->sql_numrows($taskresult);
   if($task_total != 0){
-    while(list($task_id, $task_name, $task_percent, $priority_id, $status_id) = $db2->sql_fetchrow($taskresult)) {
-      $memberresult = $db2->sql_query("SELECT `member_id` FROM `".$network_prefix."_tasks_members` WHERE `task_id`='$task_id' ORDER BY `member_id`");
-      $member_total = $db2->sql_numrows($membersresult);
+    while(list($task_id, $task_name, $task_percent, $priority_id, $status_id) = $network_db->sql_fetchrow($taskresult)) {
+      $memberresult = $network_db->sql_query("SELECT `member_id` FROM `".$network_prefix."_tasks_members` WHERE `task_id`='$task_id' ORDER BY `member_id`");
+      $member_total = $network_db->sql_numrows($membersresult);
       $taskstatus = pjtaskstatus_info($status_id);
       $taskpriority = pjtaskpriority_info($priority_id);
       $pjimage = pjimage("task.png", $module_name);

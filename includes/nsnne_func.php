@@ -22,8 +22,8 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 }
 
 function ne_save_config($config_name, $config_value){
-    global $prefix, $db, $cache;
-    $db->sql_query("UPDATE ".$prefix."_nsnne_config SET config_value='$config_value' WHERE config_name='$config_name'");
+    global $prefix, $nuke_db, $cache;
+    $nuke_db->sql_query("UPDATE ".$prefix."_nsnne_config SET config_value='$config_value' WHERE config_name='$config_name'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -34,7 +34,7 @@ function ne_save_config($config_name, $config_value){
 }
 
 function ne_get_configs(){
-    global $prefix, $db, $cache;
+    global $prefix, $nuke_db, $cache;
     static $config;
     if(isset($config)) return $config;
 /*****[BEGIN]******************************************
@@ -44,11 +44,11 @@ function ne_get_configs(){
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $configresult = $db->sql_query("SELECT config_name, config_value FROM ".$prefix."_nsnne_config");
-        while (list($config_name, $config_value) = $db->sql_fetchrow($configresult)) {
+        $configresult = $nuke_db->sql_query("SELECT config_name, config_value FROM ".$prefix."_nsnne_config");
+        while (list($config_name, $config_value) = $nuke_db->sql_fetchrow($configresult)) {
             $config[$config_name] = $config_value;
         }
-        $db->sql_freeresult($configresult);
+        $nuke_db->sql_freeresult($configresult);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -62,18 +62,18 @@ function ne_get_configs(){
 
 function automated_news() 
 {
-    global $prefix, $multilingual, $currentlang, $db;
+    global $prefix, $multilingual, $currentlang, $nuke_db;
     
-	$result = $db->sql_query('SELECT * FROM '.$prefix.'_autonews WHERE datePublished<="'.date('Y-m-d G:i:s', time()).'"');
+	$result = $nuke_db->sql_query('SELECT * FROM '.$prefix.'_autonews WHERE datePublished<="'.date('Y-m-d G:i:s', time()).'"');
     
-	while ($row2 = $db->sql_fetchrow($result)) 
+	while ($row2 = $nuke_db->sql_fetchrow($result)) 
 	{
         $title = addslashes($row2['title']);
         $hometext = addslashes($row2['hometext']);
         $bodytext = addslashes($row2['bodytext']);
         $notes = addslashes($row2['notes']);
 
-        $db->sql_query("INSERT INTO ".$prefix."_stories VALUES (NULL, 
+        $nuke_db->sql_query("INSERT INTO ".$prefix."_stories VALUES (NULL, 
 		                                              '$row2[catid]', 
 													    '$row2[aid]', 
 														    '$title', 
@@ -97,11 +97,11 @@ function automated_news()
 												                 '0', 
 																 '1')");
     }
-    if ($db->sql_numrows($result)) 
+    if ($nuke_db->sql_numrows($result)) 
 	{
-        $db->sql_query('DELETE FROM '.$prefix.'_autonews WHERE datePublished<="'.date('Y-m-d G:i:s', time()).'"');
+        $nuke_db->sql_query('DELETE FROM '.$prefix.'_autonews WHERE datePublished<="'.date('Y-m-d G:i:s', time()).'"');
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
 }
 
 ?>

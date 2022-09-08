@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 $phpbb2_root_path = './../';
 require($phpbb2_root_path . 'extension.inc');
@@ -87,9 +87,9 @@ switch ( $mode )
         break; 
     
     case 'all':
-        $sql = "UPDATE " . USERS_TABLE . " SET user_sig = ''";
+        $sql = "UPDATE " . NUKE_USERS_TABLE . " SET user_sig = ''";
 
-        if ( $result = $db->sql_query($sql) )
+        if ( $result = $nuke_db->sql_query($sql) )
         {
             $result_msg = $lang['sig_reset_successful'];
         } else

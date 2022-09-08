@@ -1583,7 +1583,7 @@ function embed_wmedia(width, height, link) {
 							$cache = false;
 							$this->data = array();
 						}
-						// If we've got a non feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL.
+						// If we've got a non feed_url stored (if the page isn't actually a feed, or is a nuke_redirect) use that URL.
 						elseif (isset($this->data['feed_url']))
 						{
 							// If the autodiscovery cache is still valid use it.
@@ -2010,7 +2010,7 @@ function embed_wmedia(width, height, link) {
 	}
 
 	/**
-	 * @todo If we have a perm redirect we should return the new URL
+	 * @todo If we have a perm nuke_redirect we should return the new URL
 	 * @todo When we make the above change, let's support <itunes:new-feed-url> as well
 	 * @todo Also, |atom:link|@rel=self
 	 */
@@ -7601,11 +7601,11 @@ class SimplePie_File
 	var $headers = array();
 	var $body;
 	var $status_code;
-	var $redirects = 0;
+	var $nuke_redirects = 0;
 	var $error;
 	var $method = SIMPLEPIE_FILE_SOURCE_NONE;
 
-	function SimplePie_File($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false)
+	function SimplePie_File($url, $timeout = 10, $nuke_redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false)
 	{
 		if (class_exists('idna_convert'))
 		{
@@ -7650,7 +7650,7 @@ class SimplePie_File
 				if (!ini_get('open_basedir') && !ini_get('safe_mode') && version_compare(SimplePie_Misc::get_curl_version(), '7.15.2', '>='))
 				{
 					curl_setopt($fp, CURLOPT_FOLLOWLOCATION, 1);
-					curl_setopt($fp, CURLOPT_MAXREDIRS, $redirects);
+					curl_setopt($fp, CURLOPT_MAXREDIRS, $nuke_redirects);
 				}
 
 				$this->headers = curl_exec($fp);
@@ -7668,7 +7668,7 @@ class SimplePie_File
 				{
 					$info = curl_getinfo($fp);
 					curl_close($fp);
-					$this->headers = explode("\r\n\r\n", $this->headers, $info['redirect_count'] + 1);
+					$this->headers = explode("\r\n\r\n", $this->headers, $info['nuke_redirect_count'] + 1);
 					$this->headers = array_pop($this->headers);
 					$parser = new SimplePie_HTTP_Parser($this->headers);
 					if ($parser->parse())
@@ -7676,11 +7676,11 @@ class SimplePie_File
 						$this->headers = $parser->headers;
 						$this->body = $parser->body;
 						$this->status_code = $parser->status_code;
-						if (($this->status_code == 300 || $this->status_code == 301 || $this->status_code == 302 || $this->status_code == 303 || $this->status_code == 307 || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects)
+						if (($this->status_code == 300 || $this->status_code == 301 || $this->status_code == 302 || $this->status_code == 303 || $this->status_code == 307 || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->nuke_redirects < $nuke_redirects)
 						{
-							$this->redirects++;
+							$this->nuke_redirects++;
 							$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
-							return $this->SimplePie_File($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+							return $this->SimplePie_File($location, $timeout, $nuke_redirects, $headers, $useragent, $force_fsockopen);
 						}
 					}
 				}
@@ -7757,11 +7757,11 @@ class SimplePie_File
 							$this->headers = $parser->headers;
 							$this->body = $parser->body;
 							$this->status_code = $parser->status_code;
-							if (($this->status_code == 300 || $this->status_code == 301 || $this->status_code == 302 || $this->status_code == 303 || $this->status_code == 307 || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects)
+							if (($this->status_code == 300 || $this->status_code == 301 || $this->status_code == 302 || $this->status_code == 303 || $this->status_code == 307 || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->nuke_redirects < $nuke_redirects)
 							{
-								$this->redirects++;
+								$this->nuke_redirects++;
 								$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
-								return $this->SimplePie_File($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+								return $this->SimplePie_File($location, $timeout, $nuke_redirects, $headers, $useragent, $force_fsockopen);
 							}
 							if (isset($this->headers['content-encoding']) && ($this->headers['content-encoding'] == 'gzip' || $this->headers['content-encoding'] == 'deflate'))
 							{

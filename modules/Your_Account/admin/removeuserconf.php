@@ -41,7 +41,7 @@ if (!defined('CNBYA')) {
 
 if(is_mod_admin($module_name)) {
 
-    list($email, $level) = $db->sql_fetchrow($db->sql_query("SELECT user_email, user_level FROM ".$user_prefix."_users WHERE user_id='$rem_uid'"));
+    list($email, $level) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_email, user_level FROM ".$nuke_user_prefix."_users WHERE user_id='$rem_uid'"));
     if ($level > -1 AND $ya_config['servermail'] == 0) {
         $message = _SORRYTO." $sitename "._HASREMOVE;
         $subject = _ACCTREMOVE;
@@ -57,16 +57,16 @@ if(is_mod_admin($module_name)) {
         // $from .= "Return-Path: $adminmail\n";
         // evo_mail($email, $subject, $message, $from);
     }
-    $db->sql_query("DELETE FROM ".$user_prefix."_users WHERE user_id='$rem_uid'");
+    $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_users WHERE user_id='$rem_uid'");
 
-    $db->sql_query("DELETE FROM ".$user_prefix."_cnbya_value WHERE uid='$rem_uid'");
-    $db->sql_query("DELETE FROM ".$user_prefix."_cnbya_value_temp WHERE uid='$rem_uid'");
-    $db->sql_query("DELETE FROM ".$prefix."_bbuser_group WHERE user_id='$rem_uid'");
-    $db->sql_query("OPTIMIZE TABLE ".$user_prefix."_cnbya_value");
-    $db->sql_query("OPTIMIZE TABLE ".$user_prefix."_cnbya_value_temp");
-    $db->sql_query("OPTIMIZE TABLE ".$prefix."_bbuser_group");
+    $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_cnbya_value WHERE uid='$rem_uid'");
+    $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_cnbya_value_temp WHERE uid='$rem_uid'");
+    $nuke_db->sql_query("DELETE FROM ".$prefix."_bbuser_group WHERE user_id='$rem_uid'");
+    $nuke_db->sql_query("OPTIMIZE TABLE ".$nuke_user_prefix."_cnbya_value");
+    $nuke_db->sql_query("OPTIMIZE TABLE ".$nuke_user_prefix."_cnbya_value_temp");
+    $nuke_db->sql_query("OPTIMIZE TABLE ".$prefix."_bbuser_group");
 
-    $db->sql_query("OPTIMIZE TABLE ".$user_prefix."_users");
+    $nuke_db->sql_query("OPTIMIZE TABLE ".$nuke_user_prefix."_users");
     $pagetitle = ": "._USERADMIN." - "._ACCTREMOVE;
     include_once(NUKE_BASE_DIR.'header.php');
 	OpenTable();

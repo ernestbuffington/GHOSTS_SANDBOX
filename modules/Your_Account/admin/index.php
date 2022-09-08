@@ -31,13 +31,13 @@ if (!defined('ADMIN_FILE')) {
    die('Access Denied');
 }
 
-global $prefix, $db, $admdata;
+global $prefix, $nuke_db, $admdata;
 $module_name = basename(dirname(dirname(__FILE__)));
 if(is_mod_admin($module_name)) {
 
     switch($op) {
         case "mod_users":
-        redirect("modules.php?name=Your_Account&file=admin");
+        nuke_redirect("modules.php?name=Your_Account&file=admin");
         break;
     }
 

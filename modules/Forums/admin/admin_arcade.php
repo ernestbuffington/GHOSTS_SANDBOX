@@ -13,7 +13,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -36,14 +36,14 @@ require($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '
 // Pull all config data
 //
 $sql = "SELECT *
-    FROM " . ARCADE_TABLE;
-if(!$result = $db->sql_query($sql))
+    FROM " . NUKE_ARCADE_TABLE;
+if(!$result = $nuke_db->sql_query($sql))
 {
-    message_die(CRITICAL_ERROR, "Could not query config information in admin_arcade", "", __LINE__, __FILE__, $sql);
+    message_die(NUKE_CRITICAL_ERROR, "Could not query config information in admin_arcade", "", __LINE__, __FILE__, $sql);
 }
 else
 {
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
         $arcade_name = $row['arcade_name'];
         $arcade_value = $row['arcade_value'];
@@ -53,12 +53,12 @@ else
 
         if( isset($HTTP_POST_VARS['submit']) )
         {
-            $sql = "UPDATE " . ARCADE_TABLE . "
+            $sql = "UPDATE " . NUKE_ARCADE_TABLE . "
                 SET arcade_value = '" . str_replace("\'", "''", $new[$arcade_name]) . "'
                 WHERE arcade_name = '$arcade_name'";
-            if( !$db->sql_query($sql) )
+            if( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Failed to update arcade configuration for $arcade_name", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Failed to update arcade configuration for $arcade_name", "", __LINE__, __FILE__, $sql);
             }
         }
     }
@@ -67,7 +67,7 @@ else
     {
         $message = $lang['Arcade_config_updated'] . "<br /><br />" . sprintf($lang['Click_return_arcade_config'], "<a href=\"" . append_sid("admin_arcade.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-        message_die(GENERAL_MESSAGE, $message);
+        message_die(NUKE_GENERAL_MESSAGE, $message);
     }
 }
 

@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -94,7 +94,7 @@ function get_module_languages($short_name)
 
     if (!file_exists($language_directory))
     {
-        message_die(GENERAL_ERROR, 'Unable to find Language Directory');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
     if( $dir = @opendir($language_directory) )
@@ -143,7 +143,7 @@ function get_all_installed_languages()
 
     if (!file_exists($language_directory))
     {
-        message_die(GENERAL_ERROR, 'Unable to find Language Directory');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
     if( $dir = @opendir($language_directory) )
@@ -188,7 +188,7 @@ function module_is_in_lang($short_name, $language)
 
     if (!file_exists($language_directory))
     {
-        message_die(GENERAL_ERROR, 'Unable to find Language Directory');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
     $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
@@ -216,7 +216,7 @@ function get_lang_entries($short_name, $language)
 
     if (!file_exists($language_directory))
     {
-        message_die(GENERAL_ERROR, 'Unable to find Language Directory');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
     $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
@@ -241,7 +241,7 @@ function get_lang_entries($short_name, $language)
 // Set specific language key, $value is the new key value
 function set_lang_entry($language, $module_id, $key, $value)
 {
-    global $directory_mode, $file_mode, $db, $phpbb2_root_path;
+    global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path;
 
     $language = trim($language);
     $module_id = intval($module_id);
@@ -250,17 +250,17 @@ function set_lang_entry($language, $module_id, $key, $value)
 
     $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
     }
     
-    if ($db->sql_numrows($result) == 0)
+    if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(GENERAL_ERROR, 'Unable to get Module ' . $module_id);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $module_id);
     }
         
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
     $short_name = trim($row['short_name']);
     $lang_entries = array();
 
@@ -268,7 +268,7 @@ function set_lang_entry($language, $module_id, $key, $value)
 
     if (!file_exists($language_directory))
     {
-        message_die(GENERAL_ERROR, 'Unable to find Language Directory');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
     $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
@@ -345,7 +345,7 @@ function set_lang_entry($language, $module_id, $key, $value)
 
     if (!($fp = fopen($language_file, 'wt')))
     {
-        message_die(GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
     }
 
     fwrite($fp, $contents, strlen($contents));
@@ -359,7 +359,7 @@ function set_lang_entry($language, $module_id, $key, $value)
 // Set specific language block, $lang_block is the new language definition block as string
 function set_lang_block($language, $module_id, $lang_block)
 {
-    global $directory_mode, $file_mode, $db, $phpbb2_root_path;
+    global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path;
 
     $language = trim($language);
     $module_id = intval($module_id);
@@ -367,17 +367,17 @@ function set_lang_block($language, $module_id, $lang_block)
 
     $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
     }
     
-    if ($db->sql_numrows($result) == 0)
+    if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(GENERAL_ERROR, 'Unable to get Module ' . $module_id);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $module_id);
     }
         
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
     $short_name = trim($row['short_name']);
     $lang_entries = array();
 
@@ -385,7 +385,7 @@ function set_lang_block($language, $module_id, $lang_block)
 
     if (!file_exists($language_directory))
     {
-        message_die(GENERAL_ERROR, 'Unable to find Language Directory');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
     $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
@@ -432,7 +432,7 @@ function set_lang_block($language, $module_id, $lang_block)
 
     if (!($fp = fopen($language_file, 'wt')))
     {
-        message_die(GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
     }
 
     fwrite($fp, $contents, strlen($contents));
@@ -446,7 +446,7 @@ function set_lang_block($language, $module_id, $lang_block)
 // Add new key to a modules language block
 function lang_add_new_key($language, $module_id, $add_key, $add_value)
 {
-    global $directory_mode, $file_mode, $db, $phpbb2_root_path;
+    global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path;
 
     $language = trim($language);
     $module_id = intval($module_id);
@@ -455,17 +455,17 @@ function lang_add_new_key($language, $module_id, $add_key, $add_value)
 
     $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
     }
     
-    if ($db->sql_numrows($result) == 0)
+    if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(GENERAL_ERROR, 'Unable to get Module ' . $module_id);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $module_id);
     }
         
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
     $short_name = trim($row['short_name']);
     $lang_entries = array();
 
@@ -473,7 +473,7 @@ function lang_add_new_key($language, $module_id, $add_key, $add_value)
 
     if (!file_exists($language_directory))
     {
-        message_die(GENERAL_ERROR, 'Unable to find Language Directory');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
     $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
@@ -551,7 +551,7 @@ function lang_add_new_key($language, $module_id, $add_key, $add_value)
 
     if (!($fp = fopen($language_file, 'wt')))
     {
-        message_die(GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
     }
 
     fwrite($fp, $contents, strlen($contents));
@@ -565,7 +565,7 @@ function lang_add_new_key($language, $module_id, $add_key, $add_value)
 // Delete key out of language block
 function delete_lang_key($language, $module_id, $key_name)
 {
-    global $directory_mode, $file_mode, $db, $phpbb2_root_path;
+    global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path;
 
     $language = trim($language);
     $module_id = intval($module_id);
@@ -573,17 +573,17 @@ function delete_lang_key($language, $module_id, $key_name)
 
     $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
     }
     
-    if ($db->sql_numrows($result) == 0)
+    if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(GENERAL_ERROR, 'Unable to get Module ' . $module_id);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $module_id);
     }
         
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
     $short_name = trim($row['short_name']);
     $lang_entries = array();
 
@@ -591,7 +591,7 @@ function delete_lang_key($language, $module_id, $key_name)
 
     if (!file_exists($language_directory))
     {
-        message_die(GENERAL_ERROR, 'Unable to find Language Directory');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
     $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
@@ -662,7 +662,7 @@ function delete_lang_key($language, $module_id, $key_name)
 
     if (!($fp = fopen($language_file, 'wt')))
     {
-        message_die(GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
     }
 
     fwrite($fp, $contents, strlen($contents));
@@ -676,7 +676,7 @@ function delete_lang_key($language, $module_id, $key_name)
 // Add Empty Language
 function add_empty_language($new_language)
 {
-    global $directory_mode, $file_mode, $db, $phpbb2_root_path, $lang;
+    global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path, $lang;
 
     $language = trim($new_language);
 
@@ -684,7 +684,7 @@ function add_empty_language($new_language)
 
     if (!file_exists($language_directory))
     {
-        message_die(GENERAL_ERROR, 'Unable to find Language Directory');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
     chmod($language_directory, $directory_mode);
@@ -703,18 +703,18 @@ function add_empty_language($new_language)
 
     $sql = "SELECT short_name FROM " . MODULES_TABLE;
 
-    if (!($result = $db->sql_query($sql)) )
+    if (!($result = $nuke_db->sql_query($sql)) )
     {
-        message_die(GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
     }
     
-    if ($db->sql_numrows($result) == 0)
+    if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(GENERAL_ERROR, 'Unable to get Modules');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Modules');
     }
         
-    $rows = $db->sql_fetchrowset($result);
-    $num_rows = $db->sql_numrows($result);
+    $rows = $nuke_db->sql_fetchrowset($result);
+    $num_rows = $nuke_db->sql_numrows($result);
 
     for ($i = 0; $i < $num_rows; $i++)
     {
@@ -747,7 +747,7 @@ function add_empty_language($new_language)
 
         if (!($fp = fopen($language_file, 'wt')))
         {
-            message_die(GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
         }
 
         fwrite($fp, $contents, strlen($contents));
@@ -763,7 +763,7 @@ function add_empty_language($new_language)
 // Add new Language, use schema
 function add_new_language($new_language, $lang_schema)
 {
-    global $directory_mode, $file_mode, $db, $phpbb2_root_path, $lang;
+    global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path, $lang;
 
     $language = trim($new_language);
     $lang_schema = trim($lang_schema);
@@ -772,7 +772,7 @@ function add_new_language($new_language, $lang_schema)
 
     if (!file_exists($language_directory))
     {
-        message_die(GENERAL_ERROR, 'Unable to find Language Directory');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
     $schema_language_file = $phpbb2_root_path . 'modules/language/' . $lang_schema . '/lang_modules.php';
@@ -805,7 +805,7 @@ function add_new_language($new_language, $lang_schema)
 
     if (!($fp = fopen($language_file, 'wt')))
     {
-        message_die(GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
     }
 
     fwrite($fp, $contents, strlen($contents));
@@ -819,7 +819,7 @@ function add_new_language($new_language, $lang_schema)
 // Add Language, Language Content is provided
 function add_new_language_predefined($new_language, $modules)
 {
-    global $directory_mode, $file_mode, $db, $phpbb2_root_path, $lang;
+    global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path, $lang;
 
     // Module content is defined as array(short_name, content)
 
@@ -829,7 +829,7 @@ function add_new_language_predefined($new_language, $modules)
 
     if (!file_exists($language_directory))
     {
-        message_die(GENERAL_ERROR, 'Unable to find Language Directory');
+        message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
     chmod($language_directory, $directory_mode);
@@ -879,7 +879,7 @@ function add_new_language_predefined($new_language, $modules)
 
         if (!($fp = fopen($language_file, 'wt')))
         {
-            message_die(GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
         }
 
         fwrite($fp, $contents, strlen($contents));
@@ -893,7 +893,7 @@ function add_new_language_predefined($new_language, $modules)
 
 function delete_complete_language($language)
 {
-    global $db, $phpbb2_root_path;
+    global $nuke_db, $phpbb2_root_path;
 
     $language = trim($language);
 

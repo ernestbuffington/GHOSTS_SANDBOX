@@ -45,7 +45,7 @@ global $name;
 
 if($name): 
     # Mod: Lock Modules v1.0.0 START
-    global $db, $prefix, $user, $lock_modules;
+    global $nuke_db, $prefix, $user, $lock_modules;
 
     if(($lock_modules && $name != 'Your_Account') 
 	&& !is_admin() 
@@ -57,7 +57,7 @@ if($name):
     include(NUKE_MODULES_DIR.'Your_Account/index.php');
     # Mod: Lock Modules v1.0.0 END
 
-    $module = $db->sql_ufetchrow('SELECT `title`, `active`, `view`, `blocks`, `custom_title`, `groups` FROM `'.$prefix.'_modules` WHERE `title`="'.Fix_Quotes($name).'"');
+    $module = $nuke_db->sql_ufetchrow('SELECT `title`, `active`, `view`, `blocks`, `custom_title`, `groups` FROM `'.$prefix.'_modules` WHERE `title`="'.Fix_Quotes($name).'"');
 	
 	$module_name = $module['title'];
 	
@@ -114,7 +114,7 @@ if($name):
     			     if(isset($userinfo['groups'][$group])):
 					 $ingroup = true;
                  	 # Group Cookie Control START
-					 list($groupname) = $db->sql_ufetchrow("SELECT `group_name` FROM ".$prefix."_bbgroups WHERE `group_id`=".$group."", SQL_NUM);
+					 list($groupname) = $nuke_db->sql_ufetchrow("SELECT `group_name` FROM ".$prefix."_bbgroups WHERE `group_id`=".$group."", SQL_NUM);
    			         $groupcookie = str_replace(" ", "_", $groupname);
 					 if(!isset($_COOKIE[$groupcookie]))
 					 setcookie($groupcookie, $group, time()+2*24*60*60);
@@ -123,14 +123,14 @@ if($name):
 			    endforeach;
 
 			    if(!$ingroup)
-                  $result = $db->sql_query('SELECT `group_name`
+                  $result = $nuke_db->sql_query('SELECT `group_name`
 			                                FROM  '.$prefix.'_bbgroups 
 											WHERE group_id = '.$group.'
 				                            ORDER BY group_id'); 
 				 
-				  if($db->sql_numrows($result)): 
+				  if($nuke_db->sql_numrows($result)): 
 	              
-                     while(($row = $db->sql_fetchrow($result)) AND (!$ingroup)): 
+                     while(($row = $nuke_db->sql_fetchrow($result)) AND (!$ingroup)): 
                      
 						 # this is so you can add a custom message to any groups on your portal
 						 # just add the special group id number where it says 9999
@@ -178,7 +178,7 @@ if($name):
 					 endwhile;
         
                   endif;
-				 $db->sql_freeresult($result);
+				 $nuke_db->sql_freeresult($result);
 			endif;
 		endif;
 		
@@ -194,6 +194,6 @@ if($name):
     endif;
  
 else: 
-    redirect('index.php');
+    nuke_redirect('index.php');
 endif;
 ?>

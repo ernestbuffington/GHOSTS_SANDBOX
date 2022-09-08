@@ -39,14 +39,14 @@ exit();
 
 function PrintPage($sid) 
 {
-    global $site_logo, $nukeurl, $sitename, $datetime, $prefix, $db, $module_name;
+    global $site_logo, $nukeurl, $sitename, $datetime, $prefix, $nuke_db, $module_name;
     
 	// Ernest Buffington 0/31/2022 12:45am Wednesday
 	// I took the image out as this is a print page and wastes ink!!!
 	//<img src=\"images/$site_logo\" alt=\"$sitename\" title=\"$sitename\" /><br /><br />
 
     $sid = intval($sid);
-    $row = $db->sql_fetchrow($db->sql_query("SELECT aid, title, datePublished, dateModified, hometext, bodytext, topic, notes FROM ".$prefix."_stories WHERE sid='$sid'"));
+    $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT aid, title, datePublished, dateModified, hometext, bodytext, topic, notes FROM ".$prefix."_stories WHERE sid='$sid'"));
     $title = stripslashes(check_html($row["title"], "nohtml"));
     
 	// START Ernest Buffington 0/31/2022 12:45am Wednesday
@@ -60,7 +60,7 @@ function PrintPage($sid)
     $bodytext = decode_bbcode(set_smilies(stripslashes($row["bodytext"])), 1, true);
     $topic = intval($row["topic"]);
     $notes = stripslashes($row["notes"]);
-    $row2 = $db->sql_fetchrow($db->sql_query("SELECT topictext FROM ".$prefix."_topics WHERE topicid='$topic'"));
+    $row2 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT topictext FROM ".$prefix."_topics WHERE topicid='$topic'"));
     $topictext = stripslashes($row2["topictext"]);
 
     formatTimestamp($time);

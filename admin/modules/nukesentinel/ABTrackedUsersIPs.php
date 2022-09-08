@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -30,9 +30,9 @@ if($perpage == 0) { $perpage = 25; }
 if(!isset($min)) $min=0;
 if(!isset($max)) $max=$min+$perpage;
 $tid=intval($tid);
-$totalselected = $db->sql_numrows($db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$tid'"));
+$totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$tid'"));
 if($totalselected > 0) {
-  list($uname) = $db->sql_fetchrow($db->sql_query("SELECT `username` FROM `".$user_prefix."_users` WHERE `user_id`='$tid' LIMIT 0,1"));
+  list($uname) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `username` FROM `".$nuke_user_prefix."_users` WHERE `user_id`='$tid' LIMIT 0,1"));
   if (empty($uname)) { $uname = $nuke_config['anonymous']; } else { $uname = UsernameColor($uname); }
   echo '<center><strong>'.$uname.' ('.$tid.')</strong></center><br />'."\n";
   echo '<table summary="" align="center" cellpadding="2" cellspacing="2" bgcolor="'.$bgcolor2.'" border="0">'."\n";
@@ -41,9 +41,9 @@ if($totalselected > 0) {
   echo '<td align="center" width="30%"><strong>'._AB_DATE.'</strong></td>'."\n";
   echo '<td align="center" width="30%"><strong>'._AB_COUNTRY.'</strong></td>'."\n";
   echo '</tr>'."\n";
-  $result = $db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$tid' ORDER BY `ip_long` LIMIT $min, $perpage");
-  while(list($lipaddr) = $db->sql_fetchrow($result)){
-    $newrow = $db->sql_fetchrow($db->sql_query("SELECT * FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$tid' AND `ip_addr`='$lipaddr' ORDER BY `date` DESC LIMIT 1"));
+  $result = $nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$tid' ORDER BY `ip_long` LIMIT $min, $perpage");
+  while(list($lipaddr) = $nuke_db->sql_fetchrow($result)){
+    $newrow = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$tid' AND `ip_addr`='$lipaddr' ORDER BY `date` DESC LIMIT 1"));
     $countrytitle = abget_countrytitle($newrow['c2c']);
     echo '<tr onmouseover="this.style.backgroundColor=\''.$bgcolor2.'\'" onmouseout="this.style.backgroundColor=\''.$bgcolor1.'\'" bgcolor="'.$bgcolor1.'">'."\n";
     echo '<td><a href="'.$ab_config['lookup_link'].$lipaddr.'" target="_blank">'.$lipaddr.'</a></td>'."\n";

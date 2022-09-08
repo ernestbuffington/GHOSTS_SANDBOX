@@ -46,7 +46,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 $phpbb2_root_path = NUKE_PHPBB2_DIR;
 include($phpbb2_root_path . 'extension.inc');
@@ -60,7 +60,7 @@ include(NUKE_BASE_DIR.'header.php');
 //
 if ( !empty($board_config['privmsg_disable']) )
 {
-    message_die(GENERAL_MESSAGE, 'PM_disabled');
+    message_die(NUKE_GENERAL_MESSAGE, 'PM_disabled');
 }
 
 //
@@ -72,7 +72,7 @@ if ( !empty($board_config['privmsg_disable']) )
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_PRIVMSGS);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_PRIVMSGS);
 init_userprefs($userdata);
 //
 // End session management
@@ -86,76 +86,76 @@ $html_entities_replace = array('&amp;', '&lt;', '&gt;');
 //
 $submit = ( isset($HTTP_POST_VARS['post']) ) ? TRUE : 0;
 $preview = ( isset($HTTP_POST_VARS['preview']) ) ? TRUE : 0;
-$group_id = $HTTP_POST_VARS[POST_GROUPS_URL];
+$group_id = $HTTP_POST_VARS[NUKE_POST_GROUPS_URL];
 
 if ( !empty($group_id) )
 {
     if( $group_id != 'users' && $group_id != 'admins' && $group_id != 'moderators')
     {
         $sql = "SELECT DISTINCT g.group_name
-            FROM ".GROUPS_TABLE . " g, ".USER_GROUP_TABLE . " ug
+            FROM ".NUKE_GROUPS_TABLE . " g, ".NUKE_USER_GROUP_TABLE . " ug
             WHERE g.group_single_user <> 1 AND g.group_id='".$group_id."'
             AND (
-                        ('".$userdata['user_level']."'='".ADMIN."') OR
-                        (g.group_allow_pm='".AUTH_MOD."' AND g.group_moderator = '" . $userdata['user_id']."') OR
-                        (g.group_allow_pm='".AUTH_ACL."' AND ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ) OR
-                        (g.group_allow_pm='".AUTH_REG."' AND '".$userdata['user_id']."'!='".ANONYMOUS."' ) OR
-                        (g.group_allow_pm='".AUTH_ALL."')
+                        ('".$userdata['user_level']."'='".NUKE_ADMIN."') OR
+                        (g.group_allow_pm='".NUKE_AUTH_MOD."' AND g.group_moderator = '" . $userdata['user_id']."') OR
+                        (g.group_allow_pm='".NUKE_AUTH_ACL."' AND ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ) OR
+                        (g.group_allow_pm='".NUKE_AUTH_REG."' AND '".$userdata['user_id']."'!='".NUKE_ANONYMOUS."' ) OR
+                        (g.group_allow_pm='".NUKE_AUTH_ALL."')
                 )" ;
-        $result = $db->sql_query($sql);
-        if( !$result = $db->sql_query($sql) )
-            message_die(GENERAL_ERROR, "Could not select group name!", __LINE__, __FILE__, $sql);
-        if( ! $db->sql_numrows($result)) message_die(GENERAL_ERROR, $lang['Not_Authorised']);
-        $group = $db->sql_fetchrow($result);
+        $result = $nuke_db->sql_query($sql);
+        if( !$result = $nuke_db->sql_query($sql) )
+            message_die(NUKE_GENERAL_ERROR, "Could not select group name!", __LINE__, __FILE__, $sql);
+        if( ! $nuke_db->sql_numrows($result)) message_die(NUKE_GENERAL_ERROR, $lang['Not_Authorised']);
+        $group = $nuke_db->sql_fetchrow($result);
         $group_name=$group['group_name'];
         $sql = "SELECT distinct u.user_id, u.user_lang, u.user_email, u.username, u.user_notify_pm,u.user_active,u.user_allow_mass_pm
-            FROM " . USERS_TABLE . " u, " . USER_GROUP_TABLE . " ug
+            FROM " . NUKE_USERS_TABLE . " u, " . NUKE_USER_GROUP_TABLE . " ug
             WHERE u.user_allow_mass_pm > 1 AND ug.group_id = $group_id
                 AND ug.user_pending <> " . TRUE . "
-                AND u.user_id <> " . ANONYMOUS . "
+                AND u.user_id <> " . NUKE_ANONYMOUS . "
                 AND u.user_id = ug.user_id
                 ORDER BY u.user_lang";
     }
     elseif ($group_id == 'users')
     {
-        if( $userdata['user_level']!=ADMIN ) message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+        if( $userdata['user_level']!=NUKE_ADMIN ) message_die(NUKE_GENERAL_ERROR, $lang['Not_Authorised']);
         $sql = "SELECT distinct user_id, user_lang, user_email, username, user_notify_pm,user_active,user_allow_mass_pm
-            FROM " . USERS_TABLE." WHERE user_allow_mass_pm > 1
-                    AND user_id <> " . ANONYMOUS." ORDER BY user_lang";
+            FROM " . NUKE_USERS_TABLE." WHERE user_allow_mass_pm > 1
+                    AND user_id <> " . NUKE_ANONYMOUS." ORDER BY user_lang";
         $group_name=$lang['All_users'];
     }
     elseif ($group_id == 'admins')
     {
-        if( $userdata['user_level']!=ADMIN ) message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+        if( $userdata['user_level']!=NUKE_ADMIN ) message_die(NUKE_GENERAL_ERROR, $lang['Not_Authorised']);
         $sql = "SELECT distinct user_id, user_lang, user_email, username, user_notify_pm,user_active,user_allow_mass_pm
-            FROM " . USERS_TABLE." WHERE user_allow_mass_pm > 1
+            FROM " . NUKE_USERS_TABLE." WHERE user_allow_mass_pm > 1
                     AND user_level = '2' ORDER BY user_lang";
         $group_name=$lang['All_admins'];
     }
     elseif ($group_id == 'moderators')
     {
-        if( $userdata['user_level']!=ADMIN ) message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+        if( $userdata['user_level']!=NUKE_ADMIN ) message_die(NUKE_GENERAL_ERROR, $lang['Not_Authorised']);
         $sql = "SELECT distinct user_id, user_lang, user_email, username, user_notify_pm,user_active,user_allow_mass_pm
-            FROM " . USERS_TABLE." WHERE user_allow_mass_pm > 1
+            FROM " . NUKE_USERS_TABLE." WHERE user_allow_mass_pm > 1
                     AND user_level = '3' ORDER BY user_lang";
         $group_name=$lang['All_mods'];
     }
-    if( !$result = $db->sql_query($sql) )
+    if( !$result = $nuke_db->sql_query($sql) )
     {
-        message_die(GENERAL_ERROR, "Coult not select group members!", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Coult not select group members!", __LINE__, __FILE__, $sql);
     }
-    if( ! $db->sql_numrows($result))
+    if( ! $nuke_db->sql_numrows($result))
     {
-        $pm_list = $db->sql_fetchrowset($result);
+        $pm_list = $nuke_db->sql_fetchrowset($result);
         //
-        // Output a relevant GENERAL_MESSAGE about users/group
+        // Output a relevant NUKE_GENERAL_MESSAGE about users/group
         // not existing
         //
         $error = TRUE;
         $error_msg .= ( ( !empty($error_msg) ) ? '<br />' : '' ) . $lang['No_to_user'];
     }
-    $PM_list = $db->sql_fetchrowset($result);
-    $PM_count=$db->sql_numrows($result);
+    $PM_list = $nuke_db->sql_fetchrowset($result);
+    $PM_count=$nuke_db->sql_numrows($result);
 }
 
 //
@@ -213,18 +213,18 @@ $error = FALSE;
         // Flood control
         //
         $sql = "SELECT MAX(privmsgs_date) AS last_post_time
-            FROM " . PRIVMSGS_TABLE . "
+            FROM " . NUKE_PRIVMSGS_TABLE . "
             WHERE privmsgs_from_userid = " . $userdata['user_id'];
-        if ( $result = $db->sql_query($sql) )
+        if ( $result = $nuke_db->sql_query($sql) )
         {
-            $db_row = $db->sql_fetchrow($result);
+            $nuke_db_row = $nuke_db->sql_fetchrow($result);
 
-            $last_post_time = $db_row['last_post_time'];
+            $last_post_time = $nuke_db_row['last_post_time'];
             $current_time = time();
 
             if ( ( $current_time - $last_post_time ) < $board_config['flood_interval'])
             {
-                message_die(GENERAL_MESSAGE, $lang['Flood_Error']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['Flood_Error']);
             }
         }
         //
@@ -276,62 +276,62 @@ $error = FALSE;
             // See if recipient is at their inbox limit
             //
             $sql = "SELECT COUNT(privmsgs_id) AS inbox_items, MIN(privmsgs_date) AS oldest_post_time
-                FROM " . PRIVMSGS_TABLE . "
-                WHERE ( privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
-                        OR privmsgs_type = " . PRIVMSGS_READ_MAIL . "
-                        OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )
+                FROM " . NUKE_PRIVMSGS_TABLE . "
+                WHERE ( privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . "
+                        OR privmsgs_type = " . NUKE_PRIVMSGS_READ_MAIL . "
+                        OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . " )
                     AND privmsgs_to_userid = " . $to_userdata['user_id'];
-            if ( !($result = $db->sql_query($sql)) )
+            if ( !($result = $nuke_db->sql_query($sql)) )
             {
-                message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['No_such_user']);
             }
 
             $sql_priority = ( SQL_LAYER == 'mysql' || SQL_LAYER == 'mysqli') ? 'LOW_PRIORITY' : '';
 
-            if ( $inbox_info = $db->sql_fetchrow($result) )
+            if ( $inbox_info = $nuke_db->sql_fetchrow($result) )
             {
                 if ( $inbox_info['inbox_items'] >= $board_config['max_inbox_privmsgs'] )
                 {
-                    $sql = "DELETE $sql_priority FROM " . PRIVMSGS_TABLE . "
-                        WHERE ( privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
-                                OR privmsgs_type = " . PRIVMSGS_READ_MAIL . "
-                                OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . "  )
+                    $sql = "DELETE $sql_priority FROM " . NUKE_PRIVMSGS_TABLE . "
+                        WHERE ( privmsgs_type = " . NUKE_PRIVMSGS_NEW_MAIL . "
+                                OR privmsgs_type = " . NUKE_PRIVMSGS_READ_MAIL . "
+                                OR privmsgs_type = " . NUKE_PRIVMSGS_UNREAD_MAIL . "  )
                             AND privmsgs_date = " . $inbox_info['oldest_post_time'] . "
                             AND privmsgs_to_userid = " . $to_userdata['user_id'];
-                    if ( !$db->sql_query($sql) )
+                    if ( !$nuke_db->sql_query($sql) )
                     {
-                        message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs', '', __LINE__, __FILE__, $sql);
+                        message_die(NUKE_GENERAL_ERROR, 'Could not delete oldest privmsgs', '', __LINE__, __FILE__, $sql);
                     }
                 }
             }
 
-            $sql_info = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig)
-                VALUES (" . PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", str_replace("[USERNAME]",$to_userdata['username'],$privmsg_subject)) . "', " . $userdata['user_id'] . ", " . $to_userdata['user_id'] . ", $msg_time, '$user_ip', $html_on, $bbcode_on, $smilies_on, $attach_sig)";
+            $sql_info = "INSERT INTO " . NUKE_PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig)
+                VALUES (" . NUKE_PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", str_replace("[USERNAME]",$to_userdata['username'],$privmsg_subject)) . "', " . $userdata['user_id'] . ", " . $to_userdata['user_id'] . ", $msg_time, '$user_ip', $html_on, $bbcode_on, $smilies_on, $attach_sig)";
 
-            if ( !($result = $db->sql_query($sql_info)) )
+            if ( !($result = $nuke_db->sql_query($sql_info)) )
             {
-                message_die(GENERAL_ERROR, "Could not insert private message sent info.", "", __LINE__, __FILE__, $sql_info);
+                message_die(NUKE_GENERAL_ERROR, "Could not insert private message sent info.", "", __LINE__, __FILE__, $sql_info);
             }
 
-            $privmsg_sent_id = $db->sql_nextid();
+            $privmsg_sent_id = $nuke_db->sql_nextid();
 
-            $sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_bbcode_uid, privmsgs_text)
+            $sql = "INSERT INTO " . NUKE_PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_bbcode_uid, privmsgs_text)
                 VALUES ($privmsg_sent_id, '" . $bbcode_uid . "', '" . str_replace("\'", "''", str_replace("[USERNAME]",$to_userdata['username'],$privmsg_message)) . "')";
 
-            if ( !$db->sql_query($sql) )
+            if ( !$nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, "Could not insert/update private message sent text.", "", __LINE__, __FILE__, $sql_info);
+                message_die(NUKE_GENERAL_ERROR, "Could not insert/update private message sent text.", "", __LINE__, __FILE__, $sql_info);
             }
 
             //
             // Add to the users new pm counter
             //
-            $sql = "UPDATE " . USERS_TABLE . "
+            $sql = "UPDATE " . NUKE_USERS_TABLE . "
                 SET user_new_privmsg = user_new_privmsg + 1, user_last_privmsg = " . time() . "
                 WHERE user_id = " . $to_userdata['user_id'];
-            if ( !$status = $db->sql_query($sql) )
+            if ( !$status = $nuke_db->sql_query($sql) )
             {
-                message_die(GENERAL_ERROR, 'Could not update private message new/read status for user', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Could not update private message new/read status for user', '', __LINE__, __FILE__, $sql);
             }
 
             if (!empty($to_userdata['user_email']) && $to_userdata['user_active'] && $to_userdata['user_allow_mass_pm']>3 )
@@ -383,7 +383,7 @@ $error = FALSE;
             'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("privmsg.$phpEx?folder=inbox") . '">')
         );
         $msg = $lang['PM_delivered'] . '<br /><br />'.sprintf($lang['Mass_pm_count'],$i,$n).'<br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid("privmsg.$phpEx?folder=inbox") . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
-        message_die(GENERAL_MESSAGE, $msg);
+        message_die(NUKE_GENERAL_MESSAGE, $msg);
     }
     else if ( $preview || $error )
     {
@@ -578,24 +578,24 @@ $error = FALSE;
     }
 
     $sql = "SELECT DISTINCT g.group_id, g.group_name
-    FROM ".GROUPS_TABLE . " g, ".USER_GROUP_TABLE . " ug
+    FROM ".NUKE_GROUPS_TABLE . " g, ".NUKE_USER_GROUP_TABLE . " ug
     WHERE g.group_single_user <> 1
         AND (
-                ('".$userdata['user_level']."'='".ADMIN."') OR
-                (g.group_allow_pm='".AUTH_MOD."' AND g.group_moderator = '" . $userdata['user_id']."') OR
-                (g.group_allow_pm='".AUTH_ACL."' AND ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ) OR
-                (g.group_allow_pm='".AUTH_REG."' AND '".$userdata['user_id']."'!='".ANONYMOUS."' ) OR
-                (g.group_allow_pm='".AUTH_ALL."')
+                ('".$userdata['user_level']."'='".NUKE_ADMIN."') OR
+                (g.group_allow_pm='".NUKE_AUTH_MOD."' AND g.group_moderator = '" . $userdata['user_id']."') OR
+                (g.group_allow_pm='".NUKE_AUTH_ACL."' AND ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ) OR
+                (g.group_allow_pm='".NUKE_AUTH_REG."' AND '".$userdata['user_id']."'!='".NUKE_ANONYMOUS."' ) OR
+                (g.group_allow_pm='".NUKE_AUTH_ALL."')
         )" ;
-    if( !$g_result = $db->sql_query($sql) )
-    message_die(GENERAL_ERROR, "Could not select group names!", __LINE__, __FILE__, $sql);
-    $group_list = $db->sql_fetchrowset($g_result);
-    if( $userdata['user_level']!=ADMIN && empty($group_list)) message_die(GENERAL_ERROR, $lang['Mass_pm_not_allowed']);
-    $groupname = $_REQUEST[POST_GROUPS_URL];
-    $select_list = '<select name = "' . POST_GROUPS_URL . '">';
-    $select_list .= ($userdata['user_level']==ADMIN) ? '<option value = "users" '. (($groupname=='users') ? ' SELECTED ' : '' ).'>' . $lang['All_users'] .'</option>':'';
-    $select_list .= ($userdata['user_level']==ADMIN) ? '<option value = "admins" '. (($groupname=='admins') ? ' SELECTED ' : '' ).'>' . $lang['All_admins'] .'</option>':'';
-    $select_list .= ($userdata['user_level']==ADMIN) ? '<option value = "moderators" '. (($groupname=='moderators') ? ' SELECTED ' : '' ).'>' . $lang['All_mods'] .'</option>':'';
+    if( !$g_result = $nuke_db->sql_query($sql) )
+    message_die(NUKE_GENERAL_ERROR, "Could not select group names!", __LINE__, __FILE__, $sql);
+    $group_list = $nuke_db->sql_fetchrowset($g_result);
+    if( $userdata['user_level']!=NUKE_ADMIN && empty($group_list)) message_die(NUKE_GENERAL_ERROR, $lang['Mass_pm_not_allowed']);
+    $groupname = $_REQUEST[NUKE_POST_GROUPS_URL];
+    $select_list = '<select name = "' . NUKE_POST_GROUPS_URL . '">';
+    $select_list .= ($userdata['user_level']==NUKE_ADMIN) ? '<option value = "users" '. (($groupname=='users') ? ' SELECTED ' : '' ).'>' . $lang['All_users'] .'</option>':'';
+    $select_list .= ($userdata['user_level']==NUKE_ADMIN) ? '<option value = "admins" '. (($groupname=='admins') ? ' SELECTED ' : '' ).'>' . $lang['All_admins'] .'</option>':'';
+    $select_list .= ($userdata['user_level']==NUKE_ADMIN) ? '<option value = "moderators" '. (($groupname=='moderators') ? ' SELECTED ' : '' ).'>' . $lang['All_mods'] .'</option>':'';
     for($i = 0;$i < count($group_list); $i++)
     {
         $select_list .= '<option value = "' . $group_list[$i]['group_id'].'"'. (($group_list[$i]['group_id']==$groupname) ? ' SELECTED ' : '').'>'.$group_list[$i]['group_name'] .'</option>';
@@ -605,7 +605,7 @@ $error = FALSE;
     //
     // Send smilies to template
     //
-    generate_smilies('inline', PAGE_PRIVMSGS);
+    generate_smilies('inline', NUKE_PAGE_PRIVMSGS);
 
     $template->assign_vars(array(
         'SUBJECT' => preg_replace($html_entities_match, $html_entities_replace, $privmsg_subject),

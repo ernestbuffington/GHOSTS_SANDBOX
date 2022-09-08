@@ -13,7 +13,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -46,7 +46,7 @@ $core->assign_defined_view('align_rows', array(
     'left')
 );
 
-$sql = "SELECT COUNT( word_id ) total_words FROM ".SEARCH_MATCH_TABLE;
+$sql = "SELECT COUNT( word_id ) total_words FROM ".NUKE_SEARCH_MATCH_TABLE;
 
 $result = $core->sql_query($sql, 'Unable to retrieve total words');
 $row = $core->sql_fetchrow($result);
@@ -54,7 +54,7 @@ $row = $core->sql_fetchrow($result);
 $total_words = $row['total_words'];
 
 $sql = "SELECT COUNT( swm.word_id ) word_count, swm.word_id word_id, swl.word_text word_text 
-FROM " . SEARCH_MATCH_TABLE . " swm, " . SEARCH_WORD_TABLE . " swl 
+FROM " . NUKE_SEARCH_MATCH_TABLE . " swm, " . NUKE_SEARCH_WORD_TABLE . " swl 
 WHERE swm.word_id = swl.word_id AND swl.word_text != 'nbsp'
 GROUP BY swl.word_id, swl.word_text ORDER BY word_count DESC 
 LIMIT " . $core->return_limit;

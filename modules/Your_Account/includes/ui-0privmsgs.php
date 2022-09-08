@@ -56,12 +56,12 @@ if (!defined('CNBYA')) {
             $links = "";
         }
         $ya_memname = htmlspecialchars($username);
-        list($uid) = $db->sql_fetchrow($db->sql_query("SELECT user_id FROM ".$user_prefix."_users WHERE username='$ya_memname'"));
+        list($uid) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_id FROM ".$nuke_user_prefix."_users WHERE username='$ya_memname'"));
         $uid = intval($uid);
-        $ya_newpms = $db->sql_numrows($db->sql_query("SELECT privmsgs_to_userid FROM ".$prefix."_bbprivmsgs WHERE privmsgs_to_userid='$uid' AND (privmsgs_type='1' OR privmsgs_type='5')"));
-        $ya_savpms = $db->sql_numrows($db->sql_query("SELECT privmsgs_to_userid FROM ".$prefix."_bbprivmsgs WHERE privmsgs_to_userid='$uid' AND privmsgs_type='3'"));
-        $ya_oldpms = $db->sql_numrows($db->sql_query("SELECT privmsgs_to_userid FROM ".$prefix."_bbprivmsgs WHERE privmsgs_to_userid='$uid' AND privmsgs_type='0'"));
-        $ya_outpms = $db->sql_numrows($db->sql_query("SELECT privmsgs_from_userid FROM ".$prefix."_bbprivmsgs WHERE privmsgs_from_userid='$uid' AND privmsgs_type='1'"));
+        $ya_newpms = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT privmsgs_to_userid FROM ".$prefix."_bbprivmsgs WHERE privmsgs_to_userid='$uid' AND (privmsgs_type='1' OR privmsgs_type='5')"));
+        $ya_savpms = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT privmsgs_to_userid FROM ".$prefix."_bbprivmsgs WHERE privmsgs_to_userid='$uid' AND privmsgs_type='3'"));
+        $ya_oldpms = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT privmsgs_to_userid FROM ".$prefix."_bbprivmsgs WHERE privmsgs_to_userid='$uid' AND privmsgs_type='0'"));
+        $ya_outpms = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT privmsgs_from_userid FROM ".$prefix."_bbprivmsgs WHERE privmsgs_from_userid='$uid' AND privmsgs_type='1'"));
         $ya_newpms = intval($ya_newpms);
         $ya_oldpms = intval($ya_oldpms);
         $ya_savpms = intval($ya_savpms);
@@ -72,8 +72,8 @@ if (!defined('CNBYA')) {
     $bbstyle    = $bbconfig['default_style'];
 
     $sql        = "SELECT template_name FROM ".$prefix."_bbthemes WHERE themes_id='$bbstyle'";
-    $result  = $db->sql_query($sql);
-    $row     = $db->sql_fetchrow($result);
+    $result  = $nuke_db->sql_query($sql);
+    $row     = $nuke_db->sql_fetchrow($result);
     $bbtheme = $row['template_name'];
     
     //escudero: modification to get the theme FROM nukemods

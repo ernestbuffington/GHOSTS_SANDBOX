@@ -361,10 +361,10 @@ class BBCode
 
 	public static function evo_mention( $user )
 	{
-		global $db, $customlang;
+		global $nuke_db, $customlang;
 		
 		// modules.php?name=Private_Messages&mode=post&pm_uname=Lonestar
-		// $row = $db->sql_ufetchrow("SELECT `user_id`, `username` FROM `".USERS_TABLE."` WHERE `username` = '".$user."'");
+		// $row = $nuke_db->sql_ufetchrow("SELECT `user_id`, `username` FROM `".NUKE_USERS_TABLE."` WHERE `username` = '".$user."'");
 		return '<a href="modules.php?name=Private_Messages&mode=post&pm_uname='.$user.'" target="_blank" alt="'.$customlang['global']['send_pm'].'" title="'.$customlang['global']['send_pm'].'">'.$user.'</a>';
 	}
 

@@ -47,7 +47,7 @@ if (!defined('CNBYA')) {
     $direktori = $board_config['avatar_gallery_path'];
     
     $newavatar=$category."/".$avatar;
-    $db->sql_query("UPDATE ".$user_prefix."_users SET user_avatar='$newavatar', user_avatar_type='3' WHERE username='$cookie[1]'");
+    $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET user_avatar='$newavatar', user_avatar_type='3' WHERE username='$cookie[1]'");
     echo "<center><span class=\"content\">"._YA_AVATARFOR." ".$cookie[1]." "._YA_SAVED."</span></center><br />";
     if (preg_match("/(http)/", $newavatar)) {
       echo "<center>"._YA_NEWAVATAR.":<br /><img alt=\"\" src=\"$newavatar\"><br />";

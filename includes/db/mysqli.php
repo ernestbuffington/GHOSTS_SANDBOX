@@ -1,4 +1,5 @@
 <?php
+### LAST EDIT 09/08/2022 Ernest Allen Buffington 6:40AM
 /***************************************************************************
  *                                 mysqli.php
  *                            -------------------
@@ -37,10 +38,10 @@ class sql_db
 	var $mysql_version;
 
 	/*!
-	 * @public var $db_connect_id
+	 * @public var $nuke_db_connect_id
 	 * The unique indentifier for the current database connection
 	 */
-	var $db_connect_id;
+	var $nuke_db_connect_id;
 
 	var $query_result;
 	var $row = array();
@@ -587,10 +588,10 @@ class sql_db
     
 	function sql_optimize($table_name="")
     {
-        global $dbname;
+        global $nuke_dbname;
         $error = false;
         if (empty($table_name)) {
-            $nuke_tables = $this->sql_fetchtables($dbname, true);
+            $nuke_tables = $this->sql_fetchtables($nuke_dbname, true);
             foreach($nuke_tables as $table) {
                 if(!$result = $this->sql_query('OPTIMIZE TABLE ' . $table)) {
                     $error = true;
@@ -654,7 +655,7 @@ class sql_db
     function mariadb_version()
 	{
 		if($this->db_connect_id):
-			$result  = 'Powered by PHP-Nuke Titanium Dev 4<br />';
+			$result  = 'Powered by PHP-AN602 v1.0.0<br />';
 			$result .= 'MySQL Server Version: ';
 			$result .= @mysqli_get_server_info($this->db_connect_id);
 			return $result;

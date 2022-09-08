@@ -53,14 +53,14 @@ if(is_mod_admin($module_name)) {
     amain();
     echo "<br />\n";
     if (isset($xusername) AND $xusername != "") {
-        $sql = "SELECT * FROM ".$user_prefix."_users_temp WHERE username='$xusername'";
+        $sql = "SELECT * FROM ".$nuke_user_prefix."_users_temp WHERE username='$xusername'";
     } elseif (isset($xuser_id) AND $xuser_id != "") {
-        $sql = "SELECT * FROM ".$user_prefix."_users_temp WHERE user_id='$xuser_id'";
+        $sql = "SELECT * FROM ".$nuke_user_prefix."_users_temp WHERE user_id='$xuser_id'";
     } elseif (isset($xuser_email) AND $xuser_email != "") {
-        $sql = "SELECT * FROM ".$user_prefix."_users_temp WHERE user_email='$xuser_email'";
+        $sql = "SELECT * FROM ".$nuke_user_prefix."_users_temp WHERE user_email='$xuser_email'";
     }
-    if($db->sql_numrows($db->sql_query($sql)) > 0) {
-        $chnginfo = $db->sql_fetchrow($db->sql_query($sql));
+    if($nuke_db->sql_numrows($nuke_db->sql_query($sql)) > 0) {
+        $chnginfo = $nuke_db->sql_fetchrow($nuke_db->sql_query($sql));
         OpenTable();
         echo "<center><table border='0'>\n";
         echo "<tr><td bgcolor='$bgcolor2'>"._USERID.":</td><td><strong>".$chnginfo['user_id']."</strong></td></tr>\n";

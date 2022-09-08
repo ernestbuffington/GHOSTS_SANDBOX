@@ -38,8 +38,8 @@ if (!defined('CNBYA')) {
     global $cookie;
     include_once(NUKE_BASE_DIR.'header.php');
     $check = $cookie[1];
-    $result = $db->sql_query("SELECT user_id, username, user_password FROM ".$user_prefix."_users WHERE username='$check'");
-    list($uid, $uname, $pass) = $db->sql_fetchrow($result);
+    $result = $nuke_db->sql_query("SELECT user_id, username, user_password FROM ".$nuke_user_prefix."_users WHERE username='$check'");
+    list($uid, $uname, $pass) = $nuke_db->sql_fetchrow($result);
     OpenTable();
     echo "<center><span class=\"option\">"._SUREDELETE."<br /><a href=\"modules.php?name=$module_name&amp;op=deleteconfirm&amp;uid=$uid&amp;code=$pass\"><strong>"._YES."</strong></a> "._OR." <a href=\"modules.php?name=$module_name\"><strong>"._NO."</strong></a></span></center>";
     CloseTable();

@@ -70,7 +70,7 @@ $sql = "SELECT `cid` FROM `"
 			.$prefix."_hnl_newsletters` WHERE `nid` = '$msnl_iNID'";
 
 $result				= msnl_fSQLCall( $sql );
-$resultcount	= $db->sql_numrows( $result );
+$resultcount	= $nuke_db->sql_numrows( $result );
 
 if ( !$result || $resultcount < 1 ) { //Bad SQL call or NID was not found in the database
 
@@ -78,7 +78,7 @@ if ( !$result || $resultcount < 1 ) { //Bad SQL call or NID was not found in the
 
 } else { //Successful SQL call
 
-	$row						= $db->sql_fetchrow( $result );
+	$row						= $nuke_db->sql_fetchrow( $result );
 
 	$msnl_iCurrCID	= intval( $row['cid'] );
 	

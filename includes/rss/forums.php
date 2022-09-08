@@ -41,7 +41,7 @@ $now = $now . $gmtstr;
 
 $num = (isset($num) && is_integer(intval($num)) && intval($num) > 0) ? 'LIMIT '.$num : 'LIMIT 10';
 
-$result = $db->sql_query("SELECT t.topic_id, t.topic_title, t.topic_last_post_id FROM ".$prefix."_bbtopics t, ".$prefix."_bbforums f WHERE t.forum_id=f.forum_id AND f.auth_view=0 ORDER BY t.topic_last_post_id DESC ".$num);
+$result = $nuke_db->sql_query("SELECT t.topic_id, t.topic_title, t.topic_last_post_id FROM ".$prefix."_bbtopics t, ".$prefix."_bbforums f WHERE t.forum_id=f.forum_id AND f.auth_view=0 ORDER BY t.topic_last_post_id DESC ".$num);
 
 header("Content-Type: text/xml");
 
@@ -74,16 +74,16 @@ echo "<sy:updatePeriod>hourly</sy:updatePeriod>\n";
 echo "<sy:updateFrequency>1</sy:updateFrequency>\n";
 echo "<sy:updateBase>".$now."</sy:updateBase>\n\n";
 
-while(list($topic_id, $topic_title, $topic_last_post_id) = $db->sql_fetchrow($result)) {
+while(list($topic_id, $topic_title, $topic_last_post_id) = $nuke_db->sql_fetchrow($result)) {
     $topic_title = entity_to_hex_value($topic_title);
-    $result2 = $db->sql_query("SELECT post_text FROM ".$prefix."_bbposts_text WHERE post_id='$topic_last_post_id'");
-    list($desc) = $db->sql_fetchrow($result2);
+    $result2 = $nuke_db->sql_query("SELECT post_text FROM ".$prefix."_bbposts_text WHERE post_id='$topic_last_post_id'");
+    list($desc) = $nuke_db->sql_fetchrow($result2);
     $desc = entity_to_hex_value($desc);
     //$desc = ereg_replace('\x99', '', $desc); // Needs improvement
     $desc = decode_bb_all($desc);
     $desc = decode_rss_rest($desc);
-    $result3 = $db->sql_query("SELECT post_time AS post_time FROM ".$prefix."_bbposts WHERE post_id='$topic_last_post_id'");
-    list($post_time) = $db->sql_fetchrow($result3);
+    $result3 = $nuke_db->sql_query("SELECT post_time AS post_time FROM ".$prefix."_bbposts WHERE post_id='$topic_last_post_id'");
+    list($post_time) = $nuke_db->sql_fetchrow($result3);
 
     // Format: 2004-08-02T12:15:23-06:00 (W3C Compliant)
     //$date = date("Y-m-d\TH:i:s", strtotime($post_time));

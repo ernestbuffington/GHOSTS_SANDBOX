@@ -23,7 +23,7 @@
 *
 ***************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 /* If for some reason preference cookie saving needs to be disabled, you
 can do so by setting this to true */
 
@@ -123,7 +123,7 @@ function topic_shadow_make_drop_box($prefix = 'mode')
 }
 function ts_id_2_name($id, $mode = 'user')
 {
-    global $db;
+    global $nuke_db;
     
     if ($id == '')
     {
@@ -134,28 +134,28 @@ function ts_id_2_name($id, $mode = 'user')
     {
         case 'user':
         {
-            $sql = 'SELECT username FROM ' . USERS_TABLE . "
+            $sql = 'SELECT username FROM ' . NUKE_USERS_TABLE . "
                    WHERE user_id = $id";
             
-            if(!$result = $db->sql_query($sql))
+            if(!$result = $nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, 'Err', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Err', '', __LINE__, __FILE__, $sql);
             }
-            $row = $db->sql_fetchrow($result);
+            $row = $nuke_db->sql_fetchrow($result);
             return $row['username'];
             break;
         }
         case 'forum':
         {
-            $sql = 'SELECT f.forum_name FROM ' . FORUMS_TABLE . ' f, ' . TOPICS_TABLE . " t
+            $sql = 'SELECT f.forum_name FROM ' . NUKE_FORUMS_TABLE . ' f, ' . NUKE_BB_TOPICS_TABLE . " t
                   WHERE t.topic_id = $id
                AND t.forum_id = f.forum_id";
             
-            if(!$result = $db->sql_query($sql))
+            if(!$result = $nuke_db->sql_query($sql))
             {
-                message_die(GENERAL_ERROR, 'Err', '', __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, 'Err', '', __LINE__, __FILE__, $sql);
             }
-            $row = $db->sql_fetchrow($result);
+            $row = $nuke_db->sql_fetchrow($result);
             return $row['forum_name'];
             break;
         }
@@ -194,23 +194,23 @@ if ($delete_all_before_date)
     }
     if ($error_message != '')
     {
-        message_die(GENERAL_ERROR, $error_message, '', __LINE__, __FILE__);
+        message_die(NUKE_GENERAL_ERROR, $error_message, '', __LINE__, __FILE__);
     }
     /* END Error Checking */
     
     $set_time = mktime(0, 0, 0, $del_month, $del_day, $del_year);
-    $sql = 'DELETE FROM ' . TOPICS_TABLE . '
-       WHERE topic_status = ' . TOPIC_MOVED . "
+    $sql = 'DELETE FROM ' . NUKE_BB_TOPICS_TABLE . '
+       WHERE topic_status = ' . NUKE_TOPIC_MOVED . "
        AND topic_time < $set_time";
     
-    if(!$db->sql_query($sql))
+    if(!$nuke_db->sql_query($sql))
     {
-        message_die(GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
     }
     else
     {
         $status_message .= sprintf($lang['Del_Before_Date'], date("M-d-Y", $set_time));
-        $status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysqli' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $db->sql_affectedrows()) : '';
+        $status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysqli' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $nuke_db->sql_affectedrows()) : '';
         sync('all_forums');
         $status_message .= sprintf($lang['Resync_Ran_On'], $lang['All_Forums']);
     }
@@ -226,21 +226,21 @@ else
                 $topic_id = substr($key, 10);
                 
                 /* Get forum info to Resync it */
-                $sql = 'SELECT f.forum_id, f.forum_name, t.topic_title FROM ' . TOPICS_TABLE . ' t, ' . FORUMS_TABLE . " f
+                $sql = 'SELECT f.forum_id, f.forum_name, t.topic_title FROM ' . NUKE_BB_TOPICS_TABLE . ' t, ' . NUKE_FORUMS_TABLE . " f
                           WHERE t.topic_id = $topic_id
                           AND t.forum_id = f.forum_id";
-                if (!$result = $db->sql_query($sql))
+                if (!$result = $nuke_db->sql_query($sql))
                 {
-                    message_die(GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
                 }
-                $forum_data_row = $db->sql_fetchrow($result);
+                $forum_data_row = $nuke_db->sql_fetchrow($result);
                 
-                $sql = 'DELETE FROM ' . TOPICS_TABLE . '
-                          WHERE topic_status = ' . TOPIC_MOVED . "
+                $sql = 'DELETE FROM ' . NUKE_BB_TOPICS_TABLE . '
+                          WHERE topic_status = ' . NUKE_TOPIC_MOVED . "
                        AND topic_id = $topic_id";
-                if(!$db->sql_query($sql))
+                if(!$nuke_db->sql_query($sql))
                 {
-                    message_die(GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
                 }
                 else
                 {
@@ -301,14 +301,14 @@ $template->assign_vars(array(
 );
 
 /* See if we actually have any shadow topics */
-$sql = 'SELECT COUNT(topic_status) as count FROM ' . TOPICS_TABLE . '
-   WHERE topic_status = ' . TOPIC_MOVED;
+$sql = 'SELECT COUNT(topic_status) as count FROM ' . NUKE_BB_TOPICS_TABLE . '
+   WHERE topic_status = ' . NUKE_TOPIC_MOVED;
 
-if(!$result = $db->sql_query($sql))
+if(!$result = $nuke_db->sql_query($sql))
 {
-    message_die(GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
 }
-$row = $db->sql_fetchrow($result);
+$row = $nuke_db->sql_fetchrow($result);
 if ($row['count'] <= 0)
 {
     $template->assign_block_vars('emptyrow', array());
@@ -316,17 +316,17 @@ if ($row['count'] <= 0)
 else
 {
     
-    $sql = 'SELECT * FROM ' . TOPICS_TABLE . '
-   WHERE topic_status = ' . TOPIC_MOVED . "
+    $sql = 'SELECT * FROM ' . NUKE_BB_TOPICS_TABLE . '
+   WHERE topic_status = ' . NUKE_TOPIC_MOVED . "
    ORDER BY $mode $order";
     
-    if(!$result = $db->sql_query($sql))
+    if(!$result = $nuke_db->sql_query($sql))
     {
-        message_die(GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
     }
     
     $i = 0;
-    while ($messages = $db->sql_fetchrow($result))
+    while ($messages = $nuke_db->sql_fetchrow($result))
     {
         $template->assign_block_vars('topicrow', array(
         'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],

@@ -27,15 +27,15 @@
 
 if(!defined('NUKE_EVO')) exit;
 
-global $prefix, $db;
+global $prefix, $nuke_db;
 
 $sql = "SELECT pid, title FROM " . $prefix . "_pages WHERE active='1'";
-$result = $db->sql_query($sql);
-while (list($pid, $title) = $db->sql_fetchrow($result)) {
+$result = $nuke_db->sql_query($sql);
+while (list($pid, $title) = $nuke_db->sql_fetchrow($result)) {
     $pid = intval($pid);
     $title = stripslashes($title);
     $content .= "<strong><big>&middot;</big></strong>&nbsp;<a href=\"modules.php?name=Content&amp;pa=showpage&amp;pid=$pid\">$title</a><br />";
 }
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 
 ?>

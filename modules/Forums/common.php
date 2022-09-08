@@ -31,7 +31,7 @@
       Advanced Time Management                 v2.2.0       07/26/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -222,7 +222,7 @@ include_once(NUKE_INCLUDE_DIR.'functions.php');
 include_once(NUKE_DB_DIR.'db.php');
 
 // We do not need this any longer, unset for safety purposes
-unset($dbpasswd);
+unset($nuke_dbpasswd);
 
 //
 // Obtain and encode users IP
@@ -238,7 +238,7 @@ $user_ip = encode_ip($client_ip);
 
 //
 // Setup forum wide options, if this fails
-// then we output a CRITICAL_ERROR since
+// then we output a NUKE_CRITICAL_ERROR since
 // basic forum information is not available
 //
 
@@ -261,11 +261,11 @@ if( $board_config['board_disable'] && !defined("IN_ADMIN") && !defined("IN_LOGIN
 {
     if ( $board_config['board_disable_msg'] != "" )
     {
-        message_die(GENERAL_MESSAGE, $board_config['board_disable_msg'], 'Information');
+        message_die(NUKE_GENERAL_MESSAGE, $board_config['board_disable_msg'], 'Information');
     }
     else
     {
-        message_die(GENERAL_MESSAGE, 'Board_disable', 'Information');
+        message_die(NUKE_GENERAL_MESSAGE, 'Board_disable', 'Information');
     }
 }
 /*****[END]********************************************

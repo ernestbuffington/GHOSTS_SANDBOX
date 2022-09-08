@@ -26,7 +26,7 @@ if (!defined('ADMIN_FILE')) {
    die ("Illegal File Access");
 }
 
-global $prefix, $db, $admdata, $dbname, $cache;
+global $prefix, $nuke_db, $admdata, $nuke_dbname, $cache;
 
 function ABCoolSize($size) {
   $kb = 1024;
@@ -48,15 +48,15 @@ if (is_mod_admin())
 {
   
 $crlf = "\n";
-$filename = $dbname.'_'.date('d-m-Y').'.sql';
-$tablelist = (isset($_POST['tablelist'])) ? $_POST['tablelist'] : $db->sql_fetchtables($dbname);
+$filename = $nuke_dbname.'_'.date('d-m-Y').'.sql';
+$tablelist = (isset($_POST['tablelist'])) ? $_POST['tablelist'] : $nuke_db->sql_fetchtables($nuke_dbname);
 @set_time_limit(0);
 
 switch ($op) {
     case 'BackupDB':
         if (empty($tablelist)) { echo('No tables found'); }
         require_once(NUKE_CLASSES_DIR.'class.database.php');
-        DB::backup($dbname, $tablelist, $filename, isset($_POST['dbstruct']), isset($_POST['dbdata']), isset($_POST['drop']), isset($_POST['gzip']));
+        DB::backup($nuke_dbname, $tablelist, $filename, isset($_POST['dbstruct']), isset($_POST['dbdata']), isset($_POST['drop']), isset($_POST['gzip']));
         break;
     
 	case 'OptimizeDB':
@@ -79,19 +79,19 @@ switch ($op) {
       echo '<td align="right" width="15%"><strong>'._AB_GAINED.'</strong></td>'."\n";
       echo '</tr>'."\n";
      $tot_data = $tot_idx = $tot_all = $tot_records = 0;
-     $result = $db->sql_query("SHOW TABLE STATUS FROM `".$dbname."`");
-     $tables = $db ->sql_numrows($result);
+     $result = $nuke_db->sql_query("SHOW TABLE STATUS FROM `".$nuke_dbname."`");
+     $tables = $nuke_db ->sql_numrows($result);
      if($tables > 0) {
        $total_total = $total_gain = 0;
-       while($row = $db->sql_fetchrow($result)) {
-         $checkrow = $db->sql_fetchrow($db->sql_query("CHECK TABLE $row[0]"));
+       while($row = $nuke_db->sql_fetchrow($result)) {
+         $checkrow = $nuke_db->sql_fetchrow($nuke_db->sql_query("CHECK TABLE $row[0]"));
          $records = $row['Rows'];
          $tot_records += $records;
          $total = ($row['Data_length'] + $row['Index_length']) - $row['Data_free'];
          $total_total += $total;
          $gain = $row['Data_free'];
          if($gain>0) {
-           $optimizerow = $db->sql_fetchrow($db->sql_query("OPTIMIZE TABLE $row[0]"));
+           $optimizerow = $nuke_db->sql_fetchrow($nuke_db->sql_query("OPTIMIZE TABLE $row[0]"));
            $status = _AB_OPTIMIZED;
          } else {
            $status = $checkrow['Msg_text'];
@@ -150,14 +150,14 @@ switch ($op) {
     echo '<td align="right" width="15%"><strong>'._AB_SIZE.'</strong></td>'."\n";
     echo '</tr>'."\n";
     $tot_data = $tot_idx = $tot_all = $tot_records = 0;
-    $result = $db->sql_query("SHOW TABLE STATUS FROM `".$dbname."`");
-    $tables = $db ->sql_numrows($result);
+    $result = $nuke_db->sql_query("SHOW TABLE STATUS FROM `".$nuke_dbname."`");
+    $tables = $nuke_db ->sql_numrows($result);
     if($tables > 0) {
       $total_total = 0;
-      while($row = $db->sql_fetchrow($result)) {
-        $checkrow = $db->sql_fetchrow($db->sql_query("CHECK TABLE $row[0]"));
+      while($row = $nuke_db->sql_fetchrow($result)) {
+        $checkrow = $nuke_db->sql_fetchrow($nuke_db->sql_query("CHECK TABLE $row[0]"));
         if($checkrow['Msg_text'] != "OK") {
-          $repairrow = $db->sql_fetchrow($db->sql_query("REPAIR TABLE $row[Table] EXTENDED"));
+          $repairrow = $nuke_db->sql_fetchrow($nuke_db->sql_query("REPAIR TABLE $row[Table] EXTENDED"));
           $status = $repairrow['Msg_text'];
         } else {
           $status = $checkrow['Msg_text'];
@@ -214,12 +214,12 @@ switch ($op) {
         echo '<td align="right" width="15%"><strong>'._AB_OVERHEAD.'</strong></td>'."\n";
         echo '</tr>'."\n";
         $tot_data = $tot_idx = $tot_all = $tot_records = 0;
-        $result = $db->sql_query("SHOW TABLE STATUS FROM `".$dbname."`");
-        $tables = $db ->sql_numrows($result);
+        $result = $nuke_db->sql_query("SHOW TABLE STATUS FROM `".$nuke_dbname."`");
+        $tables = $nuke_db ->sql_numrows($result);
         if($tables > 0) {
           $total_total = $total_gain = 0;
-          while($row = $db->sql_fetchrow($result)) {
-            $checkrow = $db->sql_fetchrow($db->sql_query("CHECK TABLE $row[0]"));
+          while($row = $nuke_db->sql_fetchrow($result)) {
+            $checkrow = $nuke_db->sql_fetchrow($nuke_db->sql_query("CHECK TABLE $row[0]"));
             $status = $checkrow['Msg_text'];
             $records = $row['Rows'];
             $tot_records += $records;
@@ -273,7 +273,7 @@ switch ($op) {
         if (!DB::query_file($_FILES['sqlfile'], $error)) { echo($error); }
         $cache->clear();
         OpenTable();
-        echo '<span><strong>'._DATABASE.': '.$dbname.'</strong></span><br /><br />'.sprintf(_IMPORTSUCCESS, $_FILES['sqlfile']['name']);
+        echo '<span><strong>'._DATABASE.': '.$nuke_dbname.'</strong></span><br /><br />'.sprintf(_IMPORTSUCCESS, $_FILES['sqlfile']['name']);
         CloseTable();
         
         OpenTable();

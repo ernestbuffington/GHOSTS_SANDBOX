@@ -18,7 +18,7 @@
 *
 ***************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -38,44 +38,44 @@ if ( isset($HTTP_POST_VARS['submit']))
 {
   if  ($HTTP_POST_VARS['action'] == 'edit')
   {
-    $sql = "UPDATE " . ADS_TABLE . " SET
+    $sql = "UPDATE " . NUKE_ADS_TABLE . " SET
         ad_name = '" . str_replace("\'", "''", htmlspecialchars($HTTP_POST_VARS['ad_name'])) . "',
         ad_code = '" . str_replace("\'", "''", $HTTP_POST_VARS['ad_code']) . "'
         WHERE ad_id = " . intval($HTTP_POST_VARS['ad_id']);
-    if( !$db->sql_query($sql) )
+    if( !$nuke_db->sql_query($sql) )
     {
-      message_die(GENERAL_ERROR, "Failed to update first post ad settings", "", __LINE__, __FILE__, $sql);
+      message_die(NUKE_GENERAL_ERROR, "Failed to update first post ad settings", "", __LINE__, __FILE__, $sql);
     }
   }
   else
   {
-    $sql = "INSERT INTO " . ADS_TABLE . "
+    $sql = "INSERT INTO " . NUKE_ADS_TABLE . "
         (ad_name, ad_code)
         VALUES ('" . str_replace("\'", "''", $HTTP_POST_VARS['ad_name']) . "','" . str_replace("\'", "''", $HTTP_POST_VARS['ad_code']) . "')";
-    if( !$db->sql_query($sql) )
+    if( !$nuke_db->sql_query($sql) )
     {
-      message_die(GENERAL_ERROR, "Failed to update first post ad settings", "", __LINE__, __FILE__, $sql);
+      message_die(NUKE_GENERAL_ERROR, "Failed to update first post ad settings", "", __LINE__, __FILE__, $sql);
     }
   }
   $message = $lang['Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_inline_code'], "<a href=\"" . append_sid("admin_inline_ad_code.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-    message_die(GENERAL_MESSAGE, $message);
+    message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 if ($HTTP_GET_VARS['action'] == "edit")
 {
   $sql = "SELECT *
-      FROM " . ADS_TABLE . " a
+      FROM " . NUKE_ADS_TABLE . " a
       WHERE a.ad_id = " . intval($HTTP_GET_VARS['id']);
-  if ( !($result = $db->sql_query($sql)) )
+  if ( !($result = $nuke_db->sql_query($sql)) )
   {
-    message_die(GENERAL_ERROR, 'Could not query ad information', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query ad information', '', __LINE__, __FILE__, $sql);
   }
   $adRow = array();
-  while( $row = $db->sql_fetchrow($result) )
+  while( $row = $nuke_db->sql_fetchrow($result) )
   {
     $adRow = $row;
   }
-  $db->sql_freeresult($result);
+  $nuke_db->sql_freeresult($result);
   $template->set_filenames(array(
   "body" => "admin/inline_ad_code_edit.tpl")
   );
@@ -95,15 +95,15 @@ if ($HTTP_GET_VARS['action'] == "edit")
 elseif ($HTTP_GET_VARS['action'] == "delete")
 {
   $sql = "DELETE
-      FROM " . ADS_TABLE . "
+      FROM " . NUKE_ADS_TABLE . "
       WHERE ad_id = " . intval($HTTP_GET_VARS['id']);
-  if ( !($result = $db->sql_query($sql)) )
+  if ( !($result = $nuke_db->sql_query($sql)) )
   {
-    message_die(GENERAL_ERROR, 'Could not query ad information', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query ad information', '', __LINE__, __FILE__, $sql);
   }
   $message = $lang['Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_inline_code'], "<a href=\"" . append_sid("admin_inline_ad_code.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-    message_die(GENERAL_MESSAGE, $message);
+    message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 elseif ($HTTP_GET_VARS['action'] == "add")
 {
@@ -126,18 +126,18 @@ elseif ($HTTP_GET_VARS['action'] == "add")
 else
 {
   $sql = "SELECT a.ad_name, a.ad_id
-      FROM " . ADS_TABLE . " a";
-  if ( !($result = $db->sql_query($sql)) )
+      FROM " . NUKE_ADS_TABLE . " a";
+  if ( !($result = $nuke_db->sql_query($sql)) )
   {
-    message_die(GENERAL_ERROR, 'Could not query ad information', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query ad information', '', __LINE__, __FILE__, $sql);
   }
   $adRow = array();
-  while( $row = $db->sql_fetchrow($result) )
+  while( $row = $nuke_db->sql_fetchrow($result) )
   {
     $adRow[] = $row;
   }
-  $ad_count = $db->sql_numrows($result);
-  $db->sql_freeresult($result);
+  $ad_count = $nuke_db->sql_numrows($result);
+  $nuke_db->sql_freeresult($result);
 
   $template->set_filenames(array(
   "body" => "admin/inline_ad_code_body.tpl")

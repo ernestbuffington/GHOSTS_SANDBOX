@@ -30,7 +30,7 @@ endif;
  */
 function title_and_meta_tags()
 {
-	global $sitename, $appID, $name, $sid, $file, $db, $prefix;
+	global $sitename, $appID, $name, $sid, $file, $nuke_db, $prefix;
 	
 	$ThemeSel           = get_theme();
 	$item_delim         = "&raquo;";
@@ -122,11 +122,11 @@ function title_and_meta_tags()
 			
             if ($file == 'article' && isset($sid) && is_numeric($sid)):
 	        
-                    list($art, $top) = $db->sql_ufetchrow("SELECT `title`, `topic` FROM `".$prefix."_stories` WHERE `sid`='".$sid."'", SQL_NUM);
+                    list($art, $top) = $nuke_db->sql_ufetchrow("SELECT `title`, `topic` FROM `".$prefix."_stories` WHERE `sid`='".$sid."'", SQL_NUM);
     
 	          if ($top) 
 		      {
-                 list($top, $topicimage) = $db->sql_ufetchrow("SELECT `topictext`,`topicimage` FROM `".$prefix."_topics` WHERE `topicid`='".$top."'", SQL_NUM);
+                 list($top, $topicimage) = $nuke_db->sql_ufetchrow("SELECT `topictext`,`topicimage` FROM `".$prefix."_topics` WHERE `topicid`='".$top."'", SQL_NUM);
 
                  if ($sitename == $top):
 			           $newpagetitle = "$sitename $item_delim $art";
@@ -145,7 +145,7 @@ function title_and_meta_tags()
               $facebook_ia_rules_url = "<meta property=\"ia:rules_url\" content=\"".HTTPS."modules.php?name=$name&file=article&sid=$sid\" />\n";
 	      $facebook_ia_rules_url_dev = "<meta property=\"ia:rules_url_dev\" content=\"".HTTPS."modules.php?name=$name&file=article&sid=$sid\" />\n";
 			     
-				     list($hometext) = $db->sql_ufetchrow("SELECT `hometext` FROM `".$prefix."_stories` WHERE `sid`='".$sid."'", SQL_NUM);
+				     list($hometext) = $nuke_db->sql_ufetchrow("SELECT `hometext` FROM `".$prefix."_stories` WHERE `sid`='".$sid."'", SQL_NUM);
 
 			               $hometext = stripslashes(check_html($hometext, "nohtml")); 	 	 
 
@@ -169,13 +169,13 @@ function title_and_meta_tags()
                    $structured_data .= '  "'.HTTPS.'images/google/16x9.png"'."\n";
                    $structured_data .= '  ],'."\n\n";
 				 
-                         list($time) = $db->sql_ufetchrow("SELECT `datePublished` FROM `".$prefix."_stories` WHERE `sid`='".$sid."'", SQL_NUM);
+                         list($time) = $nuke_db->sql_ufetchrow("SELECT `datePublished` FROM `".$prefix."_stories` WHERE `sid`='".$sid."'", SQL_NUM);
 				   $structured_data .= '  "datePublished": "'.$time.'",'."\n";
-				          list($dtm) = $db->sql_ufetchrow("SELECT `dateModified` FROM `".$prefix."_stories` WHERE `sid`='".$sid."'", SQL_NUM);
+				          list($dtm) = $nuke_db->sql_ufetchrow("SELECT `dateModified` FROM `".$prefix."_stories` WHERE `sid`='".$sid."'", SQL_NUM);
                    $structured_data .= '  "dateModified": "'.$dtm.'",'."\n\n";
                  
-				         list($name) = $db->sql_ufetchrow("SELECT `informant` FROM `".$prefix."_stories` WHERE `sid`='".$sid."'", SQL_NUM);
-				     list($username) = $db->sql_ufetchrow("SELECT `name` FROM `".$prefix."_users` WHERE `username`='".$name."'", SQL_NUM);
+				         list($name) = $nuke_db->sql_ufetchrow("SELECT `informant` FROM `".$prefix."_stories` WHERE `sid`='".$sid."'", SQL_NUM);
+				     list($username) = $nuke_db->sql_ufetchrow("SELECT `name` FROM `".$prefix."_users` WHERE `username`='".$name."'", SQL_NUM);
 				   $structured_data .= '  "author": {'."\n";
                    $structured_data .= '  "@type": "Person",'."\n";
                    $structured_data .= '  "name": "'.$username.'"'."\n";
@@ -240,12 +240,12 @@ function title_and_meta_tags()
                    $structured_data .= '  "'.HTTPS.'images/google/4x3.png",'."\n";
                    $structured_data .= '  "'.HTTPS.'images/google/16x9.png"'."\n";
                    $structured_data .= '  ],'."\n\n";
-			               list($dp) = $db->sql_ufetchrow("SELECT `datePublished` FROM `".$prefix."_config`", SQL_NUM);	 
+			               list($dp) = $nuke_db->sql_ufetchrow("SELECT `datePublished` FROM `".$prefix."_config`", SQL_NUM);	 
 			       $structured_data .= '  "datePublished": "'.$dp.'",'."\n";
-			             list($dmod) = $db->sql_ufetchrow("SELECT `dateModified` FROM `".$prefix."_config`", SQL_NUM);
+			             list($dmod) = $nuke_db->sql_ufetchrow("SELECT `dateModified` FROM `".$prefix."_config`", SQL_NUM);
 						 if(empty($dmod)) # u need to add this to save edit General Site Settings
 						 {
-							$db->sql_query("INSERT INTO `".$prefix."_config`(dateModified) VALUES (null)"); 
+							$nuke_db->sql_query("INSERT INTO `".$prefix."_config`(dateModified) VALUES (null)"); 
 						 }	 
                    $structured_data .= '  "dateModified": "'.$dmod.'",'."\n\n";
                  
@@ -254,7 +254,7 @@ function title_and_meta_tags()
 				    
 				   list($webmastername, 
 	               $avatar, 
-				   $email) = $db->sql_ufetchrow("SELECT `name`,`user_avatar`, `user_email` FROM `".$prefix."_users` WHERE `user_id`='$portaladmin'", SQL_NUM);
+				   $email) = $nuke_db->sql_ufetchrow("SELECT `name`,`user_avatar`, `user_email` FROM `".$prefix."_users` WHERE `user_id`='$portaladmin'", SQL_NUM);
 
 				   $structured_data .= '  "author": {'."\n";
                    $structured_data .= '  "@type": "Person",'."\n";

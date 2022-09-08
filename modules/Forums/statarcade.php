@@ -33,7 +33,7 @@ else
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 require($phpbb2_root_path . 'gf_funcs/gen_funcs.' . $phpEx);
@@ -41,7 +41,7 @@ require($phpbb2_root_path . 'gf_funcs/gen_funcs.' . $phpEx);
 $uid = get_var_gf(array('name' => 'uid', 'intval' => true, 'default' => 0));
 
 if ($uid == 0) {
-        message_die(GENERAL_ERROR, "Unknown user", '');
+        message_die(NUKE_GENERAL_ERROR, "Unknown user", '');
 }
 
 $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE"))) ? "Refresh: 0; URL=" : "Location: ";
@@ -49,7 +49,7 @@ $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOF
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_STATARCADES, $nukeuser);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_STATARCADES, $nukeuser);
 init_userprefs($userdata);
 //
 // End session management
@@ -75,13 +75,13 @@ $template->set_filenames(array(
 $arcade_config = array();
 $arcade_config = read_arcade_config();
 
-$sql = "SELECT username, user_avatar_type, user_allowavatar, user_avatar FROM " . USERS_TABLE . " WHERE user_id = " . $uid ;
+$sql = "SELECT username, user_avatar_type, user_allowavatar, user_avatar FROM " . NUKE_USERS_TABLE . " WHERE user_id = " . $uid ;
 
-if (!($result = $db->sql_query($sql))) {
-        message_die(GENERAL_ERROR, "Could not read the users table", '', __LINE__, __FILE__, $sql);
+if (!($result = $nuke_db->sql_query($sql))) {
+        message_die(NUKE_GENERAL_ERROR, "Could not read the users table", '', __LINE__, __FILE__, $sql);
 }
 
-$row = $db->sql_fetchrow($result);
+$row = $nuke_db->sql_fetchrow($result);
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -98,13 +98,13 @@ if ( $user_avatar_type && $user_allowavatar )
 {
    switch( $user_avatar_type )
    {
-      case USER_AVATAR_UPLOAD:
+      case NUKE_USER_AVATAR_UPLOAD:
          $avatar_img = ( $board_config['allow_avatar_upload'] ) ? '<img src="' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" border="0" hspace="20" align="center" valign="center"/>' : '';
          break;
-      case USER_AVATAR_REMOTE:
+      case NUKE_USER_AVATAR_REMOTE:
          $avatar_img = ( $board_config['allow_avatar_remote'] ) ? '<img src="' . $user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center" />' : '';
          break;
-      case USER_AVATAR_GALLERY:
+      case NUKE_USER_AVATAR_GALLERY:
          $avatar_img = ( $board_config['allow_avatar_local'] ) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center" />' : '';
          break;
    }
@@ -118,13 +118,13 @@ if (empty($liste_cat_auth)) {
         $liste_cat_auth = "''";
 }
 
-$sql = "SELECT COUNT(*) AS nbtot FROM " . SCORES_TABLE . " s, " . GAMES_TABLE . " g  WHERE s.game_id = g.game_id AND g.arcade_catid IN ($liste_cat_auth) AND user_id = " . $uid;
+$sql = "SELECT COUNT(*) AS nbtot FROM " . NUKE_SCORES_TABLE . " s, " . NUKE_GAMES_TABLE . " g  WHERE s.game_id = g.game_id AND g.arcade_catid IN ($liste_cat_auth) AND user_id = " . $uid;
 
-if (!($result = $db->sql_query($sql))) {
-        message_die(GENERAL_ERROR, "Could not read the scores table", '', __LINE__, __FILE__, $sql);
+if (!($result = $nuke_db->sql_query($sql))) {
+        message_die(NUKE_GENERAL_ERROR, "Could not read the scores table", '', __LINE__, __FILE__, $sql);
 }
 
-if ($row=$db->sql_fetchrow($result)) {
+if ($row=$nuke_db->sql_fetchrow($result)) {
         $total_games = $row['nbtot'];
 } else {
         $total_games = 0;
@@ -133,16 +133,16 @@ if ($row=$db->sql_fetchrow($result)) {
 $start = get_var_gf(array('name' => 'start', 'intval' => true));
 $limit_sql = (intval($arcade_config['stat_par_page']) > 0) ? " LIMIT $start," . intval($arcade_config['stat_par_page']) : '';
 
-$sql = "SELECT s.*, g.* FROM " . SCORES_TABLE . " s LEFT JOIN " . GAMES_TABLE . " g ON g.game_id = s.game_id WHERE g.arcade_catid IN ($liste_cat_auth) AND s.user_id = " . $uid . " ORDER BY g.game_name ASC $limit_sql";
+$sql = "SELECT s.*, g.* FROM " . NUKE_SCORES_TABLE . " s LEFT JOIN " . NUKE_GAMES_TABLE . " g ON g.game_id = s.game_id WHERE g.arcade_catid IN ($liste_cat_auth) AND s.user_id = " . $uid . " ORDER BY g.game_name ASC $limit_sql";
 
-if (!($result = $db->sql_query($sql))) {
-        message_die(GENERAL_ERROR, "Could not read the users/scores/games table", '', __LINE__, __FILE__, $sql);
+if (!($result = $nuke_db->sql_query($sql))) {
+        message_die(NUKE_GENERAL_ERROR, "Could not read the users/scores/games table", '', __LINE__, __FILE__, $sql);
 }
 
 $gamelist = array();
 $liste_id = '';
 
-while ($row=$db->sql_fetchrow($result)) {
+while ($row=$nuke_db->sql_fetchrow($result)) {
         $gamelist[] = $row;
         $liste_id .= (!empty($liste_id)) ? ', ' : '';
         $liste_id .= "'" . $row['game_id'] . "'";
@@ -152,21 +152,21 @@ $games_par_page = intval($arcade_config['stat_par_page']);
 $where_sql = (!empty($liste_id)) ? " AND s1.game_id IN ($liste_id)" : '';
 
 $sql = "SET OPTION SQL_BIG_SELECTS=1 ";
-$db->sql_query($sql);
-$sql = "SELECT count(*) AS pos, s1.game_id , g.game_highuser, g.game_name FROM " . SCORES_TABLE . " s1 LEFT JOIN " . SCORES_TABLE . " s2 ON s1.score_game >= s2.score_game AND s1.game_id = s2.game_id LEFT JOIN " . GAMES_TABLE . " g ON g.game_id = s1.game_id WHERE s2.user_id = $uid AND ((s1.score_game > s2.score_game) OR (s1.user_id = $uid)) $where_sql GROUP BY s1.game_id";
+$nuke_db->sql_query($sql);
+$sql = "SELECT count(*) AS pos, s1.game_id , g.game_highuser, g.game_name FROM " . NUKE_SCORES_TABLE . " s1 LEFT JOIN " . NUKE_SCORES_TABLE . " s2 ON s1.score_game >= s2.score_game AND s1.game_id = s2.game_id LEFT JOIN " . NUKE_GAMES_TABLE . " g ON g.game_id = s1.game_id WHERE s2.user_id = $uid AND ((s1.score_game > s2.score_game) OR (s1.user_id = $uid)) $where_sql GROUP BY s1.game_id";
 
-if (!($result = $db->sql_query($sql))) {
-        message_die(GENERAL_ERROR, "Could not read the scores table", '', __LINE__, __FILE__, $sql);
+if (!($result = $nuke_db->sql_query($sql))) {
+        message_die(NUKE_GENERAL_ERROR, "Could not read the scores table", '', __LINE__, __FILE__, $sql);
 }
 
-while ($row = $db->sql_fetchrow($result)) {
+while ($row = $nuke_db->sql_fetchrow($result)) {
         $tbpos[ $row['game_id'] ] = $row['pos'];
         $tbhighuser[ $row['game_id'] ] = $row['game_highuser'];
 }
 
 $fini = false;
 
-if (!$row = $db->sql_fetchrow($result)) {
+if (!$row = $nuke_db->sql_fetchrow($result)) {
         $fini=true;
 }
 

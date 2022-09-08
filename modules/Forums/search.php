@@ -67,7 +67,7 @@ if ($popup != "1") {
 } else {
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 include ($phpbb2_root_path . 'extension.inc');
 include ($phpbb2_root_path . 'common.' . $phpEx);
 include ("includes/bbcode.php");
@@ -75,7 +75,7 @@ include ("includes/functions_search.php");
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_SEARCH);
+$userdata = session_pagestart($user_ip, NUKE_PAGE_SEARCH);
 init_userprefs($userdata);
 //
 // End session management
@@ -165,18 +165,18 @@ if ($mode == 'searchuser') {
         //
         // Flood control
         //
-        $where_sql = ($userdata['user_id'] == ANONYMOUS || empty($userdata['user_id'])) ? "se.session_ip = '$user_ip'" : 'se.session_user_id = ' . $userdata['user_id'];
+        $where_sql = ($userdata['user_id'] == NUKE_ANONYMOUS || empty($userdata['user_id'])) ? "se.session_ip = '$user_ip'" : 'se.session_user_id = ' . $userdata['user_id'];
         $sql = 'SELECT MAX(sr.search_time) AS last_search_time
 
-             FROM ' . SEARCH_TABLE . ' sr, ' . SESSIONS_TABLE . " se
+             FROM ' . NUKE_SEARCH_TABLE_RESULTS . ' sr, ' . NUKE_BB_SESSIONS_TABLE . " se
 
              WHERE sr.session_id = se.session_id
 
              AND $where_sql";
-        if ($result = $db->sql_query($sql)) {
-            if ($row = $db->sql_fetchrow($result)) {
+        if ($result = $nuke_db->sql_query($sql)) {
+            if ($row = $nuke_db->sql_fetchrow($result)) {
                 if (intval($row['last_search_time']) > 0 && ($current_time - intval($row['last_search_time'])) < intval($board_config['search_flood_interval'])) {
-                    message_die(GENERAL_MESSAGE, $lang['Search_Flood_Error']);
+                    message_die(NUKE_GENERAL_MESSAGE, $lang['Search_Flood_Error']);
                 }
             }
         }
@@ -185,11 +185,11 @@ if ($mode == 'searchuser') {
                 if ($userdata['session_logged_in']) {
                     $sql = "SELECT post_id
 
-                    FROM " . POSTS_TABLE . "
+                    FROM " . NUKE_POSTS_TABLE . "
 
                     WHERE post_time >= " . $userdata['user_lastvisit'];
                 } else {
-                    redirect(append_sid("login.$phpEx?redirect=search.$phpEx&search_id=newposts", true));
+                    nuke_redirect(append_sid("login.$phpEx?nuke_redirect=search.$phpEx&search_id=newposts", true));
                 }
                 $show_results = 'topics';
                 $sort_by = 0;
@@ -198,11 +198,11 @@ if ($mode == 'searchuser') {
                 if ($userdata['session_logged_in']) {
                     $sql = "SELECT post_id
 
-                    FROM " . POSTS_TABLE . "
+                    FROM " . NUKE_POSTS_TABLE . "
 
                     WHERE poster_id = " . $userdata['user_id'];
                 } else {
-                    redirect(append_sid("login.$phpEx?redirect=search.$phpEx&search_id=egosearch", true));
+                    nuke_redirect(append_sid("login.$phpEx?nuke_redirect=search.$phpEx&search_id=egosearch", true));
                 }
                 $show_results = 'topics';
                 $sort_by = 0;
@@ -214,36 +214,36 @@ if ($mode == 'searchuser') {
                 }
                 $sql = "SELECT user_id
 
-            FROM " . USERS_TABLE . "
+            FROM " . NUKE_USERS_TABLE . "
 
             WHERE username LIKE '" . str_replace("\'", "''", $search_author) . "'";
-                if (!($result = $db->sql_query($sql))) {
-                    message_die(GENERAL_ERROR, "Couldn't obtain list of matching users (searching for: $search_author)", "", __LINE__, __FILE__, $sql);
+                if (!($result = $nuke_db->sql_query($sql))) {
+                    message_die(NUKE_GENERAL_ERROR, "Couldn't obtain list of matching users (searching for: $search_author)", "", __LINE__, __FILE__, $sql);
                 }
                 $matching_userids = '';
-                if ($row = $db->sql_fetchrow($result)) {
+                if ($row = $nuke_db->sql_fetchrow($result)) {
                     do {
                         $matching_userids.= (($matching_userids != '') ? ', ' : '') . $row['user_id'];
-                    } while ($row = $db->sql_fetchrow($result));
+                    } while ($row = $nuke_db->sql_fetchrow($result));
                 } else {
-                    message_die(GENERAL_MESSAGE, $lang['No_search_match']);
+                    message_die(NUKE_GENERAL_MESSAGE, $lang['No_search_match']);
                 }
                 $sql = "SELECT post_id
 
-            FROM " . POSTS_TABLE . "
+            FROM " . NUKE_POSTS_TABLE . "
 
             WHERE poster_id IN ($matching_userids)";
                 if ($search_time) {
                     $sql.= " AND post_time >= " . $search_time;
                 }
-            } if (!($result = $db->sql_query($sql))) {
-                message_die(GENERAL_ERROR, 'Could not obtain matched posts list', '', __LINE__, __FILE__, $sql);
+            } if (!($result = $nuke_db->sql_query($sql))) {
+                message_die(NUKE_GENERAL_ERROR, 'Could not obtain matched posts list', '', __LINE__, __FILE__, $sql);
             }
             $search_ids = array();
-            while ($row = $db->sql_fetchrow($result)) {
+            while ($row = $nuke_db->sql_fetchrow($result)) {
                 $search_ids[] = $row['post_id'];
             }
-            $db->sql_freeresult($result);
+            $nuke_db->sql_freeresult($result);
             $total_match_count = count($search_ids);
         } else if ($search_keywords != '') {
             $stopword_array = @file($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt');
@@ -303,7 +303,7 @@ if ($mode == 'searchuser') {
                             $match_word = str_replace('*', '%', $split_search[$i]);
                             $sql = "SELECT m.post_id
 
-                FROM " . SEARCH_WORD_TABLE . " w, " . SEARCH_MATCH_TABLE . " m
+                FROM " . NUKE_SEARCH_WORD_TABLE . " w, " . NUKE_SEARCH_MATCH_TABLE . " m
 
                 WHERE w.word_text LIKE '$match_word'
 
@@ -317,17 +317,17 @@ if ($mode == 'searchuser') {
                             $search_msg_only = ($search_fields) ? "OR post_subject LIKE '$match_word'" : '';
                             $sql = "SELECT post_id
 
-                FROM " . POSTS_TEXT_TABLE . "
+                FROM " . NUKE_POSTS_TEXT_TABLE . "
 
                 WHERE post_text LIKE '$match_word'
 
                 $search_msg_only";
                         }
-                        if (!($result = $db->sql_query($sql))) {
-                            message_die(GENERAL_ERROR, 'Could not obtain matched posts list', '', __LINE__, __FILE__, $sql);
+                        if (!($result = $nuke_db->sql_query($sql))) {
+                            message_die(NUKE_GENERAL_ERROR, 'Could not obtain matched posts list', '', __LINE__, __FILE__, $sql);
                         }
                         $row = array();
-                        while ($temp_row = $db->sql_fetchrow($result)) {
+                        while ($temp_row = $nuke_db->sql_fetchrow($result)) {
                             $row[$temp_row['post_id']] = 1;
                             if (!$word_count) {
                                 $result_list[$temp_row['post_id']] = 1;
@@ -346,7 +346,7 @@ if ($mode == 'searchuser') {
                             }
                         }
                         $word_count++;
-                        $db->sql_freeresult($result);
+                        $nuke_db->sql_freeresult($result);
                     }
                 }
                 @reset($result_list);
@@ -368,38 +368,38 @@ if ($mode == 'searchuser') {
         $passdata = (isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_fpass'])) ? unserialize(stripslashes($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_fpass'])) : '';
         $auth_sql = '';
         if ($search_forum != - 1) {
-            $is_auth = auth(AUTH_ALL, $search_forum, $userdata);
+            $is_auth = auth(NUKE_AUTH_ALL, $search_forum, $userdata);
             $has_access = true;
-            if (!$is_auth['auth_mod'] && $userdata['user_level'] != ADMIN) {
-                $sql = "SELECT forum_password FROM " . FORUMS_TABLE . " WHERE forum_id = " . $search_forum;
-                if (!$result = $db->sql_query($sql)) {
-                    message_die(GENERAL_ERROR, 'Could not retrieve forum password information', '', __LINE__, __FILE__, $sql);
+            if (!$is_auth['auth_mod'] && $userdata['user_level'] != NUKE_ADMIN) {
+                $sql = "SELECT forum_password FROM " . NUKE_FORUMS_TABLE . " WHERE forum_id = " . $search_forum;
+                if (!$result = $nuke_db->sql_query($sql)) {
+                    message_die(NUKE_GENERAL_ERROR, 'Could not retrieve forum password information', '', __LINE__, __FILE__, $sql);
                 }
-                $row = $db->sql_fetchrow($result);
-                $db->sql_freeresult($result);
+                $row = $nuke_db->sql_fetchrow($result);
+                $nuke_db->sql_freeresult($result);
                 if ($row['forum_password'] != '' && $passdata[$key] != md5($row['forum_password'])) {
                     $has_access = false;
                 }
             }
             if (!$is_auth['auth_read'] || !$has_access) {
-                message_die(GENERAL_MESSAGE, $lang['No_searchable_forums']);
+                message_die(NUKE_GENERAL_MESSAGE, $lang['No_searchable_forums']);
             }
             $auth_sql = "f.forum_id = $search_forum";
         } else {
-            $is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+            $is_auth_ary = auth(NUKE_AUTH_ALL, NUKE_AUTH_LIST_ALL, $userdata);
             if ($search_cat != - 1) {
                 $auth_sql = "f.cat_id = $search_cat";
             }
             $ignore_forum_sql = '';
             while (list($key, $value) = each($is_auth_ary)) {
                 $has_access = true;
-                if (!$is_auth['auth_mod'] && $userdata['user_level'] != ADMIN) {
-                    $sql = "SELECT forum_password FROM " . FORUMS_TABLE . " WHERE forum_id = " . $key;
-                    if (!$result = $db->sql_query($sql)) {
-                        message_die(GENERAL_ERROR, 'Could not retrieve forum password information', '', __LINE__, __FILE__, $sql);
+                if (!$is_auth['auth_mod'] && $userdata['user_level'] != NUKE_ADMIN) {
+                    $sql = "SELECT forum_password FROM " . NUKE_FORUMS_TABLE . " WHERE forum_id = " . $key;
+                    if (!$result = $nuke_db->sql_query($sql)) {
+                        message_die(NUKE_GENERAL_ERROR, 'Could not retrieve forum password information', '', __LINE__, __FILE__, $sql);
                     }
-                    $row = $db->sql_fetchrow($result);
-                    $db->sql_freeresult($result);
+                    $row = $nuke_db->sql_fetchrow($result);
+                    $nuke_db->sql_freeresult($result);
                     if ($row['forum_password'] != '' && $passdata[$key] != md5($row['forum_password'])) {
                         $has_access = false;
                     }
@@ -450,7 +450,7 @@ if ($mode == 'searchuser') {
                     if ($search_author == '' && $auth_sql == '') {
                         $sql = "SELECT topic_id
 
-                    FROM " . POSTS_TABLE . "
+                    FROM " . NUKE_POSTS_TABLE . "
 
                     WHERE post_id IN (" . implode(", ", $search_id_chunks[$i]) . ")
 
@@ -458,13 +458,13 @@ if ($mode == 'searchuser') {
 
                     GROUP BY topic_id";
                     } else {
-                        $from_sql = POSTS_TABLE . " p";
+                        $from_sql = NUKE_POSTS_TABLE . " p";
                         if ($search_author != '') {
-                            $from_sql.= ", " . USERS_TABLE . " u";
+                            $from_sql.= ", " . NUKE_USERS_TABLE . " u";
                             $where_sql.= " AND u.user_id = p.poster_id AND u.username LIKE '$search_author' ";
                         }
                         if ($auth_sql != '') {
-                            $from_sql.= ", " . FORUMS_TABLE . " f";
+                            $from_sql.= ", " . NUKE_FORUMS_TABLE . " f";
                             $where_sql.= " AND f.forum_id = p.forum_id AND $auth_sql";
                         }
                         $sql = "SELECT p.topic_id
@@ -477,13 +477,13 @@ if ($mode == 'searchuser') {
 
                     GROUP BY p.topic_id";
                     }
-                    if (!($result = $db->sql_query($sql))) {
-                        message_die(GENERAL_ERROR, 'Could not obtain topic ids', '', __LINE__, __FILE__, $sql);
+                    if (!($result = $nuke_db->sql_query($sql))) {
+                        message_die(NUKE_GENERAL_ERROR, 'Could not obtain topic ids', '', __LINE__, __FILE__, $sql);
                     }
-                    while ($row = $db->sql_fetchrow($result)) {
+                    while ($row = $nuke_db->sql_fetchrow($result)) {
                         $search_ids[] = $row['topic_id'];
                     }
-                    $db->sql_freeresult($result);
+                    $nuke_db->sql_freeresult($result);
                 }
                 $total_match_count = count($search_ids);
             } else if ($search_author != '' || $search_time || $auth_sql != '') {
@@ -506,16 +506,16 @@ if ($mode == 'searchuser') {
                 for ($i = 0;$i < count($search_id_chunks);$i++) {
                     $where_sql = ($search_author == '' && $auth_sql == '') ? 'post_id IN (' . implode(', ', $search_id_chunks[$i]) . ')' : 'p.post_id IN (' . implode(', ', $search_id_chunks[$i]) . ')';
                     $select_sql = ($search_author == '' && $auth_sql == '') ? 'post_id' : 'p.post_id';
-                    $from_sql = ($search_author == '' && $auth_sql == '') ? POSTS_TABLE : POSTS_TABLE . ' p';
+                    $from_sql = ($search_author == '' && $auth_sql == '') ? NUKE_POSTS_TABLE : NUKE_POSTS_TABLE . ' p';
                     if ($search_time) {
                         $where_sql.= ($search_author == '' && $auth_sql == '') ? " AND post_time >= $search_time " : " AND p.post_time >= $search_time";
                     }
                     if ($auth_sql != '') {
-                        $from_sql.= ", " . FORUMS_TABLE . " f";
+                        $from_sql.= ", " . NUKE_FORUMS_TABLE . " f";
                         $where_sql.= " AND f.forum_id = p.forum_id AND $auth_sql";
                     }
                     if ($search_author != '') {
-                        $from_sql.= ", " . USERS_TABLE . " u";
+                        $from_sql.= ", " . NUKE_USERS_TABLE . " u";
                         $where_sql.= " AND u.user_id = p.poster_id AND u.username LIKE '$search_author'";
                     }
                     $sql = "SELECT " . $select_sql . "
@@ -523,13 +523,13 @@ if ($mode == 'searchuser') {
                 FROM ($from_sql)
 
                 WHERE $where_sql";
-                    if (!($result = $db->sql_query($sql))) {
-                        message_die(GENERAL_ERROR, 'Could not obtain post ids', '', __LINE__, __FILE__, $sql);
+                    if (!($result = $nuke_db->sql_query($sql))) {
+                        message_die(NUKE_GENERAL_ERROR, 'Could not obtain post ids', '', __LINE__, __FILE__, $sql);
                     }
-                    while ($row = $db->sql_fetchrow($result)) {
+                    while ($row = $nuke_db->sql_fetchrow($result)) {
                         $search_ids[] = $row['post_id'];
                     }
-                    $db->sql_freeresult($result);
+                    $nuke_db->sql_freeresult($result);
                 }
                 $total_match_count = count($search_ids);
             }
@@ -537,7 +537,7 @@ if ($mode == 'searchuser') {
             if ($auth_sql != '') {
                 $sql = "SELECT t.topic_id, f.forum_id
 
-            FROM (" . TOPICS_TABLE . "  t, " . FORUMS_TABLE . " f)
+            FROM (" . NUKE_BB_TOPICS_TABLE . "  t, " . NUKE_FORUMS_TABLE . " f)
 
             WHERE t.topic_replies = '0'
 
@@ -549,20 +549,20 @@ if ($mode == 'searchuser') {
             } else {
                 $sql = "SELECT topic_id
 
-            FROM " . TOPICS_TABLE . "
+            FROM " . NUKE_BB_TOPICS_TABLE . "
 
             WHERE topic_replies = '0'
 
             AND topic_moved_id = '0'";
             }
-            if (!($result = $db->sql_query($sql))) {
-                message_die(GENERAL_ERROR, 'Could not obtain post ids', '', __LINE__, __FILE__, $sql);
+            if (!($result = $nuke_db->sql_query($sql))) {
+                message_die(NUKE_GENERAL_ERROR, 'Could not obtain post ids', '', __LINE__, __FILE__, $sql);
             }
             $search_ids = array();
-            while ($row = $db->sql_fetchrow($result)) {
+            while ($row = $nuke_db->sql_fetchrow($result)) {
                 $search_ids[] = $row['topic_id'];
             }
-            $db->sql_freeresult($result);
+            $nuke_db->sql_freeresult($result);
             $total_match_count = count($search_ids);
             //
             // Basic requirements
@@ -571,16 +571,16 @@ if ($mode == 'searchuser') {
             $sort_by = 0;
             $sort_dir = 'DESC';
         } else {
-            message_die(GENERAL_MESSAGE, $lang['No_search_match']);
+            message_die(NUKE_GENERAL_MESSAGE, $lang['No_search_match']);
         }
         //
         // Delete old data from the search result table
         //
-        $sql = 'DELETE FROM ' . SEARCH_TABLE . '
+        $sql = 'DELETE FROM ' . NUKE_SEARCH_TABLE_RESULTS . '
 
     WHERE search_time < ' . ($current_time - (int)$board_config['session_length']);
-        if (!$result = $db->sql_query($sql)) {
-            message_die(GENERAL_ERROR, 'Could not delete old search id sessions', '', __LINE__, __FILE__, $sql);
+        if (!$result = $nuke_db->sql_query($sql)) {
+            message_die(NUKE_GENERAL_ERROR, 'Could not delete old search id sessions', '', __LINE__, __FILE__, $sql);
         }
         //
         // Store new result data
@@ -620,17 +620,17 @@ if ($mode == 'searchuser') {
         unset($store_search_data);
         mt_srand((double)microtime() * 1000000);
         $search_id = mt_rand();
-        $sql = "UPDATE " . SEARCH_TABLE . "
+        $sql = "UPDATE " . NUKE_SEARCH_TABLE_RESULTS . "
 
             SET search_id = $search_id, search_time = $current_time, search_array = '" . str_replace("\'", "''", $result_array) . "'
 
             WHERE session_id = '" . $userdata['session_id'] . "'";
-        if (!($result = $db->sql_query($sql)) || !$db->sql_affectedrows()) {
-            $sql = "INSERT INTO " . SEARCH_TABLE . " (search_id, session_id, search_time, search_array)
+        if (!($result = $nuke_db->sql_query($sql)) || !$nuke_db->sql_affectedrows()) {
+            $sql = "INSERT INTO " . NUKE_SEARCH_TABLE_RESULTS . " (search_id, session_id, search_time, search_array)
 
                 VALUES($search_id, '" . $userdata['session_id'] . "', $current_time, '" . str_replace("\'", "''", $result_array) . "')";
-            if (!($result = $db->sql_query($sql))) {
-                message_die(GENERAL_ERROR, 'Could not insert search results', '', __LINE__, __FILE__, $sql);
+            if (!($result = $nuke_db->sql_query($sql))) {
+                message_die(NUKE_GENERAL_ERROR, 'Could not insert search results', '', __LINE__, __FILE__, $sql);
             }
         }
     } else {
@@ -638,15 +638,15 @@ if ($mode == 'searchuser') {
         if ($search_id) {
             $sql = "SELECT search_array
 
-                FROM " . SEARCH_TABLE . "
+                FROM " . NUKE_SEARCH_TABLE_RESULTS . "
 
                 WHERE search_id = '$search_id'
 
                 AND session_id = '" . $userdata['session_id'] . "'";
-            if (!($result = $db->sql_query($sql))) {
-                message_die(GENERAL_ERROR, 'Could not obtain search results', '', __LINE__, __FILE__, $sql);
+            if (!($result = $nuke_db->sql_query($sql))) {
+                message_die(NUKE_GENERAL_ERROR, 'Could not obtain search results', '', __LINE__, __FILE__, $sql);
             }
-            if ($row = $db->sql_fetchrow($result)) {
+            if ($row = $nuke_db->sql_fetchrow($result)) {
                 $search_data = unserialize($row['search_array']);
                 for ($i = 0;$i < count($store_vars);$i++) {
                     $$store_vars[$i] = $search_data[$store_vars[$i]];
@@ -666,7 +666,7 @@ if ($mode == 'searchuser') {
             ******************************************************/
             $sql = "SELECT pt.post_text, pt.bbcode_uid, pt.post_subject, p.*, f.forum_id, f.forum_name, t.*, u.username, u.user_id, u.user_color_gc, u.user_sig, u.user_sig_bbcode_uid
 
-     FROM (" . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TEXT_TABLE . " pt)
+     FROM (" . NUKE_FORUMS_TABLE . " f, " . NUKE_BB_TOPICS_TABLE . " t, " . NUKE_USERS_TABLE . " u, " . NUKE_POSTS_TABLE . " p, " . NUKE_POSTS_TEXT_TABLE . " pt)
 
      WHERE p.post_id IN ($search_results)
 
@@ -690,7 +690,7 @@ if ($mode == 'searchuser') {
             ******************************************************/
             $sql = "SELECT t.*, f.forum_id, f.forum_name, u.username, u.user_id, u.user_color_gc as color1, u2.user_color_gc as color2, u2.username as user2, u2.user_id as id2, p.post_username, p2.post_username AS post_username2, p2.post_time
 
-     FROM (" . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u2)
+     FROM (" . NUKE_BB_TOPICS_TABLE . " t, " . NUKE_FORUMS_TABLE . " f, " . NUKE_USERS_TABLE . " u, " . NUKE_POSTS_TABLE . " p, " . NUKE_POSTS_TABLE . " p2, " . NUKE_USERS_TABLE . " u2)
 
      WHERE t.topic_id IN ($search_results)
 
@@ -729,14 +729,14 @@ if ($mode == 'searchuser') {
             break;
         }
         $sql.= " $sort_dir LIMIT $start, " . $per_page;
-        if (!$result = $db->sql_query($sql)) {
-            message_die(GENERAL_ERROR, 'Could not obtain search results', '', __LINE__, __FILE__, $sql);
+        if (!$result = $nuke_db->sql_query($sql)) {
+            message_die(NUKE_GENERAL_ERROR, 'Could not obtain search results', '', __LINE__, __FILE__, $sql);
         }
         $searchset = array();
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $nuke_db->sql_fetchrow($result)) {
             $searchset[] = $row;
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         //
         // Define censored word matches
         //
@@ -782,9 +782,9 @@ if ($mode == 'searchuser') {
             [ Base:    Nuke Patched                       v3.1.0 ]
             
             ******************************************************/
-            $forum_url = "modules.php?name=Forums&amp;file=viewforum&amp;" . POST_FORUM_URL . "=" . $searchset[$i]['forum_id'] . "";
-            $topic_url = "modules.php?name=Forums&amp;file=viewtopic&amp;" . POST_TOPIC_URL . "=" . $searchset[$i]['topic_id'] . "&amp;highlight=$highlight_active";
-            $post_url = "modules.php?name=Forums&amp;file=viewtopic&amp;" . POST_POST_URL . "=" . $searchset[$i]['post_id'] . "&amp;highlight=$highlight_active#" . $searchset[$i]['post_id'] . "";
+            $forum_url = "modules.php?name=Forums&amp;file=viewforum&amp;" . NUKE_POST_FORUM_URL . "=" . $searchset[$i]['forum_id'] . "";
+            $topic_url = "modules.php?name=Forums&amp;file=viewtopic&amp;" . NUKE_POST_TOPIC_URL . "=" . $searchset[$i]['topic_id'] . "&amp;highlight=$highlight_active";
+            $post_url = "modules.php?name=Forums&amp;file=viewtopic&amp;" . NUKE_POST_POST_URL . "=" . $searchset[$i]['post_id'] . "&amp;highlight=$highlight_active#" . $searchset[$i]['post_id'] . "";
             /*****[END]********************************************
             
             [ Base:    Nuke Patched                       v3.1.0 ]
@@ -911,15 +911,15 @@ if ($mode == 'searchuser') {
                     }
                     $message = str_replace("\n", '<br />', $message);
                 }
-                $poster = ($searchset[$i]['user_id'] != ANONYMOUS) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=" . $searchset[$i]['user_id']) . '">' : '';
+                $poster = ($searchset[$i]['user_id'] != NUKE_ANONYMOUS) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $searchset[$i]['user_id']) . '">' : '';
                 /*****[BEGIN]******************************************                
                 [ Mod:    Advanced Username Color             v1.0.5 ]                
                 ******************************************************/
-                $poster.= ($searchset[$i]['user_id'] != ANONYMOUS) ? UsernameColor($searchset[$i]['user_color_gc'], $searchset[$i]['username']) : ((UsernameColor($searchset[$i]['user_color_gc'], $searchset[$i]['post_username']) != "") ? UsernameColor($searchset[$i]['user_color_gc'], $searchset[$i]['post_username']) : $lang['Guest']);
+                $poster.= ($searchset[$i]['user_id'] != NUKE_ANONYMOUS) ? UsernameColor($searchset[$i]['user_color_gc'], $searchset[$i]['username']) : ((UsernameColor($searchset[$i]['user_color_gc'], $searchset[$i]['post_username']) != "") ? UsernameColor($searchset[$i]['user_color_gc'], $searchset[$i]['post_username']) : $lang['Guest']);
                 /*****[END]********************************************                
                 [ Mod:    Advanced Username Color             v1.0.5 ]                
                 ******************************************************/
-                $poster.= ($searchset[$i]['user_id'] != ANONYMOUS) ? '</a>' : '';
+                $poster.= ($searchset[$i]['user_id'] != NUKE_ANONYMOUS) ? '</a>' : '';
                 if ($userdata['session_logged_in'] && $searchset[$i]['post_time'] > $userdata['user_lastvisit']) {
                     if (!empty($tracking_topics[$topic_id]) && !empty($tracking_forums[$forum_id])) {
                         $topic_last_read = ($tracking_topics[$topic_id] > $tracking_forums[$forum_id]) ? $tracking_topics[$topic_id] : $tracking_forums[$forum_id];
@@ -969,7 +969,7 @@ if ($mode == 'searchuser') {
                 [ Mod:     Global Announcements               v1.2.8 ]
                 
                 ******************************************************/
-                if ($topic_type == POST_GLOBAL_ANNOUNCE) {
+                if ($topic_type == NUKE_POST_GLOBAL_ANNOUNCE) {
                     $topic_type = $lang['Topic_global_announcement'] . " ";
                 } else
                 /*****[END]********************************************
@@ -977,9 +977,9 @@ if ($mode == 'searchuser') {
                 [ Mod:     Global Announcements               v1.2.8 ]
                 
                 ******************************************************/
-                if ($topic_type == POST_ANNOUNCE) {
+                if ($topic_type == NUKE_POST_ANNOUNCE) {
                     $topic_type = $lang['Topic_Announcement'] . ' ';
-                } else if ($topic_type == POST_STICKY) {
+                } else if ($topic_type == NUKE_POST_STICKY) {
                     $topic_type = $lang['Topic_Sticky'] . ' ';
                 } else {
                     $topic_type = '';
@@ -994,7 +994,7 @@ if ($mode == 'searchuser') {
                     $goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />' . $lang['Goto_page'] . ': ';
                     $times = 1;
                     for ($j = 0;$j < $replies + 1;$j+= $board_config['posts_per_page']) {
-                        $goto_page.= '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=" . $topic_id . "&amp;start=$j") . '">' . $times . '</a>';
+                        $goto_page.= '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=" . $topic_id . "&amp;start=$j") . '">' . $times . '</a>';
                         if ($times == 1 && $total_pages > 4) {
                             $goto_page.= ' ... ';
                             $times = $total_pages - 3;
@@ -1008,13 +1008,13 @@ if ($mode == 'searchuser') {
                 } else {
                     $goto_page = '';
                 }
-                if ($searchset[$i]['topic_status'] == TOPIC_MOVED) {
+                if ($searchset[$i]['topic_status'] == NUKE_TOPIC_MOVED) {
                     $topic_type = $lang['Topic_Moved'] . ' ';
                     $topic_id = $searchset[$i]['topic_moved_id'];
                     $folder_image = '<img src="' . $images['folder'] . '" alt="' . $lang['No_new_posts'] . '" />';
                     $newest_post_img = '';
                 } else {
-                    if ($searchset[$i]['topic_status'] == TOPIC_LOCKED) {
+                    if ($searchset[$i]['topic_status'] == NUKE_TOPIC_LOCKED) {
                         $folder = $images['folder_locked'];
                         $folder_new = $images['folder_locked_new'];
                     }
@@ -1023,7 +1023,7 @@ if ($mode == 'searchuser') {
                     [ Mod:     Global Announcements               v1.2.8 ]
                     
                     ******************************************************/
-                    else if ($searchset[$i]['topic_type'] == POST_GLOBAL_ANNOUNCE) {
+                    else if ($searchset[$i]['topic_type'] == NUKE_POST_GLOBAL_ANNOUNCE) {
                         $folder = $images['folder_global_announce'];
                         $folder_new = $images['folder_global_announce_new'];
                     }
@@ -1032,10 +1032,10 @@ if ($mode == 'searchuser') {
                     [ Mod:     Global Announcements               v1.2.8 ]
                     
                     ******************************************************/
-                    else if ($searchset[$i]['topic_type'] == POST_ANNOUNCE) {
+                    else if ($searchset[$i]['topic_type'] == NUKE_POST_ANNOUNCE) {
                         $folder = $images['folder_announce'];
                         $folder_new = $images['folder_announce_new'];
-                    } else if ($searchset[$i]['topic_type'] == POST_STICKY) {
+                    } else if ($searchset[$i]['topic_type'] == NUKE_POST_STICKY) {
                         $folder = $images['folder_sticky'];
                         $folder_new = $images['folder_sticky_new'];
                     } else {
@@ -1069,9 +1069,9 @@ if ($mode == 'searchuser') {
                                 if ($unread_topics) {
                                     $folder_image = $folder_new;
                                     $folder_alt = $lang['New_posts'];
-                                    $newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
+                                    $newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
                                 } else {
-                                    $folder_alt = ($searchset[$i]['topic_status'] == TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+                                    $folder_alt = ($searchset[$i]['topic_status'] == NUKE_TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
                                     $folder_image = $folder;
                                     $folder_alt = $folder_alt;
                                     $newest_post_img = '';
@@ -1079,36 +1079,36 @@ if ($mode == 'searchuser') {
                             } else if ($searchset[$i]['post_time'] > $userdata['user_lastvisit']) {
                                 $folder_image = $folder_new;
                                 $folder_alt = $lang['New_posts'];
-                                $newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
+                                $newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
                             } else {
                                 $folder_image = $folder;
-                                $folder_alt = ($searchset[$i]['topic_status'] == TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+                                $folder_alt = ($searchset[$i]['topic_status'] == NUKE_TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
                                 $newest_post_img = '';
                             }
                         } else {
                             $folder_image = $folder;
-                            $folder_alt = ($searchset[$i]['topic_status'] == TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+                            $folder_alt = ($searchset[$i]['topic_status'] == NUKE_TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
                             $newest_post_img = '';
                         }
                     } else {
                         $folder_image = $folder;
-                        $folder_alt = ($searchset[$i]['topic_status'] == TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+                        $folder_alt = ($searchset[$i]['topic_status'] == NUKE_TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
                         $newest_post_img = '';
                     }
                 }
-                $topic_author = ($searchset[$i]['user_id'] != ANONYMOUS) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '=' . $searchset[$i]['user_id']) . '">' : '';
+                $topic_author = ($searchset[$i]['user_id'] != NUKE_ANONYMOUS) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $searchset[$i]['user_id']) . '">' : '';
                 /*****[BEGIN]******************************************
                 
                 [ Mod:    Advanced Username Color             v1.0.5 ]
                 
                 ******************************************************/
-                $topic_author.= ($searchset[$i]['user_id'] != ANONYMOUS) ? UsernameColor($searchset[$i]['color1'], $searchset[$i]['username']) : ((UsernameColor($searchset[$i]['color1'], $searchset[$i]['post_username']) != '') ? UsernameColor($searchset[$i]['color1'], $searchset[$i]['post_username']) : $lang['Guest']);
+                $topic_author.= ($searchset[$i]['user_id'] != NUKE_ANONYMOUS) ? UsernameColor($searchset[$i]['color1'], $searchset[$i]['username']) : ((UsernameColor($searchset[$i]['color1'], $searchset[$i]['post_username']) != '') ? UsernameColor($searchset[$i]['color1'], $searchset[$i]['post_username']) : $lang['Guest']);
                 /*****[END]********************************************
                 
                 [ Mod:    Advanced Username Color             v1.0.5 ]
                 
                 ******************************************************/
-                $topic_author.= ($searchset[$i]['user_id'] != ANONYMOUS) ? '</a>' : '';
+                $topic_author.= ($searchset[$i]['user_id'] != NUKE_ANONYMOUS) ? '</a>' : '';
                 $first_post_time = create_date($board_config['default_dateformat'], $searchset[$i]['topic_time'], $board_config['board_timezone']);
                 $last_post_time = create_date($board_config['default_dateformat'], $searchset[$i]['post_time'], $board_config['board_timezone']);
                 /*****[BEGIN]******************************************
@@ -1116,13 +1116,13 @@ if ($mode == 'searchuser') {
                 [ Mod:    Advanced Username Color             v1.0.5 ]
                 
                 ******************************************************/
-                $last_post_author = ($searchset[$i]['id2'] == ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '=' . $searchset[$i]['id2']) . '">' . UsernameColor($searchset[$i]['color2'], $searchset[$i]['user2']) . '</a>';
+                $last_post_author = ($searchset[$i]['id2'] == NUKE_ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $searchset[$i]['id2']) . '">' . UsernameColor($searchset[$i]['color2'], $searchset[$i]['user2']) . '</a>';
                 /*****[END]********************************************
                 
                 [ Mod:    Advanced Username Color             v1.0.5 ]
                 
                 ******************************************************/
-                $last_post_url = '<a href="' . append_sid("viewtopic.$phpEx?" . POST_POST_URL . '=' . $searchset[$i]['topic_last_post_id']) . '#' . $searchset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
+                $last_post_url = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . '=' . $searchset[$i]['topic_last_post_id']) . '#' . $searchset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
                 /*--FNA #2--*/
                 $template->assign_block_vars('searchresults', array('FORUM_NAME' => $searchset[$i]['forum_name'], 'FORUM_ID' => $forum_id, 'TOPIC_ID' => $topic_id, 'FOLDER' => $folder_image, 'NEWEST_POST_IMG' => $newest_post_img, 'TOPIC_FOLDER_IMG' => $folder_image, 'GOTO_PAGE' => $goto_page, 'REPLIES' => $replies, 'TOPIC_TITLE' => $topic_title, 'TOPIC_TYPE' => $topic_type, 'VIEWS' => $views, 'TOPIC_AUTHOR' => $topic_author, 'FIRST_POST_TIME' => $first_post_time, 'LAST_POST_TIME' => $last_post_time, 'LAST_POST_AUTHOR' => $last_post_author, 'LAST_POST_IMG' => $last_post_url, 'L_TOPIC_FOLDER_ALT' => $folder_alt, 'U_VIEW_FORUM' => $forum_url, 'U_VIEW_TOPIC' => $topic_url));
             }
@@ -1132,7 +1132,7 @@ if ($mode == 'searchuser') {
         $template->pparse('body');
         include ("includes/page_tail.$phpEx");
     } else {
-        message_die(GENERAL_MESSAGE, $lang['No_search_match']);
+        message_die(NUKE_GENERAL_MESSAGE, $lang['No_search_match']);
     }
 }
 //
@@ -1140,18 +1140,18 @@ if ($mode == 'searchuser') {
 //
 $sql = "SELECT c.cat_title, c.cat_id, f.forum_name, f.forum_id, f.forum_parent
 
-    FROM (" . CATEGORIES_TABLE . " c, " . FORUMS_TABLE . " f)
+    FROM (" . NUKE_CATEGORIES_TABLE . " c, " . NUKE_FORUMS_TABLE . " f)
 
     WHERE f.cat_id = c.cat_id
 
-    " . (($userdata['user_level'] == ADMIN) ? "" : " AND c.cat_id<>'" . HIDDEN_CAT . "'") . "
+    " . (($userdata['user_level'] == NUKE_ADMIN) ? "" : " AND c.cat_id<>'" . NUKE_HIDDEN_CAT . "'") . "
 
     ORDER BY c.cat_id, f.forum_order";
-$result = $db->sql_query($sql);
+$result = $nuke_db->sql_query($sql);
 if (!$result) {
-    message_die(GENERAL_ERROR, 'Could not obtain forum_name/forum_id', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not obtain forum_name/forum_id', '', __LINE__, __FILE__, $sql);
 }
-$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
+$is_auth_ary = auth(NUKE_AUTH_READ, NUKE_AUTH_LIST_ALL, $userdata);
 $s_forums = '';
 /*****[BEGIN]******************************************
 
@@ -1164,7 +1164,7 @@ $list = array();
      [ Mod:    Simple Subforums                    v1.0.1 ]
 
      ******************************************************/
-while ($row = $db->sql_fetchrow($result)) {
+while ($row = $nuke_db->sql_fetchrow($result)) {
     if ($is_auth_ary[$row['forum_id']]['auth_read']) {
         /*****[BEGIN]******************************************
         
@@ -1205,7 +1205,7 @@ for ($i = 0;$i < count($list);$i++) {
         ******************************************************/
     }
 }
-$db->sql_freeresult($result);
+$nuke_db->sql_freeresult($result);
 if ($s_forums != '') {
     $s_forums = '<option value="-1">' . $lang['All_available'] . '</option>' . $s_forums;
     //
@@ -1216,7 +1216,7 @@ if ($s_forums != '') {
         $s_categories.= '<option value="' . $cat_id . '">' . $cat_title . '</option>';
     }
 } else {
-    message_die(GENERAL_MESSAGE, $lang['No_searchable_forums']);
+    message_die(NUKE_GENERAL_MESSAGE, $lang['No_searchable_forums']);
 }
 //
 // Number of chars returned

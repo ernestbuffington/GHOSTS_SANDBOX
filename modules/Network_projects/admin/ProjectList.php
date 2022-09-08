@@ -8,7 +8,7 @@
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2005 by NukeScripts Network       */
 /********************************************************/
-global $db2;
+global $network_db;
 get_lang('Network_Projects');
 if(!defined('NETWORK_SUPPORT_ADMIN')) { die("Illegal Access Detected!!!"); }
 $pagetitle = "::: "._NETWORK_TITLE." ".$pj_config['version_number']."::: "._NETWORK_PROJECTS.": "._NETWORK_PROJECTLIST;
@@ -21,8 +21,8 @@ CloseTable();
 //echo "<br />";
 pjadmin_menu(_NETWORK_PROJECTS.": "._NETWORK_PROJECTLIST);
 //echo "<br />\n";
-$projectresult = $db2->sql_query("SELECT `project_id`, `project_name`, `weight`, `featured`, `status_id`, `priority_id` FROM `".$network_prefix."_projects` ORDER BY `weight`");
-$project_total = $db2->sql_numrows($projectresult);
+$projectresult = $network_db->sql_query("SELECT `project_id`, `project_name`, `weight`, `featured`, `status_id`, `priority_id` FROM `".$network_prefix."_projects` ORDER BY `weight`");
+$project_total = $network_db->sql_numrows($projectresult);
 OpenTable();
 echo "<table width='100%' border='1' cellspacing='0' cellpadding='2'>\n";
 echo "<tr><td colspan='3' width='100%' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_PROJECTOPTIONS."</strong></nobr></td></tr>\n";
@@ -44,13 +44,13 @@ echo "<td align='center' bgcolor='$bgcolor2'><strong>"._NETWORK_REPORTS."</stron
 echo "<td align='center' bgcolor='$bgcolor2'><strong>"._NETWORK_REQUESTS."</strong></td>\n";
 echo "<td align='center' bgcolor='$bgcolor2'><strong>"._NETWORK_FUNCTIONS."</strong></td></tr>\n";
 if($project_total != 0){
-  while(list($project_id, $project_name, $weight, $featured, $status_id, $priority_id) = $db2->sql_fetchrow($projectresult)) {
-    $tasksresult = $db2->sql_query("SELECT * FROM `".$network_prefix."_tasks` WHERE `project_id`='$project_id'");
-    $tasks = $db2->sql_numrows($tasksresult);
-    $reportsresult = $db2->sql_query("SELECT * FROM `".$network_prefix."_reports` WHERE `project_id`='$project_id'");
-    $reports = $db2->sql_numrows($reportsresult);
-    $requestsresult = $db2->sql_query("SELECT * FROM `".$network_prefix."_requests` WHERE `project_id`='$project_id'");
-    $requests = $db2->sql_numrows($requestsresult);
+  while(list($project_id, $project_name, $weight, $featured, $status_id, $priority_id) = $network_db->sql_fetchrow($projectresult)) {
+    $tasksresult = $network_db->sql_query("SELECT * FROM `".$network_prefix."_tasks` WHERE `project_id`='$project_id'");
+    $tasks = $network_db->sql_numrows($tasksresult);
+    $reportsresult = $network_db->sql_query("SELECT * FROM `".$network_prefix."_reports` WHERE `project_id`='$project_id'");
+    $reports = $network_db->sql_numrows($reportsresult);
+    $requestsresult = $network_db->sql_query("SELECT * FROM `".$network_prefix."_requests` WHERE `project_id`='$project_id'");
+    $requests = $network_db->sql_numrows($requestsresult);
     $projectstatus = pjprojectstatus_info($status_id);
     $projectpriority = pjprojectpriority_info($priority_id);
     if($featured > 0) {
@@ -61,11 +61,11 @@ if($project_total != 0){
     echo "<tr><td><img src='$pjimage'></td><td width='100%'>$project_name</td>\n";
     $weight1 = $weight - 1;
     $weight3 = $weight + 1;
-    $res = $db2->sql_query("SELECT `project_id` FROM `".$network_prefix."_projects` WHERE `weight`='$weight1'");
-    list($pid1) = $db2->sql_fetchrow($res);
+    $res = $network_db->sql_query("SELECT `project_id` FROM `".$network_prefix."_projects` WHERE `weight`='$weight1'");
+    list($pid1) = $network_db->sql_fetchrow($res);
     $con1 = "$pid1";
-    $res2 = $db2->sql_query("SELECT `project_id` FROM `".$network_prefix."_projects` WHERE `weight`='$weight3'");
-    list($pid2) = $db2->sql_fetchrow($res2);
+    $res2 = $network_db->sql_query("SELECT `project_id` FROM `".$network_prefix."_projects` WHERE `weight`='$weight3'");
+    list($pid2) = $network_db->sql_fetchrow($res2);
     $con2 = "$pid2";
     echo "<td align='center'><nobr>";
     if($con1) {

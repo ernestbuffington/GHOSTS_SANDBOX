@@ -21,16 +21,16 @@ OpenTable();
     Notes:       N/A
 ================================================================================================*/
 function username() {
-    global $db, $user_prefix;
+    global $nuke_db, $nuke_user_prefix;
     $in[] = array('value' => 'N/A', 'text' => _NONE);
-    $sql = 'SELECT username FROM `'.$user_prefix.'_users` WHERE user_id > 1 ORDER BY username ASC';
-    if(!$result = $db->sql_query($sql)) {
+    $sql = 'SELECT username FROM `'.$nuke_user_prefix.'_users` WHERE user_id > 1 ORDER BY username ASC';
+    if(!$result = $nuke_db->sql_query($sql)) {
         DonateError($lang_donate['UNAMES_NF']);
     }
-    while($row = $db->sql_fetchrow($result)) {
+    while($row = $nuke_db->sql_fetchrow($result)) {
         $in[] = array('value' => $row[0], 'text' => $row[0]);
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     return  donate_combo('uname', $in, 'None');
 }
 
@@ -41,14 +41,14 @@ function username() {
     Notes:       N/A
 ================================================================================================*/
 function types() {
-    global $db, $prefix, $lang_donate;
+    global $nuke_db, $prefix, $lang_donate;
     $sql = 'SELECT config_value, config_name FROM `'.$prefix.'_donators_config` WHERE config_name="gen_type_private"';
-    if(!$result = $db->sql_query($sql)) {
+    if(!$result = $nuke_db->sql_query($sql)) {
         DonateError($lang_donate['TYPES_NF']);
     }
-    $row = $db->sql_fetchrow($result);
+    $row = $nuke_db->sql_fetchrow($result);
     $type[$row['config_name']] = $row[0];
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     if ($type['gen_type_private'] == 'yes') {
         $in[] = array('value' => 'type_private', 'text' => $lang_donate['TYPE_PRIVATE']);
         $in[] = array('value' => 'type_regular', 'text' => $lang_donate['TYPE_REGULAR']);
@@ -68,15 +68,15 @@ function types() {
     Notes:       N/A
 ================================================================================================*/
 function make_codes () {
-    global $db, $prefix, $lang_donate;
+    global $nuke_db, $prefix, $lang_donate;
     $sql = 'SELECT config_value, config_name FROM `'.$prefix.'_donators_config`';
-    if(!$result = $db->sql_query($sql)) {
+    if(!$result = $nuke_db->sql_query($sql)) {
         DonateError($lang_donate['TYPES_NF']);
     }
-    while ($row = $db->sql_fetchrow($result)) {
+    while ($row = $nuke_db->sql_fetchrow($result)) {
         $gen_configs[$row['config_name']] = $row[0];
     }
-    $db->sql_freeresult($result);
+    $nuke_db->sql_freeresult($result);
     if (empty($gen_configs['gen_codes'])) {
        return "<input type=\"hidden\" name=\"item_name\" value=\"".$gen_configs['gen_donation_code']."\">\n";
     }
@@ -160,18 +160,18 @@ function check_donation() {
     Notes:       Writes the donation to the DB
 ================================================================================================*/
 function write_donation() {
-    global $lang_donate, $db, $user_prefix, $prefix, $cache;
+    global $lang_donate, $nuke_db, $nuke_user_prefix, $prefix, $cache;
     if ($_POST['uname'] != 'N/A') {
         $_POST['uname'] = Fix_Quotes(check_html($_POST['uname'], 'nohtml'));
-        $sql = 'SELECT * FROM `'.$user_prefix.'_users` WHERE username="'.$_POST['uname'].'"';
-        if(!$result = $db->sql_query($sql)) {
+        $sql = 'SELECT * FROM `'.$nuke_user_prefix.'_users` WHERE username="'.$_POST['uname'].'"';
+        if(!$result = $nuke_db->sql_query($sql)) {
             DonateError($lang_donate['UINFO_NF']);
         }
-        $user = $db->sql_fetchrow($result);
+        $user = $nuke_db->sql_fetchrow($result);
         if(!is_array($user)) {
             DonateError($lang_donate['UINFO_NF']);
         }
-        $db->sql_freeresult($result);
+        $nuke_db->sql_freeresult($result);
         $uname = $_POST['uname'];
         $uid = $user['user_id'];
         if (!empty($_POST['fname'])) {
@@ -202,7 +202,7 @@ function write_donation() {
     $donated = Fix_Quotes(check_html($_POST['donated'], 'nohtml'));
     $donshow = ($_POST['donshow'] == 'type_regular') ? '1' : '2';
     $sql = 'INSERT INTO `'.$prefix.'_donators` VALUES("","'.$uid.'","'.$uname.'","'.$fname.'","'.$lname.'","'.$email.'","'.$donated.'",'.time().',"'.$donshow.'","","","","'.$donto.'")';
-    $db->sql_query($sql);
+    $nuke_db->sql_query($sql);
     //Clear the cache
     $cache->delete('donations', 'donations');
     $cache->delete('donations_goal', 'donations');

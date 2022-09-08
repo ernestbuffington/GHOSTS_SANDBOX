@@ -79,12 +79,12 @@ $lang['Nivisec_Com'] = 'Nivisec.com';
 
 /* PM Types */
 $lang['PM_-1'] = 'All Types'; //PRIVMSGS_ALL_MAIL = -1
-$lang['PM_0'] = 'Read PMs'; //PRIVMSGS_READ_MAIL = 0
-$lang['PM_1'] = 'New PMs'; //PRIVMSGS_NEW_MAIL = 1
-$lang['PM_2'] = 'Sent PMs'; //PRIVMSGS_SENT_MAIL = 2
-$lang['PM_3'] = 'Saved PMs (In)'; //PRIVMSGS_SAVED_IN_MAIL = 3
-$lang['PM_4'] = 'Saved PMs (Out)'; //PRIVMSGS_SAVED_OUT_MAIL = 4
-$lang['PM_5'] = 'Unread PMs'; //PRIVMSGS_UNREAD_MAIL = 5
+$lang['PM_0'] = 'Read PMs'; //NUKE_PRIVMSGS_READ_MAIL = 0
+$lang['PM_1'] = 'New PMs'; //NUKE_PRIVMSGS_NEW_MAIL = 1
+$lang['PM_2'] = 'Sent PMs'; //NUKE_PRIVMSGS_SENT_MAIL = 2
+$lang['PM_3'] = 'Saved PMs (In)'; //NUKE_PRIVMSGS_SAVED_IN_MAIL = 3
+$lang['PM_4'] = 'Saved PMs (Out)'; //NUKE_PRIVMSGS_SAVED_OUT_MAIL = 4
+$lang['PM_5'] = 'Unread PMs'; //NUKE_PRIVMSGS_UNREAD_MAIL = 5
 
 /* Errors */
 $lang['Error_Other_Table'] = 'Error querying a required table.';

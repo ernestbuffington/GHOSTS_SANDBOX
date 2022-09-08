@@ -1,5 +1,5 @@
 /*************************************************************
- *    SXBB - Select Expand BBcodes MOD v1.0.2
+ *    SXBB - Select Expand BBcodes NUKE_MOD v1.0.2
  *
  *    Copyright (C) 2004, Markus (http://www.phpmix.com)
  *    This script is released under GPL License.

@@ -31,7 +31,7 @@
 
 LinkusAdminMain();
 
-		$result = $db->sql_uquery("UPDATE `".$prefix."_link_us` SET `site_name` = '$site_name', `site_url` = '$site_url', `site_image` = '$site_image', `site_description` = '$site_description', `site_status` = '$site_status' WHERE `site_name` = '$site_name'");
+		$result = $nuke_db->sql_uquery("UPDATE `".$prefix."_link_us` SET `site_name` = '$site_name', `site_url` = '$site_url', `site_image` = '$site_image', `site_description` = '$site_description', `site_status` = '$site_status' WHERE `site_name` = '$site_name'");
 		
 		OpenTable();
 		

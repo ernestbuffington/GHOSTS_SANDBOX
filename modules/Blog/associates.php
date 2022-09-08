@@ -38,11 +38,11 @@ get_lang($module_name);
 
 $sid = intval($sid);
 
-$query = $db->sql_query("SELECT associated FROM ".$prefix."_stories WHERE sid='$sid'");
+$query = $nuke_db->sql_query("SELECT associated FROM ".$prefix."_stories WHERE sid='$sid'");
 
-list($associated) = $db->sql_fetchrow($query);
+list($associated) = $nuke_db->sql_fetchrow($query);
 
-$db->sql_freeresult($query);
+$nuke_db->sql_freeresult($query);
 
 if (!empty($associated)) 
 {
@@ -55,9 +55,9 @@ if (!empty($associated))
 	{
       if (!empty($asso_t[$i])) 
 	  {
-        $query = $db->sql_query("SELECT topicimage, topictext from ".$prefix."_topics WHERE topicid='".$asso_t[$i]."'");
-	    list($topicimage, $topictext) = $db->sql_fetchrow($query);
-	    $db->sql_freeresult($query);
+        $query = $nuke_db->sql_query("SELECT topicimage, topictext from ".$prefix."_topics WHERE topicid='".$asso_t[$i]."'");
+	    list($topicimage, $topictext) = $nuke_db->sql_fetchrow($query);
+	    $nuke_db->sql_freeresult($query);
 	    echo "<a href=\"modules.php?name=$module_name&new_topic=$asso_t[$i]\"><img src=\"".$tipath.$topicimage."\" border=\"0\" hspace=\"10\" alt=\"".$topictext."\" title=\"".$topictext."\"></a>";
       }
     }

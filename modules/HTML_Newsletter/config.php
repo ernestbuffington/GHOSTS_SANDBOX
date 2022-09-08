@@ -42,7 +42,7 @@ if ( !defined('MSNL_LOADED') and !defined('BLOCK_FILE') and !defined('NUKE_FILE'
 	die("Illegal File Access");
 }
 
-global $admin_file, $aid, $prefix, $db, $admin;
+global $admin_file, $aid, $prefix, $nuke_db, $admin;
 
 get_lang( $msnl_sModuleNm );
 

@@ -28,7 +28,7 @@
       Advanced Username Color                  v1.0.5       10/27/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
     die('Hacking attempt');
 }
@@ -65,7 +65,7 @@ include_once('includes/bbcode.' . $phpEx);
 // standard sql request in order to fill the topic_rowset array :
 // ---------------------------------
 // $sql = "SELECT t.*, u.username, u.user_id, u2.username as user2, u2.user_id as id2, p.post_username, p2.post_username AS post_username2, p2.post_time 
-//    FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u2
+//    FROM " . NUKE_BB_TOPICS_TABLE . " t, " . NUKE_USERS_TABLE . " u, " . NUKE_POSTS_TABLE . " p, " . NUKE_POSTS_TABLE . " p2, " . NUKE_USERS_TABLE . " u2
 //    WHERE t.topic_poster = u.user_id
 //        AND p.post_id = t.topic_first_post_id
 //        AND p2.post_id = t.topic_last_post_id
@@ -76,11 +76,11 @@ include_once('includes/bbcode.' . $phpEx);
 // NB:
 // ---------------------------------
 //  topic_id should have in first position the main data row type, meaning for topics :
-//    $topic_rowset[]['topic_id'] = POST_TOPIC_URL . $row['topic_id'];
+//    $topic_rowset[]['topic_id'] = NUKE_POST_TOPIC_URL . $row['topic_id'];
 //--------------------------------------------------
 function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=false, $display_nav_tree=true, $footer='', $inbox=true, $select_field='', $select_type=0, $select_formname='', $select_values=array())
 {
-    global $db, $template, $board_config, $userdata, $phpEx, $lang, $images, $HTTP_COOKIE_VARS, $tree;
+    global $nuke_db, $template, $board_config, $userdata, $phpEx, $lang, $images, $HTTP_COOKIE_VARS, $tree;
     static $box_id;
 
     // save template state
@@ -157,7 +157,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
     {
         // standard read
         $is_auth = array();
-        $is_auth = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+        $is_auth = auth(NUKE_AUTH_ALL, NUKE_AUTH_LIST_ALL, $userdata);
     }
 
     // topic icon present
@@ -176,7 +176,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
 
     // check if user replied to the topics
     $user_topics = array();
-    if ($userdata['user_id'] != ANONYMOUS)
+    if ($userdata['user_id'] != NUKE_ANONYMOUS)
     {
         // get all the topic ids to display
         $topic_ids = array();
@@ -184,7 +184,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
         {
             $topic_item_type    = substr($topic_rowset[$i]['topic_id'], 0, 1);
             $topic_id            = intval(substr($topic_rowset[$i]['topic_id'], 1));
-            if ( $topic_item_type == POST_TOPIC_URL )
+            if ( $topic_item_type == NUKE_POST_TOPIC_URL )
             {
                 $topic_ids[] = $topic_id;
             }
@@ -194,16 +194,16 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
         {
             // check the posts
             $s_topic_ids = implode(', ', $topic_ids);
-            $sql = "SELECT DISTINCT topic_id FROM " . POSTS_TABLE . " 
+            $sql = "SELECT DISTINCT topic_id FROM " . NUKE_POSTS_TABLE . " 
                     WHERE topic_id IN ($s_topic_ids)
                         AND poster_id = " . $userdata['user_id'];
-            if ( !($result = $db->sql_query($sql)) )
+            if ( !($result = $nuke_db->sql_query($sql)) )
             {
-               message_die(GENERAL_ERROR, 'Could not obtain post information', '', __LINE__, __FILE__, $sql);
+               message_die(NUKE_GENERAL_ERROR, 'Could not obtain post information', '', __LINE__, __FILE__, $sql);
             }
-            while ($row = $db->sql_fetchrow($result))
+            while ($row = $nuke_db->sql_fetchrow($result))
             {
-                $user_topics[POST_TOPIC_URL . $row['topic_id']] = true;
+                $user_topics[NUKE_POST_TOPIC_URL . $row['topic_id']] = true;
             }
         }
     }
@@ -259,15 +259,15 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
         {
             $topic_type = $lang['Birthday'] . ': ';
         }
-        else if( $topic_type == POST_GLOBAL_ANNOUNCE )
+        else if( $topic_type == NUKE_POST_GLOBAL_ANNOUNCE )
         {
             $topic_type = $lang['Topic_Global_Announcement'] . ' ';
         }
-        else if( $topic_type == POST_ANNOUNCE )
+        else if( $topic_type == NUKE_POST_ANNOUNCE )
         {
             $topic_type = $lang['Topic_Announcement'] . ' ';
         }
-        else if( $topic_type == POST_STICKY )
+        else if( $topic_type == NUKE_POST_STICKY )
         {
             $topic_type = $lang['Topic_Sticky'] . ' ';
         }
@@ -286,7 +286,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
             $folder_alt = $lang['Happy_birthday'];
             $newest_post_img = '';
         }
-        else if( $topic_rowset[$i]['topic_status'] == TOPIC_MOVED )
+        else if( $topic_rowset[$i]['topic_status'] == NUKE_TOPIC_MOVED )
         {
             $topic_type = $lang['Topic_Moved'] . ' ';
             $topic_id = $topic_rowset[$i]['topic_moved_id'];
@@ -302,22 +302,22 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
                 $folder = $images['folder_birthday'];
                 $folder_new = $images['folder_birthday'];
             }
-            else if( $topic_rowset[$i]['topic_type'] == POST_GLOBAL_ANNOUNCE )
+            else if( $topic_rowset[$i]['topic_type'] == NUKE_POST_GLOBAL_ANNOUNCE )
             {
                 $folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_global_announce'] : $images['folder_global_announce'];
                 $folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_global_announce_new'] : $images['folder_global_announce_new'];
             }
-            else if( $topic_rowset[$i]['topic_type'] == POST_ANNOUNCE )
+            else if( $topic_rowset[$i]['topic_type'] == NUKE_POST_ANNOUNCE )
             {
                 $folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_announce'] : $images['folder_announce'];
                 $folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_announce_new'] : $images['folder_announce_new'];
             }
-            else if( $topic_rowset[$i]['topic_type'] == POST_STICKY )
+            else if( $topic_rowset[$i]['topic_type'] == NUKE_POST_STICKY )
             {
                 $folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_sticky'] : $images['folder_sticky'];
                 $folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_sticky_new'] : $images['folder_sticky_new'];
             }
-            else if( $topic_rowset[$i]['topic_status'] == TOPIC_LOCKED )
+            else if( $topic_rowset[$i]['topic_status'] == NUKE_TOPIC_LOCKED )
             {
                 $folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_locked'] : $images['folder_locked'];
                 $folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_locked_new'] : $images['folder_locked_new'];
@@ -336,7 +336,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
                 }
             }
             $newest_post_img = '';
-            if ( $userdata['session_logged_in'] && ($topic_item_type == POST_TOPIC_URL) )
+            if ( $userdata['session_logged_in'] && ($topic_item_type == NUKE_POST_TOPIC_URL) )
             {
                 if( $topic_rowset[$i]['post_time'] > $userdata['user_lastvisit'] ) 
                 {
@@ -368,33 +368,33 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
                         {
                             $folder_image = $folder_new;
                             $folder_alt = $lang['New_posts'];
-                            $newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
+                            $newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
                         }
                         else
                         {
                             $folder_image = $folder;
-                            $folder_alt = ( $topic_rowset[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+                            $folder_alt = ( $topic_rowset[$i]['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
                             $newest_post_img = '';
                         }
                     }
                     else
                     {
                         $folder_image = $folder_new;
-                        $folder_alt = ( $topic_rowset[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['New_posts'];
-                        $newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
+                        $folder_alt = ( $topic_rowset[$i]['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['New_posts'];
+                        $newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
                     }
                 }
                 else 
                 {
                     $folder_image = $folder;
-                    $folder_alt = ( $topic_rowset[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+                    $folder_alt = ( $topic_rowset[$i]['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
                     $newest_post_img = '';
                 }
             }
             else
             {
                 $folder_image = $folder;
-                $folder_alt = ( $topic_rowset[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+                $folder_alt = ( $topic_rowset[$i]['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
                 $newest_post_img = '';
             }
         }
@@ -408,7 +408,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
             $times = 1;
             for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
             {
-                $goto_page .= '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=" . $topic_id . "&amp;start=$j") . '">' . $times . '</a>';
+                $goto_page .= '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=" . $topic_id . "&amp;start=$j") . '">' . $times . '</a>';
                 if( $times == 1 && $total_pages > 4 )
                 {
                     $goto_page .= ' ... ';
@@ -431,30 +431,30 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
         $views = '';
         switch ($topic_item_type)
         {
-            case POST_USERS_URL:
-                $view_topic_url        = append_sid("profile.$phpEx?" . POST_USERS_URL . "=$topic_id");
+            case NUKE_POST_USERS_URL:
+                $view_topic_url        = append_sid("profile.$phpEx?" . NUKE_POST_USERS_URL . "=$topic_id");
                 break;
             default:
-                $view_topic_url        = append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id");
-                $topic_author        = ( $topic_rowset[$i]['user_id'] != ANONYMOUS ) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '=' . $topic_rowset[$i]['user_id']) . '">' : '';
+                $view_topic_url        = append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id");
+                $topic_author        = ( $topic_rowset[$i]['user_id'] != NUKE_ANONYMOUS ) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $topic_rowset[$i]['user_id']) . '">' : '';
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $topic_author        .= ( $topic_rowset[$i]['user_id'] != ANONYMOUS ) ? UsernameColor($topic_rowset[$i]['username']) : ( ( $topic_rowset[$i]['post_username'] != '' ) ? $topic_rowset[$i]['post_username'] : $lang['Guest'] );
+                $topic_author        .= ( $topic_rowset[$i]['user_id'] != NUKE_ANONYMOUS ) ? UsernameColor($topic_rowset[$i]['username']) : ( ( $topic_rowset[$i]['post_username'] != '' ) ? $topic_rowset[$i]['post_username'] : $lang['Guest'] );
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $topic_author        .= ( $topic_rowset[$i]['user_id'] != ANONYMOUS ) ? '</a>' : '';
+                $topic_author        .= ( $topic_rowset[$i]['user_id'] != NUKE_ANONYMOUS ) ? '</a>' : '';
                 $first_post_time    = create_date($board_config['default_dateformat'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone']);
                 $last_post_time        = create_date($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $last_post_author    = ( $topic_rowset[$i]['id2'] == ANONYMOUS ) ? ( ($topic_rowset[$i]['post_username2'] != '' ) ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '='  . $topic_rowset[$i]['id2']) . '">' . UsernameColor($topic_rowset[$i]['user2']) . '</a>';
+                $last_post_author    = ( $topic_rowset[$i]['id2'] == NUKE_ANONYMOUS ) ? ( ($topic_rowset[$i]['post_username2'] != '' ) ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $topic_rowset[$i]['id2']) . '">' . UsernameColor($topic_rowset[$i]['user2']) . '</a>';
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $last_post_url        = '<a href="' . append_sid("viewtopic.$phpEx?"  . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#' . $topic_rowset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
+                $last_post_url        = '<a href="' . append_sid("viewtopic.$phpEx?"  . NUKE_POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#' . $topic_rowset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
                 $views                = $topic_rowset[$i]['topic_views'];
                 break;
         }
@@ -465,9 +465,9 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
         {
             if ($cat_hierarchy)
             {
-                if ($tree['auth'][POST_FORUM_URL . $topic_rowset[$i]['forum_id']]['tree.auth_view'])
+                if ($tree['auth'][NUKE_POST_FORUM_URL . $topic_rowset[$i]['forum_id']]['tree.auth_view'])
                 {
-                    $nav_tree = make_cat_nav_tree(POST_FORUM_URL . $topic_rowset[$i]['forum_id'], '', 'gensmall');
+                    $nav_tree = make_cat_nav_tree(NUKE_POST_FORUM_URL . $topic_rowset[$i]['forum_id'], '', 'gensmall');
                 }
             }
             else
@@ -487,13 +487,13 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
         $topic_real_type = $topic_rowset[$i]['topic_type'];
 
         // if no split between global and standard announcement, group them with standard announcement
-        if ( !$switch_split_global_announce && ($topic_real_type == POST_GLOBAL_ANNOUNCE) ) $topic_real_type = POST_ANNOUNCE;
+        if ( !$switch_split_global_announce && ($topic_real_type == NUKE_POST_GLOBAL_ANNOUNCE) ) $topic_real_type = NUKE_POST_ANNOUNCE;
 
         // if no split between announce and sticky, group them with sticky
-        if ( !$switch_split_announce && ($topic_real_type == POST_ANNOUNCE) ) $topic_real_type = POST_STICKY;
+        if ( !$switch_split_announce && ($topic_real_type == NUKE_POST_ANNOUNCE) ) $topic_real_type = NUKE_POST_STICKY;
 
         // if no split between sticky and normal, group them with normal
-        if ( !$switch_split_sticky && ($topic_real_type == POST_STICKY) ) $topic_real_type = POST_NORMAL;
+        if ( !$switch_split_sticky && ($topic_real_type == NUKE_POST_STICKY) ) $topic_real_type = NUKE_POST_NORMAL;
 
         // check if rupture
         $rupt = false;
@@ -545,19 +545,19 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
                 case POST_BIRTHDAY:
                     $sub_title = $lang['Birthday'];
                     break;
-                case POST_GLOBAL_ANNOUNCE:
+                case NUKE_POST_GLOBAL_ANNOUNCE:
                     $sub_title = $lang['Post_Global_Announcement'];
                     break;
-                case POST_ANNOUNCE:
+                case NUKE_POST_ANNOUNCE:
                     $sub_title = $lang['Post_Announcement'];
                     break;
-                case POST_STICKY:
+                case NUKE_POST_STICKY:
                     $sub_title = $lang['Post_Sticky'];
                     break;
                 case POST_CALENDAR:
                     $sub_title = $lang['Calendar_event'];
                     break;
-                case POST_NORMAL:
+                case NUKE_POST_NORMAL:
                     $sub_title = $lang['Topics'];
                     break;
             }
@@ -611,7 +611,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
 
         // get the announces dates
         $topic_announces_dates = '';
-        if (function_exists(get_announces_title) && in_array( $topic_rowset[$i]['topic_type'], array(POST_ANNOUNCE, POST_GLOBAL_ANNOUNCE)))
+        if (function_exists(get_announces_title) && in_array( $topic_rowset[$i]['topic_type'], array(NUKE_POST_ANNOUNCE, NUKE_POST_GLOBAL_ANNOUNCE)))
         {
             $topic_announces_dates = get_announces_title($topic_rowset[$i]['topic_time'], $topic_rowset[$i]['topic_announce_duration']);
         }
@@ -628,7 +628,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
         if ($icon_installed)
         {
             $type = $topic_rowset[$i]['topic_type'];
-            if ($type == POST_NORMAL)
+            if ($type == NUKE_POST_NORMAL)
             {
                 if ( defined('POST_CALENDAR') && !empty($topic_rowset[$i]['topic_calendar_time']) )
                 {

@@ -8,7 +8,7 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
@@ -36,8 +36,8 @@ if(!isset($ip_addr)) $ip_addr='';
 if(!$column or $column=="") $column = "date";
 if(!$direction or $direction=="") $direction = "desc";
 $tid=intval($tid);
-list($uname) = $db->sql_fetchrow($db->sql_query("SELECT `refered_from` FROM `".$prefix."_nsnst_tracked_ips` WHERE `tid`='$tid' LIMIT 0,1"));
-$totalselected = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_tracked_ips` WHERE `refered_from`='$uname'"));
+list($uname) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `refered_from` FROM `".$prefix."_nsnst_tracked_ips` WHERE `tid`='$tid' LIMIT 0,1"));
+$totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_tracked_ips` WHERE `refered_from`='$uname'"));
 if($totalselected > 0) {
   if(strlen($uname) > 50) { $rfrom = substr($uname, 0, 50)."..."; } else { $rfrom = UsernameColor($uname); }
   echo '<center><strong>'.$rfrom.'</strong></center><br />'."\n";
@@ -70,8 +70,8 @@ if($totalselected > 0) {
   echo '<td bgcolor="'.$bgcolor2.'" width="80%"><strong>'._AB_PAGEVIEWED.'</strong></td>'."\n";
   echo '<td bgcolor="'.$bgcolor2.'" width="20%"><strong>'._AB_DATE.'</strong></td>'."\n";
   echo '</tr>'."\n";
-  $result = $db->sql_query("SELECT `ip_addr`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `refered_from`='$uname' ORDER BY $column $direction LIMIT $min, $perpage");
-  while(list($lipaddr, $page, $date_time) = $db->sql_fetchrow($result)){
+  $result = $nuke_db->sql_query("SELECT `ip_addr`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `refered_from`='$uname' ORDER BY $column $direction LIMIT $min, $perpage");
+  while(list($lipaddr, $page, $date_time) = $nuke_db->sql_fetchrow($result)){
     $page = htmlentities($page, ENT_QUOTES);
     echo '<tr onmouseover="this.style.backgroundColor=\''.$bgcolor2.'\'" onmouseout="this.style.backgroundColor=\''.$bgcolor1.'\'" bgcolor="'.$bgcolor1.'">'."\n";
     echo '<td><a href="'.$page.'" target="_blank">'.$page.'</a></td>'."\n";

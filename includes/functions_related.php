@@ -18,7 +18,7 @@
  *
  ***************************************************************************/
 
-if(!defined('IN_PHPBB'))
+if(!defined('IN_PHPBB2'))
 {
 	die('Hacking attempt');
 }
@@ -26,22 +26,22 @@ if(!defined('IN_PHPBB'))
 
 function get_related_topics($topic_id)
 {
-	global $board_config, $db, $lang, $template, $theme, $images, $phpEx;
+	global $board_config, $nuke_db, $lang, $template, $theme, $images, $phpEx;
 	global $userdata, $HTTP_COOKIE_VARS;
 
 	//
 	// Fetch all words that appear in the title of $topic_id
 	//
-	$sql = 'SELECT m.word_id FROM ' . SEARCH_MATCH_TABLE . ' m, ' . TOPICS_TABLE . ' t
+	$sql = 'SELECT m.word_id FROM ' . NUKE_SEARCH_MATCH_TABLE . ' m, ' . NUKE_BB_TOPICS_TABLE . ' t
 			WHERE m.post_id = t.topic_first_post_id
 				AND t.topic_id = ' . intval($topic_id);
-	if( !$result = $db->sql_query($sql) )
+	if( !$result = $nuke_db->sql_query($sql) )
 	{
-		message_die(GENERAL_ERROR, 'Could not retrieve word matches', '', __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, 'Could not retrieve word matches', '', __LINE__, __FILE__, $sql);
 	}
 
 	$word_ids = array(0);
-	while( $row = $db->sql_fetchrow($result) )
+	while( $row = $nuke_db->sql_fetchrow($result) )
 	{
 		$word_ids[] = intval($row['word_id']);
 	}
@@ -51,7 +51,7 @@ function get_related_topics($topic_id)
 	// Only search for related topics in the forums where the user has read access
 	//
 	$is_auth = array();
-	$is_auth = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
+	$is_auth = auth(NUKE_AUTH_READ, NUKE_AUTH_LIST_ALL, $userdata);
 
 	$forum_ids = array(0);
 	while( list($forum_id, $forum_auth) = @each($is_auth) )
@@ -64,22 +64,22 @@ function get_related_topics($topic_id)
 	$forum_id_sql = implode(', ', $forum_ids);
 
 	$sql = 'SELECT DISTINCT(t.topic_id)
-			FROM ' . SEARCH_MATCH_TABLE . ' m, ' . POSTS_TABLE . ' p, ' . TOPICS_TABLE . ' t
+			FROM ' . NUKE_SEARCH_MATCH_TABLE . ' m, ' . NUKE_POSTS_TABLE . ' p, ' . NUKE_BB_TOPICS_TABLE . ' t
 			WHERE t.topic_id <> ' . intval($topic_id) . '
-				AND t.topic_status <> ' . TOPIC_MOVED . '
+				AND t.topic_status <> ' . NUKE_TOPIC_MOVED . '
 				AND p.topic_id = t.topic_id
 				AND p.post_id = m.post_id
 				AND p.forum_id IN (' . $forum_id_sql . ')
 				AND m.title_match = 1
 				AND m.word_id IN (' . $word_id_sql . ')
 			LIMIT 0, 5';
-	if( !$result = $db->sql_query($sql) )
+	if( !$result = $nuke_db->sql_query($sql) )
 	{
-		message_die(GENERAL_ERROR, 'Could not retrieve related topics information', '', __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, 'Could not retrieve related topics information', '', __LINE__, __FILE__, $sql);
 	}
 
 	$topic_ids = array();
-	while( $row = $db->sql_fetchrow($result) )
+	while( $row = $nuke_db->sql_fetchrow($result) )
 	{
 		$topic_ids[] = $row['topic_id'];
 	}
@@ -121,7 +121,7 @@ function get_related_topics($topic_id)
 	// Fetch all topic information
 	//
 	$sql = 'SELECT t.*, u.username, u.user_id, u2.username as user2, u2.user_id as id2, p.post_username, p2.post_username AS post_username2, p2.post_time
-			FROM ' . TOPICS_TABLE . ' t, ' . USERS_TABLE . ' u, ' . POSTS_TABLE . ' p, ' . POSTS_TABLE . ' p2, ' . USERS_TABLE . ' u2
+			FROM ' . NUKE_BB_TOPICS_TABLE . ' t, ' . NUKE_USERS_TABLE . ' u, ' . NUKE_POSTS_TABLE . ' p, ' . NUKE_POSTS_TABLE . ' p2, ' . NUKE_USERS_TABLE . ' u2
 			WHERE t.topic_id IN (' . $topic_id_sql . ')
 				AND t.topic_poster = u.user_id
 				AND p.post_id = t.topic_first_post_id
@@ -129,14 +129,14 @@ function get_related_topics($topic_id)
 				AND u2.user_id = p2.poster_id
 			ORDER BY t.topic_type DESC, t.topic_last_post_id DESC';
 
-	if( !$result = $db->sql_query($sql) )
+	if( !$result = $nuke_db->sql_query($sql) )
 	{
-		message_die(GENERAL_ERROR, 'Could not retrieve topic information', '', __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, 'Could not retrieve topic information', '', __LINE__, __FILE__, $sql);
 	}
 
 	$topic_row = array();
-	$topic_row = $db->sql_fetchrowset($result);
-	$db->sql_freeresult($result);
+	$topic_row = $nuke_db->sql_fetchrowset($result);
+	$nuke_db->sql_freeresult($result);
 
 	if( count($topic_row) == 0 )
 	{
@@ -161,10 +161,10 @@ function get_related_topics($topic_id)
 		$topic_type = $row['topic_type'];
 		switch( $topic_type )
 		{
-			case POST_ANNOUNCE:
+			case NUKE_POST_ANNOUNCE:
 				$topic_type = $lang['Topic_Announcement'] . ' ';
 				break;
-			case POST_STICKY:
+			case NUKE_POST_STICKY:
 				$topic_type = $lang['Topic_Sticky'] . ' ';
 				break;
 			default:
@@ -177,17 +177,17 @@ function get_related_topics($topic_id)
 			$topic_type .= $lang['Topic_Poll'] . ' ';
 		}
 
-		if( $row['topic_type'] == POST_ANNOUNCE )
+		if( $row['topic_type'] == NUKE_POST_ANNOUNCE )
 		{
 			$folder = $images['folder_announce'];
 			$folder_new = $images['folder_announce_new'];
 		}
-		else if( $row['topic_type'] == POST_STICKY )
+		else if( $row['topic_type'] == NUKE_POST_STICKY )
 		{
 			$folder = $images['folder_sticky'];
 			$folder_new = $images['folder_sticky_new'];
 		}
-		else if( $row['topic_status'] == TOPIC_LOCKED )
+		else if( $row['topic_status'] == NUKE_TOPIC_LOCKED )
 		{
 			$folder = $images['folder_locked'];
 			$folder_new = $images['folder_locked_new'];
@@ -247,12 +247,12 @@ function get_related_topics($topic_id)
 						$folder_image = $folder_new;
 						$folder_alt = $lang['New_posts'];
 
-						$newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
+						$newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
 					}
 					else
 					{
 						$folder_image = $folder;
-						$folder_alt = ( $row['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+						$folder_alt = ( $row['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
 
 						$newest_post_img = '';
 					}
@@ -260,15 +260,15 @@ function get_related_topics($topic_id)
 				else
 				{
 					$folder_image = $folder_new;
-					$folder_alt = ( $row['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['New_posts'];
+					$folder_alt = ( $row['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['New_posts'];
 
-					$newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
+					$newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
 				}
 			}
 			else 
 			{
 				$folder_image = $folder;
-				$folder_alt = ( $row['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+				$folder_alt = ( $row['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
 
 				$newest_post_img = '';
 			}
@@ -276,19 +276,19 @@ function get_related_topics($topic_id)
 		else
 		{
 			$folder_image = $folder;
-			$folder_alt = ( $row['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+			$folder_alt = ( $row['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
 
 			$newest_post_img = '';
 		}
 
-		$topic_author = ( $row['user_id'] != ANONYMOUS ) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '=' . $row['user_id']) . '">' : '';
-		$topic_author .= ( $row['user_id'] != ANONYMOUS ) ? $row['username'] : ( ( $row['post_username'] != '' ) ? $row['post_username'] : $lang['Guest'] );
-		$topic_author .= ( $row['user_id'] != ANONYMOUS ) ? '</a>' : '';
+		$topic_author = ( $row['user_id'] != NUKE_ANONYMOUS ) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $row['user_id']) . '">' : '';
+		$topic_author .= ( $row['user_id'] != NUKE_ANONYMOUS ) ? $row['username'] : ( ( $row['post_username'] != '' ) ? $row['post_username'] : $lang['Guest'] );
+		$topic_author .= ( $row['user_id'] != NUKE_ANONYMOUS ) ? '</a>' : '';
 
 		$first_post_time = create_date($board_config['default_dateformat'], $row['topic_time'], $board_config['board_timezone']);
 		$last_post_time = create_date($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']);
-		$last_post_author = ( $row['id2'] == ANONYMOUS ) ? ( ($row['post_username2'] != '' ) ? $row['post_username2'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '='  . $row['id2']) . '">' . $row['user2'] . '</a>';
-		$last_post_url = '<a href="' . append_sid("viewtopic.$phpEx?"  . POST_POST_URL . '=' . $row['topic_last_post_id']) . '#' . $row['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
+		$last_post_author = ( $row['id2'] == NUKE_ANONYMOUS ) ? ( ($row['post_username2'] != '' ) ? $row['post_username2'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $row['id2']) . '">' . $row['user2'] . '</a>';
+		$last_post_url = '<a href="' . append_sid("viewtopic.$phpEx?"  . NUKE_POST_POST_URL . '=' . $row['topic_last_post_id']) . '#' . $row['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
 
 		$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
@@ -299,7 +299,7 @@ function get_related_topics($topic_id)
 
 			'L_TOPIC_FOLDER_ALT' => $folder_alt,
 
-			'U_VIEW_TOPIC' => append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . '=' . $row['topic_id']),
+			'U_VIEW_TOPIC' => append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . '=' . $row['topic_id']),
 
 			'TOPIC_FOLDER_IMG' => $folder_image,
 			'TOPIC_AUTHOR' => $topic_author,

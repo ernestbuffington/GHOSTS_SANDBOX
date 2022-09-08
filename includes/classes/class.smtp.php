@@ -60,40 +60,40 @@ class SMTP
     /**
      * Debug level for no output.
      */
-    const DEBUG_OFF = 0;
+    const NUKE_DEBUG_OFF = 0;
 
     /**
      * Debug level to show client -> server messages.
      */
-    const DEBUG_CLIENT = 1;
+    const NUKE_DEBUG_CLIENT = 1;
 
     /**
      * Debug level to show client -> server and server -> client messages.
      */
-    const DEBUG_SERVER = 2;
+    const NUKE_DEBUG_SERVER = 2;
 
     /**
      * Debug level to show connection status, client -> server and server -> client messages.
      */
-    const DEBUG_CONNECTION = 3;
+    const NUKE_DEBUG_CONNECTION = 3;
 
     /**
      * Debug level to show all messages.
      */
-    const DEBUG_LOWLEVEL = 4;
+    const NUKE_DEBUG_LOWLEVEL = 4;
 
     /**
      * Debug output level.
      * Options:
-     * * self::DEBUG_OFF (`0`) No debug output, default
-     * * self::DEBUG_CLIENT (`1`) Client commands
-     * * self::DEBUG_SERVER (`2`) Client commands and server responses
-     * * self::DEBUG_CONNECTION (`3`) As DEBUG_SERVER plus connection status
-     * * self::DEBUG_LOWLEVEL (`4`) Low-level data output, all messages.
+     * * self::NUKE_DEBUG_OFF (`0`) No debug output, default
+     * * self::NUKE_DEBUG_CLIENT (`1`) Client commands
+     * * self::NUKE_DEBUG_SERVER (`2`) Client commands and server responses
+     * * self::NUKE_DEBUG_CONNECTION (`3`) As NUKE_DEBUG_SERVER plus connection status
+     * * self::NUKE_DEBUG_LOWLEVEL (`4`) Low-level data output, all messages.
      *
      * @var int
      */
-    public $do_debug = self::DEBUG_OFF;
+    public $do_debug = self::NUKE_DEBUG_OFF;
 
     /**
      * How to handle debug output.
@@ -222,7 +222,7 @@ class SMTP
      * Output debugging info via a user-selected method.
      *
      * @param string $str   Debug string to output
-     * @param int    $level The debug level of this message; see DEBUG_* constants
+     * @param int    $level The debug level of this message; see NUKE_DEBUG_* constants
      *
      * @see SMTP::$Debugoutput
      * @see SMTP::$do_debug
@@ -310,7 +310,7 @@ class SMTP
         $this->edebug(
             "Connection: opening to $host:$port, timeout=$timeout, options=" .
             (count($options) > 0 ? var_export($options, true) : 'array()'),
-            self::DEBUG_CONNECTION
+            self::NUKE_DEBUG_CONNECTION
         );
         $errno = 0;
         $errstr = '';
@@ -330,7 +330,7 @@ class SMTP
             //Fall back to fsockopen which should work in more places, but is missing some features
             $this->edebug(
                 'Connection: stream_socket_client not available, falling back to fsockopen',
-                self::DEBUG_CONNECTION
+                self::NUKE_DEBUG_CONNECTION
             );
             set_error_handler([$this, 'errorHandler']);
             $this->smtp_conn = fsockopen(
@@ -353,12 +353,12 @@ class SMTP
             $this->edebug(
                 'SMTP ERROR: ' . $this->error['error']
                 . ": $errstr ($errno)",
-                self::DEBUG_CLIENT
+                self::NUKE_DEBUG_CLIENT
             );
 
             return false;
         }
-        $this->edebug('Connection: opened', self::DEBUG_CONNECTION);
+        $this->edebug('Connection: opened', self::NUKE_DEBUG_CONNECTION);
         // SMTP server can take longer to respond, give longer timeout for first read
         // Windows does not have support for this timeout function
         if (substr(PHP_OS, 0, 3) != 'WIN') {
@@ -371,7 +371,7 @@ class SMTP
         }
         // Get any announcement
         $announce = $this->get_lines();
-        $this->edebug('SERVER -> CLIENT: ' . $announce, self::DEBUG_SERVER);
+        $this->edebug('SERVER -> CLIENT: ' . $announce, self::NUKE_DEBUG_SERVER);
 
         return true;
     }
@@ -444,15 +444,15 @@ class SMTP
                 return false;
             }
 
-            $this->edebug('Auth method requested: ' . ($authtype ? $authtype : 'UNSPECIFIED'), self::DEBUG_LOWLEVEL);
+            $this->edebug('Auth method requested: ' . ($authtype ? $authtype : 'UNSPECIFIED'), self::NUKE_DEBUG_LOWLEVEL);
             $this->edebug(
                 'Auth methods available on the server: ' . implode(',', $this->server_caps['AUTH']),
-                self::DEBUG_LOWLEVEL
+                self::NUKE_DEBUG_LOWLEVEL
             );
 
             //If we have requested a specific auth type, check the server supports it before trying others
             if (null !== $authtype and !in_array($authtype, $this->server_caps['AUTH'])) {
-                $this->edebug('Requested auth method not available: ' . $authtype, self::DEBUG_LOWLEVEL);
+                $this->edebug('Requested auth method not available: ' . $authtype, self::NUKE_DEBUG_LOWLEVEL);
                 $authtype = null;
             }
 
@@ -470,7 +470,7 @@ class SMTP
 
                     return false;
                 }
-                self::edebug('Auth method selected: ' . $authtype, self::DEBUG_LOWLEVEL);
+                self::edebug('Auth method selected: ' . $authtype, self::NUKE_DEBUG_LOWLEVEL);
             }
 
             if (!in_array($authtype, $this->server_caps['AUTH'])) {
@@ -593,7 +593,7 @@ class SMTP
                 // The socket is valid but we are not connected
                 $this->edebug(
                     'SMTP NOTICE: EOF caught while checking if connected',
-                    self::DEBUG_CLIENT
+                    self::NUKE_DEBUG_CLIENT
                 );
                 $this->close();
 
@@ -621,7 +621,7 @@ class SMTP
             // close the connection and cleanup
             fclose($this->smtp_conn);
             $this->smtp_conn = null; //Makes for cleaner serialization
-            $this->edebug('Connection: closed', self::DEBUG_CONNECTION);
+            $this->edebug('Connection: closed', self::NUKE_DEBUG_CONNECTION);
         }
     }
 
@@ -921,7 +921,7 @@ class SMTP
             $detail = substr($this->last_reply, 4);
         }
 
-        $this->edebug('SERVER -> CLIENT: ' . $this->last_reply, self::DEBUG_SERVER);
+        $this->edebug('SERVER -> CLIENT: ' . $this->last_reply, self::NUKE_DEBUG_SERVER);
 
         if (!in_array($code, (array) $expect)) {
             $this->setError(
@@ -932,7 +932,7 @@ class SMTP
             );
             $this->edebug(
                 'SMTP ERROR: ' . $this->error['error'] . ': ' . $this->last_reply,
-                self::DEBUG_CLIENT
+                self::NUKE_DEBUG_CLIENT
             );
 
             return false;
@@ -997,7 +997,7 @@ class SMTP
     public function turn()
     {
         $this->setError('The SMTP TURN command is not implemented');
-        $this->edebug('SMTP NOTICE: ' . $this->error['error'], self::DEBUG_CLIENT);
+        $this->edebug('SMTP NOTICE: ' . $this->error['error'], self::NUKE_DEBUG_CLIENT);
 
         return false;
     }
@@ -1014,11 +1014,11 @@ class SMTP
     {
         //If SMTP transcripts are left enabled, or debug output is posted online
         //it can leak credentials, so hide credentials in all but lowest level
-        if (self::DEBUG_LOWLEVEL > $this->do_debug and
+        if (self::NUKE_DEBUG_LOWLEVEL > $this->do_debug and
             in_array($command, ['User & Password', 'Username', 'Password'], true)) {
-            $this->edebug('CLIENT -> SERVER: <credentials hidden>', self::DEBUG_CLIENT);
+            $this->edebug('CLIENT -> SERVER: <credentials hidden>', self::NUKE_DEBUG_CLIENT);
         } else {
-            $this->edebug('CLIENT -> SERVER: ' . $data, self::DEBUG_CLIENT);
+            $this->edebug('CLIENT -> SERVER: ' . $data, self::NUKE_DEBUG_CLIENT);
         }
         set_error_handler([$this, 'errorHandler']);
         $result = fwrite($this->smtp_conn, $data);
@@ -1125,13 +1125,13 @@ class SMTP
             if (!stream_select($selR, $selW, $selW, $this->Timelimit)) {
                 $this->edebug(
                     'SMTP -> get_lines(): timed-out (' . $this->Timeout . ' sec)',
-                    self::DEBUG_LOWLEVEL
+                    self::NUKE_DEBUG_LOWLEVEL
                 );
                 break;
             }
             //Deliberate noise suppression - errors are handled afterwards
             $str = @fgets($this->smtp_conn, 515);
-            $this->edebug('SMTP INBOUND: "' . trim($str) . '"', self::DEBUG_LOWLEVEL);
+            $this->edebug('SMTP INBOUND: "' . trim($str) . '"', self::NUKE_DEBUG_LOWLEVEL);
             $data .= $str;
             // If response is only 3 chars (not valid, but RFC5321 S4.2 says it must be handled),
             // or 4th character is a space, we are done reading, break the loop,
@@ -1144,7 +1144,7 @@ class SMTP
             if ($info['timed_out']) {
                 $this->edebug(
                     'SMTP -> get_lines(): timed-out (' . $this->Timeout . ' sec)',
-                    self::DEBUG_LOWLEVEL
+                    self::NUKE_DEBUG_LOWLEVEL
                 );
                 break;
             }
@@ -1153,7 +1153,7 @@ class SMTP
                 $this->edebug(
                     'SMTP -> get_lines(): timelimit reached (' .
                     $this->Timelimit . ' sec)',
-                    self::DEBUG_LOWLEVEL
+                    self::NUKE_DEBUG_LOWLEVEL
                 );
                 break;
             }
@@ -1278,7 +1278,7 @@ class SMTP
         );
         $this->edebug(
             "$notice Error #$errno: $errmsg [$errfile line $errline]",
-            self::DEBUG_CONNECTION
+            self::NUKE_DEBUG_CONNECTION
         );
     }
 

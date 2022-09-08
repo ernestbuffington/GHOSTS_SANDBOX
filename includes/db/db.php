@@ -1,8 +1,8 @@
 <?php
-/* -- -----------------------------------------------------------
- * // Nuke-Evolution Xtreme: Enhanced PHP-Nuke Web Portal System
- * -- -----------------------------------------------------------
- *
+/* -- -----------------------------------------------------------------------------
+ *  PHP-Nuke Ttianium | Nuke-Evolution Xtreme: Enhanced PHP-Nuke Web Portal System
+ * -- -----------------------------------------------------------------------------
+ * # LAST EDIT 9/8/2022 7:24AM Ernest ALlen Buffington
  * >> Database
  *
  * @filename    db.php
@@ -11,9 +11,9 @@
  * @date        Nov 24, 2011
  * @notes       n/a
  *
- * -- -----------------------------------------------------------
- * // Legal Stuff
- * -- -----------------------------------------------------------
+ * -- -----------------------------------------------------------------------------
+ * Legal Stuff
+ * -- -----------------------------------------------------------------------------
  *
  * (c) Copyright 2001 The phpBB Group
  * support@phpbb.com
@@ -25,33 +25,36 @@
  */
 if (!defined('NUKE_EVO') || isset($_REQUEST['dbtype'])) 
 die('Quit trying to hack my website!');
-$dbtype = 'mysqli';
-$dbtype = strtolower($dbtype);
+$nuke_dbtype = 'mysqli';
+$nuke_dbtype = strtolower($nuke_dbtype);
 
-if (file_exists(NUKE_DB_DIR . $dbtype . '.php')) {
-    require_once(NUKE_DB_DIR . $dbtype . '.php');
-} else {
+if (file_exists(NUKE_DB_DIR . $nuke_dbtype . '.php')):
+    require_once(NUKE_DB_DIR . $nuke_dbtype . '.php');
+else:
     die('Invalid Database Type Specified!');
-}
-
-$db = new sql_db($dbhost, $dbuname, $dbpass, $dbname, false);
-
-# Enable 86it Network Support START
-if ( defined('network') ):
-$db2 = new sql_db($dbhost2, $dbuname2, $dbpass2, $dbname2, false);
 endif;
-# Enable 86it Network Support END 
 
-if (!$db->db_connect_id) 
-{
-exit("<br /><br /><div align='center'><img src='images/logo.gif'><br /><br /><strong>There seems to be a problem with the MySQL server, sorry for the inconvenience.<br /><br />We should be back shortly.</strong></div>");
-}
+# connect to local database
+$nuke_db = new sql_db($nuke_dbhost, $nuke_dbuname, $nuke_dbpass, $nuke_dbname, false);
+
+# Enable 86it Developer Network Support START
+if(defined('network')):
+$network_db = new sql_db($network_dbhost, $network_dbuname, $network_dbpass, $network_dbname, false);
+endif;
+# Enable 86it Developer Network Support END 
+
+# Load local database START
+if (!$nuke_db->db_connect_id): 
+exit("<br /><br /><div align='center'><img src='images/error/question.png'>
+<br /><br /><strong>There seems to be a problem with the MariaDB server, sorry for the inconvenience.<br /><br />We should be back shortly.</strong></div>");
+endif;
+# Load local database END
 
 # Enable 86it Network Support START
-if ( defined('network') ):
-if (!$db2->db_connect_id) 
-{
-exit("<br /><br /><div align='center'><img src='images/logo.gif'><br /><br /><strong>There seems to be a problem with the MySQL server, sorry for the inconvenience.<br /><br />We should be back shortly.</strong></div>");
-}
+if(defined('network')):
+  if (!$network_db->db_connect_id): 
+  exit("<br /><br /><div align='center'><img src='images/error/question.png'>
+  <br /><br /><strong>There seems to be a problem with the MsriaDB server, sorry for the inconvenience.<br /><br />We should be back shortly.</strong></div>");
+  endif;
 endif;
 # Enable 86it Network Support END

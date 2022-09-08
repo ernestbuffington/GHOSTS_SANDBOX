@@ -8,17 +8,17 @@
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 if (!defined('NUKESENTINEL_ADMIN')) {
    die ('You can\'t access this file directly...');
 }
 
-$clearresult = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ips`");
-while($clearblock = $db->sql_fetchrow($clearresult)) {
-  $db->sql_query("DELETE FROM `".$prefix."_nsnst_blocked_ips` WHERE `ip_addr`='".$clearblock['ip_addr']."'");
-  $db->sql_query("OPTIMIZE TABLE `".$prefix."_nsnst_blocked_ips`");
+$clearresult = $nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ips`");
+while($clearblock = $nuke_db->sql_fetchrow($clearresult)) {
+  $nuke_db->sql_query("DELETE FROM `".$prefix."_nsnst_blocked_ips` WHERE `ip_addr`='".$clearblock['ip_addr']."'");
+  $nuke_db->sql_query("OPTIMIZE TABLE `".$prefix."_nsnst_blocked_ips`");
   if($ab_config['htaccess_path'] != "") {
     if($ab_config['htaccess_path'] != "") { $ipfile = file($ab_config['htaccess_path']); }
     $ipfile = implode("", $ipfile);

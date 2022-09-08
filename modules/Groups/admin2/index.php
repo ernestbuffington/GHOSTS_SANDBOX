@@ -51,13 +51,13 @@ if (!defined('ADMIN_FILE')) {
    die('Access Denied');
 }
 
-global $prefix, $db, $admdata;
+global $prefix, $nuke_db, $admdata;
 $module_name = basename(dirname(dirname(__FILE__)));
 if(is_mod_admin('Forums')) {
 
     switch($op) {
         case "Groups":
-        redirect('modules/Forums/admin/index.php?op=Groups');
+        nuke_redirect('modules/Forums/admin/index.php?op=Groups');
         break;
     }
 

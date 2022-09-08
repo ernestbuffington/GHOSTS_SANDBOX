@@ -33,14 +33,14 @@ if (!defined('MODULE_FILE')) die ("You can't access this file directly...");
 
 if (!defined('CNBYA')) die('CNBYA protection');
 
-$result  = $db->sql_query("SELECT * FROM ".$user_prefix."_users WHERE username='$username'");
-$num     = $db->sql_numrows($result);
-$usrinfo = $db->sql_fetchrow($result);
+$result  = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE username='$username'");
+$num     = $nuke_db->sql_numrows($result);
+$usrinfo = $nuke_db->sql_fetchrow($result);
 
-$result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field");
+$result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field");
 
-while ($sqlvalue = $db->sql_fetchrow($result)):
-  list($value) = $db->sql_fetchrow( $db->sql_query("SELECT value FROM ".$user_prefix."_cnbya_value WHERE fid ='$sqlvalue[fid]' AND uid = '$usrinfo[user_id]'"));
+while ($sqlvalue = $nuke_db->sql_fetchrow($result)):
+  list($value) = $nuke_db->sql_fetchrow( $nuke_db->sql_query("SELECT value FROM ".$nuke_user_prefix."_cnbya_value WHERE fid ='$sqlvalue[fid]' AND uid = '$usrinfo[user_id]'"));
   $usrinfo[$sqlvalue[name]] = $value;
 endwhile;
 
@@ -116,11 +116,11 @@ if ($num > 0):
             echo "<tr>\n<td width='30%' bgcolor='$bgcolor1'>"._WEBSITE."</td>\n<td width='70%' bgcolor='$bgcolor1'><strong>$userwebsite</strong></td>\n</tr>\n";
 
             if(is_mod_admin($module_name) OR is_user() AND $usrinfo['username'] == $username) 
-            $result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field WHERE need <> '0' ORDER BY pos");
+            $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field WHERE need <> '0' ORDER BY pos");
 			else 
-			$result = $db->sql_query("SELECT * FROM ".$user_prefix."_cnbya_field WHERE need <> '0' AND public='1' ORDER BY pos");
+			$result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field WHERE need <> '0' AND public='1' ORDER BY pos");
 
-            while ($sqlvalue = $db->sql_fetchrow($result)): 
+            while ($sqlvalue = $nuke_db->sql_fetchrow($result)): 
      
 	         if (substr($sqlvalue['name'],0,1)=='_') 
 			 eval( "\$name_exit = $sqlvalue[name];"); 
@@ -138,8 +138,8 @@ if ($num > 0):
             echo "<tr>\n<td width='30%' bgcolor='$bgcolor1'>"._YA_LASTVISIT."</td>\n<td width='70%' bgcolor='$bgcolor1'><strong>$usrinfo[user_lastvisit]</strong></td>\n</tr>\n";
             
 			$sql2 = "SELECT uname FROM ".$prefix."_session WHERE uname='$username'";
-            $result2 = $db->sql_query($sql2);
-            $row2 = $db->sql_fetchrow($result2);
+            $result2 = $nuke_db->sql_query($sql2);
+            $row2 = $nuke_db->sql_fetchrow($result2);
             $username_pm = $username;
             $active_username = $row2[uname]; // Edited PSL 12-9-04 was killing $username
             
@@ -179,8 +179,8 @@ if ($num > 0):
 			if (is_active("Journal") AND $cookie[1] != $username):  
 			
                 $sql3 = "SELECT jid FROM ".$prefix."_journal WHERE aid='$username' AND status='yes' ORDER BY pdate,jid DESC LIMIT 0,1";
-                $result3 = $db->sql_query($sq3);
-                $row3 = $db->sql_fetchrow($result3);
+                $result3 = $nuke_db->sql_query($sq3);
+                $row3 = $nuke_db->sql_fetchrow($result3);
                 $jid = $row3[jid];
             
 			    if (!empty($jid) AND isset($jid)) 
@@ -250,7 +250,7 @@ if ($num > 0):
 	    echo "<br /><div align=\"center\"><strong>"._ACCSUSPENDED."</strong></div>"; 
         
 		if($usrinfo[user_level] == -1) 
-		echo "<br /><div align=\"center\"><strong>"._ACCDELETED."</strong></div>"; 
+		echo "<br /><div align=\"center\"><strong>"._ACCNUKE_DELETED."</strong></div>"; 
 		CloseTable();
     
 	endif;

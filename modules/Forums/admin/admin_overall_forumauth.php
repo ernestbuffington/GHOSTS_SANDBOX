@@ -20,14 +20,14 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', true);
+define('IN_PHPBB2', true);
 
 //$forum_id = 2; // You could change this value unless forum ID 3 did not exist in your board
 
 if( !empty($setmodules) )
 {
 	$filename = basename(__FILE__);
-	$module['Forums']['Overall Permissions']   = $filename . '?' . POST_FORUM_URL . "=$forum_id";
+	$module['Forums']['Overall Permissions']   = $filename . '?' . NUKE_POST_FORUM_URL . "=$forum_id";
 
 	return;
 }
@@ -44,13 +44,13 @@ require('./pagestart.' . $phpEx);
 //
 //                View      Read      Post      Reply     Edit     Delete    Sticky   Announce    Vote      Poll     Global   Post Att  Download
 $simple_auth_ary = array(
-	0  => array(AUTH_ALL, AUTH_ALL, AUTH_ALL, AUTH_ALL, AUTH_REG, AUTH_REG, AUTH_MOD, AUTH_MOD, AUTH_REG, AUTH_REG, AUTH_MOD, AUTH_MOD, AUTH_ALL),
-	1  => array(AUTH_ALL, AUTH_ALL, AUTH_REG, AUTH_REG, AUTH_REG, AUTH_REG, AUTH_MOD, AUTH_MOD, AUTH_REG, AUTH_REG, AUTH_MOD, AUTH_MOD, AUTH_ALL),
-	2  => array(AUTH_REG, AUTH_REG, AUTH_REG, AUTH_REG, AUTH_REG, AUTH_REG, AUTH_MOD, AUTH_MOD, AUTH_REG, AUTH_REG, AUTH_MOD, AUTH_MOD, AUTH_REG),
-	3  => array(AUTH_ALL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_MOD, AUTH_ACL, AUTH_ACL, AUTH_MOD, AUTH_MOD, AUTH_ACL),
-	4  => array(AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_ACL, AUTH_MOD, AUTH_ACL, AUTH_ACL, AUTH_MOD, AUTH_MOD, AUTH_ACL),
-	5  => array(AUTH_ALL, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD),
-	6  => array(AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD, AUTH_MOD),
+	0  => array(NUKE_AUTH_ALL, NUKE_AUTH_ALL, NUKE_AUTH_ALL, NUKE_AUTH_ALL, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_ALL),
+	1  => array(NUKE_AUTH_ALL, NUKE_AUTH_ALL, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_ALL),
+	2  => array(NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_REG, NUKE_AUTH_REG, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_REG),
+	3  => array(NUKE_AUTH_ALL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_MOD, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_ACL),
+	4  => array(NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_MOD, NUKE_AUTH_ACL, NUKE_AUTH_ACL, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_ACL),
+	5  => array(NUKE_AUTH_ALL, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD),
+	6  => array(NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD, NUKE_AUTH_MOD),
 );
 
 $simple_auth_types = array($lang['Public'], $lang['Registered'], $lang['Registered'] . ' [' . $lang['Hidden'] . ']', $lang['Private'], $lang['Private'] . ' [' . $lang['Hidden'] . ']', $lang['Moderators'], $lang['Moderators'] . ' [' . $lang['Hidden'] . ']');
@@ -73,14 +73,14 @@ $field_names = array(
 	'auth_download' => $lang['Auth_download']
 	);
 
-$forum_auth_levels = array('ALL', 'REG', 'PRIVATE', 'MOD', 'ADMIN');
-$forum_auth_const = array(AUTH_ALL, AUTH_REG, AUTH_ACL, AUTH_MOD, AUTH_ADMIN);
+$forum_auth_levels = array('ALL', 'REG', 'PRIVATE', 'NUKE_MOD', 'NUKE_ADMIN');
+$forum_auth_const = array(NUKE_AUTH_ALL, NUKE_AUTH_REG, NUKE_AUTH_ACL, NUKE_AUTH_MOD, NUKE_AUTH_ADMIN);
 $forum_auth_images = array(
-	AUTH_ALL => 'ALL', 
-	AUTH_REG => 'REG', 
-	AUTH_ACL => 'PRIVATE', 
-	AUTH_MOD => 'MOD', 
-	AUTH_ADMIN => 'ADMIN',
+	NUKE_AUTH_ALL => 'ALL', 
+	NUKE_AUTH_REG => 'REG', 
+	NUKE_AUTH_ACL => 'PRIVATE', 
+	NUKE_AUTH_MOD => 'NUKE_MOD', 
+	NUKE_AUTH_ADMIN => 'NUKE_ADMIN',
 );
 $forum_auth_cats = array(
 	'VIEW' => 'auth_view', 
@@ -133,10 +133,10 @@ if( isset($HTTP_POST_VARS['submit']) )
 			}
 		}
 		if ($sql != '') {
-			$sql = "UPDATE " . FORUMS_TABLE . " SET $sql WHERE forum_id = $forum_id;";
-			if ( !$db->sql_query($sql) )
+			$sql = "UPDATE " . NUKE_FORUMS_TABLE . " SET $sql WHERE forum_id = $forum_id;";
+			if ( !$nuke_db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, 'Could not update auth table', '', __LINE__, __FILE__, $sql);
+				message_die(NUKE_GENERAL_ERROR, 'Could not update auth table', '', __LINE__, __FILE__, $sql);
 			}
 		}
 	}
@@ -144,28 +144,28 @@ if( isset($HTTP_POST_VARS['submit']) )
 
 //
 $sql = "SELECT cat_id, cat_title, cat_order
-	FROM " . CATEGORIES_TABLE . "
+	FROM " . NUKE_CATEGORIES_TABLE . "
 	ORDER BY cat_order";
-if( !$q_categories = $db->sql_query($sql) )
+if( !$q_categories = $nuke_db->sql_query($sql) )
 {
-	message_die(GENERAL_ERROR, "Could not query categories list", "", __LINE__, __FILE__, $sql);
+	message_die(NUKE_GENERAL_ERROR, "Could not query categories list", "", __LINE__, __FILE__, $sql);
 }
 
-if( $total_categories = $db->sql_numrows($q_categories) ) 
+if( $total_categories = $nuke_db->sql_numrows($q_categories) ) 
 {
-	$category_rows = $db->sql_fetchrowset($q_categories);
+	$category_rows = $nuke_db->sql_fetchrowset($q_categories);
 
 	$sql = "SELECT *
-		FROM " . FORUMS_TABLE . "
+		FROM " . NUKE_FORUMS_TABLE . "
 		ORDER BY cat_id, forum_order";
-	if(!$q_forums = $db->sql_query($sql))
+	if(!$q_forums = $nuke_db->sql_query($sql))
 	{
-		message_die(GENERAL_ERROR, "Could not query forums information", "", __LINE__, __FILE__, $sql);
+		message_die(NUKE_GENERAL_ERROR, "Could not query forums information", "", __LINE__, __FILE__, $sql);
 	}
 
-	if( $total_forums = $db->sql_numrows($q_forums) )
+	if( $total_forums = $nuke_db->sql_numrows($q_forums) )
 	{
-		$forum_rows = $db->sql_fetchrowset($q_forums);
+		$forum_rows = $nuke_db->sql_fetchrowset($q_forums);
 	}
 
 	//

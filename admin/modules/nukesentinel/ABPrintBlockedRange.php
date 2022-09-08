@@ -9,7 +9,7 @@
 /* By: NukeScripts Network (webmaster@nukescripts.net)  */
 /* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2008 by NukeScripts Network       */
-/* See CREDITS.txt for ALL contributors                 */
+/* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n";
@@ -21,7 +21,7 @@ include_once("themes/$theme_Sel/theme.php");
 echo "<LINK REL='StyleSheet' HREF='themes/$theme_Sel/style/style.css' TYPE='text/css' MEDIA='screen'>\n";
 echo "</head><body>\n";
 echo "<h1 align='center'>$pagetitle</h1>\n";
-$totalselected = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ranges`"));
+$totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ranges`"));
 if($totalselected > 0) {
   echo "<table summary='' align='center' border='2' cellpadding='2' cellspacing='2'>\n";
   echo "<tr>\n";
@@ -32,9 +32,9 @@ if($totalselected > 0) {
   echo "<td align='center'><strong>"._AB_EXPIRES."</strong></td>\n";
   echo "<td align='center'><strong>"._AB_REASON."</strong></td>\n";
   echo "</tr>\n";
-  $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ranges` ORDER BY `ip_lo`");
-  while($getIPs = $db->sql_fetchrow($result)) {
-    list($getIPs['reason']) = $db->sql_fetchrow($db->sql_query("SELECT `reason` FROM `".$prefix."_nsnst_blockers` WHERE `blocker`='".$getIPs['reason']."' LIMIT 0,1"));
+  $result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ranges` ORDER BY `ip_lo`");
+  while($getIPs = $nuke_db->sql_fetchrow($result)) {
+    list($getIPs['reason']) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `reason` FROM `".$prefix."_nsnst_blockers` WHERE `blocker`='".$getIPs['reason']."' LIMIT 0,1"));
     $getIPs['reason'] = str_replace("Abuse-", "", $getIPs['reason']);
     $getIPs['ip_lo_ip'] = long2ip($getIPs['ip_lo']);
     $getIPs['ip_hi_ip'] = long2ip($getIPs['ip_hi']);

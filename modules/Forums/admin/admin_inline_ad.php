@@ -18,7 +18,7 @@
 *
 ***************************************************************************/
 
-define('IN_PHPBB', 1);
+define('IN_PHPBB2', 1);
 
 if( !empty($setmodules) )
 {
@@ -58,15 +58,15 @@ if ( isset($HTTP_POST_VARS['submit']))
   //This code is modified from admin_board.php
   //Update the Database
   $sql = "SELECT *
-  FROM " . CONFIG_TABLE . "
+  FROM " . NUKE_CONFIG_TABLE . "
   WHERE config_name LIKE 'ad_%'";
-  if(!$result = $db->sql_query($sql))
+  if(!$result = $nuke_db->sql_query($sql))
   {
-    message_die(CRITICAL_ERROR, "Could not query ad config information", "", __LINE__, __FILE__, $sql);
+    message_die(NUKE_CRITICAL_ERROR, "Could not query ad config information", "", __LINE__, __FILE__, $sql);
   }
   else
   {
-    while( $row = $db->sql_fetchrow($result) )
+    while( $row = $nuke_db->sql_fetchrow($result) )
     {
       $config_name = $row['config_name'];
       $config_value = $row['config_value'];
@@ -87,12 +87,12 @@ if ( isset($HTTP_POST_VARS['submit']))
 
       if( isset($HTTP_POST_VARS['submit']) )
       {
-        $sql = "UPDATE " . CONFIG_TABLE . " SET
+        $sql = "UPDATE " . NUKE_CONFIG_TABLE . " SET
           config_value = '" . str_replace("\'", "''", htmlspecialchars($new[$config_name])) . "'
           WHERE config_name = '$config_name'";
-        if( !$db->sql_query($sql) )
+        if( !$nuke_db->sql_query($sql) )
         {
-          message_die(GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
+          message_die(NUKE_GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
         }
       }
     }
@@ -102,7 +102,7 @@ if ( isset($HTTP_POST_VARS['submit']))
     {
       $message = $lang['Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_firstpost'], "<a href=\"" . append_sid("admin_inline_ad.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
-      message_die(GENERAL_MESSAGE, $message);
+      message_die(NUKE_GENERAL_MESSAGE, $message);
     }
   }
 
@@ -115,7 +115,7 @@ else
   $who_guest = '';
   if ($board_config['ad_who'] == ALL){
     $who_all = 'checked="checked"';
-  }elseif ($board_config['ad_who'] == USER){
+  }elseif ($board_config['ad_who'] == NUKE_USER){
     $who_reg = 'checked="checked"';
   }else{
     $who_guest = 'checked="checked"';
@@ -132,38 +132,38 @@ else
   $ad_no_groups = '<option>' . $lang['exclude_none'] . '</option>';
   $ad_no_groups_current = explode(",", $board_config['ad_no_groups']);
   $sql = "SELECT group_id, group_name
-      FROM " . GROUPS_TABLE . "
+      FROM " . NUKE_GROUPS_TABLE . "
       WHERE group_single_user = 0";
 
-  if ( !($result = $db->sql_query($sql)) )
+  if ( !($result = $nuke_db->sql_query($sql)) )
   {
-    message_die(GENERAL_ERROR, 'Could not query group information', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query group information', '', __LINE__, __FILE__, $sql);
   }
 
-  while( $row = $db->sql_fetchrow($result) )
+  while( $row = $nuke_db->sql_fetchrow($result) )
   {
     $is_selected = (in_array($row['group_id'],$ad_no_groups_current)) ? 'selected="selected"' : '';
     $ad_no_groups .= '<option value="' . $row['group_id'] . '" ' . $is_selected . '>' . $row['group_name'] . '</option>';
   }
-  $db->sql_freeresult($result);
+  $nuke_db->sql_freeresult($result);
 
   //generate forum select box
   $ad_no_forums = '<option>' . $lang['exclude_none'] . '</option>';
   $ad_no_forums_current = explode(",", $board_config['ad_no_forums']);
   $sql = "SELECT forum_id, forum_name
-      FROM " . FORUMS_TABLE;
+      FROM " . NUKE_FORUMS_TABLE;
 
-  if ( !($result = $db->sql_query($sql)) )
+  if ( !($result = $nuke_db->sql_query($sql)) )
   {
-    message_die(GENERAL_ERROR, 'Could not query forum information', '', __LINE__, __FILE__, $sql);
+    message_die(NUKE_GENERAL_ERROR, 'Could not query forum information', '', __LINE__, __FILE__, $sql);
   }
 
-  while( $row = $db->sql_fetchrow($result) )
+  while( $row = $nuke_db->sql_fetchrow($result) )
   {
     $is_selected = (in_array($row['forum_id'],$ad_no_forums_current)) ? 'selected="selected"' : '';
     $ad_no_forums .= '<option value="' . $row['forum_id'] . '" ' . $is_selected . '>' . $row['forum_name'] . '</option>';
   }
-  $db->sql_freeresult($result);
+  $nuke_db->sql_freeresult($result);
 
   $template->set_filenames(array(
   "body" => "admin/inline_ad_config_body.tpl")

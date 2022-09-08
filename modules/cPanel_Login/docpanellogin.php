@@ -49,14 +49,14 @@ if ($_POST['domain'] && $_POST['username'] && $_POST['pass'] && !($_GET['failed'
 if ( isset($HTTP_GET_VARS['domain']) || isset($HTTP_POST_VARS['domain']) )
 {
 
-        $redirectlocation = $protocol.$_POST['domain'].":".$port."/login/?user=".$_POST['username']."&pass=".$_POST['pass']."&failurl=".$_POST['failurl'];
+        $nuke_redirectlocation = $protocol.$_POST['domain'].":".$port."/login/?user=".$_POST['username']."&pass=".$_POST['pass']."&failurl=".$_POST['failurl'];
 }
 else
 {
-        $redirectlocation = $protocol.$domain.":".$port."/login/?user=".$_POST['username']."&pass=".$_POST['pass']."&failurl=".$_POST['failurl'];
+        $nuke_redirectlocation = $protocol.$domain.":".$port."/login/?user=".$_POST['username']."&pass=".$_POST['pass']."&failurl=".$_POST['failurl'];
 }
 
-header ("Location: ".$redirectlocation);
+header ("Location: ".$nuke_redirectlocation);
 }
 else
 {
