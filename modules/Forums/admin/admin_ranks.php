@@ -39,7 +39,7 @@ define('IN_PHPBB2', 1);
 $phpbb2_root_path = "./../";
 require($phpbb2_root_path . 'extension.inc');
 $cancel = ( isset($HTTP_POST_VARS['cancel']) || isset($_POST['cancel']) ) ? true : false;
-$no_page_header = $cancel;
+$no_nuke_page_header = $cancel;
 require('./pagestart.' . $phpEx);
 if ($cancel)
 {
@@ -171,11 +171,11 @@ if( $mode != "" )
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
 
-                $template->set_filenames(array(
+                $template_nuke->set_filenames(array(
                         "body" => "admin/ranks_edit_body.tpl")
                 );
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
@@ -352,13 +352,13 @@ if( $mode != "" )
  		elseif( $rank_id && !$confirm)
   		{
  			// Present the confirmation screen to the user
- 			$template->set_filenames(array(
+ 			$template_nuke->set_filenames(array(
  				'body' => 'admin/confirm_body.tpl')
  			);
 
  			$hidden_fields = '<input type="hidden" name="mode" value="delete" /><input type="hidden" name="id" value="' . $rank_id . '" />';
 
- 			$template->assign_vars(array(
+ 			$template_nuke->assign_vars(array(
  				'MESSAGE_TITLE' => $lang['Confirm'],
  				'MESSAGE_TEXT' => $lang['Confirm_delete_rank'],
 
@@ -375,15 +375,15 @@ if( $mode != "" )
  		}
  	}
 
- 	$template->pparse("body");
+ 	$template_nuke->pparse("body");
 
- 	include('./page_footer_admin.'.$phpEx);
+ 	include('./nuke_page_footer_admin.'.$phpEx);
  }
 
  //
  // Show the default page
  //
- $template->set_filenames(array(
+ $template_nuke->set_filenames(array(
  	"body" => "admin/ranks_list_body.tpl")
  );
 
@@ -397,7 +397,7 @@ if( $mode != "" )
 
  $rank_rows = $nuke_db->sql_fetchrowset($result);
 
- $template->assign_vars(array(
+ $template_nuke->assign_vars(array(
  	"L_RANKS_TITLE" => $lang['Ranks_title'],
  	"L_RANKS_TEXT" => $lang['Ranks_explain'],
  	"L_RANK" => $lang['Rank_title'],
@@ -443,7 +443,7 @@ if( $mode != "" )
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
 
- 	$template->assign_block_vars("ranks", array(
+ 	$template_nuke->assign_block_vars("ranks", array(
  		"ROW_COLOR" => "#" . $row_color,
  		"ROW_CLASS" => $row_class,
  		"RANK" => $rank,
@@ -455,8 +455,8 @@ if( $mode != "" )
  	);
  }
 
- $template->pparse("body");
+ $template_nuke->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

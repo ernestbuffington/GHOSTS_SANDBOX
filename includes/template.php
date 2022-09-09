@@ -288,10 +288,10 @@ class Template {
 					$nuke_db->sql_query($sql);
 				}
 				// recache config table for cat_hierarchy 2.1.0
-				global $config;
-				if(isset($config->data) && $config->data === $board_config && isset($config->data['mod_cat_hierarchy']))
+				global $nuke_config;
+				if(isset($nuke_config->data) && $nuke_config->data === $board_config && isset($nuke_config->data['mod_cat_hierarchy']))
 				{
-					$config->read(true);
+					$nuke_config->read(true);
 				}
 			}
 		}
@@ -590,8 +590,8 @@ class Template {
 			$sub_css_file = '';
 			$sub_img_file = '';
 			$sub_img_path = '';
-			$template_path = 'templates/';
-			$template_name = substr( $this->root, strpos($this->root, $template_path) + strlen($template_path) );
+			$template_nuke_path = 'templates/';
+			$template_nuke_name = substr( $this->root, strpos($this->root, $template_nuke_path) + strlen($template_nuke_path) );
 			$real_root = $this->root;
 			if ( $board_config['version'] > '.0.5' )
 			{
@@ -614,7 +614,7 @@ class Template {
 					if ( isset($sub_templates[$key]) )
 					{
 						// get the sub-template path
-						$current_template_path = $template_path . $template_name . '/' . $sub_templates[$key]['dir'];
+						$current_template_path = $template_nuke_path . $template_nuke_name . '/' . $sub_templates[$key]['dir'];
 						$root_template_path = $real_root . '/' . $sub_templates[$key]['dir'];
 
 						// set the filename
@@ -643,7 +643,7 @@ class Template {
 					if ( isset($sub_templates[$key]) )
 					{
 						// get the sub-template path
-						$current_template_path = $template_path . $template_name . '/' . $sub_templates[$key]['dir'];
+						$current_template_path = $template_nuke_path . $template_nuke_name . '/' . $sub_templates[$key]['dir'];
 						$root_template_path = $real_root . '/' . $sub_templates[$key]['dir'];
 						if ( empty($sub_css_file) && isset($sub_templates[$key]['head_stylesheet']) && file_exists($root_template_path . '/' . $sub_templates[$key]['head_stylesheet']) )
 						{
@@ -670,7 +670,7 @@ class Template {
 					if ( isset($sub_templates[$key]) )
 					{
 						// get the sub-template path
-						$current_template_path = $template_path . $template_name . '/' . $sub_templates[$key]['dir'];
+						$current_template_path = $template_nuke_path . $template_nuke_name . '/' . $sub_templates[$key]['dir'];
 						$root_template_path = $real_root . '/' . $sub_templates[$key]['dir'];
 						if ( isset($sub_templates[$key]['imagefile']) && file_exists($root_template_path . '/' . $sub_templates[$key]['imagefile']) )
 						{
@@ -703,7 +703,7 @@ class Template {
 			if ( isset($sub_templates[$key]) )
 			{
 				// get the sub-template path
-				$current_template_path = $template_path . $template_name . '/' . $sub_templates[$key]['dir'];
+				$current_template_path = $template_nuke_path . $template_nuke_name . '/' . $sub_templates[$key]['dir'];
 				$root_template_path = $real_root . '/' . $sub_templates[$key]['dir'];
 				if ( isset($sub_templates[$key]['imagefile']) && file_exists($root_template_path . '/' . $sub_templates[$key]['imagefile']) )
 				{
@@ -730,7 +730,7 @@ class Template {
 				$key = $sub_template_key_image;
 
 				// get the sub-template path
-				$current_template_path = $template_path . $template_name . '/' . $sub_templates[$key]['dir'];
+				$current_template_path = $template_nuke_path . $template_nuke_name . '/' . $sub_templates[$key]['dir'];
 				$root_template_path = $real_root . '/' . $sub_templates[$key]['dir'];
 				if ( isset($sub_templates[$key]['imagefile']) && file_exists($root_template_path . '/' . $sub_templates[$key]['imagefile']) )
 				{
@@ -987,9 +987,9 @@ class Template {
 	function execute($filename, $code, $handle)
 	{
 		global $lang, $theme, $board_config;
-		$template = $theme['template_name'];
-		global $$template;
-		$theme_info = &$$template;
+		$template_nuke = $theme['template_name'];
+		global $$template_nuke;
+		$theme_info = &$$template_nuke;
 		if($board_config['xs_add_comments'] && $handle)
 		{
 			echo '<!-- template ', $this->files[$handle], ' start -->';
@@ -1081,7 +1081,7 @@ class Template {
 	/**
 	 * Precompile file
 	 */
-	function precompile($template, $filename)
+	function precompile($template_nuke, $filename)
 	{
 		global $precompile_num, $board_config;
 		if(empty($precompile_num))
@@ -1096,8 +1096,8 @@ class Template {
 		$old_config = $this->use_cache;
 		$old_autosave = $this->auto_compile;
 		// set temporary configuration
-		$this->root = $this->tpldir . $template;
-		$this->tpl = $template;
+		$this->root = $this->tpldir . $template_nuke;
+		$this->tpl = $template_nuke;
 		$this->use_cache = 1;
 		$this->auto_compile = 1;
 		// set filename
@@ -2330,15 +2330,15 @@ class Template {
 					}
 				}
 				$str = $this->_serialize($this->style_config);
-				$config_name = 'xs_style_' . $tpl;
-				$board_config[$config_name] = $str;
-				$sql = "INSERT INTO " . NUKE_CONFIG_TABLE . " (config_name, config_value) VALUES ('" . str_replace('\\\'', '\'\'', addslashes($config_name)) . "', '" . str_replace('\\\'', '\'\'', addslashes($str)) . "')";
+				$nuke_config_name = 'xs_style_' . $tpl;
+				$board_config[$nuke_config_name] = $str;
+				$sql = "INSERT INTO " . NUKE_CONFIG_TABLE . " (config_name, config_value) VALUES ('" . str_replace('\\\'', '\'\'', addslashes($nuke_config_name)) . "', '" . str_replace('\\\'', '\'\'', addslashes($str)) . "')";
 				$nuke_db->sql_query($sql);
 				// recache config table for cat_hierarchy 2.1.0
-				global $config;
-				if(isset($config->data) && $config->data === $board_config && isset($config->data['mod_cat_hierarchy']))
+				global $nuke_config;
+				if(isset($nuke_config->data) && $nuke_config->data === $board_config && isset($nuke_config->data['mod_cat_hierarchy']))
 				{
-					$config->read(true);
+					$nuke_config->read(true);
 				}
 				return true;
 			}
@@ -2348,10 +2348,10 @@ class Template {
 
 	function add_config($tpl)
 	{
-		$config_name = 'xs_style_' . $tpl;
+		$nuke_config_name = 'xs_style_' . $tpl;
 		global $board_config;
 		$result = false;
-		if(empty($board_config[$config_name]))
+		if(empty($board_config[$nuke_config_name]))
 		{
 			$old = $this->style_config;
 			$result = $this->_add_config($tpl, false);
@@ -2385,22 +2385,22 @@ class Template {
 					}
 				}
 				$str = $this->_serialize($this->style_config);
-				$config_name = 'xs_style_' . $tpl;
-				if(isset($board_config[$config_name]))
+				$nuke_config_name = 'xs_style_' . $tpl;
+				if(isset($board_config[$nuke_config_name]))
 				{
-					$sql = "UPDATE " . NUKE_CONFIG_TABLE . " SET config_value='" . str_replace('\\\'', '\'\'', addslashes($str)) . "' WHERE config_name='" . str_replace('\\\'', '\'\'', addslashes($config_name)) . "'";
+					$sql = "UPDATE " . NUKE_CONFIG_TABLE . " SET config_value='" . str_replace('\\\'', '\'\'', addslashes($str)) . "' WHERE config_name='" . str_replace('\\\'', '\'\'', addslashes($nuke_config_name)) . "'";
 				}
 				else
 				{
-					$sql = "INSERT INTO " . NUKE_CONFIG_TABLE . " (config_name, config_value) VALUES ('" . str_replace('\\\'', '\'\'', addslashes($config_name)) . "', '" . str_replace('\\\'', '\'\'', addslashes($str)) . "')";
+					$sql = "INSERT INTO " . NUKE_CONFIG_TABLE . " (config_name, config_value) VALUES ('" . str_replace('\\\'', '\'\'', addslashes($nuke_config_name)) . "', '" . str_replace('\\\'', '\'\'', addslashes($str)) . "')";
 				}
 				$nuke_db->sql_query($sql);
-				$board_config[$config_name] = $str;
+				$board_config[$nuke_config_name] = $str;
 				// recache config table for cat_hierarchy 2.1.0
-				global $config;
-				if(isset($config->data) && $config->data === $board_config && isset($config->data['mod_cat_hierarchy']))
+				global $nuke_config;
+				if(isset($nuke_config->data) && $nuke_config->data === $board_config && isset($nuke_config->data['mod_cat_hierarchy']))
 				{
-					$config->read(true);
+					$nuke_config->read(true);
 				}
 				return true;
 			}
@@ -2437,9 +2437,9 @@ class Template {
 		{
 			$tpl = $this->tpl;
 		}
-		$config_name = 'xs_style_' . $tpl;
+		$nuke_config_name = 'xs_style_' . $tpl;
 		global $board_config;
-		if(empty($board_config[$config_name]))
+		if(empty($board_config[$nuke_config_name]))
 		{
 			if($add_config)
 			{
@@ -2447,7 +2447,7 @@ class Template {
 			}
 			return $this->style_config;
 		}
-		$this->style_config = $this->_unserialize($board_config[$config_name]);
+		$this->style_config = $this->_unserialize($board_config[$nuke_config_name]);
 		if($tpl === $this->tpl)
 		{
 			foreach($this->style_config as $var => $value)

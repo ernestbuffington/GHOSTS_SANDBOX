@@ -117,7 +117,7 @@ function defaultDisplay()
 
 function PreviewStory($name, $address, $subject, $story, $storyext, $topic, $alanguage, $posttype) 
 {
-    global $user, $cookie, $bgcolor1, $bgcolor2, $anonymous, $prefix, $multilingual, $AllowableHTML, $nuke_db, $module_name, $tipath, $userinfo;
+    global $nuke_user, $cookie, $bgcolor1, $bgcolor2, $anonymous, $prefix, $multilingual, $AllowableHTML, $nuke_db, $module_name, $tipath, $nuke_userinfo;
 
     include_once(NUKE_BASE_DIR.'header.php');
 
@@ -162,7 +162,7 @@ function PreviewStory($name, $address, $subject, $story, $storyext, $topic, $ala
         $topicimage = stripslashes($row['topicimage']);
         $topictext = stripslashes($row['topictext']);
     }
-    themearticle($userinfo['username'], UsernameColor($userinfo['username']), '', '', $subject, $counter, $story, $topic, $topicname, $topicimage, $topictext);
+    themearticle($nuke_userinfo['username'], UsernameColor($nuke_userinfo['username']), '', '', $subject, $counter, $story, $topic, $topicname, $topicimage, $topictext);
 	echo $warning;
     //echo '<br /><br /><center><span class="tiny">'._CHECKSTORY."</span></center>\n";
     //CloseTable();
@@ -234,7 +234,7 @@ function PreviewStory($name, $address, $subject, $story, $storyext, $topic, $ala
 
 function submitStory($name, $address, $subject, $story, $storyext, $topic, $alanguage, $posttype) 
 {
-    global $user, $EditedMessage, $cookie, $anonymous, $notify, $notify_email, $notify_subject, $notify_message, $notify_from, $prefix, $nuke_db, $cache;
+    global $nuke_user, $EditedMessage, $cookie, $anonymous, $notify, $notify_email, $notify_subject, $notify_message, $notify_from, $prefix, $nuke_db, $cache;
 
     if (is_user()) 
 	{

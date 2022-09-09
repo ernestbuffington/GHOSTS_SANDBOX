@@ -309,8 +309,8 @@ $show_thanks = ($forum_thank_result['forum_thank'] == NUKE_FORUM_THANKABLE) ? NU
 # Mod: Thank You Mod v1.1.8 END
 
 # Start session management
-$userdata = session_pagestart($user_ip, $forum_id);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, $forum_id);
+init_userprefs($nuke_userdata);
 # End session management
 
 # Mod: Printer Topic v1.0.8 START
@@ -323,9 +323,9 @@ include($phpbb2_root_path.'language/lang_'.$board_config['default_lang'].'/lang_
 
 # auth check START
 $is_auth = array();
-$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata, $forum_topic_data);
+$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $nuke_userdata, $forum_topic_data);
 if( !$is_auth['auth_view'] || !$is_auth['auth_read']):
-  if(!$userdata['session_logged_in']):
+  if(!$nuke_userdata['session_logged_in']):
      $nuke_redirect = ($post_id) ? NUKE_POST_POST_URL . "=$post_id" : NUKE_POST_TOPIC_URL . "=$topic_id";
      $nuke_redirect .= ($start) ? "&start=$start" : '';
      $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", $_SERVER["SERVER_SOFTWARE"]) ) ? "Refresh: 0; URL=" : "Location: ";
@@ -338,10 +338,10 @@ endif;
 # auth check END
 
 # Base: Who viewed a topic v1.0.3 START
-$user_id=$userdata['user_id'];
-$sql='UPDATE '.NUKE_TOPIC_VIEW_TABLE.' SET topic_id="'.$topic_id.'", view_time="'.time().'", view_count=view_count+1 WHERE topic_id='.$topic_id.' AND user_id='.$user_id;
+$nuke_user_id=$nuke_userdata['user_id'];
+$sql='UPDATE '.NUKE_TOPIC_VIEW_TABLE.' SET topic_id="'.$topic_id.'", view_time="'.time().'", view_count=view_count+1 WHERE topic_id='.$topic_id.' AND user_id='.$nuke_user_id;
 if ( !$nuke_db->sql_query($sql) || !$nuke_db->sql_affectedrows()):
-    $sql = 'INSERT IGNORE INTO '.NUKE_TOPIC_VIEW_TABLE.' (topic_id, user_id, view_time,view_count) VALUES ('.$topic_id.', "'.$user_id.'", "'.time().'","1")';
+    $sql = 'INSERT IGNORE INTO '.NUKE_TOPIC_VIEW_TABLE.' (topic_id, user_id, view_time,view_count) VALUES ('.$topic_id.', "'.$nuke_user_id.'", "'.time().'","1")';
     if ( !($nuke_db->sql_query($sql)) )
     message_die(NUKE_CRITICAL_ERROR, 'Error create user view topic information ', '', __LINE__, __FILE__, $sql);
 endif;
@@ -351,7 +351,7 @@ endif;
  *  @since 2.0.9e001
  */
 $topic_author = get_author($forum_topic_data['topic_poster']);
-$author_avatar = get_user_avatar($forum_topic_data['topic_poster'], true);
+$nuke_author_avatar = get_evo_user_avatar($forum_topic_data['topic_poster'], true); # used inone place 
 
 $forum_name = $forum_topic_data['forum_name'];
 $topic_title = $forum_topic_data['topic_title'];
@@ -360,7 +360,7 @@ $reply_topic_id = $topic_id;
 $topic_time = $forum_topic_data['topic_time'];
 
 # Password check START
-if( !$is_auth['auth_mod'] && $userdata['user_level'] != NUKE_ADMIN ):
+if( !$is_auth['auth_mod'] && $nuke_userdata['user_level'] != NUKE_ADMIN ):
 	$nuke_redirect = str_replace("&amp;", "&", preg_replace('#.*?([a-z]+?\.' . $phpEx . '.*?)$#i', '\1', htmlspecialchars($HTTP_SERVER_VARS['REQUEST_URI'])));
 	if( $HTTP_POST_VARS['cancel'] ):
 		nuke_redirect(append_sid("index.$phpEx"));
@@ -390,7 +390,7 @@ if($post_id)
 $start = floor(($forum_topic_data['prev_posts'] - 1) / intval($board_config['posts_per_page'])) * intval($board_config['posts_per_page']);
 
 # Is user watching this thread?
-if($userdata['session_logged_in']):
+if($nuke_userdata['session_logged_in']):
 
     # Mod: Report Posts v1.0.2 START
     if ( isset($HTTP_GET_VARS['report']) || isset($HTTP_POST_VARS['report'])):
@@ -402,13 +402,13 @@ if($userdata['session_logged_in']):
         if(empty($comments)):
             # show form to add comments about topic
             $page_title = $lang['Report_post'] . ' - ' . $topic_title;
-            include("includes/page_header.php");
+            include("includes/nuke_page_header.php");
 
-            $template->set_filenames(array(
+            $template_nuke->set_filenames(array(
                 'body' => 'report_post.tpl')
             );
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
             'TOPIC_TITLE'    => $topic_title,
             'POST_ID'        => $post_id,
             'U_VIEW_TOPIC'   => append_sid('viewtopic.'.$phpEx.'?'.NUKE_POST_TOPIC_URL.'='.$topic_id),
@@ -418,7 +418,7 @@ if($userdata['session_logged_in']):
             'S_ACTION'       => append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$post_id))
             );
 
-            $template->pparse('body');
+            $template_nuke->pparse('body');
 
             include("includes/page_tail.php");
             exit;
@@ -431,7 +431,7 @@ if($userdata['session_logged_in']):
             if($board_config['report_email'])
             email_report($forum_id, $post_id, $topic_title, $comments);
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 'META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id").'">')
             );
 
@@ -446,7 +446,7 @@ if($userdata['session_logged_in']):
         $sql = "SELECT notify_status
                 FROM ".NUKE_TOPICS_WATCH_TABLE."
                 WHERE topic_id = '$topic_id'
-                AND user_id = ".$userdata['user_id'];
+                AND user_id = ".$nuke_userdata['user_id'];
         
 		if(!($result = $nuke_db->sql_query($sql)))
         message_die(NUKE_GENERAL_ERROR, "Could not obtain topic watch information", '', __LINE__, __FILE__, $sql);
@@ -460,12 +460,12 @@ if($userdata['session_logged_in']):
                  $sql_priority = (SQL_LAYER == "mysql" || SQL_LAYER == "mysqli") ? "LOW_PRIORITY" : '';
                  $sql = "DELETE $sql_priority FROM ".NUKE_TOPICS_WATCH_TABLE."
                  WHERE topic_id = '$topic_id'
-                 AND user_id = " . $userdata['user_id'];
+                 AND user_id = " . $nuke_userdata['user_id'];
                  
 				 if(!($result = $nuke_db->sql_query($sql)))
                  message_die(NUKE_GENERAL_ERROR, "Could not delete topic watch information", '', __LINE__, __FILE__, $sql);
               endif;
-                 $template->assign_vars(array(
+                 $template_nuke->assign_vars(array(
                  'META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start").'">'));
 
                  $message = $lang['No_longer_watching'].'<br /><br />'.sprintf($lang['Click_return_topic'], '<a 
@@ -478,7 +478,7 @@ if($userdata['session_logged_in']):
                  $sql = "UPDATE $sql_priority ".NUKE_TOPICS_WATCH_TABLE."
                  SET notify_status = '0'
                  WHERE topic_id = '$topic_id'
-                 AND user_id = ".$userdata['user_id'];
+                 AND user_id = ".$nuke_userdata['user_id'];
                  
 				 if ( !($result = $nuke_db->sql_query($sql)) )
                  message_die(NUKE_GENERAL_ERROR, "Could not update topic watch information", '', __LINE__, __FILE__, $sql);
@@ -490,11 +490,11 @@ if($userdata['session_logged_in']):
                  $is_watching_topic = TRUE;
                  $sql_priority = (SQL_LAYER == "mysql" || SQL_LAYER == "mysqli") ? "LOW_PRIORITY" : '';
                  $sql = "INSERT $sql_priority INTO ".NUKE_TOPICS_WATCH_TABLE." (user_id, topic_id, notify_status)
-                 VALUES (" . $userdata['user_id'] . ", '$topic_id', '0')";
+                 VALUES (" . $nuke_userdata['user_id'] . ", '$topic_id', '0')";
 		         if(!($result = $nuke_db->sql_query($sql)))
                  message_die(NUKE_GENERAL_ERROR, "Could not insert topic watch information", '', __LINE__, __FILE__, $sql);
               endif;
-              $template->assign_vars(array('META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start").'">'));
+              $template_nuke->assign_vars(array('META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start").'">'));
               $message = $lang['You_are_watching'].'<br /><br />'.sprintf($lang['Click_return_topic'], '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start").'">', '</a>');
                message_die(NUKE_GENERAL_MESSAGE, $message);
            else:
@@ -520,11 +520,11 @@ endif;
 # handle pagination) and alter the main query
 # Mod: Hide Mod v1.2.0 START
 $valid = FALSE;
-if($userdata['session_logged_in']): 
+if($nuke_userdata['session_logged_in']): 
 	$sql = "SELECT p.poster_id, p.topic_id
 		FROM " . NUKE_POSTS_TABLE . " p
 		WHERE p.topic_id = $topic_id
-		AND p.poster_id = " . $userdata['user_id'];
+		AND p.poster_id = " . $nuke_userdata['user_id'];
 	$resultat = $nuke_db->sql_query($sql);
 	$valid = $nuke_db->sql_numrows($resultat) ? TRUE : FALSE;
 endif;
@@ -772,7 +772,7 @@ $printer_alt = $lang['printertopic_button'];
 # Mod: Printer Topic v1.0.8 END
 
 # Set a cookie for this topic
-if( $userdata['session_logged_in']):
+if( $nuke_userdata['session_logged_in']):
    $tracking_topics = (isset($HTTP_COOKIE_VARS[$board_config['cookie_name'].'_t'])) ? unserialize($HTTP_COOKIE_VARS[$board_config['cookie_name'].'_t']) : array();
    $tracking_forums = (isset($HTTP_COOKIE_VARS[$board_config['cookie_name'].'_f'])) ? unserialize($HTTP_COOKIE_VARS[$board_config['cookie_name'].'_f']) : array();
    if(!empty($tracking_topics[$topic_id]) && !empty($tracking_forums[$forum_id]))
@@ -780,7 +780,7 @@ if( $userdata['session_logged_in']):
    elseif(!empty($tracking_topics[$topic_id]) || !empty($tracking_forums[$forum_id]))
       $topic_last_read = (!empty($tracking_topics[$topic_id])) ? $tracking_topics[$topic_id] : $tracking_forums[$forum_id];
    else
-      $topic_last_read = $userdata['user_lastvisit'];
+      $topic_last_read = $nuke_userdata['user_lastvisit'];
 
         if(count($tracking_topics) >= 150 && empty($tracking_topics[$topic_id])):
            asort($tracking_topics);
@@ -794,11 +794,11 @@ endif;
 # Load templates
 # Mod: Printer Topic v1.0.8 START
 if(isset($HTTP_GET_VARS['printertopic'])):
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'printertopic_body.tpl')
     );
 else: 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
 # Mod: Super Quick Reply v1.3.2 START
     'qrbody' => 'viewtopic_quickreply.tpl',
     'body' => 'viewtopic_body.tpl')
@@ -825,7 +825,7 @@ if( $parent_id )
 	{
 		if( $all_forums[$i]['forum_id'] == $parent_id )
 		{
-			$template->assign_vars(array(
+			$template_nuke->assign_vars(array(
 				'PARENT_FORUM'			=> 1,
 				'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL.'='.$all_forums[$i]['forum_id']),
 				'PARENT_FORUM_NAME'		=> $all_forums[$i]['forum_name'],
@@ -840,9 +840,9 @@ $page_title = $lang['View_topic'] .' - ' . $topic_title;
 
 # Mod: Printer Topic v1.0.8 START
 if(isset($HTTP_GET_VARS['printertopic']))
-include('includes/page_header_printer.'.$phpEx);
+include('includes/nuke_page_header_printer.'.$phpEx);
 else
-include("includes/page_header.$phpEx");
+include("includes/nuke_page_header.$phpEx");
 # Mod: Printer Topic v1.0.8 END
 
 # Mod: Smilies in Topic Titles v1.0.0 START
@@ -943,7 +943,7 @@ endif;
 
 # Mod: Email topic to friend v1.0.0 START
 $s_email_topic = $s_email_url = $s_email_text = '';
-if($userdata['session_logged_in']):
+if($nuke_userdata['session_logged_in']):
   $action = ($post_id) ? NUKE_POST_POST_URL."=$post_id" : NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start";
   $s_email_topic = '<a href="'.append_sid("emailtopic.$phpEx?$action").'">'.$lang['Email_topic'].'</a>';
   $s_email_url = append_sid("emailtopic.$phpEx?$action");
@@ -991,7 +991,7 @@ $pagination_variables = array(
 );
 
 # Send vars to template
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         # Mod: Printer Topic v1.0.8 START
         'START_REL' => ($start + 1),
         'FINISH_REL' => (isset($HTTP_GET_VARS['finish_rel'])? intval($HTTP_GET_VARS['finish_rel']) : ($board_config['posts_per_page'] - $start)),
@@ -1001,7 +1001,7 @@ $template->assign_vars(array(
  		 */
 		'TOPIC_AUTHOR' => $topic_author,
 		'TOPIC_URI' => append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL.'='.$forum_id),
-      	'AUTHOR_AVATAR' => $author_avatar,
+      	'AUTHOR_AVATAR' => $nuke_author_avatar,
         'FORUM_ID' => $forum_id,
         'FORUM_NAME' => $forum_name,
         'TOPIC_ID' => $topic_id,
@@ -1138,12 +1138,12 @@ if(!empty($forum_topic_data['topic_vote'])):
                 $sql = "SELECT vote_id
                         FROM ".NUKE_VOTE_USERS_TABLE."
                         WHERE vote_id = '$vote_id'
-                        AND vote_user_id = " . intval($userdata['user_id']);
+                        AND vote_user_id = " . intval($nuke_userdata['user_id']);
                 
 				if(!($result = $nuke_db->sql_query($sql)))
                 message_die(NUKE_GENERAL_ERROR, "Could not obtain user vote data for this topic", '', __LINE__, __FILE__, $sql);
 
-                $user_voted = ($row = $nuke_db->sql_fetchrow($result)) ? TRUE : 0;
+                $nuke_user_voted = ($row = $nuke_db->sql_fetchrow($result)) ? TRUE : 0;
                 $nuke_db->sql_freeresult($result);
 
                 if( isset($HTTP_GET_VARS['vote']) || isset($HTTP_POST_VARS['vote']))
@@ -1153,15 +1153,15 @@ if(!empty($forum_topic_data['topic_vote'])):
 
                 $poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < time()) ? TRUE : 0) : 0;
 
-                if ($user_voted || $view_result || $poll_expired || !$is_auth['auth_vote'] || $forum_topic_data['topic_status'] == NUKE_TOPIC_LOCKED):
+                if ($nuke_user_voted || $view_result || $poll_expired || !$is_auth['auth_vote'] || $forum_topic_data['topic_status'] == NUKE_TOPIC_LOCKED):
                 
                      # Mod: Must first vote to see Results v1.0.0 START
                      # If poll is over, allow results to be viewed by all.
-                     if (!$user_voted && !$poll_view_toggle && $view_result && !$poll_expired) 
+                     if (!$nuke_user_voted && !$poll_view_toggle && $view_result && !$poll_expired) 
                      message_die(NUKE_GENERAL_ERROR, $lang['must_first_vote']);
                      # Mod: Must first vote to see Results v1.0.0 START
 
-                     $template->set_filenames(array(
+                     $template_nuke->set_filenames(array(
                                 'pollbox' => 'viewtopic_poll_result.tpl')
                      );
 
@@ -1185,7 +1185,7 @@ if(!empty($forum_topic_data['topic_vote'])):
                        if(count($orig_word))
                        $vote_info[$i]['vote_option_text'] = preg_replace($orig_word, $replacement_word, $vote_info[$i]['vote_option_text']);
 
-                      $template->assign_block_vars("poll_option", array(
+                      $template_nuke->assign_block_vars("poll_option", array(
                        
 					   # Mod: Smilies in Topic Titles v1.0.0 START
                       'POLL_OPTION_CAPTION' => smilies_pass($vote_info[$i]['vote_option_text']),
@@ -1206,7 +1206,7 @@ if(!empty($forum_topic_data['topic_vote'])):
                       ));
                     endfor;
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
                                 'L_TOTAL_VOTES' => $lang['Total_votes'],
                                 'TOTAL_VOTES' => $vote_results_sum)
                         );
@@ -1214,7 +1214,7 @@ if(!empty($forum_topic_data['topic_vote'])):
                 
                 else:
                 
-                        $template->set_filenames(array(
+                        $template_nuke->set_filenames(array(
                                 'pollbox' => 'viewtopic_poll_ballot.tpl')
                         );
 
@@ -1222,17 +1222,17 @@ if(!empty($forum_topic_data['topic_vote'])):
                           if ( count($orig_word) )
                           $vote_info[$i]['vote_option_text'] = preg_replace($orig_word, $replacement_word, $vote_info[$i]['vote_option_text']);
 
-                          $template->assign_block_vars("poll_option", array(
+                          $template_nuke->assign_block_vars("poll_option", array(
                                  'POLL_OPTION_ID' => $vote_info[$i]['vote_option_id'],
                                  'POLL_OPTION_CAPTION' => $vote_info[$i]['vote_option_text'])
                           );
                         endfor;
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
                                 'L_SUBMIT_VOTE' => $lang['Submit_vote'],
 
                                  # Mod: Must first vote to see Results v1.0.0 START
-                                'L_VIEW_RESULTS' => (!$user_voted && $poll_view_toggle) ? $lang['View_results'] : '',
+                                'L_VIEW_RESULTS' => (!$nuke_user_voted && $poll_view_toggle) ? $lang['View_results'] : '',
                                  # Mod: Must first vote to see Results v1.0.0 END
 
                                 'U_VIEW_RESULTS' => append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order&amp;vote=viewresult"))
@@ -1244,16 +1244,16 @@ if(!empty($forum_topic_data['topic_vote'])):
                 if(count($orig_word))
                 $vote_title = preg_replace($orig_word, $replacement_word, $vote_title);
 
-                $s_hidden_fields .= '<input type="hidden" name="sid" value="'.$userdata['session_id'].'" />';
+                $s_hidden_fields .= '<input type="hidden" name="sid" value="'.$nuke_userdata['session_id'].'" />';
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         'POLL_QUESTION' => $vote_title,
 
                         'S_HIDDEN_FIELDS' => $s_hidden_fields,
                         'S_POLL_ACTION' => append_sid("posting.$phpEx?mode=vote&amp;".NUKE_POST_TOPIC_URL."=$topic_id"))
                 );
 
-                $template->assign_var_from_handle('POLL_DISPLAY', 'pollbox');
+                $template_nuke->assign_var_from_handle('POLL_DISPLAY', 'pollbox');
         endif;
 endif;
 
@@ -1302,7 +1302,7 @@ if ($show_thanks == NUKE_FORUM_THANKABLE):
 		$thanker_profile[$i] = append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$thanker_id[$i]");   
 		$thanks .= '<a href="'.$thanker_profile[$i].'">'.UsernameColor($thanker_name[$i]).'</a> ('.$thanks_date[$i].'), ';
 		
-		if ($userdata['user_id'] == $thanksrow[$i]['user_id'])
+		if ($nuke_userdata['user_id'] == $thanksrow[$i]['user_id'])
 	    $thanked = TRUE;
 	endfor;
 
@@ -1321,9 +1321,9 @@ if ($show_thanks == NUKE_FORUM_THANKABLE):
 	$thanks .= '<br /><br />'.$lang['thanks_to'].' '.UsernameColor($autor_name).' '.$lang['thanks_end'];
 
 	# Create button switch
-	if ($userdata['user_id'] != $autor['0']['user_id'] && !$thanked):
+	if ($nuke_userdata['user_id'] != $autor['0']['user_id'] && !$thanked):
 	
-		$template->assign_block_vars('thanks_button', array(
+		$template_nuke->assign_block_vars('thanks_button', array(
 			 'THANK_IMG' => $thank_img,
 			 'U_THANK_TOPIC' => $thank_topic_url,
 			 'L_THANK_TOPIC' => $thank_alt
@@ -1336,8 +1336,8 @@ endif;
 
 # Mod: Super Quick Reply v1.3.2 START
 $sqr_last_page = ((floor( $start / intval($board_config['posts_per_page'])) + 1) == ceil($total_replies / intval($board_config['posts_per_page'])));
-if($userdata['user_id'] != NUKE_ANONYMOUS)
-$sqr_user_display = (bool)(($userdata['user_show_quickreply']==2) ? $sqr_last_page : $userdata['user_show_quickreply']);
+if($nuke_userdata['user_id'] != NUKE_ANONYMOUS)
+$sqr_user_display = (bool)(($nuke_userdata['user_show_quickreply']==2) ? $sqr_last_page : $nuke_userdata['user_show_quickreply']);
 else
 $sqr_user_display = (bool)(($board_config['anonymous_show_sqr']==2) ? $sqr_last_page : $board_config['anonymous_show_sqr']);
 if(($board_config['allow_quickreply'] != 0) 
@@ -1408,7 +1408,7 @@ for($i = 0; $i < $total_posts; $i++):
 
     # Mod: View/Disable Avatars/Signatures v1.1.2 START 
     # Mod: Display Poster Information Once v2.0.0 START
-    if($postrow[$i]['user_avatar_type'] && $poster_id != NUKE_ANONYMOUS && $postrow[$i]['user_allowavatar'] && $userdata['user_showavatars'] && !$leave_out['show_avatar_once']):
+    if($postrow[$i]['user_avatar_type'] && $poster_id != NUKE_ANONYMOUS && $postrow[$i]['user_allowavatar'] && $nuke_userdata['user_showavatars'] && !$leave_out['show_avatar_once']):
     # Mod: View/Disable Avatars/Signatures v1.1.2 END 
     # Mod: Display Poster Information Once v2.0.0 END
     
@@ -1457,7 +1457,7 @@ for($i = 0; $i < $total_posts; $i++):
         # Mod: Default avatar v1.1.0 END
         
         # Define the little post icon
-        if($userdata['session_logged_in'] && $postrow[$i]['post_time'] > $userdata['user_lastvisit'] && $postrow[$i]['post_time'] > $topic_last_read):
+        if($nuke_userdata['session_logged_in'] && $postrow[$i]['post_time'] > $nuke_userdata['user_lastvisit'] && $postrow[$i]['post_time'] > $topic_last_read):
             $mini_post_img = $images['icon_minipost_new'];
             $mini_post_alt = $lang['New_post'];
         else:
@@ -1472,17 +1472,17 @@ for($i = 0; $i < $total_posts; $i++):
         # Mod: Gender v1.2.6 END
 
         # Mod: Multiple Ranks And Staff View v2.0.3 START
-		$user_ranks = generate_ranks($postrow[$i], $ranks_sql);
-		$user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
-		$user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'].'<br />');
-		$user_rank_02 = ($user_ranks['rank_02'] == '') ? '' : ($user_ranks['rank_02'] . '<br />');
-		$user_rank_02_img = ($user_ranks['rank_02_img'] == '') ? '' : ($user_ranks['rank_02_img'].'<br />');
-		$user_rank_03 = ($user_ranks['rank_03'] == '') ? '' : ($user_ranks['rank_03'] . '<br />');
-		$user_rank_03_img = ($user_ranks['rank_03_img'] == '') ? '' : ($user_ranks['rank_03_img'].'<br />');
-		$user_rank_04 = ($user_ranks['rank_04'] == '') ? '' : ($user_ranks['rank_04'] . '<br />');
-		$user_rank_04_img = ($user_ranks['rank_04_img'] == '') ? '' : ($user_ranks['rank_04_img'].'<br />');
-		$user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . '<br />');
-		$user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'].'<br />');
+		$nuke_user_ranks = generate_ranks($postrow[$i], $ranks_sql);
+		$nuke_user_rank_01 = ($nuke_user_ranks['rank_01'] == '') ? '' : ($nuke_user_ranks['rank_01'] . '<br />');
+		$nuke_user_rank_01_img = ($nuke_user_ranks['rank_01_img'] == '') ? '' : ($nuke_user_ranks['rank_01_img'].'<br />');
+		$nuke_user_rank_02 = ($nuke_user_ranks['rank_02'] == '') ? '' : ($nuke_user_ranks['rank_02'] . '<br />');
+		$nuke_user_rank_02_img = ($nuke_user_ranks['rank_02_img'] == '') ? '' : ($nuke_user_ranks['rank_02_img'].'<br />');
+		$nuke_user_rank_03 = ($nuke_user_ranks['rank_03'] == '') ? '' : ($nuke_user_ranks['rank_03'] . '<br />');
+		$nuke_user_rank_03_img = ($nuke_user_ranks['rank_03_img'] == '') ? '' : ($nuke_user_ranks['rank_03_img'].'<br />');
+		$nuke_user_rank_04 = ($nuke_user_ranks['rank_04'] == '') ? '' : ($nuke_user_ranks['rank_04'] . '<br />');
+		$nuke_user_rank_04_img = ($nuke_user_ranks['rank_04_img'] == '') ? '' : ($nuke_user_ranks['rank_04_img'].'<br />');
+		$nuke_user_rank_05 = ($nuke_user_ranks['rank_05'] == '') ? '' : ($nuke_user_ranks['rank_05'] . '<br />');
+		$nuke_user_rank_05_img = ($nuke_user_ranks['rank_05_img'] == '') ? '' : ($nuke_user_ranks['rank_05_img'].'<br />');
         # Mod: Multiple Ranks And Staff View v2.0.3 END
 
         {
@@ -1498,7 +1498,7 @@ for($i = 0; $i < $total_posts; $i++):
         # Handle anon users posting with usernames
         if ( $poster_id == NUKE_ANONYMOUS && !empty($postrow[$i]['post_username'])):
                 $poster = $postrow[$i]['post_username'];
-                $user_rank_01 = $lang['Guest'] . '<br />';
+                $nuke_user_rank_01 = $lang['Guest'] . '<br />';
         endif;
 
         $temp_url = '';
@@ -1583,7 +1583,7 @@ for($i = 0; $i < $total_posts; $i++):
 				  src="'.$images['icon_online'].'" alt="'.sprintf($lang['is_online'], $poster).'" title="'.sprintf($lang['is_online'], $poster).'" /></a>&nbsp;';
                   
 				  $online_status = '<a href="'.append_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_online'], $poster).'"'.$online_color.'>'.$lang['Online'].'</a>';
-              elseif($is_auth['auth_mod'] || $userdata['user_id'] == $poster_id):
+              elseif($is_auth['auth_mod'] || $nuke_userdata['user_id'] == $poster_id):
                 $online_status_img = '<a href="'.append_sid("viewonline.$phpEx").'"><img 
 				src="'.$images['icon_hidden'].'" alt="'.sprintf($lang['is_hidden'], $poster).'" title="'.sprintf($lang['is_hidden'], $poster).'" /></a>&nbsp;';
                 
@@ -1640,7 +1640,7 @@ for($i = 0; $i < $total_posts; $i++):
 		$search = '<a href="'.$temp_url.'">'.sprintf($lang['Search_user_posts'], $postrow[$i]['username']).'</a>';
         $search_alt = sprintf($lang['Search_user_posts'], $postrow[$i]['username']);
 
-        if(($userdata['user_id'] == $poster_id && $is_auth['auth_edit']) || $is_auth['auth_mod']):
+        if(($nuke_userdata['user_id'] == $poster_id && $is_auth['auth_edit']) || $is_auth['auth_mod']):
           $temp_url = append_sid("posting.$phpEx?mode=editpost&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
           $edit_url = $temp_url;
           $edit_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_edit'].'" alt="'.$lang['Edit_delete_post'].'" title="'.$lang['Edit_delete_post'].'" border="0" /></a>';
@@ -1670,7 +1670,7 @@ for($i = 0; $i < $total_posts; $i++):
           $ip = '';
           $ip_alt = '';
 
-           if($userdata['user_id'] == $poster_id && $is_auth['auth_delete'] && $forum_topic_data['topic_last_post_id'] == $postrow[$i]['post_id']):
+           if($nuke_userdata['user_id'] == $poster_id && $is_auth['auth_delete'] && $forum_topic_data['topic_last_post_id'] == $postrow[$i]['post_id']):
              $temp_url = append_sid("posting.$phpEx?mode=delete&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
              $delpost_url = $temp_url;
              $delpost_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_delpost'].'" alt="'.$lang['Delete_post'].'" title="'.$lang['Delete_post'].'" border="0" /></a>';
@@ -1697,19 +1697,19 @@ for($i = 0; $i < $total_posts; $i++):
         $bbcode_uid = $postrow[$i]['bbcode_uid'];
 
         # Mod: View/Disable Avatars/Signatures v1.1.2 START
-        if($userdata['user_showsignatures'])
-        $user_sig = ($postrow[$i]['enable_sig'] && !empty($postrow[$i]['user_sig']) && $board_config['allow_sig'] ) ? $postrow[$i]['user_sig'] : '';
+        if($nuke_userdata['user_showsignatures'])
+        $nuke_user_sig = ($postrow[$i]['enable_sig'] && !empty($postrow[$i]['user_sig']) && $board_config['allow_sig'] ) ? $postrow[$i]['user_sig'] : '';
         # Mod: View/Disable Avatars/Signatures v1.1.2 END
 
-        $user_sig_bbcode_uid = $postrow[$i]['user_sig_bbcode_uid'];
+        $nuke_user_sig_bbcode_uid = $postrow[$i]['user_sig_bbcode_uid'];
 
         # Note! The order used for parsing the message _is_ important, moving things around could break any
         # output
 
         # Mod: Display Poster Information Once v2.0.0 START
 	    if($leave_out['show_sig_once']):
-		  $user_sig = "&nbsp;";		    # Leaves out signature
-		  $user_sig_image = "&nbsp;";	# Leaves out sig image (for Signature panel)
+		  $nuke_user_sig = "&nbsp;";		    # Leaves out signature
+		  $nuke_user_sig_image = "&nbsp;";	# Leaves out sig image (for Signature panel)
 	    endif;
 	 
 	    if($leave_out['show_rank_once']): 
@@ -1723,18 +1723,18 @@ for($i = 0; $i < $total_posts; $i++):
         
         # If the board has HTML off but the post has HTML
         # on then we process it, else leave it alone
-        if(!$board_config['allow_html'] || !$userdata['user_allowhtml']):
-           if ( !empty($user_sig) )
-             $user_sig = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $user_sig);
+        if(!$board_config['allow_html'] || !$nuke_userdata['user_allowhtml']):
+           if ( !empty($nuke_user_sig) )
+             $nuke_user_sig = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $nuke_user_sig);
            if ( $postrow[$i]['enable_html'] )
               $message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
         endif;
 
         # Mod: Hide Mod v1.2.0 START
         # Parse message and/or sig for BBCode if reqd
-        if($user_sig != '' && $user_sig_bbcode_uid != ''):
-		  $user_sig = ($board_config['allow_bbcode']) ? bbencode_second_pass($user_sig, $user_sig_bbcode_uid) : preg_replace("/\:$user_sig_bbcode_uid/si", '', $user_sig);
-		  $user_sig = bbencode_third_pass($user_sig, $user_sig_bbcode_uid, $valid);
+        if($nuke_user_sig != '' && $nuke_user_sig_bbcode_uid != ''):
+		  $nuke_user_sig = ($board_config['allow_bbcode']) ? bbencode_second_pass($nuke_user_sig, $nuke_user_sig_bbcode_uid) : preg_replace("/\:$nuke_user_sig_bbcode_uid/si", '', $nuke_user_sig);
+		  $nuke_user_sig = bbencode_third_pass($nuke_user_sig, $nuke_user_sig_bbcode_uid, $valid);
 		endif;
 	
 		if($bbcode_uid != ''):
@@ -1743,15 +1743,15 @@ for($i = 0; $i < $total_posts; $i++):
 		endif;
         # Mod: Hide Mod v1.2.0 END
 
-        if(!empty($user_sig))
-        $user_sig = make_clickable($user_sig);
+        if(!empty($nuke_user_sig))
+        $nuke_user_sig = make_clickable($nuke_user_sig);
         
         $message = make_clickable($message);
 
         # Parse smilies
         if($board_config['allow_smilies']):
-          if($postrow[$i]['user_allowsmile'] && !empty($user_sig))
-            $user_sig = smilies_pass($user_sig);
+          if($postrow[$i]['user_allowsmile'] && !empty($nuke_user_sig))
+            $nuke_user_sig = smilies_pass($nuke_user_sig);
           if ( $postrow[$i]['enable_smilies'] )
             $message = smilies_pass($message);
         endif;
@@ -1767,9 +1767,9 @@ for($i = 0; $i < $total_posts; $i++):
         
           $post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
 
-          if(!empty($user_sig)):
-             /*$user_sig = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' 
-			 . $user_sig . '<'), 1, -1));*/
+          if(!empty($nuke_user_sig)):
+             /*$nuke_user_sig = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' 
+			 . $nuke_user_sig . '<'), 1, -1));*/
           endif;
           
 		  $message = preg_replace($orig_word, $replacement_word, $message);
@@ -1788,17 +1788,17 @@ for($i = 0; $i < $total_posts; $i++):
 
         # Replace newlines (we use this rather than nl2br because
         # till recently it wasn't XHTML compliant)
-        if(!empty($user_sig)):
+        if(!empty($nuke_user_sig)):
           # Mod: Force Word Wrapping v1.0.16 START
-          $user_sig = word_wrap_pass($user_sig);
+          $nuke_user_sig = word_wrap_pass($nuke_user_sig);
           # Mod: Force Word Wrapping v1.0.16 END
 
           # Mod: Advance Signature Divider Control v1.0.0 START
           # Mod: Bottom aligned signature v1.2.0 START
           if ($board_config['sig_line'] == "<hr />" || $board_config['sig_line'] == "<hr />") 
-          $user_sig = '<br />' . $board_config['sig_line']. str_replace("\n", "\n<br />\n", $user_sig);
+          $nuke_user_sig = '<br />' . $board_config['sig_line']. str_replace("\n", "\n<br />\n", $nuke_user_sig);
 		  else 
-          $user_sig = $board_config['sig_line'].'<br />' . str_replace("\n", "\n<br />\n", $user_sig);
+          $nuke_user_sig = $board_config['sig_line'].'<br />' . str_replace("\n", "\n<br />\n", $nuke_user_sig);
           # Mod: Advance Signature Divider Control v1.0.0 END
           # Mod: Bottom aligned signature v1.2.0 END
         endif;
@@ -1888,8 +1888,8 @@ for($i = 0; $i < $total_posts; $i++):
         if ($display_ad):
           $display_ad = ($board_config['ad_who'] == ALL) 
 		  || ($board_config['ad_who'] == NUKE_ANONYMOUS 
-		  && $userdata['user_id'] == NUKE_ANONYMOUS) 
-		  || ($board_config['ad_who'] == NUKE_USER && $userdata['user_id'] != NUKE_ANONYMOUS);
+		  && $nuke_userdata['user_id'] == NUKE_ANONYMOUS) 
+		  || ($board_config['ad_who'] == NUKE_USER && $nuke_userdata['user_id'] != NUKE_ANONYMOUS);
           
 		  $ad_no_forums = explode(",", $board_config['ad_no_forums']);
         
@@ -1904,7 +1904,7 @@ for($i = 0; $i < $total_posts; $i++):
               $ad_no_groups = explode(",", $board_config['ad_no_groups']);
               $sql = "SELECT 1
                   FROM " . NUKE_USER_GROUP_TABLE . "
-                  WHERE user_id=".$userdata['user_id']." AND (group_id=0";
+                  WHERE user_id=".$nuke_userdata['user_id']." AND (group_id=0";
 		      for ($a=0; $a < count($ad_no_groups); $a++):
               $sql .= " OR group_id=".$ad_no_groups[$a];
               endfor;
@@ -1915,7 +1915,7 @@ for($i = 0; $i < $total_posts; $i++):
               $display_ad = false;
           endif;
 		  
-		  if ($userdata['user_id'] != NUKE_ANONYMOUS && ($board_config['ad_post_threshold'] != '') && ($userdata['user_posts'] >= $board_config['ad_post_threshold']))
+		  if ($nuke_userdata['user_id'] != NUKE_ANONYMOUS && ($board_config['ad_post_threshold'] != '') && ($nuke_userdata['user_posts'] >= $board_config['ad_post_threshold']))
           $display_ad = false;
         
 		endif;
@@ -1946,7 +1946,7 @@ for($i = 0; $i < $total_posts; $i++):
            if(!$meta['allow_html'])
            $value = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $value);
 
-           if($meta['allow_bbcode'] && $user_sig_bbcode_uid != '')
+           if($meta['allow_bbcode'] && $nuke_user_sig_bbcode_uid != '')
            $value = bbencode_second_pass($value, $profiledata['xdata_bbcode']);
            if($meta['allow_bbcode'])
            $value = make_clickable($value);
@@ -1955,7 +1955,7 @@ for($i = 0; $i < $total_posts; $i++):
 
            # Mod: XData Date Conversion v0.1.1 START
            if($meta['field_type'] == 'date')
-      	   $value = create_date($userdata['user_dateformat'], $value, $userdata['user_timezone']);
+      	   $value = create_date($nuke_userdata['user_dateformat'], $value, $nuke_userdata['user_timezone']);
            # Mod: XData Date Conversion v0.1.1 END
 
            $value = str_replace("\n", "\n<br />\n", $value);
@@ -1975,7 +1975,7 @@ for($i = 0; $i < $total_posts; $i++):
        # Mod: Super Quick Reply v1.3.2 END
 
        # Mod: Report Posts v1.0.2 START
-       if($userdata['session_logged_in']):
+       if($nuke_userdata['session_logged_in']):
           $report_url = append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$postrow[$i]['post_id']);
           $report_img = '<a href="'.append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$postrow[$i]['post_id']).'"><img 
 		  src="'.$images['icon_report'].'" border="0" alt="'.$lang['Report_post'].'" title="'.$lang['Report_post'].'" /></a>';
@@ -1987,12 +1987,12 @@ for($i = 0; $i < $total_posts; $i++):
        endif;
 
        # Mod: Force Topic Read v1.0.3 START
-	   if((!$userdata['user_ftr']) && ($userdata['user_id'] != NUKE_ANONYMOUS)):
+	   if((!$nuke_userdata['user_ftr']) && ($nuke_userdata['user_id'] != NUKE_ANONYMOUS)):
 		  # They Have Clicked The Link & Are Viewing The Post, So Set Them As Read
 		  if ($HTTP_GET_VARS['directed'] == 'ftr'):
 			$q = "UPDATE ". NUKE_USERS_TABLE ."
 				  SET user_ftr = '1', user_ftr_time = '".time()."'
-				  WHERE user_id = '".$userdata['user_id']."'";
+				  WHERE user_id = '".$nuke_userdata['user_id']."'";
 			$nuke_db->sql_query($q);
 		  else: # They Have Not Clicked The Link Yet
 			include_once($phpbb2_root_path.'language/lang_'.$board_config['default_lang'].'/lang_ftr.'.$phpEx);		
@@ -2009,13 +2009,13 @@ for($i = 0; $i < $total_posts; $i++):
 				$r 		= $nuke_db->sql_query($q);
 				$row 	= $nuke_db->sql_fetchrow($r);
 				$topic_title = $row['topic_title'];
-				$msg = str_replace('*u*', $userdata['username'], $force_message);
+				$msg = str_replace('*u*', $nuke_userdata['username'], $force_message);
 				$msg = str_replace('*t*', $topic_title, $msg);
 				$msg = str_replace('*l*', '<a href="'.append_sid('viewtopic.'.$phpEx.'?'.NUKE_POST_TOPIC_URL.'='.$topic.'&amp;directed=ftr').'" target="_self">'.$lang['ftr_here'].'</a>', $msg);
 				# New Only
 				if($who == 1):
 					# They Have Joined Since FTR Was Installed
-					if ($userdata['user_regdate'] > $installed):
+					if ($nuke_userdata['user_regdate'] > $installed):
 					message_die(NUKE_GENERAL_MESSAGE, $msg);
 					endif;
 				else: # New & Old
@@ -2027,7 +2027,7 @@ for($i = 0; $i < $total_posts; $i++):
        # Mod: Force Topic Read v1.0.3 END
 
        # Mod: XData v1.0.3 START
-        $template->assign_block_vars('postrow',array_merge( array(
+        $template_nuke->assign_block_vars('postrow',array_merge( array(
                 'REPORT_URL' => $report_url,
                 'REPORT_IMG' => $report_img,
                 'REPORT_ALT' => $report_alt,
@@ -2045,16 +2045,16 @@ for($i = 0; $i < $total_posts; $i++):
                 # Mod: Gender v1.2.6 END
 
                 # Mod: Multiple Ranks And Staff View v2.0.3 START
-        		'USER_RANK_01' => $user_rank_01,
-        		'USER_RANK_01_IMG' => $user_rank_01_img,
-        		'USER_RANK_02' => $user_rank_02,
-        		'USER_RANK_02_IMG' => $user_rank_02_img,
-        		'USER_RANK_03' => $user_rank_03,
-        		'USER_RANK_03_IMG' => $user_rank_03_img,
-        		'USER_RANK_04' => $user_rank_04,
-        		'USER_RANK_04_IMG' => $user_rank_04_img,
-        		'USER_RANK_05' => $user_rank_05,
-        		'USER_RANK_05_IMG' => $user_rank_05_img,
+        		'USER_RANK_01' => $nuke_user_rank_01,
+        		'USER_RANK_01_IMG' => $nuke_user_rank_01_img,
+        		'USER_RANK_02' => $nuke_user_rank_02,
+        		'USER_RANK_02_IMG' => $nuke_user_rank_02_img,
+        		'USER_RANK_03' => $nuke_user_rank_03,
+        		'USER_RANK_03_IMG' => $nuke_user_rank_03_img,
+        		'USER_RANK_04' => $nuke_user_rank_04,
+        		'USER_RANK_04_IMG' => $nuke_user_rank_04_img,
+        		'USER_RANK_05' => $nuke_user_rank_05,
+        		'USER_RANK_05_IMG' => $nuke_user_rank_05_img,
                 # Mod: Multiple Ranks And Staff View v2.0.3 END
 
                 'POSTER_JOINED' => $poster_joined,
@@ -2091,7 +2091,7 @@ for($i = 0; $i < $total_posts; $i++):
                 'POST_SUBJECT' => $post_subject,
                 'MESSAGE' => $message,
                 // 'MESSAGE' => $postrow[$i]['post_text'],
-                'SIGNATURE' => $user_sig,
+                'SIGNATURE' => $nuke_user_sig,
                 'EDITED_MESSAGE' => $l_edited_by,
 
                 'MINI_POST_IMG' => $mini_post_img,
@@ -2161,16 +2161,16 @@ for($i = 0; $i < $total_posts; $i++):
 		# Mod: Inline Banner Ad v1.2.3 START
         if ($display_ad):
           if (!$board_config['ad_old_style'] && $display_ad)
-            $template->assign_block_vars('postrow.switch_ad',array());
+            $template_nuke->assign_block_vars('postrow.switch_ad',array());
           else
-            $template->assign_block_vars('postrow.switch_ad_style2',array());
+            $template_nuke->assign_block_vars('postrow.switch_ad_style2',array());
         endif;
 		# Mod: Inline Banner Ad v1.2.3 END
 
 
         # Mod: Thank You Mod v1.1.8 START
 		if(($show_thanks == NUKE_FORUM_THANKABLE) && ($i == 0) && ($current_page == 1) && ($total_thank > 0)):
-			$template->assign_block_vars('postrow.thanks', array(
+			$template_nuke->assign_block_vars('postrow.thanks', array(
 			'THANKFUL' => $lang['thankful'],
 			'THANKED' => $lang['thanked'],
 			'HIDE' => $lang['hide'],
@@ -2185,8 +2185,8 @@ for($i = 0; $i < $total_posts; $i++):
         # Mod: Log Actions Mod - Topic View v2.0.0 START
 
         # Mod: View/Disable Avatars/Signatures v1.1.2 START
-	    if ($userdata['user_showavatars'])
-	    $template->assign_block_vars('postrow.switch_showavatars', array());
+	    if ($nuke_userdata['user_showavatars'])
+	    $template_nuke->assign_block_vars('postrow.switch_showavatars', array());
         # Mod: View/Disable Avatars/Signatures v1.1.2 START
 
 
@@ -2248,7 +2248,7 @@ for($i = 0; $i < $total_posts; $i++):
       $parent_forum = (isset($moved['forumparent'])) ? $moved['forumparent'] : '';
       $target_forum = (isset($moved['forumtarget'])) ? $moved['forumtarget'] : '';
 
-      if(allow_log_view($userdata['user_level'])): 
+      if(allow_log_view($nuke_userdata['user_level'])): 
         if($moved_type == 'move')
             $move_message = sprintf($lang['Move_move_message'], $move_date, $mover, $parent_forum, $target_forum);
 	    if($moved_type == 'lock')
@@ -2260,13 +2260,13 @@ for($i = 0; $i < $total_posts; $i++):
 	    if($moved_type == 'edit')
             $move_message = sprintf($lang['Move_edit_message'], $move_date, $mover);
 	    if(isset($moved) && ($moved['last_post_id'] == $postrow[$i]['post_id'] && show_log($moved_type)))
-            $template->assign_block_vars('postrow.move_message', array(
+            $template_nuke->assign_block_vars('postrow.move_message', array(
                 'MOVE_MESSAGE' => $move_message)
             );
         else
-            $template->assign_block_vars('postrow.switch_spacer', array());
+            $template_nuke->assign_block_vars('postrow.switch_spacer', array());
       else:
-      $template->assign_block_vars('postrow.switch_spacer', array());
+      $template_nuke->assign_block_vars('postrow.switch_spacer', array());
      endif;
 
 # Mod: Log Actions Mod - Topic View v2.0.0 END
@@ -2278,7 +2278,7 @@ for($i = 0; $i < $total_posts; $i++):
      # Mod: XData v1.0.3 START
      @reset($xd_block);
      while(list($code_name, $value) = each($xd_block)):
-         $template->assign_block_vars( 'postrow.xdata', array(
+         $template_nuke->assign_block_vars( 'postrow.xdata', array(
              'NAME' => $xd_meta[$code_name]['field_name'],
              'VALUE' => $value
              )
@@ -2287,9 +2287,9 @@ for($i = 0; $i < $total_posts; $i++):
      @reset($xd_meta);
      while(list($code_name, $value) = each($xd_meta)):
        if (isset($xd_root[$code_name]))
-       $template->assign_block_vars( "postrow.switch_$code_name", array() );
+       $template_nuke->assign_block_vars( "postrow.switch_$code_name", array() );
        else
-       $template->assign_block_vars( "postrow.switch_no_$code_name", array() );
+       $template_nuke->assign_block_vars( "postrow.switch_no_$code_name", array() );
      endwhile;
      # Mod: XData v1.0.3 START
 
@@ -2305,7 +2305,7 @@ if(!isset($HTTP_GET_VARS['printertopic'])):
 
    # Mod: Super Quick Reply v1.3.2 START
    if($show_qr_form):
-    $template->assign_block_vars('switch_quick_reply', array());
+    $template_nuke->assign_block_vars('switch_quick_reply', array());
     include("includes/viewtopic_quickreply.$phpEx");
    endif;
    # Mod: Super Quick Reply v1.3.2 START
@@ -2316,7 +2316,7 @@ include(NUKE_INCLUDE_DIR.'/functions_related.'.$phpEx);
 get_related_topics($topic_id);
 # Mod: Related Topics v0.12 END
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 # Mod: Printer Topic v1.0.8 START
 if(isset($HTTP_GET_VARS['printertopic']))

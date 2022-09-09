@@ -131,16 +131,16 @@ else
  ******************************************************/
     while( $row = $nuke_db->sql_fetchrow($result) )
     {
-        $config_name = $row['config_name'];
-        $config_value = $row['config_value'];
-        $default_config[$config_name] = isset($HTTP_POST_VARS['submit']) ? str_replace("'", "\'", $config_value) : $config_value;
+        $nuke_config_name = $row['config_name'];
+        $nuke_config_value = $row['config_value'];
+        $default_config[$nuke_config_name] = isset($HTTP_POST_VARS['submit']) ? str_replace("'", "\'", $nuke_config_value) : $nuke_config_value;
 
-        $new[$config_name] = ( isset($HTTP_POST_VARS[$config_name]) ) ? $HTTP_POST_VARS[$config_name] : $default_config[$config_name];
+        $new[$nuke_config_name] = ( isset($HTTP_POST_VARS[$nuke_config_name]) ) ? $HTTP_POST_VARS[$nuke_config_name] : $default_config[$nuke_config_name];
 
 /*****[BEGIN]******************************************
  [ Mod:  Birthdays                             v3.0.0 ]
  ******************************************************/
-		if ( $config_name == 'bday_greeting' && isset($HTTP_POST_VARS['submit']) )
+		if ( $nuke_config_name == 'bday_greeting' && isset($HTTP_POST_VARS['submit']) )
 		{
 			$bday_email_mask = isset($HTTP_POST_VARS['bday_email_mask']) ? 1<<($HTTP_POST_VARS['bday_email_mask']-1) : 0;
 			$bday_pm_mask = isset($HTTP_POST_VARS['bday_pm_mask']) ? 1<<($HTTP_POST_VARS['bday_pm_mask']-1) : 0;
@@ -151,18 +151,18 @@ else
  [ Mod:  Birthdays                             v3.0.0 ]
  ******************************************************/
 
-        if ($config_name == 'cookie_name')
+        if ($nuke_config_name == 'cookie_name')
         {
             $cookie_name = str_replace('.', '_', $new['cookie_name']);
         }
  		// Attempt to prevent a common mistake with this value,
  		// http:// is the protocol and not part of the server name
- 		if ($config_name == 'server_name')
+ 		if ($nuke_config_name == 'server_name')
  		{
  			$new['server_name'] = str_replace('http://', '', $new['server_name']);
   		}
 		// Attempt to prevent a mistake with this value.
-		if ($config_name == 'avatar_path')
+		if ($nuke_config_name == 'avatar_path')
 		{
 			$new['avatar_path'] = trim($new['avatar_path']);
 			if (strstr($new['avatar_path'], "\0") || !is_dir($phpbb2_root_path . $new['avatar_path']) || !is_writable($phpbb2_root_path . $new['avatar_path']))
@@ -172,20 +172,20 @@ else
 		}
         if( isset($HTTP_POST_VARS['submit']) )
         {
-            if ($config_name == "default_Theme") {
+            if ($nuke_config_name == "default_Theme") {
                 $sql = "UPDATE " . $prefix . "_config SET
-                     default_Theme = '" . str_replace("\'", "''", $new[$config_name]) . "'";
+                     default_Theme = '" . str_replace("\'", "''", $new[$nuke_config_name]) . "'";
                  if( !$nuke_db->sql_query($sql) )
                 {
-                    message_die(NUKE_GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, "Failed to update general configuration for $nuke_config_name", "", __LINE__, __FILE__, $sql);
                 }
             } else {
                 $sql = "UPDATE " . NUKE_CONFIG_TABLE . " SET
-                    config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
-                    WHERE config_name = '$config_name'";
+                    config_value = '" . str_replace("\'", "''", $new[$nuke_config_name]) . "'
+                    WHERE config_name = '$nuke_config_name'";
                 if( !$nuke_db->sql_query($sql) )
                 {
-                    message_die(NUKE_GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
+                    message_die(NUKE_GENERAL_ERROR, "Failed to update general configuration for $nuke_config_name", "", __LINE__, __FILE__, $sql);
                 }
             }
 /*****[BEGIN]******************************************
@@ -219,14 +219,14 @@ $dhtml_onclick  = ( $new['use_dhtml'] ) ? "onclick=" : "";
 /*****[BEGIN]******************************************
  [ Base:     Drop-A-Mod                        v1.0.0 ]
  ******************************************************/
-$config_dir = dirname(__FILE__) . "/board_config";
+$nuke_config_dir = dirname(__FILE__) . "/board_config";
 
 define("BOARD_CONFIG", true);
-include($config_dir . "/page_header.php");
+include($nuke_config_dir . "/nuke_page_header.php");
 
     $load_files = 1;
 
-    $dir = opendir($config_dir);
+    $dir = opendir($nuke_config_dir);
 
     $dhtml_id = 0;
     while( false !== ($file = @readdir($dir)) )
@@ -234,7 +234,7 @@ include($config_dir . "/page_header.php");
         if( preg_match("/^board_.*?\." . $phpEx . "$/", $file) )
         {
             $dhtml_id++;
-            include($config_dir . "/" . $file);
+            include($nuke_config_dir . "/" . $file);
         }
     }
 
@@ -242,12 +242,12 @@ include($config_dir . "/page_header.php");
 
     unset($load_files);
 
-include($config_dir . "/page_footer.php");
+include($nuke_config_dir . "/nuke_page_footer.php");
 define("BOARD_CONFIG", false);
 /*****[END]********************************************
  [ Base:     Drop-A-Mod                        v1.0.0 ]
  ******************************************************/
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

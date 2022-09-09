@@ -35,7 +35,7 @@ if (!defined('CNBYA')) {
     die('CNBYA protection');
 }
 
-    if (is_active("Private_Messages") AND ($username == $cookie[1]) AND ($usrinfo['user_password'] == $cookie[2])) {
+    if (is_active("Private_Messages") AND ($nuke_username == $cookie[1]) AND ($usrinfo['user_password'] == $cookie[2])) {
         echo "<br />";
         OpenTable();
       
@@ -55,7 +55,7 @@ if (!defined('CNBYA')) {
         } elseif (empty($mem_list) AND empty($mod_search)) {
             $links = "";
         }
-        $ya_memname = htmlspecialchars($username);
+        $ya_memname = htmlspecialchars($nuke_username);
         list($uid) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_id FROM ".$nuke_user_prefix."_users WHERE username='$ya_memname'"));
         $uid = intval($uid);
         $ya_newpms = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT privmsgs_to_userid FROM ".$prefix."_bbprivmsgs WHERE privmsgs_to_userid='$uid' AND (privmsgs_type='1' OR privmsgs_type='5')"));

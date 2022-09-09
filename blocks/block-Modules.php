@@ -82,7 +82,7 @@ function moduleblock_image($name) {
 }
 
 function moduleblock_display() {
-    global $moduleblock_active, $moduleblock_cats, $content, $plus_minus_images, $module_collapse, $userinfo;
+    global $moduleblock_active, $moduleblock_cats, $content, $plus_minus_images, $module_collapse, $nuke_userinfo;
 
     if(!is_array($moduleblock_active) || !is_array($moduleblock_cats)) return;
 
@@ -142,7 +142,7 @@ function moduleblock_display() {
                             {
                                 foreach ($groups as $group) 
                                 {
-                                     if (isset($userinfo['groups'][$group])) 
+                                     if (isset($nuke_userinfo['groups'][$group])) 
                                      {
                                          $ingroup = true;
                                      }

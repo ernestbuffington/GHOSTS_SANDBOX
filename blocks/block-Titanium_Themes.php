@@ -28,7 +28,7 @@ if(is_user()):
     $content  = "<div align=\"center\"><br />\n"; 
     $content .= "<form action=\"modules.php?name=$module_name\" method=\"post\">";
     $content .= "<input type=\"hidden\" name=\"chngtheme\" value=\"1\"/>\n";
-	$content .= "<input type=\"hidden\" name=\"user_id\" value=\"$userinfo[user_id]\">";
+	$content .= "<input type=\"hidden\" name=\"user_id\" value=\"$nuke_userinfo[user_id]\">";
 	$content .= "<input type=\"hidden\" name=\"op\" value=\"savetheme\">";
     $content .= GetThemeSelect('theme', 'user_themes', false, 'onChange=submit();');
     $content .= "</form>\n"; 

@@ -43,7 +43,7 @@ if ( !file_exists($phpbb2_root_path . 'language/lang_' . $language . '/lang_main
 $language = 'english';
 include($phpbb2_root_path . 'language/lang_' . $language . '/lang_main_pmqr.' . $phpEx);
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
    'ropm_quick_reply_output' => 'ropm_quick_reply.tpl')
 );
 
@@ -59,34 +59,34 @@ $template->set_filenames(array(
 <input type="hidden" name="folder" value="'.$folder.'" />
 <input type="hidden" name="mode" value="post" />
 <input type="hidden" name="username" value="' . $privmsg['username_1'] . '" />
-<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
 
-   $template->assign_block_vars('ROPM_QUICK_REPLY', array(
+   $template_nuke->assign_block_vars('ROPM_QUICK_REPLY', array(
       'POST_ACTION' => append_sid("privmsg.$phpEx"),
       'S_HIDDEN_FIELDS' => $s_hidden_fields,
       'SUBJECT' => ( ( !preg_match('/^Re:/', $privmsg['privmsgs_subject']) ) ? 'Re: ' : '' ) . str_replace('"', "&quot;", $privmsg['privmsgs_subject']),
       'BB_BOX' => Make_TextArea_Ret('message', '', 'post', '100%', '200px', true),
       'LAST_MSG' => $last_msg,
-      'S_HTML_CHECKED' => ( !$userdata['user_allowhtml'] ) ? ' checked="checked"' : '',
-      'S_BBCODE_CHECKED' => ( !$userdata['user_allowbbcode'] ) ? ' checked="checked"' : '',
-      'S_SMILIES_CHECKED' => ( !$userdata['user_allowsmile'] ) ? ' checked="checked"' : '',
-      'S_SIG_CHECKED' => ( $userdata['user_attachsig'] ) ? ' checked="checked"' : ''
+      'S_HTML_CHECKED' => ( !$nuke_userdata['user_allowhtml'] ) ? ' checked="checked"' : '',
+      'S_BBCODE_CHECKED' => ( !$nuke_userdata['user_allowbbcode'] ) ? ' checked="checked"' : '',
+      'S_SMILIES_CHECKED' => ( !$nuke_userdata['user_allowsmile'] ) ? ' checked="checked"' : '',
+      'S_SIG_CHECKED' => ( $nuke_userdata['user_attachsig'] ) ? ' checked="checked"' : ''
       ));
 
 if ( $board_config['allow_html'] )
-   $template->assign_block_vars('ROPM_QUICK_REPLY.HTMLCB', array());
+   $template_nuke->assign_block_vars('ROPM_QUICK_REPLY.HTMLCB', array());
 if ( $board_config['allow_bbcode'] )
 {
-   $template->assign_block_vars('ROPM_QUICK_REPLY.BBCODECB', array());
+   $template_nuke->assign_block_vars('ROPM_QUICK_REPLY.BBCODECB', array());
    if ( $board_config['ropm_quick_reply_bbc'] )
-     $template->assign_block_vars('ROPM_QUICK_REPLY.BBCODEBUTT', array());
+     $template_nuke->assign_block_vars('ROPM_QUICK_REPLY.BBCODEBUTT', array());
 }
 if ( $board_config['allow_smilies'] )
 {
-   $template->assign_block_vars('ROPM_QUICK_REPLY.SMILIESCB', array());
+   $template_nuke->assign_block_vars('ROPM_QUICK_REPLY.SMILIESCB', array());
    generate_smilies_row();
 }
-   $template->assign_vars(array(
+   $template_nuke->assign_vars(array(
       'U_MORE_SMILIES' => append_sid("posting.$phpEx?mode=smilies"),
       'L_EMPTY_MESSAGE' => $lang['Empty_message'],
       'L_PREVIEW' => $lang['Preview'],
@@ -142,12 +142,12 @@ if ( $board_config['allow_smilies'] )
       'IMG_URL' => $images['bbc_url']
 ));
 $lang['TRANSLATION_INFO'] .= '<br />PM Quick Reply &copy; by <a href="http://www.rondom.gu2.info" target="rondom">Rondom</a> 2003-2004' . (( $lang['PMQR_TRANSLATION'] )?' :: '.$lang['PMQR_TRANSLATION'] : '') . (($debug)?'&nbsp;&nbsp;<span style="font-weight:bolder;font-size:20px;">Rondom\'s Debug Mode enabled!</span>':'');
-$template->assign_var_from_handle('ROPM_QUICKREPLY_OUTPUT', 'ropm_quick_reply_output');
+$template_nuke->assign_var_from_handle('ROPM_QUICKREPLY_OUTPUT', 'ropm_quick_reply_output');
 }
 
 function generate_smilies_row()
 {
-   global $nuke_db, $board_config, $template;
+   global $nuke_db, $board_config, $template_nuke;
 
    $max_smilies = $board_config['ropm_quick_reply_smilies'];
 
@@ -176,7 +176,7 @@ function generate_smilies_row()
    $smilies_data = $nuke_db->sql_fetchrowset($result);
    for ($i = 0; $i < $smilies_count; $i++)
    {
-         $template->assign_block_vars('ROPM_QUICK_REPLY.SMILIES', array(
+         $template_nuke->assign_block_vars('ROPM_QUICK_REPLY.SMILIES', array(
             'CODE' => $smilies_data[$i]['code'],
             'URL' => $board_config['smilies_path'] . '/' . $smilies_data[$i]['smile_url'],
             'DESC' => $smilies_data[$i]['emoticon'])
@@ -191,7 +191,7 @@ function generate_smilies_row()
    }
    $real_smilies_count = $nuke_db->sql_numrows($result);
    if ($real_smilies_count > $max_smilies || !$max_smilies)
-   $template->assign_block_vars('ROPM_QUICK_REPLY.MORESMILIES', array());
+   $template_nuke->assign_block_vars('ROPM_QUICK_REPLY.MORESMILIES', array());
 }
 
 ?>

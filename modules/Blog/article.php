@@ -32,7 +32,7 @@
  ************************************************************************/
 if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 
-global $cookie, $userinfo, $theme_name;
+global $cookie, $nuke_userinfo, $theme_name;
 
 $optionbox = "";
 
@@ -57,13 +57,13 @@ nuke_redirect("index.php");
 if(is_user()) 
 {
     if(!isset($mode)) 
-	$mode = $userinfo['umode']; 
+	$mode = $nuke_userinfo['umode']; 
     
 	if(!isset($order)) 
-	$order = $userinfo['uorder']; 
+	$order = $nuke_userinfo['uorder']; 
     
 	if(!isset($thold)) 
-	$thold = $userinfo['thold']; 
+	$thold = $nuke_userinfo['thold']; 
     
 	$nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET umode='$mode', uorder='$order', thold='$thold' where user_id=".intval($cookie[0]));
 }
@@ -221,7 +221,7 @@ if ($haspoll == 1)
       $optionCount = $row5["optionCount"];
       $sum = (int)$sum+$optionCount;
     }
-    $boxContent .= "<span class=\"content\">[ <a href=\"modules.php?name=Surveys&amp;op=results&amp;pollID=$pollID&amp;mode=".$userinfo['umode']."&amp;order=".$userinfo['uorder']."&amp;thold=".$userinfo['thold']."\"><strong>"._RESULTS."</strong></a> | <a href=\"modules.php?name=Surveys\"><strong>"._POLLS."</strong></a> ]<br />";
+    $boxContent .= "<span class=\"content\">[ <a href=\"modules.php?name=Surveys&amp;op=results&amp;pollID=$pollID&amp;mode=".$nuke_userinfo['umode']."&amp;order=".$nuke_userinfo['uorder']."&amp;thold=".$nuke_userinfo['thold']."\"><strong>"._RESULTS."</strong></a> | <a href=\"modules.php?name=Surveys\"><strong>"._POLLS."</strong></a> ]<br />";
 
     if ($pollcomm) 
 	{

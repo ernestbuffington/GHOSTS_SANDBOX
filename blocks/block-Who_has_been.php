@@ -19,13 +19,13 @@
 ************************************************************************/
 defined('NUKE_EVO') or die('Just go away, Shit Head!');
 
-global $nuke_db, $prefix, $userinfo;
-global $evouserinfo_avatar, $board_config, $userinfo; 
+global $nuke_db, $prefix, $nuke_userinfo;
+global $evouserinfo_avatar, $board_config, $nuke_userinfo; 
 
 $max_height = '60';
 $max_width = '';
 
-$result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".NUKE_USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 10");
+$result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".NUKE_USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$nuke_userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 10");
 
 $content  = '<table border="0" cellpadding="0" cellspacing="1" class="col-12">';
 while($whosbeen = $nuke_db->sql_fetchrow($result)):

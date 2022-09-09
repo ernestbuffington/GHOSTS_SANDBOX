@@ -27,36 +27,36 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
  * @author JeFFb68CAM
  *
  * @param string $field_name The field to retrieve
- * @param string $user Username or User_id
- * @param bool $is_name Is the $user a username
+ * @param string $nuke_user Username or User_id
+ * @param bool $is_name Is the $nuke_user a username
  * @return string
  */
 // recoded by ReOrGaNiSaTiOn
-// This function is called by mainfile.php to fill $userinfo
+// This function is called by mainfile.php to fill $nuke_userinfo
 // and from other files to get specific informations about an user
 // it makes no sense to cache all users (maybe this can be thousands)
 // but for actual page we can make the informations static
-function get_user_field($field_name, $user, $is_name = false) 
+function get_user_field($field_name, $nuke_user, $is_name = false) 
 {
     global $nuke_db, $identify;
     static $actual_user;
-    if (!$user) return NULL;
+    if (!$nuke_user) return NULL;
 
-    if ($is_name || !is_numeric($user))  
+    if ($is_name || !is_numeric($nuke_user))  
 	{
-        $where  = "`username` = '". str_replace("\'", "''", $user)."'";
+        $where  = "`username` = '". str_replace("\'", "''", $nuke_user)."'";
         $search = 'username';
     } 
 	else 
 	{
-        $where  = "`user_id` = '".$user."'";
+        $where  = "`user_id` = '".$nuke_user."'";
         $search = 'user_id';
     }
     
-	if (!isset($actual_user[$user])) 
+	if (!isset($actual_user[$nuke_user])) 
 	{
         $sql = "SELECT * FROM ".NUKE_USERS_TABLE." WHERE $where";
-        $actual_user[$user] = $nuke_db->sql_ufetchrow($sql);
+        $actual_user[$nuke_user] = $nuke_db->sql_ufetchrow($sql);
         // We also put the groups data in the array.
         $result = $nuke_db->sql_query('SELECT g.group_id, 
 		                               g.group_name, 
@@ -64,30 +64,30 @@ function get_user_field($field_name, $user, $is_name = false)
 								  
 								  FROM ('.NUKE_GROUPS_TABLE.' AS g 
 								  INNER JOIN '.NUKE_USER_GROUP_TABLE.' 
-								  AS ug ON (ug.group_id=g.group_id AND ug.user_id="'.$actual_user[$user]['user_id'].'" 
+								  AS ug ON (ug.group_id=g.group_id AND ug.user_id="'.$actual_user[$nuke_user]['user_id'].'" 
 								  AND ug.user_pending=0))', true);
 								  
         while(list($g_id, $g_name, $single) = $nuke_db->sql_fetchrow($result)) 
 		{
-            $actual_user[$user]['groups'][$g_id] = ($single) ? '' : $g_name;
+            $actual_user[$nuke_user]['groups'][$g_id] = ($single) ? '' : $g_name;
         }
         $nuke_db->sql_freeresult($result);
     }
     if($field_name == '*') 
 	{
-        $actual_user[$user]['user_ip'] = $identify->get_ip();
-        return $actual_user[$user];
+        $actual_user[$nuke_user]['user_ip'] = $identify->get_ip();
+        return $actual_user[$nuke_user];
     }
     if(is_array($field_name)) 
 	{
         $data = array();
         foreach($field_name as $fld) 
 		{
-            $data[$fld] = $actual_user[$user][$fld];
+            $data[$fld] = $actual_user[$nuke_user][$fld];
         }
         return $data;
     }
-    return $actual_user[$user][$field_name];
+    return $actual_user[$nuke_user][$field_name];
 }
 
 /**
@@ -137,10 +137,10 @@ function is_mod_admin($module_name='super')
 {
 
     global $nuke_db, $aid, $admin;
-    static $auth = array();
+    static $nuke_auth = array();
 
     if(!is_admin()) return 0;
-    if(isset($auth[$module_name])) return $auth[$module_name];
+    if(isset($nuke_auth[$module_name])) return $nuke_auth[$module_name];
 
     if(!isset($aid)) {
         if(!is_array($admin)) {
@@ -152,18 +152,18 @@ function is_mod_admin($module_name='super')
         }
     }
     $admdata = get_admin_field('*', $aid);
-    $auth_user = 0;
+    $nuke_auth_user = 0;
     if($module_name != 'super') {
         list($admins) = $nuke_db->sql_ufetchrow("SELECT `admins` FROM "._MODULES_TABLE." WHERE `title`='$module_name'");
         $adminarray = explode(",", $admins);
         for ($i=0, $maxi=count($adminarray); $i < $maxi; $i++) {
             if ($admdata['aid'] == $adminarray[$i] && !empty($admins)) {
-                $auth_user = 1;
+                $nuke_auth_user = 1;
             }
         }
     }
-    $auth[$module_name] = ($admdata['radminsuper'] == 1 || $auth_user == 1);
-    return $auth[$module_name];
+    $nuke_auth[$module_name] = ($admdata['radminsuper'] == 1 || $nuke_auth_user == 1);
+    return $nuke_auth[$module_name];
 
 }
 
@@ -415,23 +415,23 @@ function update_modules()
 
 function UpdateCookie() 
 {
-    global $nuke_db, $prefix, $userinfo, $cache, $cookie, $identify;
+    global $nuke_db, $prefix, $nuke_userinfo, $cache, $cookie, $identify;
 
     $ip = $identify->get_ip();
-    $uid = $userinfo['user_id'];
-    $username = $userinfo['username'];
-    $pass = $userinfo['user_password'];
-    $storynum = $userinfo['storynum'];
-    $umode = $userinfo['umode'];
-    $uorder = $userinfo['uorder'];
-    $thold = $userinfo['thold'];
-    $noscore = $userinfo['noscore'];
-    $ublockon = $userinfo['ublockon'];
-    $theme = $userinfo['theme'];
-    $commentmax = $userinfo['commentmax'];
+    $uid = $nuke_userinfo['user_id'];
+    $nuke_username = $nuke_userinfo['username'];
+    $pass = $nuke_userinfo['user_password'];
+    $storynum = $nuke_userinfo['storynum'];
+    $umode = $nuke_userinfo['umode'];
+    $uorder = $nuke_userinfo['uorder'];
+    $thold = $nuke_userinfo['thold'];
+    $noscore = $nuke_userinfo['noscore'];
+    $ublockon = $nuke_userinfo['ublockon'];
+    $theme = $nuke_userinfo['theme'];
+    $commentmax = $nuke_userinfo['commentmax'];
 
     # added in 3.0.0
-    $guest = ( $userinfo['username'] ) ? 0 : 1;
+    $guest = ( $nuke_userinfo['username'] ) ? 0 : 1;
     # added in 3.0.0
 
     /*****[BEGIN]******************************************
@@ -442,13 +442,13 @@ function UpdateCookie()
         /*****[END]********************************************
         [ Base:    Caching System                     v3.0.0 ]
         ******************************************************/
-        $configresult = $nuke_db->sql_query("SELECT config_name, config_value FROM ".$prefix."_cnbya_config", true);
-        while (list($config_name, $config_value) = $nuke_db->sql_fetchrow($configresult, SQL_NUM)) 
+        $nuke_configresult = $nuke_db->sql_query("SELECT config_name, config_value FROM ".$prefix."_cnbya_config", true);
+        while (list($nuke_config_name, $nuke_config_value) = $nuke_db->sql_fetchrow($nuke_configresult, SQL_NUM)) 
         {
-            // if (!get_magic_quotes_gpc()) { $config_value = stripslashes($config_value); }
-            $ya_config[$config_name] = $config_value;
+            // if (!get_magic_quotes_gpc()) { $nuke_config_value = stripslashes($nuke_config_value); }
+            $ya_config[$nuke_config_name] = $nuke_config_value;
         }
-        $nuke_db->sql_freeresult($configresult);
+        $nuke_db->sql_freeresult($nuke_configresult);
         /*****[BEGIN]******************************************
         [ Base:    Caching System                     v3.0.0 ]
         ******************************************************/
@@ -458,19 +458,19 @@ function UpdateCookie()
         ******************************************************/
     }
 
-    $result = $nuke_db->sql_query("SELECT time FROM ".$prefix."_session WHERE uname='$username'", true);
+    $result = $nuke_db->sql_query("SELECT time FROM ".$prefix."_session WHERE uname='$nuke_username'", true);
     $ctime = time();
-    if (!empty($username)) {
-        $uname = substr($username, 0,25);
+    if (!empty($nuke_username)) {
+        $uname = substr($nuke_username, 0,25);
         if ($row = $nuke_db->sql_fetchrow($result)) {
-            $nuke_db->sql_query("UPDATE ".$prefix."_session SET uname='$username', time='$ctime', host_addr='$ip', guest='$guest' WHERE uname='$uname'");
+            $nuke_db->sql_query("UPDATE ".$prefix."_session SET uname='$nuke_username', time='$ctime', host_addr='$ip', guest='$guest' WHERE uname='$uname'");
         } else {
             $nuke_db->sql_query("INSERT INTO ".$prefix."_session (uname, time, starttime, host_addr, guest) VALUES ('$uname', '$ctime', '$ctime', '$ip', '$guest')");
         }
     }
     $nuke_db->sql_freeresult($result);
 
-    $cookiedata = base64_encode("$uid:$username:$pass:$storynum:$umode:$uorder:$thold:$noscore:$ublockon:$theme:$commentmax");
+    $cookiedata = base64_encode("$uid:$nuke_username:$pass:$storynum:$umode:$uorder:$thold:$noscore:$ublockon:$theme:$commentmax");
     if ($ya_config['cookietimelife'] != '-') {
         if (trim($ya_config['cookiepath']) != '') {
             @setcookie('user',$cookiedata,time()+$ya_config['cookietimelife'],$ya_config['cookiepath']);
@@ -593,7 +593,7 @@ function EvoDate($format, $gmepoch, $tz)
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-    global $board_config, $lang, $userdata, $pc_dateTime, $userinfo;
+    global $board_config, $lang, $nuke_userdata, $pc_dateTime, $nuke_userinfo;
 	getusrinfo();
 	static $translate;
 	    if ( empty($translate) && $board_config['default_lang'] != 'english' )
@@ -607,16 +607,16 @@ function EvoDate($format, $gmepoch, $tz)
         	}
         }
     }
-	if ( $userinfo['user_id'] != 1 )
+	if ( $nuke_userinfo['user_id'] != 1 )
 	{
-		switch ( $userinfo['user_time_mode'] )
+		switch ( $nuke_userinfo['user_time_mode'] )
 		{
 			case 1:
-				$dst_sec = $userinfo['user_dst_time_lag'] * 60;
+				$dst_sec = $nuke_userinfo['user_dst_time_lag'] * 60;
 				return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec), $translate) : @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec);
 				break;
 			case 2:
-				$dst_sec = date('I', $gmepoch) * $userdata['user_dst_time_lag'] * 60;
+				$dst_sec = date('I', $gmepoch) * $nuke_userdata['user_dst_time_lag'] * 60;
 				return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec), $translate) : @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec);
 				break;
 			case 3:
@@ -628,8 +628,8 @@ function EvoDate($format, $gmepoch, $tz)
 					$tzo_sec = $pc_dateTime['pc_timezoneOffset'];
 				} else
 				{
-					$user_pc_timeOffsets = explode("/", $userinfo['user_pc_timeOffsets']);
-					$tzo_sec = $user_pc_timeOffsets[0];
+					$nuke_user_pc_timeOffsets = explode("/", $nuke_userinfo['user_pc_timeOffsets']);
+					$tzo_sec = $nuke_user_pc_timeOffsets[0];
 				}
 				return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + $tzo_sec), $translate) : @gmdate($format, $gmepoch + $tzo_sec);
 				break;
@@ -639,8 +639,8 @@ function EvoDate($format, $gmepoch, $tz)
 					$tzo_sec = $pc_dateTime['pc_timeOffset'];
 				} else
 				{
-					$user_pc_timeOffsets = explode("/", $userinfo['user_pc_timeOffsets']);
-					$tzo_sec = $user_pc_timeOffsets[1];
+					$nuke_user_pc_timeOffsets = explode("/", $nuke_userinfo['user_pc_timeOffsets']);
+					$tzo_sec = $nuke_user_pc_timeOffsets[1];
 				}
 				return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + $tzo_sec), $translate) : @gmdate($format, $gmepoch + $tzo_sec);
 				break;
@@ -988,7 +988,7 @@ function post_captcha($response)
 }
 	
 	
-function security_code_check($user_response, $gfxchk) 
+function security_code_check($nuke_user_response, $gfxchk) 
 {
     global $evoconfig;
 
@@ -1013,7 +1013,7 @@ function security_code_check($user_response, $gfxchk)
      *
      * @return array
      */ 
-    $recappassfail = post_captcha($user_response);
+    $recappassfail = post_captcha($nuke_user_response);
 
     if (!$recappassfail['success']):
 
@@ -1065,29 +1065,29 @@ function Make_TextArea_Ret($name, $text='', $post='', $width='100%', $height='30
 function user_ips() 
 {
     include_once(NUKE_BASE_DIR.'ips.php');
-    global $users_ips;
-    if(isset($users_ips)){
-        if(is_array($users_ips)){
-            for($i=0, $maxi=count($users_ips); $i < $maxi; $i += 2) {
+    global $nuke_users_ips;
+    if(isset($nuke_users_ips)){
+        if(is_array($nuke_users_ips)){
+            for($i=0, $maxi=count($nuke_users_ips); $i < $maxi; $i += 2) {
                 $i2 = $i + 1;
-                $userips[strtolower($users_ips[$i])] = explode(',',$users_ips[$i2]);
+                $nuke_userips[strtolower($nuke_users_ips[$i])] = explode(',',$nuke_users_ips[$i2]);
             }
-            return $userips;
+            return $nuke_userips;
         }
     }
     return null;
 }
 
 // compare_ips function by Technocrat
-function compare_ips($username) 
+function compare_ips($nuke_username) 
 {
 	global $identify;
-    $userips = user_ips();
-    if(!is_array($userips)) {
+    $nuke_userips = user_ips();
+    if(!is_array($nuke_userips)) {
         return true;
     }
-    if(isset($userips[strtolower($username)])) {
-        $ip_check = implode('|^',$userips[strtolower($username)]);
+    if(isset($nuke_userips[strtolower($nuke_username)])) {
+        $ip_check = implode('|^',$nuke_userips[strtolower($nuke_username)]);
         if (!preg_match("/^".$ip_check."/",$identify->get_ip())) {
             return false;
         }
@@ -1098,28 +1098,28 @@ function compare_ips($username)
 [ Mod:     User IP Lock                       v1.0.0 ]
 ******************************************************/
 
-function GetRank($user_id) 
+function GetRank($nuke_user_id) 
 {
     global $nuke_db, $prefix, $nuke_user_prefix;
     static $rankData = array();
-    if(is_array($rankData[$user_id])) { return $rankData[$user_id]; }
+    if(is_array($rankData[$nuke_user_id])) { return $rankData[$nuke_user_id]; }
 
-    list($user_rank, $user_posts) = $nuke_db->sql_ufetchrow("SELECT user_rank, user_posts FROM " . $nuke_user_prefix . "_users WHERE user_id = '" . $user_id . "'", SQL_NUM);
+    list($nuke_user_rank, $nuke_user_posts) = $nuke_db->sql_ufetchrow("SELECT user_rank, user_posts FROM " . $nuke_user_prefix . "_users WHERE user_id = '" . $nuke_user_id . "'", SQL_NUM);
     $ranks = $nuke_db->sql_ufetchrowset("SELECT * FROM " . $prefix . "_bbranks ORDER BY rank_special, rank_min", SQL_ASSOC);
 
-    $rankData[$user_id] = array();
+    $rankData[$nuke_user_id] = array();
     for($i=0, $maxi=count($ranks);$i<$maxi;$i++) {
-        if ($user_rank == $ranks[$i]['rank_id'] && $ranks[$i]['rank_special']) {
+        if ($nuke_user_rank == $ranks[$i]['rank_id'] && $ranks[$i]['rank_special']) {
             echo $ranks[$i]['rank_title'];
-            $rankData[$user_id]['image'] = ($ranks[$i]['rank_image']) ? '<img src="'.$ranks[$i]['rank_image'].'" alt="'.$ranks[$i]['rank_title'].'" title="'.$ranks[$i]['rank_title'].'" border="0" />' : '';
-            $rankData[$user_id]['title'] = $ranks[$i]['rank_title'];
-            $rankData[$user_id]['id'] = $ranks[$i]['rank_id'];
-            return $rankData[$user_id];
-        } elseif ($user_posts >= $ranks[$i]['rank_min'] && !$ranks[$i]['rank_special']) {
-            $rankData[$user_id]['image'] = ($ranks[$i]['rank_image']) ? '<img src="'.$ranks[$i]['rank_image'].'" alt="'.$ranks[$i]['rank_title'].'" title="'.$ranks[$i]['rank_title'].'" border="0" />' : '';
-            $rankData[$user_id]['title'] = $ranks[$i]['rank_title'];
-            $rankData[$user_id]['id'] = $ranks[$i]['rank_id'];
-            return $rankData[$user_id];
+            $rankData[$nuke_user_id]['image'] = ($ranks[$i]['rank_image']) ? '<img src="'.$ranks[$i]['rank_image'].'" alt="'.$ranks[$i]['rank_title'].'" title="'.$ranks[$i]['rank_title'].'" border="0" />' : '';
+            $rankData[$nuke_user_id]['title'] = $ranks[$i]['rank_title'];
+            $rankData[$nuke_user_id]['id'] = $ranks[$i]['rank_id'];
+            return $rankData[$nuke_user_id];
+        } elseif ($nuke_user_posts >= $ranks[$i]['rank_min'] && !$ranks[$i]['rank_special']) {
+            $rankData[$nuke_user_id]['image'] = ($ranks[$i]['rank_image']) ? '<img src="'.$ranks[$i]['rank_image'].'" alt="'.$ranks[$i]['rank_title'].'" title="'.$ranks[$i]['rank_title'].'" border="0" />' : '';
+            $rankData[$nuke_user_id]['title'] = $ranks[$i]['rank_title'];
+            $rankData[$nuke_user_id]['id'] = $ranks[$i]['rank_id'];
+            return $rankData[$nuke_user_id];
         }
     }
     return array();
@@ -1195,11 +1195,11 @@ function ord_crypt_decode($data)
     return $result;
 }
 
-function add_group_attributes($user_id, $group_id) 
+function add_group_attributes($nuke_user_id, $group_id) 
 {
     global $prefix, $nuke_db, $board_config, $cache;
 
-    if ($user_id <= 2) return true;
+    if ($nuke_user_id <= 2) return true;
 
     $sql_color = "SELECT `group_color` FROM `" . $prefix . "_bbgroups` WHERE `group_id` = '$group_id'";
     $result_color = $nuke_db->sql_query($sql_color);
@@ -1232,7 +1232,7 @@ function add_group_attributes($user_id, $group_id)
     if (!empty($sql)) {
         $sql = "UPDATE `" . $prefix . "_users`
             SET " . $sql . "
-            WHERE user_id = " . $user_id;
+            WHERE user_id = " . $nuke_user_id;
         if ( !$nuke_db->sql_query($sql) )
         {
             return false;
@@ -1248,22 +1248,22 @@ function add_group_attributes($user_id, $group_id)
     return true;
 }
 
-function remove_group_attributes($user_id, $group_id) 
+function remove_group_attributes($nuke_user_id, $group_id) 
 {
     global $prefix, $nuke_db, $board_config, $cache;
-    if (empty($user_id) && !empty($group_id) && $group_id != 0) {
+    if (empty($nuke_user_id) && !empty($group_id) && $group_id != 0) {
         $sql = "SELECT `user_id` FROM `".$prefix."_bbuser_group` WHERE `group_id`=".$group_id;
         $result = $nuke_db->sql_query($sql);
         while ($row = $nuke_db->sql_fetchrow($result)) {
             remove_group_attributes($row['user_id'], '');
         }
         $cache->delete('UserColors', 'config');
-    } else if (!empty($user_id) && $user_id >= 3) {
+    } else if (!empty($nuke_user_id) && $nuke_user_id >= 3) {
         $sql = "UPDATE `" . $prefix . "_users`
                 SET `user_color_gc` = '',
                 `user_color_gi`  = '',
                 `user_rank` = 0
-                WHERE `user_id` = ".$user_id;
+                WHERE `user_id` = ".$nuke_user_id;
         $nuke_db->sql_query($sql);
     }
 
@@ -1369,8 +1369,8 @@ function evo_mail_batch($array_recipients)
     if (!is_array($array_recipients)) return '';
 
     $recipients = Swift_Message::newInstance();
-    foreach ($array_recipients as $username => $email){
-        $recipients->addTo($email, $username);
+    foreach ($array_recipients as $nuke_username => $email){
+        $recipients->addTo($email, $nuke_username);
     }
     return $recipients;
 }

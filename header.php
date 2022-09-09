@@ -44,7 +44,7 @@ function head()
 						  $modheader, 
 						       $name, 
 							  $cache, 
-						   $userinfo, 
+						   $nuke_userinfo, 
 						     $cookie, 
 							$sitekey, 
 							     $nuke_db, 
@@ -204,24 +204,24 @@ head();
 
 function online() 
 {
-    global $prefix, $nuke_db, $name, $board_config, $userinfo, $identify;
+    global $prefix, $nuke_db, $name, $board_config, $nuke_userinfo, $identify;
     $ip = $identify->get_ip();
     $url = (defined('ADMIN_FILE')) ? 'index.php' : Fix_Quotes($_SERVER['REQUEST_URI']);
     $uname = $ip;
     $guest = 1;
-    $user_agent = $identify->identify_agent();
+    $nuke_user_agent = $identify->identify_agent();
 	
 	if(is_user()):
-	$uname = $userinfo['username'];
+	$uname = $nuke_userinfo['username'];
     $guest = 0;
 	else:
 
-    //if(($user_agent['engine'] == 'bot')):
-    //$uname = $user_agent['bot'];
+    //if(($nuke_user_agent['engine'] == 'bot')):
+    //$uname = $nuke_user_agent['bot'];
 	//$guest = 3;
     //endif;
     
-	//if(($user_agent['engine'] == '')):
+	//if(($nuke_user_agent['engine'] == '')):
 	//endif;
     # Facebook IP Range
 
@@ -439,8 +439,8 @@ function online()
         $nuke_db->sql_query("REPLACE INTO `".$prefix."_users_who_been` (`user_ID`, 
 		                                                           `username`, 
 																   `last_visit`) 
-   values ('".$userinfo['user_id']."', 
-           '".$userinfo['username']."', 
+   values ('".$nuke_userinfo['user_id']."', 
+           '".$nuke_userinfo['username']."', 
 		    ".time().");");
 }
 

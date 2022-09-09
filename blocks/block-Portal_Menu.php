@@ -30,7 +30,7 @@
 
        global $nuke_db, 
 		   $admin, 
-		    $user, 
+		    $nuke_user, 
 	      $prefix, 
           $cookie, 
 	  $def_module, 
@@ -38,7 +38,7 @@
 		$bgcolor2, 
 		$bgcolor3, 
 		$bgcolor4,
-      $userpoints, 
+      $nuke_userpoints, 
              $uid;
 			 
       global $nuke_user_prefix, $def_module, $currentlang, $cache;			 
@@ -49,7 +49,7 @@ include_once(NUKE_LANGUAGE_DIR.'Menu/lang-'.$currentlang.'.php');
 else 
 include_once(NUKE_LANGUAGE_DIR.'Menu/lang-english.php');
 
-$userpoints=intval($userpoints); 
+$nuke_userpoints=intval($nuke_userpoints); 
 
 $gestiongroupe = 1; 
 $managment_group = 1; 
@@ -1782,23 +1782,23 @@ if( $showadmin==1 && $is_admin===1 && $horizontal!=1)
 	}
 }
 
-function menu_is_user($user, $managment_group) 
+function menu_is_user($nuke_user, $managment_group) 
 {
-    global $prefix, $nuke_db, $uid, $userpoints;
+    global $prefix, $nuke_db, $uid, $nuke_userpoints;
 
-    if(!is_array($user)) 
+    if(!is_array($nuke_user)) 
 	{
-		$user = addslashes($user); 
-        $user = base64_decode($user);
-		$user = addslashes($user); 
-        $user = explode(":", $user);
-        $uid = "$user[0]";
-        $pwd = "$user[2]";
+		$nuke_user = addslashes($nuke_user); 
+        $nuke_user = base64_decode($nuke_user);
+		$nuke_user = addslashes($nuke_user); 
+        $nuke_user = explode(":", $nuke_user);
+        $uid = "$nuke_user[0]";
+        $pwd = "$nuke_user[2]";
     } 
 	else 
 	{
-        $uid = "$user[0]";
-        $pwd = "$user[2]";
+        $uid = "$nuke_user[0]";
+        $pwd = "$nuke_user[2]";
     }
 	
 	$uid = addslashes($uid); 
@@ -1828,7 +1828,7 @@ function menu_is_user($user, $managment_group)
         
 		if($pass == $pwd && $pass != "") 
 		{
-			$userpoints = ($managment_group==1) ? $row['points'] : "";
+			$nuke_userpoints = ($managment_group==1) ? $row['points'] : "";
             return 1;
         }
     }
@@ -1838,13 +1838,13 @@ function menu_is_user($user, $managment_group)
 
 function menu_get_theme($is_user) 
 {
-    global $user, $cookie, $Default_Theme;
+    global $nuke_user, $cookie, $Default_Theme;
 
     if($is_user==1) 
 	{
-        $user2 = base64_decode($user);
+        $nuke_user2 = base64_decode($nuke_user);
     
-	    $t_cookie = explode(":", $user2);
+	    $t_cookie = explode(":", $nuke_user2);
     
 	    if($t_cookie[9]=="") $t_cookie[9]=$Default_Theme;
     

@@ -69,7 +69,7 @@ function ThemeError($error_message){
 }
 
 function InstallTheme(){
-	global $admin_file, $nuke_db, $prefix, $module_name, $userinfo, $HTTP_POST_FILES, $HTTP_POST_VARS;
+	global $admin_file, $nuke_db, $prefix, $module_name, $nuke_userinfo, $HTTP_POST_FILES, $HTTP_POST_VARS;
 	
 	$filename   = $HTTP_POST_FILES['file']['name'];
 	$path_parts = pathinfo($filename);
@@ -125,7 +125,7 @@ function InstallTheme(){
 
 function downloadTheme($theme)
 {
-	global $admin_file, $aid, $nuke_db, $prefix, $module_name, $userinfo, $admin, $directory_mode;
+	global $admin_file, $aid, $nuke_db, $prefix, $module_name, $nuke_userinfo, $admin, $directory_mode;
 	
 	function RandomNumber($length=10){
 		$random = "";
@@ -945,9 +945,9 @@ function users_themes(){
     $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE user_id != '1' ORDER BY user_id LIMIT $limit1, $limit2");
 	
     while($row = $nuke_db->sql_fetchrow($result)){
-        $user_id   = intval($row['user_id']);
-        $username  = Fix_Quotes($row['username']);
-        $useremail = Fix_Quotes($row['user_email']);
+        $nuke_user_id   = intval($row['user_id']);
+        $nuke_username  = Fix_Quotes($row['username']);
+        $nuke_useremail = Fix_Quotes($row['user_email']);
 		
         if (empty($row['name'])){
             $realname = _NOREALNAME;
@@ -956,23 +956,23 @@ function users_themes(){
         }
 		
         if (empty($row['theme'])){
-            $usertheme = get_default();
+            $nuke_usertheme = get_default();
         } else {
-            $usertheme = Fix_Quotes($row['theme']);
+            $nuke_usertheme = Fix_Quotes($row['theme']);
         }
 		
         echo "  <tr valign=\"middle\">\n";
-		echo "    <td width='10%' align='center' bgcolor='$bgcolor3'>" .$user_id. "</td>\n";
-		echo "    <td width='30%' bgcolor='$bgcolor3'>" . $username . "</td>\n";
-		echo "    <td width='30%' bgcolor='$bgcolor3'>" . $usertheme . "</td>\n";
+		echo "    <td width='10%' align='center' bgcolor='$bgcolor3'>" .$nuke_user_id. "</td>\n";
+		echo "    <td width='30%' bgcolor='$bgcolor3'>" . $nuke_username . "</td>\n";
+		echo "    <td width='30%' bgcolor='$bgcolor3'>" . $nuke_usertheme . "</td>\n";
 		echo "    <td width='30%' align='center' bgcolor='$bgcolor3'>\n";
 		echo "        <select name='op' style='display: inline-block; width: 60%;'>\n";
 		echo "            <option value='theme_users_reset'>"._THEMES_USER_RESET."</option>\n";
 		echo "            <option value='theme_users_modify'>"._THEMES_USER_MODIFY."</option>\n";
 		echo "        </select>\n";
 		// echo "        <br />\n";
-		echo "        <input type=\"hidden\" name=\"theme_userid\" value=\"$user_id\" />\n";
-		echo "        <input type=\"hidden\" name=\"theme_username\" value=\"$username\" />\n";
+		echo "        <input type=\"hidden\" name=\"theme_userid\" value=\"$nuke_user_id\" />\n";
+		echo "        <input type=\"hidden\" name=\"theme_username\" value=\"$nuke_username\" />\n";
 		echo "        <input type='submit' value='".$admlang['global']['submit']."' />\n";
 		echo "    </td>\n";
 		echo "  </tr>\n";
@@ -1026,19 +1026,19 @@ function users_themes(){
  ******************************************************/
 }
 
-function theme_users_reset($user_id, $username, $theme){
+function theme_users_reset($nuke_user_id, $nuke_username, $theme){
     global $nuke_db,$nuke_user_prefix, $admin_file;
 	
-    $user_id = intval($user_id);
-    $username = Fix_Quotes($username);
-    $result = $nuke_db->sql_query("UPDATE " . $nuke_user_prefix . "_users SET theme = '" . get_default() . "' WHERE user_id = '$user_id' AND username = '$username'");
+    $nuke_user_id = intval($nuke_user_id);
+    $nuke_username = Fix_Quotes($nuke_username);
+    $result = $nuke_db->sql_query("UPDATE " . $nuke_user_prefix . "_users SET theme = '" . get_default() . "' WHERE user_id = '$nuke_user_id' AND username = '$nuke_username'");
     nuke_redirect($admin_file . '.php?op=themes');
 }
 
-function theme_users_modify($user_id, $username, $theme){
+function theme_users_modify($nuke_user_id, $nuke_username, $theme){
     global $nuke_db, $nuke_user_prefix, $admin_file, $HTTP_POST_VARS;
 	
-    if (empty($theme) && !empty($user_id)){
+    if (empty($theme) && !empty($nuke_user_id)){
         OpenTable();
 		
         echo"<table border='2' align='center' width='100%'>\n";
@@ -1046,16 +1046,16 @@ function theme_users_modify($user_id, $username, $theme){
 		echo "    <th width='16%' align='center'><span class=\"content\" style=\"font-weight: bold\">" . _THEMES_USERNAME . "</span></th>\n";
 		echo "    <th width='16%' align='center'><span class=\"content\" style=\"font-weight: bold\">" . _THEMES_USER_SELECT. "</span></th>\n";
 		echo "  </tr>";
-        $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE user_id =".$user_id);
+        $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE user_id =".$nuke_user_id);
 		
         if ($row = $nuke_db->sql_fetchrow($result)){
-            $user_id = intval($row['user_id']);
-            $username = Fix_Quotes($row['username']);
+            $nuke_user_id = intval($row['user_id']);
+            $nuke_username = Fix_Quotes($row['username']);
 			
             if(empty($row['theme'])){
-                $usertheme = get_default();
+                $nuke_usertheme = get_default();
             } else {
-                $usertheme = $row['theme'];
+                $nuke_usertheme = $row['theme'];
             }
 			
             echo "  <form method='post' action='".$admin_file.".php?op=theme_users_modify'>\n";
@@ -1063,9 +1063,9 @@ function theme_users_modify($user_id, $username, $theme){
 			echo "    <td width='50%' align='center' bgcolor='$bgcolor3'>" . $row['username'] . "</td>\n";
 			echo "    <td width='50%' align='center' bgcolor='$bgcolor3'>\n";
 			echo          GetThemeSelect('themename')."\n";
-			echo "        <input type=\"hidden\" name=\"user_id\" value=\"$user_id\" />\n";
-			echo "        <input type=\"hidden\" name=\"username\" value=\"$username\" />\n";
-			echo "        <input type=\"hidden\" name=\"theme\" value=\"$usertheme\" />\n";
+			echo "        <input type=\"hidden\" name=\"user_id\" value=\"$nuke_user_id\" />\n";
+			echo "        <input type=\"hidden\" name=\"username\" value=\"$nuke_username\" />\n";
+			echo "        <input type=\"hidden\" name=\"theme\" value=\"$nuke_usertheme\" />\n";
 			echo "        <input type='submit' value='"._THEMES_SUBMIT."' />\n";
 			echo "    </td>\n";
 			echo "  </tr>\n";

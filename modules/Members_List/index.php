@@ -55,8 +55,8 @@ include($phpbb2_root_path.'extension.inc');
 include($phpbb2_root_path.'common.'.$phpEx);
 
 # Start session management
-$userdata = session_pagestart($user_ip, NUKE_PAGE_VIEW_MEMBERS);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_VIEW_MEMBERS);
+init_userprefs($nuke_userdata);
 
 $pageroot = (!empty($HTTP_GET_VARS['page'])) ? $HTTP_GET_VARS['page'] : 1;
 $page = (isset($pageroot)) ? intval($pageroot) : 1;
@@ -80,13 +80,13 @@ $sort_order = get_query_var('order', '_REQUEST', 'string');
 $sort_order = ($sort_order == 'DESC') ? $sort_order : 'ASC';
 
 $page_title = $lang['Memberlist'];
-include(NUKE_INCLUDE_DIR.'page_header.php');
+include(NUKE_INCLUDE_DIR.'nuke_page_header.php');
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
 	'body' => 'memberlist_body.tpl')
 );
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 	'L_PAGE_TITLE' => $lang['Memberlist'],
 	'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
 	'L_EMAIL' => $lang['Email'],
@@ -137,7 +137,7 @@ while($i < count($alpha_range)):
 	else: 
 		$alphanum_search_url = 'modules.php?name='.basename(dirname(__FILE__));
 	endif;
-	$template->assign_block_vars('alphanumsearch', array(
+	$template_nuke->assign_block_vars('alphanumsearch', array(
 		'SEARCH_SIZE' 	=> floor(100/count($alpha_range)) . '%',
 		'SEARCH_TERM' 	=> $alpha_range[$i],
 		'SEARCH_LINK' 	=> $alphanum_search_url)
@@ -189,10 +189,10 @@ switch($mode):
 endswitch;
 # search switch END
 
-$username = (!empty($HTTP_POST_VARS['username'])) ? $HTTP_POST_VARS['username'] : '';
-if ($username && isset($HTTP_POST_VARS['submituser'])):
+$nuke_username = (!empty($HTTP_POST_VARS['username'])) ? $HTTP_POST_VARS['username'] : '';
+if ($nuke_username && isset($HTTP_POST_VARS['submituser'])):
     # search for users with a wildcard
-	$search_author = str_replace('*', '%', trim($username));
+	$search_author = str_replace('*', '%', trim($nuke_username));
 	if((strpos($search_author, '%') !== false) && (strlen(str_replace('%', '',$search_author)) < $board_config['search_min_chars']))
 	$search_author = '';
 
@@ -240,7 +240,7 @@ if ($username && isset($HTTP_POST_VARS['submituser'])):
 					    user_lastvisit 
 						
 	FROM ".NUKE_USERS_TABLE." 
-	WHERE username = '$username' 
+	WHERE username = '$nuke_username' 
 	AND user_id <> ".NUKE_ANONYMOUS." LIMIT 1";
 	# this is the original SQL queery END
 
@@ -280,13 +280,13 @@ if($row = $nuke_db->sql_fetchrow($result)):
 	do
 	{
 		$realname = $row['name'];
-		$username = $row['username'];
-		$user_id = intval($row['user_id']);
+		$nuke_username = $row['username'];
+		$nuke_user_id = intval($row['user_id']);
 		
 		# Get the users location and flag
-		$user_from = (!empty($row['user_from'])) ? $row['user_from'] : '&nbsp;';
+		$nuke_user_from = (!empty($row['user_from'])) ? $row['user_from'] : '&nbsp;';
 
-		$user_flag = (!empty($row['user_from_flag'])) ? 
+		$nuke_user_flag = (!empty($row['user_from_flag'])) ? 
 		'&nbsp;'.get_evo_icon('countries '.str_replace('.png','',$row['user_from_flag'])).'&nbsp;' : '&nbsp;'.get_evo_icon('countries unknown').'&nbsp;';
 		 
 		# Calculate the users age.
@@ -302,7 +302,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
 		
 		# Website URL
 		if(!empty($row['user_website']))
-		$www = '<a href="'.$row['user_website'].'" target="_blank"><img class="tooltip-html copyright" alt="Male" title="Visit '.$username.'\'s Web Portal" width="30"alt="online" src="themes/'.$theme_name.'/forums/images/status/icons8-website-512.png" /></a>';
+		$www = '<a href="'.$row['user_website'].'" target="_blank"><img class="tooltip-html copyright" alt="Male" title="Visit '.$nuke_username.'\'s Web Portal" width="30"alt="online" src="themes/'.$theme_name.'/forums/images/status/icons8-website-512.png" /></a>';
 		else
 		$www = '';
 		
@@ -330,10 +330,10 @@ if($row = $nuke_db->sql_fetchrow($result)):
          ******************************************************/
 		
 		# Number of Posts
-		$posts = ($row['user_posts']) ? '<a href="modules.php?name=Forums&file=search&search_author='.$username.'">'.$row['user_posts'].'</a>' : 0;
+		$posts = ($row['user_posts']) ? '<a href="modules.php?name=Forums&file=search&search_author='.$nuke_username.'">'.$row['user_posts'].'</a>' : 0;
 		
 		# Private message link
-		$pm = '<a href="'.append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$user_id").'"><img class="tooltip-html copyright" alt="Male" title="Send A Private Message To '.$username.'" width="30"alt="online" src="themes/'.$theme_name.'/forums/images/status/icons8-send-80.png" /></a>';
+		$pm = '<a href="'.append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$nuke_user_id").'"><img class="tooltip-html copyright" alt="Male" title="Send A Private Message To '.$nuke_username.'" width="30"alt="online" src="themes/'.$theme_name.'/forums/images/status/icons8-send-80.png" /></a>';
 		
 		# does the person have a dick START
 		if($row['user_gender'] ==1)
@@ -347,7 +347,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
 		
 		# facebook mod v1.0 START
 		if(!empty($row['user_facebook']))
-		$facebook = '<a href="https://www.facebook.com/'.$row['user_facebook'].'" target="_blank"><img class="tooltip-html copyright" alt="Male" title="View '.$username.'\'s Facebook Page" width="30"alt="online" src="themes/'.$theme_name.'/forums/images/status/icons8-facebook-80.png" /></a>';
+		$facebook = '<a href="https://www.facebook.com/'.$row['user_facebook'].'" target="_blank"><img class="tooltip-html copyright" alt="Male" title="View '.$nuke_username.'\'s Facebook Page" width="30"alt="online" src="themes/'.$theme_name.'/forums/images/status/icons8-facebook-80.png" /></a>';
 		else
 		$facebook = '';
 		# facebook mod v1.0 END
@@ -371,8 +371,8 @@ if($row = $nuke_db->sql_fetchrow($result)):
        endif;
        # Mod: Online/Offline/Hidden v2.2.7 END
         
-		if(strlen($user_from) == 6)
-		$user_from = 'The InterWebs';
+		if(strlen($nuke_user_from) == 6)
+		$nuke_user_from = 'The InterWebs';
 
         if (!is_admin())
         if(!$row['user_allow_viewonline'])
@@ -380,12 +380,12 @@ if($row = $nuke_db->sql_fetchrow($result)):
 		
         # Alternate the row class
         $row_class = ( !($i % 2) ) ? 'row2' : 'row3';
-		$template->assign_block_vars('memberrow', array(
+		$template_nuke->assign_block_vars('memberrow', array(
 			'ROW_NUMBER' => $i + ( $start + 1 ),
 			'ROW_CLASS' => $row_class,
 			'USERNAME' => UsernameColor($row['username']),
-			'FROM' => $user_from,
-			'FLAG' => $user_flag,
+			'FROM' => $nuke_user_from,
+			'FLAG' => $nuke_user_flag,
 			'JOINED' => $joined,
 			'AGE' => $age,
 			'POSTS' => $posts,
@@ -396,7 +396,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
 			'FACEBOOK' => $facebook,
 			'STATUS' => $online_status,
 			'CURRENT_AVATAR' => '<img class="rounded-corners-header" height="auto" width="30" src="'.$current_avatar.'">&nbsp;',
-			'U_VIEWPROFILE' => "modules.php?name=Profile&mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$user_id")
+			'U_VIEWPROFILE' => "modules.php?name=Profile&mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id")
 		);
 		$i++;
 	} 
@@ -404,7 +404,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
 	$nuke_db->sql_freeresult($result);
 
 else:
-	$template->assign_block_vars('no_username', array(
+	$template_nuke->assign_block_vars('no_username', array(
 		'NO_USER_ID_SPECIFIED' => $lang['No_user_id_specified'])
 	);
 endif;
@@ -477,13 +477,13 @@ if($total['total'] > $board_config['topics_per_page'] && $mode != 'topten' || $b
 			$pagination .= '<a href="'.$nuke_redirect.'&amp;page='.$j.'">'.$lang['Goto_page_next'].'</a>';
 		endif;
 	endif;
-	$template->assign_block_vars('pagination', array(
+	$template_nuke->assign_block_vars('pagination', array(
 		'PAGINATION'	=> $pagination,
 		'TOTAL' 		=> $total_found,
 		'PERPAGE'		=> $board_config['topics_per_page'])
 	);
 endif;
-$template->pparse('body');
+$template_nuke->pparse('body');
 //echo '<span style="float:right; padding-right:5px;"><a class="font-family" href="#module-copyright-popup" rel="modal:open">'.str_replace('_',' ',$name).' &#169;</a></span><br />';
 include(NUKE_INCLUDE_DIR.'page_tail.php');
 ?>

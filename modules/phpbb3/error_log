@@ -1,0 +1,82 @@
+[09-Sep-2022 08:23:58 UTC] PHP Fatal error:  Uncaught Error: Class 'Symfony\Component\Config\ConfigCache' not found in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php:157
+Stack trace:
+#0 /home/barebones/public_html/modules/phpbb3/common.php(117): phpbb\di\container_builder->get_container()
+#1 /home/barebones/public_html/modules/phpbb3/index.php(23): include('/home/barebones...')
+#2 {main}
+  thrown in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php on line 157
+[09-Sep-2022 08:24:02 UTC] PHP Fatal error:  Uncaught Error: Class 'Symfony\Component\Config\ConfigCache' not found in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php:157
+Stack trace:
+#0 /home/barebones/public_html/modules/phpbb3/common.php(117): phpbb\di\container_builder->get_container()
+#1 /home/barebones/public_html/modules/phpbb3/index.php(23): include('/home/barebones...')
+#2 {main}
+  thrown in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php on line 157
+[09-Sep-2022 08:24:18 UTC] PHP Fatal error:  Uncaught Error: Class 'Symfony\Component\Config\ConfigCache' not found in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php:157
+Stack trace:
+#0 /home/barebones/public_html/modules/phpbb3/common.php(117): phpbb\di\container_builder->get_container()
+#1 /home/barebones/public_html/modules/phpbb3/index.php(23): include('/home/barebones...')
+#2 {main}
+  thrown in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php on line 157
+[09-Sep-2022 08:26:52 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:52 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:55 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:55 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:57 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:57 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:58 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:58 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:58 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:58 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:59 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:59 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:59 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:59 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:59 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:26:59 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:27:00 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:27:00 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:27:00 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:27:00 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:27:01 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:27:01 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:27:01 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:27:01 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:27:01 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:27:01 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:27:02 UTC] PHP Warning:  require(main.php): failed to open stream: No such file or directory in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:27:02 UTC] PHP Fatal error:  require(): Failed opening required 'main.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/barebones/public_html/modules/phpbb3/common.php on line 23
+[09-Sep-2022 08:31:27 UTC] PHP Fatal error:  Uncaught Error: Class 'Symfony\Component\Config\ConfigCache' not found in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php:157
+Stack trace:
+#0 /home/barebones/public_html/modules/phpbb3/common.php(117): phpbb\di\container_builder->get_container()
+#1 /home/barebones/public_html/modules/phpbb3/index.php(23): include('/home/barebones...')
+#2 {main}
+  thrown in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php on line 157
+[09-Sep-2022 08:32:41 UTC] PHP Fatal error:  Uncaught Error: Class 'Symfony\Component\Config\ConfigCache' not found in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php:157
+Stack trace:
+#0 /home/barebones/public_html/modules/phpbb3/common.php(117): phpbb\di\container_builder->get_container()
+#1 /home/barebones/public_html/modules/phpbb3/index.php(23): include('/home/barebones...')
+#2 {main}
+  thrown in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php on line 157
+[09-Sep-2022 08:32:42 UTC] PHP Fatal error:  Uncaught Error: Class 'Symfony\Component\Config\ConfigCache' not found in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php:157
+Stack trace:
+#0 /home/barebones/public_html/modules/phpbb3/common.php(117): phpbb\di\container_builder->get_container()
+#1 /home/barebones/public_html/modules/phpbb3/index.php(23): include('/home/barebones...')
+#2 {main}
+  thrown in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php on line 157
+[09-Sep-2022 08:32:43 UTC] PHP Fatal error:  Uncaught Error: Class 'Symfony\Component\Config\ConfigCache' not found in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php:157
+Stack trace:
+#0 /home/barebones/public_html/modules/phpbb3/common.php(117): phpbb\di\container_builder->get_container()
+#1 /home/barebones/public_html/modules/phpbb3/index.php(23): include('/home/barebones...')
+#2 {main}
+  thrown in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php on line 157
+[09-Sep-2022 08:32:44 UTC] PHP Fatal error:  Uncaught Error: Class 'Symfony\Component\Config\ConfigCache' not found in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php:157
+Stack trace:
+#0 /home/barebones/public_html/modules/phpbb3/common.php(117): phpbb\di\container_builder->get_container()
+#1 /home/barebones/public_html/modules/phpbb3/index.php(23): include('/home/barebones...')
+#2 {main}
+  thrown in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php on line 157
+[09-Sep-2022 08:32:45 UTC] PHP Fatal error:  Uncaught Error: Class 'Symfony\Component\Config\ConfigCache' not found in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php:157
+Stack trace:
+#0 /home/barebones/public_html/modules/phpbb3/common.php(117): phpbb\di\container_builder->get_container()
+#1 /home/barebones/public_html/modules/phpbb3/index.php(23): include('/home/barebones...')
+#2 {main}
+  thrown in /home/barebones/public_html/modules/phpbb3/phpbb/di/container_builder.php on line 157

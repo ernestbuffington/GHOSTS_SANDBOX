@@ -146,16 +146,16 @@ if(!($forum_row = $nuke_db->sql_fetchrow($result)))
 message_die(NUKE_GENERAL_MESSAGE, 'Forum_not_exist');
 
 # Start session management
-$userdata = session_pagestart($user_ip, $forum_id);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, $forum_id);
+init_userprefs($nuke_userdata);
 # End session management
 
 # Start auth check
 $is_auth = array();
-$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata, $forum_row);
+$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $nuke_userdata, $forum_row);
 
 if(!$is_auth['auth_read'] || !$is_auth['auth_view']):
-        if (!$userdata['session_logged_in']):
+        if (!$nuke_userdata['session_logged_in']):
                 $nuke_redirect = NUKE_POST_FORUM_URL . "=$forum_id" . ( ( isset($start) ) ? "&start=$start" : '' );
                 nuke_redirect(append_sid("login.$phpEx?nuke_redirect=viewforum.$phpEx&$nuke_redirect", true));
         endif;
@@ -166,7 +166,7 @@ endif;
 # End of auth check
 
 # Password check
-if(!$is_auth['auth_mod'] && $userdata['user_level'] != NUKE_ADMIN):
+if(!$is_auth['auth_mod'] && $nuke_userdata['user_level'] != NUKE_ADMIN):
 	$nuke_redirect = str_replace("&amp;", "&", preg_replace('#.*?([a-z]+?\.' . $phpEx . '.*?)$#i', '\1', htmlspecialchars($HTTP_SERVER_VARS['REQUEST_URI'])));
 	if($HTTP_POST_VARS['cancel']):
 		nuke_redirect(append_sid("index.$phpEx"));
@@ -188,7 +188,7 @@ if($mark_read == 'topics'):
 	$old_forum_id = $forum_id;
     # Mod: Simple Subforums v1.0.1 END
 
-        if($userdata['session_logged_in']):
+        if($nuke_userdata['session_logged_in']):
                 $sql = "SELECT p.post_time AS last_post
                         FROM (" . NUKE_POSTS_TABLE . " p, " . NUKE_BB_TOPICS_TABLE . " t)
                         WHERE t.forum_id = $forum_id
@@ -206,7 +206,7 @@ if($mark_read == 'topics'):
                           unset($tracking_forums[key($tracking_forums)]);
                         endif;
 
-                        if($row['last_post'] > $userdata['user_lastvisit']):
+                        if($row['last_post'] > $nuke_userdata['user_lastvisit']):
                           $tracking_forums[$forum_id] = time();
 				          # Mod: Simple Subforums v1.0.1 START
 				          //setcookie($board_config['cookie_name'] . '_f', serialize($tracking_forums), 0, $board_config['cookie_path'], 
@@ -225,7 +225,7 @@ if($mark_read == 'topics'):
 		        $forum_id = $old_forum_id;
                 # Mod: Simple Subforums v1.0.1 END
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         'META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id").'">')
                 );
         endif;
@@ -461,7 +461,7 @@ $replacement_word = array();
 obtain_word_list($orig_word, $replacement_word);
 
 # Post URL generation for templating vars
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'L_DISPLAY_TOPICS' => $lang['Display_topics'],
     'U_POST_NEW_TOPIC' => append_sid("posting.$phpEx?mode=newtopic&amp;".NUKE_POST_FORUM_URL."=$forum_id"),
     'S_SELECT_TOPIC_DAYS' => $select_topic_days,
@@ -491,8 +491,8 @@ $nav_links['up'] = array(
 # Dump out the page header and load viewforum template
 define('SHOW_ONLINE', true);
 $page_title = $lang['View_forum'].' - '.$forum_row['forum_name'];
-include("includes/page_header.$phpEx");
-$template->set_filenames(array(
+include("includes/nuke_page_header.$phpEx");
+$template_nuke->set_filenames(array(
     'body' => 'viewforum_body.tpl')
 );
 
@@ -501,7 +501,7 @@ $all_forums = array();
 make_jumpbox_ref('viewforum.'.$phpEx, $forum_id, $all_forums);
 # Mod: Simple Subforums v1.0.1 END
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'FORUM_ID' => $forum_id,
         'FORUM_NAME' => $forum_row['forum_name'],
         
@@ -562,7 +562,7 @@ if($forum_row['forum_parent']):
 	$parent_id = $forum_row['forum_parent'];
 	for($i = 0; $i < count($all_forums); $i++):
 		if($all_forums[$i]['forum_id'] == $parent_id):
-			$template->assign_vars(array(
+			$template_nuke->assign_vars(array(
 				'PARENT_FORUM'			=> 1,
 				'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
 				'PARENT_FORUM_NAME'		=> $all_forums[$i]['forum_name'],
@@ -578,12 +578,12 @@ else:
 
 	if(count($sub_list)):
 		$sub_list[] = $forum_id;
-		$template->vars['U_MARK_READ'] .= '&amp;mark_list=' . implode(',', $sub_list);
+		$template_nuke->vars['U_MARK_READ'] .= '&amp;mark_list=' . implode(',', $sub_list);
 	endif;
 endif;
 
 # assign additional variables for subforums mod
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 	'NUM_TOPICS' => $forum_row['forum_topics'],
 	'CAN_POST' => $is_auth['auth_post'] ? 1 : 0,
 	'L_FORUM' => $lang['Forum'],
@@ -594,7 +594,7 @@ $template->assign_vars(array(
 
 # Okay, lets dump out the page ...
 # Mod: Topic display order v1.0.2 START
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'S_DISPLAY_ORDER' => $s_display_order,
     )
 );
@@ -678,9 +678,9 @@ if($total_topics):
 
        $newest_post_img = '';
 
-       if($userdata['session_logged_in']):
+       if($nuke_userdata['session_logged_in']):
        
-         if($topic_rowset[$i]['post_time'] > $userdata['user_lastvisit']):
+         if($topic_rowset[$i]['post_time'] > $nuke_userdata['user_lastvisit']):
             if(!empty($tracking_topics) || !empty($tracking_forums) || isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f_all'])):
             
                $unread_topics = true;
@@ -780,7 +780,7 @@ if($total_topics):
     $row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
     $row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
-    $template->assign_block_vars('topicrow', array(
+    $template_nuke->assign_block_vars('topicrow', array(
        # Mod: Post Icons v1.0.1 START
 	   'ICON' => $icon,
 	   'ICON_ID' => $icon_ID,
@@ -814,7 +814,7 @@ if($total_topics):
 
        # Mod: Separate Announcements & Sticky v2.0.0a START
        if(array_key_exists($i, $dividers)):
-          $template->assign_block_vars('topicrow.divider', array(
+          $template_nuke->assign_block_vars('topicrow.divider', array(
           'L_DIV_HEADERS' => $dividers[$i])
            );
        endif;
@@ -823,7 +823,7 @@ if($total_topics):
 	 endfor;
         
 		$topics_count -= $total_announcements;
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
 
        # Mod: Topic display order v1.0.2 START
           'PAGINATION' => generate_pagination("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id&amp;
@@ -836,10 +836,10 @@ if($total_topics):
 else:
     # No topics
     $no_topics_msg = ($forum_row['forum_status'] == NUKE_FORUM_LOCKED) ? $lang['Forum_locked'] : $lang['No_topics_post_one'];
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_NO_TOPICS' => $no_topics_msg)
     );
-    $template->assign_block_vars('switch_no_topics', array());
+    $template_nuke->assign_block_vars('switch_no_topics', array());
 endif;
 
 # Mod: Simple Subforums v1.0.1 START
@@ -890,7 +890,7 @@ $nuke_db->sql_freeresult($result);
 if(($total_forums = count($subforum_data)) > 0):
 	# Find which forums are visible for this user
 	$is_auth_ary = array();
-	$is_auth_ary = auth(NUKE_AUTH_VIEW, NUKE_AUTH_LIST_ALL, $userdata, $subforum_data);
+	$is_auth_ary = auth(NUKE_AUTH_VIEW, NUKE_AUTH_LIST_ALL, $nuke_userdata, $subforum_data);
 	$display_forums = false;
 
 	for($j = 0; $j < $total_forums; $j++):
@@ -904,8 +904,8 @@ endif;
 
 if($total_forums)
 {
-	$template->assign_var('HAS_SUBFORUMS', 1);
-	$template->assign_block_vars('catrow', array(
+	$template_nuke->assign_var('HAS_SUBFORUMS', 1);
+	$template_nuke->assign_block_vars('catrow', array(
 		'CAT_ID'	=> $forum_id,
 		'CAT_DESC'	=> $forum_row['forum_name'],
 		'U_VIEWCAT' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL ."=$forum_id"),
@@ -914,11 +914,11 @@ if($total_forums)
 	
 	# Obtain a list of topic ids which contain
 	# posts made since user last visited
-	if($userdata['session_logged_in']):
+	if($nuke_userdata['session_logged_in']):
 		$sql = "SELECT t.forum_id, t.topic_id, p.post_time 
 			FROM ".NUKE_BB_TOPICS_TABLE." t, ".NUKE_POSTS_TABLE." p 
 			WHERE p.post_id = t.topic_last_post_id 
-				AND p.post_time > ".$userdata['user_lastvisit']." 
+				AND p.post_time > ".$nuke_userdata['user_lastvisit']." 
 				AND t.topic_moved_id = 0"; 
 
 		if(!($result = $nuke_db->sql_query($sql)))
@@ -982,7 +982,7 @@ if($total_forums)
 				$folder_image = $images['forum_locked']; 
 				$folder_alt = $lang['Forum_locked'];
 			else:
-				if($userdata['session_logged_in']):
+				if($nuke_userdata['session_logged_in']):
 					if(!empty($new_topic_data[$subforum_id])):
 						$subforum_last_post_time = 0;
 
@@ -1047,7 +1047,7 @@ if($total_forums)
 			$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
-			$template->assign_block_vars('catrow.forumrow',	array(
+			$template_nuke->assign_block_vars('catrow.forumrow',	array(
 				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class,
 				'FORUM_FOLDER_IMG' => $folder_image, 
@@ -1077,7 +1077,7 @@ include($phpbb2_root_path . 'glance.'.$phpEx);
 # Mod: At a Glance Option v1.0.0 END
 
 # Parse the page and print
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 # Page footer
 include("includes/page_tail.$phpEx");

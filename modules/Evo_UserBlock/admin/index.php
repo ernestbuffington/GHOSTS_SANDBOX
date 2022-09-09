@@ -52,7 +52,7 @@ $Sajax->sajax_export("sajax_update");
 $Sajax->sajax_handle_client_request();
 
 function evouserinfo_drawlists () {
-    global $lang_evo_userblock, $admin_file, $Default_Theme, $module_name, $board_config, $userinfo, $evouserinfo_ec, $admlang;
+    global $lang_evo_userblock, $admin_file, $Default_Theme, $module_name, $board_config, $nuke_userinfo, $evouserinfo_ec, $admlang;
 
     $active = evouserinfo_getactive();
     $inactive = evouserinfo_getinactive();
@@ -118,7 +118,7 @@ function evouserinfo_drawlists () {
     if(is_array($active)) {
         foreach ($active as $element) {
             if(!empty($element['image'])) {
-                $content .= "<li id=\"".$element['filename']."\" ondblclick=\"window.location.href='".$admin_file.".php?op=evo-userinfo&amp;file=".$element['filename']."'\"><center><img src=\"".$board_config['avatar_gallery_path']."/".$userinfo['user_avatar']."\"></center></li>\n";
+                $content .= "<li id=\"".$element['filename']."\" ondblclick=\"window.location.href='".$admin_file.".php?op=evo-userinfo&amp;file=".$element['filename']."'\"><center><img src=\"".$board_config['avatar_gallery_path']."/".$nuke_userinfo['user_avatar']."\"></center></li>\n";
             } else {
                 if($element['filename'] != 'Break') {
                     $addon = evouserinfo_load_addon($element['filename']);

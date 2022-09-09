@@ -165,8 +165,8 @@ else if ( $mode == 'smilies' )
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_POSTING);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_POSTING);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -454,7 +454,7 @@ if ( ($result = $nuke_db->sql_query($sql)) && ($post_info = $nuke_db->sql_fetchr
 
 
 
-		$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata, $post_info);
+		$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $nuke_userdata, $post_info);
 
 
 
@@ -488,7 +488,7 @@ if ( ($result = $nuke_db->sql_query($sql)) && ($post_info = $nuke_db->sql_fetchr
 
  ******************************************************/
 
-				log_action($lang['Unlock'], '', $t_id, $userdata['user_id'], '', '');
+				log_action($lang['Unlock'], '', $t_id, $nuke_userdata['user_id'], '', '');
 
 /*****[END]********************************************
 
@@ -516,7 +516,7 @@ if ( ($result = $nuke_db->sql_query($sql)) && ($post_info = $nuke_db->sql_fetchr
 
  ******************************************************/
 
-				log_action($lang['Lock'], '', $t_id, $userdata['user_id'], '', '');
+				log_action($lang['Lock'], '', $t_id, $nuke_userdata['user_id'], '', '');
 
 /*****[END]********************************************
 
@@ -586,7 +586,7 @@ if ( ($result = $nuke_db->sql_query($sql)) && ($post_info = $nuke_db->sql_fetchr
 
 
 
-				$post_data['poster_post'] = ( $post_info['poster_id'] == $userdata['user_id'] ) ? true : false;
+				$post_data['poster_post'] = ( $post_info['poster_id'] == $nuke_userdata['user_id'] ) ? true : false;
 
 				$post_data['first_post'] = ( $post_info['topic_first_post_id'] == $post_id ) ? true : false;
 
@@ -706,7 +706,7 @@ if ( ($result = $nuke_db->sql_query($sql)) && ($post_info = $nuke_db->sql_fetchr
 
 				//
 
-				if ( $post_info['poster_id'] != $userdata['user_id'] && !$is_auth['auth_mod'] )
+				if ( $post_info['poster_id'] != $nuke_userdata['user_id'] && !$is_auth['auth_mod'] )
 
 				{
 
@@ -804,7 +804,7 @@ if ( !$is_auth[$is_auth_type] )
 
 {
 
-		if ( $userdata['session_logged_in'] )
+		if ( $nuke_userdata['session_logged_in'] )
 
 		{
 
@@ -871,7 +871,7 @@ if ( !$is_auth[$is_auth_type] )
 /*****[BEGIN]******************************************
  [ Mod:    Password Protect Forums             v0.5.1 ]
  ******************************************************/
-if( !$is_auth['auth_mod'] && $userdata['user_level'] != NUKE_ADMIN )
+if( !$is_auth['auth_mod'] && $nuke_userdata['user_level'] != NUKE_ADMIN )
 {
 	$nuke_redirect = str_replace("&amp;", "&", preg_replace('#.*?([a-z]+?\.' . $phpEx . '.*?)$#i', '\1', htmlspecialchars($HTTP_SERVER_VARS['REQUEST_URI'])));
 	if( $HTTP_POST_VARS['cancel'] )
@@ -927,7 +927,7 @@ else
 
 {
 
-		$html_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_html']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == NUKE_ANONYMOUS ) ? $board_config['allow_html'] : $userdata['user_allowhtml'] );
+		$html_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_html']) ) ? 0 : TRUE ) : ( ( $nuke_userdata['user_id'] == NUKE_ANONYMOUS ) ? $board_config['allow_html'] : $nuke_userdata['user_allowhtml'] );
 
 }
 
@@ -945,7 +945,7 @@ else
 
 {
 
-		$bbcode_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_bbcode']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == NUKE_ANONYMOUS ) ? $board_config['allow_bbcode'] : $userdata['user_allowbbcode'] );
+		$bbcode_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_bbcode']) ) ? 0 : TRUE ) : ( ( $nuke_userdata['user_id'] == NUKE_ANONYMOUS ) ? $board_config['allow_bbcode'] : $nuke_userdata['user_allowbbcode'] );
 
 }
 
@@ -963,7 +963,7 @@ else
 
 {
 
-		$smilies_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_smilies']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == NUKE_ANONYMOUS ) ? $board_config['allow_smilies'] : $userdata['user_allowsmile'] );
+		$smilies_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_smilies']) ) ? 0 : TRUE ) : ( ( $nuke_userdata['user_id'] == NUKE_ANONYMOUS ) ? $board_config['allow_smilies'] : $nuke_userdata['user_allowsmile'] );
 
 }
 
@@ -981,7 +981,7 @@ else
 
 {
 
-		if ( $mode != 'newtopic' && $userdata['session_logged_in'] && $is_auth['auth_read'] )
+		if ( $mode != 'newtopic' && $nuke_userdata['session_logged_in'] && $is_auth['auth_read'] )
 
 		{
 
@@ -991,7 +991,7 @@ else
 
 						WHERE topic_id = '$topic_id'
 
-								AND user_id = " . $userdata['user_id'];
+								AND user_id = " . $nuke_userdata['user_id'];
 
 				if ( !($result = $nuke_db->sql_query($sql)) )
 
@@ -1003,7 +1003,7 @@ else
 
 
 
-				$notify_user = ( $nuke_db->sql_fetchrow($result) ) ? TRUE : $userdata['user_notify'];
+				$notify_user = ( $nuke_db->sql_fetchrow($result) ) ? TRUE : $nuke_userdata['user_notify'];
 
 		$nuke_db->sql_freeresult($result);
 
@@ -1013,7 +1013,7 @@ else
 
 		{
 
-				$notify_user = ( $userdata['session_logged_in'] && $is_auth['auth_read'] ) ? $userdata['user_notify'] : 0;
+				$notify_user = ( $nuke_userdata['session_logged_in'] && $is_auth['auth_read'] ) ? $nuke_userdata['user_notify'] : 0;
 
 		}
 
@@ -1021,7 +1021,7 @@ else
 
 
 
-$attach_sig = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['attach_sig']) ) ? TRUE : 0 ) : ( ( $userdata['user_id'] == NUKE_ANONYMOUS ) ? 0 : $userdata['user_attachsig'] );
+$attach_sig = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['attach_sig']) ) ? TRUE : 0 ) : ( ( $nuke_userdata['user_id'] == NUKE_ANONYMOUS ) ? 0 : $nuke_userdata['user_attachsig'] );
 
 
 
@@ -1067,7 +1067,7 @@ if ( ( $delete || $poll_delete || $mode == 'delete' ) && !$confirm )
 
 		$s_hidden_fields .= ( $delete || $mode == "delete" ) ? '<input type="hidden" name="mode" value="delete" />' : '<input type="hidden" name="mode" value="poll_delete" />';
 
-		$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+		$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
 
 
 
@@ -1081,11 +1081,11 @@ if ( ( $delete || $poll_delete || $mode == 'delete' ) && !$confirm )
 
 		//
 
-		include("includes/page_header.php");
+		include("includes/nuke_page_header.php");
 
 
 
-		$template->set_filenames(array(
+		$template_nuke->set_filenames(array(
 
 				'confirm_body' => 'confirm_body.tpl')
 
@@ -1093,7 +1093,7 @@ if ( ( $delete || $poll_delete || $mode == 'delete' ) && !$confirm )
 
 
 
-		$template->assign_vars(array(
+		$template_nuke->assign_vars(array(
 
 				'MESSAGE_TITLE' => $lang['Information'],
 
@@ -1115,7 +1115,7 @@ if ( ( $delete || $poll_delete || $mode == 'delete' ) && !$confirm )
 
 
 
-		$template->pparse('confirm_body');
+		$template_nuke->pparse('confirm_body');
 
 
 
@@ -1135,7 +1135,7 @@ else if ( $mode == 'thank' )
 
 	$topic_id = intval($HTTP_GET_VARS[NUKE_POST_TOPIC_URL]);
 
-		if ( !($userdata['session_logged_in']) )
+		if ( !($nuke_userdata['session_logged_in']) )
 
 		{
 
@@ -1157,7 +1157,7 @@ else if ( $mode == 'thank' )
 
 
 
-		$userid = $userdata['user_id'];
+		$nuke_userid = $nuke_userdata['user_id'];
 
 		$thanks_date = time();
 
@@ -1171,7 +1171,7 @@ else if ( $mode == 'thank' )
 
 				WHERE topic_id = $topic_id
 
-				AND topic_poster = $userid";
+				AND topic_poster = $nuke_userid";
 
 		if ( !($result = $nuke_db->sql_query($sql)) )
 
@@ -1207,7 +1207,7 @@ else if ( $mode == 'thank' )
 
 				WHERE topic_id = $topic_id
 
-				AND user_id = $userid";
+				AND user_id = $nuke_userid";
 
 		if ( !($result = $nuke_db->sql_query($sql)) )
 
@@ -1227,7 +1227,7 @@ else if ( $mode == 'thank' )
 
 			$sql = "INSERT INTO " . NUKE_THANKS_TABLE . " (topic_id, user_id, thanks_time) 
 
-			VALUES ('" . $topic_id . "', '" . $userid . "', " . $thanks_date . ") ";
+			VALUES ('" . $topic_id . "', '" . $nuke_userid . "', " . $thanks_date . ") ";
 
 			if ( !($result = $nuke_db->sql_query($sql)) )
 
@@ -1253,7 +1253,7 @@ else if ( $mode == 'thank' )
 
 
 
-		$template->assign_vars(array(
+		$template_nuke->assign_vars(array(
 
 			'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">')
 
@@ -1329,7 +1329,7 @@ else if ( $mode == 'vote' )
 
 								WHERE vote_id = '$vote_id'
 
-										AND vote_user_id = " . $userdata['user_id'];
+										AND vote_user_id = " . $nuke_userdata['user_id'];
 
 			if ( !($result2 = $nuke_db->sql_query($sql)) )
 
@@ -1371,7 +1371,7 @@ else if ( $mode == 'vote' )
 
 								$sql = "INSERT INTO " . NUKE_VOTE_USERS_TABLE . " (vote_id, vote_user_id, vote_user_ip, vote_cast)
 
-										VALUES ('$vote_id', " . $userdata['user_id'] . ", '$user_ip', '$vote_option_id')";
+										VALUES ('$vote_id', " . $nuke_userdata['user_id'] . ", '$nuke_user_ip', '$vote_option_id')";
 
 /*****[END]********************************************
 
@@ -1417,7 +1417,7 @@ else if ( $mode == 'vote' )
 
 
 
-				$template->assign_vars(array(
+				$template_nuke->assign_vars(array(
 
 						'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">')
 
@@ -1455,7 +1455,7 @@ else if ( $submit || $confirm )
 
 		// session id check
 
-		// if ($sid == '' || $sid != $userdata['session_id'])
+		// if ($sid == '' || $sid != $nuke_userdata['session_id'])
 
 		// {
 
@@ -1475,7 +1475,7 @@ else if ( $submit || $confirm )
 
  ******************************************************/
 
-					$username = ( !empty($HTTP_POST_VARS['username']) ) ? $HTTP_POST_VARS['username'] : '';
+					$nuke_username = ( !empty($HTTP_POST_VARS['username']) ) ? $HTTP_POST_VARS['username'] : '';
 
 					$subject = ( !empty($HTTP_POST_VARS['subject']) ) ? trim($HTTP_POST_VARS['subject']) : '';
 
@@ -1505,7 +1505,7 @@ else if ( $submit || $confirm )
 
 
 
-					prepare_post($mode, $post_data, $bbcode_on, $html_on, $smilies_on, $error_msg, $username, $bbcode_uid, $subject, $message, $poll_title, $poll_options, $poll_length, $poll_view_toggle);
+					prepare_post($mode, $post_data, $bbcode_on, $html_on, $smilies_on, $error_msg, $nuke_username, $bbcode_uid, $subject, $message, $poll_title, $poll_options, $poll_length, $poll_view_toggle);
 
 
 
@@ -1525,7 +1525,7 @@ else if ( $submit || $confirm )
 
  ******************************************************/
 
-						submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $poll_id, $topic_type, $bbcode_on, $html_on, $smilies_on, $attach_sig, $bbcode_uid, str_replace("\'", "''", $username), str_replace("\'", "''", $subject), str_replace("\'", "''", $message), str_replace("\'", "''", $poll_title), $poll_options, $poll_length, $poll_view_toggle, $post_icon);
+						submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $poll_id, $topic_type, $bbcode_on, $html_on, $smilies_on, $attach_sig, $bbcode_uid, str_replace("\'", "''", $nuke_username), str_replace("\'", "''", $subject), str_replace("\'", "''", $message), str_replace("\'", "''", $poll_title), $poll_options, $poll_length, $poll_view_toggle, $post_icon);
 
 /*****[END]********************************************
 
@@ -1577,7 +1577,7 @@ else if ( $submit || $confirm )
 
 					   {
 
-							log_action($lang['Edit_Post'], '', $topic_id, $userdata['user_id'], '', '');
+							log_action($lang['Edit_Post'], '', $topic_id, $nuke_userdata['user_id'], '', '');
 
 					   }
 
@@ -1595,7 +1595,7 @@ else if ( $submit || $confirm )
 
 				case 'reply':
 
-						$username = ( !empty($HTTP_POST_VARS['username']) ) ? $HTTP_POST_VARS['username'] : '';
+						$nuke_username = ( !empty($HTTP_POST_VARS['username']) ) ? $HTTP_POST_VARS['username'] : '';
 
 						$subject = ( !empty($HTTP_POST_VARS['subject']) ) ? trim($HTTP_POST_VARS['subject']) : '';
 
@@ -1625,7 +1625,7 @@ else if ( $submit || $confirm )
 
 
 
-						prepare_post($mode, $post_data, $bbcode_on, $html_on, $smilies_on, $error_msg, $username, $bbcode_uid, $subject, $message, $poll_title, $poll_options, $poll_length, $poll_view_toggle);
+						prepare_post($mode, $post_data, $bbcode_on, $html_on, $smilies_on, $error_msg, $nuke_username, $bbcode_uid, $subject, $message, $poll_title, $poll_options, $poll_length, $poll_view_toggle);
 
 
 
@@ -1651,7 +1651,7 @@ else if ( $submit || $confirm )
 
 								/*--FNA REPLACE 2--*/
 
-								submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $poll_id, $topic_type, $bbcode_on, $html_on, $smilies_on, $attach_sig, $bbcode_uid, str_replace("\'", "''", $username), str_replace("\'", "''", $subject), str_replace("\'", "''", $message), str_replace("\'", "''", $poll_title), $poll_options, $poll_length, $poll_view_toggle, $post_icon);
+								submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $poll_id, $topic_type, $bbcode_on, $html_on, $smilies_on, $attach_sig, $bbcode_uid, str_replace("\'", "''", $nuke_username), str_replace("\'", "''", $subject), str_replace("\'", "''", $message), str_replace("\'", "''", $poll_title), $poll_options, $poll_length, $poll_view_toggle, $post_icon);
 
 
 
@@ -1719,7 +1719,7 @@ else if ( $submit || $confirm )
 
 						{
 
-						   log_action($lang['Delete'], '', $topic_id, $userdata['user_id'], '', '');
+						   log_action($lang['Delete'], '', $topic_id, $nuke_userdata['user_id'], '', '');
 
 						}
 
@@ -1749,14 +1749,14 @@ else if ( $submit || $confirm )
 
 				{
 
-						$user_id = ( $mode == 'reply' || $mode == 'newtopic' ) ? $userdata['user_id'] : $post_data['poster_id'];
+						$nuke_user_id = ( $mode == 'reply' || $mode == 'newtopic' ) ? $nuke_userdata['user_id'] : $post_data['poster_id'];
 
-						update_post_stats($mode, $post_data, $forum_id, $topic_id, $post_id, $user_id);
+						update_post_stats($mode, $post_data, $forum_id, $topic_id, $post_id, $nuke_user_id);
 
 /*****[BEGIN]******************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/
-						update_reputations($mode, $user_id);
+						update_reputations($mode, $nuke_user_id);
 /*****[END]********************************************
  [ Mod:     Users Reputations System           v1.0.0 ]
  ******************************************************/
@@ -1791,7 +1791,7 @@ else if ( $submit || $confirm )
 /*****[BEGIN]******************************************
  [ Mod:     Log Moderator Actions              v1.1.6 ]
  ******************************************************/
-					log_action($lang['Lock'], '', $topic_id, $userdata['user_id'], '', '');
+					log_action($lang['Lock'], '', $topic_id, $nuke_userdata['user_id'], '', '');
 /*****[END]********************************************
  [ Mod:     Log Moderator Actions              v1.1.6 ]
  ******************************************************/
@@ -1821,7 +1821,7 @@ else if ( $submit || $confirm )
 						setcookie($board_config['cookie_name'] . '_t', serialize($tracking_topics), 0, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
 				}
 
-				$template->assign_vars(array(
+				$template_nuke->assign_vars(array(
 						'META' => $return_meta)
 				);
 				message_die(NUKE_GENERAL_MESSAGE, $return_message);
@@ -1830,7 +1830,7 @@ else if ( $submit || $confirm )
 
 if( $refresh || isset($HTTP_POST_VARS['del_poll_option']) || $error_msg != '' )
 {
-		$username = ( !empty($HTTP_POST_VARS['username']) ) ? htmlspecialchars(trim(stripslashes($HTTP_POST_VARS['username']))) : '';
+		$nuke_username = ( !empty($HTTP_POST_VARS['username']) ) ? htmlspecialchars(trim(stripslashes($HTTP_POST_VARS['username']))) : '';
 		$subject = ( !empty($HTTP_POST_VARS['subject']) ) ? htmlspecialchars(trim(stripslashes($HTTP_POST_VARS['subject']))) : '';
 		$message = ( !empty($HTTP_POST_VARS['message']) ) ? htmlspecialchars(trim(stripslashes($HTTP_POST_VARS['message']))) : '';
 
@@ -1874,12 +1874,12 @@ if( $refresh || isset($HTTP_POST_VARS['del_poll_option']) || $error_msg != '' )
 
 		if ( $mode == 'newtopic' || $mode == 'reply')
 		{
-				$user_sig = ( $userdata['user_sig'] != '' && $board_config['allow_sig'] ) ? $userdata['user_sig'] : '';
+				$nuke_user_sig = ( $nuke_userdata['user_sig'] != '' && $board_config['allow_sig'] ) ? $nuke_userdata['user_sig'] : '';
 		}
 		else if ( $mode == 'editpost' )
 		{
-				$user_sig = ( $post_info['user_sig'] != '' && $board_config['allow_sig'] ) ? $post_info['user_sig'] : '';
-				$userdata['user_sig_bbcode_uid'] = $post_info['user_sig_bbcode_uid'];
+				$nuke_user_sig = ( $post_info['user_sig'] != '' && $board_config['allow_sig'] ) ? $post_info['user_sig'] : '';
+				$nuke_userdata['user_sig_bbcode_uid'] = $post_info['user_sig_bbcode_uid'];
 		}
 
 		if( $preview )
@@ -1900,16 +1900,16 @@ if( $refresh || isset($HTTP_POST_VARS['del_poll_option']) || $error_msg != '' )
  [ Mod:     Smilies in Topic Titles Toggle     v1.0.0 ]
  ******************************************************/
 				$preview_subject = ($board_config['smilies_in_titles']) ? smilies_pass($subject) : $subject;
-				$preview_username = $username;
+				$preview_username = $nuke_username;
 
 				//
 				// Finalise processing as per viewtopic
 				//
 				if( !$html_on )
 				{
-						if( $user_sig != '' || !$userdata['user_allowhtml'] )
+						if( $nuke_user_sig != '' || !$nuke_userdata['user_allowhtml'] )
 						{
-								$user_sig = preg_replace('#(<)([\/]?.*?)(>)#is', '&lt;\2&gt;', $user_sig);
+								$nuke_user_sig = preg_replace('#(<)([\/]?.*?)(>)#is', '&lt;\2&gt;', $nuke_user_sig);
 						}
 				}
 
@@ -1917,18 +1917,18 @@ if( $refresh || isset($HTTP_POST_VARS['del_poll_option']) || $error_msg != '' )
  [ Mod:    Hide Mod                            v1.2.0 ]
  ******************************************************/
 				$valid = FALSE;
-				if( $userdata['session_logged_in'] ) {
+				if( $nuke_userdata['session_logged_in'] ) {
 					$sql = "SELECT p.poster_id, p.topic_id
 						FROM " . NUKE_POSTS_TABLE . " p
 						WHERE p.topic_id = $topic_id
-						AND p.poster_id = " . $userdata['user_id'];
+						AND p.poster_id = " . $nuke_userdata['user_id'];
 					$resultat = $nuke_db->sql_query($sql);
 					$valid = $nuke_db->sql_numrows($resultat) ? TRUE : FALSE;}
 
-				if( $attach_sig && $user_sig != '' && $userdata['user_sig_bbcode_uid'] )
+				if( $attach_sig && $nuke_user_sig != '' && $nuke_userdata['user_sig_bbcode_uid'] )
 				{
-						$user_sig = bbencode_second_pass($user_sig, $userdata['user_sig_bbcode_uid']);
-						$user_sig = bbencode_third_pass($user_sig, $userdata['user_sig_bbcode_uid'], $valid);
+						$nuke_user_sig = bbencode_second_pass($nuke_user_sig, $nuke_userdata['user_sig_bbcode_uid']);
+						$nuke_user_sig = bbencode_third_pass($nuke_user_sig, $nuke_userdata['user_sig_bbcode_uid'], $valid);
 				}
 
 				if( $bbcode_on )
@@ -1942,34 +1942,34 @@ if( $refresh || isset($HTTP_POST_VARS['del_poll_option']) || $error_msg != '' )
 
 				if( !empty($orig_word) )
 				{
-						$preview_username = ( !empty($username) ) ? preg_replace($orig_word, $replacement_word, $preview_username) : '';
+						$preview_username = ( !empty($nuke_username) ) ? preg_replace($orig_word, $replacement_word, $preview_username) : '';
 						$preview_subject = ( !empty($subject) ) ? preg_replace($orig_word, $replacement_word, $preview_subject) : '';
 						$preview_message = ( !empty($preview_message) ) ? preg_replace($orig_word, $replacement_word, $preview_message) : '';
 				}
 
-				if( $user_sig != '' )
+				if( $nuke_user_sig != '' )
 				{
-						$user_sig = make_clickable($user_sig);
+						$nuke_user_sig = make_clickable($nuke_user_sig);
 				}
 				$preview_message = make_clickable($preview_message);
 
 				if( $smilies_on )
 				{
-						if( $userdata['user_allowsmile'] && $user_sig != '' )
+						if( $nuke_userdata['user_allowsmile'] && $nuke_user_sig != '' )
 						{
-								$user_sig = smilies_pass($user_sig);
+								$nuke_user_sig = smilies_pass($nuke_user_sig);
 						}
 
 						$preview_message = smilies_pass($preview_message);
 				}
 
-				if( $attach_sig && $user_sig != '' )
+				if( $attach_sig && $nuke_user_sig != '' )
 				{
 /*****[BEGIN]******************************************
  [ Mod:     Advance Signature Divider Control  v1.0.0 ]
  ******************************************************/
 				$board_config['sig_line'] = str_replace('{THEME_NAME}', $ThemeSel, $board_config['sig_line']);
-				$preview_message = $preview_message . '<br />' . $board_config['sig_line'] . '<br />' . $user_sig;
+				$preview_message = $preview_message . '<br />' . $board_config['sig_line'] . '<br />' . $nuke_user_sig;
 /*****[END]********************************************
  [ Mod:     Advance Signature Divider Control  v1.0.0 ]
  ******************************************************/
@@ -1985,7 +1985,7 @@ if( $refresh || isset($HTTP_POST_VARS['del_poll_option']) || $error_msg != '' )
 
 				$preview_message = str_replace("\n", '<br />', $preview_message);
 
-				$template->set_filenames(array(
+				$template_nuke->set_filenames(array(
 						'preview' => 'posting_preview.tpl')
 				);
 
@@ -2005,7 +2005,7 @@ if( $refresh || isset($HTTP_POST_VARS['del_poll_option']) || $error_msg != '' )
  [ Mod:    Attachment Mod                      v2.4.1 ]
  ******************************************************/
 
-				$template->assign_vars(array(
+				$template_nuke->assign_vars(array(
 						'THEME_NAME' => $ThemeSel,
 						'TOPIC_TITLE' => $preview_subject,
 						'POST_SUBJECT' => $preview_subject,
@@ -2018,17 +2018,17 @@ if( $refresh || isset($HTTP_POST_VARS['del_poll_option']) || $error_msg != '' )
 						'L_POSTED' => $lang['Posted'],
 						'L_POST' => $lang['Post'])
 				);
-				$template->assign_var_from_handle('POST_PREVIEW_BOX', 'preview');
+				$template_nuke->assign_var_from_handle('POST_PREVIEW_BOX', 'preview');
 		}
 		else if( $error_msg != '' )
 		{
-				$template->set_filenames(array(
+				$template_nuke->set_filenames(array(
 						'reg_header' => 'error_body.tpl')
 				);
-				$template->assign_vars(array(
+				$template_nuke->assign_vars(array(
 						'ERROR_MESSAGE' => $error_msg)
 				);
-				$template->assign_var_from_handle('ERROR_BOX', 'reg_header');
+				$template_nuke->assign_var_from_handle('ERROR_BOX', 'reg_header');
 		}
 }
 else
@@ -2038,9 +2038,9 @@ else
 		//
 		if ( $mode == 'newtopic' )
 		{
-				$user_sig = ( $userdata['user_sig'] != '' ) ? $userdata['user_sig'] : '';
+				$nuke_user_sig = ( $nuke_userdata['user_sig'] != '' ) ? $nuke_userdata['user_sig'] : '';
 
-				$username = ($userdata['session_logged_in']) ? $userdata['username'] : '';
+				$nuke_username = ($nuke_userdata['session_logged_in']) ? $nuke_userdata['username'] : '';
 				$poll_title = '';
 				$poll_length = '';
 /*****[BEGIN]******************************************
@@ -2063,9 +2063,9 @@ else
 		}
 		else if ( $mode == 'reply' )
 		{
-				$user_sig = ( $userdata['user_sig'] != '' ) ? $userdata['user_sig'] : '';
+				$nuke_user_sig = ( $nuke_userdata['user_sig'] != '' ) ? $nuke_userdata['user_sig'] : '';
 
-				$username = ( $userdata['session_logged_in'] ) ? $userdata['username'] : '';
+				$nuke_username = ( $nuke_userdata['session_logged_in'] ) ? $nuke_userdata['username'] : '';
 				$subject = '';
 
 /*****[BEGIN]******************************************
@@ -2091,11 +2091,11 @@ else
 /*****[BEGIN]******************************************
  [ Mod:    Hide Mod                            v1.2.0 ]
  ******************************************************/
-if( !$userdata['session_logged_in'] ) {$message = hide_in_quote($message);}
+if( !$nuke_userdata['session_logged_in'] ) {$message = hide_in_quote($message);}
 else { $sql = "SELECT p.poster_id, p.topic_id
 FROM " . NUKE_POSTS_TABLE . " p
 WHERE p.topic_id = $topic_id
-AND p.poster_id = " . $userdata['user_id'];
+AND p.poster_id = " . $nuke_userdata['user_id'];
 $resultat = $nuke_db->sql_query($sql);
 if(!$nuke_db->sql_numrows($resultat)) {$message = hide_in_quote($message);}
 				}
@@ -2121,7 +2121,7 @@ if(!$nuke_db->sql_numrows($resultat)) {$message = hide_in_quote($message);}
 				if ( $mode == 'editpost' )
 				{
 						$attach_sig = ( $post_info['enable_sig'] && $post_info['user_sig'] != '' ) ? TRUE : 0;
-						$user_sig = $post_info['user_sig'];
+						$nuke_user_sig = $post_info['user_sig'];
 
 						$html_on = ( $post_info['enable_html'] ) ? true : false;
 						$bbcode_on = ( $post_info['enable_bbcode'] ) ? true : false;
@@ -2129,8 +2129,8 @@ if(!$nuke_db->sql_numrows($resultat)) {$message = hide_in_quote($message);}
 				}
 				else
 				{
-						$attach_sig = ( $userdata['user_attachsig'] ) ? TRUE : 0;
-						$user_sig = $userdata['user_sig'];
+						$attach_sig = ( $nuke_userdata['user_attachsig'] ) ? TRUE : 0;
+						$nuke_user_sig = $nuke_userdata['user_sig'];
 				}
 
 				if ( $post_info['bbcode_uid'] != '' )
@@ -2194,7 +2194,7 @@ if(!$nuke_db->sql_numrows($resultat)) {$message = hide_in_quote($message);}
 				}
 				else
 				{
-						$username = ( $post_info['user_id'] == NUKE_ANONYMOUS && !empty($post_info['post_username']) ) ? $post_info['post_username'] : '';
+						$nuke_username = ( $post_info['user_id'] == NUKE_ANONYMOUS && !empty($post_info['post_username']) ) ? $post_info['post_username'] : '';
 				}
 		}
 }
@@ -2202,9 +2202,9 @@ if(!$nuke_db->sql_numrows($resultat)) {$message = hide_in_quote($message);}
 //
 // Signature toggle selection
 //
-if( $user_sig != '' )
+if( $nuke_user_sig != '' )
 {
-		$template->assign_block_vars('switch_signature_checkbox', array());
+		$template_nuke->assign_block_vars('switch_signature_checkbox', array());
 }
 
 //
@@ -2213,7 +2213,7 @@ if( $user_sig != '' )
 if ( $board_config['allow_html'] )
 {
 		$html_status = $lang['HTML_is_ON'];
-		$template->assign_block_vars('switch_html_checkbox', array());
+		$template_nuke->assign_block_vars('switch_html_checkbox', array());
 }
 else
 {
@@ -2226,7 +2226,7 @@ else
 if ( $board_config['allow_bbcode'] )
 {
 		$bbcode_status = $lang['BBCode_is_ON'];
-		$template->assign_block_vars('switch_bbcode_checkbox', array());
+		$template_nuke->assign_block_vars('switch_bbcode_checkbox', array());
 }
 else
 {
@@ -2239,26 +2239,26 @@ else
 if ( $board_config['allow_smilies'] )
 {
 		$smilies_status = $lang['Smilies_are_ON'];
-		$template->assign_block_vars('switch_smilies_checkbox', array());
+		$template_nuke->assign_block_vars('switch_smilies_checkbox', array());
 }
 else
 {
 		$smilies_status = $lang['Smilies_are_OFF'];
 }
 
-if( !$userdata['session_logged_in'] || ( $mode == 'editpost' && $post_info['poster_id'] == NUKE_ANONYMOUS ) )
+if( !$nuke_userdata['session_logged_in'] || ( $mode == 'editpost' && $post_info['poster_id'] == NUKE_ANONYMOUS ) )
 {
-		$template->assign_block_vars('switch_username_select', array());
+		$template_nuke->assign_block_vars('switch_username_select', array());
 }
 
 //
 // Notify checkbox - only show if user is logged in
 //
-if ( $userdata['session_logged_in'] && $is_auth['auth_read'] )
+if ( $nuke_userdata['session_logged_in'] && $is_auth['auth_read'] )
 {
 		if ( $mode != 'editpost' || ( $mode == 'editpost' && $post_info['poster_id'] != NUKE_ANONYMOUS ) )
 		{
-				$template->assign_block_vars('switch_notify_checkbox', array());
+				$template_nuke->assign_block_vars('switch_notify_checkbox', array());
 		}
 }
 
@@ -2267,7 +2267,7 @@ if ( $userdata['session_logged_in'] && $is_auth['auth_read'] )
 //
 if ( $mode == 'editpost' && ( ( $is_auth['auth_delete'] && $post_data['last_post'] && ( !$post_data['has_poll'] || $post_data['edit_poll'] ) ) || $is_auth['auth_mod'] ) )
 {
-		$template->assign_block_vars('switch_delete_checkbox', array());
+		$template_nuke->assign_block_vars('switch_delete_checkbox', array());
 }
 
 /*****[BEGIN]******************************************
@@ -2277,18 +2277,18 @@ if ( ( $mode == 'editpost' || $mode == 'reply' || $mode == 'quote' || $mode == '
 {
 	if ( $post_info['topic_status'] == NUKE_TOPIC_LOCKED )
 	{
-		$template->assign_block_vars('switch_unlock_topic', array());
+		$template_nuke->assign_block_vars('switch_unlock_topic', array());
 
-		$template->assign_vars(array(
+		$template_nuke->assign_vars(array(
 			'L_UNLOCK_TOPIC' => $lang['Unlock_topic'],
 			'S_UNLOCK_CHECKED' => ( $unlock ) ? 'checked="checked"' : '')
 		);
 	}
 	else if ( $post_info['topic_status'] == NUKE_TOPIC_UNLOCKED )
 	{
-		$template->assign_block_vars('switch_lock_topic', array());
+		$template_nuke->assign_block_vars('switch_lock_topic', array());
 
-		$template->assign_vars(array(
+		$template_nuke->assign_vars(array(
 			'L_LOCK_TOPIC' => $lang['Lock_topic'],
 			'S_LOCK_CHECKED' => ( $lock ) ? 'checked="checked"' : '')
 		);
@@ -2309,8 +2309,8 @@ if ( ( $mode == 'editpost' || $mode == 'reply' || $mode == 'quote' || $mode == '
 	 } else {
 		 $checked = '';
 	 }
-	$template->assign_block_vars('switch_topic_glance_priority', array());
-		$template->assign_vars(array(
+	$template_nuke->assign_block_vars('switch_topic_glance_priority', array());
+		$template_nuke->assign_vars(array(
 			 'L_TOPIC_GLANCE_PRIORITY' => $lang['topic_glance_priority'],
 			 'TOPIC_GLANCE_PRIORITY_CHECKED' => $checked,
 			 )
@@ -2328,7 +2328,7 @@ if ( ( $mode == 'editpost' || $mode == 'reply' || $mode == 'quote' || $mode == '
 $topic_type_toggle = '';
 if ( $mode == 'newtopic' || ( $mode == 'editpost' && $post_data['first_post'] ) )
 {
-	$template->assign_block_vars('switch_type_toggle', array());
+	$template_nuke->assign_block_vars('switch_type_toggle', array());
 
 	/**
 	 * Responsive theme support added here
@@ -2390,7 +2390,7 @@ if ( $mode == 'newtopic' || ( $mode == 'editpost' && $post_data['first_post'] ) 
 }
 
 $hidden_form_fields = '<input type="hidden" name="mode" value="' . $mode . '" />';
-$hidden_form_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+$hidden_form_fields .= '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
 
 switch( $mode )
 {
@@ -2418,9 +2418,9 @@ generate_smilies('inline', NUKE_PAGE_POSTING);
 //
 // Include page header
 //
-include("includes/page_header.$phpEx");
+include("includes/nuke_page_header.$phpEx");
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
 		'body' => 'posting_body.tpl',
 		'pollbody' => 'posting_poll_body.tpl',
 		'reviewbody' => 'posting_topic_review.tpl')
@@ -2447,7 +2447,7 @@ if( $parent_id )
 	{
 		if( $all_forums[$i]['forum_id'] == $parent_id )
 		{
-			$template->assign_vars(array(
+			$template_nuke->assign_vars(array(
 				'PARENT_FORUM'			=> 1,
 				'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
 				'PARENT_FORUM_NAME'		=> $all_forums[$i]['forum_name'],
@@ -2459,7 +2459,7 @@ if( $parent_id )
  [ Mod:    Simple Subforums                    v1.0.1 ]
  ******************************************************/
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 		'FORUM_NAME' => $forum_name,
 /*****[BEGIN]******************************************
  [ Mod:     View Topic Name While Posting      v1.0.5 ]
@@ -2485,14 +2485,14 @@ $template->assign_vars(array(
 // This enables the forum/topic title to be output for posting
 // but not for privmsg (where it makes no sense)
 //
-$template->assign_block_vars('switch_not_privmsg', array());
+$template_nuke->assign_block_vars('switch_not_privmsg', array());
 
 /*****[BEGIN]******************************************
  [ Mod:     View Topic Name While Posting      v1.0.5 ]
  ******************************************************/
 if ( $mode == 'reply' || $mode == 'quote' || $mode == 'editpost' )
 {
-$template->assign_block_vars('switch_not_privmsg.reply_mode', array());
+$template_nuke->assign_block_vars('switch_not_privmsg.reply_mode', array());
 }
 /*****[END]********************************************
  [ Mod:     View Topic Name While Posting      v1.0.5 ]
@@ -2501,8 +2501,8 @@ $template->assign_block_vars('switch_not_privmsg.reply_mode', array());
 //
 // Output the data to the template
 //
-$template->assign_vars(array(
-		'USERNAME' => $username,
+$template_nuke->assign_vars(array(
+		'USERNAME' => $nuke_username,
 		'SUBJECT' => $subject,
 		'MESSAGE' => $message,
 		'HTML_STATUS' => $html_status,
@@ -2581,7 +2581,7 @@ for ($i = 0; $i < count($icones); $i++)
 	{
 
 		case NUKE_AUTH_ADMIN:
-			if ( $userdata['user_level'] == NUKE_ADMIN )
+			if ( $nuke_userdata['user_level'] == NUKE_ADMIN )
 			{
 				$icones_sort[] = $i;
 			}
@@ -2593,7 +2593,7 @@ for ($i = 0; $i < count($icones); $i++)
 			}
 			break;
 		case NUKE_AUTH_REG:
-			if ( $userdata['session_logged_in'] )
+			if ( $nuke_userdata['session_logged_in'] )
 			{
 				$icones_sort[] = $i;
 			}
@@ -2616,8 +2616,8 @@ if (!$found) $post_icon = 0;
 
 // send to template
 
-$template->assign_block_vars('switch_icon_checkbox', array());
-$template->assign_vars(array(
+$template_nuke->assign_block_vars('switch_icon_checkbox', array());
+$template_nuke->assign_vars(array(
 	'L_ICON_TITLE' => $lang['post_icon_title'],
 	/**
 	 * Responsive theme support added here.
@@ -2636,7 +2636,7 @@ if ( defined('BOOTSTRAP') ):
 
 		$nb_row = intval( (count($icones_sort)-1) / $icon_per_row )+1;
 		$offset = 0;
-		$template->assign_block_vars('switch_icon_checkbox.row',array(
+		$template_nuke->assign_block_vars('switch_icon_checkbox.row',array(
 		    'ICON_IMG'      => get_icon_title($icones[$icon_id]['ind'], 2)
 		));
 
@@ -2650,7 +2650,7 @@ if ( defined('BOOTSTRAP') ):
 
 				// send to cell or cell_none
 
-		        $template->assign_block_vars('switch_icon_checkbox.row.cell', array(
+		        $template_nuke->assign_block_vars('switch_icon_checkbox.row.cell', array(
 					'ICON_ID'		=> $icones[$icon_id]['ind'],
 					'ICON_CHECKED'	=> ($post_icon == $icones[$icon_id]['ind']) ? ' checked="checked"' : '',
 					'ICON_SELECTED' => ($post_icon == $icones[$icon_id]['ind']) ? ' selected="selected"' : '',
@@ -2672,7 +2672,7 @@ else:
 	for ($i=0; $i < $nb_row; $i++)
 	{
 
-		$template->assign_block_vars('switch_icon_checkbox.row',array());
+		$template_nuke->assign_block_vars('switch_icon_checkbox.row',array());
 
 		for ($j=0; ( ($j < $icon_per_row) && ($offset < count($icones_sort)) ); $j++)
 
@@ -2681,7 +2681,7 @@ else:
 
 			// send to cell or cell_none
 
-			$template->assign_block_vars('switch_icon_checkbox.row.cell', array(
+			$template_nuke->assign_block_vars('switch_icon_checkbox.row.cell', array(
 				'ICON_ID'		=> $icones[$icon_id]['ind'],
 				'ICON_CHECKED'	=> ($post_icon == $icones[$icon_id]['ind']) ? ' checked="checked"' : '',
 				'ICON_IMG'		=> get_icon_title($icones[$icon_id]['ind'], 2),
@@ -2705,7 +2705,7 @@ endif;
 //
 if( ( $mode == 'newtopic' || ( $mode == 'editpost' && $post_data['edit_poll']) ) && $is_auth['auth_pollcreate'] )
 {
-		$template->assign_vars(array(
+		$template_nuke->assign_vars(array(
 				'L_ADD_A_POLL' => $lang['Add_poll'],
 				'L_ADD_POLL_EXPLAIN' => $lang['Add_poll_explain'],
 				'L_POLL_QUESTION' => $lang['Poll_question'],
@@ -2739,14 +2739,14 @@ if( ( $mode == 'newtopic' || ( $mode == 'editpost' && $post_data['edit_poll']) )
 
 		if( $mode == 'editpost' && $post_data['edit_poll'] && $post_data['has_poll'])
 		{
-				$template->assign_block_vars('switch_poll_delete_toggle', array());
+				$template_nuke->assign_block_vars('switch_poll_delete_toggle', array());
 		}
 
 		if( !empty($poll_options) )
 		{
 				while( list($option_id, $option_text) = each($poll_options) )
 				{
-						$template->assign_block_vars('poll_option_rows', array(
+						$template_nuke->assign_block_vars('poll_option_rows', array(
 								'POLL_OPTION' => str_replace('"', '&quot;', $option_text),
 
 								'S_POLL_OPTION_NUM' => $option_id)
@@ -2754,7 +2754,7 @@ if( ( $mode == 'newtopic' || ( $mode == 'editpost' && $post_data['edit_poll']) )
 				}
 		}
 
-		$template->assign_var_from_handle('POLLBOX', 'pollbody');
+		$template_nuke->assign_var_from_handle('POLLBOX', 'pollbody');
 }
 
 //
@@ -2765,11 +2765,11 @@ if( $mode == 'reply' && $is_auth['auth_read'] )
 		require("includes/topic_review.$phpEx");
 		topic_review($topic_id, true);
 
-		$template->assign_block_vars('switch_inline_mode', array());
-		$template->assign_var_from_handle('TOPIC_REVIEW_BOX', 'reviewbody');
+		$template_nuke->assign_block_vars('switch_inline_mode', array());
+		$template_nuke->assign_var_from_handle('TOPIC_REVIEW_BOX', 'reviewbody');
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 include("includes/page_tail.$phpEx");
 

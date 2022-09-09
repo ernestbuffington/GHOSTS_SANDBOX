@@ -94,12 +94,12 @@ class myubrowse
                 }
         }
         
-        function uploads_getusrinfo_by_id($user_id) 
+        function uploads_getusrinfo_by_id($nuke_user_id) 
 		{
-            $sql = "SELECT * FROM ".$this->user_prefix."_users WHERE user_id = '$user_id'";
+            $sql = "SELECT * FROM ".$this->user_prefix."_users WHERE user_id = '$nuke_user_id'";
             $res = $this->db->sql_query($sql, FALSE);
-                   $userinfo = $this->db->sql_fetchrow($res);
-            return $userinfo;
+                   $nuke_userinfo = $this->db->sql_fetchrow($res);
+            return $nuke_userinfo;
         }
 
         function index() 
@@ -136,16 +136,16 @@ class myubrowse
                 include_once(NUKE_BASE_DIR.'footer.php');
         }
 
-        function browse($user_folder) 
+        function browse($nuke_user_folder) 
 		{
                 global $directory_mode, $nuke_user_prefix, $network_db, $network_prefix;
-		        $sql = "SELECT user_id FROM ".$this->user_prefix."_users WHERE username = '$user_folder'";
+		        $sql = "SELECT user_id FROM ".$this->user_prefix."_users WHERE username = '$nuke_user_folder'";
                 $res = $this->db->sql_query($sql, FALSE);
                 $row = $this->db->sql_fetchrow($res);
-                $userinfo = $this->uploads_getusrinfo_by_id($row['user_id']);
+                $nuke_userinfo = $this->uploads_getusrinfo_by_id($row['user_id']);
                 if(!eregi("/$", $this->direct) && !eregi("\\\\$", $this->direct)) $this->direct = $this->direct ."/";
                 $orig = $this->direct;
-                $this->direct = $this->direct.$userinfo['username']."/";
+                $this->direct = $this->direct.$nuke_userinfo['username']."/";
                 if(!eregi("/$", $url)) $url .= "/";
                         if(!is_dir($this->direct)) {
                     $old_umask = umask(0);
@@ -160,8 +160,8 @@ class myubrowse
                 include_once(NUKE_BASE_DIR.'header.php');
                 title(MYU_MYUPLOADS);
                 OpenTable();
-                $user_color = UsernameColor($user_folder);
-                echo "<table border=\"0\" width=\"100%\" cellspacing=\"2\" cellpadding=\"2\"><tr><td colspan=\"2\" align=\"center\"><span class=\"title\">$user_color</span></td></tr>"
+                $nuke_user_color = UsernameColor($nuke_user_folder);
+                echo "<table border=\"0\" width=\"100%\" cellspacing=\"2\" cellpadding=\"2\"><tr><td colspan=\"2\" align=\"center\"><span class=\"title\">$nuke_user_color</span></td></tr>"
                     ."<tr><td><strong>".MYU_FILENAME."</strong></td><td><strong>".MYU_FILESIZE."</strong></td></tr>\n";
                 $open = opendir($this->direct);
                 $i = 0;
@@ -173,7 +173,7 @@ class myubrowse
                                  $size = $this->uploads_getbettersize($size);
                         $smaller_name = substr($files, 0, 25);
                                  if($smaller_name != $files) $smaller_name .= "...";
-                               echo "<tr><td><a href=\"".$this->url.$userinfo['username']."/".stripslashes($files)."\" target=\"_blank\" title=\"".stripslashes($files)."\">$smaller_name</a></td>\n"
+                               echo "<tr><td><a href=\"".$this->url.$nuke_userinfo['username']."/".stripslashes($files)."\" target=\"_blank\" title=\"".stripslashes($files)."\">$smaller_name</a></td>\n"
                                            ."<td>$size</td></tr>\n";
                            }
                 }

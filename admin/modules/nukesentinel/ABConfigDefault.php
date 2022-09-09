@@ -40,22 +40,22 @@ echo '<input type="hidden" name="xblocker_row[duration]" value="'.$blocker_row['
 echo '<table summary="" align="center" border="0" cellpadding="2" cellspacing="2">'."\n";
 echo '<tr><td align="center" bgcolor="'.$bgcolor2.'" colspan="2"><strong>'._AB_DEFAULTBLOCKER.'</strong></td></tr>'."\n";
 echo '<tr><td bgcolor="'.$bgcolor2.'">'.help_img(_AB_HELP_015).' '._AB_TEMPLATE.':</td><td><select name="xblocker_row[template]">'."\n";
-$templatedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
-$templatelist = '';
-while($func=$templatedir->read()) {
-  if(substr($func, 0, 6) == 'abuse_') { $templatelist .= $func.' '; }
+$template_nukedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
+$template_nukelist = '';
+while($func=$template_nukedir->read()) {
+  if(substr($func, 0, 6) == 'abuse_') { $template_nukelist .= $func.' '; }
 }
-closedir($templatedir->handle);
-$templatelist = explode(" ", $templatelist);
-sort($templatelist);
-for($i=0; $i < sizeof($templatelist); $i++) {
-  if($templatelist[$i]!="") {
-    $bl = str_replace("abuse_", "", $templatelist[$i]);
+closedir($template_nukedir->handle);
+$template_nukelist = explode(" ", $template_nukelist);
+sort($template_nukelist);
+for($i=0; $i < sizeof($template_nukelist); $i++) {
+  if($template_nukelist[$i]!="") {
+    $bl = str_replace("abuse_", "", $template_nukelist[$i]);
     $bl = str_replace(".tpl", "", $bl);
     $bl = str_replace("_", " ", $bl);
     echo '<option';
-    if($templatelist[$i]==$blocker_row['template']) { echo ' selected="selected"'; }
-    echo ' value="'.$templatelist[$i].'">'.ucfirst($bl).'</option>'."\n";
+    if($template_nukelist[$i]==$blocker_row['template']) { echo ' selected="selected"'; }
+    echo ' value="'.$template_nukelist[$i].'">'.ucfirst($bl).'</option>'."\n";
   }
 }
 echo '</select></td></tr>'."\n";

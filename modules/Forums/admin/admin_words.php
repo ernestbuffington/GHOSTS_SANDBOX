@@ -39,7 +39,7 @@ define('IN_PHPBB2', 1);
 $phpbb2_root_path = "./../";
 require($phpbb2_root_path . 'extension.inc');
 $cancel = (isset($HTTP_POST_VARS['cancel']) || isset($_POST['cancel'])) ? true : false;
-$no_page_header = $cancel;
+$no_nuke_page_header = $cancel;
 require('./pagestart.' . $phpEx);
 if ($cancel)
 {
@@ -80,7 +80,7 @@ if( $mode != "" )
         {
                 $word_id = ( isset($HTTP_GET_VARS['id']) ) ? intval($HTTP_GET_VARS['id']) : 0;
 
-                $template->set_filenames(array(
+                $template_nuke->set_filenames(array(
                         "body" => "admin/words_edit_body.tpl")
                 );
 
@@ -108,7 +108,7 @@ if( $mode != "" )
                         }
                 }
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         "WORD" => htmlspecialchars($word_info['word']),
 			            "REPLACEMENT" => htmlspecialchars($word_info['replacement']),
 
@@ -123,9 +123,9 @@ if( $mode != "" )
                         "S_HIDDEN_FIELDS" => $s_hidden_fields)
                 );
 
-                $template->pparse("body");
+                $template_nuke->pparse("body");
 
-                include('./page_footer_admin.'.$phpEx);
+                include('./nuke_page_footer_admin.'.$phpEx);
         }
         else if( $mode == "save" )
         {
@@ -190,13 +190,13 @@ if( $mode != "" )
                 elseif( $word_id && !$confirm)
          		{
          			// Present the confirmation screen to the user
-         			$template->set_filenames(array(
+         			$template_nuke->set_filenames(array(
          				'body' => 'admin/confirm_body.tpl')
          			);
 
          			$hidden_fields = '<input type="hidden" name="mode" value="delete" /><input type="hidden" name="id" value="' . $word_id . '" />';
 
-         			$template->assign_vars(array(
+         			$template_nuke->assign_vars(array(
          				'MESSAGE_TITLE' => $lang['Confirm'],
          				'MESSAGE_TEXT' => $lang['Confirm_delete_word'],
 
@@ -215,7 +215,7 @@ if( $mode != "" )
 }
 else
 {
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 "body" => "admin/words_list_body.tpl")
         );
 
@@ -231,7 +231,7 @@ else
         $nuke_db->sql_freeresult($result);
         $word_count = count($word_rows);
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 "L_WORDS_TITLE" => $lang['Words_title'],
                 "L_WORDS_TEXT" => $lang['Words_explain'],
                 "L_WORD" => $lang['Word'],
@@ -254,7 +254,7 @@ else
                 $row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
                 $row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
-                $template->assign_block_vars("words", array(
+                $template_nuke->assign_block_vars("words", array(
                         "ROW_COLOR" => "#" . $row_color,
                         "ROW_CLASS" => $row_class,
                         "WORD" => htmlspecialchars($word),
@@ -266,8 +266,8 @@ else
         }
 }
 
-$template->pparse("body");
+$template_nuke->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

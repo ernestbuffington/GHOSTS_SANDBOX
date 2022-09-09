@@ -29,7 +29,7 @@ if (!defined('IN_PHPBB2'))
     die('Hacking attempt');
 }
 
-global $do_gzip_compress, $template, $cache, $userdata, $nuke_db, $lang, $board_config;
+global $do_gzip_compress, $template, $cache, $nuke_userdata, $nuke_db, $lang, $board_config;
 //
 // Show the overall footer.
 //
@@ -38,7 +38,7 @@ $template->set_filenames(array(
 );
 
 $template->assign_vars(array(
-    'PHPBB_VERSION' => ($userdata['user_level'] == NUKE_ADMIN && $userdata['user_id'] != NUKE_ANONYMOUS) ? '2' . $board_config['version'] : '',
+    'PHPBB_VERSION' => ($nuke_userdata['user_level'] == NUKE_ADMIN && $nuke_userdata['user_id'] != NUKE_ANONYMOUS) ? '2' . $board_config['version'] : '',
         'TRANSLATION_INFO' => (isset($lang['TRANSLATION_INFO'])) ? $lang['TRANSLATION_INFO'] : ((isset($lang['TRANSLATION'])) ? $lang['TRANSLATION'] : ''))
 );
 

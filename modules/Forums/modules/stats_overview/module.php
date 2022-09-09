@@ -25,8 +25,8 @@ $core->start_module(true);
 $core->set_content('values');
  
 // configuration of module: number of columns to use for displaying the links, may be 1..n
-$user_variables = $core->get_user_defines();
-$use_num_columns = intval($user_variables['num_columns']);
+$nuke_user_variables = $core->get_user_defines();
+$use_num_columns = intval($nuke_user_variables['num_columns']);
 
 $core->set_view('columns', 1);
 $core->set_view('num_blocks', $use_num_columns);

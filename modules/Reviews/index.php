@@ -87,10 +87,10 @@ function display_score($score) {
 }
 
 function write_review() {
-    global $admin, $sitename, $user, $cookie, $prefix, $nuke_user_prefix, $currentlang, $multilingual, $nuke_db, $module_name, $anonpost;
+    global $admin, $sitename, $nuke_user, $cookie, $prefix, $nuke_user_prefix, $currentlang, $multilingual, $nuke_db, $module_name, $anonpost;
     
     //Prevent Anonymous
-    if(!is_user($user) && !$anonpost){
+    if(!is_user($nuke_user) && !$anonpost){
         Header("Location: modules.php?name=Your_Account&op=login&nuke_redirect=Reviews");
         die();
     }
@@ -522,10 +522,10 @@ function reviews($letter, $field, $order) {
 }
 
 function postcomment($id, $title) {
-    global $user, $cookie, $AllowableHTML, $anonymous, $module_name, $anonpost;
+    global $nuke_user, $cookie, $AllowableHTML, $anonymous, $module_name, $anonpost;
 
     //Prevent Anonymous Comments
-    if(!is_user($user) && !$anonpost){
+    if(!is_user($nuke_user) && !$anonpost){
         Header("Location: modules.php?name=Your_Account&op=login&nuke_redirect=Reviews");
         die();
     }
@@ -577,13 +577,13 @@ function postcomment($id, $title) {
 }
 
 function savecomment($xanonpost, $uname, $id, $score, $comments) {
-    global $anonymous, $user, $cookie, $prefix, $nuke_db, $module_name, $anonpost;
+    global $anonymous, $nuke_user, $cookie, $prefix, $nuke_db, $module_name, $anonpost;
 
     if(!isset($_POST) || empty($_POST)) {
         header("location: modules.php?name=$module_name&rop=showcontent&id=$id");
         die();
     }
-    if(!is_user($user) && $cookie[1] != $uname && !$anonpost){
+    if(!is_user($nuke_user) && $cookie[1] != $uname && !$anonpost){
         Header("Location: modules.php?name=Your_Account&op=login&nuke_redirect=Reviews");
         die();
     }

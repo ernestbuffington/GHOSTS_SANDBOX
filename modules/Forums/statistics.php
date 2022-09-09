@@ -44,8 +44,8 @@ define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
-$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+init_userprefs($nuke_userdata);
 
 include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
 include($phpbb2_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
@@ -88,7 +88,7 @@ else
     $preview_module = -1;
 }
 
-if ($preview_module == -1 || $preview_module == 0 || $userdata['user_level'] != NUKE_ADMIN)
+if ($preview_module == -1 || $preview_module == 0 || $nuke_userdata['user_level'] != NUKE_ADMIN)
 {
     // Get all module informations about activated modules
     $modules = get_modules();
@@ -142,7 +142,7 @@ if (trim($core->used_language) == '')
 }
 
 $page_title = $lang['Board_statistics'];
-include('includes/page_header.'.$phpEx);
+include('includes/nuke_page_header.'.$phpEx);
 
 $development = FALSE;
 
@@ -241,20 +241,20 @@ if (STATS_NUKE_DEBUG)
     $stats_endtime = $m_time;
     $stats_totaltime = ($stats_endtime - $stats_starttime);
 
-    $explain = ($userdata['user_level'] == NUKE_ADMIN) ? $phpbb2_root_path . 'modules/cache/explain/e' . $userdata['user_id'] . '.html' : '';
+    $explain = ($nuke_userdata['user_level'] == NUKE_ADMIN) ? $phpbb2_root_path . 'modules/cache/explain/e' . $nuke_userdata['user_id'] . '.html' : '';
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'TIME' => $stats_totaltime,
         'SQL_TIME' => $stat_db->sql_time,
         'QUERY' => $stat_db->num_queries,
         'U_EXPLAIN' => $explain)
     );
 
-    $template->assign_block_vars('switch_debug', array());
+    $template_nuke->assign_block_vars('switch_debug', array());
 
     if ($stat_db->sql_time > 0)
     {
-        $fp = fopen($phpbb2_root_path . 'modules/cache/explain/e' . $userdata['user_id'] . '.html', 'wt');
+        $fp = fopen($phpbb2_root_path . 'modules/cache/explain/e' . $nuke_userdata['user_id'] . '.html', 'wt');
         fwrite($fp, $stat_db->sql_report);
         $str = "<pre><strong>The Statistics Mod generated " . $stat_db->num_queries . " queries,\nspending " . $stat_db->sql_time . ' doing MySQL queries and ' . ($stats_totaltime - $stat_db->sql_time) . ' doing PHP things.</strong></pre>';
         fwrite($fp, $str);
@@ -263,11 +263,11 @@ if (STATS_NUKE_DEBUG)
 
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     'body' => 'statistics.tpl')
 );
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 include('includes/page_tail.'.$phpEx);
 

@@ -49,7 +49,7 @@ else
     $mode = '';
 }
 
-$no_page_header = true;
+$no_nuke_page_header = true;
 
 @include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
 @include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . $phpEx);

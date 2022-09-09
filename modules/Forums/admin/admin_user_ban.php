@@ -46,11 +46,11 @@ require('./pagestart.' . $phpEx);
 //
 if ( isset($HTTP_POST_VARS['submit']) )
 {
-        $user_bansql = '';
+        $nuke_user_bansql = '';
         $email_bansql = '';
         $ip_bansql = '';
 
-        $user_list = array();
+        $nuke_user_list = array();
         if ( !empty($HTTP_POST_VARS['username']) )
         {
                 $this_userdata = get_userdata($HTTP_POST_VARS['username'], true);
@@ -59,7 +59,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
                         message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_id_specified'] );
                 }
 
-                $user_list[] = $this_userdata['user_id'];
+                $nuke_user_list[] = $this_userdata['user_id'];
         }
 
         $ip_list = array();
@@ -177,12 +177,12 @@ if ( isset($HTTP_POST_VARS['submit']) )
         $nuke_db->sql_freeresult($result);
 
         $kill_session_sql = '';
-        for($i = 0; $i < count($user_list); $i++)
+        for($i = 0; $i < count($nuke_user_list); $i++)
         {
                 $in_banlist = false;
                 for($j = 0; $j < count($current_banlist); $j++)
                 {
-                        if ( $user_list[$i] == $current_banlist[$j]['ban_userid'] )
+                        if ( $nuke_user_list[$i] == $current_banlist[$j]['ban_userid'] )
                         {
                                 $in_banlist = true;
                         }
@@ -190,10 +190,10 @@ if ( isset($HTTP_POST_VARS['submit']) )
 
                 if ( !$in_banlist )
                 {
-                        $kill_session_sql .= ( ( $kill_session_sql != '' ) ? ' OR ' : '' ) . "session_user_id = " . $user_list[$i];
+                        $kill_session_sql .= ( ( $kill_session_sql != '' ) ? ' OR ' : '' ) . "session_user_id = " . $nuke_user_list[$i];
 
                         $sql = "INSERT INTO " . NUKE_BANLIST_TABLE . " (ban_userid)
-                                VALUES (" . $user_list[$i] . ")";
+                                VALUES (" . $nuke_user_list[$i] . ")";
                         if ( !$nuke_db->sql_query($sql) )
                         {
                                 message_die(NUKE_GENERAL_ERROR, "Couldn't insert ban_userid info into database", "", __LINE__, __FILE__, $sql);
@@ -275,13 +275,13 @@ if ( isset($HTTP_POST_VARS['submit']) )
 
         if ( isset($HTTP_POST_VARS['unban_user']) )
         {
-                $user_list = $HTTP_POST_VARS['unban_user'];
+                $nuke_user_list = $HTTP_POST_VARS['unban_user'];
 
-                for($i = 0; $i < count($user_list); $i++)
+                for($i = 0; $i < count($nuke_user_list); $i++)
                 {
-                        if ( $user_list[$i] != -1 )
+                        if ( $nuke_user_list[$i] != -1 )
                         {
-                                $where_sql .= ( ( $where_sql != '' ) ? ', ' : '' ) . intval($user_list[$i]);
+                                $where_sql .= ( ( $where_sql != '' ) ? ', ' : '' ) . intval($nuke_user_list[$i]);
                         }
                 }
         }
@@ -329,11 +329,11 @@ if ( isset($HTTP_POST_VARS['submit']) )
 }
 else
 {
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 'body' => 'admin/user_ban_body.tpl')
         );
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'L_BAN_TITLE' => $lang['Ban_control'],
                 'L_BAN_EXPLAIN' => $lang['Ban_explain'],
                 'L_BAN_EXPLAIN_WARN' => $lang['Ban_explain_warn'],
@@ -345,7 +345,7 @@ else
                 'S_BANLIST_ACTION' => append_sid("admin_user_ban.$phpEx"))
         );
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'L_BAN_USER' => $lang['Ban_username'],
                 'L_BAN_USER_EXPLAIN' => $lang['Ban_username_explain'],
                 'L_BAN_IP' => $lang['Ban_IP'],
@@ -354,7 +354,7 @@ else
                 'L_BAN_EMAIL_EXPLAIN' => $lang['Ban_email_explain'])
         );
 
-        $userban_count = 0;
+        $nuke_userban_count = 0;
         $ipban_count = 0;
         $emailban_count = 0;
 
@@ -369,14 +369,14 @@ else
                 message_die(NUKE_GENERAL_ERROR, 'Could not select current user_id ban list', '', __LINE__, __FILE__, $sql);
         }
 
-        $user_list = $nuke_db->sql_fetchrowset($result);
+        $nuke_user_list = $nuke_db->sql_fetchrowset($result);
         $nuke_db->sql_freeresult($result);
 
         $select_userlist = '';
-        for($i = 0; $i < count($user_list); $i++)
+        for($i = 0; $i < count($nuke_user_list); $i++)
         {
-                $select_userlist .= '<option value="' . $user_list[$i]['ban_id'] . '">' . $user_list[$i]['username'] . '</option>';
-                $userban_count++;
+                $select_userlist .= '<option value="' . $nuke_user_list[$i]['ban_id'] . '">' . $nuke_user_list[$i]['username'] . '</option>';
+                $nuke_userban_count++;
         }
 
         if( $select_userlist == '' )
@@ -430,7 +430,7 @@ else
         $select_iplist = '<select name="unban_ip[]" multiple="multiple" size="5">' . $select_iplist . '</select>';
         $select_emaillist = '<select name="unban_email[]" multiple="multiple" size="5">' . $select_emaillist . '</select>';
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'L_UNBAN_USER' => $lang['Unban_username'],
                 'L_UNBAN_USER_EXPLAIN' => $lang['Unban_username_explain'],
                 'L_UNBAN_IP' => $lang['Unban_IP'],
@@ -449,8 +449,8 @@ else
         );
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

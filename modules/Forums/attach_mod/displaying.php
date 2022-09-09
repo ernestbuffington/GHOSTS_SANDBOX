@@ -27,21 +27,21 @@ $attachments = array();
 /**
 * Clear the templates compile cache
 */
-function display_compile_cache_clear($filename, $template_var)
+function display_compile_cache_clear($filename, $template_nuke_var)
 {
-    global $template;
+    global $template_nuke;
 
-    if (isset($template->cachedir))
+    if (isset($template_nuke->cachedir))
     {
-        $filename = str_replace($template->root, '', $filename);
+        $filename = str_replace($template_nuke->root, '', $filename);
         if (substr($filename, 0, 1) == '/')
         {
             $filename = substr($filename, 1, strlen($filename));
         }
 
-        if (file_exists($template->cachedir . $filename . '.php'))
+        if (file_exists($template_nuke->cachedir . $filename . '.php'))
         {
-            @unlink($template->cachedir . $filename . '.php');
+            @unlink($template_nuke->cachedir . $filename . '.php');
         }
     }
 
@@ -71,37 +71,37 @@ function init_complete_extensions_data()
 /**
 * Writing Data into plain Template Vars
 */
-function init_display_template($template_var, $replacement, $filename = 'viewtopic_attach_body.tpl')
+function init_display_template($template_nuke_var, $replacement, $filename = 'viewtopic_attach_body.tpl')
 {
-    global $template;
+    global $template_nuke;
 
     // This function is adapted from the old template class
     // I wish i had the functions from the 3.x one. :D (This class rocks, can't await to use it in Mods)
 
     // Handle Attachment Informations
-    if (!isset($template->uncompiled_code[$template_var]) && empty($template->uncompiled_code[$template_var]))
+    if (!isset($template_nuke->uncompiled_code[$template_nuke_var]) && empty($template_nuke->uncompiled_code[$template_nuke_var]))
     {
         // If we don't have a file assigned to this handle, die.
-        if (!isset($template->files[$template_var]))
+        if (!isset($template_nuke->files[$template_nuke_var]))
         {
-            die("Template->loadfile(): No file specified for handle $template_var");
+            die("Template->loadfile(): No file specified for handle $template_nuke_var");
         }
 
-        $filename_2 = $template->files[$template_var];
+        $filename_2 = $template_nuke->files[$template_nuke_var];
 
         $str = implode('', @file($filename_2));
         if (empty($str))
         {
-            die("Template->loadfile(): File $filename_2 for handle $template_var is empty");
+            die("Template->loadfile(): File $filename_2 for handle $template_nuke_var is empty");
         }
 
-        $template->uncompiled_code[$template_var] = $str;
+        $template_nuke->uncompiled_code[$template_nuke_var] = $str;
     }
 
     $complete_filename = $filename;
     if (substr($complete_filename, 0, 1) != '/')
     {
-        $complete_filename = $template->root . '/' . $complete_filename;
+        $complete_filename = $template_nuke->root . '/' . $complete_filename;
     }
 
     if (!file_exists($complete_filename))
@@ -116,10 +116,10 @@ function init_display_template($template_var, $replacement, $filename = 'viewtop
     }
 
     // replace $replacement with uncompiled code in $filename
-    $template->uncompiled_code[$template_var] = str_replace($replacement, $content, $template->uncompiled_code[$template_var]);
+    $template_nuke->uncompiled_code[$template_nuke_var] = str_replace($replacement, $content, $template_nuke->uncompiled_code[$template_nuke_var]);
 
     // Force Reload on cached version
-    display_compile_cache_clear($template->files[$template_var], $template_var);
+    display_compile_cache_clear($template_nuke->files[$template_nuke_var], $template_nuke_var);
 }
 
 /**
@@ -193,7 +193,7 @@ function display_assign_link($post_id)
 */
 function init_display_post_attachments($switch_attachment)
 {
-    global $attach_config, $nuke_db, $is_auth, $template, $lang, $postrow, $total_posts, $attachments, $forum_row, $forum_topic_data;
+    global $attach_config, $nuke_db, $is_auth, $template_nuke, $lang, $postrow, $total_posts, $attachments, $forum_row, $forum_topic_data;
 
     if (empty($forum_topic_data) && !empty($forum_row))
     {
@@ -239,7 +239,7 @@ function init_display_post_attachments($switch_attachment)
 
     init_complete_extensions_data();
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_POSTED_ATTACHMENTS'        => $lang['Posted_attachments'],
         'L_KILOBYTE'                => $lang['KB'])
     );
@@ -258,11 +258,11 @@ function init_display_post_attachments($switch_attachment)
 */
 function privmsgs_attachment_image($privmsg_id)
 {
-    global $attach_config, $userdata;
+    global $attach_config, $nuke_userdata;
 
-    $auth = ($userdata['user_level'] == NUKE_ADMIN) ? 1 : intval($attach_config['allow_pm_attach']);
+    $nuke_auth = ($nuke_userdata['user_level'] == NUKE_ADMIN) ? 1 : intval($attach_config['allow_pm_attach']);
 
-    if (!attachment_exists_db($privmsg_id, NUKE_PAGE_PRIVMSGS) || !$auth || intval($attach_config['disable_mod']) || $attach_config['topic_icon'] == '')
+    if (!attachment_exists_db($privmsg_id, NUKE_PAGE_PRIVMSGS) || !$nuke_auth || intval($attach_config['disable_mod']) || $attach_config['topic_icon'] == '')
     {
         return '';
     }
@@ -277,26 +277,26 @@ function privmsgs_attachment_image($privmsg_id)
 */
 function display_pm_attachments($privmsgs_id, $switch_attachment)
 {
-    global $attach_config, $userdata, $template, $lang;
+    global $attach_config, $nuke_userdata, $template_nuke, $lang;
 
-    if ($userdata['user_level'] == NUKE_ADMIN)
+    if ($nuke_userdata['user_level'] == NUKE_ADMIN)
     {
-        $auth_download = 1;
+        $nuke_auth_download = 1;
     }
     else
     {
-        $auth_download = intval($attach_config['allow_pm_attach']);
+        $nuke_auth_download = intval($attach_config['allow_pm_attach']);
     }
 
-    if (intval($switch_attachment) == 0 || intval($attach_config['disable_mod']) || !$auth_download)
+    if (intval($switch_attachment) == 0 || intval($attach_config['disable_mod']) || !$nuke_auth_download)
     {
         return;
     }
 
     display_attachments($privmsgs_id);
 
-    $template->assign_block_vars('switch_attachments', array());
-    $template->assign_vars(array(
+    $template_nuke->assign_block_vars('switch_attachments', array());
+    $template_nuke->assign_vars(array(
         'L_DELETE_ATTACHMENTS'    => $lang['Delete_attachments'])
     );
 }
@@ -306,18 +306,18 @@ function display_pm_attachments($privmsgs_id, $switch_attachment)
 */
 function init_display_pm_attachments($switch_attachment)
 {
-    global $attach_config, $template, $userdata, $lang, $attachments, $privmsg;
+    global $attach_config, $template_nuke, $nuke_userdata, $lang, $attachments, $privmsg;
 
-    if ($userdata['user_level'] == NUKE_ADMIN)
+    if ($nuke_userdata['user_level'] == NUKE_ADMIN)
     {
-        $auth_download = 1;
+        $nuke_auth_download = 1;
     }
     else
     {
-        $auth_download = intval($attach_config['allow_pm_attach']);
+        $nuke_auth_download = intval($attach_config['allow_pm_attach']);
     }
 
-    if (intval($switch_attachment) == 0 || intval($attach_config['disable_mod']) || !$auth_download)
+    if (intval($switch_attachment) == 0 || intval($attach_config['disable_mod']) || !$nuke_auth_download)
     {
         return;
     }
@@ -332,13 +332,13 @@ function init_display_pm_attachments($switch_attachment)
         return;
     }
 
-    $template->assign_block_vars('postrow', array());
+    $template_nuke->assign_block_vars('postrow', array());
 
     init_display_template('body', '{ATTACHMENTS}');
 
     init_complete_extensions_data();
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_POSTED_ATTACHMENTS'    => $lang['Posted_attachments'],
         'L_KILOBYTE'            => $lang['KB'])
     );
@@ -404,7 +404,7 @@ function init_display_review_attachments($is_auth)
 */
 function display_attachments_preview($attachment_list, $attachment_filesize_list, $attachment_filename_list, $attachment_comment_list, $attachment_extension_list, $attachment_thumbnail_list)
 {
-    global $attach_config, $is_auth, $allowed_extensions, $lang, $userdata, $display_categories, $upload_dir, $upload_icons, $template, $nuke_db, $theme;
+    global $attach_config, $is_auth, $allowed_extensions, $lang, $nuke_userdata, $display_categories, $upload_dir, $upload_icons, $template_nuke, $nuke_db, $theme;
 
 	if (sizeof($attachment_list) != 0)
     {
@@ -412,10 +412,10 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
 
         init_complete_extensions_data();
 
-        $template->assign_block_vars('postrow', array());
-        $template->assign_block_vars('postrow.attach', array());
+        $template_nuke->assign_block_vars('postrow', array());
+        $template_nuke->assign_block_vars('postrow.attach', array());
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'T_BODY_TEXT' => '#'.$theme['body_text'],
             'T_TR_COLOR3' => '#'.$theme['tr_color3'])
         );
@@ -450,7 +450,7 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
             {
                 $denied = true;
 
-                $template->assign_block_vars('postrow.attach.denyrow', array(
+                $template_nuke->assign_block_vars('postrow.attach.denyrow', array(
                     'L_DENIED'        => sprintf($lang['Extension_disabled_after_posting'], $extension))
                 );
             }
@@ -458,7 +458,7 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
             if (!$denied)
             {
                 // Some basic Template Vars
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                     'L_DESCRIPTION'        => $lang['Description'],
                     'L_DOWNLOAD'        => $lang['Download'],
                     'L_FILENAME'        => $lang['File_name'],
@@ -518,7 +518,7 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
                 if ($image)
                 {
                     // Images
-                    $template->assign_block_vars('postrow.attach.cat_images', array(
+                    $template_nuke->assign_block_vars('postrow.attach.cat_images', array(
                         'DOWNLOAD_NAME'        => $display_name,
                         'IMG_SRC'            => $filename,
                         'FILESIZE'            => $filesize,
@@ -531,7 +531,7 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
                 if ($thumbnail)
                 {
                     // Images, but display Thumbnail
-                    $template->assign_block_vars('postrow.attach.cat_thumb_images', array(
+                    $template_nuke->assign_block_vars('postrow.attach.cat_thumb_images', array(
                         'DOWNLOAD_NAME'        => $display_name,
                         'IMG_SRC'            => $filename,
                         'IMG_THUMB_SRC'        => $thumb_filename,
@@ -545,7 +545,7 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
                 if ($stream)
                 {
                     // Streams
-                    $template->assign_block_vars('postrow.attach.cat_stream', array(
+                    $template_nuke->assign_block_vars('postrow.attach.cat_stream', array(
                         'U_DOWNLOAD_LINK'    => $filename,
                         'DOWNLOAD_NAME'        => $display_name,
                         'FILESIZE'            => $filesize,
@@ -560,7 +560,7 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
                     // Macromedia Flash Files
                     list($width, $height) = swf_getdimension($filename);
 
-                    $template->assign_block_vars('postrow.attach.cat_swf', array(
+                    $template_nuke->assign_block_vars('postrow.attach.cat_swf', array(
                         'U_DOWNLOAD_LINK'        => $filename,
                         'DOWNLOAD_NAME'            => $display_name,
                         'FILESIZE'                => $filesize,
@@ -588,7 +588,7 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
                     $target_blank = 'target="_blank"';
 
                     // display attachment
-                    $template->assign_block_vars('postrow.attach.attachrow', array(
+                    $template_nuke->assign_block_vars('postrow.attach.attachrow', array(
                         'U_DOWNLOAD_LINK'        => $filename,
                         'S_UPLOAD_IMAGE'        => $upload_image,
 
@@ -616,7 +616,7 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
 */
 function display_attachments($post_id)
 {
-    global $template, $upload_dir, $userdata, $allowed_extensions, $display_categories, $download_modes, $nuke_db, $lang, $phpEx, $attachments, $upload_icons, $attach_config;
+    global $template_nuke, $upload_dir, $nuke_userdata, $allowed_extensions, $display_categories, $download_modes, $nuke_db, $lang, $phpEx, $attachments, $upload_icons, $attach_config;
     global $phpbb2_root_path;
 
 	$num_attachments = sizeof($attachments['_' . $post_id]);
@@ -626,7 +626,7 @@ function display_attachments($post_id)
         return;
     }
 
-    $template->assign_block_vars('postrow.attach', array());
+    $template_nuke->assign_block_vars('postrow.attach', array());
 
     for ($i = 0; $i < $num_attachments; $i++)
     {
@@ -668,15 +668,15 @@ function display_attachments($post_id)
         {
             $denied = true;
 
-            $template->assign_block_vars('postrow.attach.denyrow', array(
+            $template_nuke->assign_block_vars('postrow.attach.denyrow', array(
                 'L_DENIED'    => sprintf($lang['Extension_disabled_after_posting'], $attachments['_' . $post_id][$i]['extension']))
             );
         }
 
-        if (!$denied || $userdata['user_level'] == NUKE_ADMIN)
+        if (!$denied || $nuke_userdata['user_level'] == NUKE_ADMIN)
         {
             // Some basic Template Vars
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 'L_DESCRIPTION'        => $lang['Description'],
                 'L_DOWNLOAD'        => $lang['Download'],
                 'L_FILENAME'        => $lang['File_name'],
@@ -764,7 +764,7 @@ function display_attachments($post_id)
                     }
                 }
 
-                $template->assign_block_vars('postrow.attach.cat_images', array(
+                $template_nuke->assign_block_vars('postrow.attach.cat_images', array(
                     'DOWNLOAD_NAME'        => $display_name,
                     'S_UPLOAD_IMAGE'    => $upload_image,
 
@@ -816,7 +816,7 @@ function display_attachments($post_id)
                     }
                 }
 
-                $template->assign_block_vars('postrow.attach.cat_thumb_images', array(
+                $template_nuke->assign_block_vars('postrow.attach.cat_thumb_images', array(
                     'DOWNLOAD_NAME'            => $display_name,
                     'S_UPLOAD_IMAGE'        => $upload_image,
 
@@ -833,7 +833,7 @@ function display_attachments($post_id)
             if ($stream)
             {
                 // Streams
-                $template->assign_block_vars('postrow.attach.cat_stream', array(
+                $template_nuke->assign_block_vars('postrow.attach.cat_stream', array(
                     'U_DOWNLOAD_LINK'        => $filename,
                     'S_UPLOAD_IMAGE'        => $upload_image,
 
@@ -862,7 +862,7 @@ function display_attachments($post_id)
                 // Macromedia Flash Files
                 list($width, $height) = swf_getdimension($filename);
 
-                $template->assign_block_vars('postrow.attach.cat_swf', array(
+                $template_nuke->assign_block_vars('postrow.attach.cat_swf', array(
                     'U_DOWNLOAD_LINK'        => $filename,
                     'S_UPLOAD_IMAGE'        => $upload_image,
 
@@ -892,7 +892,7 @@ function display_attachments($post_id)
                 $target_blank = 'target="_blank"'; //( (intval($display_categories[$attachments['_' . $post_id][$i]['extension']]) == IMAGE_CAT) ) ? 'target="_blank"' : '';
 
                 // display attachment
-                $template->assign_block_vars('postrow.attach.attachrow', array(
+                $template_nuke->assign_block_vars('postrow.attach.attachrow', array(
                     'U_DOWNLOAD_LINK'    => append_sid('download.' . $phpEx . '?id=' . $attachments['_' . $post_id][$i]['attach_id']),
                     'S_UPLOAD_IMAGE'    => $upload_image,
 

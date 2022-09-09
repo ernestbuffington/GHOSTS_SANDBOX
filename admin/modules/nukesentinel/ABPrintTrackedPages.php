@@ -24,9 +24,9 @@ echo "<h1 align='center'>$pagetitle</h1>\n";
 if(!$column or $column=="") $column = "date";
 if(!$direction or $direction=="") $direction = "desc";
 $tid=intval($tid);
-$totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$user_id'"));
+$totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$nuke_user_id'"));
 if($totalselected > 0) {
-  $result = $nuke_db->sql_query("SELECT `ip_long` FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$user_id' AND `ip_addr`='$ip_addr' LIMIT 0,1");
+  $result = $nuke_db->sql_query("SELECT `ip_long` FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$nuke_user_id' AND `ip_addr`='$ip_addr' LIMIT 0,1");
   list($ip_long) = $nuke_db->sql_fetchrow($result);
   # default values if none set
   echo "<center><strong>$ip_addr ($ip_long)</strong></center><br />";
@@ -34,7 +34,7 @@ if($totalselected > 0) {
   echo "<tr>";
   // Page Sorting
   echo "<form method='post' action='".$admin_file.".php?op=ABPrintTrackedPages'>\n";
-  echo "<input type='hidden' name='user_id' value='$user_id' />\n";
+  echo "<input type='hidden' name='user_id' value='$nuke_user_id' />\n";
   echo "<input type='hidden' name='ip_addr' value='$ip_addr' />\n";
   echo "<td align='left' colspan='3'><strong>"._AB_SORT.":</strong> ";
   echo "<select name='column'>\n";
@@ -56,7 +56,7 @@ if($totalselected > 0) {
   echo "<tr>";
   echo "<td width='70%'><strong>"._AB_PAGEVIEWED."</strong></td>";
   echo "<td width='30%'><strong>"._AB_HITDATE."</strong></td>";
-  $result = $nuke_db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$user_id' ORDER BY $column $direction");
+  $result = $nuke_db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$nuke_user_id' ORDER BY $column $direction");
   while(list($ltid, $page,$date_time) = $nuke_db->sql_fetchrow($result)){
     echo "<tr>\n";
     echo "<td><a href=\"$page\">$page</a></td>\n";

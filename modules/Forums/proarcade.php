@@ -44,8 +44,8 @@ $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOF
 // Start session management
 //
 
-$userdata = session_pagestart($user_ip, NUKE_PAGE_GAME, $nukeuser);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_GAME, $nukeuser);
+init_userprefs($nuke_userdata);
 
 //
 // End session management
@@ -95,7 +95,7 @@ if ($row['game_type'] == 3) {
 }
 
 if ($row['game_type'] == 4 or $row['game_type'] == 5) {
-        $gamehash_id = md5($user_ip);
+        $gamehash_id = md5($nuke_user_ip);
         $vpaver = ($gpaver == "GFARV2") ? '100B2' : '';
         $score = $HTTP_POST_VARS['vscore'];
         $settime = $_COOKIE['timestarted'];
@@ -103,25 +103,25 @@ if ($row['game_type'] == 4 or $row['game_type'] == 5) {
 
 $vscore = $score;
 
-if (!$userdata['session_logged_in']  && ($valid=='')) {
+if (!$nuke_userdata['session_logged_in']  && ($valid=='')) {
         header($header_location . "modules.php?name=Forums&file=proarcade&$vscore=$score&gid=$gid&valid=X&newhash=$newhash&gamehash_id=$gamehash_id&gamehash=$gamehash&hashoffset=$hashoffset&settime=$settime&sid=$sid&vpaver=$vpaver");
         exit;
 }
 
-if (!$userdata['session_logged_in']) {
+if (!$nuke_userdata['session_logged_in']) {
         header($header_location . "modules.php?name=Your_Account");
         exit;
 }
 
 if ($row['game_type'] != 4 or $row['game_type'] != 5) {
-        $sql = "SELECT * FROM " . NUKE_GAMEHASH_TABLE . " WHERE gamehash_id = '$gamehash_id' and game_id = '$gid' and user_id = '" . $userdata['user_id'] . "'";
+        $sql = "SELECT * FROM " . NUKE_GAMEHASH_TABLE . " WHERE gamehash_id = '$gamehash_id' and game_id = '$gid' and user_id = '" . $nuke_userdata['user_id'] . "'";
 
         if (!($result = $nuke_db->sql_query($sql))) {
                 message_die(NUKE_GENERAL_ERROR, "Could not read the hashtable", '', __LINE__, __FILE__, $sql);
         }
 
         if (!($row = $nuke_db->sql_fetchrow($result)) or ($vpaver != "100B2") or (!isset($vscore))) {
-                $sql = "INSERT INTO " . NUKE_HACKGAME_TABLE . " (user_id , game_id , date_hack) VALUES ('" . $userdata['user_id'] . "' , '$gid' , '" . time() . "')" ;
+                $sql = "INSERT INTO " . NUKE_HACKGAME_TABLE . " (user_id , game_id , date_hack) VALUES ('" . $nuke_userdata['user_id'] . "' , '$gid' , '" . time() . "')" ;
 
                 if (!$nuke_db->sql_query($sql)) {
                         message_die(NUKE_GENERAL_ERROR, 'Could not insert hack game data', '', __LINE__, __FILE__, $sql);
@@ -132,7 +132,7 @@ if ($row['game_type'] != 4 or $row['game_type'] != 5) {
         }
 }
 
-$sql = "DELETE FROM " . NUKE_GAMEHASH_TABLE . " WHERE gamehash_id = '$gamehash_id' and game_id = $gid and user_id = " . $userdata['user_id'] ;
+$sql = "DELETE FROM " . NUKE_GAMEHASH_TABLE . " WHERE gamehash_id = '$gamehash_id' and game_id = $gid and user_id = " . $nuke_userdata['user_id'] ;
 
 if (!$nuke_db->sql_query($sql)) {
         message_die(NUKE_GENERAL_ERROR, 'Could not delete hash data from the games table', '', __LINE__, __FILE__, $sql);
@@ -140,7 +140,7 @@ if (!$nuke_db->sql_query($sql)) {
 
 if ($row['game_type'] == 4 or $row['game_type'] ==5) {
         if ($_COOKIE['gidstarted'] != $gid || !isset($_COOKIE['gidstarted'])) {
-                $sql = "INSERT INTO " . NUKE_HACKGAME_TABLE . " (user_id , game_id , date_hack) VALUES ('" . $userdata['user_id'] . "' , '$gid' , '" . time() . "')";
+                $sql = "INSERT INTO " . NUKE_HACKGAME_TABLE . " (user_id , game_id , date_hack) VALUES ('" . $nuke_userdata['user_id'] . "' , '$gid' , '" . time() . "')";
 
                 if (!$nuke_db->sql_query($sql)) {
                         message_die(NUKE_GENERAL_ERROR, 'Could not insert hack data from the games table', '', __LINE__, __FILE__, $sql);
@@ -154,7 +154,7 @@ if ($row['game_type'] == 4 or $row['game_type'] ==5) {
 // End of auth check
 //
 
-$sql = "SELECT * FROM " . NUKE_SCORES_TABLE . " WHERE game_id = $gid and user_id = " . $userdata['user_id'] ;
+$sql = "SELECT * FROM " . NUKE_SCORES_TABLE . " WHERE game_id = $gid and user_id = " . $nuke_userdata['user_id'] ;
 
 if (!($result = $nuke_db->sql_query($sql))) {
         message_die(NUKE_GENERAL_ERROR, "Unable to insert data into scores table", '', __LINE__, __FILE__, $sql);
@@ -164,20 +164,20 @@ $datenow = time();
 $ecart = $datenow - $settime ;
 
 if (!($row = $nuke_db->sql_fetchrow($result))) {
-        $sql = "INSERT INTO " . NUKE_SCORES_TABLE . " (game_id , user_id , score_game , score_date , score_time , score_set) VALUES ($gid , " . $userdata['user_id'] . " , $score , $datenow , $ecart , 1) ";
+        $sql = "INSERT INTO " . NUKE_SCORES_TABLE . " (game_id , user_id , score_game , score_date , score_time , score_set) VALUES ($gid , " . $nuke_userdata['user_id'] . " , $score , $datenow , $ecart , 1) ";
 
         if (!($result = $nuke_db->sql_query($sql))) {
                 message_die(NUKE_GENERAL_ERROR, "Unable to insert data into scores table", '', __LINE__, __FILE__, $sql);
         }
 } else {
         if ($row['score_game'] < $score) {
-                $sql = "UPDATE " . NUKE_SCORES_TABLE . " set score_game = $score , score_set = score_set + 1 , score_date = $datenow , score_time = score_time + $ecart WHERE game_id = $gid and user_id = " . $userdata['user_id'] ;
+                $sql = "UPDATE " . NUKE_SCORES_TABLE . " set score_game = $score , score_set = score_set + 1 , score_date = $datenow , score_time = score_time + $ecart WHERE game_id = $gid and user_id = " . $nuke_userdata['user_id'] ;
 
                 if (!($result = $nuke_db->sql_query($sql))) {
                         message_die(NUKE_GENERAL_ERROR, "Unable to insert data into scores table", '', __LINE__, __FILE__, $sql);
                 }
         } else {
-                $sql = "UPDATE " . NUKE_SCORES_TABLE . " set score_set = score_set + 1  , score_time = score_time + $ecart WHERE game_id = $gid and user_id = " . $userdata['user_id'] ;
+                $sql = "UPDATE " . NUKE_SCORES_TABLE . " set score_set = score_set + 1  , score_time = score_time + $ecart WHERE game_id = $gid and user_id = " . $nuke_userdata['user_id'] ;
 
                 if (!($result = $nuke_db->sql_query($sql))) {
                         message_die(NUKE_GENERAL_ERROR, "Unable to insert data into scores table", '', __LINE__, __FILE__, $sql);
@@ -192,13 +192,13 @@ if (!($result = $nuke_db->sql_query($sql))) {
 }
 
 if (($row = $nuke_db->sql_fetchrow($result)) && ($row['game_highscore']< $score)) {
-        $sql = "UPDATE " . NUKE_GAMES_TABLE . " SET game_highscore = $score, game_highuser = " . $userdata['user_id'] . ", game_highdate = " . time() . ", game_set = game_set+1 WHERE game_id = $gid" ;
+        $sql = "UPDATE " . NUKE_GAMES_TABLE . " SET game_highscore = $score, game_highuser = " . $nuke_userdata['user_id'] . ", game_highdate = " . time() . ", game_set = game_set+1 WHERE game_id = $gid" ;
 
         if (!($result = $nuke_db->sql_query($sql))) {
                 message_die(NUKE_GENERAL_ERROR, "Error accessing games table", '', __LINE__, __FILE__, $sql);
         }
 
-        if ($row['game_highuser'] != $userdata['user_id']) {
+        if ($row['game_highuser'] != $nuke_userdata['user_id']) {
                 $sql = "UPDATE " . NUKE_COMMENTS_TABLE . " SET comments_value = '' WHERE game_id = $gid";
 
                 if (!($result = $nuke_db->sql_query($sql))) {
@@ -230,9 +230,9 @@ if (($row = $nuke_db->sql_fetchrow($result)) && ($row['game_highscore']< $score)
 
                         $row[1] = $nuke_db->sql_fetchrow($result);
 
-                        $user_id = $row[1]['user_id'];
+                        $nuke_user_id = $row[1]['user_id'];
 
-                        $sql = "SELECT user_allow_arcadepm FROM " . NUKE_USERS_TABLE . " WHERE user_id = $user_id";
+                        $sql = "SELECT user_allow_arcadepm FROM " . NUKE_USERS_TABLE . " WHERE user_id = $nuke_user_id";
 
                         if (!($result = $nuke_db->sql_query($sql))) {
                                 message_die(NUKE_GENERAL_ERROR, "Error retrieving user arcade pm preference", '', __LINE__, __FILE__, $sql);
@@ -241,7 +241,7 @@ if (($row = $nuke_db->sql_fetchrow($result)) && ($row['game_highscore']< $score)
                         $row_check = $nuke_db->sql_fetchrow($result);
 
                         if ($row_check['user_allow_arcadepm'] == 1) {
-                                $sql = "UPDATE " . NUKE_USERS_TABLE . " SET user_new_privmsg = '1', user_last_privmsg = '9999999999' WHERE user_id = $user_id";
+                                $sql = "UPDATE " . NUKE_USERS_TABLE . " SET user_new_privmsg = '1', user_last_privmsg = '9999999999' WHERE user_id = $nuke_user_id";
 
                                 if (!($result = $nuke_db->sql_query($sql))) {
                                         message_die(NUKE_GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
@@ -251,7 +251,7 @@ if (($row = $nuke_db->sql_fetchrow($result)) && ($row['game_highscore']< $score)
 
                                                                 $privmsgs_date = date("U");
 
-                                $sql = "INSERT INTO " . NUKE_PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig) VALUES (" . NUKE_PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", addslashes(sprintf($lang['register_pm_subject'],$row[0]['game_name']))) . "', '2', " . $user_id . ", " . $privmsgs_date . ", '0', '1', '1', '0')";
+                                $sql = "INSERT INTO " . NUKE_PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig) VALUES (" . NUKE_PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", addslashes(sprintf($lang['register_pm_subject'],$row[0]['game_name']))) . "', '2', " . $nuke_user_id . ", " . $privmsgs_date . ", '0', '1', '1', '0')";
 
                                 if (!$nuke_db->sql_query($sql)) {
                                         message_die(NUKE_GENERAL_ERROR, 'Could not insert private message sent info', '', __LINE__, __FILE__, $sql);

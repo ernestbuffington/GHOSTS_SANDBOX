@@ -45,9 +45,9 @@ function evouserinfo_total_topics()
 
 function evouserinfo_ur_total_topics() 
 {
-    global $nuke_db, $prefix, $userinfo;
+    global $nuke_db, $prefix, $nuke_userinfo;
     
-    $sql = "SELECT COUNT(*) FROM ".$prefix."_bbtopics WHERE topic_poster='".$userinfo['user_id']."'";
+    $sql = "SELECT COUNT(*) FROM ".$prefix."_bbtopics WHERE topic_poster='".$nuke_userinfo['user_id']."'";
     $result = $nuke_db->sql_query($sql);
     $row = $nuke_db->sql_fetchrow($result);
     $nuke_db->sql_freeresult($result);
@@ -57,7 +57,7 @@ function evouserinfo_ur_total_topics()
 
 function evouserinfo_posts() 
 {
-    global $evouserinfo_posts, $lang_evo_userblock, $userinfo;
+    global $evouserinfo_posts, $lang_evo_userblock, $nuke_userinfo;
     
     $topics = evouserinfo_total_topics();
     $posts = evouserinfo_total_posts();
@@ -84,7 +84,7 @@ function evouserinfo_posts()
       $evouserinfo_posts .= '<div style="padding-left: 10px;">';
       $evouserinfo_posts .= '  <font color="orange"><i class="fas fa-chart-bar" 
 	  aria-hidden="true"></i></font>&nbsp;<a href="modules.php?name=Forums&file=search&search_id=egosearch">'.$lang_evo_userblock['BLOCK']['POSTS']['UR_POSTS'].
-	  '</a><span style="float:right">'.number_format($userinfo['user_posts']).'&nbsp;&nbsp;</span>';
+	  '</a><span style="float:right">'.number_format($nuke_userinfo['user_posts']).'&nbsp;&nbsp;</span>';
       $evouserinfo_posts .= '</div>';
 
     endif;

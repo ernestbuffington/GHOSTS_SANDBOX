@@ -91,8 +91,8 @@ function modone() {
 }
 
 function modtwo($tid, $score, $reason) {
-    global $admin, $user, $moderate, $reasons;
-    if(((is_admin() && $moderate == 1) || ($moderate == 2)) && ($user)) {
+    global $admin, $nuke_user, $moderate, $reasons;
+    if(((is_admin() && $moderate == 1) || ($moderate == 2)) && ($nuke_user)) {
         echo " | <select name=dkn$tid>";
         for($i=0, $maxi=sizeof($reasons); $i<$maxi; $i++) {
             echo "<option value=\"$score:$i\">$reasons[$i]</option>\n";
@@ -102,14 +102,14 @@ function modtwo($tid, $score, $reason) {
 }
 
 function modthree($pollID, $mode, $order, $thold=0) {
-    global $admin, $user, $moderate;
-    if(((is_admin() && ($moderate == 1)) || ($moderate==2)) && ($user)) echo "<center><input type=hidden name=pollID value=$pollID><input type=hidden name=mode value=$mode><input type=hidden name=order value=$order><input type=hidden name=thold value=$thold>
+    global $admin, $nuke_user, $moderate;
+    if(((is_admin() && ($moderate == 1)) || ($moderate==2)) && ($nuke_user)) echo "<center><input type=hidden name=pollID value=$pollID><input type=hidden name=mode value=$mode><input type=hidden name=order value=$order><input type=hidden name=thold value=$thold>
     <input type=hidden name=op value=moderate>
     <input type=image src=images/menu/moderate.gif border=0></form></center>";
 }
 
 function navbar($pollID, $title, $thold, $mode, $order) {
-    global $user, $bgcolor1, $bgcolor2, $textcolor1, $textcolor2, $anonpost, $pollcomm, $prefix, $nuke_db, $module_name, $userinfo, $cookie;
+    global $nuke_user, $bgcolor1, $bgcolor2, $textcolor1, $textcolor2, $anonpost, $pollcomm, $prefix, $nuke_db, $module_name, $nuke_userinfo, $cookie;
     OpenTable();
     $pollID = intval($pollID);
     $query = $nuke_db->sql_query("SELECT pollID FROM ".$prefix."_pollcomments WHERE pollID='$pollID'");
@@ -117,22 +117,22 @@ function navbar($pollID, $title, $thold, $mode, $order) {
     $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT pollTitle FROM ".$prefix."_poll_desc WHERE pollID='$pollID'"));
     $title = stripslashes(check_html($row['pollTitle'], "nohtml"));
     if (!isset($mode) OR empty($mode)) {
-        if(isset($userinfo['umode'])) {
-          $mode = $userinfo['umode'];
+        if(isset($nuke_userinfo['umode'])) {
+          $mode = $nuke_userinfo['umode'];
         } else {
           $mode = 'thread';
         }
         }
         if (!isset($order) OR empty($order)) {
-        if(isset($userinfo['uorder'])) {
-          $order = $userinfo['uorder'];
+        if(isset($nuke_userinfo['uorder'])) {
+          $order = $nuke_userinfo['uorder'];
         } else {
           $order = 0;
         }
         }
         if (!isset($thold) OR empty($thold)) {
-        if(isset($userinfo['thold'])) {
-          $thold = $userinfo['thold'];
+        if(isset($nuke_userinfo['thold'])) {
+          $thold = $nuke_userinfo['thold'];
         } else {
           $thold = 0;
         }
@@ -176,26 +176,26 @@ function navbar($pollID, $title, $thold, $mode, $order) {
 }
 
 function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblwidth=99) {
-    global $datetime, $user, $cookie, $bgcolor1, $reasons, $anonymous, $anonpost, $commentlimit, $prefix, $module_name, $nuke_db, $userinfo, $nuke_user_prefix;
+    global $datetime, $nuke_user, $cookie, $bgcolor1, $reasons, $anonymous, $anonpost, $commentlimit, $prefix, $module_name, $nuke_db, $nuke_userinfo, $nuke_user_prefix;
 
     $comments = 0;
     if (!isset($mode) OR empty($mode)) {
-        if(isset($userinfo['umode'])) {
-          $mode = $userinfo['umode'];
+        if(isset($nuke_userinfo['umode'])) {
+          $mode = $nuke_userinfo['umode'];
         } else {
           $mode = 'thread';
         }
     }
     if (!isset($order) OR empty($order)) {
-        if(isset($userinfo['uorder'])) {
-          $order = $userinfo['uorder'];
+        if(isset($nuke_userinfo['uorder'])) {
+          $order = $nuke_userinfo['uorder'];
         } else {
           $order = 0;
         }
     }
     if (!isset($thold) OR empty($thold)) {
-        if(isset($userinfo['thold'])) {
-          $thold = $userinfo['thold'];
+        if(isset($nuke_userinfo['thold'])) {
+          $thold = $nuke_userinfo['thold'];
         } else {
           $thold = 0;
         }
@@ -242,7 +242,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
                 formatTimestamp($r_date);
                 if ($r_email) {
                     echo "<p><strong>$r_subject</strong> <span class=content>";
-                    if($userinfo['noscore'] == 0) {
+                    if($nuke_userinfo['noscore'] == 0) {
                         echo "("._SCORE." $r_score";
                         if($r_reason>0) echo ", $reasons[$r_reason]";
                         echo ")";
@@ -256,7 +256,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
  ******************************************************/
                 } else {
                     echo "<p><strong>$r_subject</strong> <span class=content>";
-                    if($userinfo['noscore'] == 0) {
+                    if($nuke_userinfo['noscore'] == 0) {
                         echo "("._SCORE." $r_score";
                         if($r_reason>0) echo ", $reasons[$r_reason]";
                         echo ")";
@@ -278,7 +278,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
                 $url = stripslashes($row_url['user_website']);
                 if ($url != "http://" AND !empty($url) AND stristr($url, "http://")) { echo "<a href=\"$url\" target=\"new\">$url</a> "; }
                 echo "</span></td></tr><tr><td>";
-                if((isset($userinfo['commentmax'])) && (strlen($r_comment) > $userinfo['commentmax'])) echo substr($r_comment, 0, $userinfo['commentmax'])."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;pollID=$r_pollID&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
+                if((isset($nuke_userinfo['commentmax'])) && (strlen($r_comment) > $nuke_userinfo['commentmax'])) echo substr($r_comment, 0, $nuke_userinfo['commentmax'])."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;pollID=$r_pollID&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
                 elseif(strlen($r_comment) > $commentlimit) echo substr("$r_comment", 0, $commentlimit)."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;pollID=$r_pollID&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
                 else echo $r_comment;
                 echo "</td></tr></table><br /><p>";
@@ -318,7 +318,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
                 formatTimestamp($r_date);
                 if ($r_email) {
                     echo "<p><strong>$r_subject</strong> <span class=content>";
-                    if($userinfo['noscore'] == 0) {
+                    if($nuke_userinfo['noscore'] == 0) {
                         echo "("._SCORE." $r_score";
                         if($r_reason>0) echo ", $reasons[$r_reason]";
                         echo ")";
@@ -332,7 +332,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
  ******************************************************/
                  } else {
                     echo "<p><strong>$r_subject</strong> <span class=content>";
-                    if($userinfo['noscore'] == 0) {
+                    if($nuke_userinfo['noscore'] == 0) {
                         echo "("._SCORE." $r_score";
                         if($r_reason>0) echo ", $reasons[$r_reason]";
                         echo ")";
@@ -354,7 +354,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
                 $url = $row_url2['user_website'];
                 if ($url != "http://" AND !empty($url) AND preg_match("#http://#i", $url)) { echo "<a href=\"$url\" target=\"new\">$url</a> "; }
                 echo "</span></td></tr><tr><td>";
-                if((isset($userinfo['commentmax'])) && (strlen($r_comment) > $userinfo['commentmax'])) echo substr($r_comment, 0, $userinfo['commentmax'])."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;pollID=$r_pollID&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
+                if((isset($nuke_userinfo['commentmax'])) && (strlen($r_comment) > $nuke_userinfo['commentmax'])) echo substr($r_comment, 0, $nuke_userinfo['commentmax'])."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;pollID=$r_pollID&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
                 elseif(strlen($r_comment) > $commentlimit) echo substr("$r_comment", 0, $commentlimit)."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;pollID=$r_pollID&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
                 else echo $r_comment;
                 echo "</td></tr></table><br /><p><span class=content color=\"$bgcolor2\"> [ <a href=\"modules.php?name=$module_name&amp;file=comments&amp;op=Reply&amp;pid=$r_tid&amp;pollID=$r_pollID&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._REPLY."</a>";
@@ -409,7 +409,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
 }
 
 function DisplayBabies ($tid, $level=0, $dummy=0) {
-    global $userinfo, $datetime, $anonymous, $prefix, $nuke_db, $module_name;
+    global $nuke_userinfo, $datetime, $anonymous, $prefix, $nuke_db, $module_name;
 
     $comments = 0;
     $tid = intval($tid);
@@ -445,28 +445,28 @@ function DisplayBabies ($tid, $level=0, $dummy=0) {
 }
 
 function DisplayTopic ($pollID, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0, $level=0, $nokids=0) {
-    global $title, $bgcolor1, $bgcolor2, $bgcolor3, $hr, $user, $datetime, $cookie, $admin, $commentlimit, $anonymous, $reasons, $anonpost, $foot1, $foot2, $foot3, $foot4, $prefix, $module_name, $nuke_db, $admin_file, $userinfo, $nuke_user_prefix;
+    global $title, $bgcolor1, $bgcolor2, $bgcolor3, $hr, $nuke_user, $datetime, $cookie, $admin, $commentlimit, $anonymous, $reasons, $anonpost, $foot1, $foot2, $foot3, $foot4, $prefix, $module_name, $nuke_db, $admin_file, $nuke_userinfo, $nuke_user_prefix;
 
     include_once(NUKE_BASE_DIR.'header.php');
     $count_times = 0;
 
     if (!isset($mode) OR empty($mode)) {
-        if(isset($userinfo['umode'])) {
-          $mode = $userinfo['umode'];
+        if(isset($nuke_userinfo['umode'])) {
+          $mode = $nuke_userinfo['umode'];
         } else {
           $mode = 'thread';
         }
     }
     if (!isset($order) OR empty($order)) {
-        if(isset($userinfo['uorder'])) {
-          $order = $userinfo['uorder'];
+        if(isset($nuke_userinfo['uorder'])) {
+          $order = $nuke_userinfo['uorder'];
         } else {
           $order = 0;
         }
     }
     if (!isset($thold) OR empty($thold)) {
-        if(isset($userinfo['thold'])) {
-          $thold = $userinfo['thold'];
+        if(isset($nuke_userinfo['thold'])) {
+          $thold = $nuke_userinfo['thold'];
         } else {
           $thold = 0;
         }
@@ -513,7 +513,7 @@ function DisplayTopic ($pollID, $pid=0, $tid=0, $mode="thread", $order=0, $thold
         formatTimestamp($date);
         if ($email) {
             echo "<p><strong>$subject</strong> <span class=content>";
-            if($userinfo['noscore'] == 0) {
+            if($nuke_userinfo['noscore'] == 0) {
                 echo "("._SCORE." $score";
                 if($reason>0) echo ", $reasons[$reason]";
                 echo ")";
@@ -527,7 +527,7 @@ function DisplayTopic ($pollID, $pid=0, $tid=0, $mode="thread", $order=0, $thold
  ******************************************************/
         } else {
             echo "<p><strong>$subject</strong> <span class=content>";
-            if($userinfo['noscore'] == 0) {
+            if($nuke_userinfo['noscore'] == 0) {
                 echo "("._SCORE." $score";
                 if($reason>0) echo ", $reasons[$reason]";
                 echo ")";
@@ -570,7 +570,7 @@ function DisplayTopic ($pollID, $pid=0, $tid=0, $mode="thread", $order=0, $thold
         }
 
         echo "</span></td></tr><tr><td>";
-        if((isset($userinfo['commentmax'])) && (strlen($comment) > $userinfo['commentmax'])) echo substr("$comment", 0, $userinfo['commentmax'])."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;pollID=$r_pollID&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
+        if((isset($nuke_userinfo['commentmax'])) && (strlen($comment) > $nuke_userinfo['commentmax'])) echo substr("$comment", 0, $nuke_userinfo['commentmax'])."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;pollID=$r_pollID&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
         elseif(strlen($comment) > $commentlimit) echo substr($comment, 0, $commentlimit)."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;pollID=$pollID&amp;tid=$tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
         else echo $comment;
         echo "</td></tr></table><br /><p>";
@@ -604,25 +604,25 @@ function DisplayTopic ($pollID, $pid=0, $tid=0, $mode="thread", $order=0, $thold
 
 function singlecomment($tid, $pollID, $mode, $order, $thold) {
     include_once(NUKE_BASE_DIR.'header.php');
-    global $userinfo, $user, $cookie, $datetime, $bgcolor1, $bgcolor2, $bgcolor3, $anonpost, $admin, $anonymous, $prefix, $nuke_db, $module_name;
+    global $nuke_userinfo, $nuke_user, $cookie, $datetime, $bgcolor1, $bgcolor2, $bgcolor3, $anonpost, $admin, $anonymous, $prefix, $nuke_db, $module_name;
 
     if (!isset($mode) OR empty($mode)) {
-        if(isset($userinfo['umode'])) {
-            $mode = $userinfo['umode'];
+        if(isset($nuke_userinfo['umode'])) {
+            $mode = $nuke_userinfo['umode'];
         } else {
             $mode = "thread";
         }
     }
     if (!isset($order) OR empty($order)) {
-        if(isset($userinfo['uorder'])) {
-            $order = $userinfo['uorder'];
+        if(isset($nuke_userinfo['uorder'])) {
+            $order = $nuke_userinfo['uorder'];
         } else {
             $order = 0;
         }
     }
     if (!isset($thold) OR empty($thold)) {
-        if(isset($userinfo['thold'])) {
-            $thold = $userinfo['thold'];
+        if(isset($nuke_userinfo['thold'])) {
+            $thold = $nuke_userinfo['thold'];
         } else {
             $thold = 0;
         }
@@ -655,25 +655,25 @@ function singlecomment($tid, $pollID, $mode, $order, $thold) {
 
 function reply ($pid, $pollID, $mode, $order, $thold) {
     include_once(NUKE_BASE_DIR.'header.php');
-    global $userinfo, $user, $cookie, $datetime, $bgcolor1, $bgcolor2, $bgcolor3, $AllowableHTML, $anonymous, $prefix, $anonpost, $module_name, $nuke_db;
+    global $nuke_userinfo, $nuke_user, $cookie, $datetime, $bgcolor1, $bgcolor2, $bgcolor3, $AllowableHTML, $anonymous, $prefix, $anonpost, $module_name, $nuke_db;
 
     if (!isset($mode) OR empty($mode)) {
-        if(isset($userinfo['umode'])) {
-          $mode = $userinfo['umode'];
+        if(isset($nuke_userinfo['umode'])) {
+          $mode = $nuke_userinfo['umode'];
         } else {
           $mode = 'thread';
         }
     }
     if (!isset($order) OR empty($order)) {
-        if(isset($userinfo['uorder'])) {
-          $order = $userinfo['uorder'];
+        if(isset($nuke_userinfo['uorder'])) {
+          $order = $nuke_userinfo['uorder'];
         } else {
           $order = 0;
         }
     }
     if (!isset($thold) OR empty($thold)) {
-        if(isset($userinfo['thold'])) {
-          $thold = $userinfo['thold'];
+        if(isset($nuke_userinfo['thold'])) {
+          $thold = $nuke_userinfo['thold'];
         } else {
           $thold = 0;
         }
@@ -732,8 +732,8 @@ function reply ($pid, $pollID, $mode, $order, $thold) {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-        $username_color = UsernameColor($cookie[1]);
-        echo "<span class=\"content\"><a href=\"modules.php?name=Your_Account\">$username_color</a> [ <a href=\"modules.php?name=Your_Account&amp;op=logout\">"._LOGOUT."</a> ]</span>";
+        $nuke_username_color = UsernameColor($cookie[1]);
+        echo "<span class=\"content\"><a href=\"modules.php?name=Your_Account\">$nuke_username_color</a> [ <a href=\"modules.php?name=Your_Account&amp;op=logout\">"._LOGOUT."</a> ]</span>";
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -764,25 +764,25 @@ function reply ($pid, $pollID, $mode, $order, $thold) {
 
 function replyPreview ($pid, $pollID, $subject, $comment, $xanonpost, $mode, $order, $thold, $posttype) {
     include_once(NUKE_BASE_DIR.'header.php');
-    global $userinfo, $user, $cookie, $AllowableHTML, $anonymous, $module_name;
+    global $nuke_userinfo, $nuke_user, $cookie, $AllowableHTML, $anonymous, $module_name;
 
     if (!isset($mode) OR empty($mode)) {
-                    if(isset($userinfo['umode'])) {
-                      $mode = $userinfo['umode'];
+                    if(isset($nuke_userinfo['umode'])) {
+                      $mode = $nuke_userinfo['umode'];
                     } else {
                       $mode = "thread";
                     }
     }
     if (!isset($order) OR empty($order)) {
-                    if(isset($userinfo['uorder'])) {
-                      $order = $userinfo['uorder'];
+                    if(isset($nuke_userinfo['uorder'])) {
+                      $order = $nuke_userinfo['uorder'];
                     } else {
                       $order = 0;
                     }
     }
     if (!isset($thold) OR empty($thold)) {
-                    if(isset($userinfo['thold'])) {
-                      $thold = $userinfo['thold'];
+                    if(isset($nuke_userinfo['thold'])) {
+                      $thold = $nuke_userinfo['thold'];
                     } else {
                       $thold = 0;
                     }
@@ -845,31 +845,31 @@ function replyPreview ($pid, $pollID, $subject, $comment, $xanonpost, $mode, $or
 }
 
 function CreateTopic ($xanonpost, $subject, $comment, $pid, $pollID, $host_name, $mode, $order, $thold, $posttype) {
-    global $userinfo, $user, $userinfo, $EditedMessage, $cookie, $prefix, $pollcomm, $anonpost, $nuke_db, $module_name;
+    global $nuke_userinfo, $nuke_user, $nuke_userinfo, $EditedMessage, $cookie, $prefix, $pollcomm, $anonpost, $nuke_db, $module_name;
 
                   if (!isset($mode) OR empty($mode)) {
-                    if(isset($userinfo['umode'])) {
-                      $mode = $userinfo['umode'];
+                    if(isset($nuke_userinfo['umode'])) {
+                      $mode = $nuke_userinfo['umode'];
                     } else {
                       $mode = "thread";
                     }
                   }
                   if (!isset($order) OR empty($order)) {
-                    if(isset($userinfo['uorder'])) {
-                      $order = $userinfo['uorder'];
+                    if(isset($nuke_userinfo['uorder'])) {
+                      $order = $nuke_userinfo['uorder'];
                     } else {
                       $order = 0;
                     }
                   }
                   if (!isset($thold) OR empty($thold)) {
-                    if(isset($userinfo['thold'])) {
-                      $thold = $userinfo['thold'];
+                    if(isset($nuke_userinfo['thold'])) {
+                      $thold = $nuke_userinfo['thold'];
                     } else {
                       $thold = 0;
                     }
                   }
 
-    $author = Fix_Quotes($author);
+    $nuke_author = Fix_Quotes($nuke_author);
     $subject = Fix_Quotes(filter_text($subject, "nohtml"));
     $comment = format_url($comment);
     if ($posttype=="exttrans") {
@@ -880,9 +880,9 @@ function CreateTopic ($xanonpost, $subject, $comment, $pid, $pollID, $host_name,
         $comment = Fix_Quotes(filter_text($comment));
     }
     if ((is_user()) && (!$xanonpost)) {
-    $name = $userinfo['username'];
-    $email = $userinfo['femail'];
-    $url = $userinfo['user_website'];
+    $name = $nuke_userinfo['username'];
+    $email = $nuke_userinfo['femail'];
+    $url = $nuke_userinfo['user_website'];
     $score = 1;
     } else {
     $name = "";
@@ -910,9 +910,9 @@ function CreateTopic ($xanonpost, $subject, $comment, $pid, $pollID, $host_name,
     exit;
     }
     if ($pollcomm == 1) {
-    if (isset($userinfo['umode'])) $options .= "&amp;mode=".$userinfo['umode']; else $options .= "&amp;mode=thread";
-    if (isset($userinfo['uorder'])) $options .= "&amp;order=".$userinfo['uorder']; else $options .= "&amp;order=0";
-    if (isset($userinfo['thold'])) $options .= "&amp;thold=".$userinfo['thold']; else $options .= "&amp;thold=0";
+    if (isset($nuke_userinfo['umode'])) $options .= "&amp;mode=".$nuke_userinfo['umode']; else $options .= "&amp;mode=thread";
+    if (isset($nuke_userinfo['uorder'])) $options .= "&amp;order=".$nuke_userinfo['uorder']; else $options .= "&amp;order=0";
+    if (isset($nuke_userinfo['thold'])) $options .= "&amp;thold=".$nuke_userinfo['thold']; else $options .= "&amp;thold=0";
     } else {
     $options = "";
     }
@@ -928,22 +928,22 @@ if (isset($order)) { $order = intval($order); }
 if (isset($thold)) { $thold = intval($thold); }
 
 if (!isset($mode) OR empty($mode)) {
-  if(isset($userinfo['umode'])) {
-    $mode = $userinfo['umode'];
+  if(isset($nuke_userinfo['umode'])) {
+    $mode = $nuke_userinfo['umode'];
   } else {
     $mode = 'thread';
   }
 }
 if (!isset($order) OR empty($order)) {
-  if(isset($userinfo['uorder'])) {
-    $order = $userinfo['uorder'];
+  if(isset($nuke_userinfo['uorder'])) {
+    $order = $nuke_userinfo['uorder'];
   } else {
     $order = 0;
   }
 }
 if (!isset($thold) OR empty($thold)) {
-  if(isset($userinfo['thold'])) {
-    $thold = $userinfo['thold'];
+  if(isset($nuke_userinfo['thold'])) {
+    $thold = $nuke_userinfo['thold'];
   } else {
     $thold = 0;
   }
@@ -1001,7 +1001,7 @@ switch($op) {
         break;
 
     default:
-        global $module_name, $mode, $userinfo, $order, $thold;
+        global $module_name, $mode, $nuke_userinfo, $order, $thold;
         if ((isset($tid)) && (!isset($pid))) {
             singlecomment($tid, $pollID, $mode, $order, $thold);
         } elseif (!isset($pid)) {

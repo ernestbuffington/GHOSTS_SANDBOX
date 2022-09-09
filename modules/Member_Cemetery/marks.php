@@ -1,17 +1,17 @@
 <?php
 if (!defined('MODULE_FILE')) die("You can't access this file directly...");
-global $prefix, $nuke_db, $cookie, $user, $theme_name;
+global $prefix, $nuke_db, $cookie, $nuke_user, $theme_name;
 $index = 1;
 require_once("mainfile.php");
 $module_name = basename(dirname(__FILE__));
 get_lang($module_name);
 $pagetitle = "86it Developers Network - My "._MARKSTITLE;
 include("header.php");
-$userinfo = getusrinfo( $user );
-$userid = $userinfo["user_id"];
+$nuke_userinfo = getusrinfo( $nuke_user );
+$nuke_userid = $nuke_userinfo["user_id"];
 $catname=@htmlentities($catname);
-if(!isset($userid) || $userid== "")
-$userid = 0;
+if(!isset($nuke_userid) || $nuke_userid== "")
+$nuke_userid = 0;
 # Sometimes we don't know the category name
 if((!isset($catname) || $catname== "") && (isset($category) && $category != "")):
 	$getname="select name from ".$prefix."_cemetery_cat where category_id='$category'";
@@ -28,7 +28,7 @@ $toes =  '<img class="tooltip-html copyright" alt="" title="" width="30" src="mo
 echo "<center><span class=title><strong><h1>".$headstone." ".$catname." ".$headstone."</h1></strong></span></center><P>\n";
 echo "<center>[ <a href=modules.php?name=".$module_name.">"._CATEGORIES."</a> | <a href=modules.php?name=".$module_name."&amp;file=edit_mark&amp;catid=$category>"._NEWBOOKMARK."</a> | <a href=modules.php?name=".$module_name."&amp;file=edit_cat>"._NEWCATEGORY."</a> ]</center>";
 echo "<hr />";
-$marks_query = "SELECT `id`,`name`,`url`,`description`,`mod_date`,`popup` FROM ".$prefix."_cemetery WHERE user_id=".$userid." AND category_id='".$category ."' ORDER BY `name`";
+$marks_query = "SELECT `id`,`name`,`url`,`description`,`mod_date`,`popup` FROM ".$prefix."_cemetery WHERE user_id=".$nuke_userid." AND category_id='".$category ."' ORDER BY `name`";
 $marks_res = $nuke_db->sql_query ($marks_query,$nuke_db);
 echo "<table width=98%>\n<tr class=boxtitle>
       <td width=37%>

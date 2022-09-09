@@ -57,21 +57,21 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
   private $_esmtpParams = array();
   
   /**
-   * Create a new AuthHandler with $authenticators for support.
-   * @param Swift_Transport_Esmtp_Authenticator[] $authenticators
+   * Create a new AuthHandler with $nuke_authenticators for support.
+   * @param Swift_Transport_Esmtp_Authenticator[] $nuke_authenticators
    */
-  public function __construct(array $authenticators)
+  public function __construct(array $nuke_authenticators)
   {
-    $this->setAuthenticators($authenticators);
+    $this->setAuthenticators($nuke_authenticators);
   }
   
   /**
    * Set the Authenticators which can process a login request.
-   * @param Swift_Transport_Esmtp_Authenticator[] $authenticators
+   * @param Swift_Transport_Esmtp_Authenticator[] $nuke_authenticators
    */
-  public function setAuthenticators(array $authenticators)
+  public function setAuthenticators(array $nuke_authenticators)
   {
-    $this->_authenticators = $authenticators;
+    $this->_authenticators = $nuke_authenticators;
   }
   
   /**
@@ -85,11 +85,11 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
   
   /**
    * Set the username to authenticate with.
-   * @param string $username
+   * @param string $nuke_username
    */
-  public function setUsername($username)
+  public function setUsername($nuke_username)
   {
-    $this->_username = $username;
+    $this->_username = $nuke_username;
   }
   
   /**
@@ -164,13 +164,13 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
     if ($this->_username)
     {
       $count = 0;
-      foreach ($this->_getAuthenticatorsForAgent() as $authenticator)
+      foreach ($this->_getAuthenticatorsForAgent() as $nuke_authenticator)
       {
-        if (in_array(strtolower($authenticator->getAuthKeyword()),
+        if (in_array(strtolower($nuke_authenticator->getAuthKeyword()),
           array_map('strtolower', $this->_esmtpParams)))
         {
           $count++;
-          if ($authenticator->authenticate($agent, $this->_username, $this->_password))
+          if ($nuke_authenticator->authenticate($agent, $this->_username, $this->_password))
           {
             return;
           }
@@ -249,11 +249,11 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
       return $this->_authenticators;
     }
 
-    foreach ($this->_authenticators as $authenticator)
+    foreach ($this->_authenticators as $nuke_authenticator)
     {
-      if (strtolower($authenticator->getAuthKeyword()) == $mode)
+      if (strtolower($nuke_authenticator->getAuthKeyword()) == $mode)
       {
-        return array($authenticator);
+        return array($nuke_authenticator);
       }
     }
 

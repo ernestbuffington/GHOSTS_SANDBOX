@@ -39,7 +39,7 @@ if (!isset($type)) { $type = ''; }
 if (!isset($category)) { $category = 0; }
 if (!isset($topic)) { $topic = 0; }
 if (!isset($days)) { $days = 0; }
-if (!isset($author)) { $author = ''; }
+if (!isset($nuke_author)) { $nuke_author = ''; }
 if (!isset($op)) { $op = ''; }
 if (!isset($sid)) { $sid = 0; } else { $sid = intval($sid); } 
 
@@ -155,9 +155,9 @@ switch($op) {
         echo "&nbsp;<select name=\"author\">";
         echo "<option value=\"\">"._ALLAUTHORS."</option>\n";
         while($row4 = $nuke_db->sql_fetchrow($thing)) {
-            $authors = stripslashes($row4['aid']);
-            if ($authors==$author) { $sel = 'selected '; } else { $sel = ''; }
-            echo "<option value=\"$authors\" $sel>$authors</option>\n";
+            $nuke_authors = stripslashes($row4['aid']);
+            if ($nuke_authors==$nuke_author) { $sel = 'selected '; } else { $sel = ''; }
+            echo "<option value=\"$nuke_authors\" $sel>$nuke_authors</option>\n";
         }
         $nuke_db->sql_freeresult($thing);
         echo "</select>\n";
@@ -213,7 +213,7 @@ switch($op) {
 						   s.topic FROM ".$prefix."_stories s, ".$prefix."_authors a WHERE s.aid=a.aid $queryalang $categ";
                 
 				if (isset($query)) $q .= "AND (s.title LIKE '%$query%' OR s.hometext LIKE '%$query%' OR s.bodytext LIKE '%$query%' OR s.notes LIKE '%$query%') ";
-                if (!empty($author)) $q .= "AND s.aid='".Fix_Quotes($author)."' ";
+                if (!empty($nuke_author)) $q .= "AND s.aid='".Fix_Quotes($nuke_author)."' ";
                 if (!empty($topic)) $q .= "AND s.topic='".Fix_Quotes($topic)."' ";
                 if (!empty($days) && $days!=0) $q .= "AND TO_DAYS(NOW()) - TO_DAYS(datePublished) <= '".Fix_Quotes($days)."' ";
                 $q .= " ORDER BY s.datePublished DESC LIMIT $min,$offset";
@@ -297,13 +297,13 @@ switch($op) {
 
                     $prev = $min-$offset;
                     if ($prev>=0) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type&amp;category=$category\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type&amp;category=$category\">";
                         print "<strong>$min "._PREVMATCHES."</strong></a></div>";
                     }
 
                     $next = $min+$offset;
                     if ($x>=9) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type&amp;category=$category\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type&amp;category=$category\">";
                         print "<strong>"._NEXTMATCHES."</strong></a></div>";
                     }
                 }
@@ -359,13 +359,13 @@ switch($op) {
 
                     $prev = $min-$offset;
                     if ($prev>=0) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$topic&amp;min=$prev&amp;query=$query&amp;type=$type\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$topic&amp;min=$prev&amp;query=$query&amp;type=$type\">";
                         print "<strong>$min "._PREVMATCHES."</strong></a></div>";
                     }
 
                     $next = $min+$offset;
                     if ($x>=9) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$topic&amp;min=$max&amp;query=$query&amp;type=$type\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$topic&amp;min=$max&amp;query=$query&amp;type=$type\">";
                         print "<strong>"._NEXTMATCHES."</strong></a></div>";
                     }
                 }
@@ -408,13 +408,13 @@ switch($op) {
 
                     $prev = $min-$offset;
                     if ($prev >= 0) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type\">";
                         print "<strong>$min "._PREVMATCHES."</strong></a></div>";
                     }
 
                     $next=$min+$offset;
                     if ($x >= 9) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type\">";
                         print "<strong>"._NEXTMATCHES."</strong></a></div>";
                     }
                 }
@@ -450,13 +450,13 @@ switch($op) {
 
                     $prev = $min-$offset;
                     if ($prev >= 0) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type\">";
                         print "<strong>$min "._PREVMATCHES."</strong></a></div>";
                     }
 
                     $next = $min+$offset;
                     if ($x >= 9) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type\">";
                         print "<strong>"._NEXTMATCHES."</strong></a></div>";
                     }
                 }

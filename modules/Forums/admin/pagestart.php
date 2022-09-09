@@ -87,14 +87,14 @@ $admin = base64_decode($admin);
 $admin = explode(":", $admin);
 
 $admin_info = get_admin_field(array('name', 'pwd', 'radminsuper'), $admin[0]);
-$user_info = get_user_field(array('user_id', 'user_password', 'user_level'), $cookie[1], true);
+$nuke_user_info = get_user_field(array('user_id', 'user_password', 'user_level'), $cookie[1], true);
 
 if(!(
 	#Check to see if they are a site administrator with Forum Module access
 	($admin[1] == $admin_info['pwd'] && !empty($admin_info['pwd']) && is_mod_admin('Forums'))
 	OR
 	#Checks to see if they are a standard forum admin
-	(is_user() && ($cookie[2] == $user_info['user_password']) && !empty($user_info['user_password']) && ($user_info['user_level'] == NUKE_ADMIN))
+	(is_user() && ($cookie[2] == $nuke_user_info['user_password']) && !empty($nuke_user_info['user_password']) && ($nuke_user_info['user_level'] == NUKE_ADMIN))
 ))
 {
     unset($cookie);
@@ -104,17 +104,17 @@ if(!(
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
 
-if ( empty($no_page_header) )
+if ( empty($no_nuke_page_header) )
 {
         // Not including the pageheader can be neccesarry if META tags are
         // needed in the calling script.
-        include('./page_header_admin.'.$phpEx);
+        include('./nuke_page_header_admin.'.$phpEx);
 }
 
 ?>

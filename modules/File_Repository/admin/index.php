@@ -18,7 +18,7 @@ require_once('mainfile.php');
 
 if(is_mod_admin($module_name)) 
 {
-	global $nuke_db, $admin_file, $currentlang, $userinfo;
+	global $nuke_db, $admin_file, $currentlang, $nuke_userinfo;
 //-------------------------------------------------------------------------
 //  INCLUDE THE LANGUAGE FILE FOR THE MODULE.
 //-------------------------------------------------------------------------

@@ -152,7 +152,7 @@ else
     $alpahnum = '';
     $alpha_where = '';
 }
-$user_ids = array();
+$nuke_user_ids = array();
 $filter = '';
 $filter_where = '';
 $find_by = 'find_username';
@@ -190,11 +190,11 @@ if ( isset($HTTP_GET_VARS['filter']) || isset($HTTP_POST_VARS['filter']) )
 //
 if ( isset($HTTP_POST_VARS[NUKE_POST_USERS_URL]) || isset($HTTP_GET_VARS[NUKE_POST_USERS_URL]) )
 {
-    $user_ids = ( isset($HTTP_POST_VARS[NUKE_POST_USERS_URL]) ) ? $HTTP_POST_VARS[NUKE_POST_USERS_URL] : $HTTP_GET_VARS[NUKE_POST_USERS_URL];
+    $nuke_user_ids = ( isset($HTTP_POST_VARS[NUKE_POST_USERS_URL]) ) ? $HTTP_POST_VARS[NUKE_POST_USERS_URL] : $HTTP_GET_VARS[NUKE_POST_USERS_URL];
 }
 else
 {
-    unset($user_ids);
+    unset($nuke_user_ids);
 }
 switch( $mode )
 {
@@ -218,19 +218,19 @@ switch( $mode )
             // show message
             $i = 0;
             $hidden_fields = '';
-            while( $i < count($user_ids) )
+            while( $i < count($nuke_user_ids) )
             {
-                $user_id = intval($user_ids[$i]);
-                $hidden_fields .= '<input type="hidden" name="' . NUKE_POST_USERS_URL . '[]" value="' . $user_id . '">';
+                $nuke_user_id = intval($nuke_user_ids[$i]);
+                $hidden_fields .= '<input type="hidden" name="' . NUKE_POST_USERS_URL . '[]" value="' . $nuke_user_id . '">';
 
-                unset($user_id);
+                unset($nuke_user_id);
                 $i++;
             }
 
-            $template->set_filenames(array(
+            $template_nuke->set_filenames(array(
                 'body' => 'confirm_body.tpl')
             );
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 'MESSAGE_TITLE' => $lang['Delete'],
                 'MESSAGE_TEXT' => $lang['Confirm_user_deleted'],
 
@@ -248,13 +248,13 @@ switch( $mode )
         {
             // delete users
             $i = 0;
-            while( $i < count($user_ids) )
+            while( $i < count($nuke_user_ids) )
             {
-                $user_id = intval($user_ids[$i]);
+                $nuke_user_id = intval($nuke_user_ids[$i]);
 
                 $sql = "SELECT u.username, g.group_id
                     FROM " . NUKE_USERS_TABLE . " u, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g
-                    WHERE ug.user_id = '$user_id'
+                    WHERE ug.user_id = '$nuke_user_id'
                         AND g.group_id = ug.group_id
                         AND g.group_single_user = '1'";
                 if( !($result = $nuke_db->sql_query($sql)) )
@@ -266,7 +266,7 @@ switch( $mode )
 
                 $sql = "UPDATE " . NUKE_POSTS_TABLE . "
                     SET poster_id = " . NUKE_DELETED . ", post_username = '" . $row['username'] . "'
-                    WHERE poster_id = '$user_id'";
+                    WHERE poster_id = '$nuke_user_id'";
                 if( !$nuke_db->sql_query($sql) )
                 {
                     message_die(NUKE_GENERAL_ERROR, 'Could not update posts for this user', '', __LINE__, __FILE__, $sql);
@@ -274,7 +274,7 @@ switch( $mode )
 
                 $sql = "UPDATE " . NUKE_BB_TOPICS_TABLE . "
                     SET topic_poster = " . NUKE_DELETED . "
-                    WHERE topic_poster = '$user_id'";
+                    WHERE topic_poster = '$nuke_user_id'";
                 if( !$nuke_db->sql_query($sql) )
                 {
                     message_die(NUKE_GENERAL_ERROR, 'Could not update topics for this user', '', __LINE__, __FILE__, $sql);
@@ -282,7 +282,7 @@ switch( $mode )
 
                 $sql = "UPDATE " . NUKE_VOTE_USERS_TABLE . "
                     SET vote_user_id = " . NUKE_DELETED . "
-                    WHERE vote_user_id = '$user_id'";
+                    WHERE vote_user_id = '$nuke_user_id'";
                 if( !$nuke_db->sql_query($sql) )
                 {
                     message_die(NUKE_GENERAL_ERROR, 'Could not update votes for this user', '', __LINE__, __FILE__, $sql);
@@ -290,7 +290,7 @@ switch( $mode )
 
                 $sql = "SELECT group_id
                     FROM " . NUKE_GROUPS_TABLE . "
-                    WHERE group_moderator = '$user_id'";
+                    WHERE group_moderator = '$nuke_user_id'";
                 if( !($result = $nuke_db->sql_query($sql)) )
                 {
                     message_die(NUKE_GENERAL_ERROR, 'Could not select groups where user was moderator', '', __LINE__, __FILE__, $sql);
@@ -306,7 +306,7 @@ switch( $mode )
                     $update_moderator_id = implode(', ', $group_moderator);
 
                     $sql = "UPDATE " . NUKE_GROUPS_TABLE . "
-                        SET group_moderator = " . $userdata['user_id'] . "
+                        SET group_moderator = " . $nuke_userdata['user_id'] . "
                         WHERE group_moderator IN ($update_moderator_id)";
                     if( !$nuke_db->sql_query($sql) )
                     {
@@ -315,14 +315,14 @@ switch( $mode )
                 }
 
                 $sql = "DELETE FROM " . NUKE_USERS_TABLE . "
-                    WHERE user_id = '$user_id'";
+                    WHERE user_id = '$nuke_user_id'";
                 if( !$nuke_db->sql_query($sql) )
                 {
                     message_die(NUKE_GENERAL_ERROR, 'Could not delete user', '', __LINE__, __FILE__, $sql);
                 }
 
                 $sql = "DELETE FROM " . NUKE_USER_GROUP_TABLE . "
-                    WHERE user_id = '$user_id'";
+                    WHERE user_id = '$nuke_user_id'";
                 if( !$nuke_db->sql_query($sql) )
                 {
                     message_die(NUKE_GENERAL_ERROR, 'Could not delete user from user_group table', '', __LINE__, __FILE__, $sql);
@@ -343,14 +343,14 @@ switch( $mode )
                 }
 
                 $sql = "DELETE FROM " . NUKE_TOPICS_WATCH_TABLE . "
-                    WHERE user_id = '$user_id'";
+                    WHERE user_id = '$nuke_user_id'";
                 if ( !$nuke_db->sql_query($sql) )
                 {
                     message_die(NUKE_GENERAL_ERROR, 'Could not delete user from topic watch table', '', __LINE__, __FILE__, $sql);
                 }
 
                 $sql = "DELETE FROM " . NUKE_BANLIST_TABLE . "
-                    WHERE ban_userid = '$user_id'";
+                    WHERE ban_userid = '$nuke_user_id'";
                 if ( !$nuke_db->sql_query($sql) )
                 {
                     message_die(NUKE_GENERAL_ERROR, 'Could not delete user from banlist table', '', __LINE__, __FILE__, $sql);
@@ -358,8 +358,8 @@ switch( $mode )
 
                 $sql = "SELECT privmsgs_id
                     FROM " . NUKE_PRIVMSGS_TABLE . "
-                    WHERE privmsgs_from_userid = '$user_id'
-                        OR privmsgs_to_userid = '$user_id'";
+                    WHERE privmsgs_from_userid = '$nuke_user_id'
+                        OR privmsgs_to_userid = '$nuke_user_id'";
                 if ( !($result = $nuke_db->sql_query($sql)) )
                 {
                     message_die(NUKE_GENERAL_ERROR, 'Could not select all users private messages', '', __LINE__, __FILE__, $sql);
@@ -391,7 +391,7 @@ switch( $mode )
                     }
                 }
 
-                unset($user_id);
+                unset($nuke_user_id);
                 $i++;
             }
 
@@ -420,19 +420,19 @@ switch( $mode )
         {
             $i = 0;
             $hidden_fields = '';
-            while( $i < count($user_ids) )
+            while( $i < count($nuke_user_ids) )
             {
-                $user_id = intval($user_ids[$i]);
-                $hidden_fields .= '<input type="hidden" name="' . NUKE_POST_USERS_URL . '[]" value="' . $user_id . '">';
+                $nuke_user_id = intval($nuke_user_ids[$i]);
+                $hidden_fields .= '<input type="hidden" name="' . NUKE_POST_USERS_URL . '[]" value="' . $nuke_user_id . '">';
 
-                unset($user_id);
+                unset($nuke_user_id);
                 $i++;
             }
 
-            $template->set_filenames(array(
+            $template_nuke->set_filenames(array(
                 'body' => 'confirm_body.tpl')
             );
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 'MESSAGE_TITLE' => $lang['Ban'],
                 'MESSAGE_TEXT' => $lang['Confirm_user_ban'],
 
@@ -450,18 +450,18 @@ switch( $mode )
         {
             // ban users
             $i = 0;
-            while( $i < count($user_ids) )
+            while( $i < count($nuke_user_ids) )
             {
-                $user_id = intval($user_ids[$i]);
+                $nuke_user_id = intval($nuke_user_ids[$i]);
 
                 $sql = "INSERT INTO " . NUKE_BANLIST_TABLE . " ( ban_userid )
-                    VALUES ( '$user_id' )";
+                    VALUES ( '$nuke_user_id' )";
                 if( !($result = $nuke_db->sql_query($sql)) )
                 {
                     message_die(NUKE_GENERAL_ERROR, 'Could not obtain ban user', '', __LINE__, __FILE__, $sql);
                 }
 
-                unset($user_id);
+                unset($nuke_user_id);
                 $i++;
             }
 
@@ -477,11 +477,11 @@ switch( $mode )
         // activate or deactive the seleted users
         //
         $i = 0;
-        while( $i < count($user_ids) )
+        while( $i < count($nuke_user_ids) )
         {
-            $user_id = intval($user_ids[$i]);
+            $nuke_user_id = intval($nuke_user_ids[$i]);
             $sql = "SELECT user_active FROM " . NUKE_USERS_TABLE . "
-                WHERE user_id = '$user_id'";
+                WHERE user_id = '$nuke_user_id'";
             if( !($result = $nuke_db->sql_query($sql)) )
             {
                 message_die(NUKE_GENERAL_ERROR, 'Could not obtain user information', '', __LINE__, __FILE__, $sql);
@@ -497,13 +497,13 @@ switch( $mode )
                 SET user_active = '$new_status',
                 user_level = '$new_level',
                 name = '$name'
-                WHERE user_id = '$user_id'";
+                WHERE user_id = '$nuke_user_id'";
             if( !($result = $nuke_db->sql_query($sql)) )
             {
                 message_die(NUKE_GENERAL_ERROR, 'Could not update user status', '', __LINE__, __FILE__, $sql);
             }
 
-            unset($user_id);
+            unset($nuke_user_id);
             $i++;
         }
 
@@ -522,20 +522,20 @@ switch( $mode )
             // show form to select which group to add users to
             $i = 0;
             $hidden_fields = '';
-            while( $i < count($user_ids) )
+            while( $i < count($nuke_user_ids) )
             {
-                $user_id = intval($user_ids[$i]);
-                $hidden_fields .= '<input type="hidden" name="' . NUKE_POST_USERS_URL . '[]" value="' . $user_id . '">';
+                $nuke_user_id = intval($nuke_user_ids[$i]);
+                $hidden_fields .= '<input type="hidden" name="' . NUKE_POST_USERS_URL . '[]" value="' . $nuke_user_id . '">';
 
-                unset($user_id);
+                unset($nuke_user_id);
                 $i++;
             }
 
-            $template->set_filenames(array(
+            $template_nuke->set_filenames(array(
                 'body' => 'admin/userlist_group.tpl')
             );
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 'MESSAGE_TITLE' => $lang['Add_group'],
                 'MESSAGE_TEXT' => $lang['Add_group_explain'],
 
@@ -561,7 +561,7 @@ switch( $mode )
             // loop through groups
             while ( $row = $nuke_db->sql_fetchrow($result) )
             {
-                $template->assign_block_vars('grouprow',array(
+                $template_nuke->assign_block_vars('grouprow',array(
                     'GROUP_NAME' => $row['group_name'],
                     'GROUP_ID' => $row['group_id'])
                 );
@@ -576,9 +576,9 @@ switch( $mode )
             $emailer = new emailer($board_config['smtp_delivery']);
 
             $i = 0;
-            while( $i < count($user_ids) )
+            while( $i < count($nuke_user_ids) )
             {
-                $user_id = intval($user_ids[$i]);
+                $nuke_user_id = intval($nuke_user_ids[$i]);
 
                 //
                 // For security, get the ID of the group moderator.
@@ -625,7 +625,7 @@ switch( $mode )
 
                 $sql = "SELECT user_id, user_email, user_lang, user_level
                     FROM " . NUKE_USERS_TABLE . "
-                    WHERE user_id = '$user_id'";
+                    WHERE user_id = '$nuke_user_id'";
                 if ( !($result = $nuke_db->sql_query($sql)) )
                 {
                     message_die(NUKE_GENERAL_ERROR, "Could not get user information", $lang['Error'], __LINE__, __FILE__, $sql);
@@ -705,7 +705,7 @@ switch( $mode )
 
                 }
 
-                unset($user_id);
+                unset($nuke_user_id);
                 $i++;
             }
 
@@ -720,7 +720,7 @@ switch( $mode )
         //
         // get and display all of the users
         //
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
           'body' => 'admin/userlist_body.tpl')
         );
 
@@ -759,7 +759,7 @@ switch( $mode )
                 $alpha_range[$i] = '<strong>' . $alpha_range[$i] . '</strong>';
             }
 
-            $template->assign_block_vars('alphanumsearch', array(
+            $template_nuke->assign_block_vars('alphanumsearch', array(
                 'SEARCH_SIZE' => floor(100/count($alpha_range)) . '%',
                 'SEARCH_TERM' => $alpha_range[$i],
                 'SEARCH_LINK' => $alphanum_search_url)
@@ -774,7 +774,7 @@ switch( $mode )
         //
         // set up template varibles
         //
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'L_TITLE' => $lang['Userlist'],
             'L_DESCRIPTION' => $lang['Userlist_description'],
 
@@ -954,7 +954,7 @@ switch( $mode )
             //
             // setup user row template varibles
             //
-            $template->assign_block_vars('user_row', array(
+            $template_nuke->assign_block_vars('user_row', array(
                 'ROW_NUMBER' => $i + ( $HTTP_GET_VARS['start'] + 1 ),
                 'ROW_CLASS' => ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'],
 
@@ -1019,7 +1019,7 @@ switch( $mode )
                     $group_status = $lang['Member'];
                 }
 
-                $template->assign_block_vars('user_row.group_row', array(
+                $template_nuke->assign_block_vars('user_row.group_row', array(
 /*****[BEGIN]******************************************
  [ Mod:    Group Colors                        v1.0.0 ]
  ******************************************************/
@@ -1035,7 +1035,7 @@ switch( $mode )
 
             if ( $g == 0 )
             {
-                $template->assign_block_vars('user_row.no_group_row', array(
+                $template_nuke->assign_block_vars('user_row.no_group_row', array(
                     'L_NONE' => $lang['None'])
                 );
             }
@@ -1060,7 +1060,7 @@ switch( $mode )
             $pagination = generate_pagination($phpbb2_root_path . "admin/admin_userlist.$phpEx?sort=$sort&amp;order=$sort_order&amp;show=$show" . ( ( isset($alphanum) ) ? "&amp;alphanum=$alphanum" : '' ), $total_members, $show, $start);
         }
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'PAGINATION' => $pagination,
             'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $show ) + 1 ), ceil( $total_members / $show )))
         );
@@ -1069,8 +1069,8 @@ switch( $mode )
 
 } // switch()
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

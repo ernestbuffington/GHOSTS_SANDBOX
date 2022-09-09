@@ -113,40 +113,40 @@ class FacebookRedirectLoginHelper
     /**
      * Stores CSRF state and returns a URL to which the user should be sent to in order to continue the login process with Facebook.
      *
-     * @param string $nuke_redirectUrl The URL Facebook should nuke_redirect users to after login.
+     * @param string $redirectUrl The URL Facebook should redirect users to after login.
      * @param array  $scope       List of permissions to request during login.
      * @param array  $params      An array of parameters to generate URL.
      * @param string $separator   The separator to use in http_build_query().
      *
      * @return string
      */
-    private function makeUrl($nuke_redirectUrl, array $scope, array $params = [], $separator = '&')
+    private function makeUrl($redirectUrl, array $scope, array $params = [], $separator = '&')
     {
         $state = $this->persistentDataHandler->get('state') ?: $this->pseudoRandomStringGenerator->getPseudoRandomString(static::CSRF_LENGTH);
         $this->persistentDataHandler->set('state', $state);
 
-        return $this->oAuth2Client->getAuthorizationUrl($nuke_redirectUrl, $state, $scope, $params, $separator);
+        return $this->oAuth2Client->getAuthorizationUrl($redirectUrl, $state, $scope, $params, $separator);
     }
 
     /**
      * Returns the URL to send the user in order to login to Facebook.
      *
-     * @param string $nuke_redirectUrl The URL Facebook should nuke_redirect users to after login.
+     * @param string $redirectUrl The URL Facebook should redirect users to after login.
      * @param array  $scope       List of permissions to request during login.
      * @param string $separator   The separator to use in http_build_query().
      *
      * @return string
      */
-    public function getLoginUrl($nuke_redirectUrl, array $scope = [], $separator = '&')
+    public function getLoginUrl($redirectUrl, array $scope = [], $separator = '&')
     {
-        return $this->makeUrl($nuke_redirectUrl, $scope, [], $separator);
+        return $this->makeUrl($redirectUrl, $scope, [], $separator);
     }
 
     /**
      * Returns the URL to send the user in order to log out of Facebook.
      *
      * @param AccessToken|string $accessToken The access token that will be logged out.
-     * @param string             $next        The url Facebook should nuke_redirect the user to after a successful logout.
+     * @param string             $next        The url Facebook should redirect the user to after a successful logout.
      * @param string             $separator   The separator to use in http_build_query().
      *
      * @return string
@@ -174,45 +174,45 @@ class FacebookRedirectLoginHelper
     /**
      * Returns the URL to send the user in order to login to Facebook with permission(s) to be re-asked.
      *
-     * @param string $nuke_redirectUrl The URL Facebook should nuke_redirect users to after login.
+     * @param string $redirectUrl The URL Facebook should redirect users to after login.
      * @param array  $scope       List of permissions to request during login.
      * @param string $separator   The separator to use in http_build_query().
      *
      * @return string
      */
-    public function getReRequestUrl($nuke_redirectUrl, array $scope = [], $separator = '&')
+    public function getReRequestUrl($redirectUrl, array $scope = [], $separator = '&')
     {
         $params = ['auth_type' => 'rerequest'];
 
-        return $this->makeUrl($nuke_redirectUrl, $scope, $params, $separator);
+        return $this->makeUrl($redirectUrl, $scope, $params, $separator);
     }
 
     /**
      * Returns the URL to send the user in order to login to Facebook with user to be re-authenticated.
      *
-     * @param string $nuke_redirectUrl The URL Facebook should nuke_redirect users to after login.
+     * @param string $redirectUrl The URL Facebook should redirect users to after login.
      * @param array  $scope       List of permissions to request during login.
      * @param string $separator   The separator to use in http_build_query().
      *
      * @return string
      */
-    public function getReAuthenticationUrl($nuke_redirectUrl, array $scope = [], $separator = '&')
+    public function getReAuthenticationUrl($redirectUrl, array $scope = [], $separator = '&')
     {
         $params = ['auth_type' => 'reauthenticate'];
 
-        return $this->makeUrl($nuke_redirectUrl, $scope, $params, $separator);
+        return $this->makeUrl($redirectUrl, $scope, $params, $separator);
     }
 
     /**
-     * Takes a valid code from a login nuke_redirect, and returns an AccessToken entity.
+     * Takes a valid code from a login redirect, and returns an AccessToken entity.
      *
-     * @param string|null $nuke_redirectUrl The nuke_redirect URL.
+     * @param string|null $redirectUrl The redirect URL.
      *
      * @return AccessToken|null
      *
      * @throws FacebookSDKException
      */
-    public function getAccessToken($nuke_redirectUrl = null)
+    public function getAccessToken($redirectUrl = null)
     {
         if (!$code = $this->getCode()) {
             return null;
@@ -221,11 +221,11 @@ class FacebookRedirectLoginHelper
         $this->validateCsrf();
         $this->resetCsrf();
 
-        $nuke_redirectUrl = $nuke_redirectUrl ?: $this->urlDetectionHandler->getCurrentUrl();
+        $redirectUrl = $redirectUrl ?: $this->urlDetectionHandler->getCurrentUrl();
         // At minimum we need to remove the 'code', 'enforce_https' and 'state' params
-        $nuke_redirectUrl = FacebookUrlManipulator::removeParamsFromUrl($nuke_redirectUrl, ['code', 'enforce_https', 'state']);
+        $redirectUrl = FacebookUrlManipulator::removeParamsFromUrl($redirectUrl, ['code', 'enforce_https', 'state']);
 
-        return $this->oAuth2Client->getAccessTokenFromCode($code, $nuke_redirectUrl);
+        return $this->oAuth2Client->getAccessTokenFromCode($code, $redirectUrl);
     }
 
     /**

@@ -84,9 +84,9 @@ if(is_mod_admin($module_name)) {
     $add_user_interest = ya_fixtext($add_user_interest);
     $add_user_viewemail = intval($add_user_viewemail);
     $add_newsletter = intval($add_newsletter);
-    $user_points = intval($user_points);
+    $nuke_user_points = intval($nuke_user_points);
     if (empty($stop)) {
-        $user_password = $add_pass;
+        $nuke_user_password = $add_pass;
 /*****[BEGIN]******************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
@@ -94,14 +94,14 @@ if(is_mod_admin($module_name)) {
 /*****[END]********************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
-        $user_regdate = date("M d, Y");
+        $nuke_user_regdate = date("M d, Y");
         list($newest_uid) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT max(user_id) AS newest_uid FROM ".$nuke_user_prefix."_users"));
         if ($newest_uid == "-1") { $new_uid = 1; } else { $new_uid = $newest_uid+1; }
         $sql = "INSERT INTO ".$nuke_user_prefix."_users ";
         $sql .= "(user_id, name, username, user_email, femail, user_website, user_regdate, user_from, user_occ, user_interests, user_viewemail, user_avatar, user_avatar_type, user_sig, user_password, newsletter, broadcast, popmeson";
         //if ($Version_Num > 6.9) { $sql .= ", points"; }
         $sql .= ") ";
-        $sql .= "VALUES ('$new_uid', '$add_name', '$add_uname', '$add_email', '$add_femail', '$add_url', '$user_regdate', '$add_user_from', '$add_user_occ', '$add_user_intrest', '$add_user_viewemail', 'gallery/blank.gif', '3', '$add_user_sig', '$add_pass', '$add_newsletter', '1', '0'";
+        $sql .= "VALUES ('$new_uid', '$add_name', '$add_uname', '$add_email', '$add_femail', '$add_url', '$nuke_user_regdate', '$add_user_from', '$add_user_occ', '$add_user_intrest', '$add_user_viewemail', 'gallery/blank.gif', '3', '$add_user_sig', '$add_pass', '$add_newsletter', '1', '0'";
         //if ($Version_Num > 6.9) { $sql .= ", '$add_points'"; }
         $sql .= ")";
         $result = $nuke_db->sql_query($sql);
@@ -147,7 +147,7 @@ if(is_mod_admin($module_name)) {
             if ($ya_config['servermail'] == 0) {
                 $message = _WELCOMETO." $sitename!<br /><br />";
                 $message .= _YOUUSEDEMAIL." ($add_email) "._TOREGISTER." $sitename.<br /><br />";
-                $message .= _FOLLOWINGMEM."<br />"._UNICKNAME." $add_uname<br />"._UPASSWORD." $user_password";
+                $message .= _FOLLOWINGMEM."<br />"._UNICKNAME." $add_uname<br />"._UPASSWORD." $nuke_user_password";
                 $subject = _ACCOUNTCREATED;
                 $headers = array(
                     'Content-Type: text/html; charset=UTF-8',
@@ -155,7 +155,7 @@ if(is_mod_admin($module_name)) {
                     'Reply-To: '.$adminmail,
                     'Return-Path: '.$adminmail
                 );
-                evo_phpmailer( $user_email, $subject, $message, $headers );
+                evo_phpmailer( $nuke_user_email, $subject, $message, $headers );
             }
             if (isset($min)) { $xmin = "&min=$min"; }
             if (isset($xop)) { $xxop = "&op=$xop"; }

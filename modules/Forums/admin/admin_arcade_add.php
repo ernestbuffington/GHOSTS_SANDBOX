@@ -105,7 +105,7 @@ if( isset($HTTP_POST_VARS['submit']) )
     }
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     "body" => "admin/arcade_add_body.tpl")
 );
 
@@ -121,7 +121,7 @@ while ( $row = $nuke_db->sql_fetchrow($result))
 }
 
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "L_ADD_TITLE" => $lang['Add_title'],
 
     "L_NAME" => $lang['Add_game_name'],
@@ -158,8 +158,8 @@ $template->assign_vars(array(
 
 // Generate The Page
 
-$template->pparse("body");
+$template_nuke->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

@@ -81,8 +81,8 @@ function modone() {
 }
 
 function modtwo($tid, $score, $reason) {
-    global $admin, $user, $moderate, $reasons;
-    if((((isset($admin)) && ($moderate == 1)) || ($moderate == 2)) && ($user)) {
+    global $admin, $nuke_user, $moderate, $reasons;
+    if((((isset($admin)) && ($moderate == 1)) || ($moderate == 2)) && ($nuke_user)) {
     echo " | <select name=dkn$tid>";
     for($i=0,$maxi=count($reasons); $i<$maxi; $i++) {
         echo "<option value=\"$score:$i\">$reasons[$i]</option>\n";
@@ -92,8 +92,8 @@ function modtwo($tid, $score, $reason) {
 }
 
 function modthree($sid, $mode, $order, $thold=0) {
-    global $admin, $user, $moderate;
-    if((((isset($admin)) && ($moderate == 1)) || ($moderate==2)) && ($user)) echo "<center><input type=\"hidden\" name=\"sid\" value=\"$sid\"><input type=\"hidden\" name=\"mode\" value=\"$mode\"><input type=\"hidden\" name=\"order\" value=\"$order\"><input type=\"hidden\" name=\"thold\" value=\"$thold\">
+    global $admin, $nuke_user, $moderate;
+    if((((isset($admin)) && ($moderate == 1)) || ($moderate==2)) && ($nuke_user)) echo "<center><input type=\"hidden\" name=\"sid\" value=\"$sid\"><input type=\"hidden\" name=\"mode\" value=\"$mode\"><input type=\"hidden\" name=\"order\" value=\"$order\"><input type=\"hidden\" name=\"thold\" value=\"$thold\">
     <input type=\"hidden\" name=\"op\" value=\"moderate\">
     <input type=\"image\" src=\"images/menu/moderate.gif\"></center></form>";
 }
@@ -106,7 +106,7 @@ function nocomm() {
 
 function navbar($sid, $title, $thold, $mode, $order) 
 {
-    global $user, $bgcolor1, $bgcolor2, $textcolor1, $textcolor2, $anonpost, $prefix, $nuke_db, $module_name;
+    global $nuke_user, $bgcolor1, $bgcolor2, $textcolor1, $textcolor2, $anonpost, $prefix, $nuke_db, $module_name;
 
     $query = $nuke_db->sql_query("SELECT * FROM ".$prefix."_comments WHERE sid='$sid'");
 
@@ -171,13 +171,13 @@ function navbar($sid, $title, $thold, $mode, $order)
 
 function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblwidth=99) {
     
-	global $datetime, $user, $cookie, $bgcolor1, $reasons, $anonymous, $anonpost, $commentlimit, $prefix, $textcolor2, $nuke_db, $module_name, $nuke_user_prefix, $userinfo;
+	global $datetime, $nuke_user, $cookie, $bgcolor1, $reasons, $anonymous, $anonpost, $commentlimit, $prefix, $textcolor2, $nuke_db, $module_name, $nuke_user_prefix, $nuke_userinfo;
     
 	$comments = 0;
     
-	if (!empty($userinfo['umode'])) 
+	if (!empty($nuke_userinfo['umode'])) 
 	{
-        $mode = $userinfo['umode'];
+        $mode = $nuke_userinfo['umode'];
     }
                          $result = $nuke_db->sql_query("SELECT `tid`, 
 	                                                      `pid`, 
@@ -239,7 +239,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
 		
 		if ($r_email) {
             echo "<strong>$r_subject</strong> <font class=\"content\">";
-            if($userinfo['noscore'] == 0) {
+            if($nuke_userinfo['noscore'] == 0) {
             echo "("._SCORE." $r_score";
             if($r_reason>0) echo ", $reasons[$r_reason]";
             echo ")";
@@ -247,7 +247,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
             echo "<br />"._BY." <a href=\"mailto:$r_email\">$r_name</a> <font class=\"content\"><strong>($r_email)</strong></font> "._ON." $r_date";
         } else {
             echo "<strong>$r_subject</strong> <font class=\"content\">";
-            if($userinfo['noscore'] == 0) {
+            if($nuke_userinfo['noscore'] == 0) {
             echo "("._SCORE." $r_score";
             if($r_reason>0) echo ", $reasons[$r_reason]";
             echo ")";
@@ -263,7 +263,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
         $url = stripslashes($row_url["user_website"]);
         if ($url != "http://" AND $url != "" AND preg_match("#http://#i", $url)) { echo "<a href=\"$url\" target=\"new\">$url</a> "; }
         echo "</font></td></tr><tr><td>";
-        if((isset($userinfo['commentmax'])) && (strlen($r_comment) > $userinfo['commentmax'])) echo substr("$r_comment", 0, $userinfo['commentmax'])."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;sid=$r_sid&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
+        if((isset($nuke_userinfo['commentmax'])) && (strlen($r_comment) > $nuke_userinfo['commentmax'])) echo substr("$r_comment", 0, $nuke_userinfo['commentmax'])."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;sid=$r_sid&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
         elseif(strlen($r_comment) > $commentlimit) echo substr("$r_comment", 0, $commentlimit)."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;sid=$r_sid&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
         else echo $r_comment;
         echo "</td></tr></table><br /><br />";
@@ -302,7 +302,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
             
 			if ($r_email) {
             echo "<strong>$r_subject</strong> <font class=\"content\">";
-            if($userinfo['noscore'] == 0) {
+            if($nuke_userinfo['noscore'] == 0) {
                 echo "("._SCORE." $r_score";
                 if($r_reason>0) echo ", $reasons[$r_reason]";
                 echo ")";
@@ -310,7 +310,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
             echo "<br />"._BY." <a href=\"mailto:$r_email\">$r_name</a> <font class=\"content\"><strong>($r_email)</strong></font> "._ON." $r_date";
              } else {
             echo "<strong>$r_subject</strong> <font class=\"content\">";
-            if($userinfo['noscore'] == 0) {
+            if($nuke_userinfo['noscore'] == 0) {
                 echo "("._SCORE." $r_score";
                 if($r_reason>0) echo ", $reasons[$r_reason]";
                 echo ")";
@@ -326,7 +326,7 @@ function DisplayKids ($tid, $mode, $order=0, $thold=0, $level=0, $dummy=0, $tblw
             $url = stripslashes($row_url2["user_website"]);
             if ($url != "http://" AND $url != "" AND preg_match("#http://#i", $url)) { echo "<a href=\"$url\" target=\"new\">$url</a> "; }
             echo "</font></td></tr><tr><td>";
-            if((isset($userinfo['commentmax'])) && (strlen($r_comment) > $userinfo['commentmax'])) echo substr("$r_comment", 0, $userinfo['commentmax'])."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;sid=$r_sid&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
+            if((isset($nuke_userinfo['commentmax'])) && (strlen($r_comment) > $nuke_userinfo['commentmax'])) echo substr("$r_comment", 0, $nuke_userinfo['commentmax'])."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;sid=$r_sid&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
             elseif(strlen($r_comment) > $commentlimit) echo substr("$r_comment", 0, $commentlimit)."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;sid=$r_sid&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
             else echo $r_comment;
             echo "</td></tr></table><br /><br />";
@@ -435,9 +435,9 @@ function DisplayBabies ($tid, $level=0, $dummy=0) {
 function DisplayTopic ($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0, $level=0, $nokids=0) 
 {
     
-	global $hr, $user, $datetime, $cookie, $mainfile, $admin, $commentlimit, 
+	global $hr, $nuke_user, $datetime, $cookie, $mainfile, $admin, $commentlimit, 
 	$anonymous, $reasons, $anonpost, $foot1, $foot2, $foot3, $foot4, $prefix, 
-	$acomm, $articlecomm, $nuke_db, $module_name, $nukeurl, $admin_file, $nuke_user_prefix, $userinfo, $cookie;
+	$acomm, $articlecomm, $nuke_db, $module_name, $nukeurl, $admin_file, $nuke_user_prefix, $nuke_userinfo, $cookie;
     
 	if(defined('NUKE_FILE')) 
 	{
@@ -529,7 +529,7 @@ function DisplayTopic ($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0,
 	
 	if ($email) {
         echo "<strong>$subject</strong> <font class=\"content\">";
-        if($userinfo['noscore'] == 0) {
+        if($nuke_userinfo['noscore'] == 0) {
         echo "("._SCORE." $score";
         if($reason>0) echo ", $reasons[$reason]";
         echo ")";
@@ -537,7 +537,7 @@ function DisplayTopic ($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0,
         echo "<br />"._BY." <a href=\"mailto:$email\">$c_name</a> <strong>($email)</strong> "._ON." $date";
     } else {
         echo "<strong>$subject</strong> <font class=\"content\">";
-        if($userinfo['noscore'] == 0) {
+        if($nuke_userinfo['noscore'] == 0) {
         echo "("._SCORE." $score";
         if($reason>0) echo ", $reasons[$reason]";
         echo ")";
@@ -572,7 +572,7 @@ function DisplayTopic ($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0,
         echo "<br /><strong>(IP: $host_name)</strong>";
     }
     echo "</font></td></tr><tr><td>";
-    if((isset($userinfo['commentmax'])) && (strlen($r_comment) > $userinfo['commentmax'])) echo substr("$r_comment", 0, $userinfo['commentmax'])."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;sid=$r_sid&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
+    if((isset($nuke_userinfo['commentmax'])) && (strlen($r_comment) > $nuke_userinfo['commentmax'])) echo substr("$r_comment", 0, $nuke_userinfo['commentmax'])."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;sid=$r_sid&amp;tid=$r_tid&amp;mode=$mode&amp;order=$order&amp;thold=$thold\">"._READREST."</a></strong>";
     elseif(strlen($comment) > $commentlimit) echo substr("$comment", 0, $commentlimit)."<br /><br /><strong><a href=\"modules.php?name=$module_name&amp;file=comments&amp;sid=$sid&tid=$tid&mode=$mode&order=$order&thold=$thold\">"._READREST."</a></strong>";
     else echo $comment;
     echo "</td></tr></table><br /><br />";
@@ -613,7 +613,7 @@ function DisplayTopic ($sid, $pid=0, $tid=0, $mode="thread", $order=0, $thold=0,
 
 function singlecomment($tid, $sid, $mode, $order, $thold) 
 {
-    global $module_name, $user, $cookie, $datetime, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $admin, $anonpost, $prefix, $textcolor2, $nuke_db;
+    global $module_name, $nuke_user, $cookie, $datetime, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $admin, $anonpost, $prefix, $textcolor2, $nuke_db;
 
     include_once(NUKE_BASE_DIR."header.php");
 
@@ -655,7 +655,7 @@ function reply($pid, $sid, $mode, $order, $thold)
 {
     include_once(NUKE_BASE_DIR."header.php");
 
-    global $module_name, $user, $cookie, $bgcolor1, $bgcolor2, $bgcolor3, $nuke_db, $anonpost, $anonymous, $admin, $AllowableHTML;
+    global $module_name, $nuke_user, $cookie, $bgcolor1, $bgcolor2, $bgcolor3, $nuke_db, $anonpost, $anonymous, $admin, $AllowableHTML;
 
     if ($anonpost == 0 AND !is_user() AND !is_mod_admin($module_name)) {
 
@@ -785,7 +785,7 @@ function replyPreview ($pid, $sid, $subject, $comment, $xanonpost, $mode, $order
 {
     include_once(NUKE_BASE_DIR."header.php");
 
-    global $module_name, $user, $cookie, $AllowableHTML, $anonymous, $anonpost;
+    global $module_name, $nuke_user, $cookie, $AllowableHTML, $anonymous, $anonpost;
 
     OpenTable();
     echo "<center><font class=\"title\"><strong>"._COMREPLYPRE."</strong></font></center>";
@@ -863,9 +863,9 @@ function replyPreview ($pid, $sid, $subject, $comment, $xanonpost, $mode, $order
 function CreateTopic ($xanonpost, $subject, $comment, $pid, $sid, $host_name, $mode, $order, $thold, $posttype) 
 {
     
-	global $module_name, $user, $userinfo, $EditedMessage, $cookie, $AllowableHTML, $ultramode, $prefix, $anonpost, $articlecomm, $nuke_db;
+	global $module_name, $nuke_user, $nuke_userinfo, $EditedMessage, $cookie, $AllowableHTML, $ultramode, $prefix, $anonpost, $articlecomm, $nuke_db;
     
-	$author = Fix_Quotes($author);
+	$nuke_author = Fix_Quotes($nuke_author);
     
 	$subject = Fix_Quotes(filter_text($subject, "nohtml"));
     
@@ -885,9 +885,9 @@ function CreateTopic ($xanonpost, $subject, $comment, $pid, $sid, $host_name, $m
     }
     if ((is_user()) && (!$xanonpost)) 
 	{
-        $name = $userinfo['username'];
-        $email = $userinfo['femail'];
-        $url = $userinfo['user_website'];
+        $name = $nuke_userinfo['username'];
+        $email = $nuke_userinfo['femail'];
+        $url = $nuke_userinfo['user_website'];
         $score = 1;
     } 
 	else 

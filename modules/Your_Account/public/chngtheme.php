@@ -36,8 +36,8 @@ if (!defined('CNBYA')) {
     die('CNBYA protection');
 }
 
-    global $cookie, $userinfo;
-    if ((is_user()) AND (strtolower($userinfo['username']) == strtolower($cookie[1])) AND ($userinfo['user_password'] == $cookie[2])) {
+    global $cookie, $nuke_userinfo;
+    if ((is_user()) AND (strtolower($nuke_userinfo['username']) == strtolower($cookie[1])) AND ($nuke_userinfo['user_password'] == $cookie[2])) {
         include_once(NUKE_BASE_DIR.'header.php');
         title(_THEMESELECTION);
         // OpenTable();
@@ -59,7 +59,7 @@ if (!defined('CNBYA')) {
         echo ""._THEMETEXT1."<br />";
         echo ""._THEMETEXT2."<br />";
         echo ""._THEMETEXT3."<br /><br />";
-        echo "<input type=\"hidden\" name=\"user_id\" value=\"$userinfo[user_id]\">";
+        echo "<input type=\"hidden\" name=\"user_id\" value=\"$nuke_userinfo[user_id]\">";
         echo "<input type=\"hidden\" name=\"op\" value=\"savetheme\">";
         echo "<input type=\"submit\" value=\""._SAVECHANGES."\">";
         echo "</form>";
@@ -67,7 +67,7 @@ if (!defined('CNBYA')) {
         CloseTable();
         include_once(NUKE_BASE_DIR.'footer.php');
     } else {
-        mmain($user);
+        mmain($nuke_user);
     }
 
 ?>

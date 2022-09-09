@@ -29,9 +29,9 @@ require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 // required information and then copy the file "copyright.php" into your
 // module's directory. It's all, as easy as it sounds ;)
 
-$author_name = "Quake";
-$author_email = "quake2005@gmail.com";
-$author_homepage = "http://www.nuke-evolution.com";
+$nuke_author_name = "Quake";
+$nuke_author_email = "quake2005@gmail.com";
+$nuke_author_homepage = "http://www.nuke-evolution.com";
 $license = "GNU/GPL";
 $download_location = "http://www.nuke-evolution.com";
 $module_version = "1.0.0";
@@ -44,6 +44,6 @@ $module_description = "Groups module for PHP-Nuke, made of phpBB Groups";
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($author_name, $author_email, $author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
 
 ?>

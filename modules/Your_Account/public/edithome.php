@@ -29,28 +29,28 @@ exit ("You can't access this file directly...");
 if (!defined('CNBYA')) 
 exit('CNBYA protection');
 
-    global $cookie, $userinfo;
-    if((is_user()) AND (strtolower($userinfo['username']) == strtolower($cookie[1])) AND ($userinfo['user_password'] == $cookie[2])):
+    global $cookie, $nuke_userinfo;
+    if((is_user()) AND (strtolower($nuke_userinfo['username']) == strtolower($cookie[1])) AND ($nuke_userinfo['user_password'] == $cookie[2])):
         include_once(NUKE_BASE_DIR.'header.php');
         title(_HOMECONFIG);
-        if(empty($userinfo['theme'])) { $userinfo['theme'] = "$Default_Theme"; }
+        if(empty($nuke_userinfo['theme'])) { $nuke_userinfo['theme'] = "$Default_Theme"; }
         OpenTable();
         echo "<form action=\"modules.php?name=$module_name\" method=\"post\">";
-        if ($user_news == 1):
+        if ($nuke_user_news == 1):
             echo "<strong>"._BLOGPOSTSINHOME."</strong> "._MAX127." ";
-            echo "<input type=\"text\" name=\"storynum\" size=\"4\" maxlength=\"3\" value=\"$userinfo[storynum]\">";
+            echo "<input type=\"text\" name=\"storynum\" size=\"4\" maxlength=\"3\" value=\"$nuke_userinfo[storynum]\">";
             echo "<br /><br />";
         else:
             echo "<input type=\"hidden\" name=\"storynum\" value=\"$storyhome\">";
         endif;
-        echo "<input type=\"hidden\" name=\"username\" value=\"$userinfo[username]\">";
-        echo "<input type=\"hidden\" name=\"user_id\" value=\"$userinfo[user_id]\">";
+        echo "<input type=\"hidden\" name=\"username\" value=\"$nuke_userinfo[username]\">";
+        echo "<input type=\"hidden\" name=\"user_id\" value=\"$nuke_userinfo[user_id]\">";
         echo "<input type=\"hidden\" name=\"op\" value=\"savehome\">";
         echo "<input type=\"submit\" value=\""._SAVECHANGES."\">";
         echo "</form>";
         CloseTable();
         include_once(NUKE_BASE_DIR.'footer.php');
     else: 
-        mmain($user);
+        mmain($nuke_user);
     endif;
 ?>

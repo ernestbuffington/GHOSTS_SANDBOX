@@ -167,26 +167,26 @@ function write_donation() {
         if(!$result = $nuke_db->sql_query($sql)) {
             DonateError($lang_donate['UINFO_NF']);
         }
-        $user = $nuke_db->sql_fetchrow($result);
-        if(!is_array($user)) {
+        $nuke_user = $nuke_db->sql_fetchrow($result);
+        if(!is_array($nuke_user)) {
             DonateError($lang_donate['UINFO_NF']);
         }
         $nuke_db->sql_freeresult($result);
         $uname = $_POST['uname'];
-        $uid = $user['user_id'];
+        $uid = $nuke_user['user_id'];
         if (!empty($_POST['fname'])) {
             $fname = Fix_Quotes(check_html($_POST['fname'], 'nohtml'));
             $lname = Fix_Quotes(check_html($_POST['lname'], 'nohtml'));
         } else {
-            if (substr_count($user['name'], ' ') == 1) {
-                list($fname, $lname) = split(' ',$user['name']);
+            if (substr_count($nuke_user['name'], ' ') == 1) {
+                list($fname, $lname) = split(' ',$nuke_user['name']);
             } else {
-                $fname = $user['name'];
+                $fname = $nuke_user['name'];
                 $lname = '';
             }
         }
         if (empty($_POST['email'])) {
-            $email = $user['user_email'];
+            $email = $nuke_user['user_email'];
         } else {
             $email = Fix_Quotes(check_html($_POST['email'], 'nohtml'));
         }

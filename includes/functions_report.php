@@ -39,10 +39,10 @@ if (!defined('IN_PHPBB2'))
 
 function insert_report($post_id, $comments)
 {
-    global $nuke_db, $userdata;
+    global $nuke_db, $nuke_userdata;
 
     $sql = "INSERT INTO " . NUKE_POST_REPORTS_TABLE . " (post_id, reporter_id, report_time, report_status, report_comments)
-        VALUES ($post_id, " . $userdata['user_id'] . ", " . time() . ", " . NUKE_REPORT_POST_NEW . ", '" . str_replace("\'", "''", $comments) . "')";
+        VALUES ($post_id, " . $nuke_userdata['user_id'] . ", " . time() . ", " . NUKE_REPORT_POST_NEW . ", '" . str_replace("\'", "''", $comments) . "')";
     if ( !$nuke_db->sql_query($sql) )
     {
         message_die(NUKE_GENERAL_ERROR, 'Could not insert report', '', __LINE__, __FILE__, $sql);
@@ -53,7 +53,7 @@ function insert_report($post_id, $comments)
 
 function email_report($forum_id, $post_id, $topic_title, $comments)
 {
-    global $nuke_db, $phpEx, $userdata, $board_config, $lang;
+    global $nuke_db, $phpEx, $nuke_userdata, $board_config, $lang;
 
     //
     // Obtain list of moderators of each forum
@@ -159,9 +159,9 @@ function email_report($forum_id, $post_id, $topic_title, $comments)
     // $emailer->set_subject($lang['Report_post'] . ' - ' . $topic_title);
 
     // $email_headers = 'X-AntiAbuse: Board servername - ' . $board_config['server_name'] . "\n";
-    // $email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
-    // $email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
-    // $email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
+    // $email_headers .= 'X-AntiAbuse: User_id - ' . $nuke_userdata['user_id'] . "\n";
+    // $email_headers .= 'X-AntiAbuse: Username - ' . $nuke_userdata['username'] . "\n";
+    // $email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($nuke_user_ip) . "\n";
     // $emailer->extra_headers($email_headers);
 
     $script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($board_config['script_path']));
@@ -175,7 +175,7 @@ function email_report($forum_id, $post_id, $topic_title, $comments)
 
     // $emailer->assign_vars(array(
     //     'SITENAME'        => $board_config['sitename'],
-    //     'USERNAME'        => $userdata['username'],
+    //     'USERNAME'        => $nuke_userdata['username'],
     //     'POST_ID'        => $post_id,
     //     'TOPIC_TITLE'    => $topic_title,
     //     'COMMENTS'        => $comments,
@@ -191,7 +191,7 @@ function email_report($forum_id, $post_id, $topic_title, $comments)
     $report_url = $server_protocol . $server_name . $server_port . 'modules.php?name=Forums&file=viewpost_reports';
 
     $content = str_replace( '{SITENAME}', $board_config['sitename'], $lang['report_post_template'] );
-    $content = str_replace( '{USERNAME}', $userdata['username'], $content );
+    $content = str_replace( '{USERNAME}', $nuke_userdata['username'], $content );
     $content = str_replace( '{POST_ID}', $post_id, $content );
     $content = str_replace( '{TOPIC_TITLE}', $topic_title, $content );
     $content = str_replace( '{COMMENTS}', $comments, $content );
@@ -209,9 +209,9 @@ function email_report($forum_id, $post_id, $topic_title, $comments)
     $headers[] = 'Return-Path: '.$board_config['board_email'];  
 
     $headers[] = 'X-AntiAbuse: Board servername - ' . $board_config['server_name'] . "\n";
-    $headers[] = 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
-    $headers[] = 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
-    $headers[] = 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
+    $headers[] = 'X-AntiAbuse: User_id - ' . $nuke_userdata['user_id'] . "\n";
+    $headers[] = 'X-AntiAbuse: Username - ' . $nuke_userdata['username'] . "\n";
+    $headers[] = 'X-AntiAbuse: User IP - ' . decode_ip($nuke_user_ip) . "\n";
 
     foreach($moderators as $email)
     {
@@ -226,7 +226,7 @@ function email_report($forum_id, $post_id, $topic_title, $comments)
 
 function show_reports($status = NUKE_REPORT_POST_NEW)
 {
-    global $nuke_db, $board_config, $template, $lang, $phpEx, $userdata;
+    global $nuke_db, $board_config, $template_nuke, $lang, $phpEx, $nuke_userdata;
 
     // find the forums where the user is a moderator
     $forum_ids = array();
@@ -274,7 +274,7 @@ function show_reports($status = NUKE_REPORT_POST_NEW)
 
         $row_class = ( !($i % 2) ) ? 'row1' : 'row2';
 
-        $template->assign_block_vars('postrow', array(
+        $template_nuke->assign_block_vars('postrow', array(
             'ROW_CLASS'            => $row_class,
 
             'REPORT_ID'            => $row['report_id'],
@@ -327,7 +327,7 @@ function show_reports($status = NUKE_REPORT_POST_NEW)
         $deleted_reports = '&nbsp;';
     }
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'NUKE_DELETED_REPORTS'    => $deleted_reports)
     );
 
@@ -336,10 +336,10 @@ function show_reports($status = NUKE_REPORT_POST_NEW)
 
 function report_flood()
 {
-    global $nuke_db, $board_config, $userdata;
+    global $nuke_db, $board_config, $nuke_userdata;
 
     $sql = "SELECT MAX(report_time) AS latest_time FROM " . NUKE_POST_REPORTS_TABLE . "
-        WHERE reporter_id = " . $userdata['user_id'];
+        WHERE reporter_id = " . $nuke_userdata['user_id'];
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
         message_die(NUKE_GENERAL_ERROR, 'Could not get most recent report', '', __LINE__, __FILE__, $sql);
@@ -432,16 +432,16 @@ function get_report_comments($report_id)
 // get the forums where the user is a moderator
 function get_forums_auth_mod()
 {
-    global $userdata;
+    global $nuke_userdata;
 
-    $auth = auth(NUKE_AUTH_MOD, NUKE_AUTH_LIST_ALL, $userdata);
+    $nuke_auth = auth(NUKE_AUTH_MOD, NUKE_AUTH_LIST_ALL, $nuke_userdata);
 
     // create an array to store the moderated forums
     $forums_auth = array();
 
-    while ( list($forum) = each($auth) )
+    while ( list($forum) = each($nuke_auth) )
     {
-        if ( $auth[$forum]['auth_mod'] )
+        if ( $nuke_auth[$forum]['auth_mod'] )
         {
             $forums_auth[] = $forum;
         }

@@ -112,10 +112,10 @@ if($totalselected > 0) {
   echo "<td align='center'><strong>"._AB_HITS."</strong></td>\n";
   echo "<td align='center'><strong>"._AB_FUNCTIONS."</strong></td>\n</tr>\n";
   $result = $nuke_db->sql_query("SELECT DISTINCT(`user_agent`), tid, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 1 ORDER BY $column $direction LIMIT $min, $perpage");
-  while(list($user_agent, $tid, $lastview, $hits) = $nuke_db->sql_fetchrow($result)){
+  while(list($nuke_user_agent, $tid, $lastview, $hits) = $nuke_db->sql_fetchrow($result)){
     echo "<tr onmouseover=\"this.style.backgroundColor='$bgcolor2'\" onmouseout=\"this.style.backgroundColor='$bgcolor1'\" bgcolor='$bgcolor1'>";
-    echo "<td>$user_agent</td>";
-    $trackedips = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_agent`='$user_agent'"));
+    echo "<td>$nuke_user_agent</td>";
+    $trackedips = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_agent`='$nuke_user_agent'"));
     echo "<td align='center'><a href='".$admin_file.".php?op=ABTrackedAgentsIPs&amp;tid=$tid' target='_blank'>$trackedips</a></td>\n";
     echo "<td align='center'>".date("Y-m-d \@ H:i:s",$lastview)."</td>";
     echo "<td align='center'>$hits</td>";

@@ -6,7 +6,7 @@ DEFAULT: NULL
 
 <p>
     Munges all browsable (usually http, https and ftp)
-    absolute URIs into another URI, usually a URI nuke_redirection service.
+    absolute URIs into another URI, usually a URI redirection service.
     This directive accepts a URI, formatted with a <code>%s</code> where
     the url-encoded original URI should be inserted (sample:
     <code>http://www.google.com/url?q=%s</code>).
@@ -29,14 +29,14 @@ DEFAULT: NULL
 </ul>
 <p>
     Prior to HTML Purifier 3.1.1, this directive also enabled the munging
-    of browsable external resources, which could break things if your nuke_redirection
+    of browsable external resources, which could break things if your redirection
     script was a splash page or used <code>meta</code> tags. To revert to
     previous behavior, please use %URI.MungeResources.
 </p>
 <p>
     You may want to also use %URI.MungeSecretKey along with this directive
-    in order to enforce what URIs your nuke_redirector script allows. Open
-    nuke_redirector scripts can be a security risk and negatively affect the
+    in order to enforce what URIs your redirector script allows. Open
+    redirector scripts can be a security risk and negatively affect the
     reputation of your domain name.
 </p>
 <p>

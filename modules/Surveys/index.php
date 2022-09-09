@@ -57,9 +57,9 @@ if(!isset($pollID)) {
     echo "</td><td>&nbsp;</td><td width='30%' valign='top'>";
     OpenTable();
     echo "<strong>"._LAST5POLLS." $sitename</strong><br /><br />";
-    if (isset($userinfo['umode'])) { $r_options .= "&amp;mode=$userinfo[umode]"; }
-    if (isset($userinfo['uorder'])) { $r_options .= "&amp;order=$userinfo[uorder]"; }
-    if (isset($userinfo['thold'])) { $r_options .= "&amp;thold=$userinfo[thold]"; }
+    if (isset($nuke_userinfo['umode'])) { $r_options .= "&amp;mode=$nuke_userinfo[umode]"; }
+    if (isset($nuke_userinfo['uorder'])) { $r_options .= "&amp;order=$nuke_userinfo[uorder]"; }
+    if (isset($nuke_userinfo['thold'])) { $r_options .= "&amp;thold=$nuke_userinfo[thold]"; }
     $resu = $nuke_db->sql_query("SELECT pollID, pollTitle, voters FROM ".$prefix."_poll_desc WHERE artid='0' ORDER BY timeStamp DESC LIMIT 1,6");
     while (list($plid, $pltitle, $plvoters) = $nuke_db->sql_fetchrow($resu)) {
         if ($pollID == $plid) {
@@ -104,7 +104,7 @@ if(!isset($pollID)) {
 /*********************************************************/
 
 function pollMain($pollID) {
-    global $boxTitle, $boxContent, $pollcomm, $user, $prefix, $nuke_db, $module_name;
+    global $boxTitle, $boxContent, $pollcomm, $nuke_user, $prefix, $nuke_db, $module_name;
     if(!isset($pollID)) $pollID = 1;
     include_once(NUKE_MODULES_DIR.$module_name.'/includes/pollblock.php');
     global $content;
@@ -143,12 +143,12 @@ function pollCollector($pollID, $voteID, $forwarder) {
 }
 
 function pollList() {
-    global $user, $prefix, $multilingual, $currentlang, $admin, $nuke_db, $module_name, $admin_file;
+    global $nuke_user, $prefix, $multilingual, $currentlang, $admin, $nuke_db, $module_name, $admin_file;
 
     $r_options = '';
-    if (isset($userinfo['umode'])) { $r_options .= "&amp;mode=$userinfo[umode]"; }
-    if (isset($userinfo['uorder'])) { $r_options .= "&amp;order=$userinfo[uorder]"; }
-    if (isset($userinfo['thold'])) { $r_options .= "&amp;thold=$userinfo[thold]"; }
+    if (isset($nuke_userinfo['umode'])) { $r_options .= "&amp;mode=$nuke_userinfo[umode]"; }
+    if (isset($nuke_userinfo['uorder'])) { $r_options .= "&amp;order=$nuke_userinfo[uorder]"; }
+    if (isset($nuke_userinfo['thold'])) { $r_options .= "&amp;thold=$nuke_userinfo[thold]"; }
     $editing = '';
 
     OpenTable();
@@ -168,7 +168,7 @@ function pollList() {
 }
 
 function pollResults($pollID) {
-    global $resultTableBgColor, $resultBarFile, $Default_Theme, $user, $prefix, $nuke_db, $admin, $module_name, $admin_file;
+    global $resultTableBgColor, $resultBarFile, $Default_Theme, $nuke_user, $prefix, $nuke_db, $admin, $module_name, $admin_file;
 
     if(!isset($pollID)) $pollID = 1;
     $result = $nuke_db->sql_query("SELECT pollID, pollTitle, artid FROM ".$prefix."_poll_desc WHERE pollID='$pollID'");

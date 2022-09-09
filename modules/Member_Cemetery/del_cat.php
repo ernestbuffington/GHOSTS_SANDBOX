@@ -1,22 +1,22 @@
 <?php
 if (!defined('MODULE_FILE')) die ("You can't access this file directly...");
-global $prefix, $nuke_db, $cookie, $user;
+global $prefix, $nuke_db, $cookie, $nuke_user;
 $index = 1;
 require_once("mainfile.php");
 $module_name = basename(dirname(__FILE__));
 get_lang($module_name);
-$userinfo = getusrinfo( $user );
-$userid = $userinfo["user_id"];
+$nuke_userinfo = getusrinfo( $nuke_user );
+$nuke_userid = $nuke_userinfo["user_id"];
 $catname=@htmlentities($catname);
-if (!isset($userid) || $userid == "")
-$userid=0;
+if (!isset($nuke_userid) || $nuke_userid == "")
+$nuke_userid=0;
 # If no was pressed
 if (isset($action) && $action==_NO)
 Header("Location: modules.php?name=".$module_name);
 # If yes was pressed
 if (isset($action)  && $action==_YES && isset($catid) && $catid!=""):
-	$delmarksquery = "delete from ".$prefix."_cemetery where category_id=$catid AND user_id=$userid";
-	$delcatquery   = "delete from ".$prefix."_cemetery_cat where category_id=$catid AND user_id=$userid";
+	$delmarksquery = "delete from ".$prefix."_cemetery where category_id=$catid AND user_id=$nuke_userid";
+	$delcatquery   = "delete from ".$prefix."_cemetery_cat where category_id=$catid AND user_id=$nuke_userid";
 	$nuke_db->sql_query ($delmarksquery,$nuke_db);
 	$nuke_db->sql_query ($delcatquery,$nuke_db);
 	Header("Location: modules.php?name=".$module_name);

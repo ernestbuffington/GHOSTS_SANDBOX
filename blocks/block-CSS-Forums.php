@@ -1,6 +1,6 @@
 <?php
 
-global $blockslang, $admin, $nuke_db, $userinfo;
+global $blockslang, $admin, $nuke_db, $nuke_userinfo;
 
 /**
  *	Choose whether or not when clicking the topic title, it shoudl take you to first post or last.
@@ -287,7 +287,7 @@ if (!$topic_data = cache_load('TopicData', 'home')):
 	$topic_data = array();
 	$result = dbquery("SELECT t.topic_id, t.topic_type, t.topic_attachment, f.forum_name, f.forum_color, f.forum_id, t.topic_last_post_id, t.topic_first_post_id, t.topic_title, t.topic_poster, t.topic_views, t.topic_replies, t.topic_status, p.post_time, p.poster_id, pu.username as postername, u.username, u.user_id FROM `".NUKE_BB_TOPICS_TABLE."` t, `".NUKE_FORUMS_TABLE."` f, `".NUKE_POSTS_TABLE."` p, `".NUKE_USERS_TABLE."` u, `".NUKE_USERS_TABLE."` pu WHERE t.forum_id=f.forum_id AND p.post_id=t.topic_last_post_id AND u.user_id=t.topic_poster AND pu.user_id=p.poster_id AND t.topic_moved_id = '0' ORDER BY topic_last_post_id DESC LIMIT $last_new_topics");
 
-	while ( list( $topic_id, $topic_type, $topic_attachment, $forum_name, $forum_color, $forum_id, $topic_last_post_id, $topic_first_post_id, $topic_title, $topic_poster, $topic_views, $topic_replies, $topic_status, $post_time, $poster_id, $poster_name, $username, $user_id ) = dbrow( $result)) 
+	while ( list( $topic_id, $topic_type, $topic_attachment, $forum_name, $forum_color, $forum_id, $topic_last_post_id, $topic_first_post_id, $topic_title, $topic_poster, $topic_views, $topic_replies, $topic_status, $post_time, $poster_id, $poster_name, $nuke_username, $nuke_user_id ) = dbrow( $result)) 
 	{
 	        $topic_data[$topic_id]['topic_id'] 			 = $topic_id;
 	        $topic_data[$topic_id]['topic_type'] 		 = $topic_type;
@@ -305,8 +305,8 @@ if (!$topic_data = cache_load('TopicData', 'home')):
 	        $topic_data[$topic_id]['post_time'] 			 = $post_time;
 	        $topic_data[$topic_id]['poster_id'] 			 = $poster_id;
 	        $topic_data[$topic_id]['poster_name'] 		 = $poster_name;
-	        $topic_data[$topic_id]['username'] 			 = $username;
-	        $topic_data[$topic_id]['user_id'] 			 = $user_id;
+	        $topic_data[$topic_id]['username'] 			 = $nuke_username;
+	        $topic_data[$topic_id]['user_id'] 			 = $nuke_user_id;
 	}
 	dbfree($result);
 /*****[BEGIN]******************************************
@@ -375,7 +375,7 @@ if ($topic_data):
 			</div>
 
 			<div class="'.$colClass3.' block-latest-post-last '.$bg__backwardsCompat.'">
-				<div class="block-latest-post-time">'.EvoDate( 'M jS Y g:i a' , $topic_info['post_time'] , $userinfo['user_timezone'] ).'</div>
+				<div class="block-latest-post-time">'.EvoDate( 'M jS Y g:i a' , $topic_info['post_time'] , $nuke_userinfo['user_timezone'] ).'</div>
 				<div class="block-latest-post-author">'.sprintf($blockslang['forums']['by'],'<a href="modules.php?name=Forums&amp;file=profile&amp;mode=viewprofile&amp;u='.$topic_info['poster_id'].'">'.UsernameColor($topic_info['poster_name']).'</a>').' <a href="modules.php?name=Forums&amp;file=viewtopic&amp;p='.$topic_info['topic_last_post_id'].'#'.$topic_info['topic_last_post_id'].'"><i class="fas fa-arrow-right" data-toggle="btn-tooltip" data-placement="top" aria-hidden="true" title="'.$blockslang['forums']['view_latest'].'"></i></a></div>
 			</div>
 

@@ -46,8 +46,8 @@ $set_mode = 'today';      // set default mode ('today', 'yesterday', 'last24', '
 $set_days = '3';          // set default days (used for lastXdays mode)
 // ############         Edit above         ########################################
 
-$userdata = session_pagestart($user_ip, NUKE_PAGE_RECENT);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_RECENT);
+init_userprefs($nuke_userdata);
 
 $start = ( isset($HTTP_GET_VARS['start']) ) ? intval($HTTP_GET_VARS['start']) : 0;
 
@@ -70,7 +70,7 @@ else
 }
 
 $page_title = $lang['Recent_topics'];
-include("includes/page_header.php");
+include("includes/nuke_page_header.php");
 
 $sql_auth = "SELECT * FROM ". NUKE_FORUMS_TABLE;
 if( !$result_auth = $nuke_db->sql_query($sql_auth) )
@@ -85,7 +85,7 @@ while( $row_auth = $nuke_db->sql_fetchrow($result_auth) )
 $nuke_db->sql_freeresult($result_auth);
 
 $is_auth_ary = array();
-$is_auth_ary = auth(NUKE_AUTH_ALL, NUKE_AUTH_LIST_ALL, $userdata);
+$is_auth_ary = auth(NUKE_AUTH_ALL, NUKE_AUTH_LIST_ALL, $nuke_userdata);
 
 $except_forums = '\'start\'';
 for( $f = 0; $f < count($forums); $f++ )
@@ -122,28 +122,28 @@ switch( $mode )
 {
     case 'today':
         $sql = $sql_start ."FROM_UNIXTIME(p.post_time,'%Y%m%d') - FROM_UNIXTIME(unix_timestamp(NOW()),'%Y%m%d') = 0". $sql_end;
-        $template->assign_vars(array('STATUS' => $lang['Recent_today']));
+        $template_nuke->assign_vars(array('STATUS' => $lang['Recent_today']));
         $where_count = "$where_forums AND FROM_UNIXTIME(p.post_time,'%Y%m%d') - FROM_UNIXTIME(unix_timestamp(NOW()),'%Y%m%d') = 0";
         $l_mode = $lang['Recent_title_today'];
         break;
 
     case 'yesterday':
         $sql = $sql_start ."FROM_UNIXTIME(p.post_time,'%Y%m%d') - FROM_UNIXTIME(unix_timestamp(NOW()),'%Y%m%d') = -1". $sql_end;
-        $template->assign_vars(array('STATUS' => $lang['Recent_yesterday']));
+        $template_nuke->assign_vars(array('STATUS' => $lang['Recent_yesterday']));
         $where_count = "$where_forums AND FROM_UNIXTIME(p.post_time,'%Y%m%d') - FROM_UNIXTIME(unix_timestamp(NOW()),'%Y%m%d') = -1";
         $l_mode = $lang['Recent_title_yesterday'];
         break;
 
     case 'last24':
         $sql = $sql_start ."UNIX_TIMESTAMP(NOW()) - p.post_time < 86400". $sql_end;
-        $template->assign_vars(array('STATUS' => $lang['Recent_last24']));
+        $template_nuke->assign_vars(array('STATUS' => $lang['Recent_last24']));
         $where_count = "$where_forums AND UNIX_TIMESTAMP(NOW()) - p.post_time < 86400";
         $l_mode = $lang['Recent_title_last24'];
         break;
 
     case 'lastweek':
         $sql = $sql_start ."UNIX_TIMESTAMP(NOW()) - p.post_time < 691200". $sql_end;
-        $template->assign_vars(array('STATUS' => $lang['Recent_lastweek']));
+        $template_nuke->assign_vars(array('STATUS' => $lang['Recent_lastweek']));
         $where_count = "$where_forums AND UNIX_TIMESTAMP(NOW()) - p.post_time < 691200";
         $l_mode = $lang['Recent_title_lastweek'];
         break;
@@ -155,7 +155,7 @@ switch( $mode )
             break;
         }
         $sql = $sql_start ."UNIX_TIMESTAMP(NOW()) - p.post_time < 86400 * $amount_days". $sql_end;
-        $template->assign_vars(array('STATUS' => sprintf($lang['Recent_lastXdays'], $amount_days)));
+        $template_nuke->assign_vars(array('STATUS' => sprintf($lang['Recent_lastXdays'], $amount_days)));
         $where_count = "$where_forums AND UNIX_TIMESTAMP(NOW()) - p.post_time < 86400 * $amount_days";
         $l_mode = sprintf($lang['Recent_title_lastXdays'], $amount_days);
         break;
@@ -176,7 +176,7 @@ while( $row = $nuke_db->sql_fetchrow($result) )
 }
 $nuke_db->sql_freeresult($result);
         
-$template->set_filenames(array('body' => 'recent_body.tpl'));
+$template_nuke->set_filenames(array('body' => 'recent_body.tpl'));
 
 $orig_word = array();
 $replacement_word = array();
@@ -272,9 +272,9 @@ for( $i = 0; $i < count($line); $i++ )
     }
 
     $newest_img = '';
-    if( $userdata['session_logged_in'] )
+    if( $nuke_userdata['session_logged_in'] )
     {
-        if( $line[$i]['post_time'] > $userdata['user_lastvisit'] ) 
+        if( $line[$i]['post_time'] > $nuke_userdata['user_lastvisit'] ) 
         {
             if( !empty($tracking_topics) || !empty($tracking_forums) || isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] .'_f_all']) )
             {
@@ -353,7 +353,7 @@ for( $i = 0; $i < count($line); $i++ )
  ******************************************************/
     $last_url = '<a href="'. append_sid("viewtopic.$phpEx?". NUKE_POST_POST_URL .'='. $line[$i]['topic_last_post_id']) .'#'. $line[$i]['topic_last_post_id'] .'"><img src="'. $images['icon_latest_reply'] .'" alt="'. $lang['View_latest_post'] .'" title="'. $lang['View_latest_post'] .'" border="0" /></a>';
 
-    $template->assign_block_vars('recent', array(
+    $template_nuke->assign_block_vars('recent', array(
         'ROW_CLASS' => ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'],
         'TOPIC_TITLE' => $topic_title,
         'TOPIC_TYPE' => $topic_type,
@@ -390,10 +390,10 @@ if( $total = $nuke_db->sql_fetchrow($result) )
 
 if( $total_topics == '0' )
 {
-    $template->assign_block_vars('switch_no_topics', array());
+    $template_nuke->assign_block_vars('switch_no_topics', array());
 }
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'L_RECENT_TITLE' => ( $total_topics == '1' ) ? sprintf($lang['Recent_title_one'], $total_topics, $l_mode) : sprintf($lang['Recent_title_more'], $total_topics, $l_mode),
     'L_TODAY' => $lang['Recent_today'],
     'L_YESTERDAY' => $lang['Recent_yesterday'],
@@ -410,7 +410,7 @@ $template->assign_vars(array(
     'PAGE_NUMBER' => ( $total_topics != '0' ) ? sprintf($lang['Page_of'], ( floor( $start / $topic_limit ) + 1 ), ceil( $total_topics / $topic_limit )) : '',
 ));
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 include("includes/page_tail.php");
 
 ?>

@@ -69,17 +69,17 @@ function clear_directory($file = 'modules/cache')
 // 
 // Check if a user is within Group
 //
-function user_is_within_group($user_id, $group_id)
+function user_is_within_group($nuke_user_id, $group_id)
 {
     global $nuke_db;
 
-    if ((empty($user_id)) || (empty($group_id)))
+    if ((empty($nuke_user_id)) || (empty($group_id)))
     {
         return (FALSE);
     }
     
     $sql = "SELECT u.group_id FROM " . NUKE_USER_GROUP_TABLE . " u, " . NUKE_GROUPS_TABLE . " g 
-    WHERE (g.group_single_user = 0) AND (u.group_id = g.group_id) AND (u.user_id = " . $user_id . ") AND (g.group_id = " . $group_id . ")
+    WHERE (g.group_single_user = 0) AND (u.group_id = g.group_id) AND (u.user_id = " . $nuke_user_id . ") AND (g.group_id = " . $group_id . ")
     LIMIT 1";
             
     if ( !($result = $nuke_db->sql_query($sql)) )
@@ -100,7 +100,7 @@ function user_is_within_group($user_id, $group_id)
 // Get module informations
 function get_modules($activated = true, $module_id = -1)
 {
-    global $nuke_db, $stats_config, $userdata;
+    global $nuke_db, $stats_config, $nuke_userdata;
 
     $where_statement = ($activated) ? 'WHERE active = 1 ' : '';
     if ($module_id != -1)
@@ -130,11 +130,11 @@ function get_modules($activated = true, $module_id = -1)
             
     $g_rows = $nuke_db->sql_fetchrowset($result);
     $g_num_rows = $nuke_db->sql_numrows($result);
-    $authed_groups = array();
+    $nuke_authed_groups = array();
 
     for ($i = 0; $i < $g_num_rows; $i++)
     {
-        $authed_groups[$g_rows[$i]['module_id']][] = $g_rows[$i]['group_id'];
+        $nuke_authed_groups[$g_rows[$i]['module_id']][] = $g_rows[$i]['group_id'];
     }
 
     $modules = array();
@@ -142,49 +142,49 @@ function get_modules($activated = true, $module_id = -1)
     // Check Authentication
     for ($i = 0; $i < $num_rows; $i++)
     {
-        $authed = FALSE;
+        $nuke_authed = FALSE;
 
         if (intval($rows[$i]['perm_all']) == 1)
         {
-            $authed = TRUE;
+            $nuke_authed = TRUE;
         }
         
         if (intval($rows[$i]['perm_reg']) == 1)
         {
-            if ($userdata['user_id'] != NUKE_ANONYMOUS)
+            if ($nuke_userdata['user_id'] != NUKE_ANONYMOUS)
             {
-                $authed = TRUE;
+                $nuke_authed = TRUE;
             }
         }
     
         if (intval($rows[$i]['perm_mod']) == 1)
         {
-            if ($userdata['user_level'] == NUKE_MOD)
+            if ($nuke_userdata['user_level'] == NUKE_MOD)
             {
-                $authed = TRUE;
+                $nuke_authed = TRUE;
             }
         }
 
         if (intval($rows[$i]['perm_admin']) == 1)
         {
-            if ($userdata['user_level'] == NUKE_ADMIN)
+            if ($nuke_userdata['user_level'] == NUKE_ADMIN)
             {
-                $authed = TRUE;
+                $nuke_authed = TRUE;
             }
         }
     
-        if (!$authed)
+        if (!$nuke_authed)
         {
-            for ($j = 0; $j < count($authed_groups[$rows[$i]['module_id']]) && !$authed; $j++)
+            for ($j = 0; $j < count($nuke_authed_groups[$rows[$i]['module_id']]) && !$nuke_authed; $j++)
             {
-                if (user_is_within_group($userdata['user_id'], $authed_groups[$rows[$i]['module_id']][$j]))
+                if (user_is_within_group($nuke_userdata['user_id'], $nuke_authed_groups[$rows[$i]['module_id']][$j]))
                 {
-                    $authed = TRUE;
+                    $nuke_authed = TRUE;
                 }
             }
         }
 
-        if ($authed)
+        if ($nuke_authed)
         {
             $modules[] = $rows[$i];
         }

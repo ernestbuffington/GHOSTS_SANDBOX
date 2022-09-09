@@ -97,7 +97,7 @@ while(list($topic_id, $topic_title, $topic_last_post_id) = $nuke_db->sql_fetchro
     echo "<guid isPermaLink=\"false\">".$topic_last_post_id."@".$nukeurl."</guid>\n";
     echo "<dc:subject>".$topic_title."</dc:subject>\n";
     echo "<dc:date>".$date."</dc:date>\n";
-    //echo "<dc:creator>Posted by ".$username."</dc:creator>\n";
+    //echo "<dc:creator>Posted by ".$nuke_username."</dc:creator>\n";
     echo "</item>\n\n";
 }
 echo "</channel>\n\n";

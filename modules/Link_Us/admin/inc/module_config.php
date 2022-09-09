@@ -31,7 +31,7 @@
 
 LinkusAdminMain();
 
-$config = $nuke_db->sql_ufetchrow("SELECT * FROM ".$prefix."_link_us_config LIMIT 0,1");
+$nuke_config = $nuke_db->sql_ufetchrow("SELECT * FROM ".$prefix."_link_us_config LIMIT 0,1");
 
 OpenTable();
 
@@ -41,19 +41,19 @@ echo "<table width='80%' border='1' cellpadding='3' cellspacing='3' style='margi
 echo "  <tr>";
 echo "    <td width='40%'><strong>".$lang_new[$module_name]['SHOW_STANDARD'].":</strong></td>";
 echo "    <td width='40%'>";
-echo yesno_option('button_standard', $config['button_standard']);
+echo yesno_option('button_standard', $nuke_config['button_standard']);
 echo "    </td>";
 echo "  </tr>";
 echo "  <tr>";
 echo "    <td width='40%'><strong>".$lang_new[$module_name]['SHOW_BANNER'].":</strong></td>";
 echo "    <td width='40%'>";
-echo yesno_option('button_banner', $config['button_banner']);
+echo yesno_option('button_banner', $nuke_config['button_banner']);
 echo "    </td>";
 echo "  </tr>";
 echo "  <tr>";
 echo "    <td width='40%'><strong>".$lang_new[$module_name]['SHOW_RESOURCES'].":</strong></td>";
 echo "    <td width='40%'>";
-echo yesno_option('button_resource', $config['button_resource']);
+echo yesno_option('button_resource', $nuke_config['button_resource']);
 echo "    </td>";
 echo "  </tr>";
 echo "</table>";

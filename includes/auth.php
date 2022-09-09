@@ -102,7 +102,7 @@ exit('Hacking attempt');
 # forum auth levels, this will prevent the auth function having to do its own
 # lookup
 
-function auth($type, $forum_id, $userdata, $f_access = '')
+function auth($type, $forum_id, $nuke_userdata, $f_access = '')
 {
    global $nuke_db, $lang;
 
@@ -121,7 +121,7 @@ switch($type):
 		 a.auth_pollcreate, 
 	 a.auth_globalannounce';
     
-	 $auth_fields = array('auth_view', 
+	 $nuke_auth_fields = array('auth_view', 
 	                      'auth_read', 
 						  'auth_post', 
 						 'auth_reply', 
@@ -136,50 +136,50 @@ switch($type):
     break;
     case NUKE_AUTH_VIEW:
        $a_sql = 'a.auth_view';
-       $auth_fields = array('auth_view');
+       $nuke_auth_fields = array('auth_view');
     break;
     case NUKE_AUTH_READ:
        $a_sql = 'a.auth_read';
-       $auth_fields = array('auth_read');
+       $nuke_auth_fields = array('auth_read');
     break;
     case NUKE_AUTH_POST:
        $a_sql = 'a.auth_post';
-       $auth_fields = array('auth_post');
+       $nuke_auth_fields = array('auth_post');
     break;
     case NUKE_AUTH_REPLY:
        $a_sql = 'a.auth_reply';
-       $auth_fields = array('auth_reply');
+       $nuke_auth_fields = array('auth_reply');
     break;
     case NUKE_AUTH_EDIT:
         $a_sql = 'a.auth_edit';
-        $auth_fields = array('auth_edit');
+        $nuke_auth_fields = array('auth_edit');
     break;
     case NUKE_AUTH_DELETE:
         $a_sql = 'a.auth_delete';
-        $auth_fields = array('auth_delete');
+        $nuke_auth_fields = array('auth_delete');
     break;
     case NUKE_AUTH_ANNOUNCE:
         $a_sql = 'a.auth_announce';
-        $auth_fields = array('auth_announce');
+        $nuke_auth_fields = array('auth_announce');
     break;
     case NUKE_AUTH_STICKY:
         $a_sql = 'a.auth_sticky';
-        $auth_fields = array('auth_sticky');
+        $nuke_auth_fields = array('auth_sticky');
     break;
     case NUKE_AUTH_POLLCREATE:
         $a_sql = 'a.auth_pollcreate';
-        $auth_fields = array('auth_pollcreate');
+        $nuke_auth_fields = array('auth_pollcreate');
     break;
     case NUKE_AUTH_VOTE:
         $a_sql = 'a.auth_vote';
-        $auth_fields = array('auth_vote');
+        $nuke_auth_fields = array('auth_vote');
     break;
     case NUKE_AUTH_ATTACH:
     break;
     # Mod: Global Announcements v1.2.8 START
     case NUKE_AUTH_GLOBALANNOUNCE:
         $a_sql = 'a.auth_globalannounce';
-        $auth_fields = array('auth_globalannounce');
+        $nuke_auth_fields = array('auth_globalannounce');
     break;
     # Mod: Global Announcements v1.2.8 END
     default:
@@ -188,7 +188,7 @@ switch($type):
 endswitch;
 
         # Mod: Attachment Mod v2.4.1 START
-        attach_setup_basic_auth($type, $auth_fields, $a_sql);
+        attach_setup_basic_auth($type, $nuke_auth_fields, $a_sql);
         # Mod: Attachment Mod v2.4.1 END
 
         # If f_access has been passed, or auth is needed to return an array of forums
@@ -218,11 +218,11 @@ endswitch;
         # are denied access
         $u_access = array();
 
-        if($userdata['session_logged_in']):
+        if($nuke_userdata['session_logged_in']):
            $forum_match_sql = ($forum_id != NUKE_AUTH_LIST_ALL) ? "AND a.forum_id = '$forum_id'" : '';
            $sql = "SELECT a.forum_id, $a_sql, a.auth_mod
                    FROM " . NUKE_AUTH_ACCESS_TABLE . " a, " . NUKE_USER_GROUP_TABLE . " ug
-                   WHERE ug.user_id = ".$userdata['user_id']. "
+                   WHERE ug.user_id = ".$nuke_userdata['user_id']. "
                    AND ug.user_pending = '0'
                    AND a.group_id = ug.group_id
                    $forum_match_sql";
@@ -242,11 +242,11 @@ endswitch;
 		$nuke_db->sql_freeresult($result);
         endif;
 
-        $is_admin = ( $userdata['user_level'] == NUKE_ADMIN && $userdata['session_logged_in'] ) ? TRUE : 0;
+        $is_admin = ( $nuke_userdata['user_level'] == NUKE_ADMIN && $nuke_userdata['session_logged_in'] ) ? TRUE : 0;
 
-        $auth_user = array();
-        for($i = 0; $i < count($auth_fields); $i++):
-           $key = $auth_fields[$i];
+        $nuke_auth_user = array();
+        for($i = 0; $i < count($nuke_auth_fields); $i++):
+           $key = $nuke_auth_fields[$i];
            # If the user is logged on and the forum type is either ALL or REG then the user has access
            #
            # If the type if ACL, NUKE_MOD or NUKE_ADMIN then we need to see if the user has specific permissions
@@ -261,27 +261,27 @@ endswitch;
              $value = (isset($f_access[$key])) ? $f_access[$key] : null;
              switch($value):
                  case NUKE_AUTH_ALL:
-                 $auth_user[$key] = TRUE;
-                 $auth_user[$key.'_type'] = $lang['Auth_Anonymous_Users'];
+                 $nuke_auth_user[$key] = TRUE;
+                 $nuke_auth_user[$key.'_type'] = $lang['Auth_Anonymous_Users'];
                  break;
                  case NUKE_AUTH_REG:
-                 $auth_user[$key] = ( $userdata['session_logged_in'] ) ? TRUE : 0;
-                 $auth_user[$key.'_type'] = $lang['Auth_Registered_Users'];
+                 $nuke_auth_user[$key] = ( $nuke_userdata['session_logged_in'] ) ? TRUE : 0;
+                 $nuke_auth_user[$key.'_type'] = $lang['Auth_Registered_Users'];
                  break;
                  case NUKE_AUTH_ACL:
-                 $auth_user[$key] = ( $userdata['session_logged_in'] ) ? auth_check_user(NUKE_AUTH_ACL, $key, $u_access, $is_admin) : 0;
-                 $auth_user[$key.'_type'] = $lang['Auth_Users_granted_access'];
+                 $nuke_auth_user[$key] = ( $nuke_userdata['session_logged_in'] ) ? auth_check_user(NUKE_AUTH_ACL, $key, $u_access, $is_admin) : 0;
+                 $nuke_auth_user[$key.'_type'] = $lang['Auth_Users_granted_access'];
                  break;
                  case NUKE_AUTH_MOD:
-                 $auth_user[$key] = ( $userdata['session_logged_in'] ) ? auth_check_user(NUKE_AUTH_MOD, 'auth_mod', $u_access, $is_admin) : 0;
-                 $auth_user[$key.'_type'] = $lang['Auth_Moderators'];
+                 $nuke_auth_user[$key] = ( $nuke_userdata['session_logged_in'] ) ? auth_check_user(NUKE_AUTH_MOD, 'auth_mod', $u_access, $is_admin) : 0;
+                 $nuke_auth_user[$key.'_type'] = $lang['Auth_Moderators'];
                  break;
                  case NUKE_AUTH_ADMIN:
-                 $auth_user[$key] = $is_admin;
-                 $auth_user[$key.'_type'] = $lang['Auth_Administrators'];
+                 $nuke_auth_user[$key] = $is_admin;
+                 $nuke_auth_user[$key.'_type'] = $lang['Auth_Administrators'];
                  break;
                  default:
-                 $auth_user[$key] = 0;
+                 $nuke_auth_user[$key] = 0;
                  break;
                endswitch;
            
@@ -293,27 +293,27 @@ endswitch;
                  $u_access[$f_forum_id] = isset($u_access[$f_forum_id]) ? $u_access[$f_forum_id] : array();
                  switch($value):
                     case NUKE_AUTH_ALL:
-                    $auth_user[$f_forum_id][$key] = TRUE;
-                    $auth_user[$f_forum_id][$key.'_type'] = $lang['Auth_Anonymous_Users'];
+                    $nuke_auth_user[$f_forum_id][$key] = TRUE;
+                    $nuke_auth_user[$f_forum_id][$key.'_type'] = $lang['Auth_Anonymous_Users'];
                     break;
                     case NUKE_AUTH_REG:
-                    $auth_user[$f_forum_id][$key] = ( $userdata['session_logged_in'] ) ? TRUE : 0;
-                    $auth_user[$f_forum_id][$key.'_type'] = $lang['Auth_Registered_Users'];
+                    $nuke_auth_user[$f_forum_id][$key] = ( $nuke_userdata['session_logged_in'] ) ? TRUE : 0;
+                    $nuke_auth_user[$f_forum_id][$key.'_type'] = $lang['Auth_Registered_Users'];
                     break;
                     case NUKE_AUTH_ACL:
-                    $auth_user[$f_forum_id][$key] = ( $userdata['session_logged_in'] ) ? auth_check_user(NUKE_AUTH_ACL, $key, $u_access[$f_forum_id], $is_admin) : 0;
-                    $auth_user[$f_forum_id][$key.'_type'] = $lang['Auth_Users_granted_access'];
+                    $nuke_auth_user[$f_forum_id][$key] = ( $nuke_userdata['session_logged_in'] ) ? auth_check_user(NUKE_AUTH_ACL, $key, $u_access[$f_forum_id], $is_admin) : 0;
+                    $nuke_auth_user[$f_forum_id][$key.'_type'] = $lang['Auth_Users_granted_access'];
                     break;
                     case NUKE_AUTH_MOD:
-                    $auth_user[$f_forum_id][$key] = ( $userdata['session_logged_in'] ) ? auth_check_user(NUKE_AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $is_admin) : 0;
-                    $auth_user[$f_forum_id][$key.'_type'] = $lang['Auth_Moderators'];
+                    $nuke_auth_user[$f_forum_id][$key] = ( $nuke_userdata['session_logged_in'] ) ? auth_check_user(NUKE_AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $is_admin) : 0;
+                    $nuke_auth_user[$f_forum_id][$key.'_type'] = $lang['Auth_Moderators'];
                     break;
                     case NUKE_AUTH_ADMIN:
-                    $auth_user[$f_forum_id][$key] = $is_admin;
-                    $auth_user[$f_forum_id][$key.'_type'] = $lang['Auth_Administrators'];
+                    $nuke_auth_user[$f_forum_id][$key] = $is_admin;
+                    $nuke_auth_user[$f_forum_id][$key.'_type'] = $lang['Auth_Administrators'];
                     break;
                     default:
-                    $auth_user[$f_forum_id][$key] = 0;
+                    $nuke_auth_user[$f_forum_id][$key] = 0;
                     break;
                  endswitch;
 
@@ -325,23 +325,23 @@ endswitch;
         # Is user a moderator?
         if($forum_id != NUKE_AUTH_LIST_ALL):
         
-          $auth_user['auth_mod'] = ($userdata['session_logged_in']) ? auth_check_user(NUKE_AUTH_MOD, 'auth_mod', $u_access, $is_admin) : 0;
+          $nuke_auth_user['auth_mod'] = ($nuke_userdata['session_logged_in']) ? auth_check_user(NUKE_AUTH_MOD, 'auth_mod', $u_access, $is_admin) : 0;
         
         else:
         
           for($k = 0; $k < count($f_access); $k++):
              $f_forum_id = $f_access[$k]['forum_id'];
              $u_access[$f_forum_id] = isset($u_access[$f_forum_id]) ? $u_access[$f_forum_id] : array();
-             $auth_user[$f_forum_id]['auth_mod'] = ( $userdata['session_logged_in'] ) ? auth_check_user(NUKE_AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $is_admin) : 0;
+             $nuke_auth_user[$f_forum_id]['auth_mod'] = ( $nuke_userdata['session_logged_in'] ) ? auth_check_user(NUKE_AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $is_admin) : 0;
            endfor;
         endif;
 
-        return $auth_user;
+        return $nuke_auth_user;
 }
 
 function auth_check_user($type, $key, $u_access, $is_admin)
 {
-  $auth_user = 0;
+  $nuke_auth_user = 0;
   if(count($u_access)):
      for($j = 0; $j < count($u_access); $j++):
         $result = 0;
@@ -354,11 +354,11 @@ function auth_check_user($type, $key, $u_access, $is_admin)
            $result = $result || $is_admin;
            break;
         endswitch;
-        $auth_user = $auth_user || $result;
+        $nuke_auth_user = $nuke_auth_user || $result;
      endfor;
   else:
-     $auth_user = $is_admin;
+     $nuke_auth_user = $is_admin;
   endif;
- return $auth_user;
+ return $nuke_auth_user;
 }
 ?>

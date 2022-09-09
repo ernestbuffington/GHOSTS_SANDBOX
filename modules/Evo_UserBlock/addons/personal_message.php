@@ -27,8 +27,8 @@ function evouserinfo_personal_message () {
     $evouserinfo_personal_message = $evouserinfo_addons['personal_message_message'];
     
     if (is_user()) {
-        global $userinfo;
-        $uname = UsernameColor($userinfo['username']);
+        global $nuke_userinfo;
+        $uname = UsernameColor($nuke_userinfo['username']);
     } else {
         $uname = $lang_evo_userblock['BLOCK']['GOOD_AFTERNOON']['ANON'];
     }

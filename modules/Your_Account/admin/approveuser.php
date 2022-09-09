@@ -47,7 +47,7 @@ if(is_mod_admin($module_name)) {
 	echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _USER_RETURNMAIN . "</a> ]</div>\n";
 	CloseTable();
 	echo "<br />";
-    list($username, $realname, $email, $check_num) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT username, realname, user_email, check_num FROM ".$nuke_user_prefix."_users_temp WHERE user_id='$act_uid'"));
+    list($nuke_username, $realname, $email, $check_num) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT username, realname, user_email, check_num FROM ".$nuke_user_prefix."_users_temp WHERE user_id='$act_uid'"));
 
     $pagetitle = ": "._USERADMIN." - "._YA_APPROVEUSER;
     
@@ -61,7 +61,7 @@ if(is_mod_admin($module_name)) {
 
     OpenTable();
         echo "<table align='center' border='0' align=\"center\">";
-        echo "<tr><td width=\"50%\"><strong>"._USERNAME.":</strong></td><td align=\"left\">$username<br /></td></tr>";
+        echo "<tr><td width=\"50%\"><strong>"._USERNAME.":</strong></td><td align=\"left\">$nuke_username<br /></td></tr>";
         echo "<tr><td width=\"50%\"><strong>"._UREALNAME.":</strong></td><td align=\"left\">$realname<br /></td></tr>";
         echo "<tr><td width=\"50%\"><strong>"._EMAIL.":</strong></td><td align=\"left\">$email</td></tr>";
         echo "</table>";

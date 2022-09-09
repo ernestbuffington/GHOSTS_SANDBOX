@@ -35,10 +35,10 @@ if($totalselected > 0) {
   echo '<td align="center"><strong>'._AB_HITS.'</strong></td>'."\n";
   echo '</tr>'."\n";
   $result = $nuke_db->sql_query("SELECT `user_id`, `username`, `ip_addr`, `ip_long`, MAX(`date`), COUNT(*), MIN(`tid`), `c2c` FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 2,3,4 ORDER BY `ip_addr`");
-  while(list($userid,$username,$ipaddr,$ip_long,$lastview,$hits,$tid,$c2c) = $nuke_db->sql_fetchrow($result)){
+  while(list($nuke_userid,$nuke_username,$ipaddr,$ip_long,$lastview,$hits,$tid,$c2c) = $nuke_db->sql_fetchrow($result)){
     $countrytitleinfo = abget_countrytitle($c2c);
     echo '<tr bgcolor="#ffffff">'."\n";
-    if($userid != 1) { echo '<td>'.$username.'</td>'."\n"; } else { echo '<td>'.$anonymous.'</td>'."\n"; }
+    if($nuke_userid != 1) { echo '<td>'.$nuke_username.'</td>'."\n"; } else { echo '<td>'.$anonymous.'</td>'."\n"; }
     echo '<td>'.$ipaddr.'</td>'."\n";
     echo '<td align="center">'.strtoupper($c2c).' - '.$countrytitleinfo['country'].'</td>'."\n";
     echo '<td align="center">'.date("Y-m-d \@ H:i:s",$lastview).'</td>'."\n";

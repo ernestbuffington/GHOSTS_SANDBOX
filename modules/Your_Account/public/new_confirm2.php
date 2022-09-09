@@ -64,7 +64,7 @@ if (!defined('CNBYA')) {
         }
     }
 
-    $user_viewemail = "0";
+    $nuke_user_viewemail = "0";
     $ya_user_email = strtolower($ya_user_email);
     ya_userCheck($ya_username);
     ya_mailCheck($ya_user_email);
@@ -89,16 +89,16 @@ if (!defined('CNBYA')) {
 		include_once './includes/honeypot/hp_confirm.php';
 		}
 		# end Nuke Honeypot
-        if (empty($user_password) AND empty($user_password2)) {
-            $user_password = YA_MakePass();
-        } elseif ($user_password != $user_password2) {
+        if (empty($nuke_user_password) AND empty($nuke_user_password2)) {
+            $nuke_user_password = YA_MakePass();
+        } elseif ($nuke_user_password != $nuke_user_password2) {
             OpenTable();
             echo "<center><span class='title'><strong>"._ERRORREG."</strong></span><br /><br />";
             echo "<span class='content'>"._PASSDIFFERENT."<br /><br />"._GOBACK."</span></center>";
             CloseTable();
             include_once(NUKE_BASE_DIR.'footer.php');
             exit;
-        } elseif ($user_password == $user_password2 AND (strlen($user_password) < $ya_config['pass_min'] OR strlen($user_password) > $ya_config['pass_max'])) {
+        } elseif ($nuke_user_password == $nuke_user_password2 AND (strlen($nuke_user_password) < $ya_config['pass_min'] OR strlen($nuke_user_password) > $ya_config['pass_max'])) {
             OpenTable();
             echo "<center><span class='title'><strong>"._ERRORREG."</strong></span><br /><br />";
             echo "<span class='content'>"._YA_PASSLENGTH."<br /><br />"._GOBACK."</span></center>";
@@ -128,7 +128,7 @@ if (!defined('CNBYA')) {
         echo "<tr><td><strong>"._USERNAME.":</strong> $ya_username<br /></td></tr>";
         echo "<tr><td><strong>"._EMAIL.":</strong> $ya_user_email</td></tr>";
 // menelaos: removed display of the user password here. It is mailed to the user
-//      echo "<tr><td><strong>"._YA_PASSWORD.":</strong> $user_password<br /></td></tr>";
+//      echo "<tr><td><strong>"._YA_PASSWORD.":</strong> $nuke_user_password<br /></td></tr>";
         echo "</table><br /><br />";
         echo "<center><strong>"._NOTE."</strong> "._YOUWILLRECEIVE."";
         echo "<form action='modules.php?name=$module_name' method='post'>";
@@ -150,7 +150,7 @@ if (!defined('CNBYA')) {
         echo "<input type='hidden' name='ya_username' value=\"$ya_username\">";
         echo "<input type='hidden' name='ya_realname' value=\"$ya_realname\">";
         echo "<input type='hidden' name='ya_user_email' value=\"$ya_user_email\">";
-        echo "<input type='hidden' name='user_password' value=\"$user_password\">";
+        echo "<input type='hidden' name='user_password' value=\"$nuke_user_password\">";
         echo "<input type='hidden' name='op' value='new_finish'><br /><br />";
         echo "<input type='submit' value='"._FINISH."'> &nbsp;&nbsp;"._GOBACK."</form></center>";
         CloseTable();

@@ -47,17 +47,17 @@ function abget_countrytitle($c2c){
   return $countrytitleinfo;
 }
 
-function absave_config($config_name, $config_value){
+function absave_config($nuke_config_name, $nuke_config_value){
   global $prefix, $nuke_db, $cache;
   if(!get_magic_quotes_runtime()) {
-    $config_name = addslashes($config_name);
-    $config_value = addslashes($config_value);
+    $nuke_config_name = addslashes($nuke_config_name);
+    $nuke_config_value = addslashes($nuke_config_value);
   }
-  $resultnum = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_config` WHERE `config_name`='$config_name' LIMIT 0,1"));
+  $resultnum = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_config` WHERE `config_name`='$nuke_config_name' LIMIT 0,1"));
   if($resultnum < 1) {
-    $nuke_db->sql_query("INSERT INTO `".$prefix."_nsnst_config` (`config_name`, `config_value`) VALUES ('$config_name', '$config_value')");
+    $nuke_db->sql_query("INSERT INTO `".$prefix."_nsnst_config` (`config_name`, `config_value`) VALUES ('$nuke_config_name', '$nuke_config_value')");
   } else {
-    $nuke_db->sql_query("UPDATE `".$prefix."_nsnst_config` SET `config_value`='$config_value' WHERE `config_name`='$config_name'");
+    $nuke_db->sql_query("UPDATE `".$prefix."_nsnst_config` SET `config_value`='$nuke_config_value' WHERE `config_name`='$nuke_config_name'");
   }
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -394,25 +394,25 @@ function info_img($abinfo) {
   }
 }
 
-function templatemenu($template="") {
+function templatemenu($template_nuke="") {
   global $nuke_config, $ab_config, $nsnst_const, $admin_file;
   echo '<form action="'.$admin_file.'.php" method="post" target="templateview">'."\n";
   echo '<input type="hidden" name="op" value="ABTemplateView" />'."\n";
   echo '<table summary="" align="center" border="0" cellpadding="2" cellspacing="2">'."\n";
   echo '<tr><td>'._AB_TEMPLATE.':</td><td><select name="template">'."\n";
-  $templatelist = "";
-  $templatedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
-  while($func=$templatedir->read()) {
-    if(substr($func, -4) == ".tpl") { $templatelist .= "$func "; }
+  $template_nukelist = "";
+  $template_nukedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
+  while($func=$template_nukedir->read()) {
+    if(substr($func, -4) == ".tpl") { $template_nukelist .= "$func "; }
   }
-  closedir($templatedir->handle);
-  $templatelist = explode(" ", $templatelist);
-  sort($templatelist);
-  for($i=0; $i < sizeof($templatelist); $i++) {
-    if($templatelist[$i]!="") {
-      $bl = str_replace(".tpl","",$templatelist[$i]);
+  closedir($template_nukedir->handle);
+  $template_nukelist = explode(" ", $template_nukelist);
+  sort($template_nukelist);
+  for($i=0; $i < sizeof($template_nukelist); $i++) {
+    if($template_nukelist[$i]!="") {
+      $bl = str_replace(".tpl","",$template_nukelist[$i]);
       $bl = str_replace("_"," ",$bl);
-      echo '<option value="'.$templatelist[$i].'">'.$bl.'</option>'."\n";
+      echo '<option value="'.$template_nukelist[$i].'">'.$bl.'</option>'."\n";
     }
   }
   echo '</select></td></tr>'."\n";
@@ -423,19 +423,19 @@ function templatemenu($template="") {
   echo '<input type="hidden" name="op" value="ABTemplateSource" />'."\n";
   echo '<table summary="" align="center" border="0" cellpadding="2" cellspacing="2">'."\n";
   echo '<tr><td>'._AB_TEMPLATE.':</td><td><select name="template">'."\n";
-  $templatelist = "";
-  $templatedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
-  while($func=$templatedir->read()) {
-    if(substr($func, -4) == ".tpl") { $templatelist .= "$func "; }
+  $template_nukelist = "";
+  $template_nukedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
+  while($func=$template_nukedir->read()) {
+    if(substr($func, -4) == ".tpl") { $template_nukelist .= "$func "; }
   }
-  closedir($templatedir->handle);
-  $templatelist = explode(" ", $templatelist);
-  sort($templatelist);
-  for($i=0; $i < sizeof($templatelist); $i++) {
-    if($templatelist[$i]!="") {
-      $bl = str_replace(".tpl","",$templatelist[$i]);
+  closedir($template_nukedir->handle);
+  $template_nukelist = explode(" ", $template_nukelist);
+  sort($template_nukelist);
+  for($i=0; $i < sizeof($template_nukelist); $i++) {
+    if($template_nukelist[$i]!="") {
+      $bl = str_replace(".tpl","",$template_nukelist[$i]);
       $bl = str_replace("_"," ",$bl);
-      echo '<option value="'.$templatelist[$i].'">'.$bl.'</option>'."\n";
+      echo '<option value="'.$template_nukelist[$i].'">'.$bl.'</option>'."\n";
     }
   }
   echo '</select></td></tr>'."\n";
@@ -443,16 +443,16 @@ function templatemenu($template="") {
   echo '</table>'."\n".'</form>'."\n";
 }
 
-function abview_template($template="") {
+function abview_template($template_nuke="") {
   global $nuke_config, $ab_config, $nsnst_const, $nuke_db, $prefix, $ip;
-  if(empty($template)) { $template = "abuse_default.tpl"; }
+  if(empty($template_nuke)) { $template_nuke = "abuse_default.tpl"; }
   $sitename = $nuke_config['sitename'];
   $adminmail = $nuke_config['adminmail'];
   $adminmail = str_replace("@", "(at)", $adminmail);
   $adminmail = str_replace(".", "(dot)", $adminmail);
   $adminmail2 = urlencode($nuke_config['adminmail']);
   $querystring = get_query_string();
-  $filename = NUKE_INCLUDE_DIR.'nukesentinel/abuse/'.$template;
+  $filename = NUKE_INCLUDE_DIR.'nukesentinel/abuse/'.$template_nuke;
   if(!file_exists($filename)) { $filename = NUKE_INCLUDE_DIR.'nukesentinel/abuse/abuse_default.tpl'; }
   $handle = @fopen($filename, "r");
   $display_page = fread($handle, filesize($filename));

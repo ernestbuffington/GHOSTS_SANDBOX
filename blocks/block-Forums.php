@@ -3,7 +3,7 @@
 if(!defined('NUKE_EVO')) 
 	exit;
 
-global $nuke_db, $block_title, $nuke_user_prefix, $prefix, $cache, $blockslang, $images, $board_config, $board_config, $userinfo;
+global $nuke_db, $block_title, $nuke_user_prefix, $prefix, $cache, $blockslang, $images, $board_config, $board_config, $nuke_userinfo;
 
 define('forum_board_icon_path','themes/'.get_theme().'/forums');
 
@@ -34,7 +34,7 @@ $count_topics = 0;
 	$topic_data = array();
 	$result = $nuke_db->sql_query("SELECT t.topic_id, t.topic_type, t.topic_attachment, f.forum_name, f.forum_color, f.forum_id, t.topic_last_post_id, t.topic_first_post_id, t.topic_title, t.topic_poster, t.topic_views, t.topic_replies, t.topic_status, p.post_time, p.poster_id, pu.username as postername, u.username, u.user_id FROM ".$prefix."_bbtopics t, ".$prefix."_bbforums f, ".$prefix."_bbposts p, ".$nuke_user_prefix."_users u, ".$nuke_user_prefix."_users pu WHERE t.forum_id=f.forum_id AND p.post_id=t.topic_last_post_id AND u.user_id=t.topic_poster AND pu.user_id=p.poster_id AND t.topic_moved_id = '0' ORDER BY topic_last_post_id DESC LIMIT $last_new_topics");
 
-	while ( list( $topic_id, $topic_type, $topic_attachment, $forum_name, $forum_color, $forum_id, $topic_last_post_id, $topic_first_post_id, $topic_title, $topic_poster, $topic_views, $topic_replies, $topic_status, $post_time, $poster_id, $poster_name, $username, $user_id ) = $nuke_db->sql_fetchrow( $result)) 
+	while ( list( $topic_id, $topic_type, $topic_attachment, $forum_name, $forum_color, $forum_id, $topic_last_post_id, $topic_first_post_id, $topic_title, $topic_poster, $topic_views, $topic_replies, $topic_status, $post_time, $poster_id, $poster_name, $nuke_username, $nuke_user_id ) = $nuke_db->sql_fetchrow( $result)) 
 	{
 	        $topic_data[$topic_id]['topic_id'] 			  = $topic_id;
 	        $topic_data[$topic_id]['topic_type'] 		  = $topic_type;
@@ -52,8 +52,8 @@ $count_topics = 0;
 	        $topic_data[$topic_id]['post_time'] 		  = $post_time;
 	        $topic_data[$topic_id]['poster_id'] 		  = $poster_id;
 	        $topic_data[$topic_id]['poster_name'] 		  = $poster_name;
-	        $topic_data[$topic_id]['username'] 			  = $username;
-	        $topic_data[$topic_id]['user_id'] 			  = $user_id;
+	        $topic_data[$topic_id]['username'] 			  = $nuke_username;
+	        $topic_data[$topic_id]['user_id'] 			  = $nuke_user_id;
 	}
 	$nuke_db->sql_freeresult($result);
 /*****[BEGIN]******************************************
@@ -88,7 +88,7 @@ if ($topic_data):
 		$table .= '    <td class="'.$row_class.'"><a href="modules.php?name=Forums&amp;file=viewtopic&amp;p='.$topic_info['topic_first_post_id'].'">'.$topic_info['topic_title'].'</a>'.$startedby.'</td>'.PHP_EOL; // #'.$topic_info['topic_first_post_id'].'
 		$table .= '    <td class="'.$row_class.'"><a href="modules.php?name=Forums&amp;file=viewforum&amp;f='.$topic_info['forum_id'].'">'.$topic_info['forum_name'].'</a></td>'.PHP_EOL;
 		$table .= '    <td class="'.$row_class.'" nowrap>'.$topic_info['topic_replies'].'&nbsp;'.$blockslang['global']['replies'].'<br />'.$topic_info['topic_views'].'&nbsp;'.$blockslang['global']['views'].'</td>'.PHP_EOL;
-		$table .= '    <td class="'.$row_class.' lastpost" nowrap><a href="modules.php?name=Forums&amp;file=viewtopic&amp;p='.$topic_info['topic_last_post_id'].'#'.$topic_info['topic_last_post_id'].'"><i class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$blockslang['forums']['view_latest'].'"></i></a>'.EvoDate( 'M jS Y g:i a' , $topic_info['post_time'] , $userinfo['user_timezone'] ).'<br />'.sprintf($blockslang['forums']['by'],'<a href="modules.php?name=Forums&amp;file=profile&amp;mode=viewprofile&amp;u='.$topic_info['poster_id'].'">'.UsernameColor($topic_info['poster_name']).'</a>').'</td>'.PHP_EOL;
+		$table .= '    <td class="'.$row_class.' lastpost" nowrap><a href="modules.php?name=Forums&amp;file=viewtopic&amp;p='.$topic_info['topic_last_post_id'].'#'.$topic_info['topic_last_post_id'].'"><i class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$blockslang['forums']['view_latest'].'"></i></a>'.EvoDate( 'M jS Y g:i a' , $topic_info['post_time'] , $nuke_userinfo['user_timezone'] ).'<br />'.sprintf($blockslang['forums']['by'],'<a href="modules.php?name=Forums&amp;file=profile&amp;mode=viewprofile&amp;u='.$topic_info['poster_id'].'">'.UsernameColor($topic_info['poster_name']).'</a>').'</td>'.PHP_EOL;
 		$table .= '  </tr>'.PHP_EOL;
 
 	endforeach;

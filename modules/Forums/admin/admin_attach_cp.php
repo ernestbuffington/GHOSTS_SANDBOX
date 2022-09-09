@@ -228,11 +228,11 @@ else if ($delete && sizeof($delete_id_list) > 0)
         $hidden_fields .= '<input type="hidden" name="delete_id_list[]" value="' . $delete_id_list[$i] . '" />';
     }
 
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'confirm' => 'confirm_body.tpl')
     );
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'MESSAGE_TITLE'        => $lang['Confirm'],
         'MESSAGE_TEXT'        => $lang['Confirm_delete_attachments'],
 
@@ -243,15 +243,15 @@ else if ($delete && sizeof($delete_id_list) > 0)
         'S_HIDDEN_FIELDS'    => $hidden_fields)
     );
 
-    $template->pparse('confirm');
+    $template_nuke->pparse('confirm');
     
-    include('page_footer_admin.'.$phpEx);
+    include('nuke_page_footer_admin.'.$phpEx);
 
     exit;
 }
 
 // Assign Default Template Vars
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'L_VIEW'                    => $lang['View'],
     'L_SUBMIT'                    => $lang['Submit'],
     'L_CONTROL_PANEL_TITLE'        => $lang['Control_panel_title'],
@@ -308,7 +308,7 @@ if ($submit_change && $view == 'attachments')
 // Statistics
 if ($view == 'stats')
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/attach_cp_body.tpl')
     );
 
@@ -392,7 +392,7 @@ if ($view == 'stats')
     $number_of_users = $nuke_db->sql_numrows($result);
     $nuke_db->sql_freeresult($result);
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_STATISTIC'                => $lang['Statistic'],
         'L_VALUE'                    => $lang['Value'],
         'L_NUMBER_OF_ATTACHMENTS'    => $lang['Number_of_attachments'],
@@ -456,11 +456,11 @@ if ($view == 'search')
         message_die(NUKE_GENERAL_MESSAGE, $lang['No_searchable_forums']);
     }
     
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/attach_cp_search.tpl')
     );
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_ATTACH_SEARCH_QUERY'        => $lang['Attach_search_query'],
         'L_FILENAME'                => $lang['File_name'],
         'L_COMMENT'                    => $lang['File_comment'],
@@ -488,11 +488,11 @@ if ($view == 'search')
 // Username
 if ($view == 'username')
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/attach_cp_user.tpl')
     );
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_SELECT_SORT_METHOD'    => $lang['Select_sort_method'],
         'L_ORDER'                => $lang['Order'],
         'L_USERNAME'            => $lang['Username'],
@@ -575,18 +575,18 @@ if ($view == 'username')
         
         for ($i = 0; $i < count($members); $i++)
         {
-            $username = $members[$i]['username'];
+            $nuke_username = $members[$i]['username'];
             $total_attachments = $members[$i]['total_attachments'];
             $total_size = $members[$i]['total_size'];
 
             $row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
             $row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
-            $template->assign_block_vars('memberrow', array(
+            $template_nuke->assign_block_vars('memberrow', array(
                 'ROW_NUMBER'        => $i + ( $HTTP_GET_VARS['start'] + 1 ),
                 'ROW_COLOR'            => '#' . $row_color,
                 'ROW_CLASS'            => $row_class,
-                'USERNAME'            => $username,
+                'USERNAME'            => $nuke_username,
                 'TOTAL_ATTACHMENTS'    => $total_attachments,
                 'TOTAL_SIZE'        => round(($total_size / MEGABYTE), 2),
                 'U_VIEW_MEMBER'        => append_sid('admin_attach_cp.' . $phpEx . '?view=attachments&amp;uid=' . $members[$i]['user_id']))
@@ -610,16 +610,16 @@ if ($view == 'username')
 // Attachments
 if ($view == 'attachments')
 {
-    $user_based = ($uid) ? TRUE : FALSE;
+    $nuke_user_based = ($uid) ? TRUE : FALSE;
     $search_based = (isset($HTTP_POST_VARS['search']) && $HTTP_POST_VARS['search']) ? TRUE : FALSE;
     
     $hidden_fields = '';
     
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/attach_cp_attachments.tpl')
     );
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_SELECT_SORT_METHOD'    => $lang['Select_sort_method'],
         'L_ORDER'                => $lang['Order'],
 
@@ -643,7 +643,7 @@ if ($view == 'attachments')
     $total_rows = 0;
     
     // Are we called from Username ?
-    if ($user_based)
+    if ($nuke_user_based)
     {
         $sql = "SELECT username 
             FROM " . NUKE_USERS_TABLE . " 
@@ -657,15 +657,15 @@ if ($view == 'attachments')
         $row = $nuke_db->sql_fetchrow($result);
         $nuke_db->sql_freeresult($result);
 
-        $username = $row['username'];
+        $nuke_username = $row['username'];
 
         $s_hidden = '<input type="hidden" name="u_id" value="' . intval($uid) . '" />';
     
-        $template->assign_block_vars('switch_user_based', array());
+        $template_nuke->assign_block_vars('switch_user_based', array());
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'S_USER_HIDDEN'            => $s_hidden,
-            'L_STATISTICS_FOR_USER'    => sprintf($lang['Statistics_for_user'], $username))
+            'L_STATISTICS_FOR_USER'    => sprintf($lang['Statistics_for_user'], $nuke_username))
         );
 
         $sql = "SELECT attach_id 
@@ -684,7 +684,7 @@ if ($view == 'attachments')
 
         if ($num_attach_ids == 0)
         {
-            message_die(NUKE_GENERAL_MESSAGE, 'For some reason no Attachments are assigned to the User "' . $username . '".');
+            message_die(NUKE_GENERAL_MESSAGE, 'For some reason no Attachments are assigned to the User "' . $nuke_username . '".');
         }
         
         $total_rows = $num_attach_ids;
@@ -799,7 +799,7 @@ if ($view == 'attachments')
 
             $hidden_field = '<input type="hidden" name="attach_id_list[]" value="' . intval($attachments[$i]['attach_id']) . '" />';
 
-            $template->assign_block_vars('attachrow', array(
+            $template_nuke->assign_block_vars('attachrow', array(
                 'ROW_NUMBER'    => $i + ( $HTTP_GET_VARS['start'] + 1 ),
                 'ROW_COLOR'        => '#' . $row_color,
                 'ROW_CLASS'        => $row_class,
@@ -821,7 +821,7 @@ if ($view == 'attachments')
         }
     }
 
-    if (!$search_based && !$user_based)
+    if (!$search_based && !$nuke_user_based)
     {
         if ($total_attachments == 0)
         {
@@ -843,7 +843,7 @@ if ($do_pagination && $total_rows > $board_config['topics_per_page'])
 {
     $pagination = generate_pagination('admin_attach_cp.' . $phpEx . '?view=' . $view . '&amp;mode=' . $mode . '&amp;order=' . $sort_order . '&amp;uid=' . $uid, $total_rows, $board_config['topics_per_page'], $start).'&nbsp;';
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'PAGINATION'    => $pagination,
         'PAGE_NUMBER'    => sprintf($lang['Page_of'], ( floor( $start / $board_config['topics_per_page'] ) + 1 ), ceil( $total_rows / $board_config['topics_per_page'] )), 
 
@@ -851,12 +851,12 @@ if ($do_pagination && $total_rows > $board_config['topics_per_page'])
     );
 }
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'ATTACH_VERSION' => sprintf($lang['Attachment_version'], $attach_config['attach_version']))
 );
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
-include('page_footer_admin.'.$phpEx);
+include('nuke_page_footer_admin.'.$phpEx);
 
 ?>

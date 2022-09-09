@@ -34,14 +34,14 @@ define('CP_INCLUDE_DIR', dirname(dirname(dirname(__FILE__))));
 require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 
 $module_name = basename(dirname(__FILE__));
-$author_email = "webmaster@www.86it.us";
-$author_homepage = "http://www.86it.us";
-$author_name = "Ernest Allen Buffington";
+$nuke_author_email = "webmaster@www.86it.us";
+$nuke_author_homepage = "http://www.86it.us";
+$nuke_author_name = "Ernest Allen Buffington";
 $license = "GNU/GPL";
 $download_location = "http://www.86it.us";
 $module_version = "3.0.0";
 $release_date = "08/27/2019";
 $module_description = "PHP-Nuke Titanium Blog Module";
 
-show_copyright($author_name, $author_email, $author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
 ?>

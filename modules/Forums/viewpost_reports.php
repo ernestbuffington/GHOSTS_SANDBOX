@@ -51,18 +51,18 @@ include_once("includes/functions_report.php");
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
 
-if( !$userdata['session_logged_in'] )
+if( !$nuke_userdata['session_logged_in'] )
 {
     nuke_redirect('login.'.$phpEx.'?nuke_redirect=viewpost_reports.'.$phpEx);
 }
 
-if ( $userdata['user_level'] < NUKE_ADMIN )
+if ( $nuke_userdata['user_level'] < NUKE_ADMIN )
 {
     message_die(NUKE_GENERAL_MESSAGE, $lang['Not_Moderator'], $lang['Not_Authorised']);
 }
@@ -109,13 +109,13 @@ if ( ($mode == 'closereport' || $mode == 'openreport') && $report_id != '' )
 
         // show form to add comments about report
         $page_title = $lang['Report_post'] . ' - ' . $topic_title;
-        include('includes/page_header.'.$phpEx);
+        include('includes/nuke_page_header.'.$phpEx);
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
             'report_comment' => 'report_comment.tpl')
         );
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'TOPIC_TITLE' => $topic_title,
             'POST_ID' => $post_id,
             'REPORT_COMMENTS' => $report_comments,
@@ -130,7 +130,7 @@ if ( ($mode == 'closereport' || $mode == 'openreport') && $report_id != '' )
             'S_ACTION' => append_sid('viewpost_reports.'.$phpEx.'?mode='.$mode.'&amp;report='.$report_id))
         );
 
-        $template->pparse('report_comment');
+        $template_nuke->pparse('report_comment');
 
         include('includes/page_tail.'.$phpEx);
         exit;
@@ -144,7 +144,7 @@ if ( ($mode == 'closereport' || $mode == 'openreport') && $report_id != '' )
         $time_var = time();
 
         // create the new comments
-        $last_action_user = '<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;' . NUKE_POST_USERS_URL . '=' . $userdata['user_id'] . '">' . $userdata['username'] . '</a>' ;
+        $last_action_user = '<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;' . NUKE_POST_USERS_URL . '=' . $nuke_userdata['user_id'] . '">' . $nuke_userdata['username'] . '</a>' ;
         $last_action_date = create_date($board_config['default_dateformat'], $time_var, $board_config['board_timezone']);
 
         if ( $mode == 'closereport' )
@@ -166,7 +166,7 @@ if ( ($mode == 'closereport' || $mode == 'openreport') && $report_id != '' )
         // update report status
           $sql = "UPDATE " . NUKE_POST_REPORTS_TABLE . " SET
             report_status = " . ( ( $mode == 'closereport' ) ? NUKE_REPORT_POST_CLOSED : NUKE_REPORT_POST_NEW ) . ",
-            last_action_user_id = " . $userdata['user_id'] . ",
+            last_action_user_id = " . $nuke_userdata['user_id'] . ",
             last_action_time = " . $time_var . ",
             last_action_comments = '" . str_replace("\'", "''", $last_action_comments) . "'
             WHERE report_id = " . $report_id;
@@ -187,7 +187,7 @@ else if ( $mode == 'close' || $mode == 'open' )
 
     // comment to use when doing mass (checkbox & drop down menu) updating
     // here we have to add the previous comments for each report too
-    $last_action_user = '<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;' . NUKE_POST_USERS_URL . '=' . $userdata['user_id'] . '">' . $userdata['username'] . '</a>' ;
+    $last_action_user = '<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;' . NUKE_POST_USERS_URL . '=' . $nuke_userdata['user_id'] . '">' . $nuke_userdata['username'] . '</a>' ;
     $last_action_date = create_date($board_config['default_dateformat'], $time_var, $board_config['board_timezone']);
 
     if ( $mode == 'close' )
@@ -252,7 +252,7 @@ else if ( $mode == 'close' || $mode == 'open' )
 
             $sql = "UPDATE " . NUKE_POST_REPORTS_TABLE . " SET
                 report_status = " . ( ( $mode == 'close' ) ? NUKE_REPORT_POST_CLOSED : NUKE_REPORT_POST_NEW ) . ",
-                last_action_user_id = " . $userdata['user_id'] . ",
+                last_action_user_id = " . $nuke_userdata['user_id'] . ",
                 last_action_time = " . $time_var . ",
                 last_action_comments = '" . str_replace("\'", "''", $last_action_comments) . "'
                 WHERE report_id = " . $key;
@@ -275,7 +275,7 @@ else if ( $mode == 'optout' || $mode == 'optin' )
 {
     $sql = "UPDATE " . NUKE_USERS_TABLE . " SET
         user_report_optout = " . (( $mode == 'optout' ) ? 1 : 0) . "
-        WHERE user_id = " . $userdata['user_id'];
+        WHERE user_id = " . $nuke_userdata['user_id'];
 
     if ( !$nuke_db->sql_query($sql) )
     {
@@ -288,7 +288,7 @@ else if ( $mode == 'optout' || $mode == 'optin' )
 else if ( $mode == 'delete' )
 {
     // check if the user is an admin
-    if ( $userdata['user_level'] != NUKE_ADMIN )
+    if ( $nuke_userdata['user_level'] != NUKE_ADMIN )
     {
         message_die(NUKE_GENERAL_MESSAGE, $lang['Not_Authorised']);
     }
@@ -321,13 +321,13 @@ else if ( $mode == 'delete' )
     message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 $page_title = $lang['View_post_reports'];
-include('includes/page_header.'.$phpEx);
+include('includes/nuke_page_header.'.$phpEx);
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     'body' => 'reports_view.tpl')
 );
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'L_DISPLAY'        => $lang['Display'],
     'L_OPEN'            => $lang['Open'],
     'L_CLOSE'        => $lang['Close'],
@@ -345,9 +345,9 @@ $template->assign_vars(array(
 
     'L_SELECT_ONE'    => $lang['Select_one'],
     'L_SUBMIT'        => $lang['Submit'],
-    'L_OPT_OUT'        => ( $userdata['user_report_optout'] ) ? $lang['Opt_in'] : $lang['Opt_out'],
+    'L_OPT_OUT'        => ( $nuke_userdata['user_report_optout'] ) ? $lang['Opt_in'] : $lang['Opt_out'],
 
-    'U_OPT_OUT'        => ( $userdata['user_report_optout'] ) ? append_sid('viewpost_reports.' . $phpEx . '?mode=optin') : append_sid('viewpost_reports.' . $phpEx . '?mode=optout'),
+    'U_OPT_OUT'        => ( $nuke_userdata['user_report_optout'] ) ? append_sid('viewpost_reports.' . $phpEx . '?mode=optin') : append_sid('viewpost_reports.' . $phpEx . '?mode=optout'),
 
     'S_OPEN'            => ( $status == NUKE_REPORT_POST_NEW ) ? ' selected="selected"' : '',
     'S_CLOSED'        => ( $status == NUKE_REPORT_POST_CLOSED ) ? ' selected="selected"' : '',
@@ -358,7 +358,7 @@ $template->assign_vars(array(
 
 show_reports($status);
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 include('includes/page_tail.'.$phpEx);
 

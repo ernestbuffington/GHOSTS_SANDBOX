@@ -114,7 +114,7 @@ if( empty($disallowed) )
 }
 else
 {
-        $user = array();
+        $nuke_user = array();
         for( $i = 0; $i < count($disallowed); $i++ )
         {
                 $disallow_select .= '<option value="' . $disallowed[$i]['disallow_id'] . '">' . $disallowed[$i]['disallow_username'] . '</option>';
@@ -123,11 +123,11 @@ else
 
 $disallow_select .= '</select>';
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         "body" => "admin/disallow_body.tpl")
 );
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         "S_DISALLOW_SELECT" => $disallow_select,
         "S_FORM_ACTION" => append_sid("admin_disallow.$phpEx"),
 
@@ -143,8 +143,8 @@ $template->assign_vars(array(
         "L_USERNAME" => $lang['Username'])
 );
 
-$template->pparse("body");
+$template_nuke->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

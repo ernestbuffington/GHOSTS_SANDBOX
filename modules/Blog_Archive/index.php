@@ -127,7 +127,7 @@ function select_month()
 
 function show_month($year, $month, $month_l) 
 {
-    global $userinfo, $prefix, $nuke_user_prefix, $nuke_db, $bgcolor1, $bgcolor2, $user, $cookie, $sitename, $multilingual, $language, $module_name, $articlecomm;
+    global $nuke_userinfo, $prefix, $nuke_user_prefix, $nuke_db, $bgcolor1, $bgcolor2, $nuke_user, $cookie, $sitename, $multilingual, $language, $module_name, $articlecomm;
     
 	$year = intval($year);
     $month = htmlentities($month);
@@ -143,19 +143,19 @@ function show_month($year, $month, $month_l)
     
 	if(is_user()) 
 	{
-      if (isset($userinfo['umode'])) 
+      if (isset($nuke_userinfo['umode'])) 
 	  { 
-	    $r_options .= "&amp;mode=".$userinfo['umode']; 
+	    $r_options .= "&amp;mode=".$nuke_userinfo['umode']; 
 	  }
       
-	  if (isset($userinfo['uorder'])) 
+	  if (isset($nuke_userinfo['uorder'])) 
 	  { 
-	    $r_options .= "&amp;order=".$userinfo['uorder']; 
+	    $r_options .= "&amp;order=".$nuke_userinfo['uorder']; 
 	  }
       
-	  if (isset($userinfo['thold'])) 
+	  if (isset($nuke_userinfo['thold'])) 
 	  { 
-	    $r_options .= "&amp;thold=".$userinfo['thold']; 
+	    $r_options .= "&amp;thold=".$nuke_userinfo['thold']; 
 	  }
     }
     
@@ -344,7 +344,7 @@ function show_month($year, $month, $month_l)
 
 function show_all($min) 
 {
-    global $prefix, $nuke_user_prefix, $nuke_db, $bgcolor1, $bgcolor2, $user, $cookie, $sitename, $multilingual, $language, $module_name, $userinfo;
+    global $prefix, $nuke_user_prefix, $nuke_db, $bgcolor1, $bgcolor2, $nuke_user, $cookie, $sitename, $multilingual, $language, $module_name, $nuke_userinfo;
 
     if (!isset($min) || (!is_numeric($min) || ((int)$min) != $min)) 
 	{
@@ -366,19 +366,19 @@ function show_all($min)
     
 	if(is_user()) 
 	{
-      if (isset($userinfo['umode'])) 
+      if (isset($nuke_userinfo['umode'])) 
 	  { 
-	     $r_options .= "&amp;mode=".$userinfo['umode']; 
+	     $r_options .= "&amp;mode=".$nuke_userinfo['umode']; 
 	  }
       
-	  if (isset($userinfo['uorder'])) 
+	  if (isset($nuke_userinfo['uorder'])) 
 	  { 
-	     $r_options .= "&amp;order=".$userinfo['uorder']; 
+	     $r_options .= "&amp;order=".$nuke_userinfo['uorder']; 
 	  }
       
-	  if (isset($userinfo['thold'])) 
+	  if (isset($nuke_userinfo['thold'])) 
 	  { 
-	     $r_options .= "&amp;thold=".$userinfo['thold']; 
+	     $r_options .= "&amp;thold=".$nuke_userinfo['thold']; 
 	  }
     }
     

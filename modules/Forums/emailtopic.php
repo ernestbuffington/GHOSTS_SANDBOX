@@ -49,14 +49,14 @@ $start = (isset($HTTP_GET_VARS['start'])) ? intval($HTTP_GET_VARS['start']) : ((
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_PROFILE);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_PROFILE);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
 
 
-if(!$userdata['session_logged_in'])
+if(!$nuke_userdata['session_logged_in'])
 {
   $nuke_redirect = ($post_id) ? NUKE_POST_POST_URL . "=$post_id" : NUKE_POST_TOPIC_URL . "=$topic_id&start=$start";
   nuke_redirect(append_sid("login.$phpEx?nuke_redirect=emailtopic.$phpEx&$nuke_redirect", true));
@@ -96,7 +96,7 @@ $email_time = 24;
 $current_time = time();
 $sql = 'SELECT COUNT(user_id) AS total
     FROM ' . NUKE_TOPICS_EMAIL_TABLE . '
-    WHERE user_id = ' . $userdata['user_id'] . '
+    WHERE user_id = ' . $nuke_userdata['user_id'] . '
     AND time >= ' . ($current_time - ($email_time * 3600));
 if(!$result = $nuke_db->sql_query($sql))
 {
@@ -145,12 +145,12 @@ if(isset($_POST['submit']))
 
   include('includes/emailer.'.$phpEx);
   $emailer = new emailer($board_config['smtp_delivery']);
-  $emailer->use_template('email_topic', $userdata['user_lang']);
+  $emailer->use_template('email_topic', $nuke_userdata['user_lang']);
   $emailer->email_address($friend_email);
   $emailer->set_subject($lang['Email_topic']);
   $emailer->assign_vars(array(
     'SITENAME'    => $board_config['sitename'],
-    'USERNAME'    => $userdata['username'],
+    'USERNAME'    => $nuke_userdata['username'],
     'FRIEND_NAME' => stripslashes($friend_name),
     'MESSAGE'   => stripslashes($message),
     'TOPIC'     => $topic_title,
@@ -166,7 +166,7 @@ if(isset($_POST['submit']))
 
   // Add record to database
   $current_time = time();
-  $sql = "INSERT INTO " . NUKE_TOPICS_EMAIL_TABLE . " (user_id, friend_name, friend_email, message, topic_id, time) VALUES (" . $userdata['user_id'] . ", '" . str_replace("\'", "''", $friend_name) . "', '" . str_replace ("\'", "''", $friend_email) . "', '" . str_replace ("\'", "''", $message) . "', $topic_id, $current_time)";
+  $sql = "INSERT INTO " . NUKE_TOPICS_EMAIL_TABLE . " (user_id, friend_name, friend_email, message, topic_id, time) VALUES (" . $nuke_userdata['user_id'] . ", '" . str_replace("\'", "''", $friend_name) . "', '" . str_replace ("\'", "''", $friend_email) . "', '" . str_replace ("\'", "''", $message) . "', $topic_id, $current_time)";
   if(!$result = $nuke_db->sql_query($sql))
   {
     message_die(NUKE_GENERAL_ERROR, 'Could not insert topic email data', __LINE__, __FILE__, $sql);
@@ -175,7 +175,7 @@ if(isset($_POST['submit']))
 
   // All done - add the post anchor if a post ID was specified, and nuke_redirect to the original topic
   $nuke_redirect = ($post_id) ? NUKE_POST_POST_URL . "=$post_id" : NUKE_POST_TOPIC_URL . "=$topic_id&amp;start=$start";
-  $template->assign_var('META', '<meta http-equiv="refresh" content="3; url=' . append_sid("viewtopic.$phpEx?$nuke_redirect") . (($post_id) ? "#$post_id" : '') . '" />');
+  $template_nuke->assign_var('META', '<meta http-equiv="refresh" content="3; url=' . append_sid("viewtopic.$phpEx?$nuke_redirect") . (($post_id) ? "#$post_id" : '') . '" />');
 
   $msg = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?$nuke_redirect") . (($post_id) ? "#$post_id" : '') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
   message_die(NUKE_GENERAL_MESSAGE, $msg);
@@ -192,13 +192,13 @@ $s_hidden_fields .= '<input type="hidden" name="start" value="' . $start . '" />
 
 // Output page to template
 $page_title = $lang['Email_topic'];
-include('includes/page_header.'.$phpEx);
+include('includes/nuke_page_header.'.$phpEx);
 
-$template->set_filenames(array('body' => 'email_topic_body.tpl'));
+$template_nuke->set_filenames(array('body' => 'email_topic_body.tpl'));
 
 make_jumpbox('viewforum.'.$phpEx, $forum_id);
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
   'L_TITLE'     => $lang['Email_topic_settings'],
 
   'L_FRIEND_NAME'   => $lang['Friend_name'],
@@ -214,7 +214,7 @@ $template->assign_vars(array(
   'S_HIDDEN_FIELDS' => $s_hidden_fields
 ));
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 include('includes/page_tail.'.$phpEx);
 
 ?>

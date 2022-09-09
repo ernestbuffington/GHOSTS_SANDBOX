@@ -27,7 +27,7 @@ if (!defined('BOARD_CONFIG')) {
     die('Access Denied');
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     "private_messages" => "admin/board_config/board_private_messages.tpl")
 );
 
@@ -43,12 +43,12 @@ $welcome_pm_no = ( !$new['welcome_pm'] ) ? 'checked="checked"' : '';
 [ Mod:     Welcome PM                         v2.0.0 ]
 ******************************************************/
 //General Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "DHTML_ID" => "c" . $dhtml_id)
 );
     
 //Language Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "L_PRIVATE_MESSAGING" => $lang['Private_Messaging'],
     "L_DISABLE_PRIVATE_MESSAGING" => $lang['Disable_privmsg'],
 /*****[BEGIN]******************************************
@@ -72,7 +72,7 @@ $template->assign_vars(array(
 ));
 
 //Data Template Variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "S_PRIVMSG_ENABLED" => $privmsg_on,
     "S_PRIVMSG_DISABLED" => $privmsg_off,
 /*****[BEGIN]******************************************
@@ -95,6 +95,6 @@ $template->assign_vars(array(
     "SAVEBOX_LIMIT" => $new['max_savebox_privmsgs'],
     "WELCOME_USERNAME" => $board_config['welcome_pm_username']
  ));
-$template->pparse("private_messages");
+$template_nuke->pparse("private_messages");
 
 ?>

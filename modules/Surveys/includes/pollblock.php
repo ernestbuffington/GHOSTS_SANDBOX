@@ -29,7 +29,7 @@ if (!defined('NUKE_EVO')) {
     die('You can\'t access this file directly...');
 }
 
-global $prefix, $nuke_db, $content, $pollcomm, $user, $userinfo, $cookie, $multilingual, $currentlang, $evoconfig, $cache, $identify;
+global $prefix, $nuke_db, $content, $pollcomm, $nuke_user, $nuke_userinfo, $cookie, $multilingual, $currentlang, $evoconfig, $cache, $identify;
 
 // Fetch random poll
 $make_random = intval($evoconfig['poll_random']);

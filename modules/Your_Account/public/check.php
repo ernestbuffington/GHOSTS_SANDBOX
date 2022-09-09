@@ -32,21 +32,21 @@ if (!defined('MODULE_FILE') || !defined('CNBYA') || $_SERVER['REQUEST_METHOD'] !
     die('You can\'t access this file directly...');
 }
 
-$username = $nuke_db->sql_escapestring($_POST['username']);
+$nuke_username = $nuke_db->sql_escapestring($_POST['username']);
 
-if (empty($username)) 
+if (empty($nuke_username)) 
 {
     echo '';
 } 
-elseif (strlen($username) <= 3) 
+elseif (strlen($nuke_username) <= 3) 
 {
     echo '&nbsp;<img src="images/not-available.png" alt"" height="16" width="16" style="vertical-align: middle;">&nbsp;';
     echo '<span style="color: #FF9E00; font-weight: bold;">' . _TOOSHORT . '</span>';
 } 
 else 
 {
-	$query = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT username FROM `" . $nuke_user_prefix . "_users` WHERE LCASE(username)='" . $username . "'"));
-    $result = $nuke_db->sql_query("SELECT `username` FROM `" . $nuke_user_prefix . "_users` WHERE LCASE(username) = '".strtolower($username)."'");
+	$query = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT username FROM `" . $nuke_user_prefix . "_users` WHERE LCASE(username)='" . $nuke_username . "'"));
+    $result = $nuke_db->sql_query("SELECT `username` FROM `" . $nuke_user_prefix . "_users` WHERE LCASE(username) = '".strtolower($nuke_username)."'");
 	$totalCount = $nuke_db->sql_numrows($result);
 
     if ($totalCount == 0) 

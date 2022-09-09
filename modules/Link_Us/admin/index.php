@@ -37,7 +37,7 @@
 	} 
 	else 
 	{
-		global $nuke_db, $admin_file, $currentlang, $userinfo;
+		global $nuke_db, $admin_file, $currentlang, $nuke_userinfo;
 	
 		get_lang($module_name);
 		include(NUKE_BASE_DIR.'header.php');

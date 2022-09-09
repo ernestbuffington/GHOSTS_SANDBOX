@@ -282,15 +282,15 @@ function send_file_to_browser($attachment, $upload_dir)
 //
 // Start Session Management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+init_userprefs($nuke_userdata);
 
 if (!$download_id)
 {
     message_die(NUKE_GENERAL_ERROR, $lang['No_attachment_selected']);
 }
 
-if ($attach_config['disable_mod'] && $userdata['user_level'] != NUKE_ADMIN)
+if ($attach_config['disable_mod'] && $nuke_userdata['user_level'] != NUKE_ADMIN)
 {
     message_die(NUKE_GENERAL_MESSAGE, $lang['Attachment_feature_disabled']);
 }
@@ -314,7 +314,7 @@ $attachment['physical_filename'] = basename($attachment['physical_filename']);
 $nuke_db->sql_freeresult($result);
 
 // get forum_id for attachment authorization or private message authorization
-$authorised = false;
+$nuke_authorised = false;
 
 $sql = 'SELECT *
     FROM ' . ATTACHMENTS_TABLE . '
@@ -325,18 +325,18 @@ if (!($result = $nuke_db->sql_query($sql)))
     message_die(NUKE_GENERAL_ERROR, 'Could not query attachment informations', '', __LINE__, __FILE__, $sql);
 }
 
-$auth_pages = $nuke_db->sql_fetchrowset($result);
+$nuke_auth_pages = $nuke_db->sql_fetchrowset($result);
 $num_auth_pages = $nuke_db->sql_numrows($result);
 
-for ($i = 0; $i < $num_auth_pages && $authorised == false; $i++)
+for ($i = 0; $i < $num_auth_pages && $nuke_authorised == false; $i++)
 {
-    $auth_pages[$i]['post_id'] = intval($auth_pages[$i]['post_id']);
+    $nuke_auth_pages[$i]['post_id'] = intval($nuke_auth_pages[$i]['post_id']);
 
-    if ($auth_pages[$i]['post_id'] != 0)
+    if ($nuke_auth_pages[$i]['post_id'] != 0)
     {
         $sql = 'SELECT forum_id
             FROM ' . NUKE_POSTS_TABLE . '
-            WHERE post_id = ' . (int) $auth_pages[$i]['post_id'];
+            WHERE post_id = ' . (int) $nuke_auth_pages[$i]['post_id'];
 
         if ( !($result = $nuke_db->sql_query($sql)) )
         {
@@ -348,22 +348,22 @@ for ($i = 0; $i < $num_auth_pages && $authorised == false; $i++)
         $forum_id = $row['forum_id'];
 
         $is_auth = array();
-        $is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata);
+        $is_auth = auth(NUKE_AUTH_ALL, $forum_id, $nuke_userdata);
 
         if ($is_auth['auth_download'])
         {
-            $authorised = TRUE;
+            $nuke_authorised = TRUE;
         }
     }
     else
     {
-        if ( (intval($attach_config['allow_pm_attach'])) && ( ($userdata['user_id'] == $auth_pages[$i]['user_id_2']) || ($userdata['user_id'] == $auth_pages[$i]['user_id_1']) ) || ($userdata['user_level'] == NUKE_ADMIN) )
+        if ( (intval($attach_config['allow_pm_attach'])) && ( ($nuke_userdata['user_id'] == $nuke_auth_pages[$i]['user_id_2']) || ($nuke_userdata['user_id'] == $nuke_auth_pages[$i]['user_id_1']) ) || ($nuke_userdata['user_level'] == NUKE_ADMIN) )
         {
-            $authorised = TRUE;
+            $nuke_authorised = TRUE;
         }
     }
 }
-if (!$authorised)
+if (!$nuke_authorised)
 {
     message_die(NUKE_GENERAL_MESSAGE, $lang['Sorry_auth_view_attach']);
 }
@@ -391,7 +391,7 @@ for ($i = 0; $i < $num_rows; $i++)
 }
 
 // disallowed ?
-if (!in_array($attachment['extension'], $allowed_extensions) && $userdata['user_level'] != NUKE_ADMIN)
+if (!in_array($attachment['extension'], $allowed_extensions) && $nuke_userdata['user_level'] != NUKE_ADMIN)
 {
     message_die(NUKE_GENERAL_MESSAGE, sprintf($lang['Extension_disabled_after_posting'], $attachment['extension']));
 }

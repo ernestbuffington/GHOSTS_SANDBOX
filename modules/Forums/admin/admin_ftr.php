@@ -26,7 +26,7 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 	$mode 				= ( isset($HTTP_POST_VARS['mode']) ) ? $HTTP_POST_VARS['mode'] : $HTTP_GET_VARS['mode'];
 	$update 			= ( isset($HTTP_POST_VARS['update']) ) ? $HTTP_POST_VARS['update'] : $HTTP_GET_VARS['update'];
 	$start 				= ( isset($HTTP_GET_VARS['start']) ) ? intval($HTTP_GET_VARS['start']) : 0;
-	$user 				= ( isset($HTTP_POST_VARS['user']) ) ? intval($HTTP_POST_VARS['user']) : 0;
+	$nuke_user 				= ( isset($HTTP_POST_VARS['user']) ) ? intval($HTTP_POST_VARS['user']) : 0;
 	$forum_selected 	= ( isset($HTTP_POST_VARS['forum']) ) ? intval($HTTP_POST_VARS['forum']) : 0;
 	$topic_selected 	= ( isset($HTTP_POST_VARS['topic']) ) ? intval($HTTP_POST_VARS['topic']) : 0;				
 
@@ -478,5 +478,5 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 		echo '</table>';		
 	}
 	
-include('page_footer_admin.' . $phpEx);
+include('nuke_page_footer_admin.' . $phpEx);
 ?>

@@ -44,7 +44,7 @@ define('IN_PHPBB2', 1);
 //
 // Load default header
 //
-$no_page_header = TRUE;
+$no_nuke_page_header = TRUE;
 $phpbb2_root_path = "./../";
 require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
@@ -76,7 +76,7 @@ function inarray($needle, $haystack)
 
     $q = "SELECT username, user_id
           FROM ". NUKE_USERS_TABLE ."";
-    $users_data = $nuke_db->sql_ufetchrowset($q);
+    $nuke_users_data = $nuke_db->sql_ufetchrowset($q);
 
     $q = "SELECT topic_id, topic_title
           FROM ". NUKE_BB_TOPICS_TABLE ."";
@@ -113,13 +113,13 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 
     unset($setmodules);
 
-        include('./page_header_admin.'.$phpEx);
+        include('./nuke_page_header_admin.'.$phpEx);
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 "body" => "admin/index_navigate.tpl")
         );
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 "U_FORUM_INDEX" => append_sid("index.$phpEx"),
                 "U_FORUM_PREINDEX" => append_sid("index.$phpEx"),
                 "U_ADMIN_INDEX" => append_sid("index.$phpEx?pane=right"),
@@ -171,7 +171,7 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 {
     $cat = ( !empty($lang[$cat]) ) ? $lang[$cat] : preg_replace("/_/", " ", $cat);
 
-    $template->assign_block_vars("catrow", array(
+    $template_nuke->assign_block_vars("catrow", array(
 
 /*****[BEGIN]******************************************
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
@@ -195,7 +195,7 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 
         $action = ( !empty($lang[$action]) ) ? $lang[$action] : preg_replace("/_/", " ", $action);
 
-        $template->assign_block_vars("catrow.modulerow", array(
+        $template_nuke->assign_block_vars("catrow.modulerow", array(
 
 /*****[BEGIN]******************************************
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
@@ -221,15 +221,15 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
  ******************************************************/
 }
-        $template->pparse("body");
+        $template_nuke->pparse("body");
 
-        include('./page_footer_admin.'.$phpEx);
+        include('./nuke_page_footer_admin.'.$phpEx);
 }
 elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 {
-        include('./page_header_admin.'.$phpEx);
+        include('./nuke_page_header_admin.'.$phpEx);
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 "body" => "admin/index_body.tpl")
         );
 /*****[BEGIN]******************************************
@@ -246,7 +246,7 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 /*****[END]********************************************
  [ Mod:    Admin IP Lock                       v2.0.1 ]
  ******************************************************/
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 "L_WELCOME" => $lang['Welcome_phpBB'],
                 "L_ADMIN_INTRO" => $lang['Admin_intro'],
                 "L_FORUM_STATS" => $lang['Forum_stats'],
@@ -410,7 +410,7 @@ $sql = "SELECT COUNT(user_id) AS total
 
         $posts_per_day = sprintf("%.2f", $total_posts / $boarddays);
         $topics_per_day = sprintf("%.2f", $total_topics / $boarddays);
-        $users_per_day = sprintf("%.2f", $total_users / $boarddays);
+        $nuke_users_per_day = sprintf("%.2f", $total_users / $boarddays);
 
         $avatar_dir_size = 0;
 
@@ -460,9 +460,9 @@ $sql = "SELECT COUNT(user_id) AS total
                 $topics_per_day = $total_topics;
         }
 
-        if($users_per_day > $total_users)
+        if($nuke_users_per_day > $total_users)
         {
-                $users_per_day = $total_users;
+                $nuke_users_per_day = $total_users;
         }
 
         //
@@ -567,14 +567,14 @@ $sql = "SELECT VERSION() AS mysql_version";
 /*****[END]********************************************
  [ Mod:    Advance Admin Index Stats           v1.0.0 ]
  ******************************************************/
-           $template->assign_vars(array(
+           $template_nuke->assign_vars(array(
                 "NUMBER_OF_POSTS" => $total_posts,
                 "NUMBER_OF_TOPICS" => $total_topics,
                 "NUMBER_OF_USERS" => $total_users,
                 "START_DATE" => $start_date,
                 "POSTS_PER_DAY" => $posts_per_day,
                 "TOPICS_PER_DAY" => $topics_per_day,
-                "USERS_PER_DAY" => $users_per_day,
+                "USERS_PER_DAY" => $nuke_users_per_day,
                 "AVATAR_DIR_SIZE" => $avatar_dir_size,
                 "DB_SIZE" => $nuke_dbsize,
 /*****[BEGIN]******************************************
@@ -659,12 +659,12 @@ $sql = "SELECT VERSION() AS mysql_version";
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                                $username = UsernameColor($onlinerow_reg[$i]['username']);
+                                $nuke_username = UsernameColor($onlinerow_reg[$i]['username']);
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
 
-                                if( $onlinerow_reg[$i]['user_allow_viewonline'] || $userdata['user_level'] == NUKE_ADMIN )
+                                if( $onlinerow_reg[$i]['user_allow_viewonline'] || $nuke_userdata['user_level'] == NUKE_ADMIN )
                                 {
                                         $registered_users++;
                                         $hidden = FALSE;
@@ -786,7 +786,7 @@ $sql = "SELECT VERSION() AS mysql_version";
 /*****[BEGIN]******************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-                                $BSH = select_session_url($onlinerow_reg[$i]['session_page'], $onlinerow_reg[$i]['session_url_qs'], $onlinerow_reg[$i]['session_url_ps'], $onlinerow_reg[$i]['session_url_specific'], $userdata['user_level'], $onlinerow_reg[$i]['user_id'], $forums_data, $topics_data, $users_data, $cats_data);
+                                $BSH = select_session_url($onlinerow_reg[$i]['session_page'], $onlinerow_reg[$i]['session_url_qs'], $onlinerow_reg[$i]['session_url_ps'], $onlinerow_reg[$i]['session_url_specific'], $nuke_userdata['user_level'], $onlinerow_reg[$i]['user_id'], $forums_data, $topics_data, $nuke_users_data, $cats_data);
                                 $location = $BSH;
 /*****[END]********************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
@@ -797,10 +797,10 @@ $sql = "SELECT VERSION() AS mysql_version";
 
                                 $reg_ip = decode_ip($onlinerow_reg[$i]['session_ip']);
 
-                                $template->assign_block_vars("reg_user_row", array(
+                                $template_nuke->assign_block_vars("reg_user_row", array(
                                         "ROW_COLOR" => "#" . $row_color,
                                         "ROW_CLASS" => $row_class,
-                                        "USERNAME" => $username,
+                                        "USERNAME" => $nuke_username,
                                         "STARTED" => create_date($board_config['default_dateformat'], $onlinerow_reg[$i]['session_start'], $board_config['board_timezone']),
                                         "LASTUPDATE" => create_date($board_config['default_dateformat'], $onlinerow_reg[$i]['user_session_time'], $board_config['board_timezone']),
                                         "FORUM_LOCATION" => $location,
@@ -816,7 +816,7 @@ $sql = "SELECT VERSION() AS mysql_version";
         }
         else
         {
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         "L_NO_REGISTERED_USERS_BROWSING" => $lang['No_users_browsing'])
                 );
         }
@@ -946,7 +946,7 @@ $sql = "SELECT VERSION() AS mysql_version";
 /*****[BEGIN]******************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-                        $BSH = select_session_url($onlinerow_guest[$i]['session_page'], $onlinerow_guest[$i]['session_url_qs'], $onlinerow_guest[$i]['session_url_ps'], $onlinerow_guest[$i]['session_url_specific'], $userdata['user_level'], $onlinerow_guest[$i]['user_id'], $forums_data, $topics_data, $users_data, $cats_data);
+                        $BSH = select_session_url($onlinerow_guest[$i]['session_page'], $onlinerow_guest[$i]['session_url_qs'], $onlinerow_guest[$i]['session_url_ps'], $onlinerow_guest[$i]['session_url_specific'], $nuke_userdata['user_level'], $onlinerow_guest[$i]['user_id'], $forums_data, $topics_data, $nuke_users_data, $cats_data);
                         $location = $BSH;
 /*****[END]********************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
@@ -957,7 +957,7 @@ $sql = "SELECT VERSION() AS mysql_version";
 
                         $guest_ip = decode_ip($onlinerow_guest[$i]['session_ip']);
 
-                        $template->assign_block_vars("guest_user_row", array(
+                        $template_nuke->assign_block_vars("guest_user_row", array(
                                 "ROW_COLOR" => "#" . $row_color,
                                 "ROW_CLASS" => $row_class,
                                 "USERNAME" => $lang['Guest'],
@@ -974,7 +974,7 @@ $sql = "SELECT VERSION() AS mysql_version";
         }
         else
         {
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         "L_NO_GUESTS_BROWSING" => $lang['No_users_browsing'])
                 );
         }
@@ -1080,14 +1080,14 @@ $sql = "SELECT VERSION() AS mysql_version";
  ******************************************************/
 
     $version_info .= '<p>' . $lang['Mailing_list_subscribe_reminder'] . '</p>';
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'VERSION_INFO'    => $version_info,
         'L_VERSION_INFORMATION'    => $lang['Version_information'])
     );
 
-        $template->pparse("body");
+        $template_nuke->pparse("body");
 
-        include('./page_footer_admin.'.$phpEx);
+        include('./nuke_page_footer_admin.'.$phpEx);
 
 }
 else
@@ -1095,7 +1095,7 @@ else
         //
         // Generate frameset
         //
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 "body" => "admin/index_frameset.tpl")
         );
 
@@ -1105,7 +1105,7 @@ else
             $mainframe = append_sid("index.$phpEx?pane=right");
         }
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 "S_FRAME_NAV" => append_sid("index.$phpEx?pane=left"),
                 "S_FRAME_MAIN" => $mainframe)
         );
@@ -1113,7 +1113,7 @@ else
         header ("Expires: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
         header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 
-        $template->pparse("body");
+        $template_nuke->pparse("body");
 /*****[BEGIN]******************************************
  [ Mod:     Log Moderator Actions              v1.1.6 ]
  ******************************************************/

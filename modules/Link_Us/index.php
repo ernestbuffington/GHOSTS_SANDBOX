@@ -52,7 +52,7 @@ $pagetitle = "- ".$module_name."";
 include(NUKE_BASE_DIR.'header.php');
 include(NUKE_MODULES_DIR.$module_name.'/admin/inc/functions.php');
 
-$config = $nuke_db->sql_ufetchrow('SELECT * FROM `'.$prefix.'_link_us_config` LIMIT 0,1');
+$nuke_config = $nuke_db->sql_ufetchrow('SELECT * FROM `'.$prefix.'_link_us_config` LIMIT 0,1');
 
 $op = $_GETVAR->get('op', '_REQUEST', 'string');
 

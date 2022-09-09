@@ -23,7 +23,7 @@ if(!defined('NUKE_EVO')) exit;
 
 global $prefix, $nuke_db, $sitename, $nukeurl;
 
-$config = dburow("SELECT * FROM ".$prefix."_link_us_config LIMIT 1");
+$nuke_config = dburow("SELECT * FROM ".$prefix."_link_us_config LIMIT 1");
 	
 function block_Link_Us_cache($block_cachetime) 
 {
@@ -50,30 +50,30 @@ $blocksession = block_Link_Us_cache( get_evo_option('block_cachetime') );
 
 $settings = 'width="88" height="31" border="0"';
 	
-	if($config['marquee_direction'] == 1){ $direction = "up"; }
-elseif($config['marquee_direction'] == 2){ $direction = "down"; }
-elseif($config['marquee_direction'] == 3){ $direction = "left"; }
-elseif($config['marquee_direction'] == 4){ $direction = "right"; }
+	if($nuke_config['marquee_direction'] == 1){ $direction = "up"; }
+elseif($nuke_config['marquee_direction'] == 2){ $direction = "down"; }
+elseif($nuke_config['marquee_direction'] == 3){ $direction = "left"; }
+elseif($nuke_config['marquee_direction'] == 4){ $direction = "right"; }
 
-	if ($config['button_seperate'] == 1){ $seperation ="<span style='width=100px; size=5;'><br /></span>"; }
-elseif ($config['button_seperate'] == 2){ $seperation ="<div align=\"center\">-------------------</div>"; }
-elseif ($config['button_seperate'] == 0){ $seperation =""; }
+	if ($nuke_config['button_seperate'] == 1){ $seperation ="<span style='width=100px; size=5;'><br /></span>"; }
+elseif ($nuke_config['button_seperate'] == 2){ $seperation ="<div align=\"center\">-------------------</div>"; }
+elseif ($nuke_config['button_seperate'] == 0){ $seperation =""; }
 
-	if($config['show_clicks'] == 1){ $clicks = "<br />( Visits ".$site_hits." )"; }
-elseif($config['show_clicks'] == 0){ $clicks = ""; }
+	if($nuke_config['show_clicks'] == 1){ $clicks = "<br />( Visits ".$site_hits." )"; }
+elseif($nuke_config['show_clicks'] == 0){ $clicks = ""; }
 
-	if($config['block_height'] == 1){ $height = "100"; }
-elseif($config['block_height'] == 2){ $height = "150"; }
-elseif($config['block_height'] == 3){ $height = "200"; }
-elseif($config['block_height'] == 4){ $height = "250"; }
-elseif($config['block_height'] == 5){ $height = "300"; }
+	if($nuke_config['block_height'] == 1){ $height = "100"; }
+elseif($nuke_config['block_height'] == 2){ $height = "150"; }
+elseif($nuke_config['block_height'] == 3){ $height = "200"; }
+elseif($nuke_config['block_height'] == 4){ $height = "250"; }
+elseif($nuke_config['block_height'] == 5){ $height = "300"; }
 
-	if($config['marquee_scroll'] == 1){ $amount = 3; }
-elseif($config['marquee_scroll'] == 2){ $amount = 2; }
+	if($nuke_config['marquee_scroll'] == 1){ $amount = 3; }
+elseif($nuke_config['marquee_scroll'] == 2){ $amount = 2; }
 
 
-$my_image = '<br /><img src="'.$config['my_image'].'" alt="'.$sitename.'" title="'.$sitename.'" width="88" height="31">';
-$linkus_settings = '<a href="'.$nukeurl.'" target="_blank"><img src="'.$config['my_image'].'" alt="'.$sitename.'" title="'.$sitename.'" width="88" height="31">lol</a><br>';
+$my_image = '<br /><img src="'.$nuke_config['my_image'].'" alt="'.$sitename.'" title="'.$sitename.'" width="88" height="31">';
+$linkus_settings = '<a href="'.$nukeurl.'" target="_blank"><img src="'.$nuke_config['my_image'].'" alt="'.$sitename.'" title="'.$sitename.'" width="88" height="31">lol</a><br>';
 
 $content = '<div align="center" style="padding-top:6px;">';
 $content = '</div>';
@@ -84,27 +84,27 @@ $content .= '<span class="content"><textarea style="resize: none; font-size: 13p
 $content .= '<br /><br />';
 $content .= '<a href="modules.php?name=Link_Us">View All Buttons</a><br />';
 
-if($config['user_submit'] == 1)
+if($nuke_config['user_submit'] == 1)
 $content .= '<a href="modules.php?name=Link_Us&op=submitbutton">Submit Button</a><br /><br />'; 
 
 $content .= '';
 
-if($config['marquee'] == 1)
+if($nuke_config['marquee'] == 1)
 $content .= "<marquee direction='".$direction."' scrollamount='".$amount."' height='".$height."' onMouseover='this.stop()' onMouseout='this.start()'>";
 
 foreach( $blocksession as $friends ):
 
 	$content .= "<div class='center'><a href='modules.php?name=Link_Us&amp;op=visit&amp;id=".$friends['id']."' target='_blank'><img src='".$friends['site_image']."' ".$settings." title='".$friends['site_name']."' /></a>";
 
-		if($config['show_clicks'] == 1){$clicks = "<br /><strong><font size=\"2\">".$friends['site_name']."</font></strong><br /><strong><font size=\"2\">( ".$friends['site_hits']." CLICKS )</font></strong>";}
-	elseif($config['show_clicks'] == 0){$clicks = "";}
+		if($nuke_config['show_clicks'] == 1){$clicks = "<br /><strong><font size=\"2\">".$friends['site_name']."</font></strong><br /><strong><font size=\"2\">( ".$friends['site_hits']." CLICKS )</font></strong>";}
+	elseif($nuke_config['show_clicks'] == 0){$clicks = "";}
 
 	$content .= "".$clicks."";
 	$content .= "<br>".$seperation."</div>";
 
 endforeach;
 
-if($config['marquee'] == 1)
+if($nuke_config['marquee'] == 1)
 $content .= "</marquee>";
 $content .= '</div>';
 ?>

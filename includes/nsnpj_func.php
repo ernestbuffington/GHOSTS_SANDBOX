@@ -40,14 +40,14 @@ function pjget_configs()
 {
   if(defined('network')):
   global $network_prefix, $network_db;
-  $configresult = $network_db->sql_query("SELECT `config_name`, `config_value` FROM `".$network_prefix."_config`");
+  $nuke_configresult = $network_db->sql_query("SELECT `config_name`, `config_value` FROM `".$network_prefix."_config`");
   
-  while(list($config_name, $config_value) = $network_db->sql_fetchrow($configresult)) 
+  while(list($nuke_config_name, $nuke_config_value) = $network_db->sql_fetchrow($nuke_configresult)) 
   {
-    $config[$config_name] = $config_value;
+    $nuke_config[$nuke_config_name] = $nuke_config_value;
   }
   
-  return $config;
+  return $nuke_config;
   endif;
 }
 
@@ -247,19 +247,19 @@ function pjencode_email($email_address){
   return $encoded;
 }
 
-function pjsave_config($config_name, $config_value)
+function pjsave_config($nuke_config_name, $nuke_config_value)
 {
   global $network_prefix, $network_db;
   
-  $resultnum = $network_db->sql_numrows($network_db->sql_query("SELECT * FROM `".$network_prefix."_config` WHERE `config_name`='$config_name'"));
+  $resultnum = $network_db->sql_numrows($network_db->sql_query("SELECT * FROM `".$network_prefix."_config` WHERE `config_name`='$nuke_config_name'"));
   
   if($resultnum < 1) 
   {
-    $network_db->sql_query("INSERT INTO `".$network_prefix."_config` (`config_name`, `config_value`) VALUES ('$config_name', '$config_value')");
+    $network_db->sql_query("INSERT INTO `".$network_prefix."_config` (`config_name`, `config_value`) VALUES ('$nuke_config_name', '$nuke_config_value')");
   } 
   else 
   {
-    $network_db->sql_query("UPDATE `".$network_prefix."_config` SET `config_value`='$config_value' WHERE `config_name`='$config_name'");
+    $network_db->sql_query("UPDATE `".$network_prefix."_config` SET `config_value`='$nuke_config_value' WHERE `config_name`='$nuke_config_name'");
   }
    
    $network_db->sql_query("OPTIMIZE TABLE `".$network_prefix."_config`");

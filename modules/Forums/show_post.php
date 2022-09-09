@@ -138,12 +138,12 @@ $forum_id = $forum_row['forum_id'];
 $topic_title = $forum_row['topic_title'];
 
 # Start session management
-$userdata = session_pagestart($user_ip, $forum_id);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, $forum_id);
+init_userprefs($nuke_userdata);
 # End session management
 
 $is_auth = array();
-$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata, $forum_row);
+$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $nuke_userdata, $forum_row);
 
 if(!$is_auth['auth_read'])
 message_die(NUKE_GENERAL_MESSAGE, sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']));
@@ -163,16 +163,16 @@ $topic_title = preg_replace($orig_word, $replacement_word, $topic_title);
 $gen_simple_header = TRUE;
 
 $page_title = $lang['Post_review'] . ' - ' . $topic_title;
-include('includes/page_header.'.$phpEx);
+include('includes/nuke_page_header.'.$phpEx);
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     'reviewbody' => 'post_review.tpl')
 );
 
 $view_prev_post_url = append_sid("show_post.$phpEx?p=$post_id&amp;view=previous");
 $view_next_post_url = append_sid("show_post.$phpEx?p=$post_id&amp;view=next");
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'L_AUTHOR' => $lang['Author'],
     'L_MESSAGE' => $lang['Message'],
     'L_POSTED' => $lang['Posted'], 
@@ -245,7 +245,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
         $poster_avatar = '';
         
 		# Mod: View/Disable Avatars/Signatures v1.1.2 START
-        if ( $row['user_avatar_type'] && $poster_id != NUKE_ANONYMOUS && $row['user_allowavatar'] && $userdata['user_showavatars']):
+        if ( $row['user_avatar_type'] && $poster_id != NUKE_ANONYMOUS && $row['user_allowavatar'] && $nuke_userdata['user_showavatars']):
 		# Mod: View/Disable Avatars/Signatures v1.1.2 END
             switch( $row['user_avatar_type']):
                 case NUKE_USER_AVATAR_UPLOAD:
@@ -362,7 +362,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
                    
 				   $online_status = '<br />'.$lang['Online_status'].': <strong><a href="'.append_sid("viewonline.$phpEx").'" 
 				   title="'.sprintf($lang['is_online'], $poster).'"'.$online_color.'>'.$lang['Online'].'</a></strong>';
-               elseif($is_auth['auth_mod'] || $userdata['user_id'] == $poster_id):
+               elseif($is_auth['auth_mod'] || $nuke_userdata['user_id'] == $poster_id):
                    $online_status_img = '<a href="'.append_sid("viewonline.$phpEx").'"><img 
 				   src="'.$images['icon_hidden'].'" alt="'.sprintf($lang['is_hidden'], $poster).'" title="'.sprintf($lang['is_hidden'], $poster).'" /></a>&nbsp;';
                    
@@ -424,20 +424,20 @@ if($row = $nuke_db->sql_fetchrow($result)):
         $bbcode_uid = $row['bbcode_uid'];
         
 		# Mod: View/Disable Avatars/Signatures v1.1.2 START
-        if($userdata['user_showsignatures'])
-        $user_sig = ( $row['enable_sig'] && !empty($row['user_sig']) && $board_config['allow_sig'] ) ? $row['user_sig'] : '';
+        if($nuke_userdata['user_showsignatures'])
+        $nuke_user_sig = ( $row['enable_sig'] && !empty($row['user_sig']) && $board_config['allow_sig'] ) ? $row['user_sig'] : '';
 		# Mod: View/Disable Avatars/Signatures v1.1.2 END
 
-        $user_sig_bbcode_uid = $row['user_sig_bbcode_uid'];
+        $nuke_user_sig_bbcode_uid = $row['user_sig_bbcode_uid'];
 
         # Note! The order used for parsing the message _is_ important, moving things around could break any 
         # output
 
         # If the board has HTML off but the post has HTML
         # on then we process it, else leave it alone
-        if(!$board_config['allow_html'] || !$userdata['user_allowhtml']):
-            if(!empty($user_sig))
-            $user_sig = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $user_sig);
+        if(!$board_config['allow_html'] || !$nuke_userdata['user_allowhtml']):
+            if(!empty($nuke_user_sig))
+            $nuke_user_sig = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $nuke_user_sig);
 
             if($row['enable_html'])
             $message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
@@ -445,22 +445,22 @@ if($row = $nuke_db->sql_fetchrow($result)):
 
         # Parse message and/or sig for BBCode if reqd
         if($board_config['allow_bbcode']):
-            if(!empty($user_sig) && !empty($user_sig_bbcode_uid))
-            $user_sig = ( $board_config['allow_bbcode'] ) ? bbencode_second_pass($user_sig, $user_sig_bbcode_uid) : preg_replace('/\:[0-9a-z\:]+\]/si', ']', $user_sig);
+            if(!empty($nuke_user_sig) && !empty($nuke_user_sig_bbcode_uid))
+            $nuke_user_sig = ( $board_config['allow_bbcode'] ) ? bbencode_second_pass($nuke_user_sig, $nuke_user_sig_bbcode_uid) : preg_replace('/\:[0-9a-z\:]+\]/si', ']', $nuke_user_sig);
 
             if(!empty($bbcode_uid))
             $message = ( $board_config['allow_bbcode'] ) ? bbencode_second_pass($message, $bbcode_uid) : preg_replace('/\:[0-9a-z\:]+\]/si', ']', $message);
         endif;
 
-        if(!empty($user_sig))
-        $user_sig = make_clickable($user_sig);
+        if(!empty($nuke_user_sig))
+        $nuke_user_sig = make_clickable($nuke_user_sig);
 
         $message = make_clickable($message);
 
         # Parse smilies
         if($board_config['allow_smilies']):
-            if($row['user_allowsmile'] && !empty($user_sig))
-            $user_sig = smilies_pass($user_sig);
+            if($row['user_allowsmile'] && !empty($nuke_user_sig))
+            $nuke_user_sig = smilies_pass($nuke_user_sig);
 
             if ( $row['enable_smilies'] )
             $message = smilies_pass($message);
@@ -470,22 +470,22 @@ if($row = $nuke_db->sql_fetchrow($result)):
         if (count($orig_word)):
             $post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
 
-            if (!empty($user_sig))
-            $user_sig = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $user_sig . '<'), 1, -1));
+            if (!empty($nuke_user_sig))
+            $nuke_user_sig = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $nuke_user_sig . '<'), 1, -1));
 
             $message = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
         endif;
 
         # Replace newlines (we use this rather than nl2br because
         # till recently it wasn't XHTML compliant)
-        if(!empty($user_sig)):
+        if(!empty($nuke_user_sig)):
           # Mod: Force Word Wrapping v1.0.16 START
-          $user_sig = word_wrap_pass($user_sig);
+          $nuke_user_sig = word_wrap_pass($nuke_user_sig);
           # Mod: Force Word Wrapping v1.0.16 END
 
           # Mod: Advance Signature Divider Control v1.0.0 START
           # Mod: Bottom aligned signature v1.2.0 START
-          $user_sig = '<br />' . $board_config['sig_line'] . '<br />' . str_replace("\n", "\n<br />\n", $user_sig);
+          $nuke_user_sig = '<br />' . $board_config['sig_line'] . '<br />' . str_replace("\n", "\n<br />\n", $nuke_user_sig);
           # Mod: Advance Signature Divider Control v1.0.0 END
           # Mod: Bottom aligned signature v1.2.0 END
         endif;
@@ -506,7 +506,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
         endif;
 		
         # Mod: Report Post v1.0.0 START
-        if($userdata['session_logged_in']):
+        if($nuke_userdata['session_logged_in']):
           $report_img = '<a href="'.append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$post_id).'"><img 
 		  src="'.$images['icon_report'].'" border="0" width="16" height="18" alt="'.$lang['Report_post'].'" title="'.$lang['Report_post'].'" /></a>';
         else:
@@ -519,7 +519,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
         $row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
         $row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
-        $template->assign_block_vars('postrow', array(
+        $template_nuke->assign_block_vars('postrow', array(
             'ROW_COLOR' => '#' . $row_color,
             'ROW_CLASS' => $row_class,
 			
@@ -542,7 +542,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
             'POST_DATE' => $post_date,
             'POST_SUBJECT' => $post_subject,
             'MESSAGE' => $message, 
-            'SIGNATURE' => $user_sig, 
+            'SIGNATURE' => $nuke_user_sig, 
             'EDITED_MESSAGE' => $l_edited_by, 
 
             'MINI_POST_IMG' => $mini_post_img, 
@@ -592,5 +592,5 @@ else:
     message_die(NUKE_GENERAL_MESSAGE, 'Topic_post_not_exist', '', __LINE__, __FILE__, $sql);
 endif;
 
-$template->pparse('reviewbody');
+$template_nuke->pparse('reviewbody');
 ?>

@@ -35,19 +35,19 @@ function evouserinfo_get_mostonline ()
     $result = $nuke_db->sql_query("SELECT COUNT(*) FROM `".$prefix."_session` WHERE `guest`='0' OR `guest`='2'");
     $row = $nuke_db->sql_fetchrow($result);
     $nuke_db->sql_freeresult($result);
-    $users = $row[0];
+    $nuke_users = $row[0];
 
     $result = $nuke_db->sql_query("SELECT COUNT(*) FROM `".$prefix."_session` WHERE `guest`='1' OR `guest`='3'");
     $row = $nuke_db->sql_fetchrow($result);
     $nuke_db->sql_freeresult($result);
     $guests = $row[0];
 
-    $total = $users + $guests;
+    $total = $nuke_users + $guests;
     
     if ($total > $out['total']):
 
         $nuke_db->sql_query("DELETE FROM `".$prefix."_mostonline` WHERE `total`='".$out['total']."' LIMIT 1");
-        $nuke_db->sql_query("INSERT INTO `".$prefix."_mostonline` VALUES ('".$total."','".$users."','".$guests."')");
+        $nuke_db->sql_query("INSERT INTO `".$prefix."_mostonline` VALUES ('".$total."','".$nuke_users."','".$guests."')");
 
     endif;
 
@@ -55,7 +55,7 @@ function evouserinfo_get_mostonline ()
 }
 
 
-global $userinfo, $lang_evo_userblock;
+global $nuke_userinfo, $lang_evo_userblock;
 $block_mostever = evouserinfo_get_mostonline();
 
 $evouserinfo_mostever .= '<div style="font-weight: bold">'.$lang_evo_userblock['BLOCK']['MOST']['MOST'].'</div>';

@@ -21,9 +21,9 @@ define('_IREPOSITORY_DIR', 'modules/'.$module_name.'/files/');
 define('_IREPOSITORY_IMGS', 'modules/'.$module_name.'/images/');
 define('_IREPOSITORY_INCLUDES', 'modules/'.$module_name.'/admin/inc/');
 define('_IREPOSITORY_JS', 'modules/'.$module_name.'/includes/js/');
-//define('_IREPOSITORY_USER_FOLDER', ($userinfo['user_id']+10000));
-define('_IREPOSITORY_USER_FOLDER', ((($_POST['user']) ? $_POST['user'] : $userinfo['user_id'])+10000));
-define('_IREPOSITORY_USER_FOLDER_THUMBS', ($userinfo['user_id']+10000).'/thumbs');
+//define('_IREPOSITORY_USER_FOLDER', ($nuke_userinfo['user_id']+10000));
+define('_IREPOSITORY_USER_FOLDER', ((($_POST['user']) ? $_POST['user'] : $nuke_userinfo['user_id'])+10000));
+define('_IREPOSITORY_USER_FOLDER_THUMBS', ($nuke_userinfo['user_id']+10000).'/thumbs');
 define('_IREPOSITORY_VERSION', '1.1.0');
 
 define('_IREPOSITORY_THUMBHEIGHT','125');
@@ -38,10 +38,10 @@ define('_IREPOSITORY_THUMBWIDTH','240');
 // define('_ENABLE_LYTEBOX', true);
 // define('_ENABLE_HIGHSLIDE', true);
 
-$imagecount = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$userinfo['user_id']."'"));
-$mysettings	= $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$userinfo['user_id']."'"));
-$myimages	= $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$userinfo['user_id']."'"));
-$quotainfo 	= _quota_percentages($userinfo['user_id']);
+$imagecount = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$nuke_userinfo['user_id']."'"));
+$mysettings	= $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$nuke_userinfo['user_id']."'"));
+$myimages	= $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$nuke_userinfo['user_id']."'"));
+$quotainfo 	= _quota_percentages($nuke_userinfo['user_id']);
 
 
 $JStoHead  = '<script type="text/javascript">';
@@ -170,7 +170,7 @@ function image_repo_settings_variables()
 
 function image_repo_users_preferences()
 {
-	global $nuke_db, $module_name, $userinfo, $settings;
+	global $nuke_db, $module_name, $nuke_userinfo, $settings;
 	$create_directories[] = _IREPOSITORY_DIR;
 	$create_directories[] = _IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER;
 	$create_directories[] = _IREPOSITORY_DIR._IREPOSITORY_USER_FOLDER_THUMBS;
@@ -179,13 +179,13 @@ function image_repo_users_preferences()
 		@mkdir($directory,0755);
 		@copy('images/index.html', $directory.'/index.html');
 	}
-	$checktable = $nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$userinfo['user_id']."'");
-	$user_exists = $nuke_db->sql_numrows($checktable);
-	if($user_exists == 0)
+	$checktable = $nuke_db->sql_query("SELECT * FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$nuke_userinfo['user_id']."'");
+	$nuke_user_exists = $nuke_db->sql_numrows($checktable);
+	if($nuke_user_exists == 0)
 	{
-		if($userinfo['user_id'] > 1)
+		if($nuke_userinfo['user_id'] > 1)
 		{
-			$nuke_db->sql_query("INSERT INTO `"._IMAGE_REPOSITORY_USERS."` (`uid`, `background_color`, `border_color`, `folder`, `percent_color`, `quota`, `quota_request`) VALUES (".$userinfo['user_id'].", 'white', 'black', '"._IREPOSITORY_USER_FOLDER."', 'darkorchid', '".$settings['quota']."', 0)");
+			$nuke_db->sql_query("INSERT INTO `"._IMAGE_REPOSITORY_USERS."` (`uid`, `background_color`, `border_color`, `folder`, `percent_color`, `quota`, `quota_request`) VALUES (".$nuke_userinfo['user_id'].", 'white', 'black', '"._IREPOSITORY_USER_FOLDER."', 'darkorchid', '".$settings['quota']."', 0)");
 		}
 	}
 }
@@ -557,11 +557,11 @@ function _kill_function()
 	die();
 }
 
-function _quota_percentages($user=FALSE)
+function _quota_percentages($nuke_user=FALSE)
 {
-	global $nuke_db, $userinfo;		
-	list ($quota)      = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `quota` FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$user."'"));
-	list ($total_size) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT SUM(size) as total_size FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$user."'"));	
+	global $nuke_db, $nuke_userinfo;		
+	list ($quota)      = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `quota` FROM `"._IMAGE_REPOSITORY_USERS."` WHERE `uid`='".$nuke_user."'"));
+	list ($total_size) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT SUM(size) as total_size FROM `"._IMAGE_REPOSITORY_UPLOADS."` WHERE `submitter`='".$nuke_user."'"));	
 	if($total_size > 0) {
 		$PercentageResult = ($total_size*100)/$quota;
 		$PercentageResult = round($PercentageResult,1);
@@ -605,8 +605,8 @@ function _string_to_upper($string)
 function _submitter($uid)
 {
 	global $nuke_db;
-	list($username) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `username` FROM `"._USERS_TABLE."` WHERE `user_id`='".$uid."'"));
-	return (function_exists('UsernameColor')) ? UsernameColor($username) : $username;
+	list($nuke_username) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `username` FROM `"._USERS_TABLE."` WHERE `user_id`='".$uid."'"));
+	return (function_exists('UsernameColor')) ? UsernameColor($nuke_username) : $nuke_username;
 }
 
 function _timestamp($format, $gmepoch, $tz)

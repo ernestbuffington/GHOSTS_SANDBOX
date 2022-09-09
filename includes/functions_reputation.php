@@ -88,16 +88,16 @@ function get_reputation_medals($rep)
 
 
 //
-// This function will send the PM to the user $user_2id
+// This function will send the PM to the user $nuke_user_2id
 // (borrowed from privmsg.php)
 //
-function r_send_pm(&$user_id, &$user_2id, &$rep_sum, &$user_ip)
+function r_send_pm(&$nuke_user_id, &$nuke_user_2id, &$rep_sum, &$nuke_user_ip)
 {
   global $lang, $nuke_db;
 
   $msg_time = time();
   $sql_info = "INSERT INTO " . NUKE_PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig)
-        VALUES (" . NUKE_PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", $lang['PM_notify_subj']) . "' , " . $user_id . ", " . $user_2id . ", $msg_time, '$user_ip', 0, 1, 0, 0)";
+        VALUES (" . NUKE_PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", $lang['PM_notify_subj']) . "' , " . $nuke_user_id . ", " . $nuke_user_2id . ", $msg_time, '$nuke_user_ip', 0, 1, 0, 0)";
   if ( !($result = $nuke_db->sql_query($sql_info, BEGIN_TRANSACTION)) )
   {
     message_die(NUKE_GENERAL_ERROR, "Could not insert/update private message sent info.", "", __LINE__, __FILE__, $sql_info);
@@ -119,7 +119,7 @@ function r_send_pm(&$user_id, &$user_2id, &$rep_sum, &$user_ip)
   //
   $sql = "UPDATE " . NUKE_USERS_TABLE . "
     SET user_new_privmsg = user_new_privmsg + 1, user_last_privmsg = " . $msg_time . "
-    WHERE user_id = " . $user_2id;
+    WHERE user_id = " . $nuke_user_2id;
   if ( !$status = $nuke_db->sql_query($sql) )
   {
     message_die(NUKE_GENERAL_ERROR, 'Could not update private message new/read status for user', '', __LINE__, __FILE__, $sql);
@@ -133,11 +133,11 @@ function r_send_pm(&$user_id, &$user_2id, &$rep_sum, &$user_ip)
 // This function updates the reputations for the user,
 // earned by posting and by "living" on forum
 //
-function update_reputations(&$mode, &$user_id)
+function update_reputations(&$mode, &$nuke_user_id)
 {
-  global $nuke_db, $rep_config, $userdata;
+  global $nuke_db, $rep_config, $nuke_userdata;
 
-  if ($userdata['user_id'] == NUKE_ANONYMOUS)
+  if ($nuke_userdata['user_id'] == NUKE_ANONYMOUS)
   {
     $last_time = time();
   } else
@@ -150,7 +150,7 @@ function update_reputations(&$mode, &$user_id)
       $sign_rep = ' + 0';
     }
 
-    $last_time = ($userdata['user_rep_last_time'] == 0) ? time() : $userdata['user_rep_last_time'];
+    $last_time = ($nuke_userdata['user_rep_last_time'] == 0) ? time() : $nuke_userdata['user_rep_last_time'];
     $dif = time() - $last_time;
     $dif = round($dif/86400,0);
     if ($dif > 1)
@@ -170,7 +170,7 @@ function update_reputations(&$mode, &$user_id)
   {
     $sql = "UPDATE " . NUKE_USERS_TABLE . "
         SET user_reputation = user_reputation $sign_rep, user_rep_last_time = $last_time
-        WHERE user_id = $user_id";
+        WHERE user_id = $nuke_user_id";
     if (!$nuke_db->sql_query($sql))
     {
       message_die(NUKE_GENERAL_ERROR, 'Error in updating the reputations', '', __LINE__, __FILE__, $sql);

@@ -130,14 +130,14 @@ if ( $mode == 'delete')
          message_die(NUKE_GENERAL_ERROR, "Impossible to remove the category, it is not empty.");
       }
 
-          $template->set_filenames(array(
+          $template_nuke->set_filenames(array(
         "body" => "admin/arcade_cat_delete_body.tpl")
         );
 
         $hidden_fields = '<input type="hidden" name="mode" value="movedel" />';
         $hidden_fields .= '<input type="hidden" name="arcade_catid" value="' . $arcade_catid . '" />';
     
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             "S_ACTION" => append_sid("admin_arcade_games.$phpEx"),
             "S_HIDDEN_FIELDS" => $hidden_fields,
             "L_TITLE" => $lang['arcade_cat_delete'],
@@ -150,9 +150,9 @@ if ( $mode == 'delete')
             "S_SUBMIT_VALUE" => $lang['arcade_cat_move_and_del'])
         );
 
-        $template->pparse("body");
+        $template_nuke->pparse("body");
 
-        include('./page_footer_admin.'.$phpEx);
+        include('./nuke_page_footer_admin.'.$phpEx);
         exit;
   }
 }
@@ -232,7 +232,7 @@ if ( $mode == 'edit')
             }
             $row = $nuke_db->sql_fetchrow($result);
 
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         "body" => "admin/arcade_catedit_body.tpl")
     );
     //Members
@@ -263,7 +263,7 @@ if ( $mode == 'edit')
     $hidden_fields = '<input type="hidden" name="mode" value="editsave" />';
     $hidden_fields .= '<input type="hidden" name="arcade_catid" value="' . $arcade_catid . '" />';
     
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         "S_ACTION" => append_sid("admin_arcade_games.$phpEx"),
         "S_HIDDEN_FIELDS" => $hidden_fields,
         "L_TITLE" => $lang['Admin_arcade_cat'],
@@ -276,15 +276,15 @@ if ( $mode == 'edit')
         "L_SUBMIT" => $lang['Submit'])
     );
 
-    $template->pparse("body");
+    $template_nuke->pparse("body");
 
-    include('./page_footer_admin.'.$phpEx);
+    include('./nuke_page_footer_admin.'.$phpEx);
     exit;
 }
 
 if ( $mode == 'new' )
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         "body" => "admin/arcade_catedit_body.tpl")
     );
 
@@ -298,7 +298,7 @@ if ( $mode == 'new' )
     $liste_auth .= "<option value='6' >" . $lang['arcade_auth_6']. '</options>';
 
     $hidden_fields = '<input type="hidden" name="mode" value="editcreate" />';
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         "S_ACTION" => append_sid("admin_arcade_games.$phpEx"),
         "S_HIDDEN_FIELDS" => $hidden_fields,
         'S_AUTH' => $liste_auth,
@@ -309,9 +309,9 @@ if ( $mode == 'new' )
         "L_SUBMIT" => $lang['Submit'])
     );
 
-    $template->pparse("body");
+    $template_nuke->pparse("body");
 
-    include('./page_footer_admin.'.$phpEx);
+    include('./nuke_page_footer_admin.'.$phpEx);
     exit;
 }
 
@@ -325,7 +325,7 @@ if(!$result = $nuke_db->sql_query($sql))
     message_die(NUKE_CRITICAL_ERROR, "Could not query arcade_categorie in admin_arcade", "", __LINE__, __FILE__, $sql);
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     "body" => "admin/arcade_cat_manage_body.tpl")
 );
 
@@ -336,7 +336,7 @@ $template->set_filenames(array(
 
 $hidden_fields = '<input type="hidden" name="mode" value="new" />';
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "S_ACTION" => append_sid("admin_arcade_games.$phpEx"),
     "S_HIDDEN_FIELDS" => $hidden_fields,
     "L_TITLE" => $lang['Admin_arcade_cat'],
@@ -364,7 +364,7 @@ for ( $i = 0 ; $i < $nbcat ; $i++ )
 {
   $td_row = ( $td_row == 'row1' ) ? 'row2' : 'row1';
 
-   $template->assign_block_vars('arcade_catrow', array(
+   $template_nuke->assign_block_vars('arcade_catrow', array(
       'TD_ROW' => $td_row,
       'L_UP' => ( $i > 0) ? $lang['Up_arcade_cat'] . '<br />' : '',
       'L_DOWN' => ( $i < $nbcat-1 ) ? $lang['Down_arcade_cat'] : '',
@@ -385,8 +385,8 @@ for ( $i = 0 ; $i < $nbcat ; $i++ )
 /*---------------------------------------------/
 / Generate the page
 /---------------------------------------------*/
-$template->pparse("body");
+$template_nuke->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

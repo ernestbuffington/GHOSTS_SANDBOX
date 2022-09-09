@@ -36,7 +36,7 @@ function cache_header()
     $last_cleared_img = ((time() - $evoconfig['cache_last_cleared']) >= 604800) ? get_evo_icon('evo-sprite bad') : get_evo_icon('evo-sprite good');
     $clear_needed = ((time() - $evoconfig['cache_last_cleared']) >= 604800) ? "(<a href=\"$admin_file.php?op=cache_clear\"><font color=\"red\">" . _CACHE_CLEARNOW . "</font></a>)" : "";
     $last_cleared = date('F j, Y, g:i a', $evoconfig['cache_last_cleared']);
-    $user_can_clear = ($usrclearcache) ? "[ <strong>" . _CACHE_YES . "</strong> | <a href=\"$admin_file.php?op=usrclearcache&amp;opt=0\">" . _CACHE_NO . "</a> ]" : "[ <a href=\"$admin_file.php?op=usrclearcache&amp;opt=1\">" . _CACHE_YES . "</a> | <strong>" . _CACHE_NO . "</strong> ]";
+    $nuke_user_can_clear = ($usrclearcache) ? "[ <strong>" . _CACHE_YES . "</strong> | <a href=\"$admin_file.php?op=usrclearcache&amp;opt=0\">" . _CACHE_NO . "</a> ]" : "[ <a href=\"$admin_file.php?op=usrclearcache&amp;opt=1\">" . _CACHE_YES . "</a> | <strong>" . _CACHE_NO . "</strong> ]";
     $cache_good = (is_writable(NUKE_CACHE_DIR) && !ini_get('safe_mode')) ? "<font color=\"green\">" . _CACHE_GOOD . "</font>" : "<font color=\"red\">" . _CACHE_BAD . "</font>";
     $cache_good_img = (is_writable(NUKE_CACHE_DIR) && !ini_get('safe_mode')) ? get_evo_icon('evo-sprite good') : get_evo_icon('evo-sprite bad');
     $cache_good = (ini_get('safe_mode')) ? "<font color=red>" . _CACHESAFEMODE . "</font>" : $cache_good;
@@ -87,7 +87,7 @@ function cache_header()
         ."</tr>"
         ."<tr><td>"
         .(($usrclearcache == 1) ? get_evo_icon('evo-sprite good') : get_evo_icon('evo-sprite bad'))."</td><td>"
-        ."<i>" . _CACHE_USER_CAN_CLEAR . "</i></td><td>" . $user_can_clear . "</td>"
+        ."<i>" . _CACHE_USER_CAN_CLEAR . "</i></td><td>" . $nuke_user_can_clear . "</td>"
         ."</tr>"
         ."<tr><td>"
         .get_evo_icon('evo-sprite good')."</td><td>"
@@ -306,7 +306,7 @@ function howto_enable_cache() {
     CloseTable();
 }
 
-global $userinfo;
+global $nuke_userinfo;
 if (is_admin()) {
     include_once(NUKE_BASE_DIR.'header.php');
     cache_header();

@@ -85,74 +85,74 @@ if (!$result = $nuke_db->sql_query($sql))
 
 while ($row = $nuke_db->sql_fetchrow($result))
 {
-    $config_name = $row['config_name'];
-    $config_value = $row['config_value'];
+    $nuke_config_name = $row['config_name'];
+    $nuke_config_value = $row['config_value'];
 
-    $new_attach[$config_name] = get_var($config_name, trim($attach_config[$config_name]));
+    $new_attach[$nuke_config_name] = get_var($nuke_config_name, trim($attach_config[$nuke_config_name]));
 
-    if (!$size && !$submit && $config_name == 'max_filesize')
+    if (!$size && !$submit && $nuke_config_name == 'max_filesize')
     {
-        $size = ($attach_config[$config_name] >= 1048576) ? 'mb' : (($attach_config[$config_name] >= 1024) ? 'kb' : 'b');
+        $size = ($attach_config[$nuke_config_name] >= 1048576) ? 'mb' : (($attach_config[$nuke_config_name] >= 1024) ? 'kb' : 'b');
     }
 
-    if (!$quota_size && !$submit && $config_name == 'attachment_quota')
+    if (!$quota_size && !$submit && $nuke_config_name == 'attachment_quota')
     {
-        $quota_size = ($attach_config[$config_name] >= 1048576) ? 'mb' : (($attach_config[$config_name] >= 1024) ? 'kb' : 'b');
+        $quota_size = ($attach_config[$nuke_config_name] >= 1048576) ? 'mb' : (($attach_config[$nuke_config_name] >= 1024) ? 'kb' : 'b');
     }
 
-    if (!$pm_size && !$submit && $config_name == 'max_filesize_pm')
+    if (!$pm_size && !$submit && $nuke_config_name == 'max_filesize_pm')
     {
-        $pm_size = ($attach_config[$config_name] >= 1048576) ? 'mb' : (($attach_config[$config_name] >= 1024) ? 'kb' : 'b');
+        $pm_size = ($attach_config[$nuke_config_name] >= 1048576) ? 'mb' : (($attach_config[$nuke_config_name] >= 1024) ? 'kb' : 'b');
     }
 
-    if (!$submit && ($config_name == 'max_filesize' || $config_name == 'attachment_quota' || $config_name == 'max_filesize_pm'))
+    if (!$submit && ($nuke_config_name == 'max_filesize' || $nuke_config_name == 'attachment_quota' || $nuke_config_name == 'max_filesize_pm'))
     {
-        if ($new_attach[$config_name] >= 1048576)
+        if ($new_attach[$nuke_config_name] >= 1048576)
         {
-            $new_attach[$config_name] = round($new_attach[$config_name] / 1048576 * 100) / 100;
+            $new_attach[$nuke_config_name] = round($new_attach[$nuke_config_name] / 1048576 * 100) / 100;
         }
-        else if ($new_attach[$config_name] >= 1024)
+        else if ($new_attach[$nuke_config_name] >= 1024)
         {
-            $new_attach[$config_name] = round($new_attach[$config_name] / 1024 * 100) / 100;
+            $new_attach[$nuke_config_name] = round($new_attach[$nuke_config_name] / 1024 * 100) / 100;
         }
     }
 
     if ($submit && ($mode == 'manage' || $mode == 'cats'))
     {
-        if ($config_name == 'max_filesize')
+        if ($nuke_config_name == 'max_filesize')
         {
-            $old = $new_attach[$config_name];
-            $new_attach[$config_name] = ($size == 'kb') ? round($new_attach[$config_name] * 1024) : (($size == 'mb') ? round($new_attach[$config_name] * 1048576) : $new_attach[$config_name]);
+            $old = $new_attach[$nuke_config_name];
+            $new_attach[$nuke_config_name] = ($size == 'kb') ? round($new_attach[$nuke_config_name] * 1024) : (($size == 'mb') ? round($new_attach[$nuke_config_name] * 1048576) : $new_attach[$nuke_config_name]);
         }
 
-        if ($config_name == 'attachment_quota')
+        if ($nuke_config_name == 'attachment_quota')
         {
-            $old = $new_attach[$config_name];
-            $new_attach[$config_name] = ( $quota_size == 'kb' ) ? round($new_attach[$config_name] * 1024) : ( ($quota_size == 'mb') ? round($new_attach[$config_name] * 1048576) : $new_attach[$config_name] );
+            $old = $new_attach[$nuke_config_name];
+            $new_attach[$nuke_config_name] = ( $quota_size == 'kb' ) ? round($new_attach[$nuke_config_name] * 1024) : ( ($quota_size == 'mb') ? round($new_attach[$nuke_config_name] * 1048576) : $new_attach[$nuke_config_name] );
         }
 
-        if ($config_name == 'max_filesize_pm')
+        if ($nuke_config_name == 'max_filesize_pm')
         {
-            $old = $new_attach[$config_name];
-            $new_attach[$config_name] = ( $pm_size == 'kb' ) ? round($new_attach[$config_name] * 1024) : ( ($pm_size == 'mb') ? round($new_attach[$config_name] * 1048576) : $new_attach[$config_name] );
+            $old = $new_attach[$nuke_config_name];
+            $new_attach[$nuke_config_name] = ( $pm_size == 'kb' ) ? round($new_attach[$nuke_config_name] * 1024) : ( ($pm_size == 'mb') ? round($new_attach[$nuke_config_name] * 1048576) : $new_attach[$nuke_config_name] );
         }
 
-        if ($config_name == 'ftp_server' || $config_name == 'ftp_path' || $config_name == 'download_path')
+        if ($nuke_config_name == 'ftp_server' || $nuke_config_name == 'ftp_path' || $nuke_config_name == 'download_path')
         {
-            $value = trim($new_attach[$config_name]);
+            $value = trim($new_attach[$nuke_config_name]);
 
             if ($value[strlen($value)-1] == '/')
             {
                 $value[strlen($value)-1] = ' ';
             }
 
-            $new_attach[$config_name] = trim($value);
+            $new_attach[$nuke_config_name] = trim($value);
         }
 
-        if ($config_name == 'max_filesize')
+        if ($nuke_config_name == 'max_filesize')
         {
-            $old_size = $attach_config[$config_name];
-            $new_size = $new_attach[$config_name];
+            $old_size = $attach_config[$nuke_config_name];
+            $new_size = $new_attach[$nuke_config_name];
 
             if ($old_size != $new_size)
             {
@@ -168,24 +168,24 @@ while ($row = $nuke_db->sql_fetchrow($result))
             }
 
             $sql = "UPDATE " . ATTACH_CONFIG_TABLE . "
-                SET    config_value = '" . attach_mod_sql_escape($new_attach[$config_name]) . "'
-                WHERE config_name = '" . attach_mod_sql_escape($config_name) . "'";
+                SET    config_value = '" . attach_mod_sql_escape($new_attach[$nuke_config_name]) . "'
+                WHERE config_name = '" . attach_mod_sql_escape($nuke_config_name) . "'";
         }
         else
         {
             $sql = "UPDATE " . ATTACH_CONFIG_TABLE . "
-                SET    config_value = '" . attach_mod_sql_escape($new_attach[$config_name]) . "'
-                WHERE config_name = '" . attach_mod_sql_escape($config_name) . "'";
+                SET    config_value = '" . attach_mod_sql_escape($new_attach[$nuke_config_name]) . "'
+                WHERE config_name = '" . attach_mod_sql_escape($nuke_config_name) . "'";
         }
 
         if (!$nuke_db->sql_query($sql))
         {
-            message_die(NUKE_GENERAL_ERROR, 'Failed to update attachment configuration for ' . $config_name, '', __LINE__, __FILE__, $sql);
+            message_die(NUKE_GENERAL_ERROR, 'Failed to update attachment configuration for ' . $nuke_config_name, '', __LINE__, __FILE__, $sql);
         }
 
-        if ($config_name == 'max_filesize' || $config_name == 'attachment_quota' || $config_name == 'max_filesize_pm')
+        if ($nuke_config_name == 'max_filesize' || $nuke_config_name == 'attachment_quota' || $nuke_config_name == 'max_filesize_pm')
         {
-            $new_attach[$config_name] = $old;
+            $new_attach[$nuke_config_name] = $old;
         }
     }
 }
@@ -410,7 +410,7 @@ if ($submit && $mode == 'manage')
 
 if ($mode == 'manage')
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/attach_manage_body.tpl')
     );
 
@@ -424,14 +424,14 @@ if ($mode == 'manage')
 
     if (!function_exists('ftp_connect'))
     {
-        $template->assign_block_vars('switch_no_ftp', array());
+        $template_nuke->assign_block_vars('switch_no_ftp', array());
     }
     else
     {
-        $template->assign_block_vars('switch_ftp', array());
+        $template_nuke->assign_block_vars('switch_ftp', array());
     }
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_MANAGE_TITLE'                => $lang['Attach_settings'],
         'L_MANAGE_EXPLAIN'                => $lang['Manage_attachments_explain'],
         'L_ATTACHMENT_SETTINGS'            => $lang['Attach_settings'],
@@ -575,14 +575,14 @@ if ($mode == 'shadow')
     @set_time_limit(0);
 
     // Shadow Attachments
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/attach_shadow.tpl')
     );
 
     $shadow_attachments = array();
     $shadow_row = array();
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_SHADOW_TITLE'    => $lang['Shadow_attachments'],
         'L_SHADOW_EXPLAIN'    => $lang['Shadow_attachments_explain'],
         'L_EXPLAIN_FILE'    => $lang['Shadow_attachments_file_explain'],
@@ -722,7 +722,7 @@ if ($mode == 'shadow')
     // Now look for Attachment ID's defined for posts or topics but not defined at the Attachments Description Table
 	for ($i = 0; $i < sizeof($shadow_attachments); $i++)
     {
-        $template->assign_block_vars('file_shadow_row', array(
+        $template_nuke->assign_block_vars('file_shadow_row', array(
             'ATTACH_ID'            => $shadow_attachments[$i],
             'ATTACH_FILENAME'    => $shadow_attachments[$i],
             'ATTACH_COMMENT'    => $lang['No_file_comment_available'],
@@ -734,7 +734,7 @@ if ($mode == 'shadow')
     {
         for ($i = 0; $i < sizeof($shadow_row['attach_id']); $i++)
         {
-            $template->assign_block_vars('table_shadow_row', array(
+            $template_nuke->assign_block_vars('table_shadow_row', array(
                 'ATTACH_ID'            => $shadow_row['attach_id'][$i],
                 'ATTACH_FILENAME'    => basename($shadow_row['physical_filename'][$i]),
                 'ATTACH_COMMENT'    => (trim($shadow_row['comment'][$i]) == '') ? $lang['No_file_comment_available'] : trim($shadow_row['comment'][$i]))
@@ -753,7 +753,7 @@ if ($submit && $mode == 'cats')
 
 if ($mode == 'cats')
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/attach_cat_body.tpl')
     );
 
@@ -810,10 +810,10 @@ if ($mode == 'cats')
     }
     else
     {
-        $template->assign_block_vars('switch_thumbnail_support', array());
+        $template_nuke->assign_block_vars('switch_thumbnail_support', array());
     }
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_MANAGE_CAT_TITLE'    => $lang['Manage_categories'],
         'L_MANAGE_CAT_EXPLAIN'    => $lang['Manage_categories_explain'],
         'L_SETTINGS_CAT_IMAGES'    => $lang['Settings_cat_images'],
@@ -1280,7 +1280,7 @@ if ($submit && $mode == 'quota')
 
 if ($mode == 'quota')
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/attach_quota_body.tpl')
     );
 
@@ -1296,7 +1296,7 @@ if ($mode == 'quota')
         $max_add_filesize = round($max_add_filesize / 1024 * 100) / 100;
     }
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_MANAGE_QUOTAS_TITLE'        => $lang['Manage_quotas'],
         'L_MANAGE_QUOTAS_EXPLAIN'    => $lang['Manage_quotas_explain'],
         'L_SUBMIT'                    => $lang['Submit'],
@@ -1338,7 +1338,7 @@ if ($mode == 'quota')
             $rows[$i]['quota_limit'] = round($rows[$i]['quota_limit'] / 1024 * 100) / 100;
         }
 
-        $template->assign_block_vars('limit_row', array(
+        $template_nuke->assign_block_vars('limit_row', array(
             'QUOTA_NAME'        => $rows[$i]['quota_desc'],
             'QUOTA_ID'            => $rows[$i]['quota_limit_id'],
             'S_FILESIZE'        => size_select('size_select_list[]', $size_format),
@@ -1357,7 +1357,7 @@ if ($mode == 'quota' && $e_mode == 'view_quota')
         message_die(NUKE_GENERAL_MESSAGE, 'Invalid Call');
     }
 
-    $template->assign_block_vars('switch_quota_limit_desc', array());
+    $template_nuke->assign_block_vars('switch_quota_limit_desc', array());
 
     $sql = "SELECT * FROM " . QUOTA_LIMITS_TABLE . " WHERE quota_limit_id = " . (int) $quota_id . " LIMIT 1";
 
@@ -1369,7 +1369,7 @@ if ($mode == 'quota' && $e_mode == 'view_quota')
     $row = $nuke_db->sql_fetchrow($result);
     $nuke_db->sql_freeresult($result);
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_QUOTA_LIMIT_DESC'    => $row['quota_desc'],
         'L_ASSIGNED_USERS'        => $lang['Assigned_users'],
         'L_ASSIGNED_GROUPS'        => $lang['Assigned_groups'],
@@ -1396,14 +1396,14 @@ if ($mode == 'quota' && $e_mode == 'view_quota')
     {
         if ($rows[$i]['quota_type'] == QUOTA_UPLOAD_LIMIT)
         {
-            $template->assign_block_vars('users_upload_row', array(
+            $template_nuke->assign_block_vars('users_upload_row', array(
                 'USER_ID'        => $rows[$i]['user_id'],
                 'USERNAME'        => $rows[$i]['username'])
             );
         }
         else if ($rows[$i]['quota_type'] == QUOTA_PM_LIMIT)
         {
-            $template->assign_block_vars('users_pm_row', array(
+            $template_nuke->assign_block_vars('users_pm_row', array(
                 'USER_ID'        => $rows[$i]['user_id'],
                 'USERNAME'        => $rows[$i]['username'])
             );
@@ -1429,14 +1429,14 @@ if ($mode == 'quota' && $e_mode == 'view_quota')
     {
         if ($rows[$i]['quota_type'] == QUOTA_UPLOAD_LIMIT)
         {
-            $template->assign_block_vars('groups_upload_row', array(
+            $template_nuke->assign_block_vars('groups_upload_row', array(
                 'GROUP_ID'        => $rows[$i]['group_id'],
                 'GROUPNAME'        => $rows[$i]['group_name'])
             );
         }
         else if ($rows[$i]['quota_type'] == QUOTA_PM_LIMIT)
         {
-            $template->assign_block_vars('groups_pm_row', array(
+            $template_nuke->assign_block_vars('groups_pm_row', array(
                 'GROUP_ID'        => $rows[$i]['group_id'],
                 'GROUPNAME'        => $rows[$i]['group_name'])
             );
@@ -1445,23 +1445,23 @@ if ($mode == 'quota' && $e_mode == 'view_quota')
 }
 if ($error)
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'reg_header' => 'error_body.tpl')
     );
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'ERROR_MESSAGE' => $error_msg)
     );
 
-    $template->assign_var_from_handle('ERROR_BOX', 'reg_header');
+    $template_nuke->assign_var_from_handle('ERROR_BOX', 'reg_header');
 }
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'ATTACH_VERSION' => sprintf($lang['Attachment_version'], $attach_config['attach_version']))
 );
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
-include('page_footer_admin.'.$phpEx);
+include('nuke_page_footer_admin.'.$phpEx);
 
 ?>

@@ -37,10 +37,10 @@ if (!defined('CNBYA')) {
     die('CNBYA protection');
 }
 
-    if (!empty($username) AND empty($user_email)) {
-        $sql = "SELECT username, user_email, user_password, user_level FROM ".$nuke_user_prefix."_users WHERE username='$username' LIMIT 1";
-    } elseif (empty($username) AND !empty($user_email)) {
-        $sql = "SELECT username, user_email, user_password, user_level FROM ".$nuke_user_prefix."_users WHERE user_email='$user_email' LIMIT 1";
+    if (!empty($nuke_username) AND empty($nuke_user_email)) {
+        $sql = "SELECT username, user_email, user_password, user_level FROM ".$nuke_user_prefix."_users WHERE username='$nuke_username' LIMIT 1";
+    } elseif (empty($nuke_username) AND !empty($nuke_user_email)) {
+        $sql = "SELECT username, user_email, user_password, user_level FROM ".$nuke_user_prefix."_users WHERE user_email='$nuke_user_email' LIMIT 1";
     } else {
         include_once(NUKE_BASE_DIR.'header.php');
 // removed by menelaos dot hetnet dot nl
@@ -74,13 +74,13 @@ if (!defined('CNBYA')) {
  [ Base:    NukeSentinel                      v2.5.00 ]
  ******************************************************/
             $row = $nuke_db->sql_fetchrow($result);
-            $user_name = $row['username'];
-            $user_email = $row['user_email'];
-            $user_password = $row['user_password'];
-            $user_level = $row['user_level'];
-            if ($user_level > 0) 
+            $nuke_user_name = $row['username'];
+            $nuke_user_email = $row['user_email'];
+            $nuke_user_password = $row['user_password'];
+            $nuke_user_level = $row['user_level'];
+            if ($nuke_user_level > 0) 
             {
-                $areyou = substr($user_password, 0, 10);
+                $areyou = substr($nuke_user_password, 0, 10);
                 if ($areyou == $code) 
                 {
                     $newpass = YA_MakePass();
@@ -89,12 +89,12 @@ if (!defined('CNBYA')) {
 
                     $email_data = array(
                         'sitename'      => $sitename,
-                        'username'      => $user_name,
+                        'username'      => $nuke_user_name,
                         'ip_address'    => $identify->get_ip(),
                         'password'      => $newpass,
 
-                        'email'         => $user_email,
-                        'subject'       => sprintf($language_define_for_user_pass_subject, ((!empty($username)) ? $user_name : $user_email)),
+                        'email'         => $nuke_user_email,
+                        'subject'       => sprintf($language_define_for_user_pass_subject, ((!empty($nuke_username)) ? $nuke_user_name : $nuke_user_email)),
                         'reply_to'      => $adminmail,
                         'from'          => $adminmail,
                         'module_url'    => $nukeurl.'/modules.php?name='.$module_name,
@@ -122,16 +122,16 @@ if (!defined('CNBYA')) {
 /*****[END]********************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
-                    if (!empty($username)) {
-                        $query = "UPDATE ".$nuke_user_prefix."_users SET user_password='$cryptpass' WHERE username='$username'";
-                    } else if (!empty($user_email)) {
-                        $query = "UPDATE ".$nuke_user_prefix."_users SET user_password='$cryptpass' WHERE user_email='$user_email'";
+                    if (!empty($nuke_username)) {
+                        $query = "UPDATE ".$nuke_user_prefix."_users SET user_password='$cryptpass' WHERE username='$nuke_username'";
+                    } else if (!empty($nuke_user_email)) {
+                        $query = "UPDATE ".$nuke_user_prefix."_users SET user_password='$cryptpass' WHERE user_email='$nuke_user_email'";
                     }
                     include_once(NUKE_BASE_DIR.'header.php');
                     OpenTable();
                     if (!$nuke_db->sql_query($query)) { echo "<center>"._UPDATEFAILED."</center><br />"; }
                     echo "<center><strong>"._PASSWORD4." ";
-                    if (!empty($username)) { echo "'$user_name'"; } else if (!empty($user_email)) { echo "'$user_email'"; }
+                    if (!empty($nuke_username)) { echo "'$nuke_user_name'"; } else if (!empty($nuke_user_email)) { echo "'$nuke_user_email'"; }
                     echo " "._MAILED."</strong><br /><br />"._GOBACK."</center>";
                     CloseTable();
                     include_once(NUKE_BASE_DIR.'footer.php');
@@ -141,12 +141,12 @@ if (!defined('CNBYA')) {
 
                     $email_data = array(
                         'sitename'      => $sitename,
-                        'username'      => $user_name,
+                        'username'      => $nuke_user_name,
                         'ip_address'    => $identify->get_ip(),
-                        'code'          => substr($user_password, 0, 10),
+                        'code'          => substr($nuke_user_password, 0, 10),
 
-                        'email'         => $user_email,
-                        'subject'       => sprintf($language_define_for_pass_lost_subject, ((!empty($username)) ? $user_name : $user_email)),
+                        'email'         => $nuke_user_email,
+                        'subject'       => sprintf($language_define_for_pass_lost_subject, ((!empty($nuke_username)) ? $nuke_user_name : $nuke_user_email)),
                         'reply_to'      => $adminmail,
                         'from'          => $adminmail,
                         'password_url'  => $nukeurl."/modules.php?name=$module_name&op=pass_lost",
@@ -170,19 +170,19 @@ if (!defined('CNBYA')) {
                     include_once(NUKE_BASE_DIR.'header.php');
                     OpenTable();
                     echo "<center><strong>"._CODEFOR." ";
-                    if (!empty($username)) { echo "'$user_name'"; } else if (!empty($user_email)) { echo "'$user_email'"; }
+                    if (!empty($nuke_username)) { echo "'$nuke_user_name'"; } else if (!empty($nuke_user_email)) { echo "'$nuke_user_email'"; }
                     echo " "._MAILED."</strong><br /><br />"._GOBACK."</center>";
                     CloseTable();
                     include_once(NUKE_BASE_DIR.'footer.php');
                 }
-            } elseif ($user_level == 0) {
+            } elseif ($nuke_user_level == 0) {
                 include_once(NUKE_BASE_DIR.'header.php');
                 title(_USERREGLOGIN);
                 OpenTable();
                 echo "<center><span class='title'>"._ACCSUSPENDED."</span></center>\n";
                 CloseTable();
                 include_once(NUKE_BASE_DIR.'footer.php');
-            } elseif ($user_level == -1) {
+            } elseif ($nuke_user_level == -1) {
                 include_once(NUKE_BASE_DIR.'header.php');
                 title(_USERREGLOGIN);
                 OpenTable();

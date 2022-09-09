@@ -85,7 +85,7 @@ $_SESSION['YA2'] = true;
     }
     }
 
-    $user_viewemail    = "0";
+    $nuke_user_viewemail    = "0";
     $ya_user_email    = strtolower($ya_user_email);
     ya_userCheck($ya_username);
     ya_mailCheck($ya_user_email);
@@ -108,16 +108,16 @@ $_SESSION['YA2'] = true;
 		include_once './includes/honeypot/hp_confirm.php';
 		}
 		# end Nuke Honeypot
-        if (empty($user_password) AND empty($user_password2)) {
-            $user_password = YA_MakePass();
-        } elseif ($user_password != $user_password2) {
+        if (empty($nuke_user_password) AND empty($nuke_user_password2)) {
+            $nuke_user_password = YA_MakePass();
+        } elseif ($nuke_user_password != $nuke_user_password2) {
             OpenTable();
             echo "<center><span class='title'><strong>"._ERRORREG."</strong></span><br /><br />";
             echo "<span class='content'>"._PASSDIFFERENT."<br /><br />"._GOBACK."</span></center>";
             CloseTable();
             include_once(NUKE_BASE_DIR.'footer.php');
             exit;
-        } elseif ($user_password == $user_password2 AND (strlen($user_password) < $ya_config['pass_min'] OR strlen($user_password) > $ya_config['pass_max'])) {
+        } elseif ($nuke_user_password == $nuke_user_password2 AND (strlen($nuke_user_password) < $ya_config['pass_min'] OR strlen($nuke_user_password) > $ya_config['pass_max'])) {
             OpenTable();
             echo "<center><span class='title'><strong>"._ERRORREG."</strong></span><br /><br />";
             echo "<span class='content'>"._YA_PASSLENGTH."<br /><br />"._GOBACK."</span></center>";
@@ -147,7 +147,7 @@ $_SESSION['YA2'] = true;
         echo "<tr><td><strong>"._USERNAME.":</strong> $ya_username<br /></td></tr>";
         echo "<tr><td><strong>"._EMAIL.":</strong> $ya_user_email</td></tr>";
 // menelaos: removed display of the user password here. It is mailed to the user
-//      echo "<tr><td><strong>"._YA_PASSWORD.":</strong> $user_password<br /></td></tr>";
+//      echo "<tr><td><strong>"._YA_PASSWORD.":</strong> $nuke_user_password<br /></td></tr>";
         echo "</table>";
         echo "<center><form action='modules.php?name=$module_name' method='post'>";
 
@@ -166,20 +166,20 @@ $_SESSION['YA2'] = true;
         echo "<input type='hidden' name='gfx_check' value=\"$gfx_check\">";
         echo "<input type='hidden' name='ya_username' value=\"$ya_username\">";
         echo "<input type='hidden' name='ya_user_email' value=\"$ya_user_email\">";
-        echo "<input type='hidden' name='user_password' value=\"$user_password\">";
+        echo "<input type='hidden' name='user_password' value=\"$nuke_user_password\">";
         // MrFluffy $realname to $ya_realname
         echo "<input type='hidden' name='realname' value=\"$ya_realname\">\n";
         echo "<input type='hidden' name='femail' value=\"$femail\">\n";
-        echo "<input type='hidden' name='user_website' value=\"$user_website\">\n";
-        echo "<input type='hidden' name='user_from' value=\"$user_from\">\n";
-        echo "<input type='hidden' name='user_occ' value=\"$user_occ\">\n";
-        echo "<input type='hidden' name='user_interests' value=\"$user_interests\">\n";
+        echo "<input type='hidden' name='user_website' value=\"$nuke_user_website\">\n";
+        echo "<input type='hidden' name='user_from' value=\"$nuke_user_from\">\n";
+        echo "<input type='hidden' name='user_occ' value=\"$nuke_user_occ\">\n";
+        echo "<input type='hidden' name='user_interests' value=\"$nuke_user_interests\">\n";
         echo "<input type='hidden' name='newsletter' value=\"$newsletter\">\n";
-        echo "<input type='hidden' name='user_viewemail' value=\"$user_viewemail\">\n";
-        echo "<input type='hidden' name='user_allow_viewonline' value=\"$user_allow_viewonline\">\n";
-        echo "<input type='hidden' name='user_timezone' value=\"$user_timezone\">\n";
-        echo "<input type='hidden' name='user_dateformat' value=\"$user_dateformat\">\n";
-        echo "<input type='hidden' name='user_sig' value=\"$user_sig\">\n";
+        echo "<input type='hidden' name='user_viewemail' value=\"$nuke_user_viewemail\">\n";
+        echo "<input type='hidden' name='user_allow_viewonline' value=\"$nuke_user_allow_viewonline\">\n";
+        echo "<input type='hidden' name='user_timezone' value=\"$nuke_user_timezone\">\n";
+        echo "<input type='hidden' name='user_dateformat' value=\"$nuke_user_dateformat\">\n";
+        echo "<input type='hidden' name='user_sig' value=\"$nuke_user_sig\">\n";
         echo "<input type='hidden' name='bio' value=\"$bio\">\n";
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v0.1.1 ]

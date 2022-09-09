@@ -128,8 +128,8 @@ echo '<div>'.$lang_new[$module_name]['note'].'</div><br />';
 
 echo '<form action="modules.php?name='.$module_name.'" method="post" name="feedback">';
 echo '<input type="hidden" name="action" value="submit">';
-echo '<div class="textbold" style="margin-left:1px;">'.$lang_new[$module_name]['name'].'</div><input type="text" name="sender_name" value="'.$userinfo['username'].'" size="30" required><br /><br />';
-echo '<div class="textbold" style="margin-left:1px;">'.$lang_new[$module_name]['email'].'</div><input type="email" name="sender_email" value="'.$userinfo['user_email'].'" size="30" required><br /><br />';
+echo '<div class="textbold" style="margin-left:1px;">'.$lang_new[$module_name]['name'].'</div><input type="text" name="sender_name" value="'.$nuke_userinfo['username'].'" size="30" required><br /><br />';
+echo '<div class="textbold" style="margin-left:1px;">'.$lang_new[$module_name]['email'].'</div><input type="email" name="sender_email" value="'.$nuke_userinfo['user_email'].'" size="30" required><br /><br />';
 echo '<div class="textbold" style="margin-left:1px;">'.$lang_new[$module_name]['message'].'</div><textarea data-autoresize name="message" style="resize: none; width: 99.8%; height: 190px; min-height: 190px;" required>'.$_POST['message'].'</textarea><br /><br />';
 echo security_code(array(0,1,2,3,4,5,6,7), 'normal').'<br />';
 echo '<input type="submit" name="submit" value="'.$lang_new[$module_name]['send'].'">';

@@ -45,30 +45,30 @@ if (!defined('CNBYA')) {
     $vuid = $row['user_id'];
     $ccpass = $row['user_password'];
     $tuemail = strtolower($row['user_email']);
-    $user_sig = str_replace("<br />", "\r\n", $user_sig);
-    $user_sig = ya_fixtext($user_sig);
-    $user_email = strtolower($user_email);
-    $user_email = ya_fixtext($user_email);
+    $nuke_user_sig = str_replace("<br />", "\r\n", $nuke_user_sig);
+    $nuke_user_sig = ya_fixtext($nuke_user_sig);
+    $nuke_user_email = strtolower($nuke_user_email);
+    $nuke_user_email = ya_fixtext($nuke_user_email);
     $femail = ya_fixtext($femail);
-    $user_website = ya_fixtext($user_website);
+    $nuke_user_website = ya_fixtext($nuke_user_website);
     $bio = ya_fixtext($bio);
-    $user_icq = ya_fixtext($user_icq);
-    $user_aim = ya_fixtext($user_aim);
-    $user_yim = ya_fixtext($user_yim);
-    $user_msnm = ya_fixtext($user_msnm);
-    $user_occ = ya_fixtext($user_occ);
-    $user_from = ya_fixtext($user_from);
-    $user_interests = ya_fixtext($user_interests);
+    $nuke_user_icq = ya_fixtext($nuke_user_icq);
+    $nuke_user_aim = ya_fixtext($nuke_user_aim);
+    $nuke_user_yim = ya_fixtext($nuke_user_yim);
+    $nuke_user_msnm = ya_fixtext($nuke_user_msnm);
+    $nuke_user_occ = ya_fixtext($nuke_user_occ);
+    $nuke_user_from = ya_fixtext($nuke_user_from);
+    $nuke_user_interests = ya_fixtext($nuke_user_interests);
     $realname = ya_fixtext($realname);
-    $user_dateformat = ya_fixtext($user_dateformat);
+    $nuke_user_dateformat = ya_fixtext($nuke_user_dateformat);
     $newsletter = intval($newsletter);
-    $user_viewemail = intval($user_viewemail);
-    $user_allow_viewonline = intval($user_allow_viewonline);
-    $user_timezone = intval($user_timezone);
+    $nuke_user_viewemail = intval($nuke_user_viewemail);
+    $nuke_user_allow_viewonline = intval($nuke_user_allow_viewonline);
+    $nuke_user_timezone = intval($nuke_user_timezone);
     if ($ya_config['allowmailchange'] < 1) {
-        if ($tuemail != $user_email) { ya_mailCheck($user_email); }
+        if ($tuemail != $nuke_user_email) { ya_mailCheck($nuke_user_email); }
     }
-    if ($user_password > "" OR $vpass > "") { ya_passCheck($user_password, $vpass); }
+    if ($nuke_user_password > "" OR $vpass > "") { ya_passCheck($nuke_user_password, $vpass); }
 
         $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field WHERE need = '3' ORDER BY pos");
         while ($sqlvalue = $nuke_db->sql_fetchrow($result)) {
@@ -85,52 +85,52 @@ if (!defined('CNBYA')) {
           };
         }
 
-    if (empty($stop) AND ($user_id == $vuid) AND ($check2 == $ccpass)) {
-        if (!preg_match("#http://#i", $user_website) AND !empty($user_website)) {
-            $user_website = "http://$user_website";
+    if (empty($stop) AND ($nuke_user_id == $vuid) AND ($check2 == $ccpass)) {
+        if (!preg_match("#http://#i", $nuke_user_website) AND !empty($nuke_user_website)) {
+            $nuke_user_website = "http://$nuke_user_website";
         }
         if ($bio) { filter_text($bio); $bio = $EditedMessage; $bio = Fix_Quotes($bio); }
-        if (!empty($user_password)) {
+        if (!empty($nuke_user_password)) {
             global $cookie;
             $nuke_db->sql_query("LOCK TABLES ".$nuke_user_prefix."_users, ".$nuke_user_prefix."_cnbya_value WRITE");
 /*****[BEGIN]******************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
-            $user_password = md5($user_password);
+            $nuke_user_password = md5($nuke_user_password);
 /*****[END]********************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
 
-            if ( ($ya_config['emailvalidate'] == '0') OR ($tuemail == $user_email) ) {
-                $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET name='$realname', user_email='$user_email', femail='$femail', user_website='$user_website', user_password='$user_password', bio='$bio', user_icq='$user_icq', user_occ='$user_occ', user_from='$user_from', user_interests='$user_interests', user_sig='$user_sig', user_aim='$user_aim', user_yim='$user_yim', user_msnm='$user_msnm', newsletter='$newsletter', user_viewemail='$user_viewemail', user_allow_viewonline='$user_allow_viewonline', user_notify='$user_notify', user_notify_pm='$user_notify_pm', user_popup_pm='$user_popup_pm', user_attachsig='$user_attachsig', user_allowbbcode='$user_allowbbcode', user_allowhtml='$user_allowhtml', user_allowsmile='$user_allowsmile', user_timezone='$user_timezone', user_dateformat='$user_dateformat' WHERE user_id='$user_id'");
+            if ( ($ya_config['emailvalidate'] == '0') OR ($tuemail == $nuke_user_email) ) {
+                $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET name='$realname', user_email='$nuke_user_email', femail='$femail', user_website='$nuke_user_website', user_password='$nuke_user_password', bio='$bio', user_icq='$nuke_user_icq', user_occ='$nuke_user_occ', user_from='$nuke_user_from', user_interests='$nuke_user_interests', user_sig='$nuke_user_sig', user_aim='$nuke_user_aim', user_yim='$nuke_user_yim', user_msnm='$nuke_user_msnm', newsletter='$newsletter', user_viewemail='$nuke_user_viewemail', user_allow_viewonline='$nuke_user_allow_viewonline', user_notify='$nuke_user_notify', user_notify_pm='$nuke_user_notify_pm', user_popup_pm='$nuke_user_popup_pm', user_attachsig='$nuke_user_attachsig', user_allowbbcode='$nuke_user_allowbbcode', user_allowhtml='$nuke_user_allowhtml', user_allowsmile='$nuke_user_allowsmile', user_timezone='$nuke_user_timezone', user_dateformat='$nuke_user_dateformat' WHERE user_id='$nuke_user_id'");
             } else {
-                $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET name='$realname', femail='$femail', user_website='$user_website', user_password='$user_password', bio='$bio', user_icq='$user_icq', user_occ='$user_occ', user_from='$user_from', user_interests='$user_interests', user_sig='$user_sig', user_aim='$user_aim', user_yim='$user_yim', user_msnm='$user_msnm', newsletter='$newsletter', user_viewemail='$user_viewemail', user_allow_viewonline='$user_allow_viewonline', user_notify='$user_notify', user_notify_pm='$user_notify_pm', user_popup_pm='$user_popup_pm', user_attachsig='$user_attachsig', user_allowbbcode='$user_allowbbcode', user_allowhtml='$user_allowhtml', user_allowsmile='$user_allowsmile', user_timezone='$user_timezone', user_dateformat='$user_dateformat' WHERE user_id='$user_id'");
+                $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET name='$realname', femail='$femail', user_website='$nuke_user_website', user_password='$nuke_user_password', bio='$bio', user_icq='$nuke_user_icq', user_occ='$nuke_user_occ', user_from='$nuke_user_from', user_interests='$nuke_user_interests', user_sig='$nuke_user_sig', user_aim='$nuke_user_aim', user_yim='$nuke_user_yim', user_msnm='$nuke_user_msnm', newsletter='$newsletter', user_viewemail='$nuke_user_viewemail', user_allow_viewonline='$nuke_user_allow_viewonline', user_notify='$nuke_user_notify', user_notify_pm='$nuke_user_notify_pm', user_popup_pm='$nuke_user_popup_pm', user_attachsig='$nuke_user_attachsig', user_allowbbcode='$nuke_user_allowbbcode', user_allowhtml='$nuke_user_allowhtml', user_allowsmile='$nuke_user_allowsmile', user_timezone='$nuke_user_timezone', user_dateformat='$nuke_user_dateformat' WHERE user_id='$nuke_user_id'");
                 $datekey = date("F Y");
-                $check_num = substr(md5(hexdec($datekey) * hexdec($cookie[2]) * hexdec($sitekey) * hexdec($user_email) * hexdec($tuemail)), 2, 10);
-                $finishlink = "$nukeurl/modules.php?name=$module_name&op=changemail&id=$user_id&mail=$user_email&check_num=$check_num";
-                $message .= _CHANGEMAIL1." $tuemail "._CHANGEMAIL2." $user_email"._CHANGEMAIL3." $sitename.<br /><br />";
+                $check_num = substr(md5(hexdec($datekey) * hexdec($cookie[2]) * hexdec($sitekey) * hexdec($nuke_user_email) * hexdec($tuemail)), 2, 10);
+                $finishlink = "$nukeurl/modules.php?name=$module_name&op=changemail&id=$nuke_user_id&mail=$nuke_user_email&check_num=$check_num";
+                $message .= _CHANGEMAIL1." $tuemail "._CHANGEMAIL2." $nuke_user_email"._CHANGEMAIL3." $sitename.<br /><br />";
                 $message .= _CHANGEMAILFIN."<br /><br />$finishlink<br /><br />";
                 $subject = _CHANGEMAILSUB;
-                ya_mail($user_email, $subject, $message, '');
+                ya_mail($nuke_user_email, $subject, $message, '');
             }
 
             if (count($nfield) > 0) {
               foreach ($nfield as $key => $var) {
-                  if (($nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_value WHERE fid='$key' AND uid = '$user_id'"))) == 0) {
-                  $sql = "INSERT INTO ".$nuke_user_prefix."_cnbya_value (uid, fid, value) VALUES ('$user_id', '$key','$nfield[$key]')";
+                  if (($nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_value WHERE fid='$key' AND uid = '$nuke_user_id'"))) == 0) {
+                  $sql = "INSERT INTO ".$nuke_user_prefix."_cnbya_value (uid, fid, value) VALUES ('$nuke_user_id', '$key','$nfield[$key]')";
                   $nuke_db->sql_query($sql);
                 }
                 else {
-                $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_cnbya_value SET value='$nfield[$key]' WHERE fid='$key' AND uid = '$user_id'");
+                $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_cnbya_value SET value='$nfield[$key]' WHERE fid='$key' AND uid = '$nuke_user_id'");
                 }
               }
             }
 
-            $sql = "SELECT * FROM ".$nuke_user_prefix."_users WHERE username='$username' AND user_password='$user_password'";
+            $sql = "SELECT * FROM ".$nuke_user_prefix."_users WHERE username='$nuke_username' AND user_password='$nuke_user_password'";
             $result = $nuke_db->sql_query($sql);
             if ($nuke_db->sql_numrows($result) == 1) {
-                $userinfo = $nuke_db->sql_fetchrow($result);
-                yacookie($userinfo[user_id],$userinfo[username],$userinfo[user_password],$userinfo[storynum],$userinfo[umode],$userinfo[uorder],$userinfo[thold],$userinfo[noscore],$userinfo[ublockon],$userinfo[theme],$userinfo[commentmax]);
+                $nuke_userinfo = $nuke_db->sql_fetchrow($result);
+                yacookie($nuke_userinfo[user_id],$nuke_userinfo[username],$nuke_userinfo[user_password],$nuke_userinfo[storynum],$nuke_userinfo[umode],$nuke_userinfo[uorder],$nuke_userinfo[thold],$nuke_userinfo[noscore],$nuke_userinfo[ublockon],$nuke_userinfo[theme],$nuke_userinfo[commentmax]);
             } else {
                 echo "<center>"._SOMETHINGWRONG."</center><br />";
             }
@@ -138,30 +138,30 @@ if (!defined('CNBYA')) {
         } else {
             $nuke_db->sql_query("LOCK TABLES ".$nuke_user_prefix."_users,".$nuke_user_prefix."_cnbya_value WRITE");
 
-        if ( ($ya_config['emailvalidate'] == '0') OR ($tuemail == $user_email) ) {
-            $q = "UPDATE ".$nuke_user_prefix."_users SET name='$realname', user_email='$user_email', femail='$femail', user_website='$user_website', bio='$bio', user_icq='$user_icq', user_occ='$user_occ', user_from='$user_from', user_interests='$user_interests', user_sig='$user_sig', user_aim='$user_aim', user_yim='$user_yim', user_msnm='$user_msnm', newsletter='$newsletter', user_viewemail='$user_viewemail', user_allow_viewonline='$user_allow_viewonline', user_notify='$user_notify', user_notify_pm='$user_notify_pm', user_popup_pm='$user_popup_pm', user_attachsig='$user_attachsig', user_allowbbcode='$user_allowbbcode', user_allowhtml='$user_allowhtml', user_allowsmile='$user_allowsmile', user_timezone='$user_timezone', user_dateformat='$user_dateformat' WHERE user_id='$user_id'";
+        if ( ($ya_config['emailvalidate'] == '0') OR ($tuemail == $nuke_user_email) ) {
+            $q = "UPDATE ".$nuke_user_prefix."_users SET name='$realname', user_email='$nuke_user_email', femail='$femail', user_website='$nuke_user_website', bio='$bio', user_icq='$nuke_user_icq', user_occ='$nuke_user_occ', user_from='$nuke_user_from', user_interests='$nuke_user_interests', user_sig='$nuke_user_sig', user_aim='$nuke_user_aim', user_yim='$nuke_user_yim', user_msnm='$nuke_user_msnm', newsletter='$newsletter', user_viewemail='$nuke_user_viewemail', user_allow_viewonline='$nuke_user_allow_viewonline', user_notify='$nuke_user_notify', user_notify_pm='$nuke_user_notify_pm', user_popup_pm='$nuke_user_popup_pm', user_attachsig='$nuke_user_attachsig', user_allowbbcode='$nuke_user_allowbbcode', user_allowhtml='$nuke_user_allowhtml', user_allowsmile='$nuke_user_allowsmile', user_timezone='$nuke_user_timezone', user_dateformat='$nuke_user_dateformat' WHERE user_id='$nuke_user_id'";
                 $nuke_db->sql_query($q);
             } else {
 
-                $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET name='$realname', femail='$femail', user_website='$user_website', bio='$bio', user_icq='$user_icq', user_occ='$user_occ', user_from='$user_from', user_interests='$user_interests', user_sig='$user_sig', user_aim='$user_aim', user_yim='$user_yim', user_msnm='$user_msnm', newsletter='$newsletter', user_viewemail='$user_viewemail', user_allow_viewonline='$user_allow_viewonline', user_notify='$user_notify', user_notify_pm='$user_notify_pm', user_popup_pm='$user_popup_pm', user_attachsig='$user_attachsig', user_allowbbcode='$user_allowbbcode', user_allowhtml='$user_allowhtml', user_allowsmile='$user_allowsmile', user_timezone='$user_timezone', user_dateformat='$user_dateformat' WHERE user_id='$user_id'");
+                $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET name='$realname', femail='$femail', user_website='$nuke_user_website', bio='$bio', user_icq='$nuke_user_icq', user_occ='$nuke_user_occ', user_from='$nuke_user_from', user_interests='$nuke_user_interests', user_sig='$nuke_user_sig', user_aim='$nuke_user_aim', user_yim='$nuke_user_yim', user_msnm='$nuke_user_msnm', newsletter='$newsletter', user_viewemail='$nuke_user_viewemail', user_allow_viewonline='$nuke_user_allow_viewonline', user_notify='$nuke_user_notify', user_notify_pm='$nuke_user_notify_pm', user_popup_pm='$nuke_user_popup_pm', user_attachsig='$nuke_user_attachsig', user_allowbbcode='$nuke_user_allowbbcode', user_allowhtml='$nuke_user_allowhtml', user_allowsmile='$nuke_user_allowsmile', user_timezone='$nuke_user_timezone', user_dateformat='$nuke_user_dateformat' WHERE user_id='$nuke_user_id'");
                 $datekey = date("F Y");
-                $check_num = substr(md5(hexdec($datekey) * hexdec($cookie[2]) * hexdec($sitekey) * hexdec($user_email) * hexdec($tuemail)), 2, 10);
+                $check_num = substr(md5(hexdec($datekey) * hexdec($cookie[2]) * hexdec($sitekey) * hexdec($nuke_user_email) * hexdec($tuemail)), 2, 10);
 
-                $finishlink = "$nukeurl/modules.php?name=$module_name&op=changemail&id=$user_id&mail=$user_email&check_num=$check_num";
-                $message .= _CHANGEMAIL1." $tuemail "._CHANGEMAIL2." $user_email"._CHANGEMAIL3." $sitename.<br /><br />";
+                $finishlink = "$nukeurl/modules.php?name=$module_name&op=changemail&id=$nuke_user_id&mail=$nuke_user_email&check_num=$check_num";
+                $message .= _CHANGEMAIL1." $tuemail "._CHANGEMAIL2." $nuke_user_email"._CHANGEMAIL3." $sitename.<br /><br />";
                 $message .= _CHANGEMAILFIN."<br /><br />$finishlink<br /><br />";
                 $subject = _CHANGEMAILSUB;
-                ya_mail($user_email, $subject, $message, '');
+                ya_mail($nuke_user_email, $subject, $message, '');
         }
 
         if (count($nfield) > 0) {
                  foreach ($nfield as $key => $var) {
-                  if (($nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_value WHERE fid='$key' AND uid = '$user_id'"))) == 0) {
-                      $sql = "INSERT INTO ".$nuke_user_prefix."_cnbya_value (uid, fid, value) VALUES ('$user_id', '$key','$nfield[$key]')";
+                  if (($nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_value WHERE fid='$key' AND uid = '$nuke_user_id'"))) == 0) {
+                      $sql = "INSERT INTO ".$nuke_user_prefix."_cnbya_value (uid, fid, value) VALUES ('$nuke_user_id', '$key','$nfield[$key]')";
                       $nuke_db->sql_query($sql);
                   }
                   else {
-                  $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_cnbya_value SET value='$nfield[$key]' WHERE fid='$key' AND uid = '$user_id'");
+                  $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_cnbya_value SET value='$nfield[$key]' WHERE fid='$key' AND uid = '$nuke_user_id'");
                   }
               }
         }

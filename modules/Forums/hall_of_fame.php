@@ -23,11 +23,11 @@ if (!defined('IN_PHPBB2'))
     die('Hacking attempt');
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         'hall_of_fame' => 'hall_of_fame.tpl')
 );
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
                 'L_RANK' => $lang['boardrank'],
                 'L_GAME' => $lang['game'],
                 'L_ARCADE_USER' => $lang['arcade_user'],
@@ -60,7 +60,7 @@ while ( $row = $nuke_db->sql_fetchrow($result))
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
                         
-            $template->assign_block_vars('record_row', array(
+            $template_nuke->assign_block_vars('record_row', array(
                         'GAME_NAME' => '<a href="' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>', 
                         'USERNAME' => '<a href="' . append_sid("statarcade.$phpEx?uid=" . $row['user_id'] ) . '" class="genmed">' . $row['username'] . '</a> ',
                         'HIGHSCORE' =>  number_format($row['game_highscore']),
@@ -72,6 +72,6 @@ while ( $row = $nuke_db->sql_fetchrow($result))
 
             }
 
-$template->assign_var_from_handle('HALL_OF_FAME', 'hall_of_fame');
+$template_nuke->assign_var_from_handle('HALL_OF_FAME', 'hall_of_fame');
 
 ?>

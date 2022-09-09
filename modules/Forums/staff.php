@@ -29,16 +29,16 @@ define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
-$userdata = session_pagestart($user_ip, NUKE_PAGE_STAFF, $session_length);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_STAFF, $session_length);
+init_userprefs($nuke_userdata);
 
 $page_title = $lang['Staff'];
-include('includes/page_header.'.$phpEx);
+include('includes/nuke_page_header.'.$phpEx);
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 'body' => 'staff_body.tpl')
         );
-$uid = (isset($userdata['user_id']) && !empty($userdata['user_id'])) ? $userdata['user_id'] : '1';
+$uid = (isset($nuke_userdata['user_id']) && !empty($nuke_userdata['user_id'])) ? $nuke_userdata['user_id'] : '1';
 
 // forums
  $sql = "SELECT ug.user_id, f.forum_id, f.forum_name
@@ -49,7 +49,7 @@ $uid = (isset($userdata['user_id']) && !empty($userdata['user_id'])) ? $userdata
            WHERE aa.auth_mod = " . TRUE . "
                       AND ug.group_id = aa.group_id
                       AND f.forum_id = aa.forum_id
-                      AND ( f.auth_view <= '.$auth.'
+                      AND ( f.auth_view <= '.$nuke_auth.'
                       OR aa2.auth_view = " . TRUE . ")
            ";
 /*$sql = "SELECT ug.user_id, f.forum_id, f.forum_name
@@ -142,8 +142,8 @@ while($staff = $nuke_db->sql_fetchrow($results))
         {
                 $percentage = 0;
         }
-        $user_id = $staff['user_id'];
-        $sql = "SELECT post_time, post_id FROM ".NUKE_POSTS_TABLE." WHERE poster_id = " . $user_id . " ORDER BY post_time DESC LIMIT 1";
+        $nuke_user_id = $staff['user_id'];
+        $sql = "SELECT post_time, post_id FROM ".NUKE_POSTS_TABLE." WHERE poster_id = " . $nuke_user_id . " ORDER BY post_time DESC LIMIT 1";
         if ( !($result = $nuke_db->sql_query($sql)) )
         {
                 message_die(NUKE_GENERAL_ERROR, 'Error getting user last post time', '', __LINE__, __FILE__, $post_time_sql);
@@ -201,7 +201,7 @@ while($staff = $nuke_db->sql_fetchrow($results))
                 }
         }
 
-        $template->assign_block_vars('staff', array(
+        $template_nuke->assign_block_vars('staff', array(
                 'AVATAR' => $avatar,
                 'RANK' => $rank,
                 'RANK_IMAGE' => $rank_image,
@@ -230,7 +230,7 @@ while($staff = $nuke_db->sql_fetchrow($results))
                 'WWW' => $www)
         );
 }
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'L_AVATAR' => $lang['Avatar'],
                 'L_USERNAME' => $lang['Username'],
                 'L_FORUMS' => $lang['Forums'],
@@ -242,7 +242,7 @@ while($staff = $nuke_db->sql_fetchrow($results))
                 'L_WWW' => $lang['Website'])
         );
 
-        $template->pparse('body');
+        $template_nuke->pparse('body');
 
 include('includes/page_tail.'.$phpEx);
 

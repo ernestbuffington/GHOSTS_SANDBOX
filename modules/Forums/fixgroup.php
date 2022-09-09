@@ -36,8 +36,8 @@ if (is_admin())
     include('includes/functions_search.'.$phpEx);
 
     // Start session management
-    $userdata = session_pagestart($user_ip, NUKE_PAGE_SEARCH);
-    init_userprefs($userdata);
+    $nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_SEARCH);
+    init_userprefs($nuke_userdata);
     // End session management
 
     //*****  check users and user groups ****//
@@ -53,13 +53,13 @@ if (is_admin())
     $liste ='';
     while ( $row = $nuke_db->sql_fetchrow($result) )
     {
-       $username = $row['username'];
-       $user_id = $row['user_id'];
-       $usergroup = '';
+       $nuke_username = $row['username'];
+       $nuke_user_id = $row['user_id'];
+       $nuke_usergroup = '';
         
        $sql1 = "SELECT ug.group_id
               FROM " . NUKE_USER_GROUP_TABLE ." ug, ". NUKE_GROUPS_TABLE. " g
-              WHERE ug.user_id = $user_id
+              WHERE ug.user_id = $nuke_user_id
                 AND ug.group_id = g.group_id
                 AND g.group_single_user  = 1
                 ";
@@ -67,7 +67,7 @@ if (is_admin())
        if ( ($result1 = $nuke_db->sql_query($sql1)) )
        {
            $row1 = $nuke_db->sql_fetchrow($result1);
-              $usergroup =( ( $row1['group_id'] != '' ) ? $row1['group_id'] : 'User has no user group'.$row1 );
+              $nuke_usergroup =( ( $row1['group_id'] != '' ) ? $row1['group_id'] : 'User has no user group'.$row1 );
               
        }
 
@@ -96,18 +96,18 @@ if (is_admin())
              }
 
              $sql4 = "INSERT INTO " . NUKE_USER_GROUP_TABLE . " (user_id, group_id, user_pending)
-                VALUES ($user_id, $group_id, 0)";
+                VALUES ($nuke_user_id, $group_id, 0)";
              if( !($result4 = $nuke_db->sql_query($sql4)) )
              { 
                 message_die(NUKE_GENERAL_ERROR, 'Could not insert data into user_group table', '', __LINE__, __FILE__, $sql4);
              }
 
                   
-                 $usergroup = $usergroup.', adding user group '.$group_id;
+                 $nuke_usergroup = $nuke_usergroup.', adding user group '.$group_id;
               }
 
 
-       $liste .= ( ( $liste != '' ) ? '<br /> ' : '' ) . $username.' <b>'.$usergroup.'</b>';
+       $liste .= ( ( $liste != '' ) ? '<br /> ' : '' ) . $nuke_username.' <b>'.$nuke_usergroup.'</b>';
     }
 
     message_die(NUKE_GENERAL_MESSAGE,'Users:<br />'.$liste);

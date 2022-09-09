@@ -43,7 +43,7 @@ include_once(NUKE_BASE_DIR.'header.php');
     $ya_user_email = strtolower($ya_user_email);
     ya_userCheck($ya_username);
     ya_mailCheck($ya_user_email);
-    $user_regdate = date("M d, Y");
+    $nuke_user_regdate = date("M d, Y");
     if (!isset($stop)) {
         $datekey = date("F j");
         $rcode = hexdec(md5($_SERVER['HTTP_USER_AGENT'] . $sitekey . $random_num . $datekey));
@@ -63,7 +63,7 @@ include_once(NUKE_BASE_DIR.'header.php');
 /*****[BEGIN]******************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
-        $new_password = md5($user_password);
+        $new_password = md5($nuke_user_password);
 /*****[END]********************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
@@ -72,7 +72,7 @@ include_once(NUKE_BASE_DIR.'header.php');
         $ya_user_email = check_html($ya_user_email, 'nohtml');
         list($newest_uid) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT max(user_id) AS newest_uid FROM ".$nuke_user_prefix."_users_temp"));
         if ($newest_uid == "-1") { $new_uid = 1; } else { $new_uid = $newest_uid+1; }
-        $result = $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_users_temp (user_id, username, realname, user_email, user_password, user_regdate, check_num, time) VALUES ($new_uid, '$ya_username', '$ya_realname', '$ya_user_email', '$new_password', '$user_regdate', '$check_num', '$time')");
+        $result = $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_users_temp (user_id, username, realname, user_email, user_password, user_regdate, check_num, time) VALUES ($new_uid, '$ya_username', '$ya_realname', '$ya_user_email', '$new_password', '$nuke_user_regdate', '$check_num', '$time')");
 
         if (is_array($nfield)):
 
@@ -94,7 +94,7 @@ include_once(NUKE_BASE_DIR.'header.php');
                 $message = _WELCOMETO." $sitename ($nukeurl)!<br /><br />";
                 $message .= _YOUUSEDEMAIL." $ya_user_email "._TOREGISTER." $sitename.<br /><br />";
 				$message .= _TOFINISHUSER."<br /><br /><a href=\"$finishlink\">$finishlink</a><br /><br />";
-                $message .= _FOLLOWINGMEM."<br />"._UNICKNAME." $ya_username<br />"._UPASSWORD." $user_password";
+                $message .= _FOLLOWINGMEM."<br />"._UNICKNAME." $ya_username<br />"._UPASSWORD." $nuke_user_password";
                 $subject = _ACTIVATIONSUB;
                 $headers = array( 'Content-Type: text/html; charset=UTF-8', 'Reply-To: '.$adminmail, 'Return-Path: '.$adminmail );
                 evo_phpmailer( $ya_user_email, $subject, $message, $headers );

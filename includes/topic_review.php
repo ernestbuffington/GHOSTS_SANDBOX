@@ -43,7 +43,7 @@ if (!defined('IN_PHPBB2'))
 
 function topic_review($topic_id, $is_inline_review)
 {
-        global $nuke_db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb2_root_path, $userdata, $user_ip, $orig_word, $replacement_word, $starttime;
+        global $nuke_db, $board_config, $template_nuke, $lang, $images, $theme, $phpEx, $phpbb2_root_path, $nuke_userdata, $nuke_user_ip, $orig_word, $replacement_word, $starttime;
 /*****[BEGIN]******************************************
  [ Mod:     Post Icons                         v1.0.1 ]
  ******************************************************/
@@ -91,14 +91,14 @@ function topic_review($topic_id, $is_inline_review)
                 //
                 // Start session management
                 //
-                $userdata = session_pagestart($user_ip, $forum_id);
-                init_userprefs($userdata);
+                $nuke_userdata = session_pagestart($nuke_user_ip, $forum_id);
+                init_userprefs($nuke_userdata);
                 //
                 // End session management
                 //
 
                 $is_auth = array();
-                $is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata, $forum_row);
+                $is_auth = auth(NUKE_AUTH_ALL, $forum_id, $nuke_userdata, $forum_row);
 
                 if ( !$is_auth['auth_read'] )
                 {
@@ -125,9 +125,9 @@ function topic_review($topic_id, $is_inline_review)
                 $gen_simple_header = TRUE;
 
                 $page_title = $lang['Topic_review'] . ' - ' . $topic_title;
-                include("includes/page_header_review.php");
+                include("includes/nuke_page_header_review.php");
 
-                $template->set_filenames(array(
+                $template_nuke->set_filenames(array(
                         'reviewbody' => 'posting_topic_review.tpl')
                 );
         }
@@ -168,12 +168,12 @@ function topic_review($topic_id, $is_inline_review)
  [ Mod:    Hide Mod                            v1.2.0 ]
  ******************************************************/
 				$valid = FALSE;
-				if( $userdata['session_logged_in'] ) 
+				if( $nuke_userdata['session_logged_in'] ) 
 				{
 					$sql = "SELECT p.poster_id, p.topic_id
 						FROM " . NUKE_POSTS_TABLE . " p
 						WHERE p.topic_id = $topic_id
-						AND p.poster_id = " . $userdata['user_id'];
+						AND p.poster_id = " . $nuke_userdata['user_id'];
 					$resultat = $nuke_db->sql_query($sql);
 					$valid = $nuke_db->sql_numrows($resultat) ? TRUE : FALSE;
 				}
@@ -317,7 +317,7 @@ function topic_review($topic_id, $is_inline_review)
 
                         /*--FNA #2--*/
 
-                        $template->assign_block_vars('postrow', array(
+                        $template_nuke->assign_block_vars('postrow', array(
                                 'ROW_COLOR' => '#' . $row_color,
                                 'ROW_CLASS' => $row_class,
 
@@ -358,7 +358,7 @@ function topic_review($topic_id, $is_inline_review)
         }
     $nuke_db->sql_freeresult($result);
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'L_AUTHOR' => $lang['Author'],
                 'L_MESSAGE' => $lang['Message'],
                 'L_POSTED' => $lang['Posted'],
@@ -368,7 +368,7 @@ function topic_review($topic_id, $is_inline_review)
 
         if ( !$is_inline_review )
         {
-                $template->pparse('reviewbody');
+                $template_nuke->pparse('reviewbody');
                 include("includes/page_tail_review.php");
         }
 }

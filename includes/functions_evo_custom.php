@@ -605,11 +605,11 @@ function the_rating( $size, $rating, $msg = false )
  */
 function has_new_or_unread_private_messages()
 {
-	global $userinfo;
-	if ( intval($userinfo['user_new_privmsg']) > 0 ):
-		return intval($userinfo['user_new_privmsg']);
-	elseif ( intval($userinfo['user_unread_privmsg']) > 0 ):
-		return intval($userinfo['user_unread_privmsg']);
+	global $nuke_userinfo;
+	if ( intval($nuke_userinfo['user_new_privmsg']) > 0 ):
+		return intval($nuke_userinfo['user_new_privmsg']);
+	elseif ( intval($nuke_userinfo['user_unread_privmsg']) > 0 ):
+		return intval($nuke_userinfo['user_unread_privmsg']);
 	else:
 		return 0;
 	endif;
@@ -832,44 +832,44 @@ function url_shorten( $url, $length = 35 ) {
  *
  * @global db $nuke_db Evolution Xtreme database abstraction object.
  * @global board_config $board_config Forum configuration variable.
- * @global userinfo $userinfo Get the logged in users account information.
+ * @global userinfo $nuke_userinfo Get the logged in users account information.
  */
-function get_user_avatar($user_id) {
-	global $nuke_db, $board_config, $userinfo;
+function get_evo_user_avatar($nuke_user_id) {
+	global $nuke_db, $board_config, $nuke_userinfo;
 	static $avatarData;
 
-	if(is_array($avatarData[$user_id]) && !empty($avatarData[$user_id])) { return $avatarData[$user_id]; }
-	if ( $user_id == $userinfo['user_id'] ) {
-		 $user_avatar       = $userinfo['user_avatar'];
-		 $user_avatar_type  = $userinfo['user_avatar_type'];
-		 $user_avatar_allow = $userinfo['user_allowavatar'];
-		 $user_avatar_show  = $userinfo['user_showavatars'];
+	if(is_array($avatarData[$nuke_user_id]) && !empty($avatarData[$nuke_user_id])) { return $avatarData[$nuke_user_id]; }
+	if ( $nuke_user_id == $nuke_userinfo['user_id'] ) {
+		 $nuke_user_avatar       = $nuke_userinfo['user_avatar'];
+		 $nuke_user_avatar_type  = $nuke_userinfo['user_avatar_type'];
+		 $nuke_user_avatar_allow = $nuke_userinfo['user_allowavatar'];
+		 $nuke_user_avatar_show  = $nuke_userinfo['user_showavatars'];
 	} else {
-		list($user_avatar, $user_avatar_type, $user_avatar_allow, $user_avatar_show) = $nuke_db->sql_ufetchrow("SELECT user_avatar, user_avatar_type, user_allowavatar, user_showavatars FROM ".NUKE_USERS_TABLE." WHERE user_id = '" . $user_id . "' LIMIT 1");
+		list($nuke_user_avatar, $nuke_user_avatar_type, $nuke_user_avatar_allow, $nuke_user_avatar_show) = $nuke_db->sql_ufetchrow("SELECT user_avatar, user_avatar_type, user_allowavatar, user_showavatars FROM ".NUKE_USERS_TABLE." WHERE user_id = '" . $nuke_user_id . "' LIMIT 1");
 	}
 	$poster_avatar = '';
-	if ( $user_avatar_type && $user_id != NUKE_ANONYMOUS && $user_avatar_allow && $user_avatar_show && !empty($user_avatar)) {
-		switch( $user_avatar_type ) {
+	if ( $nuke_user_avatar_type && $nuke_user_id != NUKE_ANONYMOUS && $nuke_user_avatar_allow && $nuke_user_avatar_show && !empty($nuke_user_avatar)) {
+		switch( $nuke_user_avatar_type ) {
 			case NUKE_USER_AVATAR_UPLOAD:
-				$poster_avatar = ( $board_config['allow_avatar_upload'] ) ? avatar_resize($board_config['avatar_path'] . '/' . $user_avatar) : '';
+				$poster_avatar = ( $board_config['allow_avatar_upload'] ) ? avatar_resize($board_config['avatar_path'] . '/' . $nuke_user_avatar) : '';
 				break;
 			case NUKE_USER_AVATAR_REMOTE:
-				$poster_avatar = avatar_resize($user_avatar);
+				$poster_avatar = avatar_resize($nuke_user_avatar);
 				break;
 			case NUKE_USER_AVATAR_GALLERY:
-				$poster_avatar = ( $board_config['allow_avatar_local'] ) ? avatar_resize($board_config['avatar_gallery_path'] . '/' . $user_avatar) : '';
+				$poster_avatar = ( $board_config['allow_avatar_local'] ) ? avatar_resize($board_config['avatar_gallery_path'] . '/' . $nuke_user_avatar) : '';
 				break;
 		}
 	}
 	$default_member_avatar = evo_image('avatar_member.png', 'Forums');
 	$default_guest_avatar  = evo_image('avatar_guest.png', 'Forums');
-	if ( empty($poster_avatar) && $user_id != NUKE_ANONYMOUS) {
+	if ( empty($poster_avatar) && $nuke_user_id != NUKE_ANONYMOUS) {
 		$poster_avatar = '<img src="'.  $default_member_avatar .'" alt="" border="0" />';
 	}
-	if ( $user_id == NUKE_ANONYMOUS ) {
+	if ( $nuke_user_id == NUKE_ANONYMOUS ) {
 		$poster_avatar = '<img src="'.  $default_guest_avatar .'" alt="" border="0" />';
 	}
-	$avatarData[$user_id] = $poser_avatar;
+	$avatarData[$nuke_user_id] = $poser_avatar;
 	return ($poster_avatar);
 }
 
@@ -979,8 +979,8 @@ function sprintf_e( $lang, $var = 'customlang', $module_name = '', $replacement=
  */
 function get_userinfo( $field )
 {
-	global $userinfo;
-	return $userinfo[ $field ];
+	global $nuke_userinfo;
+	return $nuke_userinfo[ $field ];
 }
 
 /**

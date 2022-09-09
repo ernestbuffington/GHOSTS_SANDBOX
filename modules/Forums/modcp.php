@@ -371,9 +371,9 @@ else
 
 //
 
-$userdata = session_pagestart($user_ip, $forum_id);
+$nuke_userdata = session_pagestart($nuke_user_ip, $forum_id);
 
-init_userprefs($userdata);
+init_userprefs($nuke_userdata);
 
 //
 
@@ -385,7 +385,7 @@ init_userprefs($userdata);
 
 // session id check
 
-//if (empty($sid) || $sid != $userdata['session_id'])
+//if (empty($sid) || $sid != $nuke_userdata['session_id'])
 
 //{
 
@@ -451,7 +451,7 @@ if ( isset($HTTP_POST_VARS['cancel']) )
 
 //
 
-$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata);
+$is_auth = auth(NUKE_AUTH_ALL, $forum_id, $nuke_userdata);
 
 
 
@@ -495,7 +495,7 @@ switch( $mode )
 
                 $page_title = $lang['Mod_CP'];
 
-                include("includes/page_header.$phpEx");
+                include("includes/nuke_page_header.$phpEx");
 
 
 
@@ -599,7 +599,7 @@ switch( $mode )
 
  ******************************************************/
 
-                        $user_updated = array();
+                        $nuke_user_updated = array();
 
 /*****[END]********************************************
 
@@ -628,7 +628,7 @@ switch( $mode )
 
  ******************************************************/
 
-                                $user_updated [] = "SELECT ug.user_id, g.group_id as g_id, u.user_posts, g.group_count, g.group_count_max, ".$row['poster_id']." as u_id FROM (" . NUKE_GROUPS_TABLE . " g, ".NUKE_USERS_TABLE." u)
+                                $nuke_user_updated [] = "SELECT ug.user_id, g.group_id as g_id, u.user_posts, g.group_count, g.group_count_max, ".$row['poster_id']." as u_id FROM (" . NUKE_GROUPS_TABLE . " g, ".NUKE_USERS_TABLE." u)
 
                                         LEFT JOIN ". NUKE_USER_GROUP_TABLE." ug ON g.group_id=ug.group_id AND ug.user_id=".$row['poster_id']."
 
@@ -680,19 +680,19 @@ switch( $mode )
 
  ******************************************************/
 
-                        if ( sizeof($user_updated) )
+                        if ( sizeof($nuke_user_updated) )
 
                         {
 
-                        	for($i = 0; $i < sizeof($user_updated); $i++)
+                        	for($i = 0; $i < sizeof($nuke_user_updated); $i++)
 
                         	{
 
-                        		if ( !($result = $nuke_db->sql_query($user_updated[$i])) )
+                        		if ( !($result = $nuke_db->sql_query($nuke_user_updated[$i])) )
 
                         		{
 
-                        			message_die(NUKE_GENERAL_ERROR, 'Error geting users post stat', '', __LINE__, __FILE__, $user_updated[$i]);
+                        			message_die(NUKE_GENERAL_ERROR, 'Error geting users post stat', '', __LINE__, __FILE__, $nuke_user_updated[$i]);
 
                         		}
 
@@ -700,13 +700,13 @@ switch( $mode )
 
                         		{
 
-                        			$user_already_added = (!empty($group_data['user_id']) || $group_data['u_id']==NUKE_ANONYMOUS) ? TRUE : FALSE;
+                        			$nuke_user_already_added = (!empty($group_data['user_id']) || $group_data['u_id']==NUKE_ANONYMOUS) ? TRUE : FALSE;
 
-                        			$user_add = ($group_data['group_count'] == $group_data['user_posts'] && $group_data['u_id']!=NUKE_ANONYMOUS) ? TRUE : FALSE;
+                        			$nuke_user_add = ($group_data['group_count'] == $group_data['user_posts'] && $group_data['u_id']!=NUKE_ANONYMOUS) ? TRUE : FALSE;
 
-                        			$user_remove = ($group_data['group_count'] > $group_data['user_posts'] && $group_data['u_id']!=NUKE_ANONYMOUS) ? TRUE : FALSE;
+                        			$nuke_user_remove = ($group_data['group_count'] > $group_data['user_posts'] && $group_data['u_id']!=NUKE_ANONYMOUS) ? TRUE : FALSE;
 
-                        			if ($user_add && !$user_already_added)
+                        			if ($nuke_user_add && !$nuke_user_already_added)
 
                         			{
 
@@ -726,7 +726,7 @@ switch( $mode )
 
                         			} else
 
-                        			if ( $user_already_added && $user_remove)
+                        			if ( $nuke_user_already_added && $nuke_user_remove)
 
                         			{
 
@@ -898,7 +898,7 @@ switch( $mode )
 
  ******************************************************/
 
-                                 log_action('delete', '', $topic_id_sql, $userdata['user_id'], '', '');
+                                 log_action('delete', '', $topic_id_sql, $nuke_userdata['user_id'], '', '');
 
 /*****[END]********************************************
 
@@ -1031,7 +1031,7 @@ switch( $mode )
                                 $l_nuke_redirect = sprintf($lang['Click_return_modcp'], '<a href="' . $nuke_redirect_page . '">', '</a>');
                         }
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
                                 'META' => '<meta http-equiv="refresh" content="3;url=' . $nuke_redirect_page . '">')
                         );
 
@@ -1052,7 +1052,7 @@ switch( $mode )
 
 
 
-                        $hidden_fields = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" /><input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '" />';
+                        $hidden_fields = '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" /><input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '" />';
 
 
 
@@ -1088,7 +1088,7 @@ switch( $mode )
 
                         //
 
-                        $template->set_filenames(array(
+                        $template_nuke->set_filenames(array(
 
                                 'confirm' => 'confirm_body.tpl')
 
@@ -1138,7 +1138,7 @@ switch( $mode )
 
 					{
 
-						$template->assign_vars(array(
+						$template_nuke->assign_vars(array(
 
 							'PARENT_FORUM'			=> 1,
 
@@ -1162,7 +1162,7 @@ switch( $mode )
 
 
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
 
                                 'MESSAGE_TITLE' => $lang['Confirm'],
 
@@ -1184,7 +1184,7 @@ switch( $mode )
 
 
 
-                        $template->pparse('confirm');
+                        $template_nuke->pparse('confirm');
 
 
 
@@ -1200,7 +1200,7 @@ switch( $mode )
 
                 $page_title = $lang['Mod_CP'];
 
-                include("includes/page_header.$phpEx");
+                include("includes/nuke_page_header.$phpEx");
 
 
 
@@ -1334,7 +1334,7 @@ switch( $mode )
 
  ******************************************************/
 
-                                        log_action('move', '', $topic_id, $userdata['user_id'], $old_forum_id, $new_forum_id);
+                                        log_action('move', '', $topic_id, $nuke_userdata['user_id'], $old_forum_id, $new_forum_id);
 
 /*****[END]********************************************
 
@@ -1428,7 +1428,7 @@ switch( $mode )
 
 
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
 
                                 'META' => '<meta http-equiv="refresh" content="3;url=' . $nuke_redirect_page . '">')
 
@@ -1454,7 +1454,7 @@ switch( $mode )
 
 
 
-                        $hidden_fields = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" /><input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '" />';
+                        $hidden_fields = '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" /><input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '" />';
 
 
 
@@ -1492,7 +1492,7 @@ switch( $mode )
 
                         //
 
-                        $template->set_filenames(array(
+                        $template_nuke->set_filenames(array(
 
                                 'movetopic' => 'modcp_move.tpl')
 
@@ -1500,7 +1500,7 @@ switch( $mode )
 
 
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
 
                                 'MESSAGE_TITLE' => $lang['Confirm'],
 
@@ -1528,7 +1528,7 @@ switch( $mode )
 
 
 
-                        $template->pparse('movetopic');
+                        $template_nuke->pparse('movetopic');
 
 
 
@@ -1574,7 +1574,7 @@ switch( $mode )
 
  ******************************************************/
 
-                log_action('lock', '', $topic_id_sql, $userdata['user_id'], '', '');
+                log_action('lock', '', $topic_id_sql, $nuke_userdata['user_id'], '', '');
 
 /*****[END]********************************************
 
@@ -1630,7 +1630,7 @@ switch( $mode )
 
 
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
 
                         'META' => '<meta http-equiv="refresh" content="3;url=' . $nuke_redirect_page . '">')
 
@@ -1700,7 +1700,7 @@ switch( $mode )
 
  ******************************************************/
 
-                log_action('unlock', '', $topic_id_sql, $userdata['user_id'], '', '');
+                log_action('unlock', '', $topic_id_sql, $nuke_userdata['user_id'], '', '');
 
 /*****[END]********************************************
 
@@ -1736,7 +1736,7 @@ switch( $mode )
 
 
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
 
                         'META' => '<meta http-equiv="refresh" content="3;url=' . $nuke_redirect_page . '">')
 
@@ -1756,7 +1756,7 @@ switch( $mode )
 
                 $page_title = $lang['Mod_CP'];
 
-                include("includes/page_header.$phpEx");
+                include("includes/nuke_page_header.$phpEx");
 
 
 
@@ -1856,7 +1856,7 @@ switch( $mode )
 
 
 
-                                $user_id_sql = '';
+                                $nuke_user_id_sql = '';
 
                                 $post_id_sql = '';
 
@@ -1864,7 +1864,7 @@ switch( $mode )
 
                                 {
 
-                                        $user_id_sql .= ((!empty($user_id_sql)) ? ', ' : '') . intval($row['poster_id']);
+                                        $nuke_user_id_sql .= ((!empty($nuke_user_id_sql)) ? ', ' : '') . intval($row['poster_id']);
 
                                         $post_id_sql .= (($post_id_sql != '') ? ', ' : '') . intval($row['post_id']);;                                          $post_id_sql .= ((!empty($post_id_sql)) ? ', ' : '') . intval($row['post_id']);;
 
@@ -1946,7 +1946,7 @@ switch( $mode )
 
  ******************************************************/
 
-                                log_action('split', $new_topic_id, $topic_id, $userdata['user_id'], $forum_id, '');
+                                log_action('split', $new_topic_id, $topic_id, $nuke_userdata['user_id'], $forum_id, '');
 
 /*****[END]********************************************
 
@@ -1966,7 +1966,7 @@ switch( $mode )
 
                                         WHERE topic_id = '$topic_id'
 
-                                                AND user_id IN ($user_id_sql)";
+                                                AND user_id IN ($nuke_user_id_sql)";
 
                                 if (!$nuke_db->sql_query($sql))
 
@@ -2008,7 +2008,7 @@ switch( $mode )
 
 
 
-                                $template->assign_vars(array(
+                                $template_nuke->assign_vars(array(
 
                                 'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">')
 
@@ -2034,7 +2034,7 @@ switch( $mode )
 
                         //
 
-                        $template->set_filenames(array(
+                        $template_nuke->set_filenames(array(
 
                                 'split_body' => 'modcp_split.tpl')
 
@@ -2066,7 +2066,7 @@ switch( $mode )
 
 
 
-                        $s_hidden_fields = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" /><input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '" /><input type="hidden" name="' . NUKE_POST_TOPIC_URL . '" value="' . $topic_id . '" /><input type="hidden" name="mode" value="split" />';
+                        $s_hidden_fields = '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" /><input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '" /><input type="hidden" name="' . NUKE_POST_TOPIC_URL . '" value="' . $topic_id . '" /><input type="hidden" name="mode" value="split" />';
 
 
 
@@ -2078,7 +2078,7 @@ switch( $mode )
 
 
 
-                                $template->assign_vars(array(
+                                $template_nuke->assign_vars(array(
 
                                         'L_SPLIT_TOPIC' => $lang['Split_Topic'],
 
@@ -2250,7 +2250,7 @@ switch( $mode )
 
 
 
-                                        $template->assign_block_vars('postrow', array(
+                                        $template_nuke->assign_block_vars('postrow', array(
 
                                                 'ROW_COLOR' => '#' . $row_color,
 
@@ -2276,7 +2276,7 @@ switch( $mode )
 
 
 
-                                $template->pparse('split_body');
+                                $template_nuke->pparse('split_body');
 
                         }
 
@@ -2290,7 +2290,7 @@ switch( $mode )
 
                 $page_title = $lang['Mod_CP'];
 
-                include("includes/page_header.$phpEx");
+                include("includes/nuke_page_header.$phpEx");
 
 
 
@@ -2314,7 +2314,7 @@ switch( $mode )
 
                 //
 
-                $template->set_filenames(array(
+                $template_nuke->set_filenames(array(
 
                         'viewip' => 'modcp_viewip.tpl')
 
@@ -2362,7 +2362,7 @@ switch( $mode )
 
 
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
 
                         'L_IP_INFO' => $lang['IP_info'],
 
@@ -2432,7 +2432,7 @@ switch( $mode )
 
                                 {
 
-                                        $template->assign_vars(array(
+                                        $template_nuke->assign_vars(array(
 
                                                 'POSTS' => $row['postings'] . ' ' . ( ( $row['postings'] == 1 ) ? $lang['Post'] : $lang['Posts'] ))
 
@@ -2456,7 +2456,7 @@ switch( $mode )
 
 
 
-                                $template->assign_block_vars('iprow', array(
+                                $template_nuke->assign_block_vars('iprow', array(
 
                                         'ROW_COLOR' => '#' . $row_color,
 
@@ -2524,7 +2524,7 @@ switch( $mode )
 
                                 $id = $row['user_id'];
 
-                                $username = ( $id == NUKE_ANONYMOUS ) ? $lang['Guest'] : $row['username'];
+                                $nuke_username = ( $id == NUKE_ANONYMOUS ) ? $lang['Guest'] : $row['username'];
 
 
 
@@ -2534,23 +2534,23 @@ switch( $mode )
 
 
 
-                                $template->assign_block_vars('userrow', array(
+                                $template_nuke->assign_block_vars('userrow', array(
 
                                         'ROW_COLOR' => '#' . $row_color,
 
                                         'ROW_CLASS' => $row_class,
 
-                                        'USERNAME' => $username,
+                                        'USERNAME' => $nuke_username,
 
                                         'POSTS' => $row['postings'] . ' ' . ( ( $row['postings'] == 1 ) ? $lang['Post'] : $lang['Posts'] ),
 
-                                        'L_SEARCH_POSTS' => sprintf($lang['Search_user_posts'], $username),
+                                        'L_SEARCH_POSTS' => sprintf($lang['Search_user_posts'], $nuke_username),
 
 
 
                                         'U_PROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$id"),
 
-                                        'U_SEARCHPOSTS' => append_sid("search.$phpEx?search_author=" . (($id == NUKE_ANONYMOUS) ? 'Anonymous' : urlencode($username)) . "&amp;showresults=topics"))
+                                        'U_SEARCHPOSTS' => append_sid("search.$phpEx?search_author=" . (($id == NUKE_ANONYMOUS) ? 'Anonymous' : urlencode($nuke_username)) . "&amp;showresults=topics"))
 
                                 );
 
@@ -2566,7 +2566,7 @@ switch( $mode )
 
 
 
-                $template->pparse('viewip');
+                $template_nuke->pparse('viewip');
 
 
 
@@ -2630,7 +2630,7 @@ switch( $mode )
 
             // Quake: Wtf happened here
 
-            //$nuke_redirect_page = "modules.php?name=Forums&file=viewtopic&" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;sid=" . $userdata['session_id'];
+            //$nuke_redirect_page = "modules.php?name=Forums&file=viewtopic&" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;sid=" . $nuke_userdata['session_id'];
 
             $nuke_redirect_page = append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id");
 
@@ -2644,7 +2644,7 @@ switch( $mode )
 
             // And here again. Dam we must use append_sid for this!!
 
-            //$nuke_redirect_page = "modules.php?name=Forums&file=modcp&" . NUKE_POST_FORUM_URL . "=$forum_id&amp;sid=" . $userdata['session_id'];
+            //$nuke_redirect_page = "modules.php?name=Forums&file=modcp&" . NUKE_POST_FORUM_URL . "=$forum_id&amp;sid=" . $nuke_userdata['session_id'];
 
             $nuke_redirect_page = append_sid("modcp.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id");
 
@@ -2656,13 +2656,13 @@ switch( $mode )
 
         // And also here. Also notice the two WRONG <br /> and the '  . "modules.php which is totally wrong
 
-        //$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . "modules.php?name=Forums&file=viewtopic&" . NUKE_POST_FORUM_URL . "=$forum_id&amp;sid=" . $userdata['session_id'] . '">', '</a>');
+        //$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . "modules.php?name=Forums&file=viewtopic&" . NUKE_POST_FORUM_URL . "=$forum_id&amp;sid=" . $nuke_userdata['session_id'] . '">', '</a>');
 
         $message .= '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id") . '">', '</a>');
 
 
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
 
             'META' => '<meta http-equiv="refresh" content="3;url=' . $nuke_redirect_page . '">')
 
@@ -2688,11 +2688,11 @@ switch( $mode )
 
                 $page_title = $lang['Mod_CP'];
 
-                include("includes/page_header.$phpEx");
+                include("includes/nuke_page_header.$phpEx");
 
 
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
 
                         'FORUM_NAME' => $forum_name,
 
@@ -2740,7 +2740,7 @@ switch( $mode )
 
                         'U_VIEW_FORUM' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id"),
 
-                        'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" /><input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '" />',
+                        'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" /><input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '" />',
 
                         'S_MODCP_ACTION' => append_sid("modcp.$phpEx"))
 
@@ -2748,7 +2748,7 @@ switch( $mode )
 
 
 
-                $template->set_filenames(array(
+                $template_nuke->set_filenames(array(
 
                         'body' => 'modcp_body.tpl')
 
@@ -2798,7 +2798,7 @@ switch( $mode )
 
 				{
 
-					$template->assign_vars(array(
+					$template_nuke->assign_vars(array(
 
 						'PARENT_FORUM'			=> 1,
 
@@ -3074,7 +3074,7 @@ switch( $mode )
 
 
 
-                        $template->assign_block_vars('topicrow', array(
+                        $template_nuke->assign_block_vars('topicrow', array(
 
                                 'U_VIEW_TOPIC' => $u_view_topic,
 
@@ -3130,9 +3130,9 @@ switch( $mode )
 
 
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
 
-                        'PAGINATION' => generate_pagination("modcp.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id&amp;sid=" . $userdata['session_id'], $forum_topics, $board_config['topics_per_page'], $start),
+                        'PAGINATION' => generate_pagination("modcp.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id&amp;sid=" . $nuke_userdata['session_id'], $forum_topics, $board_config['topics_per_page'], $start),
 
                         'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $board_config['topics_per_page'] ) + 1 ), ceil( $forum_topics / $board_config['topics_per_page'] )),
 
@@ -3142,7 +3142,7 @@ switch( $mode )
 
 
 
-                $template->pparse('body');
+                $template_nuke->pparse('body');
 
 
 

@@ -99,8 +99,8 @@ $forum_auth_cats = array(
 );
 
 for($i=0; $i<count($forum_auth_const); $i++) {
-	$auth_key .= '<img src="../../../images/spacer.gif" width=10 height=10 class="' . $forum_auth_classes[$forum_auth_const[$i]] . '">&nbsp;' . $forum_auth_levels[$i] . '&nbsp;&nbsp;';		
-	$template->assign_block_vars("authedit",	array(
+	$nuke_auth_key .= '<img src="../../../images/spacer.gif" width=10 height=10 class="' . $forum_auth_classes[$forum_auth_const[$i]] . '">&nbsp;' . $forum_auth_levels[$i] . '&nbsp;&nbsp;';		
+	$template_nuke->assign_block_vars("authedit",	array(
 		'CLASS' => $forum_auth_classes[$forum_auth_const[$i]],
 		'NAME' => $forum_auth_levels[$i],
 		'VALUE' => $forum_auth_const[$i],
@@ -116,7 +116,7 @@ else
 	unset($adv);
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
 	"body" => "admin/auth_overall_forum_body.tpl")
 );
 //
@@ -177,7 +177,7 @@ if( $total_categories = $nuke_db->sql_numrows($q_categories) )
 	{
 		$cat_id = $category_rows[$i]['cat_id'];
 
-		$template->assign_block_vars("catrow", array( 
+		$template_nuke->assign_block_vars("catrow", array( 
 			'CAT_ID' => $cat_id,
 			'CAT_DESC' => $category_rows[$i]['cat_title'],
 		));
@@ -189,7 +189,7 @@ if( $total_categories = $nuke_db->sql_numrows($q_categories) )
 			if ($forum_rows[$j]['cat_id'] == $cat_id)
 			{
 
-				$template->assign_block_vars("catrow.forumrow",	array(
+				$template_nuke->assign_block_vars("catrow.forumrow",	array(
 					'FORUM_NAME' => $forum_rows[$j]['forum_name'],
 					'FORUM_ID' => $forum_rows[$j]['forum_id'],
 					'ROW_COLOR' => $row_color,
@@ -215,18 +215,18 @@ if( $total_categories = $nuke_db->sql_numrows($q_categories) )
 
 }// if ... total_categories
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 	'L_FORUM_TITLE' => $lang['Auth_Control_Forum'],
 	'L_FORUM_EXPLAIN' => $lang['Forum_auth_explain_overall'],
 	'L_FORUM_EXPLAIN_EDIT' => $lang['Forum_auth_explain_overall_edit'],
 	'L_FORUM_OVERALL_RESTORE' => $lang['Forum_auth_overall_restore'],
 	'L_FORUM_OVERALL_STOP' => $lang['Forum_auth_overall_stop'],
 	'L_SUBMIT' => $lang['Submit'],
-	'AUTH_KEY' => $auth_key,
+	'AUTH_KEY' => $nuke_auth_key,
 ));
 
-$template->pparse("body");
+$template_nuke->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

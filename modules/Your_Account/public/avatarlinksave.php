@@ -28,7 +28,7 @@
 if(!defined('MODULE_FILE')) die ("You can't access this file directly...");
 
 if(!defined('CNBYA')) die('CNBYA protection');
-    global $cookie, $userinfo;
+    global $cookie, $nuke_userinfo;
 	
     include_once(NUKE_BASE_DIR.'header.php');
     

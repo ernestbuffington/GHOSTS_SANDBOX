@@ -111,14 +111,14 @@ function get_topic_id($topic)
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
 
 // check if user is a moderator or an admin
-if (($userdata['user_level'] != NUKE_MOD) && ($userdata['user_level'] != NUKE_ADMIN))
+if (($nuke_userdata['user_level'] != NUKE_MOD) && ($nuke_userdata['user_level'] != NUKE_ADMIN))
 {
     message_die(NUKE_GENERAL_MESSAGE, $lang['Not_Authorised']);
 }
@@ -278,14 +278,14 @@ if (($select_from || $select_to) && (!$cancel))
 
     // set the page title and include the page header
     $page_title = $lang['Merge_topics'];
-    include ('includes/page_header.'.$phpEx);
+    include ('includes/nuke_page_header.'.$phpEx);
 
     // template name
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'merge_select_body.tpl')
     );
     // header
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_GO'            => $lang['Go'],
         'S_LIST_FORUMS'    => $list_forums,
         'PAGINATION'    => $pagination,
@@ -324,7 +324,7 @@ if (($select_from || $select_to) && (!$cancel))
     topic_list($box, $tpl, $topic_rowset, $list_title, $split_type, $display_nav_tree, $footer, $inbox, $select_field, $select_type, $select_formname );
 
     // system
-    $s_hidden_fields  = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+    $s_hidden_fields  = '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
     $s_hidden_fields .= '<input type="hidden" name="topic_title" value="' . addslashes($topic_title) . '" />';
     $s_hidden_fields .= '<input type="hidden" name="from_topic" value="' . $from_topic . '" />';
     $s_hidden_fields .= '<input type="hidden" name="to_topic" value="' . $to_topic . '" />';
@@ -333,13 +333,13 @@ if (($select_from || $select_to) && (!$cancel))
     if ($select_from) $s_hidden_fields .= '<input type="hidden" name="select_from" value="1" />';
     if ($select_to) $s_hidden_fields .= '<input type="hidden" name="select_to" value="1" />';
     $s_hidden_fields .= '<input type="hidden" name="start" value="' . $start . '" />';
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'S_ACTION'            => append_sid("merge.$phpEx"),
         'S_HIDDEN_FIELDS'    => $s_hidden_fields,
         )
     );
     // footer
-    $template->pparse('body');
+    $template_nuke->pparse('body');
     include('includes/page_tail.'.$phpEx);
     exit;
 }
@@ -348,7 +348,7 @@ if (($select_from || $select_to) && (!$cancel))
 if ($submit)
 {
     // check session id
-    if ($sid == '' || $sid != $userdata['session_id'])
+    if ($sid == '' || $sid != $nuke_userdata['session_id'])
     {
         message_die(NUKE_GENERAL_ERROR, 'Invalid_session');
     }
@@ -413,7 +413,7 @@ if ($submit)
     // check authorizations
     if (!empty($from_forum_id))
     {
-        $is_auth = auth(NUKE_AUTH_ALL, $from_forum_id, $userdata);
+        $is_auth = auth(NUKE_AUTH_ALL, $from_forum_id, $nuke_userdata);
         if ( !$is_auth['auth_mod'] )
         {
             $error = true;
@@ -422,7 +422,7 @@ if ($submit)
     }
     if (!empty($to_forum_id))
     {
-        $is_auth = auth(NUKE_AUTH_ALL, $to_forum_id, $userdata);
+        $is_auth = auth(NUKE_AUTH_ALL, $to_forum_id, $nuke_userdata);
         if ( !$is_auth['auth_mod'] )
         {
             $error = true;
@@ -495,12 +495,12 @@ if ($submit)
         // check if the destination is already watched
         $sql = "SELECT * FROM " . NUKE_TOPICS_WATCH_TABLE . " WHERE topic_id=$to_topic_id";
         if ( !$result=$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not read topics watch informations', '', __LINE__, __FILE__, $sql);
-        $user_ids = array();
-        while ($row = $nuke_db->sql_fetchrow($result)) $user_ids[] = $row['user_id'];
+        $nuke_user_ids = array();
+        while ($row = $nuke_db->sql_fetchrow($result)) $nuke_user_ids[] = $row['user_id'];
         $sql_user = '';
-        if (!empty($user_ids))
+        if (!empty($nuke_user_ids))
         {
-            $sql_user = " AND user_id NOT IN (" . implode(', ', $user_ids) . ")";
+            $sql_user = " AND user_id NOT IN (" . implode(', ', $nuke_user_ids) . ")";
         }
         // grab the topics watch to the new topic
         $sql = "UPDATE " . NUKE_TOPICS_WATCH_TABLE . " SET topic_id=$to_topic_id WHERE topic_id=$from_topic_id" . $sql_user;
@@ -563,7 +563,7 @@ if ($submit)
 /*****[BEGIN]******************************************
  [ Mod:     Log Moderator Actions              v1.1.6 ]
  ******************************************************/
-    log_action('merge', '', $to_topic_id, $userdata['user_id'], '', '');
+    log_action('merge', '', $to_topic_id, $nuke_userdata['user_id'], '', '');
 /*****[END]********************************************
  [ Mod:     Log Moderator Actions              v1.1.6 ]
  ******************************************************/
@@ -574,7 +574,7 @@ if ($submit)
         sync('forum', $to_forum_id);
         
         // send end message
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$to_topic_id") . '">')
         );
         message_die(NUKE_GENERAL_MESSAGE, $lang['Merge_topic_done'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$to_topic_id") . '" class="gen">', '</a>')  . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '" class="gen">', '</a>'));
@@ -586,12 +586,12 @@ if ($submit)
         $message .= (($message != '') ? '<br />' : '') . sprintf($lang['Merge_confirm_process'], $from_title, $to_title);
 
         $page_title = $lang['Merge_topics'];
-        include ('includes/page_header.'.$phpEx);
-        $template->set_filenames(array(
+        include ('includes/nuke_page_header.'.$phpEx);
+        $template_nuke->set_filenames(array(
             'body' => 'confirm_body.tpl')
         );
 
-        $s_hidden_fields  = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+        $s_hidden_fields  = '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
         $s_hidden_fields .= '<input type="hidden" name="topic_title" value="' . addslashes($topic_title) . '" />';
         $s_hidden_fields .= '<input type="hidden" name="from_topic" value="' . $from_topic . '" />';
         $s_hidden_fields .= '<input type="hidden" name="to_topic" value="' . $to_topic . '" />';
@@ -599,7 +599,7 @@ if ($submit)
         if ($shadow) $s_hidden_fields .= '<input type="hidden" name="shadow" value="1" />';
 
         // header
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'MESSAGE_TITLE'        => $page_title,
             'MESSAGE_TEXT'        => $message,
             'L_YES'                => $lang['Yes'],
@@ -609,7 +609,7 @@ if ($submit)
             )
         );
         // footer
-        $template->pparse('body');
+        $template_nuke->pparse('body');
         include('includes/page_tail.'.$phpEx);
         exit;
     }
@@ -619,17 +619,17 @@ if ($submit)
 // set the page title and include the page header
 //
 $page_title = $lang['Merge_topics'];
-include ('includes/page_header.'.$phpEx);
+include ('includes/nuke_page_header.'.$phpEx);
 //
 // template name
 //
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     'body' => 'merge_body.tpl')
 );
 //
 // header
 //
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'L_TITLE'                => $page_title,
     'L_TOPIC_TITLE'            => $lang['Merge_title'],
     'L_TOPIC_TITLE_EXPLAIN'    => $lang['Merge_title_explain'],
@@ -649,7 +649,7 @@ if (!empty($to_title) && empty($topic_title))
     $topic_title = $to_title;
 }
 // values
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'TOPIC_TITLE'    => $topic_title,
     'FROM_TOPIC'    => $from_topic,
     'TO_TOPIC'        => $to_topic,
@@ -658,8 +658,8 @@ $template->assign_vars(array(
 );
 
 // system
-$s_hidden_fields  = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
-$template->assign_vars(array(
+$s_hidden_fields  = '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
+$template_nuke->assign_vars(array(
     'S_ACTION'            => append_sid("merge.$phpEx"),
     'S_HIDDEN_FIELDS'    => $s_hidden_fields,
     )
@@ -667,7 +667,7 @@ $template->assign_vars(array(
 //
 // footer
 //
-$template->pparse('body');
+$template_nuke->pparse('body');
 include('includes/page_tail.'.$phpEx);
 
 ?>

@@ -31,7 +31,7 @@ get_lang($module_name);
 
 function RecommendSite() 
 {
-    global $module_name, $userinfo, $customlang;
+    global $module_name, $nuke_userinfo, $customlang;
     include_once(NUKE_BASE_DIR.'header.php');
     if ( !get_query_var( 'recap', 'get', 'int' ) ):
     	title($customlang[$module_name]['recommend']);
@@ -43,8 +43,8 @@ function RecommendSite()
     endif;
     OpenTable();
 
-    $your_name = ( is_user() ) ? $userinfo['username'] : '';
-    $your_mail = ( is_user() ) ? $userinfo['user_email'] : '';
+    $your_name = ( is_user() ) ? $nuke_userinfo['username'] : '';
+    $your_mail = ( is_user() ) ? $nuke_userinfo['user_email'] : '';
 	
 	/**
 	 *	Make sure the user is actually logged in, We do not want any anonymous users in here.

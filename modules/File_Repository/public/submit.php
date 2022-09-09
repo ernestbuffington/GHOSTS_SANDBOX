@@ -14,7 +14,7 @@ if (!defined('MODULE_FILE'))
 
 function _file_repository_submitdownload()
 {
-	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $themes, $userinfo, $admin, $user;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $themes, $nuke_userinfo, $admin, $nuke_user;
 	OpenTable();
 	_index_navigation_header();
 
@@ -182,11 +182,11 @@ function _file_repository_submitdownload()
 		echo '  </tr>'."\n";
 		echo '  <tr'._bgColor(1).'>'."\n";
 		echo '    <td'._tdcss('50%',FALSE,_sc()).'>'._sut($lang_new[$module_name]['SUBMITTER_USERNAME']).'</td>'."\n";
-		echo '    <td'._tdcss('50%',FALSE,_sc()).'>'.$userinfo['username'].'</td>'."\n";
+		echo '    <td'._tdcss('50%',FALSE,_sc()).'>'.$nuke_userinfo['username'].'</td>'."\n";
 		echo '  </tr>'."\n";
 		echo '  <tr'._bgColor(1).'>'."\n";
 		echo '    <td'._tdcss('50%',FALSE,_sc()).'>'._sut($lang_new[$module_name]['SUBMITTER_EMAIL']).'</td>'."\n";
-		echo '    <td'._tdcss('50%',FALSE,_sc()).'>'.$userinfo['user_email'].'</td>'."\n";
+		echo '    <td'._tdcss('50%',FALSE,_sc()).'>'.$nuke_userinfo['user_email'].'</td>'."\n";
 		echo '  </tr>'."\n";
 
 		echo '  <tr'._bgColor(2).'>'."\n";
@@ -222,9 +222,9 @@ function _file_repository_submitdownload()
 	endif;
 	
 	echo '</table>'."\n";
-	echo _input('hidden','semail',FALSE,$userinfo['user_email']);
-	echo _input('hidden','sname',FALSE,$userinfo['username']);
-	echo _input('hidden','suid',FALSE,$userinfo['user_id']);
+	echo _input('hidden','semail',FALSE,$nuke_userinfo['user_email']);
+	echo _input('hidden','sname',FALSE,$nuke_userinfo['username']);
+	echo _input('hidden','suid',FALSE,$nuke_userinfo['user_id']);
 	echo '</form>'."\n";
 	CloseTable();
 }
@@ -274,7 +274,7 @@ function _file_repository_delete_on_client_error($did)
 
 function _file_repository_save_submitdownload()
 {
-	global $nuke_db, $admin_file, $module_name, $userinfo, $settings;
+	global $nuke_db, $admin_file, $module_name, $nuke_userinfo, $settings;
 
 	// $_FILES['userfile'] = array();
 
@@ -288,9 +288,9 @@ function _file_repository_save_submitdownload()
 		$file_extensions = $settings['allowed_file_extensions'];
 		$image_extensions = $settings['allowed_image_extensions'];
 
-		$author      		= (!empty($_POST['author'])) ? _escape_string($_POST['author']) : '';
-		$author_email      	= (!empty($_POST['author_email'])) ? $_POST['author_email'] : '';
-		$author_website     = (!empty($_POST['author_website'])) ? $_POST['author_website'] : '';
+		$nuke_author      		= (!empty($_POST['author'])) ? _escape_string($_POST['author']) : '';
+		$nuke_author_email      	= (!empty($_POST['author_email'])) ? $_POST['author_email'] : '';
+		$nuke_author_website     = (!empty($_POST['author_website'])) ? $_POST['author_website'] : '';
 		$cid      			= (!empty($_POST['cid'])) ? intval($_POST['cid']) : 0;
 		$description      	= (!empty($_POST['submit_description'])) ? _escape_string($_POST['submit_description']) : '';
 		$did      			= (!empty($_POST['did'])) ? intval($_POST['did']) : '';
@@ -301,7 +301,7 @@ function _file_repository_save_submitdownload()
 		$title      		= (!empty($_POST['title'])) ? _escape_string($_POST['title']) : '';
 		$version      		= (!empty($_POST['version'])) ? $_POST['version'] : '';
 
-		$sql = "INSERT INTO `"._FILE_REPOSITORY_ITEMS."` (`cid`, `author`, `author_email`, `author_website`, `date`, `description`, `did`, `isapproved`, `preview`, `semail`, `sname`, `suid`, `title`, `version`) VALUES ('".$cid."', '".$author."', '".$author_email."', '".$author_website."', now(), '".$description."', NULL, 0, '".$preview."', '".$semail."', '".$sname."', '".$suid."', '".$title."', '".$version."')";
+		$sql = "INSERT INTO `"._FILE_REPOSITORY_ITEMS."` (`cid`, `author`, `author_email`, `author_website`, `date`, `description`, `did`, `isapproved`, `preview`, `semail`, `sname`, `suid`, `title`, `version`) VALUES ('".$cid."', '".$nuke_author."', '".$nuke_author_email."', '".$nuke_author_website."', now(), '".$description."', NULL, 0, '".$preview."', '".$semail."', '".$sname."', '".$suid."', '".$title."', '".$version."')";
 		$nuke_db->sql_query($sql);
 		$did = $nuke_db->sql_nextid();
 
@@ -366,52 +366,52 @@ function _file_repository_save_submitdownload()
 
 			if($_FILES['userscreen']['name'][$s]):
 
-				$userscreen['name']   = $_FILES['userscreen']['name'][$s];
-				$userscreen['name']   = preg_replace('/\s*/m', '', $userscreen['name']);
+				$nuke_userscreen['name']   = $_FILES['userscreen']['name'][$s];
+				$nuke_userscreen['name']   = preg_replace('/\s*/m', '', $nuke_userscreen['name']);
 
-				$userscreen['desc']  	= $_POST['userscreen_desc'][$s];
-				$userscreen['error']  	= $_FILES['userscreen']['error'][$s];
+				$nuke_userscreen['desc']  	= $_POST['userscreen_desc'][$s];
+				$nuke_userscreen['error']  	= $_FILES['userscreen']['error'][$s];
 				$file_parts     		= @pathinfo($_FILES['userscreen']['name'][$s]);
-		    	$userscreen['ext'] 		= $file_parts['extension'];
-		    	$userscreen['size']		= $_FILES['userscreen']['size'][$s];
-		    	$userscreen['temp']   	= $_FILES['userscreen']['tmp_name'][$s];
+		    	$nuke_userscreen['ext'] 		= $file_parts['extension'];
+		    	$nuke_userscreen['size']		= $_FILES['userscreen']['size'][$s];
+		    	$nuke_userscreen['temp']   	= $_FILES['userscreen']['tmp_name'][$s];
 
-				if (!in_array($userscreen['ext'],explode(',',$image_extensions))):
+				if (!in_array($nuke_userscreen['ext'],explode(',',$image_extensions))):
 					$error_messages[] = 'Invalid Image Type: Image Field '.($s+1);
 				endif;
 
 			endif;
 
-			if (is_uploaded_file($userscreen['temp']) && $userscreen['error'] == 0 && count( $error_messages ) == 0):
+			if (is_uploaded_file($nuke_userscreen['temp']) && $nuke_userscreen['error'] == 0 && count( $error_messages ) == 0):
 
 				# If the uploaded file has no size, Do nothing with it.
-				if ($userscreen['size'] <= 1):
+				if ($nuke_userscreen['size'] <= 1):
 					$error_messages[] = 'File does not have a valid size.';
 				else:
 				
 					# If the user does not submit a file description, simple use the filename itself to fill the in the gap.
-					if($userscreen['desc']):
-						$userscreen['name'] = strtolower($userscreen['desc']).'-'._generate_rand_string().'.'.$userscreen['ext'];
+					if($nuke_userscreen['desc']):
+						$nuke_userscreen['name'] = strtolower($nuke_userscreen['desc']).'-'._generate_rand_string().'.'.$nuke_userscreen['ext'];
 					else:
-						$userscreen['name'] = strtolower($userscreen['name']).'-'._generate_rand_string().'.'.$userscreen['ext'];
+						$nuke_userscreen['name'] = strtolower($nuke_userscreen['name']).'-'._generate_rand_string().'.'.$nuke_userscreen['ext'];
 					endif;
 
-					if (@move_uploaded_file($userscreen['temp'], _FILE_REPOSITORY_SCREENS.$userscreen['name'])):
+					if (@move_uploaded_file($nuke_userscreen['temp'], _FILE_REPOSITORY_SCREENS.$nuke_userscreen['name'])):
 
 						# Generate the thumbnails for this submitted download.
-						_create_thumb_from_image(_FILE_REPOSITORY_SCREENS.$userscreen['name'], _FILE_REPOSITORY_SCREENS.'thumbs/thumb_100x100_'.$userscreen['name'], array(
+						_create_thumb_from_image(_FILE_REPOSITORY_SCREENS.$nuke_userscreen['name'], _FILE_REPOSITORY_SCREENS.'thumbs/thumb_100x100_'.$nuke_userscreen['name'], array(
 							'width' => '100',
 			 				'height' => '100',
 							'aspect_ratio' => true
 						));
 
-						_create_thumb_from_image(_FILE_REPOSITORY_SCREENS.$userscreen['name'], _FILE_REPOSITORY_SCREENS.'thumbs/thumb_190x120_'.$userscreen['name'], array(
+						_create_thumb_from_image(_FILE_REPOSITORY_SCREENS.$nuke_userscreen['name'], _FILE_REPOSITORY_SCREENS.'thumbs/thumb_190x120_'.$nuke_userscreen['name'], array(
 							'width' => '190',
 							'height' => '120',
 							'aspect_ratio' => true
 						));
 
-						$nuke_db->sql_query("INSERT INTO `"._FILE_REPOSITORY_SCREENSHOTS."` (`pid`, `did`, `active`, `filename`, `size`, `submitter`, `title`) VALUES (NULL, '".$did."', 1, '".$userscreen['name']."', '".$userscreen['size']."', '".$userinfo['username']."', '".$userscreen['desc']."')");
+						$nuke_db->sql_query("INSERT INTO `"._FILE_REPOSITORY_SCREENSHOTS."` (`pid`, `did`, `active`, `filename`, `size`, `submitter`, `title`) VALUES (NULL, '".$did."', 1, '".$nuke_userscreen['name']."', '".$nuke_userscreen['size']."', '".$nuke_userinfo['username']."', '".$nuke_userscreen['desc']."')");
 
 					endif;
 
@@ -434,10 +434,10 @@ function _file_repository_save_submitdownload()
 
 function _file_respotiroy_error_messages( $error_messages )
 {
-	global $lang_new, $module_name, $settings, $userinfo;
+	global $lang_new, $module_name, $settings, $nuke_userinfo;
 	OpenTable();
 	echo '<div style="text-align: center;">';
-	echo '<h2>There seems to have been a problem '.$userinfo['username'].'</h2>';
+	echo '<h2>There seems to have been a problem '.$nuke_userinfo['username'].'</h2>';
 	echo '<p>Below is a list of error that have been returned</p>';
 
 	echo '<p>';
@@ -454,10 +454,10 @@ function _file_respotiroy_error_messages( $error_messages )
 
 function _file_repository_success_submitdownload()
 {
-	global $lang_new, $module_name, $settings, $userinfo;
+	global $lang_new, $module_name, $settings, $nuke_userinfo;
 	OpenTable();
 	echo '<div style="text-align: center;">';
-	echo '<p>'.sprintf($lang_new[$module_name]['SUBMITDOWNLOAD_SUCCESS'], $userinfo['username']).'</p>';
+	echo '<p>'.sprintf($lang_new[$module_name]['SUBMITDOWNLOAD_SUCCESS'], $nuke_userinfo['username']).'</p>';
 	echo '</div>';
 	CloseTable();
 }

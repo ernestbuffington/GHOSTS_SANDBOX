@@ -74,7 +74,7 @@ include(NUKE_BASE_DIR. 'header.php');
 
 //     if (GDSUPPORT AND $code != $gfx_check AND ($ya_config['usegfxcheck'] == 3 OR $ya_config['usegfxcheck'] == 4 OR $ya_config['usegfxcheck'] == 6)) {
 
-    $user_regdate = date("M d, Y");
+    $nuke_user_regdate = date("M d, Y");
     if (!isset($stop)) {
         $ya_username = ya_fixtext($ya_username);
         $ya_user_email = ya_fixtext($ya_user_email);
@@ -91,26 +91,26 @@ include(NUKE_BASE_DIR. 'header.php');
 /*****[BEGIN]******************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
-        $new_password = md5($user_password);
+        $new_password = md5($nuke_user_password);
 /*****[END]********************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
         $realname = ya_fixtext($realname);
         $femail = ya_fixtext($femail);
-        $user_website = check_html($user_website);
-        if (!preg_match("#http://#i", $user_website) AND !empty($user_website)) { $user_website = "http://$user_website"; }
+        $nuke_user_website = check_html($nuke_user_website);
+        if (!preg_match("#http://#i", $nuke_user_website) AND !empty($nuke_user_website)) { $nuke_user_website = "http://$nuke_user_website"; }
         $bio = str_replace("<br />", "\r\n", $bio);
         $bio = ya_fixtext($bio);
-        $user_sig = str_replace("<br />", "\r\n", $user_sig);
-        $user_sig = ya_fixtext($user_sig);
-        $user_occ = ya_fixtext($user_occ);
-        $user_from = ya_fixtext($user_from);
-        $user_interests = ya_fixtext($user_interests);
-        $user_dateformat = ya_fixtext($user_dateformat);
+        $nuke_user_sig = str_replace("<br />", "\r\n", $nuke_user_sig);
+        $nuke_user_sig = ya_fixtext($nuke_user_sig);
+        $nuke_user_occ = ya_fixtext($nuke_user_occ);
+        $nuke_user_from = ya_fixtext($nuke_user_from);
+        $nuke_user_interests = ya_fixtext($nuke_user_interests);
+        $nuke_user_dateformat = ya_fixtext($nuke_user_dateformat);
         $newsletter = intval($newsletter);
-        $user_viewemail = intval($user_viewemail);
-        $user_allow_viewonline = intval($user_allow_viewonline);
-        $user_timezone = intval($user_timezone);
+        $nuke_user_viewemail = intval($nuke_user_viewemail);
+        $nuke_user_allow_viewonline = intval($nuke_user_allow_viewonline);
+        $nuke_user_timezone = intval($nuke_user_timezone);
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v0.1.1 ]
  ******************************************************/
@@ -130,7 +130,7 @@ include(NUKE_BASE_DIR. 'header.php');
         list($newest_uid) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT max(user_id) AS newest_uid FROM ".$nuke_user_prefix."_users"));
         if ($newest_uid == "-1") { $new_uid = 1; } else { $new_uid = $newest_uid+1; }
         $lv = time();
-        $result = $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_users (user_id, name, username, user_email, user_avatar, user_regdate, user_viewemail, user_password, user_lang, user_lastvisit) VALUES ($new_uid, '$ya_username', '$ya_username', '$ya_user_email', 'gallery/blank.gif', '$user_regdate', '0', '$new_password', '$language', '$lv')");
+        $result = $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_users (user_id, name, username, user_email, user_avatar, user_regdate, user_viewemail, user_password, user_lang, user_lastvisit) VALUES ($new_uid, '$ya_username', '$ya_username', '$ya_user_email', 'gallery/blank.gif', '$nuke_user_regdate', '0', '$new_password', '$language', '$lv')");
 
         if ((count($nfield) > 0) AND ($result)) {
           foreach ($nfield as $key => $var) {
@@ -141,7 +141,7 @@ include(NUKE_BASE_DIR. 'header.php');
     $nuke_db->sql_query("LOCK TABLES ".$nuke_user_prefix."_users WRITE");
     $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET user_avatar='gallery/blank.gif', user_avatar_type='3', user_lang='$language', user_lastvisit='$lv', umode='nested' WHERE user_id='$new_uid'");
 
-    $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET username='$ya_username', name='$realname', user_email='$ya_user_email', femail='$femail', user_website='$user_website', user_from='$user_from', user_occ='$user_occ', user_interests='$user_interests', newsletter='$newsletter', user_viewemail='$user_viewemail', user_allow_viewonline='$user_allow_viewonline', user_timezone='$user_timezone', user_dateformat='$user_dateformat', user_sig='$user_sig', bio='$bio', user_password='$new_password', user_regdate='$user_regdate' WHERE user_id='$new_uid'");
+    $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET username='$ya_username', name='$realname', user_email='$ya_user_email', femail='$femail', user_website='$nuke_user_website', user_from='$nuke_user_from', user_occ='$nuke_user_occ', user_interests='$nuke_user_interests', newsletter='$newsletter', user_viewemail='$nuke_user_viewemail', user_allow_viewonline='$nuke_user_allow_viewonline', user_timezone='$nuke_user_timezone', user_dateformat='$nuke_user_dateformat', user_sig='$nuke_user_sig', bio='$bio', user_password='$new_password', user_regdate='$nuke_user_regdate' WHERE user_id='$new_uid'");
 
     $nuke_db->sql_query("UNLOCK TABLES");
     $sql = "INSERT INTO " . NUKE_GROUPS_TABLE . " (group_name, group_description, group_single_user, group_moderator)
@@ -184,7 +184,7 @@ include(NUKE_BASE_DIR. 'header.php');
         if ($ya_config['servermail'] == 0) {
                 $message = _WELCOMETO." $sitename ($nukeurl)!<br /><br />";
                 $message .= _YOUUSEDEMAIL." $ya_user_email "._TOREGISTER." $sitename.<br /><br />";
-                $message .= _FOLLOWINGMEM."<br />"._UNICKNAME." $ya_username<br />"._UPASSWORD." $user_password";
+                $message .= _FOLLOWINGMEM."<br />"._UNICKNAME." $ya_username<br />"._UPASSWORD." $nuke_user_password";
                 $subject = _REGISTRATIONSUB;
 
                 $headers = array(
@@ -200,12 +200,12 @@ include(NUKE_BASE_DIR. 'header.php');
             OpenTable();
             $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE username='$ya_username' AND user_password='$new_password'");
             if ($nuke_db->sql_numrows($result) == 1) {
-                $userinfo = $nuke_db->sql_fetchrow($result);
-                yacookie($userinfo['user_id'],$userinfo['username'],$userinfo['user_password'],$userinfo['storynum'],$userinfo['umode'],$userinfo['uorder'],$userinfo['thold'],$userinfo['noscore'],$userinfo['ublockon'],$userinfo['theme'],$userinfo['commentmax']);
+                $nuke_userinfo = $nuke_db->sql_fetchrow($result);
+                yacookie($nuke_userinfo['user_id'],$nuke_userinfo['username'],$nuke_userinfo['user_password'],$nuke_userinfo['storynum'],$nuke_userinfo['umode'],$nuke_userinfo['uorder'],$nuke_userinfo['thold'],$nuke_userinfo['noscore'],$nuke_userinfo['ublockon'],$nuke_userinfo['theme'],$nuke_userinfo['commentmax']);
 // menelaos: i wonder if this cookie is set correctly
 // menelaos: refresh of location? The next line causes multiple accounts to be loaded into the database, this has to be fixed
 //              echo "<META HTTP-EQUIV=\"refresh\" content=\"2;URL=/modules.php?name=$module_name\">";
-                echo "<center><strong>$userinfo[username]:</strong> "._ACTMSG2."</center>";
+                echo "<center><strong>$nuke_userinfo[username]:</strong> "._ACTMSG2."</center>";
 /*****[BEGIN]******************************************
  [ Mod:     Finished Redirection               v1.0.0 ]
  ******************************************************/

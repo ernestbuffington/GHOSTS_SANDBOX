@@ -111,10 +111,10 @@ $install_lang['config_failed'] = "Config.php generation failed.";
 $install_lang['installer_heading'] = "Installer :: Step";
 $install_lang['installer_heading2'] = "of";
 
-$install_lang['dbhost_a'] = "DB Host:";
-$install_lang['dbname_a'] = "DB Name:";
-$install_lang['dbuser_a'] = "DB User:";
-$install_lang['dbpass_a'] = "DB Password:";
+$install_lang['nuke_dbhost'] = "DB Host:";
+$install_lang['nuke_dbname'] = "DB Name:";
+$install_lang['nuke_dbuname'] = "DB User:";
+$install_lang['nuke_dbpass'] = "DB Password:";
 
 $install_lang['dbtype'] = "DB Type:";
 $install_lang['dbhost_error'] = "You must enter a database host (default is \"localhost\")";

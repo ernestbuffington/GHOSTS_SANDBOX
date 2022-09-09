@@ -1,7 +1,7 @@
 <?php
 
 /*=======================================================================
- Nuke-Evolution Xtreme: Enhanced PHP-Nuke Web Portal System
+ PHP-Nuke Titanium | Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -22,7 +22,7 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 
 global $nuke_dbhost, $nuke_dbname, $nuke_dbuname, $prefix; 
 /*----[ Welcome! ] ---------------------------------------
-| Welcome to Nuke-Evolution, an advanced content          |
+| Welcome to PHP-Nuke Titanium, an advanced content       |
 | management system based on PHP-Nuke                     |
 ---------------------------------------------------------*/
 

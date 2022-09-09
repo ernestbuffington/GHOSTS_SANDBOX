@@ -33,9 +33,9 @@ require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 // module's directory. It's all, as easy as it sounds ;)
 // NOTE: in $download_location PLEASE give the direct download link to the file!!!
 
-$author_name = "Ernest Buffington";
-$author_email = "webmaster@www.86it.us";
-$author_homepage = "http://www.86it.us";
+$nuke_author_name = "Ernest Buffington";
+$nuke_author_email = "webmaster@www.86it.us";
+$nuke_author_homepage = "http://www.86it.us";
 $license = "GNU/GPL";
 $download_location = "";
 $module_version = "v3.0.0";
@@ -48,5 +48,5 @@ $module_description = "Blogs Archive";
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($author_name, $author_email, $author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
 ?>

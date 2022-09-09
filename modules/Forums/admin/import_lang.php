@@ -54,7 +54,7 @@ $cancel = ( isset($HTTP_POST_VARS['cancel']) ) ? TRUE : FALSE;
 
 if ($cancel)
 {
-    $no_page_header = TRUE;
+    $no_nuke_page_header = TRUE;
 }
 
 @include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
@@ -103,7 +103,7 @@ if ($cancel)
 
 if ($mode == 'import_new_lang' && $submit)
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/stat_import_language.tpl')
     );
 
@@ -235,9 +235,9 @@ if ($mode == 'import_new_lang' && $submit)
     $lang_array = $inst_langs;
 
     // Prepare Template
-    $template->assign_block_vars('switch_install_language', array());
+    $template_nuke->assign_block_vars('switch_install_language', array());
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_IMPORT_LANGUAGE' => $lang['Import_new_language'],
         'L_IMPORT_LANGUAGE_EXPLAIN' => $lang['Import_new_language_explain'],
         'L_INSTALL_LANGUAGE' => $lang['Install_language'],
@@ -251,7 +251,7 @@ if ($mode == 'import_new_lang' && $submit)
     {
         $language = str_replace('lang_', '', $key);
 
-        $template->assign_block_vars('languages', array(
+        $template_nuke->assign_block_vars('languages', array(
             'LANGUAGE' => $language)
         );
 
@@ -259,7 +259,7 @@ if ($mode == 'import_new_lang' && $submit)
         @reset($modules);
         while (list($module_name, $module_data) = each($modules))
         {
-            $template->assign_block_vars('languages.modules', array(
+            $template_nuke->assign_block_vars('languages.modules', array(
                 'MODULE' => $module_name)
             );
         }
@@ -267,14 +267,14 @@ if ($mode == 'import_new_lang' && $submit)
 
     $s_hidden_fields .= '<input type="hidden" name="install_language" value="1">';
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'S_HIDDEN_FIELDS' => $s_hidden_fields)
     );
 }
 
 if (($mode == 'import_new_lang') && (!$submit))
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/stat_import_language.tpl')
     );
 
@@ -299,7 +299,7 @@ if (($mode == 'import_new_lang') && (!$submit))
 
         if (count($lang_paks) > 0)
         {
-            $template->assign_block_vars('switch_select_lang', array());
+            $template_nuke->assign_block_vars('switch_select_lang', array());
 
             $module_select_field = '<select name="selected_pak_file">';
 
@@ -314,7 +314,7 @@ if (($mode == 'import_new_lang') && (!$submit))
             
             $s_hidden_fields = '<input type="hidden" name="fileselect" value="1">';
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 'L_SELECT_LANGUAGE' => $lang['Select_language_pak'],
                 'S_SELECT_LANGUAGE' => $module_select_field,
                 'S_SELECT_HIDDEN_FIELDS' => $s_hidden_fields)
@@ -322,11 +322,11 @@ if (($mode == 'import_new_lang') && (!$submit))
         
         }
 
-        $template->assign_block_vars('switch_upload_lang', array());
+        $template_nuke->assign_block_vars('switch_upload_lang', array());
 
         $s_hidden_fields = '<input type="hidden" name="fileupload" value="1">';
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'L_IMPORT_LANGUAGE' => $lang['Import_new_language'],
             'L_IMPORT_LANGUAGE_EXPLAIN' => $lang['Import_new_language_explain'],
             'L_UPLOAD_LANGUAGE' => $lang['Upload_language_pak'],
@@ -338,11 +338,11 @@ if (($mode == 'import_new_lang') && (!$submit))
     }
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 //
 // Page Footer
 //
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

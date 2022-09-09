@@ -46,8 +46,8 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_FAQ);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_FAQ);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -134,14 +134,14 @@ for($i = 0; $i < count($faq); $i++)
 // Lets build a page ...
 //
 $page_title = $l_title;
-include("includes/page_header.php");
+include("includes/nuke_page_header.php");
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         'body' => 'faq_body.tpl')
 );
 make_jumpbox('viewforum.'.$phpEx);
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'L_FAQ_TITLE' => $l_title,
         'L_BACK_TO_TOP' => $lang['Back_to_top'])
 );
@@ -150,10 +150,10 @@ for($i = 0; $i < count($faq_block); $i++)
 {
         if( count($faq_block[$i]) )
         {
-                $template->assign_block_vars('faq_block', array(
+                $template_nuke->assign_block_vars('faq_block', array(
                         'BLOCK_TITLE' => $faq_block_titles[$i])
                 );
-                $template->assign_block_vars('faq_block_link', array(
+                $template_nuke->assign_block_vars('faq_block_link', array(
                         'BLOCK_TITLE' => $faq_block_titles[$i])
                 );
 
@@ -162,7 +162,7 @@ for($i = 0; $i < count($faq_block); $i++)
                         $row_color = ( !($j % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
                         $row_class = ( !($j % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
-                        $template->assign_block_vars('faq_block.faq_row', array(
+                        $template_nuke->assign_block_vars('faq_block.faq_row', array(
                                 'ROW_COLOR' => '#' . $row_color,
                                 'ROW_CLASS' => $row_class,
                                 'FAQ_QUESTION' => $faq_block[$i][$j]['question'],
@@ -171,7 +171,7 @@ for($i = 0; $i < count($faq_block); $i++)
                                 'U_FAQ_ID' => $faq_block[$i][$j]['id'])
                         );
 
-                        $template->assign_block_vars('faq_block_link.faq_row_link', array(
+                        $template_nuke->assign_block_vars('faq_block_link.faq_row_link', array(
                                 'ROW_COLOR' => '#' . $row_color,
                                 'ROW_CLASS' => $row_class,
                                 'FAQ_LINK' => $faq_block[$i][$j]['question'],
@@ -182,7 +182,7 @@ for($i = 0; $i < count($faq_block); $i++)
         }
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 include("includes/page_tail.php");
 

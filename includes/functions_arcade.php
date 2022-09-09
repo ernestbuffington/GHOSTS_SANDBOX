@@ -18,7 +18,7 @@ if (!defined('IN_PHPBB2'))
     die('Hacking attempt');
 }
 
-if ( file_exists('arcade_install.'.$phpEx) AND ($userdata['user_level'] == NUKE_ADMIN))
+if ( file_exists('arcade_install.'.$phpEx) AND ($nuke_userdata['user_level'] == NUKE_ADMIN))
 {
 $message = "Only the Administrator will see this message. <br /><br /> You MUST DELETE arcade_install.php FROM the site root before you can continue.";
 message_die(NUKE_GENERAL_ERROR, $message);
@@ -49,7 +49,7 @@ function read_arcade_config() {
         return $arcade_config;
 }
 
-function get_arcade_categories($user_id, $user_level, $mode) {
+function get_arcade_categories($nuke_user_id, $nuke_user_level, $mode) {
         global $nuke_db;
         $liste_cat = '';
         $nbcat = 0;
@@ -57,12 +57,12 @@ function get_arcade_categories($user_id, $user_level, $mode) {
         switch ($mode) {
                 case 'view':
                     $liste_auth = "0,1,3,5";
-                    $liste_auth .= ($user_level == NUKE_ADMIN) ? ',2,4,6' : (( $user_level == NUKE_MOD) ? ',4' : '');
+                    $liste_auth .= ($nuke_user_level == NUKE_ADMIN) ? ',2,4,6' : (( $nuke_user_level == NUKE_MOD) ? ',4' : '');
                     break;
 
                 case 'play':
                     $liste_auth = "0";
-                    $liste_auth .= ($user_level == NUKE_ADMIN) ? ',1,2,3,4,5,6' : (( $user_level == NUKE_MOD) ? ',3,4' : '');
+                    $liste_auth .= ($nuke_user_level == NUKE_ADMIN) ? ',1,2,3,4,5,6' : (( $nuke_user_level == NUKE_MOD) ? ',3,4' : '');
                     break;
         }
 
@@ -76,7 +76,7 @@ function get_arcade_categories($user_id, $user_level, $mode) {
                 $liste_cat .= (empty($liste_cat)) ? $row['arcade_catid'] : ',' . $row['arcade_catid'];
         }
 
-          $sql = "SELECT aa.arcade_catid FROM " . NUKE_AUTH_ARCADE_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id ";
+          $sql = "SELECT aa.arcade_catid FROM " . NUKE_AUTH_ARCADE_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE. " g WHERE ug.user_id = $nuke_user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id ";
 
         if (!($result = $nuke_db->sql_query($sql))) {
                 message_die(NUKE_GENERAL_ERROR, 'Could not select info FROM user/user_group table', '', __LINE__, __FILE__, $sql);

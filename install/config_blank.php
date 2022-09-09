@@ -1,7 +1,7 @@
 <?php
 
 /*=======================================================================
- Nuke-Evolution Xtreme: Enhanced PHP-Nuke Web Portal System
+ PHP-Nuke Titanium | Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -19,26 +19,27 @@
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
     exit('Access Denied');
 }
+
 global $nuke_dbhost, $nuke_dbname, $nuke_dbuname, $prefix; 
 /*----[ Welcome! ] ---------------------------------------
-| Welcome to Nuke-Evolution, an advanced content          |
+| Welcome to PHP-Nuke Titanium, an advanced content       |
 | management system based on PHP-Nuke                     |
 ---------------------------------------------------------*/
 
-/*----[ $dbhost_a ] ---------------------------------------
+/*----[ $nuke_dbhost ] -----------------------------------
 | Your database host, normally 'localhost'                |
 |                                                         |
 | Default: localhost                                      |
 ---------------------------------------------------------*/
 $nuke_dbhost = '%dbhost%';
-/*----[ $dbname_a ] ---------------------------------------
+/*----[ $nuke_dbname ] -----------------------------------
 | The name of your database that will hold Evo's tables   |
 |                                                         |
 | Default: xxx_evo                                        |
 ---------------------------------------------------------*/
 $nuke_dbname = '%dbname%';
 
-/*----[ $dbuname_a ] --------------------------------------
+/*----[ $dbuname_a ] -------------------------------------
 | The username linked to your database, must have correct |
 | permissions                                             |
 |                                                         |
@@ -46,7 +47,7 @@ $nuke_dbname = '%dbname%';
 ---------------------------------------------------------*/
 $nuke_dbuname = '%dbuname%';
 
-/*----[ $dbpass_a ] ---------------------------------------
+/*----[ $nuke_dbpass ] -----------------------------------
 | The password associated with your db usersname          |
 |                                                         |
 | Default: null                                           |
@@ -71,7 +72,7 @@ $nuke_dbtype = '%dbtype%';
 ---------------------------------------------------------*/
 $prefix = '%prefix%';
 
-/*----[ $user_prefix ] -----------------------------------
+/*----[ $nuke_user_prefix ] ------------------------------
 | The prefix for your Nuke-Evolution user-related tables  |
 | Do not change this unless it is really needed           |
 |                                                         |

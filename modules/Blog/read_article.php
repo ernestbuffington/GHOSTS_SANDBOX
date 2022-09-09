@@ -30,7 +30,7 @@
  ************************************************************************/
 if (!defined('MODULE_FILE')) { die('You can\'t access this file directly...'); }
 
-global $cookie, $userinfo;
+global $cookie, $nuke_userinfo;
 
 @include_once(NUKE_INCLUDE_DIR.'counter.php');
 
@@ -49,7 +49,7 @@ nuke_redirect("index.php");
 if ($save AND is_user()) 
 {
     $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET umode='$mode', uorder='$order', thold='$thold' where uid='$cookie[0]'");
-    $info = base64_encode("$userinfo[user_id]:$userinfo[username]:$userinfo[user_password]:$userinfo[storynum]:$userinfo[umode]:$userinfo[uorder]:$userinfo[thold]:$userinfo[noscore]");
+    $info = base64_encode("$nuke_userinfo[user_id]:$nuke_userinfo[username]:$nuke_userinfo[user_password]:$nuke_userinfo[storynum]:$nuke_userinfo[umode]:$nuke_userinfo[uorder]:$nuke_userinfo[thold]:$nuke_userinfo[noscore]");
     setcookie("user","$info",time()+$cookieusrtime);
 }
 

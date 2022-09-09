@@ -41,10 +41,10 @@ if (!defined('CNBYA')) {
 
 if(is_mod_admin($module_name)) {
 
-    list($username, $email, $check_num) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT username, user_email, check_num FROM ".$nuke_user_prefix."_users_temp WHERE user_id='$rsn_uid'"));
+    list($nuke_username, $email, $check_num) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT username, user_email, check_num FROM ".$nuke_user_prefix."_users_temp WHERE user_id='$rsn_uid'"));
     if ($ya_config['servermail'] == 0) {
         $time = time();
-        $finishlink = "$nukeurl/modules.php?name=$module_name&op=activate&username=$username&check_num=$check_num";
+        $finishlink = "$nukeurl/modules.php?name=$module_name&op=activate&username=$nuke_username&check_num=$check_num";
         $message = _WELCOMETO." $sitename!<br /><br />";
         $message .= _YOUUSEDEMAIL." ($email) "._TOREGISTER." $sitename.<br /><br />";
         $message .= _TOFINISHUSER."<br /><br /><a href=\"$finishlink\">$finishlink</a>";

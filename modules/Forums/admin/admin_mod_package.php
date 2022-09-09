@@ -56,7 +56,7 @@ $submit = (isset($HTTP_POST_VARS['submit'])) ? TRUE : FALSE;
 
 if (($mode == 'mod_pak') && ($submit))
 {
-    $no_page_header = true;
+    $no_nuke_page_header = true;
 }
 
 @include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
@@ -146,7 +146,7 @@ if (($mode == 'mod_pak') && ($submit))
 if (($mode == 'mod_pak') && (!$submit))
 {
 
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/stat_make_pak.tpl')
     );
     
@@ -219,7 +219,7 @@ if (($mode == 'mod_pak') && (!$submit))
     
     $php_select_field .= '</select>';
         
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_PACKAGE_MODULE' => $lang['Package_module'],
         'L_PACKAGE_MODULE_EXPLAIN' => $lang['Package_module_explain'],
         'L_SELECT_INFO_FILE' => $lang['Select_info_file'],
@@ -237,11 +237,11 @@ if (($mode == 'mod_pak') && (!$submit))
 }
 // END Package Module
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 //
 // Page Footer
 //
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

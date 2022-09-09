@@ -46,22 +46,22 @@
 	
 	}
 	
-	if($config['button_method'] == 0){		
-    	if (!file_exists($config['upload_file'])) {
-      		if (!@mkdir($config['upload_file'], $directory_mode)) {
-          		@mkdir($config['upload_file'], $directory_mode);
+	if($nuke_config['button_method'] == 0){		
+    	if (!file_exists($nuke_config['upload_file'])) {
+      		if (!@mkdir($nuke_config['upload_file'], $directory_mode)) {
+          		@mkdir($nuke_config['upload_file'], $directory_mode);
       		}
     	}
 		
 	if (check_image_type($_FILES['site_image']['type']) == false){ echo $lang_new[$module_name]['ERROR']; }
-		if (move_uploaded_file($_FILES['site_image']['tmp_name'], $config['upload_file'] . $_FILES['site_image']['name'])) {
-			$img_upload = $config['upload_file'].$_FILES['site_image']['name'];
+		if (move_uploaded_file($_FILES['site_image']['tmp_name'], $nuke_config['upload_file'] . $_FILES['site_image']['name'])) {
+			$img_upload = $nuke_config['upload_file'].$_FILES['site_image']['name'];
 		}
 		} else {
   			$img_upload = $site_image;
 		}
 		
-		$result = $nuke_db->sql_query("INSERT INTO `".$prefix."_link_us`(`id`, `site_name`, `site_url`, `site_image`, `site_description`, `site_hits`, `site_status`, `date_added`, `button_type`, `user_id`, `user_name`, `user_email`, `user_ip`) VALUES (NULL, '".$site_name."', '".$site_url."', '".$img_upload."', '".$site_description."', '".$site_hits."', '".$site_status."', '".$date_added."', '".$button_type."', '".$user_id."', '".$user_name."', '".$user_email."', '".$user_ip."')");
+		$result = $nuke_db->sql_query("INSERT INTO `".$prefix."_link_us`(`id`, `site_name`, `site_url`, `site_image`, `site_description`, `site_hits`, `site_status`, `date_added`, `button_type`, `user_id`, `user_name`, `user_email`, `user_ip`) VALUES (NULL, '".$site_name."', '".$site_url."', '".$img_upload."', '".$site_description."', '".$site_hits."', '".$site_status."', '".$date_added."', '".$button_type."', '".$nuke_user_id."', '".$nuke_user_name."', '".$nuke_user_email."', '".$nuke_user_ip."')");
 		
 		if(!$result) {
     		include_once(NUKE_BASE_DIR.'header.php');
@@ -77,10 +77,10 @@
     		$msg .= $lang_new[$module_name]['SITE_URL'].": ".Remove_Slashes($site_url)."\n";
     		$msg .= $lang_new[$module_name]['SITE_IMAGE'].": ".Remove_Slashes($imgurl)."\n";
     		$msg .= $lang_new[$module_name]['SITE_DESCRIPTION'].": ".Remove_Slashes($site_description)."\n";
-    		$msg .= $lang_new[$module_name]['SUB_YOUR_ID'].": ".$user_id."\n";
-    		$msg .= $lang_new[$module_name]['SUB_USERNAME'].": ".Remove_Slashes($user_name)."\n";
-    		$msg .= $lang_new[$module_name]['SUB_EMAIL'].": ".Remove_Slashes($user_email)."\n";
-    		$msg .= $lang_new[$module_name]['SUB_IP'].": ".$user_ip."\n";
+    		$msg .= $lang_new[$module_name]['SUB_YOUR_ID'].": ".$nuke_user_id."\n";
+    		$msg .= $lang_new[$module_name]['SUB_USERNAME'].": ".Remove_Slashes($nuke_user_name)."\n";
+    		$msg .= $lang_new[$module_name]['SUB_EMAIL'].": ".Remove_Slashes($nuke_user_email)."\n";
+    		$msg .= $lang_new[$module_name]['SUB_IP'].": ".$nuke_user_ip."\n";
     		$to = $adminmail;
     		$subject = $sitename.$lang_new[$module_name]['SUB_ADDED'];
     		$mailheaders = "From: ".$adminmail."\r\n";

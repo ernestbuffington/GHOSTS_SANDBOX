@@ -119,12 +119,12 @@ $limit_by_posts_no = ( !$new['limit_by_posts'] ) ? "checked=\"checked\"" : "";
 $limit_type_posts = ( $new['limit_type']=='posts' ) ? "checked=\"checked\"" : "";
 $limit_type_date = ( $new['limit_type']=='date' ) ? "checked=\"checked\"" : "";
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     "body" => "admin/arcade_config_body.tpl")
 );
 
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "S_CONFIG_ACTION" => append_sid("admin_arcade.$phpEx"),
 
     "L_YES" => $lang['Yes'],
@@ -200,8 +200,8 @@ $template->assign_vars(array(
 
 // Generate the page footer
 
-$template->pparse("body");
+$template_nuke->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

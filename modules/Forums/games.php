@@ -41,8 +41,8 @@ require_once('includes/bbcode.'. $phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_GAME, $nukeuser);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_GAME, $nukeuser);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -50,7 +50,7 @@ include('includes/functions_arcade.' . $phpEx);
 //
 // Start auth check
 //
-if (!$userdata['session_logged_in']) {
+if (!$nuke_userdata['session_logged_in']) {
         $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE"))) ? "Refresh: 0; URL=" : "Location: ";
         header($header_location . "modules.php?name=Your_Account");
         exit;
@@ -62,9 +62,9 @@ if (!$userdata['session_logged_in']) {
 $arcade_config = array();
 $arcade_config = read_arcade_config();
 
-if($arcade_config['limit_by_posts'] && $userdata['user_level'] != NUKE_ADMIN){
+if($arcade_config['limit_by_posts'] && $nuke_userdata['user_level'] != NUKE_ADMIN){
 $secs = 86400;
-$uid = $userdata['user_id'];
+$uid = $nuke_userdata['user_id'];
 
 $days = $arcade_config['days_limit'];
 $posts = $arcade_config['posts_needed'];
@@ -126,7 +126,7 @@ if (!($row = $nuke_db->sql_fetchrow($result)) )
         message_die(NUKE_GENERAL_ERROR, "This game does not exist", '', __LINE__, __FILE__, $sql);
 }
 
-$liste_cat_auth_play = get_arcade_categories($userdata['user_id'], $userdata['user_level'],'play');
+$liste_cat_auth_play = get_arcade_categories($nuke_userdata['user_id'], $nuke_userdata['user_level'],'play');
 $tbauth_play = array();
 $tbauth_play = explode(',',$liste_cat_auth_play);
 
@@ -136,7 +136,7 @@ if (!in_array($row['arcade_catid'],$tbauth_play))
 }
 
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         'body' => 'games_body.tpl')
 );
 
@@ -150,9 +150,9 @@ if (!$nuke_db->sql_query($sql))
 // Type V2 Game Else Type V1
 if ($row['game_type'] == 3) {
         $type_v2 = true;
-        $template->assign_block_vars('game_type_V2',array());
-        $gamehash_id = md5(uniqid($user_ip));
-        $sql = "INSERT INTO " . NUKE_GAMEHASH_TABLE . " (gamehash_id , game_id , user_id , hash_date) VALUES ('$gamehash_id' , '$gid' , '" . $userdata['user_id'] . "' , '" . time() . "')";
+        $template_nuke->assign_block_vars('game_type_V2',array());
+        $gamehash_id = md5(uniqid($nuke_user_ip));
+        $sql = "INSERT INTO " . NUKE_GAMEHASH_TABLE . " (gamehash_id , game_id , user_id , hash_date) VALUES ('$gamehash_id' , '$gid' , '" . $nuke_userdata['user_id'] . "' , '" . time() . "')";
 
         if (!($result = $nuke_db->sql_query($sql)))
                 {
@@ -163,19 +163,19 @@ elseif ($row['game_type'] == 4 or $row['game_type'] == 5)
         {
         if ($row['game_type'] == 5)
                 {
-                            $template->assign_block_vars('game_type_V5',array());
+                            $template_nuke->assign_block_vars('game_type_V5',array());
             }
             else
             {
-                        $template->assign_block_vars('game_type_V2',array());
+                        $template_nuke->assign_block_vars('game_type_V2',array());
             }
         setcookie('gidstarted', '', time() - 3600);
         setcookie('gidstarted',$gid);
         setcookie('timestarted', '', time() - 3600);
         setcookie('timestarted', time());
 
-        $gamehash_id = md5($user_ip);
-        $sql = "INSERT INTO " . NUKE_GAMEHASH_TABLE . " (gamehash_id , game_id , user_id , hash_date) VALUES ('$gamehash_id' , '$gid' , '" . $userdata['user_id'] . "' , '" . time() . "')";
+        $gamehash_id = md5($nuke_user_ip);
+        $sql = "INSERT INTO " . NUKE_GAMEHASH_TABLE . " (gamehash_id , game_id , user_id , hash_date) VALUES ('$gamehash_id' , '$gid' , '" . $nuke_userdata['user_id'] . "' , '" . time() . "')";
 
         if (!($result = $nuke_db->sql_query($sql)))
                 {
@@ -197,7 +197,7 @@ $result = $nuke_db->sql_query($sql);
 $ourrow = $nuke_db->sql_fetchrow($result);
 $cat_title = $ourrow['arcade_cattitle'];
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'MAXSIZE_AVATAR' => intval($arcade_config['maxsize_avatar']),
         'CAT_TITLE' => '<a class="nav" href="' . append_sid("arcade.$phpEx&amp;cid=") . $row['arcade_catid'] .'">' . $cat_title . '</a> ' ,
         'NAV_DESC' => '<a class="nav" href="' . append_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> ' ,
@@ -257,9 +257,9 @@ while ($row = $nuke_db->sql_fetchrow($result)) {
         $posreelle++;
 
         if ($posreelle == 1) {
-                $user_avatar_type = $row['user_avatar_type'];
-                $user_allowavatar = $row['user_allowavatar'];
-                $user_avatar = $row['user_avatar'];
+                $nuke_user_avatar_type = $row['user_avatar_type'];
+                $nuke_user_allowavatar = $row['user_allowavatar'];
+                $nuke_user_avatar = $row['user_avatar'];
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -278,7 +278,7 @@ while ($row = $nuke_db->sql_fetchrow($result)) {
         }
 
         $lastscore = $row['score_game'];
-        $template->assign_block_vars('scorerow', array(
+        $template_nuke->assign_block_vars('scorerow', array(
                 'POS' => $pos,
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
@@ -295,30 +295,30 @@ while ($row = $nuke_db->sql_fetchrow($result)) {
 }
 
 $avatar_img = '';
-if ($user_avatar_type && $user_allowavatar) {
-        switch($user_avatar_type) {
+if ($nuke_user_avatar_type && $nuke_user_allowavatar) {
+        switch($nuke_user_avatar_type) {
                 case NUKE_USER_AVATAR_UPLOAD:
-                        $avatar_img = ($board_config['allow_avatar_upload']) ? '<img src="' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" border="0" hspace="20" align="center" valign="center" onload="resize_avatar(this)"/>' : '';
+                        $avatar_img = ($board_config['allow_avatar_upload']) ? '<img src="' . $board_config['avatar_path'] . '/' . $nuke_user_avatar . '" alt="" border="0" hspace="20" align="center" valign="center" onload="resize_avatar(this)"/>' : '';
                         break;
 
                 case NUKE_USER_AVATAR_REMOTE:
-                        $avatar_img = ($board_config['allow_avatar_remote']) ? '<img src="' . $user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center"  onload="resize_avatar(this)"/>' : '';
+                        $avatar_img = ($board_config['allow_avatar_remote']) ? '<img src="' . $nuke_user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center"  onload="resize_avatar(this)"/>' : '';
                         break;
 
                 case NUKE_USER_AVATAR_GALLERY:
-                        $avatar_img = ($board_config['allow_avatar_local']) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center"  onload="resize_avatar(this)"/>' : '';
+                        $avatar_img = ($board_config['allow_avatar_local']) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $nuke_user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center"  onload="resize_avatar(this)"/>' : '';
                         break;
         }
 }
 
 if ($arcade_config['display_winner_avatar']) {
         if ($arcade_config['winner_avatar_position']=='right') {
-                $template->assign_block_vars('avatar_best_player_right',array());
+                $template_nuke->assign_block_vars('avatar_best_player_right',array());
         } else {
-                $template->assign_block_vars('avatar_best_player_left',array());
+                $template_nuke->assign_block_vars('avatar_best_player_left',array());
         }
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
            'L_ACTUAL_WINNER' => $lang['Actual_winner'],
            'BEST_USER_NAME' => $best_user,
            'BEST_USER_DATE' => sprintf($lang['hi_score_on'], $best_date),
@@ -335,8 +335,8 @@ include($phpbb2_root_path . 'whoisplaying.'.$phpEx);
 //
 // Output page header
 $page_title = $lang['arcade_game'];
-include('includes/page_header.'.$phpEx);
-$template->pparse('body');
+include('includes/nuke_page_header.'.$phpEx);
+$template_nuke->pparse('body');
 include('includes/page_tail.'.$phpEx);
 
 ?>

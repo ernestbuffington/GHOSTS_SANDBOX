@@ -237,23 +237,23 @@ $top_smilies['Smilie_code'] = 'Smiley Code';
 // [/top_smilies]
 
 // [users_by_month]
-$users_by_month = array();
+$nuke_users_by_month = array();
 
-$users_by_month['module_name'] = 'Number of new users by month';
-$users_by_month['Year'] = 'Year';
+$nuke_users_by_month['module_name'] = 'Number of new users by month';
+$nuke_users_by_month['Year'] = 'Year';
 
-$users_by_month['Month_jan'] = 'Jan';
-$users_by_month['Month_feb'] = 'Feb';
-$users_by_month['Month_mar'] = 'Mar';
-$users_by_month['Month_apr'] = 'Apr';
-$users_by_month['Month_may'] = 'May';
-$users_by_month['Month_jun'] = 'Jun';
-$users_by_month['Month_jul'] = 'Jul';
-$users_by_month['Month_aug'] = 'Aug';
-$users_by_month['Month_sep'] = 'Sep';
-$users_by_month['Month_oct'] = 'Oct';
-$users_by_month['Month_nov'] = 'Nov';
-$users_by_month['Month_dec'] = 'Dec';
+$nuke_users_by_month['Month_jan'] = 'Jan';
+$nuke_users_by_month['Month_feb'] = 'Feb';
+$nuke_users_by_month['Month_mar'] = 'Mar';
+$nuke_users_by_month['Month_apr'] = 'Apr';
+$nuke_users_by_month['Month_may'] = 'May';
+$nuke_users_by_month['Month_jun'] = 'Jun';
+$nuke_users_by_month['Month_jul'] = 'Jul';
+$nuke_users_by_month['Month_aug'] = 'Aug';
+$nuke_users_by_month['Month_sep'] = 'Sep';
+$nuke_users_by_month['Month_oct'] = 'Oct';
+$nuke_users_by_month['Month_nov'] = 'Nov';
+$nuke_users_by_month['Month_dec'] = 'Dec';
 // [/users_by_month]
 
 // [posts_by_month]

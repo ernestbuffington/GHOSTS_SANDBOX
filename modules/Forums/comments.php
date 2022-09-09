@@ -39,8 +39,8 @@ include('includes/functions_post.'. $phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_POSTING, $nukeuser);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_POSTING, $nukeuser);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -48,7 +48,7 @@ include('includes/functions_arcade.' . $phpEx);
 
 $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE")) ) ? "Refresh: 0; URL=" : "Location: ";
 
-if ( !$userdata['session_logged_in'] )
+if ( !$nuke_userdata['session_logged_in'] )
 {
     header($header_location . "modules.php?name=Your_Account");
     exit;
@@ -57,15 +57,15 @@ if ( !$userdata['session_logged_in'] )
 // End of auth check
 //
 generate_smilies('inline', NUKE_PAGE_POSTING);
-include("includes/page_header.php");
+include("includes/nuke_page_header.php");
 
 $mode = $HTTP_GET_VARS['mode'];
 
 if($mode == "z")
 {
-$user_allow_arcadepm = intval($HTTP_POST_VARS['user_allow_arcadepm']);
+$nuke_user_allow_arcadepm = intval($HTTP_POST_VARS['user_allow_arcadepm']);
 
-$sql = "UPDATE " . NUKE_USERS_TABLE. " SET user_allow_arcadepm = '$user_allow_arcadepm' WHERE user_id =  " . $userdata['user_id'];
+$sql = "UPDATE " . NUKE_USERS_TABLE. " SET user_allow_arcadepm = '$nuke_user_allow_arcadepm' WHERE user_id =  " . $nuke_userdata['user_id'];
         if( !($result = $nuke_db->sql_query($sql)))
             {
             message_die(NUKE_GENERAL_ERROR, "Error updating selection", '', __LINE__, __FILE__, $sql);
@@ -85,7 +85,7 @@ if($mode == "update")
             //Checks to make sure the user has privledge to enter highscores.
             //This query checks the user_id stored in the users cookie and in the database.
             //If they don't match, the comments is not entered and error message is displayed.
-            $user_id = $userdata['user_id'];
+            $nuke_user_id = $nuke_userdata['user_id'];
             $sql = "SELECT game_highuser FROM " . NUKE_GAMES_TABLE. " WHERE game_id = $game_id";
 
                 if( !($result = $nuke_db->sql_query($sql)))
@@ -94,7 +94,7 @@ if($mode == "update")
             }
             $row = $nuke_db->sql_fetchrow($result);
 
-            if($row['game_highuser'] != $user_id)
+            if($row['game_highuser'] != $nuke_user_id)
             {
             message_die(NUKE_GENERAL_ERROR, "Error Authenticating User - Possible hack attempt!", '');
             }
@@ -115,7 +115,7 @@ if($mode == "update")
 
 if($mode == "submit")
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
                                 'body' => 'comments_body.tpl'));
 
     $game_id = intval($HTTP_POST_VARS['comment_id']);
@@ -129,7 +129,7 @@ if($mode == "submit")
 
     $row = $nuke_db->sql_fetchrow($result);
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
             'L_ADD_EDIT_COMMENTS' => $lang['add_edit_comments'],
             'NAV_DESC' => '<a class="nav" href="' . append_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> ' ,
             'GAME_ID' => $row['game_id'],
@@ -141,42 +141,42 @@ if($mode == "submit")
             ));
 
     //Gets Avatar based on user settings and other user stats
-    $sql = "SELECT username, user_avatar_type, user_allowavatar, user_avatar FROM " . NUKE_USERS_TABLE . " WHERE user_id = " . $userdata['user_id'] ;
+    $sql = "SELECT username, user_avatar_type, user_allowavatar, user_avatar FROM " . NUKE_USERS_TABLE . " WHERE user_id = " . $nuke_userdata['user_id'] ;
     if( !($result = $nuke_db->sql_query($sql)) )
     {
         message_die(NUKE_GENERAL_ERROR, "Cannot access the users table", '', __LINE__, __FILE__, $sql);
     }
     $row = $nuke_db->sql_fetchrow($result);
 
-    $user_avatar_type = $row['user_avatar_type'];
-    $user_allowavatar = $row['user_allowavatar'];
-    $user_avatar = $row['user_avatar'];
+    $nuke_user_avatar_type = $row['user_avatar_type'];
+    $nuke_user_allowavatar = $row['user_allowavatar'];
+    $nuke_user_avatar = $row['user_avatar'];
     $avatar_img = '';
 
-    if ( $user_avatar_type && $user_allowavatar )
+    if ( $nuke_user_avatar_type && $nuke_user_allowavatar )
     {
-       switch( $user_avatar_type )
+       switch( $nuke_user_avatar_type )
        {
           case NUKE_USER_AVATAR_UPLOAD:
-             $avatar_img = ( $board_config['allow_avatar_upload'] ) ? '<img src="' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" border="0" hspace="20" align="center" valign="center"/>' : '';
+             $avatar_img = ( $board_config['allow_avatar_upload'] ) ? '<img src="' . $board_config['avatar_path'] . '/' . $nuke_user_avatar . '" alt="" border="0" hspace="20" align="center" valign="center"/>' : '';
              break;
           case NUKE_USER_AVATAR_REMOTE:
-             $avatar_img = ( $board_config['allow_avatar_remote'] ) ? '<img src="' . $user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center" />' : '';
+             $avatar_img = ( $board_config['allow_avatar_remote'] ) ? '<img src="' . $nuke_user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center" />' : '';
              break;
           case NUKE_USER_AVATAR_GALLERY:
-             $avatar_img = ( $board_config['allow_avatar_local'] ) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center" />' : '';
+             $avatar_img = ( $board_config['allow_avatar_local'] ) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $nuke_user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center" />' : '';
              break;
        }
 
     }
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'L_QUICK_STATS' => $lang['quick_stats'],
-            'USER_AVATAR' => '<a href="modules.php?name=Forums&amp;file=profile&amp;mode=viewprofile&amp;u=' . $userdata['user_id'] . '">' . $avatar_img . '</a>',
-            'USERNAME' => '<a href="' . append_sid("statarcade.$phpEx?uid=" . $userdata['user_id'] ) . '" class="genmed">' . $row['username'] . '</a> ',
+            'USER_AVATAR' => '<a href="modules.php?name=Forums&amp;file=profile&amp;mode=viewprofile&amp;u=' . $nuke_userdata['user_id'] . '">' . $avatar_img . '</a>',
+            'USERNAME' => '<a href="' . append_sid("statarcade.$phpEx?uid=" . $nuke_userdata['user_id'] ) . '" class="genmed">' . $row['username'] . '</a> ',
             ));
 
     //Gets some user stats to display on the comment submission page
-    $sql ="SELECT s.score_set, s.game_id, g.game_name FROM " . NUKE_SCORES_TABLE. " s LEFT JOIN " . NUKE_USERS_TABLE. " u ON s.user_id = u.user_id LEFT JOIN " . NUKE_GAMES_TABLE. " g ON s.game_id = g.game_id WHERE s.user_id = " . $userdata['user_id'] . " ORDER BY score_set DESC LIMIT 1";
+    $sql ="SELECT s.score_set, s.game_id, g.game_name FROM " . NUKE_SCORES_TABLE. " s LEFT JOIN " . NUKE_USERS_TABLE. " u ON s.user_id = u.user_id LEFT JOIN " . NUKE_GAMES_TABLE. " g ON s.game_id = g.game_id WHERE s.user_id = " . $nuke_userdata['user_id'] . " ORDER BY score_set DESC LIMIT 1";
 
     if( !($result = $nuke_db->sql_query($sql)) )
     {
@@ -188,7 +188,7 @@ if($mode == "submit")
         $fav_game_name = '<a href="' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>';
 
 
-    $sql="SELECT * FROM " .NUKE_GAMES_TABLE ." WHERE game_highuser = " . $userdata['user_id'] . " ORDER BY game_highdate DESC";
+    $sql="SELECT * FROM " .NUKE_GAMES_TABLE ." WHERE game_highuser = " . $nuke_userdata['user_id'] . " ORDER BY game_highdate DESC";
     if( !($result = $nuke_db->sql_query($sql)) )
     {
         message_die(NUKE_GENERAL_ERROR, "Cannot access last high score data", '', __LINE__, __FILE__, $sql);
@@ -199,22 +199,22 @@ if($mode == "submit")
     $highscore_date = create_date( $board_config['default_dateformat'] , $row['game_highdate'] , $board_config['board_timezone'] );
     $highscore_game_name = '<a href="' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>';
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                     'L_QUICK_STATS_MESSAGE' => sprintf($lang['quick_stats_message'], $score_count, $fav_game_name, $times_played, $highscore_date, $highscore_game_name),
             ));
 
 //
 // Generate the page end
 //
-$template->pparse('body');
+$template_nuke->pparse('body');
 include("includes/page_tail.php");
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
    'body' => 'comments_select_body.tpl'));
 
 $link    = "comments";
-$uid = $userdata['user_id'];
+$uid = $nuke_userdata['user_id'];
 $submit = append_sid($link."?mode=submit");
 $z = append_sid($link."?mode=z");
 
@@ -241,15 +241,15 @@ $sql = "SELECT user_allow_arcadepm FROM " . NUKE_USERS_TABLE . " WHERE user_id =
 
 $row = $nuke_db->sql_fetchrow($result);
 
-$user_allow_arcadepm_yes = ( $row['user_allow_arcadepm'] ) ? "checked=\"checked\"" : "";
-$user_allow_arcadepm_no = ( !$row['user_allow_arcadepm'] ) ? "checked=\"checked\"" : "";
+$nuke_user_allow_arcadepm_yes = ( $row['user_allow_arcadepm'] ) ? "checked=\"checked\"" : "";
+$nuke_user_allow_arcadepm_no = ( !$row['user_allow_arcadepm'] ) ? "checked=\"checked\"" : "";
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
             'NAV_DESC' => '<a class="nav" href="' . append_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> '
             ));
 if ($score_count != 0)
 {
-$template->assign_block_vars('comment_select',array(
+$template_nuke->assign_block_vars('comment_select',array(
             'NAV_DESC' => '<a class="nav" href="' . append_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> ' ,
             'HIGHSCORE_COUNT' => $score_count,
             'HIGHSCORE_SELECT' => $select_highscore,
@@ -258,18 +258,18 @@ $template->assign_block_vars('comment_select',array(
 
 }
 
-$template->assign_block_vars('comment_settings',array(
+$template_nuke->assign_block_vars('comment_settings',array(
             'S_ACTION_PM' => $z,
             'L_YES' => $lang['Yes'],
             'L_NO' => $lang['No'],
-            'USER_ALLOW_ARCADEPM_YES' => $user_allow_arcadepm_yes,
-            'USER_ALLOW_ARCADEPM_NO' => $user_allow_arcadepm_no
+            'USER_ALLOW_ARCADEPM_YES' => $nuke_user_allow_arcadepm_yes,
+            'USER_ALLOW_ARCADEPM_NO' => $nuke_user_allow_arcadepm_no
             ));
 
 //
 // Generate the page end
 //
-$template->pparse('body');
+$template_nuke->pparse('body');
 include("includes/page_tail.php");
 
 ?>

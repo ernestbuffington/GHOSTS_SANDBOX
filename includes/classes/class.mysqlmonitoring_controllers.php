@@ -49,7 +49,7 @@ class Mysqlmonitoring extends CI_Controller
         // Path to your model
         $this->load->model('Mysqlmonitoring_model', 'mysqlmonitoring');
 
-        /* Get all actual process with time over $config['slowq'] seconds */
+        /* Get all actual process with time over $nuke_config['slowq'] seconds */
         foreach ($this->mysqlmonitoring->processList() as $process) {
             if ($process->Time > $this->input->post('slowqueries') and $process->Command != 'Sleep') $data['slow'][] = $process;
         }

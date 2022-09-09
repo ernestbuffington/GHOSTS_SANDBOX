@@ -31,9 +31,9 @@ require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 // module's directory. It's all, as easy as it sounds ;)
 // NOTE: in $download_location PLEASE give the direct download link to the file!!!
 
-$author_name = "Shawn Archer";
-$author_email = "Shawn@NukeStyles.com";
-$author_homepage = "http://www.NukeStyles.com";
+$nuke_author_name = "Shawn Archer";
+$nuke_author_email = "Shawn@NukeStyles.com";
+$nuke_author_homepage = "http://www.NukeStyles.com";
 $license = "GNU/GPL";
 $download_location = "http://www.NukeStyles.com/modules.php?name=Downloads";
 $module_version = "1.0";
@@ -46,6 +46,6 @@ $module_description = "Module to have your Website documents in one place. You h
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($author_name, $author_email, $author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
 
 ?>

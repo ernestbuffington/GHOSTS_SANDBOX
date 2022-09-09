@@ -34,13 +34,13 @@ if($totalselected > 0) {
   echo '<td align="center"><strong>'._AB_HITS.'</strong></td>'."\n";
   echo '</tr>'."\n";
   $result = $nuke_db->sql_query("SELECT `user_agent`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` GROUP BY 1");
-  while(list($user_agent, $lastview, $hits) = $nuke_db->sql_fetchrow($result)){
-    $trackedips = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_agent`='$user_agent'"));
-    $user_agent = wordwrap($user_agent, 50, "\n", true);
-    $user_agent = str_replace("&amp;amp;", "&amp;", htmlentities($user_agent, ENT_QUOTES));
-    $user_agent = str_replace("\n", "<br />\n", $user_agent);
+  while(list($nuke_user_agent, $lastview, $hits) = $nuke_db->sql_fetchrow($result)){
+    $trackedips = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_agent`='$nuke_user_agent'"));
+    $nuke_user_agent = wordwrap($nuke_user_agent, 50, "\n", true);
+    $nuke_user_agent = str_replace("&amp;amp;", "&amp;", htmlentities($nuke_user_agent, ENT_QUOTES));
+    $nuke_user_agent = str_replace("\n", "<br />\n", $nuke_user_agent);
     echo '<tr bgcolor="#ffffff">'."\n";
-    echo '<td>'.$user_agent.'</td>'."\n";
+    echo '<td>'.$nuke_user_agent.'</td>'."\n";
     echo '<td align="center">'.$trackedips.'</td>'."\n";
     echo '<td align="center">'.date("Y-m-d \@ H:i:s",$lastview).'</td>'."\n";
     echo '<td align="center">'.$hits.'</td>'."\n";

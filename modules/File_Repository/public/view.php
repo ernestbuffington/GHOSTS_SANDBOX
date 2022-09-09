@@ -11,7 +11,7 @@
 
 function _view_downloadinfo()
 {
-	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $admin, $user, $userinfo;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $admin, $nuke_user, $nuke_userinfo;
 	OpenTable();
 	_index_navigation_header();
 //------------------------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ function _view_downloadinfo()
 //------------------------------------------------------------------------------------------------
 //	UPDATE THE ITEM VIEW COUNTER / WILL NOT UPDATE IF YOU ARE THE AUTHOR
 //------------------------------------------------------------------------------------------------
-		$nuke_db->sql_query('UPDATE `'._FILE_REPOSITORY_ITEMS.'` SET `views` = `views` + 1 WHERE `did`="'.$did.'" && `sname`!="'.$userinfo['user_id'].'"');
+		$nuke_db->sql_query('UPDATE `'._FILE_REPOSITORY_ITEMS.'` SET `views` = `views` + 1 WHERE `did`="'.$did.'" && `sname`!="'.$nuke_userinfo['user_id'].'"');
 //------------------------------------------------------------------------------------------------
 		$screenshots 	= _grab_the_items_screenshots($_GET['did']);
 		$colspan		= (($screenshots['count'] == 0) ? '2' : '3');
@@ -98,13 +98,13 @@ function _view_downloadinfo()
 			echo '  </tr>'."\n";
 		}
 //---------------------------------------------------------------------
-		if($userinfo['user_posts'] <= $iteminfo['posts'] && $iteminfo['posts'] <> 0)
+		if($nuke_userinfo['user_posts'] <= $iteminfo['posts'] && $iteminfo['posts'] <> 0)
 		{
 			echo '  <tr'._bgColor(2).'>'."\n";
 			echo '    <td'._tdcss(false,'center',_sh(),3).'>'._suh($lang_new[$module_name]['ERROR']).'</td>'."\n";
 			echo '  </tr>'."\n";
 			echo '  <tr'._bgColor(1).'>'."\n";
-			echo '    <td'._tdcss(false,'center',_sc(),3).'>'.sprintf($lang_new[$module_name]['POSTS_REQUIRED'],$userinfo['user_posts'],$iteminfo['posts']).'</td>'."\n";
+			echo '    <td'._tdcss(false,'center',_sc(),3).'>'.sprintf($lang_new[$module_name]['POSTS_REQUIRED'],$nuke_userinfo['user_posts'],$iteminfo['posts']).'</td>'."\n";
 			echo '  </tr>'."\n";
 		}
 		elseif(_check_users_permissions($iteminfo['groups']) == false || $settings['usegfxcheck'] == true && $adminBypass && get_evo_option('recap_site_key') && get_evo_option('recap_priv_key'))
@@ -143,7 +143,7 @@ function _view_downloadinfo()
 		{
 			$submitButton = _submit(sprintf($lang_new[$module_name]['DOWNLOAD_ITEM'],$iteminfo['title']));
 		}
-		elseif($iteminfo['groups'] > 0 && _check_users_permissions($iteminfo['groups']) == true && $userinfo['user_posts'] >= $iteminfo['posts'])
+		elseif($iteminfo['groups'] > 0 && _check_users_permissions($iteminfo['groups']) == true && $nuke_userinfo['user_posts'] >= $iteminfo['posts'])
 		{
 			$submitButton = _submit(sprintf($lang_new[$module_name]['DOWNLOAD_ITEM'],$iteminfo['title']));
 		}

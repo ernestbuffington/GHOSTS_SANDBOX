@@ -22,17 +22,17 @@ class tmhOAuth {
   /**
    * Creates a new tmhOAuth object
    *
-   * @param string $config, the configuration to use for this request
+   * @param string $nuke_config, the configuration to use for this request
    * @return void
    */
-  public function __construct($config=array()) {
+  public function __construct($nuke_config=array()) {
     $this->buffer = null;
-    $this->reconfigure($config);
+    $this->reconfigure($nuke_config);
     $this->reset_request_settings();
     $this->set_user_agent();
   }
 
-  public function reconfigure($config=array()) {
+  public function reconfigure($nuke_config=array()) {
     // default configuration options
     $this->config = array_merge(
       array(
@@ -95,7 +95,7 @@ class tmhOAuth {
         'force_nonce'                => false, // used for checking signatures. leave as false for auto
         'force_timestamp'            => false, // used for checking signatures. leave as false for auto
       ),
-      $config
+      $nuke_config
     );
   }
 

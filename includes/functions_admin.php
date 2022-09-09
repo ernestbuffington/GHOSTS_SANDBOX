@@ -80,9 +80,9 @@ if (!defined('IN_PHPBB2'))
 
 function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
 {
-        global $nuke_db, $userdata, $lang;
+        global $nuke_db, $nuke_userdata, $lang;
 
-        $is_auth_ary = auth(NUKE_AUTH_READ, NUKE_AUTH_LIST_ALL, $userdata);
+        $is_auth_ary = auth(NUKE_AUTH_READ, NUKE_AUTH_LIST_ALL, $nuke_userdata);
 
         $sql = 'SELECT f.forum_id, f.forum_name, f.forum_parent
             FROM ' . NUKE_CATEGORIES_TABLE . ' c, ' . NUKE_FORUMS_TABLE . ' f

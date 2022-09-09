@@ -150,7 +150,7 @@ function _file_repository_broken_files()
 //------------------
 function _file_repository_attach_file()
 {
-	global $nuke_db, $admin_file, $userinfo;
+	global $nuke_db, $admin_file, $nuke_userinfo;
 //-------------------------------------------------------------------------------
 //	ON UPLOAD GIVE THE FILE A RANDOM NAME TO PREVENT DOUBLING OF FILES
 //-------------------------------------------------------------------------------
@@ -168,14 +168,14 @@ function _file_repository_attach_file()
 
 function _file_repository_add_file()
 {
-	global $nuke_db, $admin_file, $userinfo;
+	global $nuke_db, $admin_file, $nuke_userinfo;
 	$result = $nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_CATEGORIES."`");
 	if($nuke_db->sql_numrows($result) > 0)
 	{
 //-----------------------------------------------------------------------------------------------------------------
 // INSERT A NEW ITEM INTO THE DATABASE, THIS FUNCTION IS NEEDED FOR THE NEW JQUERY FILE AND SCREENSHOT UPLOADER
 //-----------------------------------------------------------------------------------------------------------------
-		$nuke_db->sql_query("INSERT INTO `"._FILE_REPOSITORY_ITEMS."` (`date`, `isnew`, `isapproved`, `semail`, `sname`) VALUES (now(), '1', '1', '".$userinfo['user_email']."', '".$userinfo['username']."')");
+		$nuke_db->sql_query("INSERT INTO `"._FILE_REPOSITORY_ITEMS."` (`date`, `isnew`, `isapproved`, `semail`, `sname`) VALUES (now(), '1', '1', '".$nuke_userinfo['user_email']."', '".$nuke_userinfo['username']."')");
 		$did = $nuke_db->sql_nextid();
 		_nuke_redirect($admin_file.'.php?op='._MODNAME.'&action=newfile&did='.$did);
 //-----------------------------------------------------------------------------------------------------------------
@@ -425,10 +425,10 @@ function _file_repository_new_file()
 
 function _file_repository_save_file()
 {
-	global $nuke_db, $admin_file, $module_name, $userinfo, $settings;
-	$author      		= (!empty($_POST['author'])) ? _escape_string($_POST['author']) : '';
-	$author_email      	= (!empty($_POST['author_email'])) ? $_POST['author_email'] : '';
-	$author_website     = (!empty($_POST['author_website'])) ? $_POST['author_website'] : '';
+	global $nuke_db, $admin_file, $module_name, $nuke_userinfo, $settings;
+	$nuke_author      		= (!empty($_POST['author'])) ? _escape_string($_POST['author']) : '';
+	$nuke_author_email      	= (!empty($_POST['author_email'])) ? $_POST['author_email'] : '';
+	$nuke_author_website     = (!empty($_POST['author_website'])) ? $_POST['author_website'] : '';
 	$cid      			= (!empty($_POST['cid'])) ? intval($_POST['cid']) : 0;
 	$color      		= (!empty($_POST['colorize'])) ? $_POST['colorize'] : '';
 	$currency      		= (!empty($_POST['currency'])) ? $_POST['currency'] : '';
@@ -449,9 +449,9 @@ function _file_repository_save_file()
 	$title      		= (!empty($_POST['title'])) ? _escape_string(trim($_POST['title'])) : '';
 	$version      		= (!empty($_POST['version'])) ? $_POST['version'] : '';
 	$nuke_db->sql_query("UPDATE `"._FILE_REPOSITORY_ITEMS."` SET 
-		`author` = '".$author."',
-		`author_email` = '".$author_email."',
-		`author_website` = '".$author_website."',
+		`author` = '".$nuke_author."',
+		`author_email` = '".$nuke_author_email."',
+		`author_website` = '".$nuke_author_website."',
 		`cid` = '".$cid."',
 		`color` = '".$color."',
 		`currency` = '".$currency."',
@@ -467,8 +467,8 @@ function _file_repository_save_file()
 		`paypal` = '".$paypal."',
 		`posts` = '".$posts."',
 		`preview` = '".$preview."',
-		`semail` = '".$userinfo['user_email']."',
-		`sname` = '".$userinfo['user_id']."',
+		`semail` = '".$nuke_userinfo['user_email']."',
+		`sname` = '".$nuke_userinfo['user_id']."',
 		`title` = '".$title."', 
 		`version` = '".$version."' WHERE `did` = '".$did."'");
 
@@ -481,7 +481,7 @@ function _file_repository_save_file()
 
 function _file_repository_upload_files()
 {
-	global $nuke_db, $lang_new, $module_name, $userinfo;
+	global $nuke_db, $lang_new, $module_name, $nuke_userinfo;
 //-------------------------------------------------------------------------------
 //	IF THIS FUNCTION IS NOT USED VIA XMLHttpRequest THEN KILL THE FUNCTION
 //-------------------------------------------------------------------------------
@@ -573,7 +573,7 @@ function _file_repository_delete_files()
 // _FILE_REPOSITORY_SCREENS
 function _file_repository_upload_screens()
 {
-	global $nuke_db, $lang_new, $module_name, $userinfo;
+	global $nuke_db, $lang_new, $module_name, $nuke_userinfo;
 //-------------------------------------------------------------------------------
 //	If this function is not used via XMLHttpRequest then kill the function
 //-------------------------------------------------------------------------------
@@ -611,7 +611,7 @@ function _file_repository_upload_screens()
 		_create_thumb_from_image(NUKE_BASE_DIR.$_POST['screendir'].$newfilename, NUKE_BASE_DIR.$_POST['screendir'].'thumbs/thumb_100x100_'.$newfilename, array('width'=>'100','height'=>'100','aspect_ratio'=>true));
 		_create_thumb_from_image(NUKE_BASE_DIR.$_POST['screendir'].$newfilename, NUKE_BASE_DIR.$_POST['screendir'].'thumbs/thumb_190x120_'.$newfilename, array('width'=>'190','height'=>'120','aspect_ratio'=>true));
 //-------------------------------------------------------------------------------
-		$nuke_db->sql_query("INSERT INTO `"._FILE_REPOSITORY_SCREENSHOTS."` (`pid`, `did`, `active`, `filename`, `size`, `submitter`, `title`) VALUES (NULL, '".$_POST['did']."', 1, '".$newfilename."', '".$size."', '".$userinfo['username']."', '".$_POST['title']."')");
+		$nuke_db->sql_query("INSERT INTO `"._FILE_REPOSITORY_SCREENSHOTS."` (`pid`, `did`, `active`, `filename`, `size`, `submitter`, `title`) VALUES (NULL, '".$_POST['did']."', 1, '".$newfilename."', '".$size."', '".$nuke_userinfo['username']."', '".$_POST['title']."')");
 		$pid = $nuke_db->sql_nextid();
 //-------------------------------------------------------------------------------
 //	Return a JSON array with all the information

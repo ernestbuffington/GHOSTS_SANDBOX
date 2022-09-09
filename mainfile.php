@@ -97,7 +97,7 @@ if (!ini_get('register_globals')):
 endif;
 
 $admin = (isset($_COOKIE['admin'])) ? $_COOKIE['admin'] : false;
-$user = (isset($_COOKIE['user'])) ? $_COOKIE['user'] : false;
+$nuke_user = (isset($_COOKIE['user'])) ? $_COOKIE['user'] : false;
 
 if ((isset($_POST['name']) && !empty($_POST['name'])) && (isset($_GET['name']) && !empty($_GET['name']))) 
     $name = (isset($_GET['name']) && !stristr($_GET['name'],'..') && !stristr($_GET['name'],'://')) ? addslashes(trim($_GET['name'])) : false;
@@ -425,22 +425,22 @@ require_once(NUKE_INCLUDE_DIR.'functions_evo.php');
 require_once(NUKE_INCLUDE_DIR.'functions_evo_custom.php');
 include_once(NUKE_INCLUDE_DIR.'validation.php');
 
-// We globalize the $cookie and $userinfo variables,
+// We globalize the $cookie and $nuke_userinfo variables,
 // so that they dont have to be called each time
 // And as you can see, getusrinfo() is now deprecated.
-// Because you dont have to call it anymore, just call $userinfo
+// Because you dont have to call it anymore, just call $nuke_userinfo
 if(is_user()):
     $cookie = cookiedecode();
-    $userinfo = get_user_field('*', $cookie[1], true);
+    $nuke_userinfo = get_user_field('*', $cookie[1], true);
 else:
     $cookie = array();
-    $userinfo = get_user_field('*', 'Anonymous', true);
+    $nuke_userinfo = get_user_field('*', 'Anonymous', true);
 endif;
 
 //If they have been deactivated send them to logout to kill their cookie and sessions
-if (is_array($userinfo) && isset($userinfo['user_active']) 
-&& $userinfo['user_id'] != 1 && $userinfo['user_id'] != 0 
-&& $userinfo['user_active'] == 0 && $_GET['name'] != 'Your_Account'):
+if (is_array($nuke_userinfo) && isset($nuke_userinfo['user_active']) 
+&& $nuke_userinfo['user_id'] != 1 && $nuke_userinfo['user_id'] != 0 
+&& $nuke_userinfo['user_active'] == 0 && $_GET['name'] != 'Your_Account'):
     nuke_redirect('modules.php?name=Your_Account&op=logout');
     die();
 endif;
@@ -487,7 +487,7 @@ $articlecomm = intval($articlecomm);
 $my_headlines = intval($my_headlines);
 $top = intval($top);
 $storyhome = intval($storyhome);
-$user_news = intval($user_news);
+$nuke_user_news = intval($nuke_user_news);
 $oldnum = intval($oldnum);
 $ultramode = intval($ultramode);
 $banners = intval($banners);
@@ -683,26 +683,26 @@ function is_god_admin($trash=0)
 
 function is_user($trash=0) 
 {
-    static $userstatus;
-    if(isset($userstatus)) 
-	return $userstatus;
+    static $nuke_userstatus;
+    if(isset($nuke_userstatus)) 
+	return $nuke_userstatus;
     
-	$usercookie = isset($_COOKIE['user']) ? $_COOKIE['user'] : false;
+	$nuke_usercookie = isset($_COOKIE['user']) ? $_COOKIE['user'] : false;
     
-	if (!$usercookie) 
-	return $userstatus = 0; 
+	if (!$nuke_usercookie) 
+	return $nuke_userstatus = 0; 
     
-	$usercookie = (!is_array($usercookie)) ? explode(':', base64_decode($usercookie)) : $usercookie;
-    $uid = $usercookie[0];
-    $pwd = $usercookie[2];
+	$nuke_usercookie = (!is_array($nuke_usercookie)) ? explode(':', base64_decode($nuke_usercookie)) : $nuke_usercookie;
+    $uid = $nuke_usercookie[0];
+    $pwd = $nuke_usercookie[2];
     $uid = intval($uid);
 
     if (!empty($uid) AND !empty($pwd)):
-        $user_password = get_user_field('user_password', $uid);
-        if ($user_password == $pwd && !empty($user_password))
-        return $userstatus = 1;
+        $nuke_user_password = get_user_field('user_password', $uid);
+        if ($nuke_user_password == $pwd && !empty($nuke_user_password))
+        return $nuke_userstatus = 1;
     endif;
-    return $userstatus = 0;
+    return $nuke_userstatus = 0;
 }
 
 function cookiedecode($trash=0) 
@@ -713,8 +713,8 @@ function cookiedecode($trash=0)
     if(isset($rcookie)) 
 	return $rcookie; 
 
-    $usercookie = $_COOKIE['user'];
-    $rcookie = (!is_array($usercookie)) ? explode(':', base64_decode($usercookie)) : $usercookie;
+    $nuke_usercookie = $_COOKIE['user'];
+    $rcookie = (!is_array($nuke_usercookie)) ? explode(':', base64_decode($nuke_usercookie)) : $nuke_usercookie;
     $pass = get_user_field('user_password', $rcookie[1], true);
 
     if ($rcookie[2] == $pass && !empty($pass))
@@ -847,7 +847,7 @@ function blocks_visible($side)
 }
 
 function blocks($side, $count=false) {
-    global $prefix, $multilingual, $currentlang, $nuke_db, $userinfo, $cache;
+    global $prefix, $multilingual, $currentlang, $nuke_db, $nuke_userinfo, $cache;
     static $blocks;
 
     $querylang = ($multilingual) ? 'AND (`blanguage`="'.$currentlang.'" OR `blanguage`="")' : '';
@@ -902,7 +902,7 @@ function blocks($side, $count=false) {
                     if (is_array($ingroups)) {
                         $cnt = 0;
                         foreach ($ingroups as $group) {
-                            if (isset($userinfo['groups'][($group)])) {
+                            if (isset($nuke_userinfo['groups'][($group)])) {
                                 $cnt++;
                               }
                           }
@@ -1185,11 +1185,11 @@ function actualTime() {
 // formatTimestamp function by ReOrGaNiSaTiOn
 function formatTimestamp($time, $format='', $dateonly='') 
 {
-    global $datetime, $locale, $userinfo, $board_config;
+    global $datetime, $locale, $nuke_userinfo, $board_config;
 
     if (empty($format)): 
-        if (isset($userinfo['user_dateformat']) && !empty($userinfo['user_dateformat'])) 
-            $format = $userinfo['user_dateformat'];
+        if (isset($nuke_userinfo['user_dateformat']) && !empty($nuke_userinfo['user_dateformat'])) 
+            $format = $nuke_userinfo['user_dateformat'];
 		else 
 		if (isset($board_config['default_dateformat']) && !empty($board_config['default_dateformat'])) 
             $format = $board_config['default_dateformat'];
@@ -1203,8 +1203,8 @@ function formatTimestamp($time, $format='', $dateonly='')
         $format = str_replace($replaces, '', $format);
     endif;
     
-	if ((isset($userinfo['user_timezone']) && !empty($userinfo['user_timezone'])) && $userinfo['user_id'] != 1) 
-        $tz = $userinfo['user_timezone'];
+	if ((isset($nuke_userinfo['user_timezone']) && !empty($nuke_userinfo['user_timezone'])) && $nuke_userinfo['user_id'] != 1) 
+        $tz = $nuke_userinfo['user_timezone'];
 	elseif (isset($board_config['board_timezone']) && !empty($board_config['board_timezone'])) 
         $tz = $board_config['board_timezone'];
 	else 
@@ -1233,23 +1233,23 @@ function get_microtime()
 function blog_signature($aid) 
 {
     global $nuke_user_prefix, $nuke_db;
-    static $users;
+    static $nuke_users;
 
-    if (is_array($users[$aid])):
-        $row = $users[$aid];
+    if (is_array($nuke_users[$aid])):
+        $row = $nuke_users[$aid];
     else:
         $row = get_admin_field('*', $aid);
-        $users[$aid] = $row;
+        $nuke_users[$aid] = $row;
     endif;
 
 	  # webmaster
-       list($username, 
+       list($nuke_username, 
 	          $avatar, 
 			   $email, 
 			    $name,
 				 $bio,
 		 $admin_notes,
-		    $user_occ) = $nuke_db->sql_ufetchrow('SELECT `username`,
+		    $nuke_user_occ) = $nuke_db->sql_ufetchrow('SELECT `username`,
 		                                         `user_avatar`, 
 												  `user_email`, 
 												        `name`, 
@@ -1267,7 +1267,7 @@ function blog_signature($aid)
      $aid .= '<td valign="top" height="80" width="80" height="200"><img width="90" class="rounded-corners" 
 	 style="max-height: 150px; max-width: 150px;" src="modules/Forums/images/avatars/'.  $avatar.'" alt="avatar" border="0"></td>';
      $aid .= '<td align="top">';
-     $aid .= '&nbsp;&nbsp;<strong>'.$user_occ.'</strong><br />';
+     $aid .= '&nbsp;&nbsp;<strong>'.$nuke_user_occ.'</strong><br />';
      $aid .= '&nbsp;&nbsp;name: '.$name.'<br />';
      $aid .= '&nbsp;&nbsp;email: '.str_replace("@", "[at]", $email).'<br />';
      $aid .= $bio.'';
@@ -1285,23 +1285,23 @@ function blog_signature($aid)
 function get_author($aid) 
 {
     global $nuke_user_prefix, $nuke_db;
-    static $users;
+    static $nuke_users;
 
-    if (is_array($users[$aid])): 
-        $row = $users[$aid];
+    if (is_array($nuke_users[$aid])): 
+        $row = $nuke_users[$aid];
 	else: 
         $row = get_admin_field('*', $aid);
-        $users[$aid] = $row;
+        $nuke_users[$aid] = $row;
     endif;
 	
     $result = $nuke_db->sql_query('SELECT `user_id` from `'.$nuke_user_prefix.'_users` WHERE `username`="'.$aid.'"');
-    $userid = $nuke_db->sql_fetchrow($result);
+    $nuke_userid = $nuke_db->sql_fetchrow($result);
     $nuke_db->sql_freeresult($result);
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-    if (isset($userid[0])) 
-     $aid = "<a href=\"modules.php?name=Profile&amp;mode=viewprofile&amp;u=".$userid[0]."\">".UsernameColor($aid)."</a>";
+    if (isset($nuke_userid[0])) 
+     $aid = "<a href=\"modules.php?name=Profile&amp;mode=viewprofile&amp;u=".$nuke_userid[0]."\">".UsernameColor($aid)."</a>";
 	elseif (isset($row['url']) && $row['url'] != 'http://') 
      $aid = "<a href=\"".$row['url']."\">".UsernameColor($aid)."</a>";
 	else 
@@ -1738,19 +1738,19 @@ function encode_mail($email)
 }
 
 # get username color
-function UsernameColor($username, $old_name=false) 
+function UsernameColor($nuke_username, $old_name=false) 
 {
     global $nuke_db, $nuke_user_prefix, $use_colors, $cache;
 
     static $cached_names;
 
     if($old_name) 
-	$username = $old_name; 
+	$nuke_username = $old_name; 
 
     if(!$use_colors) 
-	return $username;
+	return $nuke_username;
 
-    $plain_username = strtolower($username);
+    $plain_username = strtolower($nuke_username);
 
     if(isset($cached_names[$plain_username])) 
     return $cached_names[$plain_username];
@@ -1760,10 +1760,10 @@ function UsernameColor($username, $old_name=false)
     
     if (!isset($cached_names[$plain_username])):
           
-		    list($user_color, $uname) = $nuke_db->sql_ufetchrow("SELECT `user_color_gc`, `username` FROM `" . $nuke_user_prefix . "_users` WHERE `username` = '" . str_replace("'", "\'", $username) . "'", SQL_NUM);
-            $uname = (!empty($uname)) ? $uname : $username;
-            $username = (strlen($user_color) == 6) ? '<span style="color: #'. $user_color .'">'. $uname .'</span>' : $uname;
-            $cached_names[$plain_username] = $username;
+		    list($nuke_user_color, $uname) = $nuke_db->sql_ufetchrow("SELECT `user_color_gc`, `username` FROM `" . $nuke_user_prefix . "_users` WHERE `username` = '" . str_replace("'", "\'", $nuke_username) . "'", SQL_NUM);
+            $uname = (!empty($uname)) ? $uname : $nuke_username;
+            $nuke_username = (strlen($nuke_user_color) == 6) ? '<span style="color: #'. $nuke_user_color .'">'. $uname .'</span>' : $uname;
+            $cached_names[$plain_username] = $nuke_username;
             $cache->save('UserColors', 'config', $cached_names);
 	endif;
 
@@ -1811,14 +1811,14 @@ function GroupColor($group_name, $short=0)
     return $plaingroupname;
 }
 
-function check_priv_mess($user_id) 
+function check_priv_mess($nuke_user_id) 
 {
     global $nuke_db;
 
-    if (empty($user_id) || !is_numeric($user_id)) 
+    if (empty($nuke_user_id) || !is_numeric($nuke_user_id)) 
     return false;
     
- 	$pms = $nuke_db->sql_ufetchrow("SELECT COUNT(privmsgs_id) as no FROM ".NUKE_PRIVMSGS_TABLE." WHERE privmsgs_to_userid='".$user_id."' AND (privmsgs_type='5' OR privmsgs_type='1')");
+ 	$pms = $nuke_db->sql_ufetchrow("SELECT COUNT(privmsgs_id) as no FROM ".NUKE_PRIVMSGS_TABLE." WHERE privmsgs_to_userid='".$nuke_user_id."' AND (privmsgs_type='5' OR privmsgs_type='1')");
     return $pms['no'];
 }
 
@@ -1888,3 +1888,71 @@ include_once(NUKE_CLASSES_DIR.'class.zip.php');
 /*****[END]********************************************
  [ Include:  Zip Class                                ]
  ******************************************************/
+
+// Report all errors, except notices and deprecation messages
+$level = E_ALL & ~E_NOTICE & ~E_DEPRECATED;
+error_reporting($level);
+/**
+* Minimum Requirement: PHP 7.1.3
+*/
+if (version_compare(PHP_VERSION, '7.1.3', '<'))
+{
+	die('You are running an unsupported PHP version. Please upgrade to PHP 7.1.3 or higher before trying to install or update to PHP-Nuke Titanium 4.0.1b');
+}
+// Register globals and magic quotes have been dropped in PHP 5.4 so no need for extra checks
+
+
+// In PHP 5.3.0 the error level has been raised to E_WARNING which causes problems
+// because we show E_WARNING errors and do not set a default timezone.
+// This is because we have our own timezone handling and work in UTC only anyway.
+
+// So what we basically want to do is set our timezone to UTC,
+// but we don't know what other scripts (such as bridges) are involved,
+// so we check whether a timezone is already set by calling date_default_timezone_get().
+
+// Unfortunately, date_default_timezone_get() itself might throw E_WARNING
+// if no timezone has been set, so we have to keep it quiet with @.
+
+// date_default_timezone_get() tries to guess the correct timezone first
+// and then falls back to UTC when everything fails.
+// We just set the timezone to whatever date_default_timezone_get() returns.
+date_default_timezone_set(@date_default_timezone_get());
+
+// Autoloading of dependencies.
+// Three options are supported:
+// 1. If dependencies are installed with Composer, Composer will create a
+//    vendor/autoload.php. If this file exists it will be
+//    automatically used by PHP-Nuke Titanium. This is the default mode that
+//    Titanium will use when shipped.
+// 2. To disable composer autoloading, PHP_NUKE_TITANIUM_NO_COMPOSER_AUTOLOAD 
+// 	  can be specified. 
+//    Additionally specify PHP_NUKE_TITANIUM_AUTOLOAD=/path/to/autoload.php 
+//    in the environment. This is useful for running CLI scripts and tests.
+//    /path/to/autoload.php should define and register class loaders
+//    for all of PHP-Nuke Titanium's dependencies.
+// 3. You can also set PHP_NUKE_TITANIUM_NO_COMPOSER_AUTOLOAD without setting 
+//    PHP_NUKE_TITANIUM__AUTOLOAD.
+//    In this case autoloading needs to be defined before running any 
+//    PHP-Nuke Titanium scripts. This might be useful in cases when 
+//    PHP-Nuke Titanium is integrated into a
+//    larger program.
+ if (getenv('PHP_NUKE_TITANIUM_NO_COMPOSER_AUTOLOAD'))
+{
+	if (getenv('PHP_NUKE_TITANIUM_AUTOLOAD'))
+	{
+		require(getenv('PHP_NUKE_TITANIUM_AUTOLOAD'));
+	}
+}
+else
+{
+	if (!file_exists(NUKE_BASE_DIR . 'vendor/autoload.php'))
+	{
+		trigger_error(
+			'Composer dependencies have not been set up yet, run ' .
+			"'php ../composer.phar install' from the / directory to do so.",
+			E_USER_ERROR
+		);
+	}
+	require(NUKE_BASE_DIR . 'vendor/autoload.php');
+}
+$starttime = microtime(true);

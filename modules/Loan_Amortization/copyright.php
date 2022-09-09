@@ -15,9 +15,9 @@ require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 // required information and then copy the file "copyright.php" into your
 // module's directory. It's all, as easy as it sounds ;)
 
-$author_name = "Truman ScottyBcoder Buffington";
-$author_email = "scottybcoder [at] gmail [dot] com";
-$author_homepage = "http://www.scottybcoder.com";
+$nuke_author_name = "Truman ScottyBcoder Buffington";
+$nuke_author_email = "scottybcoder [at] gmail [dot] com";
+$nuke_author_homepage = "http://www.scottybcoder.com";
 $license = "GNU/GPL 3.0";
 $download_location = "http://www.86it.us";
 $module_version = "3.0.0";
@@ -30,5 +30,5 @@ $module_description = "The US 30/360 Rule Module (10/01/2012)";
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($author_name, $author_email, $author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
 ?>

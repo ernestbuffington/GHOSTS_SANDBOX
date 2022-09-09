@@ -68,31 +68,31 @@ if ( isset($HTTP_POST_VARS['submit']))
   {
     while( $row = $nuke_db->sql_fetchrow($result) )
     {
-      $config_name = $row['config_name'];
-      $config_value = $row['config_value'];
-      $default_config[$config_name] = isset($HTTP_POST_VARS['submit']) ? str_replace("'", "\'", $config_value) : $config_value;
+      $nuke_config_name = $row['config_name'];
+      $nuke_config_value = $row['config_value'];
+      $default_config[$nuke_config_name] = isset($HTTP_POST_VARS['submit']) ? str_replace("'", "\'", $nuke_config_value) : $nuke_config_value;
 
-      if ($config_name == 'ad_no_groups')
+      if ($nuke_config_name == 'ad_no_groups')
       {
-        $new[$config_name] = $ad_no_groups;
+        $new[$nuke_config_name] = $ad_no_groups;
       }
-      elseif ($config_name == 'ad_no_forums')
+      elseif ($nuke_config_name == 'ad_no_forums')
       {
-        $new[$config_name] = $ad_no_forums;
+        $new[$nuke_config_name] = $ad_no_forums;
       }
       else
       {
-        $new[$config_name] = ( isset($HTTP_POST_VARS[$config_name]) ) ? $HTTP_POST_VARS[$config_name] : $default_config[$config_name];
+        $new[$nuke_config_name] = ( isset($HTTP_POST_VARS[$nuke_config_name]) ) ? $HTTP_POST_VARS[$nuke_config_name] : $default_config[$nuke_config_name];
       }
 
       if( isset($HTTP_POST_VARS['submit']) )
       {
         $sql = "UPDATE " . NUKE_CONFIG_TABLE . " SET
-          config_value = '" . str_replace("\'", "''", htmlspecialchars($new[$config_name])) . "'
-          WHERE config_name = '$config_name'";
+          config_value = '" . str_replace("\'", "''", htmlspecialchars($new[$nuke_config_name])) . "'
+          WHERE config_name = '$nuke_config_name'";
         if( !$nuke_db->sql_query($sql) )
         {
-          message_die(NUKE_GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
+          message_die(NUKE_GENERAL_ERROR, "Failed to update general configuration for $nuke_config_name", "", __LINE__, __FILE__, $sql);
         }
       }
     }
@@ -165,10 +165,10 @@ else
   }
   $nuke_db->sql_freeresult($result);
 
-  $template->set_filenames(array(
+  $template_nuke->set_filenames(array(
   "body" => "admin/inline_ad_config_body.tpl")
   );
-  $template->assign_vars(array(
+  $template_nuke->assign_vars(array(
   "AD_AFTER_POST" => $board_config['ad_after_post'],
   "AD_EVERY_POST" => $board_config['ad_every_post'],
   "AD_FORUMS" => $ad_no_forums,
@@ -196,8 +196,8 @@ else
   "L_AD_POST_THRESHOLD" => $lang['ad_post_threshold'],
   "L_RESET" => $lang['Reset'])
   );
-  $template->pparse("body");
+  $template_nuke->pparse("body");
 
-  include('./page_footer_admin.'.$phpEx);
+  include('./nuke_page_footer_admin.'.$phpEx);
 }
 ?>

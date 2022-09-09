@@ -130,7 +130,7 @@ class Wysiwyg
 
 	function getHTML()
 	{
-		global $board_config, $name, $lang, $userinfo;
+		global $board_config, $name, $lang, $nuke_userinfo;
 
 		# FORM CHECKING HAS BEEN MOVED TO HERE, AS THERE IS NOW MORE THAN ONE EDITOR TO USE
 		# FORM CHECKING SHOULD BE LEFT HERE, SO THAT IT CAN BE USED FOR BOTH THE BBCODE TABLE AND THE STANDARD TABLE
@@ -153,7 +153,7 @@ class Wysiwyg
 		  $setting['bbcode_button_location'] = 'top';
 
 		  # top aligned buttons aligned buttons
-		  if($setting['bbcode_button_location'] == 'top' && ($userdata['user_id'] != NUKE_ANONYMOUS)):
+		  if($setting['bbcode_button_location'] == 'top' && ($nuke_userdata['user_id'] != NUKE_ANONYMOUS)):
 		  $HTMLtable .= '<tr>';
 		  $HTMLtable .= '<td class="row1" style="width: 100%;">'.bbcode_table($this->field, $this->form, $allowed).'</td>';
 		  $HTMLtable .= '</tr>';
@@ -168,7 +168,7 @@ class Wysiwyg
 		  $HTMLtable .= '</tr>';
 
 		  # bottom aligned buttons
-		  if($setting['bbcode_button_location'] == 'bottom' && ($userdata['user_id'] != NUKE_ANONYMOUS)):
+		  if($setting['bbcode_button_location'] == 'bottom' && ($nuke_userdata['user_id'] != NUKE_ANONYMOUS)):
 			$HTMLtable .= '<tr>';
         	$HTMLtable .= '<td class="row1"><input type="text" name="help'.$field.'" value="Tip: BBCode can be applied quickly to selected text" class="helpline" readonly /></td>';
         	$HTMLtable .= '</tr>';
@@ -177,7 +177,7 @@ class Wysiwyg
 			$HTMLtable .= '</tr>';
 		  endif;
 
-		  if($board_config['allow_smilies'] && $this->smilies && ($userdata['user_id'] != NUKE_ANONYMOUS)):
+		  if($board_config['allow_smilies'] && $this->smilies && ($nuke_userdata['user_id'] != NUKE_ANONYMOUS)):
 			$HTMLtable .= '<tr>';
 			$HTMLtable .= '<td class="row1" style="width: 100%;">'.smilies_table('onerow',$this->field, $this->form).'</td>';
 			$HTMLtable .= '</tr>';

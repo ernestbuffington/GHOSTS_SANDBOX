@@ -32,18 +32,18 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticator
   }
   
   /**
-   * Try to authenticate the user with $username and $password.
+   * Try to authenticate the user with $nuke_username and $password.
    * @param Swift_Transport_SmtpAgent $agent
-   * @param string $username
+   * @param string $nuke_username
    * @param string $password
    * @return boolean
    */
   public function authenticate(Swift_Transport_SmtpAgent $agent,
-    $username, $password)
+    $nuke_username, $password)
   {
     try
     {
-      $message = base64_encode($username . chr(0) . $username . chr(0) . $password);
+      $message = base64_encode($nuke_username . chr(0) . $nuke_username . chr(0) . $password);
       $agent->executeCommand(sprintf("AUTH PLAIN %s\r\n", $message), array(235));
       return true;
     }

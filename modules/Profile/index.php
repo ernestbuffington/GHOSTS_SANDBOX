@@ -53,17 +53,17 @@ include('includes/functions_reputation.'.$phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_PROFILE);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_PROFILE);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
 /*****[BEGIN]******************************************
  [ Mod:   Admin delete user with all postings v.1.0.5 ]
  ******************************************************/
-if( $userdata['session_logged_in']  &&  $userdata['user_level'] == NUKE_ADMIN )
+if( $nuke_userdata['session_logged_in']  &&  $nuke_userdata['user_level'] == NUKE_ADMIN )
 {
-	include($phpbb2_root_path.'language/lang_' . $userdata['user_lang'] . '/lang_user_delete.'.$phpEx);
+	include($phpbb2_root_path.'language/lang_' . $nuke_userdata['user_lang'] . '/lang_user_delete.'.$phpEx);
 }
 /*****[END]********************************************
  [ Mod:   Admin delete user with all postings v.1.0.5 ]
@@ -200,19 +200,19 @@ function gen_rand_string($hash)
 			$gen_simple_header = TRUE;
 
 			$page_title = $lang['View_Birthdays'];
-			include('includes/page_header.'.$phpEx);
+			include('includes/nuke_page_header.'.$phpEx);
 
 			// reuse the pm popup box template
-			$template->set_filenames(array(
+			$template_nuke->set_filenames(array(
 				'body' => 'privmsgs_popup.tpl')
 			);
 
-			$template->assign_vars(array(
+			$template_nuke->assign_vars(array(
 				'L_CLOSE_WINDOW' => $lang['Close_window'],
 				'L_MESSAGE' => sprintf($lang['Birthday_popup'],$board_config['sitename']))
 			);
 
-			$template->pparse('body');
+			$template_nuke->pparse('body');
 
 			include('includes/page_tail.'.$phpEx);
 			exit;

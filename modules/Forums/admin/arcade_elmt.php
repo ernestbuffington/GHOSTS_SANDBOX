@@ -135,11 +135,11 @@ if( !empty($mode) )
                 $hidden_fields = "<input type='hidden' name='mode' value='createsave' />";
             }
 
-            $template->set_filenames(array(
+            $template_nuke->set_filenames(array(
             "body" => "admin/admin_edit_games.tpl")
              );
 
-          $template->assign_vars(array(
+          $template_nuke->assign_vars(array(
             "L_EDIT_GAME" => $l_title,
             "L_EDIT_GAME_EXPLAIN" => $lang['Edit_game_explain'],
             "L_GAME_SETTINGS" => $lang['Game_settings'],
@@ -184,8 +184,8 @@ if( !empty($mode) )
             "S_HIDDEN_FIELDS" => $hidden_fields)
             );
 
-          $template->pparse('body');
-          include('page_footer_admin.'.$phpEx);
+          $template_nuke->pparse('body');
+          include('nuke_page_footer_admin.'.$phpEx);
           break;
           
           case 'createsave':
@@ -373,11 +373,11 @@ if ($valid_select <> '')
 //---------------------------
 $hidden_fields = "<input type='hidden' name='arcade_catid' value='$arcade_catid'/>";
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         "body" => "admin/arcade_manage_body.tpl")
     );
 
-  $template->assign_vars(array(
+  $template_nuke->assign_vars(array(
         "L_MANAGE_GAME" => $lang['Manage_game'],
         "ADD_GAME" => $lang['Add_new'],
         "INITIAL_SCORE" => $lang['Initialize_score'],
@@ -416,7 +416,7 @@ $cg = count($liste_jeux);
 
 for( $i=0 ; $i<$cg; $i++)
 {
-  $template->assign_block_vars('ligne_jeu', array(
+  $template_nuke->assign_block_vars('ligne_jeu', array(
         'TITRE_JEU' => $liste_jeux[$i]['game_name'],
         'NB_SETS' => $liste_jeux[$i]['game_set'],
         'NB_SCORES' => $liste_jeux[$i]['nbset'],
@@ -435,10 +435,10 @@ for( $i=0 ; $i<$cg; $i++)
 
 if ( $cg>0 )
 {
-  $template->assign_block_vars('switch_liste_non_vide', array());
+  $template_nuke->assign_block_vars('switch_liste_non_vide', array());
 }
 
-  $template->pparse('body');
-  include('page_footer_admin.'.$phpEx);
+  $template_nuke->pparse('body');
+  include('nuke_page_footer_admin.'.$phpEx);
 
 ?>

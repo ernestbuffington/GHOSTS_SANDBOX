@@ -44,36 +44,36 @@ if (!defined('CNBYA')) {
     $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users_temp WHERE username='$ya_username' AND check_num='$check_num' AND time='$ya_time'");
     if ($nuke_db->sql_numrows($result) == 1) {
         $row = $nuke_db->sql_fetchrow($result);
-        $username = $row['username'];
-        $user_email = $row['user_email'];
-        $user_regdate = $row['user_regdate'];
-        $user_password = $row['user_password'];
+        $nuke_username = $row['username'];
+        $nuke_user_email = $row['user_email'];
+        $nuke_user_regdate = $row['user_regdate'];
+        $nuke_user_password = $row['user_password'];
         $realname = ya_fixtext($realname);
         if(empty($realname)) { $realname = $row['username']; }
-        $user_sig = str_replace("<br />", "\r\n", $user_sig);
-        $user_sig = ya_fixtext($user_sig);
-        $user_email = ya_fixtext($user_email);
+        $nuke_user_sig = str_replace("<br />", "\r\n", $nuke_user_sig);
+        $nuke_user_sig = ya_fixtext($nuke_user_sig);
+        $nuke_user_email = ya_fixtext($nuke_user_email);
         $femail = ya_fixtext($femail);
-        $user_website = ya_fixtext($user_website);
-        if (!preg_match("#http://#i", $user_website) AND !empty($user_website)) { $user_website = "http://$user_website"; }
+        $nuke_user_website = ya_fixtext($nuke_user_website);
+        if (!preg_match("#http://#i", $nuke_user_website) AND !empty($nuke_user_website)) { $nuke_user_website = "http://$nuke_user_website"; }
         $bio = str_replace("<br />", "\r\n", $bio);
         $bio = ya_fixtext($bio);
-        $user_occ = ya_fixtext($user_occ);
-        $user_from = ya_fixtext($user_from);
-        $user_interests = ya_fixtext($user_interests);
-        $user_dateformat = ya_fixtext($user_dateformat);
+        $nuke_user_occ = ya_fixtext($nuke_user_occ);
+        $nuke_user_from = ya_fixtext($nuke_user_from);
+        $nuke_user_interests = ya_fixtext($nuke_user_interests);
+        $nuke_user_dateformat = ya_fixtext($nuke_user_dateformat);
         $newsletter = intval($newsletter);
-        $user_viewemail = intval($user_viewemail);
-        $user_allow_viewonline = intval($user_allow_viewonline);
-        $user_timezone = intval($user_timezone);
+        $nuke_user_viewemail = intval($nuke_user_viewemail);
+        $nuke_user_allow_viewonline = intval($nuke_user_allow_viewonline);
+        $nuke_user_timezone = intval($nuke_user_timezone);
         list($latest_uid) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT max(user_id) AS latest_uid FROM ".$nuke_user_prefix."_users"));
         if ($latest_uid == "-1") { $new_uid = 1; } else { $new_uid = $latest_uid+1; }
         $lv = time();
         $nuke_db->sql_query("LOCK TABLES ".$nuke_user_prefix."_users WRITE");
         $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_users (user_id, user_avatar, user_avatar_type, user_lang, user_lastvisit, umode) VALUES ($new_uid, 'gallery/blank.gif', '3', '$language', '$lv', 'nested')");
-        $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET username='$username', name='$realname', user_email='$user_email', femail='$femail', user_website='$user_website', user_from='$user_from', user_occ='$user_occ', user_interests='$user_interests', newsletter='$newsletter', user_viewemail='$user_viewemail', user_allow_viewonline='$user_allow_viewonline', user_timezone='$user_timezone', user_dateformat='$user_dateformat', user_sig='$user_sig', bio='$bio', user_password='$user_password', user_regdate='$user_regdate' WHERE user_id='$new_uid'");
+        $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET username='$nuke_username', name='$realname', user_email='$nuke_user_email', femail='$femail', user_website='$nuke_user_website', user_from='$nuke_user_from', user_occ='$nuke_user_occ', user_interests='$nuke_user_interests', newsletter='$newsletter', user_viewemail='$nuke_user_viewemail', user_allow_viewonline='$nuke_user_allow_viewonline', user_timezone='$nuke_user_timezone', user_dateformat='$nuke_user_dateformat', user_sig='$nuke_user_sig', bio='$bio', user_password='$nuke_user_password', user_regdate='$nuke_user_regdate' WHERE user_id='$new_uid'");
         $nuke_db->sql_query("UNLOCK TABLES");
-        $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_users_temp WHERE username='$username'");
+        $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_users_temp WHERE username='$nuke_username'");
 
         $res = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_value_temp WHERE uid = '$row[user_id]'");
         while ($sqlvalue = $nuke_db->sql_fetchrow($res)) {
@@ -93,7 +93,7 @@ if (!defined('CNBYA')) {
  ******************************************************/
         title(""._ACTIVATIONYES."");
         OpenTable();
-        $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE username='$username' AND user_password='$user_password'");
+        $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE username='$nuke_username' AND user_password='$nuke_user_password'");
         if ($nuke_db->sql_numrows($result) == 1) {
 /*****[BEGIN]******************************************
  [ Mod:     Welcome PM                         v2.0.0 ]
@@ -102,8 +102,8 @@ if (!defined('CNBYA')) {
 /*****[END]********************************************
  [ Mod:     Welcome PM                         v2.0.0 ]
  ******************************************************/
-            $userinfo = $nuke_db->sql_fetchrow($result);
-            yacookie($userinfo['user_id'],$userinfo['username'],$userinfo['user_password'],$userinfo['storynum'],$userinfo['umode'],$userinfo['uorder'],$userinfo['thold'],$userinfo['noscore'],$userinfo['ublockon'],$userinfo['theme'],$userinfo['commentmax']);
+            $nuke_userinfo = $nuke_db->sql_fetchrow($result);
+            yacookie($nuke_userinfo['user_id'],$nuke_userinfo['username'],$nuke_userinfo['user_password'],$nuke_userinfo['storynum'],$nuke_userinfo['umode'],$nuke_userinfo['uorder'],$nuke_userinfo['thold'],$nuke_userinfo['noscore'],$nuke_userinfo['ublockon'],$nuke_userinfo['theme'],$nuke_userinfo['commentmax']);
 /*****[BEGIN]******************************************
  [ Mod:     Initial Usergroup                  v1.0.1 ]
  ******************************************************/

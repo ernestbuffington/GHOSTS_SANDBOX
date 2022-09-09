@@ -41,7 +41,7 @@ $phpbb2_root_path = './../';
 require_once($phpbb2_root_path . 'extension.inc');
 require_once('./pagestart.' . $phpEx);
 include_once("../../../includes/functions_log.php");
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     "body" => "admin/logs_config_body.tpl")
 );
 
@@ -56,7 +56,7 @@ if(!$result = $nuke_db->sql_query($sql))
 $row = $nuke_db->sql_fetchrow($result);
 $all_admin_authorized = $row['all_admin'];
 
-if ( $all_admin_authorized == '0' && $userdata['user_id'] <> '2' && !is_mod_admin($module_name) && $userdata['user_view_log'] <> '1' )
+if ( $all_admin_authorized == '0' && $nuke_userdata['user_id'] <> '2' && !is_mod_admin($module_name) && $nuke_userdata['user_view_log'] <> '1' )
 {
     message_die(NUKE_GENERAL_MESSAGE, $lang['Admin_not_authorized']);
 }
@@ -72,19 +72,19 @@ else
 {
     while ( $row = $nuke_db->sql_fetchrow($result) )
     {
-        $config_name = $row['config_name'];
-        $config_value = $row['config_value'];
-        $default_config[$config_name] = $config_value;
+        $nuke_config_name = $row['config_name'];
+        $nuke_config_value = $row['config_value'];
+        $default_config[$nuke_config_name] = $nuke_config_value;
 
-        $new[$config_name] = ( isset($HTTP_POST_VARS[$config_name]) ) ? $HTTP_POST_VARS[$config_name] : $default_config[$config_name];
+        $new[$nuke_config_name] = ( isset($HTTP_POST_VARS[$nuke_config_name]) ) ? $HTTP_POST_VARS[$nuke_config_name] : $default_config[$nuke_config_name];
         if ( isset($HTTP_POST_VARS['submit']) )
         {
             $sql = "UPDATE " . NUKE_BB_LOGS_CONFIG_TABLE . " SET
-                config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
-                WHERE config_name = '$config_name'";
+                config_value = '" . str_replace("\'", "''", $new[$nuke_config_name]) . "'
+                WHERE config_name = '$nuke_config_name'";
             if( !$nuke_db->sql_query($sql) )
             {
-                message_die(NUKE_GENERAL_ERROR, "Failed to update configuration for $config_name", "", __LINE__, __FILE__, $sql);
+                message_die(NUKE_GENERAL_ERROR, "Failed to update configuration for $nuke_config_name", "", __LINE__, __FILE__, $sql);
             }
         }
     }
@@ -124,7 +124,7 @@ if( empty($choose) )
 }
 else
 {
-    $user = array();
+    $nuke_user = array();
     for( $i = 0; $i < count($choose); $i++ )
     {
         $add_admin_select .= '<option value="' . $choose[$i]['user_id'] . '">' . $choose[$i]['username'] . '</option>';
@@ -182,7 +182,7 @@ if( empty($choose_delete) )
 }
 else
 {
-    $user = array();
+    $nuke_user = array();
     for( $i = 0; $i < count($choose_delete); $i++ )
     {
         $delete_admin_select .= '<option value="' . $choose_delete[$i]['user_id'] . '">' . $choose_delete[$i]['username'] . '</option>';
@@ -243,7 +243,7 @@ if ( $do_prune )
 }
 $all_admin_yes = ( $new['all_admin'] ) ? "checked=\"checked\"" : "";
 $all_admin_no = ( !$new['all_admin'] ) ? "checked=\"checked\"" : "";
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "S_CONFIG_ACTION" => append_sid("admin_logs_conf.$phpEx"),
 
     "L_YES" => $lang['Yes'],
@@ -274,8 +274,8 @@ $template->assign_vars(array(
     "S_DELETE_ADMIN" => $delete_admin_select)
 );
 
-$template->pparse("body");
+$template_nuke->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

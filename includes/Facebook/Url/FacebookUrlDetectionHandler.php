@@ -164,7 +164,7 @@ class FacebookUrlDetectionHandler implements UrlDetectionInterface
 
     /**
      * Checks if the value in X_FORWARDED_HOST is a valid hostname
-     * Could prevent unintended nuke_redirections
+     * Could prevent unintended redirections
      *
      * @param string $header
      *

@@ -24,14 +24,14 @@ $aid = substr($aid, 0,125);
 $row = $network_db->sql_fetchrow($network_db->sql_query("SELECT `title`, `admins` FROM `".$prefix."_modules` WHERE `title`='$module_name'"));
 $row2 = $network_db->sql_fetchrow($network_db->sql_query("SELECT `name`, `radminsuper` FROM `".$prefix."_authors` WHERE `aid`='$aid'"));
 $admins = explode(",", $row['admins']);
-$auth_user = 0;
+$nuke_auth_user = 0;
 for ($i=0; $i < sizeof($admins); $i++) {
     if ($row2['name'] == "$admins[$i]" AND !empty($row['admins'])) {
-        $auth_user = 1;
+        $nuke_auth_user = 1;
     }
 }
 
-if ($row2['radminsuper'] == 1 || $auth_user == 1) {
+if ($row2['radminsuper'] == 1 || $nuke_auth_user == 1) {
   if(!defined('NETWORK_SUPPORT_FUNC')) { $op = "LoadError"; }
   switch ($op) {
     case "Config":include_once(NUKE_MODULES_DIR.$module_name."/admin/Config.php");break;

@@ -51,7 +51,7 @@ include('includes/posting_icons.'. $phpEx);
     //
     // GET NUKE_USER LAST VISIT
     //
-    $glance_last_visit = $userdata['user_lastvisit'];
+    $glance_last_visit = $nuke_userdata['user_lastvisit'];
     $glance_recent_offset = (isset($HTTP_GET_VARS['glance_recent_offset'])) ? intval($HTTP_GET_VARS['glance_recent_offset']) : 0;
     $glance_news_offset = (isset($HTTP_GET_VARS['glance_news_offset'])) ? intval($HTTP_GET_VARS['glance_news_offset']) : 0;
 
@@ -134,19 +134,19 @@ include('includes/posting_icons.'. $phpEx);
     if ( $glance_num_recent )
     {
         $glance_auth_level = ( $glance_auth_read ) ? NUKE_AUTH_VIEW : NUKE_AUTH_ALL;
-        $is_auth_ary = auth($glance_auth_level, NUKE_AUTH_LIST_ALL, $userdata);
+        $is_auth_ary = auth($glance_auth_level, NUKE_AUTH_LIST_ALL, $nuke_userdata);
 
         $forumsignore = $glance_news_forum_id;
         if ( $num_forums = count($is_auth_ary) )
         {
-            while ( list($forum_id, $auth_mod) = each($is_auth_ary) )
+            while ( list($forum_id, $nuke_auth_mod) = each($is_auth_ary) )
             {
                 $unauthed = false;
-                if ( !$auth_mod['auth_view'] )
+                if ( !$nuke_auth_mod['auth_view'] )
                 {
                     $unauthed = true;
                 }
-                if ( !$glance_auth_read && !$auth_mod['auth_read'] )
+                if ( !$glance_auth_read && !$nuke_auth_mod['auth_read'] )
                 {
                     $unauthed = true;
                 }
@@ -229,7 +229,7 @@ include('includes/posting_icons.'. $phpEx);
     //
     // BEGIN OUTPUT
     //
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'glance_output' => 'glance_body.tpl')
     );
 
@@ -241,7 +241,7 @@ include('includes/posting_icons.'. $phpEx);
 
             for ( $i = 0; $i < count($latest_news); $i++ )
             {
-                if ( $userdata['session_logged_in'] )
+                if ( $nuke_userdata['session_logged_in'] )
                 {
                     $unread_topics = false;
                     $glance_topic_id = $latest_news[$i]['topic_id'];
@@ -314,7 +314,7 @@ include('includes/posting_icons.'. $phpEx);
  [ Mod:     Post Icons                         v1.0.1 ]
  ******************************************************/
 
-                $template->assign_block_vars('news', array(
+                $template_nuke->assign_block_vars('news', array(
 
                     'ROW_CLASS' => $row_class,
 
@@ -363,7 +363,7 @@ include('includes/posting_icons.'. $phpEx);
         }
         else
         {
-            $template->assign_block_vars('news', array(
+            $template_nuke->assign_block_vars('news', array(
             'BULLET' => '<img src="' . $images['folder'] . '" border="0" alt="" />', $glance_recent_bullet_old,
 
             'TOPIC_TITLE' => 'None')
@@ -379,7 +379,7 @@ include('includes/posting_icons.'. $phpEx);
         {
             for ( $i = 0; $i < count($latest_topics); $i++ )
             {
-                if ( $userdata['session_logged_in'] )
+                if ( $nuke_userdata['session_logged_in'] )
                 {
                     $unread_topics = false;
                     $glance_topic_id = $latest_topics[$i]['topic_id'];
@@ -480,7 +480,7 @@ include('includes/posting_icons.'. $phpEx);
  [ Mod:     Post Icons                         v1.0.1 ]
  ******************************************************/
 
-                $template->assign_block_vars('recent', array(
+                $template_nuke->assign_block_vars('recent', array(
 
                     'ROW_CLASS' => $row_class,
 
@@ -538,7 +538,7 @@ include('includes/posting_icons.'. $phpEx);
         }
         else
         {
-            $template->assign_block_vars('recent', array(
+            $template_nuke->assign_block_vars('recent', array(
             'BULLET' => '<img src="' . $images['forum'] . '" border="0" alt="" />', $glance_recent_bullet_old,
 
             'TOPIC_TITLE' => 'None')
@@ -548,7 +548,7 @@ include('includes/posting_icons.'. $phpEx);
 
     if ( $glance_num_news )
     {
-        $template->assign_block_vars('switch_glance_news', array(
+        $template_nuke->assign_block_vars('switch_glance_news', array(
             'NEXT_URL' => $next_news_url,
             'PREV_URL' => $prev_news_url)
         );
@@ -557,11 +557,11 @@ include('includes/posting_icons.'. $phpEx);
         //$news_on = !isset($HTTP_COOKIE_VARS['phpbbGlance_news']) || !empty($HTTP_COOKIE_VARS['phpbbGlance_news']) ? true : false;
         //if( $news_on )
         //{
-        //   $template->assign_block_vars('switch_glance_news.switch_news_on', array());
+        //   $template_nuke->assign_block_vars('switch_glance_news.switch_news_on', array());
         //}
         //else
         //{
-        //    $template->assign_block_vars('switch_glance_news.switch_news_off', array());
+        //    $template_nuke->assign_block_vars('switch_glance_news.switch_news_off', array());
         //}
         // NUKE_MOD CAT ROLLOUT END
     }
@@ -570,7 +570,7 @@ include('includes/posting_icons.'. $phpEx);
         $next_recent_url = (isset($next_recent_url)) ? $next_recent_url : '';
         $prev_recent_url = (isset($prev_recent_url)) ? $prev_recent_url : '';
 
-        $template->assign_block_vars('switch_glance_recent', array(
+        $template_nuke->assign_block_vars('switch_glance_recent', array(
             'NEXT_URL' => $next_recent_url,
             'PREV_URL' => $prev_recent_url)
         );
@@ -579,16 +579,16 @@ include('includes/posting_icons.'. $phpEx);
         //$recent_on = !isset($HTTP_COOKIE_VARS['phpbbGlance_recent']) || !empty($HTTP_COOKIE_VARS['phpbbGlance_recent']) ? true : false;
         //if( $recent_on )
         //{
-        //    $template->assign_block_vars('switch_glance_recent.switch_recent_on', array());
+        //    $template_nuke->assign_block_vars('switch_glance_recent.switch_recent_on', array());
         //}
         //else
         //{
-        //   $template->assign_block_vars('switch_glance_recent.switch_recent_off', array());
+        //   $template_nuke->assign_block_vars('switch_glance_recent.switch_recent_off', array());
         //}
         // NUKE_MOD CAT ROLLOUT END
     }
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'GLANCE_TABLE_WIDTH' =>    $glance_table_width,
         'RECENT_HEADING' => $glance_recent_heading,
         'NEWS_HEADING' => $glance_news_heading,
@@ -601,7 +601,7 @@ include('includes/posting_icons.'. $phpEx);
         'L_AUTHOR' => $lang['Author'])
         );
 
-    $template->assign_var_from_handle('GLANCE_OUTPUT', 'glance_output');
+    $template_nuke->assign_var_from_handle('GLANCE_OUTPUT', 'glance_output');
 
 // THE END
 

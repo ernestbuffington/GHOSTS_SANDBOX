@@ -485,7 +485,7 @@ switch( $sHTML ) {
 
 function msnl_fIsViewable( $view, $cid, $groups ) {
 
-	global $admin, $user, $userinfo, $msnl_gasModCfg;
+	global $admin, $nuke_user, $nuke_userinfo, $msnl_gasModCfg;
 
 	//NOTE: only Admins should be allowed to see the first category which is reserved for *Unassigned*
 
@@ -499,19 +499,19 @@ function msnl_fIsViewable( $view, $cid, $groups ) {
 
 			$viewable = 1;
 
-	} elseif ( $cid <> 1 AND $view == 1 AND is_user( $user ) ) {  //Registered User
+	} elseif ( $cid <> 1 AND $view == 1 AND is_user( $nuke_user ) ) {  //Registered User
 
 			$viewable = 1;
 
-	} elseif ( $cid <> 1 AND $view == 2 AND is_user( $user ) AND $userinfo[newsletter] == 1 ) {  //Subscribed (Newsletter) User
+	} elseif ( $cid <> 1 AND $view == 2 AND is_user( $nuke_user ) AND $nuke_userinfo[newsletter] == 1 ) {  //Subscribed (Newsletter) User
 
 			$viewable = 1;
 
-	} elseif ( $cid <> 1 AND $view == 3 AND is_user( $user ) AND paid() ) {  //Paid subscribers
+	} elseif ( $cid <> 1 AND $view == 3 AND is_user( $nuke_user ) AND paid() ) {  //Paid subscribers
 
 			$viewable = 1;
 
-	} elseif ( $cid <> 1 AND $view == 3 AND is_user( $user ) AND $msnl_gasModCfg['nsn_groups'] == 1 ) {  //NSN Groups Only
+	} elseif ( $cid <> 1 AND $view == 3 AND is_user( $nuke_user ) AND $msnl_gasModCfg['nsn_groups'] == 1 ) {  //NSN Groups Only
 
 			if ( in_groups( $groups ) ) {
 

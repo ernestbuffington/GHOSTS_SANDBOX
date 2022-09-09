@@ -203,12 +203,12 @@ else if (count($delete_list) > 0)
 
 if ($mode == 'select')
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/stat_admin_lang.tpl',
         'lang_body' => 'admin/stat_edit_lang.tpl')
     );
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_EDIT' => $lang['Edit'],
         'L_UPDATE' => $lang['Update'],
         'L_DELETE' => $lang['Delete'],
@@ -254,7 +254,7 @@ if ($mode == 'select')
             $link_col_decol = $phpbb2_root_path . 'admin/admin_stats_lang.php?mode=select&amp;d_lang=' . $provided_languages[$i];
         }
 
-        $template->assign_block_vars('langrow', array(
+        $template_nuke->assign_block_vars('langrow', array(
             'LANGUAGE' => $provided_languages[$i],
             'L_COLLAPSE_DECOLLAPSE' => $col_decol,
             'U_COLLAPSE_DECOLLAPSE' => $link_col_decol,
@@ -273,7 +273,7 @@ if ($mode == 'select')
                     $informations .= '<br />No Content';
                 }
             
-                $template->assign_block_vars('langrow.modulerow', array(
+                $template_nuke->assign_block_vars('langrow.modulerow', array(
                     'MODULE_NAME' => $modules[$j]['long_name'],
                     'MODULE_DESC' => $modules[$j]['extra_info'],
                     'U_LANG_EDIT' => $phpbb2_root_path . 'admin/admin_stats_lang.php?mode=select&amp;m_mode=edit&amp;lang=' . $provided_languages[$i] . '&amp;module=' . $modules[$j]['module_id'] . '&amp;d_lang=' . $lang_decollapse,
@@ -311,13 +311,13 @@ if ($mode == 'select')
             $current_modules = $modules;
         }
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'LANGUAGE' => $language)
         );
 
         for ($i = 0; $i < count($current_modules); $i++)
         {
-            $template->assign_block_vars('modules', array(
+            $template_nuke->assign_block_vars('modules', array(
                 'MODULE_NAME' => $current_modules[$i]['long_name'],
                 'MODULE_ID' => $current_modules[$i]['module_id'])
             );
@@ -326,7 +326,7 @@ if ($mode == 'select')
         
             for ($j = 0; $j < count($lang_entries); $j++)
             {
-                $template->assign_block_vars('modules.language_entries', array(
+                $template_nuke->assign_block_vars('modules.language_entries', array(
                     'KEY' => $lang_entries[$j]['key'],
                     'MODULE_ID' => $current_modules[$i]['module_id'],
                     'VALUE' => $lang_entries[$j]['value'])
@@ -334,15 +334,15 @@ if ($mode == 'select')
             }
         }
 
-        $template->assign_var_from_handle('EDIT_LANG_PANEL', 'lang_body');
+        $template_nuke->assign_var_from_handle('EDIT_LANG_PANEL', 'lang_body');
     }
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 //
 // Page Footer
 //
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

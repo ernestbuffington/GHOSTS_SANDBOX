@@ -440,18 +440,18 @@ function remove_search_post($post_id_sql)
 //
 function username_search($search_match)
 {
-        global $nuke_db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb2_root_path, $starttime, $gen_simple_header;
+        global $nuke_db, $board_config, $template_nuke, $lang, $images, $theme, $phpEx, $phpbb2_root_path, $starttime, $gen_simple_header;
 
         $gen_simple_header = TRUE;
 
-        $username_list = '';
+        $nuke_username_list = '';
         if ( !empty($search_match) )
         {
-        $username_search = preg_replace('/\*/', '%', phpbb_clean_username($search_match));
+        $nuke_username_search = preg_replace('/\*/', '%', phpbb_clean_username($search_match));
 
                 $sql = "SELECT username
                         FROM " . NUKE_USERS_TABLE . "
-                        WHERE username LIKE '" . str_replace("\'", "''", $username_search) . "' AND user_id <> " . NUKE_ANONYMOUS . "
+                        WHERE username LIKE '" . str_replace("\'", "''", $nuke_username_search) . "' AND user_id <> " . NUKE_ANONYMOUS . "
                         ORDER BY username";
                 if ( !($result = $nuke_db->sql_query($sql)) )
                 {
@@ -462,25 +462,25 @@ function username_search($search_match)
                 {
                         do
                         {
-                                $username_list .= '<option value="' . $row['username'] . '">' . $row['username'] . '</option>';
+                                $nuke_username_list .= '<option value="' . $row['username'] . '">' . $row['username'] . '</option>';
                         }
                         while ( $row = $nuke_db->sql_fetchrow($result) );
                 }
                 else
                 {
-                        $username_list .= '<option>' . $lang['No_match']. '</option>';
+                        $nuke_username_list .= '<option>' . $lang['No_match']. '</option>';
                 }
                 $nuke_db->sql_freeresult($result);
         }
 
         $page_title = $lang['Search'];
-        include("includes/page_header_review.php");
+        include("includes/nuke_page_header_review.php");
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 'search_user_body' => 'search_username.tpl')
         );
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'USERNAME' => (!empty($search_match)) ? phpbb_clean_username($search_match) : '',
 
                 'L_CLOSE_WINDOW' => $lang['Close_window'],
@@ -491,16 +491,16 @@ function username_search($search_match)
                 'L_SEARCH_EXPLAIN' => $lang['Search_author_explain'],
                 'L_CLOSE_WINDOW' => $lang['Close_window'],
 
-                'S_USERNAME_OPTIONS' => $username_list,
+                'S_USERNAME_OPTIONS' => $nuke_username_list,
                 'S_SEARCH_ACTION' => append_sid("search.$phpEx?mode=searchuser&popup=1"))
         );
 
-        if ( $username_list != '' )
+        if ( $nuke_username_list != '' )
         {
-                $template->assign_block_vars('switch_select_name', array());
+                $template_nuke->assign_block_vars('switch_select_name', array());
         }
 
-        $template->pparse('search_user_body');
+        $template_nuke->pparse('search_user_body');
 
         include("includes/page_tail_review.php");
 

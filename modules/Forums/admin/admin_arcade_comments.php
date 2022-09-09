@@ -65,7 +65,7 @@ $mode = $HTTP_GET_VARS['mode'];
 
     $gid = $HTTP_GET_VARS['gid'];
 
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
        'body' => 'admin/admin_edit_comments_body.tpl')); 
 
     
@@ -78,16 +78,16 @@ $mode = $HTTP_GET_VARS['mode'];
 
     $row = $nuke_db->sql_fetchrow($result);
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
             'GAME_ID' => $row['game_id'],
             'GAME_NAME' => '<a href="../../../' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>', 
             'COMMENTS' => $row['comments_value'],
             'S_ACTION' => append_sid('admin_arcade_comments.' . $phpEx . '?mode=update'), 
             ));
 
-    $template->pparse('body'); 
+    $template_nuke->pparse('body'); 
 
-    include('./page_footer_admin.'.$phpEx);
+    include('./nuke_page_footer_admin.'.$phpEx);
 
     }
  
@@ -107,7 +107,7 @@ $mode = $HTTP_GET_VARS['mode'];
     $comments_perpage = 15;
 
 
-$template->set_filenames(array( 
+$template_nuke->set_filenames(array( 
    'body' => 'admin/admin_arcade_comments_body.tpl')); 
 
                 
@@ -122,7 +122,7 @@ $sql = "SELECT g.*, c.*, u.* FROM " . NUKE_GAMES_TABLE. " g LEFT JOIN " . NUKE_C
 while ( $row = $nuke_db->sql_fetchrow($result))
             {
             
-            $template->assign_block_vars('commentrow', array(
+            $template_nuke->assign_block_vars('commentrow', array(
                  'GAME_NAME' => '<a href="../../../' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>', 
                  'COMMENTS_VALUE' => $row['comments_value'],
 /*****[BEGIN]******************************************
@@ -137,7 +137,7 @@ while ( $row = $nuke_db->sql_fetchrow($result))
 
             }
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
                 'PAGINATION' => generate_pagination("admin_arcade_comments.$phpEx?", $comments_total, $comments_perpage, $start),
                 'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $comments_perpage) + 1 ), ceil( $comments_total / $comments_perpage )),
                 'L_GOTO_PAGE' => $lang['Goto_page'])
@@ -146,7 +146,7 @@ $template->assign_vars(array(
 //
 // Generate the page end
 //
-$template->pparse('body');
-include('./page_footer_admin.'.$phpEx);
+$template_nuke->pparse('body');
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

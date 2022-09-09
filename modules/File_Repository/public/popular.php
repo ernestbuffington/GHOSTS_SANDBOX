@@ -14,7 +14,7 @@ if (!defined('MODULE_FILE'))
 
 function _most_popular_download_info()
 {
-	global $nuke_db, $lang_new, $module_name, $userinfo, $admin, $user, $settings, $themes;
+	global $nuke_db, $lang_new, $module_name, $nuke_userinfo, $admin, $nuke_user, $settings, $themes;
 	OpenTable();
 	_index_navigation_header();
 

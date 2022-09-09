@@ -65,10 +65,10 @@ $template->set_filenames(array(
 //
 // Generate logged in/logged out status
 //
-if ( $userdata['session_logged_in'] )
+if ( $nuke_userdata['session_logged_in'] )
 {
         $u_login_logout = 'modules.php?name=Your_Account&op=logout&nuke_redirect=Forums';
-        $l_login_logout = $lang['Logout'] . ' [ ' . $userdata['username'] . ' ]';
+        $l_login_logout = $lang['Logout'] . ' [ ' . $nuke_userdata['username'] . ' ]';
 }
 else
 {
@@ -76,26 +76,26 @@ else
         $l_login_logout = $lang['Login'];
 }
 
-$s_last_visit = ( $userdata['session_logged_in'] ) ? create_date($board_config['default_dateformat'], $userdata['user_lastvisit'], $board_config['board_timezone']) : '';
+$s_last_visit = ( $nuke_userdata['session_logged_in'] ) ? create_date($board_config['default_dateformat'], $nuke_userdata['user_lastvisit'], $board_config['board_timezone']) : '';
 
 //
 // Get basic (usernames + totals) online
 // situation
 //
-$user_forum_sql = ( !empty($forum_id) ) ? "AND s.session_page = " . intval($forum_id) : '';
+$nuke_user_forum_sql = ( !empty($forum_id) ) ? "AND s.session_page = " . intval($forum_id) : '';
 $sql = "SELECT u.username, u.user_id, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_ip
     FROM ".NUKE_USERS_TABLE." u, ".NUKE_BB_SESSIONS_TABLE." s
     WHERE u.user_id = s.session_user_id
         AND s.session_time >= ".( time() - 300 ) . "
-        $user_forum_sql
+        $nuke_user_forum_sql
     ORDER BY u.username ASC, s.session_ip ASC";
 if( !($result = $nuke_db->sql_query($sql)) )
 {
     message_die(NUKE_GENERAL_ERROR, 'Could not obtain user/online information', '', __LINE__, __FILE__, $sql);
 }
 
-$userlist_ary = array();
-$userlist_visible = array();
+$nuke_userlist_ary = array();
+$nuke_userlist_visible = array();
 
 $logged_visible_online = 0;
 $logged_hidden_online = 0;
@@ -127,18 +127,18 @@ while( $row = $nuke_db->sql_fetchrow($result) )
 
             if ( $row['user_allow_viewonline'] )
             {
-                $user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'>' . $row['username'] . '</a>';
+                $nuke_user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'>' . $row['username'] . '</a>';
                 $logged_visible_online++;
             }
             else
             {
-                $user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'><i>' . $row['username'] . '</i></a>';
+                $nuke_user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'><i>' . $row['username'] . '</i></a>';
                 $logged_hidden_online++;
             }
 
-            if ( $row['user_allow_viewonline'] || $userdata['user_level'] == NUKE_ADMIN )
+            if ( $row['user_allow_viewonline'] || $nuke_userdata['user_level'] == NUKE_ADMIN )
             {
-                $online_userlist .= ( $online_userlist != '' ) ? ', ' . $user_online_link : $user_online_link;
+                $online_userlist .= ( $online_userlist != '' ) ? ', ' . $nuke_user_online_link : $nuke_user_online_link;
             }
         }
 
@@ -255,18 +255,18 @@ $l_online_users .= sprintf($l_g_user_s, $guests_online);
 // Obtain number of new private messages
 // if user is logged in
 //
-if ( $userdata['session_logged_in'] )
+if ( $nuke_userdata['session_logged_in'] )
 {
-    if ( $userdata['user_new_privmsg'] )
+    if ( $nuke_userdata['user_new_privmsg'] )
     {
-        $l_message_new = ( $userdata['user_new_privmsg'] == 1 ) ? $lang['New_pm'] : $lang['New_pms'];
-        $l_privmsgs_text = sprintf($l_message_new, $userdata['user_new_privmsg']);
+        $l_message_new = ( $nuke_userdata['user_new_privmsg'] == 1 ) ? $lang['New_pm'] : $lang['New_pms'];
+        $l_privmsgs_text = sprintf($l_message_new, $nuke_userdata['user_new_privmsg']);
 
-        if ( $userdata['user_last_privmsg'] > $userdata['user_lastvisit'] )
+        if ( $nuke_userdata['user_last_privmsg'] > $nuke_userdata['user_lastvisit'] )
         {
             $sql = "UPDATE " . NUKE_USERS_TABLE . "
-                SET user_last_privmsg = " . $userdata['user_lastvisit'] . "
-                WHERE user_id = " . $userdata['user_id'];
+                SET user_last_privmsg = " . $nuke_userdata['user_lastvisit'] . "
+                WHERE user_id = " . $nuke_userdata['user_id'];
             if ( !$nuke_db->sql_query($sql) )
             {
                 message_die(NUKE_GENERAL_ERROR, 'Could not update private message new/read time for user', '', __LINE__, __FILE__, $sql);
@@ -289,10 +289,10 @@ if ( $userdata['session_logged_in'] )
         $icon_pm = $images['pm_no_new_msg'];
     }
 
-    if ( $userdata['user_unread_privmsg'] )
+    if ( $nuke_userdata['user_unread_privmsg'] )
     {
-        $l_message_unread = ( $userdata['user_unread_privmsg'] == 1 ) ? $lang['Unread_pm'] : $lang['Unread_pms'];
-        $l_privmsgs_text_unread = sprintf($l_message_unread, $userdata['user_unread_privmsg']);
+        $l_message_unread = ( $nuke_userdata['user_unread_privmsg'] == 1 ) ? $lang['Unread_pm'] : $lang['Unread_pms'];
+        $l_privmsgs_text_unread = sprintf($l_message_unread, $nuke_userdata['user_unread_privmsg']);
     }
     else
     {
@@ -439,7 +439,7 @@ $template->assign_vars(array(
 //
 // Login box?
 //
-if ( !$userdata['session_logged_in'] )
+if ( !$nuke_userdata['session_logged_in'] )
 {
     $template->assign_block_vars('switch_user_logged_out', array());
 }
@@ -447,7 +447,7 @@ else
 {
     $template->assign_block_vars('switch_user_logged_in', array());
 
-    if ( !empty($userdata['user_popup_pm']) )
+    if ( !empty($nuke_userdata['user_popup_pm']) )
     {
         $template->assign_block_vars('switch_enable_pm_popup', array());
     }

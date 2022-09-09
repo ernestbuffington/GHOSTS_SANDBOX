@@ -40,7 +40,7 @@ if(!defined('IN_SETTINGS'))exit('Access Denied');
        $articlecomm, 
            $minpass, 
       $my_headlines, 
-         $user_news, 
+         $nuke_user_news, 
           $adminssl, 
      $queries_count, 
         $use_colors, 

@@ -94,7 +94,7 @@ if( isset($HTTP_POST_VARS['doprune']) )
         // Convert days to seconds for timestamp functions...
         $prunedate = time() - ( $prunedays * 86400 );
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 'body' => 'admin/forum_prune_result_body.tpl')
         );
 
@@ -106,7 +106,7 @@ if( isset($HTTP_POST_VARS['doprune']) )
                 $row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
                 $row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
-                $template->assign_block_vars('prune_results', array(
+                $template_nuke->assign_block_vars('prune_results', array(
                         'ROW_COLOR' => '#' . $row_color,
                         'ROW_CLASS' => $row_class,
                         'FORUM_NAME' => $forum_rows[$i]['forum_name'],
@@ -115,7 +115,7 @@ if( isset($HTTP_POST_VARS['doprune']) )
                 );
         }
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'L_FORUM_PRUNE' => $lang['Forum_Prune'],
                 'L_FORUM' => $lang['Forum'],
                 'L_TOPICS_PRUNED' => $lang['Topics_pruned'],
@@ -134,7 +134,7 @@ else
                 //
                 // Output a selection table if no forum id has been specified.
                 //
-                $template->set_filenames(array(
+                $template_nuke->set_filenames(array(
                         'body' => 'admin/forum_prune_select_body.tpl')
                 );
 
@@ -150,7 +150,7 @@ else
                 //
                 // Assign the template variables.
                 //
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         'L_FORUM_PRUNE' => $lang['Forum_Prune'],
                         'L_SELECT_FORUM' => $lang['Select_a_Forum'],
                         'L_LOOK_UP' => $lang['Look_up_Forum'],
@@ -166,7 +166,7 @@ else
                 //
                 // Output the form to retrieve Prune information.
                 //
-                $template->set_filenames(array(
+                $template_nuke->set_filenames(array(
                         'body' => 'admin/forum_prune_body.tpl')
                 );
 
@@ -180,7 +180,7 @@ else
                 //
                 // Assign the template variables.
                 //
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         'FORUM_NAME' => $forum_name,
 
                         'L_FORUM' => $lang['Forum'],
@@ -197,8 +197,8 @@ else
 //
 // Actually output the page here.
 //
-$template->pparse('body');
+$template_nuke->pparse('body');
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

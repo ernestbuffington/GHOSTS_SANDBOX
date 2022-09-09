@@ -144,7 +144,7 @@ function SearchForm()
 
 function linkinfomenu($lid, $ttitle) 
 {
-    global $module_name, $user;
+    global $module_name, $nuke_user;
     
 	echo "<span class=\"content\"><strong>"
     ."<i class=\"bi bi-person-square\"></i>&nbsp;<a href=\"modules.php?name=".$module_name."&amp;l_op=viewlinkcomments&amp;lid=".$lid."&amp;ttitle=".$ttitle."\">"._LINKCOMMENTS."</a>&nbsp;&nbsp;"
@@ -262,7 +262,7 @@ function index()
 
 function AddLink() 
 {
-    global $prefix, $nuke_db, $user, $links_anonaddlinklock, $module_name;
+    global $prefix, $nuke_db, $nuke_user, $links_anonaddlinklock, $module_name;
     include_once(NUKE_BASE_DIR.'header.php');
     $mainlink = 1;
     menu(1);
@@ -313,9 +313,9 @@ function AddLink()
 		echo "</select><br /><br />";
         echo ""._LDESCRIPTION."<br /><textarea name=\"description\" cols=\"60\" rows=\"5\"></textarea><br /><br />";
         
-		global $userinfo;
-        echo '<div class="textbold" style="margin-left:1px;">'._YOURNAME.':</div><input type="text" name="auth_name" value="'.$userinfo['username'].'" size="30" required><br /><br />';
-        echo '<div class="textbold" style="margin-left:1px;">'._YOUREMAIL.':</div><input type="email" name="email" value="'.$userinfo['user_email'].'" size="30" required><br /><br />';
+		global $nuke_userinfo;
+        echo '<div class="textbold" style="margin-left:1px;">'._YOURNAME.':</div><input type="text" name="auth_name" value="'.$nuke_userinfo['username'].'" size="30" required><br /><br />';
+        echo '<div class="textbold" style="margin-left:1px;">'._YOUREMAIL.':</div><input type="email" name="email" value="'.$nuke_userinfo['user_email'].'" size="30" required><br /><br />';
             
 		echo security_code(array(0,1,2,3,4,5,6,7), 'normal').'<br />'; # added 5/6/2021 (Someone fucked this up so I fixed it)
 		
@@ -343,8 +343,8 @@ function AddLink()
     include_once(NUKE_BASE_DIR.'footer.php');
 }
 
-function Add($title, $url, $auth_name, $cat, $description, $email) {
-    global $prefix, $nuke_db, $user, $cookie, $cache;
+function Add($title, $url, $nuke_auth_name, $cat, $description, $email) {
+    global $prefix, $nuke_db, $nuke_user, $cookie, $cache;
     $result = $nuke_db->sql_query("SELECT `url` FROM ".$prefix."_links_links WHERE url='$url'");
     $numrows = $nuke_db->sql_numrows($result);
 /*****[BEGIN]******************************************
@@ -371,7 +371,7 @@ function Add($title, $url, $auth_name, $cat, $description, $email) {
         include_once(NUKE_BASE_DIR.'footer.php');
 	else: 
         if(is_user()) 
-        $submitter = $userinfo['username'];
+        $submitter = $nuke_userinfo['username'];
 		// Check if Title exist
         if (empty($title)):
             include_once(NUKE_BASE_DIR.'header.php');
@@ -408,7 +408,7 @@ function Add($title, $url, $auth_name, $cat, $description, $email) {
         $title = check_html(Fix_Quotes($title, "nohtml"));
         $url = stripslashes(check_html($url, "nohtml"));
         $description = check_html(Fix_Quotes($description), "html");
-        $auth_name = stripslashes(check_html($auth_name, "nohtml"));
+        $nuke_auth_name = stripslashes(check_html($nuke_auth_name, "nohtml"));
         if (!empty($email)) 
         Validate($email,'email',_WEBLINKS);
         Validate($url,'url',_WEBLINKS);
@@ -424,7 +424,7 @@ function Add($title, $url, $auth_name, $cat, $description, $email) {
 												  '".addslashes($title)."', 
 												    '".addslashes($url)."', 
 											'".addslashes($description)."', 
-											  '".addslashes($auth_name)."', 
+											  '".addslashes($nuke_auth_name)."', 
 											      '".addslashes($email)."', 
 											  '".addslashes($submitter)."')");
 											  
@@ -527,7 +527,7 @@ function NewLinks($newlinkshowdays)
 
 function NewLinksDate($selectdate) 
 {
-    global $prefix, $nuke_db, $module_name, $admin, $user, $admin_file, $locale, $mainvotedecimal, $datetime;
+    global $prefix, $nuke_db, $module_name, $admin, $nuke_user, $admin_file, $locale, $mainvotedecimal, $datetime;
     $dateDB = (date("d-M-Y", $selectdate));
     $dateView = (date("F d, Y", $selectdate));
     include_once(NUKE_BASE_DIR.'header.php');
@@ -618,7 +618,7 @@ function NewLinksDate($selectdate)
 
 function TopRated($ratenum, $ratetype) 
 {
-    global $prefix, $nuke_db, $admin, $module_name, $user, $locale, $mainvotedecimal, $datetime;
+    global $prefix, $nuke_db, $admin, $module_name, $nuke_user, $locale, $mainvotedecimal, $datetime;
     
 	include_once(NUKE_BASE_DIR.'header.php');
     include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
@@ -741,7 +741,7 @@ function TopRated($ratenum, $ratetype)
 
 function MostPopular($ratenum, $ratetype) 
 {
-    global $prefix, $nuke_db, $admin, $module_name, $user, $admin_file, $locale, $mainvotedecimal, $datetime;
+    global $prefix, $nuke_db, $admin, $module_name, $nuke_user, $admin_file, $locale, $mainvotedecimal, $datetime;
     include_once(NUKE_BASE_DIR.'header.php');
     include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
     menu(1);
@@ -893,7 +893,7 @@ function RandomLink()
 
 function viewlink($cid, $min, $orderby, $show) 
 {
-    global $prefix, $nuke_db, $admin, $perpage, $module_name, $user, $admin_file, $locale, $mainvotedecimal, $datetime;
+    global $prefix, $nuke_db, $admin, $perpage, $module_name, $nuke_user, $admin_file, $locale, $mainvotedecimal, $datetime;
     $show = intval($show);
 
     if (empty($show))
@@ -1678,15 +1678,15 @@ function viewlinkcomments($lid, $ttitle)
         
 		/* Individual user information */
         $result2 = $nuke_db->sql_query("SELECT `rating` FROM ".$prefix."_links_votedata WHERE ratinguser = '$ratinguser'");
-        $usertotalcomments = $nuke_db->sql_numrows($result2);
-        $useravgrating = 0;
+        $nuke_usertotalcomments = $nuke_db->sql_numrows($result2);
+        $nuke_useravgrating = 0;
     
 	while($row2 = $nuke_db->sql_fetchrow($result2))
         
 		$rating2 = intval($row2['rating']);
-        $useravgrating = $useravgrating + $rating2;
-        $useravgrating = $useravgrating / $usertotalcomments;
-        $useravgrating = number_format($useravgrating, 1);
+        $nuke_useravgrating = $nuke_useravgrating + $rating2;
+        $nuke_useravgrating = $nuke_useravgrating / $nuke_usertotalcomments;
+        $nuke_useravgrating = number_format($nuke_useravgrating, 1);
         
 		echo "<tr><td bgcolor=\"$bgcolor2\">"
             ."<span class=\"content\"><strong> "._USER.": </strong><a href=\"$nukeurl/modules.php?name=Your_Account&amp;op=userinfo&amp;username=$ratinguser\">$ratinguser</a></span>"
@@ -1700,10 +1700,10 @@ function viewlinkcomments($lid, $ttitle)
             ."</tr>"
             ."<tr>"
             ."<td valign=\"top\">"
-            ."<span class=\"tiny\">"._USERAVGRATING.": $useravgrating</span>"
+            ."<span class=\"tiny\">"._USERAVGRATING.": $nuke_useravgrating</span>"
             ."</td>"
             ."<td valign=\"top\" colspan=\"2\">"
-            ."<span class=\"tiny\">"._NUMRATINGS.": $usertotalcomments</span>"
+            ."<span class=\"tiny\">"._NUMRATINGS.": $nuke_usertotalcomments</span>"
             ."</td>"
             ."</tr>"
             ."<tr>"
@@ -2294,7 +2294,7 @@ function outsidelinksetup($lid)
 
 function brokenlink($lid) 
 {
-    global $prefix, $nuke_db, $user, $cookie, $module_name;
+    global $prefix, $nuke_db, $nuke_user, $cookie, $module_name;
 
     if (is_user()): 
     include_once(NUKE_BASE_DIR.'header.php');
@@ -2340,7 +2340,7 @@ function brokenlink($lid)
 function brokenlinkS($lid,$cid, $title, $url, $description, $modifysubmitter) 
 {
 
-    global $prefix, $nuke_db, $user, $anonymous, $cookie, $module_name, $user, $cache;
+    global $prefix, $nuke_db, $nuke_user, $anonymous, $cookie, $module_name, $nuke_user, $cache;
 
     if (is_user()): 
 	
@@ -2389,7 +2389,7 @@ function brokenlinkS($lid,$cid, $title, $url, $description, $modifysubmitter)
 
 function modifylinkrequest($lid) 
 {
-    global $prefix, $nuke_db, $user, $module_name, $anonymous, $cookie;
+    global $prefix, $nuke_db, $nuke_user, $module_name, $anonymous, $cookie;
     include_once(NUKE_BASE_DIR.'header.php');
     include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
 
@@ -2471,7 +2471,7 @@ function modifylinkrequest($lid)
 
 function modifylinkrequestS($lid, $cat, $title, $url, $description, $modifysubmitter) 
 {
-    global $prefix, $nuke_db, $user, $module_name, $cookie, $cache;
+    global $prefix, $nuke_db, $nuke_user, $module_name, $cookie, $cache;
     include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
 
     if(is_user()) 
@@ -2569,7 +2569,7 @@ function rateinfo($lid)
 
 function addrating($ratinglid, $ratinguser, $rating, $ratinghost_name, $ratingcomments) 
 {
-    global $prefix, $nuke_db, $cookie, $user, $module_name, $anonymous;
+    global $prefix, $nuke_db, $cookie, $nuke_user, $module_name, $anonymous;
     $passtest = "yes";
     include_once(NUKE_BASE_DIR.'header.php');
     include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
@@ -2760,7 +2760,7 @@ function completevote($error)
 	echo "<div align=\"center\"><span class=\"option\"><strong><h1>"._COMPLETEVOTE6."</h1></strong></span></div><br />";
 }
 
-function ratelink($lid, $user, $ttitle) 
+function ratelink($lid, $nuke_user, $ttitle) 
 {
     global $prefix, $cookie, $datetime, $module_name, $identify;
     include_once(NUKE_BASE_DIR.'header.php');
@@ -2788,11 +2788,11 @@ function ratelink($lid, $user, $ttitle)
     if(is_user()): 
         echo "<li>"._YOUAREREGGED.""
             ."<li>"._FEELFREE2ADD."";
-        $auth_name = $cookie[1];
+        $nuke_auth_name = $cookie[1];
 	else: 
         echo "<li>"._YOUARENOTREGGED.""
             ."<li>"._IFYOUWEREREG."";
-        $auth_name = $anonymous;
+        $nuke_auth_name = $anonymous;
     endif;
     
     echo "</ul>"
@@ -2801,7 +2801,7 @@ function ratelink($lid, $user, $ttitle)
         ."<tr><td width=\"25\" nowrap></td>"
         ."<tr><td width=\"25\" nowrap></td><td width=\"550\">"
         ."<input type=\"hidden\" name=\"ratinglid\" value=\"$lid\">"
-        ."<input type=\"hidden\" name=\"ratinguser\" value=\"$auth_name\">"
+        ."<input type=\"hidden\" name=\"ratinguser\" value=\"$nuke_auth_name\">"
         ."<input type=\"hidden\" name=\"ratinghost_name\" value=\"$ip\">"
         ."<span class=content>"._RATETHISSITE."&nbsp;"
         ."<select name=\"rating\">"
@@ -2903,19 +2903,19 @@ switch($l_op):
     visit($lid);
     break;
     case "Add":
-    Add($title, $url, $auth_name, $cat, $description, $email);
+    Add($title, $url, $nuke_auth_name, $cat, $description, $email);
     break;
     case "search":
     search($query, $min, $orderby, $show);
     break;
     case "rateinfo":
-    rateinfo($lid, $user, $title);
+    rateinfo($lid, $nuke_user, $title);
     break;
     case "ratelink":
-    ratelink($lid, $user, $ttitle);
+    ratelink($lid, $nuke_user, $ttitle);
     break;
     case "addrating":
-    addrating($ratinglid, $ratinguser, $rating, $ratinghost_name, $ratingcomments, $user);
+    addrating($ratinglid, $ratinguser, $rating, $ratinghost_name, $ratingcomments, $nuke_user);
     break;
     case "viewlinkcomments":
     viewlinkcomments($lid, $ttitle);

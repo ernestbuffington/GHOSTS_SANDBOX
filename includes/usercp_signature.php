@@ -16,13 +16,13 @@ if (!defined('IN_PHPBB2'))
 }
 
 // get the board & user settings ...
-$html_status    = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
-$bbcode_status  = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode']  ) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
-$smilies_status = ( $userdata['user_allowsmile'] && $board_config['allow_smilies']  ) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
+$html_status    = ( $nuke_userdata['user_allowhtml'] && $board_config['allow_html'] ) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
+$bbcode_status  = ( $nuke_userdata['user_allowbbcode'] && $board_config['allow_bbcode']  ) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
+$smilies_status = ( $nuke_userdata['user_allowsmile'] && $board_config['allow_smilies']  ) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
 
-$html_on    = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? 1 : 0 ;
-$bbcode_on  = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode']  ) ? 1 : 0 ;
-$smilies_on = ( $userdata['user_allowsmile'] && $board_config['allow_smilies']  ) ? 1 : 0 ;
+$html_on    = ( $nuke_userdata['user_allowhtml'] && $board_config['allow_html'] ) ? 1 : 0 ;
+$bbcode_on  = ( $nuke_userdata['user_allowbbcode'] && $board_config['allow_bbcode']  ) ? 1 : 0 ;
+$smilies_on = ( $nuke_userdata['user_allowsmile'] && $board_config['allow_smilies']  ) ? 1 : 0 ;
 
 // check and set various parameters
 $params = array('submit' => 'save', 'preview' => 'preview', 'mode' => 'mode');
@@ -68,12 +68,12 @@ $page_title = $lang['Signature'];
 
 include('includes/bbcode.'.$phpEx);
 include('includes/functions_post.'.$phpEx);
-include('includes/page_header.'.$phpEx);
+include('includes/nuke_page_header.'.$phpEx);
 
 // save new signature
 if ($submit)
 {
-    $template->assign_block_vars('switch_save_sig', array());
+    $template_nuke->assign_block_vars('switch_save_sig', array());
 
     if ( isset($signature) )
     {
@@ -87,11 +87,11 @@ if ($submit)
         {
         $bbcode_uid = ( $bbcode_on ) ? make_bbcode_uid() : '';
         $signature = prepare_message($signature, $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
-        $user_id =  $userdata['user_id'];
+        $nuke_user_id =  $nuke_userdata['user_id'];
 
         $sql = "UPDATE " . NUKE_USERS_TABLE . "
         SET user_sig = '" . str_replace("\'", "''", $signature) . "', user_sig_bbcode_uid = '$bbcode_uid'
-        WHERE user_id = $user_id";
+        WHERE user_id = $nuke_user_id";
 
             if ( !($result = $nuke_db->sql_query($sql)) )
             {
@@ -114,7 +114,7 @@ if ($submit)
 // catch the submitted message and prepare it for a preview
 else if ($preview)
 {
-    $template->assign_block_vars('switch_preview_sig', array());
+    $template_nuke->assign_block_vars('switch_preview_sig', array());
 
     if ( isset($signature) )
     {
@@ -164,42 +164,42 @@ else if ($preview)
 else if ($mode)
 {
 
-    $template->assign_block_vars('switch_current_sig', array());
+    $template_nuke->assign_block_vars('switch_current_sig', array());
 
-    $signature_bbcode_uid = $userdata['user_sig_bbcode_uid'];
-    $signature = ( $signature_bbcode_uid != '' ) ? preg_replace("/:(([a-z0-9]+:)?)$signature_bbcode_uid\]/si", ']', $userdata['user_sig']) : $userdata['user_sig'];
-    $bbcode_uid = $userdata['user_sig_bbcode_uid'];
-    $user_sig = prepare_message($userdata['user_sig'], $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+    $signature_bbcode_uid = $nuke_userdata['user_sig_bbcode_uid'];
+    $signature = ( $signature_bbcode_uid != '' ) ? preg_replace("/:(([a-z0-9]+:)?)$signature_bbcode_uid\]/si", ']', $nuke_userdata['user_sig']) : $nuke_userdata['user_sig'];
+    $bbcode_uid = $nuke_userdata['user_sig_bbcode_uid'];
+    $nuke_user_sig = prepare_message($nuke_userdata['user_sig'], $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
 
-    if( $user_sig != '' ) 
+    if( $nuke_user_sig != '' ) 
     { 
-        if ( $bbcode_on  == 1 ) { $user_sig = bbencode_second_pass($user_sig, $bbcode_uid); }
-        if ( $bbcode_on  == 1 ) { $user_sig = bbencode_first_pass($user_sig, $bbcode_uid); }
-        if ( $bbcode_on  == 1 ) { $user_sig = make_clickable($user_sig); }
-        if ( $smilies_on == 1 ) { $user_sig = smilies_pass($user_sig); }
+        if ( $bbcode_on  == 1 ) { $nuke_user_sig = bbencode_second_pass($nuke_user_sig, $bbcode_uid); }
+        if ( $bbcode_on  == 1 ) { $nuke_user_sig = bbencode_first_pass($nuke_user_sig, $bbcode_uid); }
+        if ( $bbcode_on  == 1 ) { $nuke_user_sig = make_clickable($nuke_user_sig); }
+        if ( $smilies_on == 1 ) { $nuke_user_sig = smilies_pass($nuke_user_sig); }
 /*****[BEGIN]******************************************
  [ Mod:     Advance Signature Divider Control  v1.0.0 ]
  ******************************************************/
-        $user_sig = $board_config['sig_line'] . $user_sig;
+        $nuke_user_sig = $board_config['sig_line'] . $nuke_user_sig;
 /*****[END]********************************************
  [ Mod:     Advance Signature Divider Control  v1.0.0 ]
  ******************************************************/
-        $user_sig = nl2br($user_sig); 
+        $nuke_user_sig = nl2br($nuke_user_sig); 
     }
     else 
     { 
-        $user_sig = $lang['sig_none']; 
+        $nuke_user_sig = $lang['sig_none']; 
     }
 
 }
 
 // template
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'profile_signature.tpl'
 
     ));
 
-    $template->assign_vars(array( 
+    $template_nuke->assign_vars(array( 
 
         // added some pic´s for a better preview ;)
         'PROFIL_IMG' => '<img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" border="0" />',
@@ -232,14 +232,14 @@ else if ($mode)
  [ Mod:     BBCode Box                         v1.0.0 ]
  ******************************************************/        
         'SIGNATURE' => $signature,
-        'CURRENT_PREVIEW' => $user_sig,
+        'CURRENT_PREVIEW' => $nuke_user_sig,
         'PREVIEW' => htmlspecialchars(stripslashes($signature)),
         'REAL_PREVIEW' => $preview_sig,
         'SAVE_MESSAGE' => $save_message,
 
     ));
 
-    $template->pparse('body');
+    $template_nuke->pparse('body');
 
 include('includes/page_tail.'.$phpEx);
 

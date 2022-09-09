@@ -24,18 +24,18 @@ if (!defined('IN_PHPBB2'))
 }
 
 //Loading Template
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
    'headingarcade' => 'headingarcade_body.tpl')
 );
 
     $class = ($class == 'row1') ? 'row2' : 'row1';
 
-    $template->assign_block_vars('arcaderow2',array(
+    $template_nuke->assign_block_vars('arcaderow2',array(
            'U_TOPARCADE' => append_sid("toparcade.$phpEx"),
            'BEST_SCORES' => $lang['best_scores'])
            );
 
-    $template->assign_block_vars('arcaderow3',array(
+    $template_nuke->assign_block_vars('arcaderow3',array(
            'CLASS' => $class,
            'U_TOPARCADE' => append_sid("toparcade.$phpEx"),
            'BEST_SCORES' => $lang['best_scores'])
@@ -43,11 +43,11 @@ $template->set_filenames(array(
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-        $color_name = UsernameColor($userdata['username']);
+        $color_name = UsernameColor($nuke_userdata['username']);
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
             'L_AVATAR' => $lang['Avatar'],
             'L_TOP' => $lang['heading_top'],
             'L_RECENT' => $lang['heading_recent'],
@@ -68,7 +68,7 @@ $template->set_filenames(array(
             'VICTOIRES' => $lang['Victoires'],
             'ARCADE_VICTOIRES' => $nbvictoires,
             'AVATAR_IMG' => $avatar_img,
-            'USERNAME' => '<a href="' . append_sid("statarcade.$phpEx?uid=" . $userdata['user_id'] ) . '" class="genmed">' . $color_name . '</a> ',
+            'USERNAME' => '<a href="' . append_sid("statarcade.$phpEx?uid=" . $nuke_userdata['user_id'] ) . '" class="genmed">' . $color_name . '</a> ',
             'POSTER_RANK' => $poster_rank,
             'RANK_IMG' => $rank_image,
             'ARCADE_ANNOUNCEMENT' => $arcade_config['arcade_announcement'],
@@ -113,11 +113,11 @@ $sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, 
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-        $user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'>' . $row['username'] . '</a>';
+        $nuke_user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'>' . $row['username'] . '</a>';
 
-        $template->assign_block_vars('player_row', array(
+        $template_nuke->assign_block_vars('player_row', array(
             'CLASSEMENT' => $place,
-            'USERNAME' => $user_online_link,
+            'USERNAME' => $nuke_user_online_link,
             'VICTOIRES' => $row['nbvictoires'])
         );
 
@@ -146,7 +146,7 @@ $sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, 
     $last_scoreuser = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $rowArcade['game_highuser']) . '">' . $rowArcade['username'] . '</a>';
     $last_score = number_format($rowArcade['game_highscore']);
 
-        $template->assign_block_vars('arcaderow2.bestscore2',array(
+        $template_nuke->assign_block_vars('arcaderow2.bestscore2',array(
     'CLASS' => $class,
     'L_HEADING_CHAMP' => sprintf($lang['heading_champ'], $last_scoreuser, $last_scoregame, $last_score),
         'LAST_SCOREDATE' => create_date($board_config['default_dateformat'], $rowArcade['game_highdate'] , $board_config['board_timezone']))
@@ -176,7 +176,7 @@ $sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, 
       $last_scoreuser = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $rowScore['user_id']) . '">' . $rowScore['username'] . '</a>';
       $last_score = number_format($rowScore['score_game']);
 
-      $template->assign_block_vars('arcaderow3.score3',array(
+      $template_nuke->assign_block_vars('arcaderow3.score3',array(
       'L_LAST_SCORE' => sprintf($lang['heading_last_score'], $last_scoreuser, $last_score, $last_scoregame, $last_scoredate ))
       );
     }
@@ -199,15 +199,15 @@ $nuke_db->sql_freeresult($result);
 
 $poster_rank = '';
 $rank_image = '';
-if ( $userdata['user_rank'] )
+if ( $nuke_userdata['user_rank'] )
 {
     for($i = 0; $i < count($ranksrow); $i++)
     {
-        if ( $userdata['user_rank'] == $ranksrow[$i]['rank_id'] && $ranksrow[$i]['rank_special'] )
+        if ( $nuke_userdata['user_rank'] == $ranksrow[$i]['rank_id'] && $ranksrow[$i]['rank_special'] )
         {
-            if (empty($userdata['user_custom_title'])){
+            if (empty($nuke_userdata['user_custom_title'])){
             $poster_rank = $ranksrow[$i]['rank_title'];}
-            else{$poster_rank = $userdata['user_custom_title'];}
+            else{$poster_rank = $nuke_userdata['user_custom_title'];}
             $rank_image = ( $ranksrow[$i]['rank_image'] ) ? '<img src="modules/Forums/' . $ranksrow[$i]['rank_image'] . '" alt="' . $poster_rank . '" title="' . $poster_rank . '" border="0" /><br />' : '';
         }
     }
@@ -216,11 +216,11 @@ else
 {
     for($i = 0; $i < count($ranksrow); $i++)
     {
-        if ( $userdata['user_posts'] >= $ranksrow[$i]['rank_min'] && !$ranksrow[$i]['rank_special'] )
+        if ( $nuke_userdata['user_posts'] >= $ranksrow[$i]['rank_min'] && !$ranksrow[$i]['rank_special'] )
         {
-            if (empty($userdata['user_custom_title'])){
+            if (empty($nuke_userdata['user_custom_title'])){
             $poster_rank = $ranksrow[$i]['rank_title'];}
-            else{$poster_rank = $userdata['user_custom_title'];}
+            else{$poster_rank = $nuke_userdata['user_custom_title'];}
             $rank_image = ( $ranksrow[$i]['rank_image'] ) ? '<img src="modules/Forums/' . $ranksrow[$i]['rank_image'] . '" alt="' . $poster_rank . '" title="' . $poster_rank . '" border="0" /><br />' : '';
         }
     }
@@ -228,7 +228,7 @@ else
 // End User Rank
 
 // Calculates the users total number of arcade victories
-$sql = "SELECT COUNT(*) AS nbvictoires FROM " . NUKE_GAMES_TABLE . " WHERE game_highuser = " . $userdata['user_id'];
+$sql = "SELECT COUNT(*) AS nbvictoires FROM " . NUKE_GAMES_TABLE . " WHERE game_highuser = " . $nuke_userdata['user_id'];
 if( !$result = $nuke_db->sql_query($sql))
 {
     message_die(NUKE_GENERAL_ERROR, 'Could not obtain games information', '', __LINE__, __FILE__, $sql);
@@ -239,18 +239,18 @@ $nbvictoires = $row['nbvictoires'];
 
 // Gets the avatar
 $avatar_img = '';
-if ( $userdata['user_avatar_type'] && $userdata['user_allowavatar'] )
+if ( $nuke_userdata['user_avatar_type'] && $nuke_userdata['user_allowavatar'] )
 {
-    switch( $userdata['user_avatar_type'] )
+    switch( $nuke_userdata['user_avatar_type'] )
     {
         case NUKE_USER_AVATAR_UPLOAD:
-            $avatar_img = ( $board_config['allow_avatar_upload'] ) ? '<img src="' . $board_config['avatar_path'] . '/' . $userdata['user_avatar'] . '" alt="" border="0" onload="resize_avatar(this)"/>' : '';
+            $avatar_img = ( $board_config['allow_avatar_upload'] ) ? '<img src="' . $board_config['avatar_path'] . '/' . $nuke_userdata['user_avatar'] . '" alt="" border="0" onload="resize_avatar(this)"/>' : '';
             break;
         case NUKE_USER_AVATAR_REMOTE:
-            $avatar_img = ( $board_config['allow_avatar_remote'] ) ? '<img src="' . $userdata['user_avatar'] . '" alt="" border="0" onload="resize_avatar(this)"/>' : '';
+            $avatar_img = ( $board_config['allow_avatar_remote'] ) ? '<img src="' . $nuke_userdata['user_avatar'] . '" alt="" border="0" onload="resize_avatar(this)"/>' : '';
             break;
         case NUKE_USER_AVATAR_GALLERY:
-            $avatar_img = ( $board_config['allow_avatar_local'] ) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $userdata['user_avatar'] . '" alt="" border="0" onload="resize_avatar(this)"/>' : '';
+            $avatar_img = ( $board_config['allow_avatar_local'] ) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $nuke_userdata['user_avatar'] . '" alt="" border="0" onload="resize_avatar(this)"/>' : '';
             break;
     }
 }
@@ -261,7 +261,7 @@ IF ( empty($avatar_img) )
 // Finished avatar
 
 //Total times playing Arcade
-$sql = "SELECT SUM(score_set) AS games_played FROM " . NUKE_SCORES_TABLE . " WHERE user_id = " . $userdata['user_id'];
+$sql = "SELECT SUM(score_set) AS games_played FROM " . NUKE_SCORES_TABLE . " WHERE user_id = " . $nuke_userdata['user_id'];
 if( !$result = $nuke_db->sql_query($sql))
 {
     message_die(NUKE_GENERAL_ERROR, 'Could not obtain games information', '', __LINE__, __FILE__, $sql);
@@ -270,7 +270,7 @@ $row = $nuke_db->sql_fetchrow($result);
 $games_played = $row['games_played'];
 
 //Total time playing Arcade
-$sql = "SELECT SUM(score_time) AS games_time FROM " . NUKE_SCORES_TABLE . " WHERE user_id = " . $userdata['user_id'];
+$sql = "SELECT SUM(score_time) AS games_time FROM " . NUKE_SCORES_TABLE . " WHERE user_id = " . $nuke_userdata['user_id'];
 if( !$result = $nuke_db->sql_query($sql))
 {
     message_die(NUKE_GENERAL_ERROR, 'Could not obtain games information', '', __LINE__, __FILE__, $sql);
@@ -279,17 +279,17 @@ $row = $nuke_db->sql_fetchrow($result);
 $games_time = sec2hms($row['games_time']);
 
 
-            $template->assign_block_vars('arcaderow2',array(
+            $template_nuke->assign_block_vars('arcaderow2',array(
                    'U_TOPARCADE' => append_sid("toparcade.$phpEx"),
                    'BEST_SCORES' => $lang['best_scores'])
                );
 
-            $template->assign_block_vars('arcaderow3',array(
+            $template_nuke->assign_block_vars('arcaderow3',array(
                    'U_TOPARCADE' => append_sid("toparcade.$phpEx"),
                    'BEST_SCORES' => $lang['best_scores'])
                );
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 "AVATAR_IMG" => $avatar_img,
                 "POSTER_RANK" => $poster_rank,
                 "RANK_IMG" => $rank_image,
@@ -301,6 +301,6 @@ $games_time = sec2hms($row['games_time']);
             )
             );
 
-$template->assign_var_from_handle('HEADINGARCADE', 'headingarcade');
+$template_nuke->assign_var_from_handle('HEADINGARCADE', 'headingarcade');
 
 ?>

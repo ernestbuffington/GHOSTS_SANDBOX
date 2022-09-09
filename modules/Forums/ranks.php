@@ -52,11 +52,11 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+init_userprefs($nuke_userdata);
 
 // global pgm options
-$auth_rank_only_logged = true; // true will required to be logged to have access, false guest are welcome
+$nuke_auth_rank_only_logged = true; // true will required to be logged to have access, false guest are welcome
 $spe_rank_max_users = -1; // number of displayed members in the memberlist : -1=all, 0=none, value=number
 $std_rank_max_users = 10; // number of displayed members in the memberlist : -1=all, 0=none, value=number
 
@@ -90,14 +90,14 @@ function get_rank_title($rank_title)
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
 
 // only registered members have access if desired
-if ( $auth_rank_only_logged && !$userdata['session_logged_in'] )
+if ( $nuke_auth_rank_only_logged && !$nuke_userdata['session_logged_in'] )
 {
     nuke_redirect(append_sid('login.' . $phpEx . '?nuke_redirect=ranks.' . $phpEx, true));
     exit;
@@ -219,16 +219,16 @@ for ($i=count($ranks)-1; $i >=0; $i--)
 // set the page title and include the page header
 //
 $page_title = $lang['Ranks'];
-include ('includes/page_header.'.$phpEx);
+include ('includes/nuke_page_header.'.$phpEx);
 //
 // template setting
 //
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     'body' => 'ranks_body.tpl')
 );
 
 // constants
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'L_SPECIAL_RANKS' => $lang['Special_ranks'],
     'L_USERS_LIST' => $lang['Memberlist'],
     'L_RANKS' => $lang['Ranks'],
@@ -242,13 +242,13 @@ $template->assign_vars(array(
 // standard ranks
 if ($std_rank_max_users != 0)
 {
-    $template->assign_block_vars('std_userlist', array());
+    $template_nuke->assign_block_vars('std_userlist', array());
 }
-else $template->assign_block_vars('no_std_userlist', array());
+else $template_nuke->assign_block_vars('no_std_userlist', array());
 
 for ($i=0; $i < count($ranks); $i++)
 {
-    $template->assign_block_vars('ranks', array(
+    $template_nuke->assign_block_vars('ranks', array(
         'RANK_TITLE' => get_rank_title($ranks[$i]['rank_title']),
         'RANK_IMAGE' => ($ranks[$i]['rank_image'] == '') ? '' : '<img src="modules/Forums/' . $ranks[$i]['rank_image'] . '" border=0 align="center" alt="' . $ranks[$i]['rank_title'] . '">',
         'RANK_MINI'  => $ranks[$i]['rank_min'],
@@ -257,38 +257,38 @@ for ($i=0; $i < count($ranks); $i++)
     );
     if ($std_rank_max_users != 0)
     {
-        $template->assign_block_vars('ranks.userlist', array(
+        $template_nuke->assign_block_vars('ranks.userlist', array(
             'USERS_LIST' => $ranks[$i]['users_list'],
             )
         );
     }
-    else $template->assign_block_vars('ranks.no_userlist', array());
+    else $template_nuke->assign_block_vars('ranks.no_userlist', array());
 }
 
 // special ranks
 if ($spe_rank_max_users != 0)
 {
-    $template->assign_block_vars('spe_userlist', array());
+    $template_nuke->assign_block_vars('spe_userlist', array());
 }
-else $template->assign_block_vars('no_spe_userlist', array());
+else $template_nuke->assign_block_vars('no_spe_userlist', array());
 
 for ($i=0; $i < count($spe_ranks); $i++)
 {
-    $template->assign_block_vars('spe_ranks', array(
+    $template_nuke->assign_block_vars('spe_ranks', array(
         'RANK_TITLE' => get_rank_title($spe_ranks[$i]['rank_title']),
         'RANK_IMAGE' => ($spe_ranks[$i]['rank_image'] == '') ? '' : '<img src="modules/Forums/' . $spe_ranks[$i]['rank_image'] . '" border=0 align="center" alt="' . $spe_ranks[$i]['rank_title'] . '">',
         )
     );
     if ($spe_rank_max_users != 0)
     {
-        $template->assign_block_vars('spe_ranks.userlist', array(
+        $template_nuke->assign_block_vars('spe_ranks.userlist', array(
             'USERS_LIST' => $spe_ranks[$i]['users_list'],
             )
         );
     }
     else
     {
-        $template->assign_block_vars('spe_ranks.no_userlist', array(
+        $template_nuke->assign_block_vars('spe_ranks.no_userlist', array(
             'RANK_TOTAL' => $spe_ranks[$i]['user_number'],
             )
         );
@@ -298,7 +298,7 @@ for ($i=0; $i < count($spe_ranks); $i++)
 //
 // page footer
 //
-$template->pparse('body');
+$template_nuke->pparse('body');
 include('includes/page_tail.'.$phpEx);
 
 ?>

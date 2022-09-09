@@ -49,15 +49,15 @@ get_lang($module_name);
     $topictext, 
      $datetime,
 	 $modified, 
-         $user, 
+         $nuke_user, 
 	   $cookie, 
 	   $prefix, 
  $multilingual, 
   $currentlang, 
   $articlecomm, 
      $sitename, 
-    $user_news, 
-	 $userinfo;
+    $nuke_user_news, 
+	 $nuke_userinfo;
  
 automated_news();
 
@@ -73,8 +73,8 @@ switch ($op)
     default:
         if($neconfig["homenumber"] == 0) 
 		{
-            if (isset($userinfo['storynum'])) 
-                $storynum = $userinfo['storynum'];
+            if (isset($nuke_userinfo['storynum'])) 
+                $storynum = $nuke_userinfo['storynum'];
 			else 
               $storynum = $storyhome;
         } 
@@ -182,18 +182,18 @@ switch ($op)
 			$totalcount = $introcount + $fullcount;
             $r_options = "";
             
-			if (isset($userinfo['umode'])) 
-			  $r_options .= "&amp;mode=".$userinfo['umode']; 
+			if (isset($nuke_userinfo['umode'])) 
+			  $r_options .= "&amp;mode=".$nuke_userinfo['umode']; 
 			else 
 			  $r_options .= "&amp;mode=thread"; 
             
-			if (isset($userinfo['uorder'])) 
-			$r_options .= "&amp;order=".$userinfo['uorder']; 
+			if (isset($nuke_userinfo['uorder'])) 
+			$r_options .= "&amp;order=".$nuke_userinfo['uorder']; 
 			else 
 			$r_options .= "&amp;order=0"; 
             
-			if (isset($userinfo['thold'])) 
-			$r_options .= "&amp;thold=".$userinfo['thold']; 
+			if (isset($nuke_userinfo['thold'])) 
+			$r_options .= "&amp;thold=".$nuke_userinfo['thold']; 
 			else 
 			$r_options .= "&amp;thold=0"; 
             
@@ -472,9 +472,9 @@ switch ($op)
 
         if (is_user()) 
 		{
-            if (isset($userinfo['umode'])) { $r_options .= "&amp;mode=".$userinfo['umode']; } else { $r_options .= "&amp;mode=thread"; }
-            if (isset($userinfo['uorder'])) { $r_options .= "&amp;order=".$userinfo['uorder']; } else { $r_options .= "&amp;order=0"; }
-            if (isset($userinfo['thold'])) { $r_options .= "&amp;thold=".$userinfo['thold']; } else { $r_options .= "&amp;thold=0"; }
+            if (isset($nuke_userinfo['umode'])) { $r_options .= "&amp;mode=".$nuke_userinfo['umode']; } else { $r_options .= "&amp;mode=thread"; }
+            if (isset($nuke_userinfo['uorder'])) { $r_options .= "&amp;order=".$nuke_userinfo['uorder']; } else { $r_options .= "&amp;order=0"; }
+            if (isset($nuke_userinfo['thold'])) { $r_options .= "&amp;thold=".$nuke_userinfo['thold']; } else { $r_options .= "&amp;thold=0"; }
         }
         
 		include_once(NUKE_BASE_DIR."header.php");

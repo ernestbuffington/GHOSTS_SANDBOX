@@ -13,10 +13,10 @@ $module_name = basename(dirname(dirname(__FILE__)));
 
 $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT title, admins FROM ".$prefix."_modules WHERE title='$module_name'"));
 $admins = explode(",", $row['admins']);
-$auth_user = 0;
+$nuke_auth_user = 0;
 for ($i=0; $i < count($admins); $i++) {
     if ($admdata['name'] == $admins[$i] && !empty($row['admins'])) {
-        $auth_user = 1;
+        $nuke_auth_user = 1;
     }
 }
 
@@ -27,7 +27,7 @@ define('NUKE_DONATIONS_ADMIN_INCLUDES', NUKE_DONATIONS_ADMIN . 'includes/');
 
 include_once(NUKE_DONATIONS_ADMIN_INCLUDES . 'base.php');
 
-if ($admdata['radminsuper'] != 1 && $auth_user != 1) {
+if ($admdata['radminsuper'] != 1 && $nuke_auth_user != 1) {
     DisplayError($lang_donate['ACCESS_DENIED']);
 }
 

@@ -49,8 +49,8 @@ $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOF
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_STATARCADES, $nukeuser);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_STATARCADES, $nukeuser);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -60,7 +60,7 @@ include('includes/functions_arcade.' . $phpEx);
 //
 $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE"))) ? "Refresh: 0; URL=" : "Location: ";
 
-if (!$userdata['session_logged_in']) {
+if (!$nuke_userdata['session_logged_in']) {
         header($header_location . "modules.php?name=Your_Account");
         exit;
 }
@@ -68,7 +68,7 @@ if (!$userdata['session_logged_in']) {
 // End of auth check
 //
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         'body' => 'statarcade_body.tpl')
 );
 
@@ -89,30 +89,30 @@ $statuser = UsernameColor($row['username']);
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-$user_avatar_type = $row['user_avatar_type'];
-$user_allowavatar = $row['user_allowavatar'];
-$user_avatar = $row['user_avatar'];
+$nuke_user_avatar_type = $row['user_avatar_type'];
+$nuke_user_allowavatar = $row['user_allowavatar'];
+$nuke_user_avatar = $row['user_avatar'];
 $avatar_img = '';
 
-if ( $user_avatar_type && $user_allowavatar )
+if ( $nuke_user_avatar_type && $nuke_user_allowavatar )
 {
-   switch( $user_avatar_type )
+   switch( $nuke_user_avatar_type )
    {
       case NUKE_USER_AVATAR_UPLOAD:
-         $avatar_img = ( $board_config['allow_avatar_upload'] ) ? '<img src="' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" border="0" hspace="20" align="center" valign="center"/>' : '';
+         $avatar_img = ( $board_config['allow_avatar_upload'] ) ? '<img src="' . $board_config['avatar_path'] . '/' . $nuke_user_avatar . '" alt="" border="0" hspace="20" align="center" valign="center"/>' : '';
          break;
       case NUKE_USER_AVATAR_REMOTE:
-         $avatar_img = ( $board_config['allow_avatar_remote'] ) ? '<img src="' . $user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center" />' : '';
+         $avatar_img = ( $board_config['allow_avatar_remote'] ) ? '<img src="' . $nuke_user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center" />' : '';
          break;
       case NUKE_USER_AVATAR_GALLERY:
-         $avatar_img = ( $board_config['allow_avatar_local'] ) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center" />' : '';
+         $avatar_img = ( $board_config['allow_avatar_local'] ) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $nuke_user_avatar . '" alt="" border="0"  hspace="20" align="center" valign="center" />' : '';
          break;
    }
 
 }
 
 $nbcol = 2;
-$liste_cat_auth = get_arcade_categories($userdata['user_id'], $userdata['user_level'],'view');
+$liste_cat_auth = get_arcade_categories($nuke_userdata['user_id'], $nuke_userdata['user_level'],'view');
 
 if (empty($liste_cat_auth)) {
         $liste_cat_auth = "''";
@@ -170,7 +170,7 @@ if (!$row = $nuke_db->sql_fetchrow($result)) {
         $fini=true;
 }
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'PAGINATION' => generate_pagination(append_sid("statarcade.$phpEx?uid=$uid"), $total_games, $games_par_page, $start),
         'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $games_par_page) + 1), ceil($total_games / $games_par_page)),
         'URL_ARCADE' => '<nobr><a class="cattitle" href="' . append_sid("arcade.$phpEx") . '">' . $lang['lib_arcade'] . '</a></nobr> ',
@@ -185,10 +185,10 @@ $i = 0;
 $fini = ($i == $nbjeux) ? true : false;
 
 while(!$fini) {
-        $template->assign_block_vars('blkligne', array());
+        $template_nuke->assign_block_vars('blkligne', array());
 
         for ($cg = 1; $cg <= $nbcol; $cg++) {
-                $template->assign_block_vars('blkligne.blkcolonne', array());
+                $template_nuke->assign_block_vars('blkligne.blkcolonne', array());
 
                 if (!$fini) {
                         if ($gamelist[$i]['score_set'] != 0) {
@@ -201,7 +201,7 @@ while(!$fini) {
 
                         $pos = (isset($tbpos[ $gamelist[$i]['game_id'] ])) ? $tbpos[ $gamelist[$i]['game_id'] ] : 1;
 
-                        $template->assign_block_vars('blkligne.blkcolonne.blkgame', array(
+                        $template_nuke->assign_block_vars('blkligne.blkcolonne.blkgame', array(
                                 'GAMENAME' => '<nobr><a class="cattitle" href="' . append_sid("games.$phpEx?gid=" . $gamelist[$i]['game_id']) . '">' . $gamelist[$i]['game_name'] . '</a></nobr> ',
                                 'L_NBSET' => $lang['statnbset'],
                                 'NBSET' =>  ($gamelist[$i]['score_set'] == 0) ? "n/a" : $gamelist[$i]['score_set'],
@@ -228,8 +228,8 @@ while(!$fini) {
 //
 // Output page header
 $page_title = $lang['statarcade_user'];
-include('includes/page_header.'.$phpEx);
-$template->pparse('body');
+include('includes/nuke_page_header.'.$phpEx);
+$template_nuke->pparse('body');
 include('includes/page_tail.'.$phpEx);
 
 ?>

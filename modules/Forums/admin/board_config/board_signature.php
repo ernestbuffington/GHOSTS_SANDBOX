@@ -26,7 +26,7 @@ if (!defined('BOARD_CONFIG')) {
     die('Access Denied');
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     "signature" => "admin/board_config/board_signature.tpl")
 );
 
@@ -39,12 +39,12 @@ $new['sig_line'] = str_replace('"', '&quot;', $new['sig_line']);
  ******************************************************/
  
 //General Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "DHTML_ID" => "c" . $dhtml_id)
 );
     
 //Language Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:     Advance Signature Divider Control  v1.0.0 ]
  ******************************************************/
@@ -59,7 +59,7 @@ $template->assign_vars(array(
 ));
 
 //Data Template Variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:     Advance Signature Divider Control  v1.0.0 ]
  ******************************************************/
@@ -69,6 +69,6 @@ $template->assign_vars(array(
  ******************************************************/
     "SIG_SIZE" => $new['max_sig_chars'],
  ));
-$template->pparse("signature");
+$template_nuke->pparse("signature");
 
 ?>

@@ -161,11 +161,11 @@ $file = isset($HTTP_GET_VARS['file']) ? htmlspecialchars($HTTP_GET_VARS['file'])
 
 if( !isset($HTTP_GET_VARS['language']) && !isset($HTTP_POST_VARS['language']) )
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         "body" => "admin/faq_select_lang_body.tpl")
     );
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_LANGUAGE' => $lang['faq_select_language'],
         'LANGUAGE_SELECT' => language_select($board_config['default_lang'], 'language', $phpbb2_root_path.'language'),
         'S_ACTION' => append_sid("admin_faq_editor.$phpEx?file=$file"),
@@ -174,8 +174,8 @@ if( !isset($HTTP_GET_VARS['language']) && !isset($HTTP_POST_VARS['language']) )
         'L_EXPLAIN' => $lang['faq_editor_explain']
     ));
 
-    $template->pparse("body");
-    include('./page_footer_admin.'.$phpEx);
+    $template_nuke->pparse("body");
+    include('./nuke_page_footer_admin.'.$phpEx);
     exit;
 }
 
@@ -206,14 +206,14 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
 
         // result of pressing the delete link next to a block
         case 'block_del':
-            $template->set_filenames(array(
+            $template_nuke->set_filenames(array(
                 "confirm" => "confirm_body.tpl")
             );
 
             $s_hidden_fields = '<input type="hidden" name="mode" value="block_del_confirm" />';
             $s_hidden_fields .= '<input type="hidden" name="block" value="'.$block_no.'" />';
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 "MESSAGE_TITLE" => $lang['Confirm'],
                 "MESSAGE_TEXT" => $lang['faq_block_delete'],
 
@@ -224,8 +224,8 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
                 "S_HIDDEN_FIELDS" => $s_hidden_fields
             ));
 
-            $template->pparse("confirm");
-            include('./page_footer_admin.'.$phpEx);
+            $template_nuke->pparse("confirm");
+            include('./nuke_page_footer_admin.'.$phpEx);
 
             exit;
 
@@ -249,11 +249,11 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
 
         // generate the edit screen as a result of pressing the edit link
         case 'block_edit':
-            $template->set_filenames(array(
+            $template_nuke->set_filenames(array(
                 "body" => "admin/faq_block_body.tpl")
             );
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 'L_TITLE' => $lang['faq_block_rename'],
                 'L_EXPLAIN' => $lang['faq_block_rename_explain'],
                 'L_SUBMIT' => $lang['Submit'],
@@ -265,8 +265,8 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
                 'S_ACTION' => append_sid("admin_faq_editor.$phpEx?file=$file&amp;language=$language")
             ));
 
-            $template->pparse("body");
-            include('./page_footer_admin.'.$phpEx);
+            $template_nuke->pparse("body");
+            include('./nuke_page_footer_admin.'.$phpEx);
 
             exit;
 
@@ -315,7 +315,7 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
 
         // create a new question as a result of typing a question on the main page
         case 'quest_new':
-            $template->set_filenames(array(
+            $template_nuke->set_filenames(array(
                 "body" => "admin/faq_quest_body.tpl")
             );
 
@@ -328,7 +328,7 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
                 $s_block_list .= '<option value="'.$i.'"'.$is_selected.'>' . $blocks[$i] . '</option>';
             }
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 'L_TITLE' => $lang['faq_quest_create'],
                 'L_EXPLAIN' => $lang['faq_quest_create_explain'],
                 'L_BLOCK' => $lang['faq_block'],
@@ -344,8 +344,8 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
                 'S_HIDDEN_FIELDS' => '<input name="mode" type="hidden" value="quest_create">'
             ));
 
-            $template->pparse("body");
-            include('./page_footer_admin.'.$phpEx);
+            $template_nuke->pparse("body");
+            include('./nuke_page_footer_admin.'.$phpEx);
 
             exit;
 
@@ -363,7 +363,7 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
 
         // present the question edit screen
         case 'quest_edit':
-            $template->set_filenames(array(
+            $template_nuke->set_filenames(array(
                 "body" => "admin/faq_quest_body.tpl")
             );
 
@@ -376,7 +376,7 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
                 $s_block_list .= '<option value="'.$i.'"'.$is_selected.'>' . $blocks[$i] . '</option>';
             }
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 'L_TITLE' => $lang['faq_quest_edit'],
                 'L_EXPLAIN' => $lang['faq_quest_edit_explain'],
                 'L_BLOCK' => $lang['faq_block'],
@@ -392,8 +392,8 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
                 'S_HIDDEN_FIELDS' => '<input name="quest" type="hidden" value="'.$quest_no.'"><input name="old_block" type="hidden" value="'.$block_no.'"><input name="mode" type="hidden" value="quest_do_edit">'
             ));
 
-            $template->pparse("body");
-            include('./page_footer_admin.'.$phpEx);
+            $template_nuke->pparse("body");
+            include('./nuke_page_footer_admin.'.$phpEx);
 
             exit;
 
@@ -431,7 +431,7 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
 
         // delete a question: confirm box
         case 'quest_del':
-            $template->set_filenames(array(
+            $template_nuke->set_filenames(array(
                 "confirm" => "confirm_body.tpl")
             );
 
@@ -439,7 +439,7 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
             $s_hidden_fields .= '<input type="hidden" name="block" value="'.$block_no.'" />';
             $s_hidden_fields .= '<input type="hidden" name="quest" value="'.$quest_no.'" />';
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 "MESSAGE_TITLE" => $lang['Confirm'],
                 "MESSAGE_TEXT" => $lang['faq_quest_delete'],
 
@@ -450,8 +450,8 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
                 "S_HIDDEN_FIELDS" => $s_hidden_fields
             ));
 
-            $template->pparse("confirm");
-            include('./page_footer_admin.'.$phpEx);
+            $template_nuke->pparse("confirm");
+            include('./nuke_page_footer_admin.'.$phpEx);
 
             exit;
 
@@ -519,11 +519,11 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
 
 // if we've got this far without exiting we just dump the default page
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     "body" => "admin/faq_editor_body.tpl")
 );
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'L_TITLE' => $lang['faq_editor'],
     'L_EXPLAIN' => $lang['faq_editor_explain'],
 
@@ -547,7 +547,7 @@ if(count($blocks) > 0)
 {
     for($i = 0; $i < count($blocks); $i++)
     {
-        $template->assign_block_vars("blockrow", array( 
+        $template_nuke->assign_block_vars("blockrow", array( 
             'BLOCK_TITLE' => $blocks[$i],
             'BLOCK_NUMBER' => "$i",
             'BLOCK_ANCHOR' => $anchor_code,
@@ -562,7 +562,7 @@ if(count($blocks) > 0)
         {
             for($j = 0; $j < count($quests[$i]); $j++)
             {
-                $template->assign_block_vars("blockrow.questrow", array( 
+                $template_nuke->assign_block_vars("blockrow.questrow", array( 
                     'QUEST_TITLE' => $quests[$i][$j][Q],
                     'U_QUEST' => ("../../../modules.php?name=Forums&amp;file=faq&amp;mode=$file")."#$k",
 
@@ -577,17 +577,17 @@ if(count($blocks) > 0)
         }
         else
         {
-            $template->assign_block_vars("blockrow.no_questions", array());
+            $template_nuke->assign_block_vars("blockrow.no_questions", array());
         }
     }
 }
 else
 {
-    $template->assign_block_vars("no_blocks", array());
+    $template_nuke->assign_block_vars("no_blocks", array());
 }
 
-$template->pparse("body");
+$template_nuke->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

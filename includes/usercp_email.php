@@ -90,35 +90,35 @@ if (!$board_config['board_email_form'])
 
 if ( !empty($HTTP_GET_VARS[NUKE_POST_USERS_URL]) || !empty($HTTP_POST_VARS[NUKE_POST_USERS_URL]) )
 {
-        $user_id = ( !empty($HTTP_GET_VARS[NUKE_POST_USERS_URL]) ) ? intval($HTTP_GET_VARS[NUKE_POST_USERS_URL]) : intval($HTTP_POST_VARS[NUKE_POST_USERS_URL]);
+        $nuke_user_id = ( !empty($HTTP_GET_VARS[NUKE_POST_USERS_URL]) ) ? intval($HTTP_GET_VARS[NUKE_POST_USERS_URL]) : intval($HTTP_POST_VARS[NUKE_POST_USERS_URL]);
 }
 else
 {
         message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_specified']);
 }
 
-if ( !$userdata['session_logged_in'] )
+if ( !$nuke_userdata['session_logged_in'] )
 {
-        nuke_redirect( append_sid("login.$phpEx?nuke_redirect=profile.$phpEx&mode=email&" . NUKE_POST_USERS_URL . "=$user_id", true));
+        nuke_redirect( append_sid("login.$phpEx?nuke_redirect=profile.$phpEx&mode=email&" . NUKE_POST_USERS_URL . "=$nuke_user_id", true));
         exit;
 }
 
 $sql = "SELECT username, user_email, user_viewemail, user_lang
         FROM " . NUKE_USERS_TABLE . "
-        WHERE user_id = '$user_id'";
+        WHERE user_id = '$nuke_user_id'";
 if ( $result = $nuke_db->sql_query($sql) )
 {
         if ( $row = $nuke_db->sql_fetchrow($result) )
 	{
         $nuke_db->sql_freeresult($result);
 
-        $username = $row['username'];
-        $user_email = $row['user_email'];
-        $user_lang = $row['user_lang'];
+        $nuke_username = $row['username'];
+        $nuke_user_email = $row['user_email'];
+        $nuke_user_lang = $row['user_lang'];
 
-        if ( $row['user_viewemail'] || $userdata['user_level'] == NUKE_ADMIN )
+        if ( $row['user_viewemail'] || $nuke_userdata['user_level'] == NUKE_ADMIN )
         {
-                if ( time() - $userdata['user_emailtime'] < $board_config['flood_interval'] )
+                if ( time() - $nuke_userdata['user_emailtime'] < $board_config['flood_interval'] )
                 {
                         message_die(NUKE_GENERAL_MESSAGE, $lang['Flood_email_limit']);
                 }
@@ -151,31 +151,31 @@ if ( $result = $nuke_db->sql_query($sql) )
                         {
                                 $sql = "UPDATE " . NUKE_USERS_TABLE . "
                                         SET user_emailtime = " . time() . "
-                                        WHERE user_id = " . $userdata['user_id'];
+                                        WHERE user_id = " . $nuke_userdata['user_id'];
                                 if ( $result = $nuke_db->sql_query($sql) )
                                 {
                                         $nuke_db->sql_freeresult($result);
                                         include("includes/emailer.php");
                                         $emailer = new emailer($board_config['smtp_delivery']);
 
-                                        $emailer->from($userdata['user_email']);
-                                        $emailer->replyto($userdata['user_email']);
+                                        $emailer->from($nuke_userdata['user_email']);
+                                        $emailer->replyto($nuke_userdata['user_email']);
 
                                         $email_headers = 'X-AntiAbuse: Board servername - ' . $server_name . "\n";
-                                        $email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
-                                        $email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
-                                        $email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
+                                        $email_headers .= 'X-AntiAbuse: User_id - ' . $nuke_userdata['user_id'] . "\n";
+                                        $email_headers .= 'X-AntiAbuse: Username - ' . $nuke_userdata['username'] . "\n";
+                                        $email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($nuke_user_ip) . "\n";
 
-                                        $emailer->use_template('profile_send_email', $user_lang);
-                                        $emailer->email_address($user_email);
+                                        $emailer->use_template('profile_send_email', $nuke_user_lang);
+                                        $emailer->email_address($nuke_user_email);
                                         $emailer->set_subject($subject);
                                         $emailer->extra_headers($email_headers);
 
                                         $emailer->assign_vars(array(
                                                 'SITENAME' => $board_config['sitename'],
                                                 'BOARD_EMAIL' => $board_config['board_email'],
-                                                'FROM_USERNAME' => $userdata['username'],
-                                                'TO_USERNAME' => $username,
+                                                'FROM_USERNAME' => $nuke_userdata['username'],
+                                                'TO_USERNAME' => $nuke_username,
                                                 'MESSAGE' => $message)
                                         );
                                         $emailer->send();
@@ -183,24 +183,24 @@ if ( $result = $nuke_db->sql_query($sql) )
 
                                         if ( !empty($HTTP_POST_VARS['cc_email']) )
                                         {
-                                                $emailer->from($userdata['user_email']);
-                                                $emailer->replyto($userdata['user_email']);
+                                                $emailer->from($nuke_userdata['user_email']);
+                                                $emailer->replyto($nuke_userdata['user_email']);
                                                 $emailer->use_template('profile_send_email');
-                                                $emailer->email_address($userdata['user_email']);
+                                                $emailer->email_address($nuke_userdata['user_email']);
                                                 $emailer->set_subject($subject);
 
                                                 $emailer->assign_vars(array(
                                                         'SITENAME' => $board_config['sitename'],
                                                         'BOARD_EMAIL' => $board_config['board_email'],
-                                                        'FROM_USERNAME' => $userdata['username'],
-                                                        'TO_USERNAME' => $username,
+                                                        'FROM_USERNAME' => $nuke_userdata['username'],
+                                                        'TO_USERNAME' => $nuke_username,
                                                         'MESSAGE' => $message)
                                                 );
                                                 $emailer->send();
                                                 $emailer->reset();
                                         }
 
-                                        $template->assign_vars(array(
+                                        $template_nuke->assign_vars(array(
                                                 'META' => '<meta http-equiv="refresh" content="5;url=' . append_sid("index.$phpEx") . '">')
                                         );
 
@@ -215,29 +215,29 @@ if ( $result = $nuke_db->sql_query($sql) )
                         }
                 }
 
-                include("includes/page_header.php");
+                include("includes/nuke_page_header.php");
 
-                $template->set_filenames(array(
+                $template_nuke->set_filenames(array(
                         'body' => 'profile_send_email.tpl')
                 );
                 make_jumpbox('viewforum.'.$phpEx);
 
                 if ( $error )
                 {
-                        $template->set_filenames(array(
+                        $template_nuke->set_filenames(array(
                                 'reg_header' => 'error_body.tpl')
                         );
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
                                 'ERROR_MESSAGE' => $error_msg)
                         );
-                        $template->assign_var_from_handle('ERROR_BOX', 'reg_header');
+                        $template_nuke->assign_var_from_handle('ERROR_BOX', 'reg_header');
                 }
 
-                $template->assign_vars(array(
-                        'USERNAME' => $username,
+                $template_nuke->assign_vars(array(
+                        'USERNAME' => $nuke_username,
 
                         'S_HIDDEN_FIELDS' => '',
-                        'S_POST_ACTION' => append_sid("profile.$phpEx?mode=email&amp;" . NUKE_POST_USERS_URL . "=$user_id"),
+                        'S_POST_ACTION' => append_sid("profile.$phpEx?mode=email&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id"),
 
                         'L_SEND_EMAIL_MSG' => $lang['Send_email_msg'],
                         'L_RECIPIENT' => $lang['Recipient'],
@@ -252,7 +252,7 @@ if ( $result = $nuke_db->sql_query($sql) )
                         'L_SEND_EMAIL' => $lang['Send_email'])
                 );
 
-                $template->pparse('body');
+                $template_nuke->pparse('body');
 
                 include("includes/page_tail.php");
         }

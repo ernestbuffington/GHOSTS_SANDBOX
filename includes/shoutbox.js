@@ -118,7 +118,7 @@ var Base64 = {
         var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
         var i = 0;
 
-        input = Base64._utf8_encode(input);
+        input = Base64._nuke_utf8_encode(input);
 
         while (i < input.length) {
 
@@ -177,14 +177,14 @@ var Base64 = {
 
         }
 
-        output = Base64._utf8_decode(output);
+        output = Base64._nuke_utf8_decode(output);
 
         return output;
 
     },
 
     // private method for UTF-8 encoding
-    _utf8_encode : function (string) {
+    _nuke_utf8_encode : function (string) {
         string = string.replace(/\r\n/g,"\n");
         var utftext = "";
 
@@ -211,7 +211,7 @@ var Base64 = {
     },
 
     // private method for UTF-8 decoding
-    _utf8_decode : function (utftext) {
+    _nuke_utf8_decode : function (utftext) {
         var string = "";
         var i = 0;
         var c = c1 = c2 = 0;

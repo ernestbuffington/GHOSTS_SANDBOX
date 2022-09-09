@@ -152,12 +152,12 @@ class Zend_Cache_Core
     /**
      * Set options using an instance of type Zend_Config
      *
-     * @param Zend_Config $config
+     * @param Zend_Config $nuke_config
      * @return Zend_Cache_Core
      */
-    public function setConfig(Zend_Config $config)
+    public function setConfig(Zend_Config $nuke_config)
     {
-        $options = $config->toArray();
+        $options = $nuke_config->toArray();
         while (list($name, $value) = each($options)) {
             $this->setOption($name, $value);
         }

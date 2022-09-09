@@ -32,7 +32,7 @@
  ************************************************************************/
 if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 
-global $storyhome, $topicname, $topicimage, $topictext, $datetime, $user, $cookie, $prefix, $multilingual, $currentlang, $nuke_db, $articlecomm, $module_name, $userinfo;
+global $storyhome, $topicname, $topicimage, $topictext, $datetime, $nuke_user, $cookie, $prefix, $multilingual, $currentlang, $nuke_db, $articlecomm, $module_name, $nuke_userinfo;
 
 $module_name = basename(dirname(__FILE__));
 
@@ -58,8 +58,8 @@ switch ($op)
     case "newindex":
         if($neconfig["homenumber"] == 0) 
 		{
-            if (isset($userinfo['setstorynum'])) 
-			$storynum = $userinfo['setstorynum']; 
+            if (isset($nuke_userinfo['setstorynum'])) 
+			$storynum = $nuke_userinfo['setstorynum']; 
 			else 
 			$storynum = $storyhome; 
         } 
@@ -145,18 +145,18 @@ switch ($op)
             $totalcount = $introcount + $fullcount;
             $r_options = "";
             
-			if (isset($userinfo['umode'])) 
-			$r_options .= "&amp;mode=".$userinfo['umode']; 
+			if (isset($nuke_userinfo['umode'])) 
+			$r_options .= "&amp;mode=".$nuke_userinfo['umode']; 
 			else 
 			$r_options .= "&amp;mode=thread"; 
             
-			if (isset($userinfo['uorder'])) 
-			$r_options .= "&amp;order=".$userinfo['uorder']; 
+			if (isset($nuke_userinfo['uorder'])) 
+			$r_options .= "&amp;order=".$nuke_userinfo['uorder']; 
 			else 
 			$r_options .= "&amp;order=0"; 
             
-			if (isset($userinfo['thold'])) 
-			$r_options .= "&amp;thold=".$userinfo['thold']; 
+			if (isset($nuke_userinfo['thold'])) 
+			$r_options .= "&amp;thold=".$nuke_userinfo['thold']; 
 			else 
 			$r_options .= "&amp;thold=0"; 
             

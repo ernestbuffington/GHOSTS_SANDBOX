@@ -256,16 +256,16 @@ else
 /** Main Page
 /******************************************************************************************/
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
 'body' => 'admin/admin_topic_shadow.tpl')
 );
 
 if ($status_message != '')
 {
-    $template->assign_block_vars('statusrow', array());
+    $template_nuke->assign_block_vars('statusrow', array());
 }
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 'L_DELETE_FROM_EXPLAN' => $lang['Delete_From_Date'],
 'L_DELETE_BEFORE' => $lang['Delete_Before_Date_Button'],
 'L_MONTH' => $lang['Month'],
@@ -311,7 +311,7 @@ if(!$result = $nuke_db->sql_query($sql))
 $row = $nuke_db->sql_fetchrow($result);
 if ($row['count'] <= 0)
 {
-    $template->assign_block_vars('emptyrow', array());
+    $template_nuke->assign_block_vars('emptyrow', array());
 }
 else
 {
@@ -328,7 +328,7 @@ else
     $i = 0;
     while ($messages = $nuke_db->sql_fetchrow($result))
     {
-        $template->assign_block_vars('topicrow', array(
+        $template_nuke->assign_block_vars('topicrow', array(
         'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
         'TITLE' => $messages['topic_title'],
         'MOVED_TO' => ts_id_2_name($messages['topic_moved_id'], 'forum'),
@@ -341,8 +341,8 @@ else
     }
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 copyright_nivisec($page_title, '2001-2003');
-include('page_footer_admin.'.$phpEx);
+include('nuke_page_footer_admin.'.$phpEx);
 
 ?>

@@ -24,9 +24,9 @@ require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 // module's directory. It's all, as easy as it sounds ;)
 // NOTE: in $download_location PLEASE give the direct download link to the file!!!
 
-$author_name = "Aric Bolf (SuperCat) / Updated & AJAX'ed by Technocrat (nuke-evolution.com)";
-$author_email = "webmaster (at) ourscripts (dot) net";
-$author_homepage = "https://ourscripts.86it.us";
+$nuke_author_name = "Aric Bolf (SuperCat) / Updated & AJAX'ed by Technocrat (nuke-evolution.com)";
+$nuke_author_email = "webmaster (at) ourscripts (dot) net";
+$nuke_author_homepage = "https://ourscripts.86it.us";
 $license = "GNU/GPL";
 $download_location = "https://ourscripts.86it.us";
 $module_version = "8.6.0";
@@ -39,6 +39,6 @@ $module_description = "Let the visitors to your site speak up! The block is very
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($author_name, $author_email, $author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
 
 ?>

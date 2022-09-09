@@ -33,14 +33,14 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_auc.' . $phpEx);
 
 # Start session management 
-$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX); 
-init_userprefs($userdata); 
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX); 
+init_userprefs($nuke_userdata); 
 # End session management 
 
 $group = (!empty($HTTP_POST_VARS['id'])) ? $HTTP_POST_VARS['id'] : $HTTP_GET_VARS['id']; 
 $exist = $HTTP_GET_VARS['group'];        
     
-$template->set_filenames(array('body' => 'auc_listing_body.tpl') );    
+$template_nuke->set_filenames(array('body' => 'auc_listing_body.tpl') );    
         
 if($exist):
 
@@ -55,7 +55,7 @@ if($exist):
      $g = LESS_ADMIN;
   endif;
                                     
-  $template->assign_vars(array(
+  $template_nuke->assign_vars(array(
   "T_L" => $lang['listing_left'], 
   "T_C_2" => $group_name, 
   "T_R" => $lang['listing_right'])
@@ -102,7 +102,7 @@ if($exist):
      elseif ($row['user_level'] == LESS_ADMIN)
      $style_color = '#'.$theme['fontcolor4'];
                     
-     $template->assign_block_vars("colors", array(
+     $template_nuke->assign_block_vars("colors", array(
       "NUKE_USER"         => "<font color='".$style_color."'>".$row1['username']."</font>", 
       "ROW_CLASS"    => $row_class,
       "INFO_LINE"    => $info)
@@ -161,7 +161,7 @@ elseif($group):
             
        $i++;
                         
-       $template->assign_block_vars('colors', array(
+       $template_nuke->assign_block_vars('colors', array(
        'NUKE_USER' => UsernameColor($row1[$a]['username']), 
        'ROW_CLASS' => $row_class,
        'INFO_LINE' => $info)
@@ -176,14 +176,14 @@ endif;
    if($i == 1)
    message_die(NUKE_GENERAL_MESSAGE, sprintf($lang['listing_none'], '<strong>'. $row['group_name'] .'</strong>'));
                 
-   $template->assign_vars(array(
+   $template_nuke->assign_vars(array(
    "T_L" => $lang['listing_left'], 
    "T_C_2" => $row['group_name'], 
    "T_R" => $lang['listing_right'])
    ); 
                             
 // Generate page
-include('includes/page_header.'.$phpEx);
-$template->pparse('body');
+include('includes/nuke_page_header.'.$phpEx);
+$template_nuke->pparse('body');
 include('includes/page_tail.'.$phpEx);
 ?>

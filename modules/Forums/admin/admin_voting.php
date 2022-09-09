@@ -153,11 +153,11 @@ if( !empty($setmodules) )
 // Build arrays
 //
     // Assign page template
-        $template->set_filenames(array('pollbody' => 'admin/admin_voting_body.tpl'
+        $template_nuke->set_filenames(array('pollbody' => 'admin/admin_voting_body.tpl'
             ));
 
     // Assign labels
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'L_ADMIN_VOTE_EXPLAIN' => $lang['Admin_Vote_Explain'],
             'L_ADMIN_VOTE_TITLE' => $lang['Admin_Vote_Title'],
             'L_VOTE_ID' => $lang['Vote_id'], 
@@ -186,15 +186,15 @@ if( !empty($setmodules) )
 
         while ( $row = $nuke_db->sql_fetchrow($result) )
             {
-                    $user_id = $row['user_id'];
+                    $nuke_user_id = $row['user_id'];
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                    $username = UsernameColor($row['username']);
+                    $nuke_username = UsernameColor($row['username']);
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                    $user_arr[$user_id] = $username;
+                    $nuke_user_arr[$nuke_user_id] = $nuke_username;
             }
 
     // Assign poll options array
@@ -270,25 +270,25 @@ if( !empty($setmodules) )
                         $vote_duration = (date ("m/d/y",$vote_start)) . " - " . (date ("m/d/y",$vote_end)) . "(completed)" ;
                     } 
 
-            $user = ""; 
-            $users = ""; 
-            $user_option_arr = array();
+            $nuke_user = ""; 
+            $nuke_users = ""; 
+            $nuke_user_option_arr = array();
  
             if (count($voter_arr[$vote_id]) > 0 )
                 { 
-                    foreach($voter_arr[$vote_id] as $user_id => $option_id)
+                    foreach($voter_arr[$vote_id] as $nuke_user_id => $option_id)
                     { 
-                        $user .= $user_arr[$user_id].", "; 
-                        $user_option_arr[$option_id] .= $user_arr[$user_id].", "; 
+                        $nuke_user .= $nuke_user_arr[$nuke_user_id].", "; 
+                        $nuke_user_option_arr[$option_id] .= $nuke_user_arr[$nuke_user_id].", "; 
                     } 
-                        $user = substr($user, "0", strrpos($user, ", ")); 
+                        $nuke_user = substr($nuke_user, "0", strrpos($nuke_user, ", ")); 
                 }
  
-            $template->assign_block_vars("votes", array( 
+            $template_nuke->assign_block_vars("votes", array( 
                 'COLOR' => $topic_row_color,
                 'LINK' => $root_path . "modules.php?name=Forums&amp;file=viewtopic&amp;t=$topic_id", 
                 'DESCRIPTION' => $vote_text, 
-                'NUKE_USER' => $user, 
+                'NUKE_USER' => $nuke_user, 
                 'ENDDATE' => $vote_end,
                 'VOTE_DURATION' => $vote_duration, 
                 'VOTE_ID' => $vote_id
@@ -300,13 +300,13 @@ if( !empty($setmodules) )
                         { 
                             $option_text = $elem["text"]; 
                             $option_result = $elem["result"]; 
-                            $user = $user_option_arr[$vote_option_id]; 
-                            $user = substr($user, "0", strrpos($user, ", "));
+                            $nuke_user = $nuke_user_option_arr[$vote_option_id]; 
+                            $nuke_user = substr($nuke_user, "0", strrpos($nuke_user, ", "));
  
-            $template->assign_block_vars("votes.detail", array( 
+            $template_nuke->assign_block_vars("votes.detail", array( 
                 'OPTION' => $option_text, 
                 'RESULT' => $option_result, 
-                'NUKE_USER' => $user
+                'NUKE_USER' => $nuke_user
                 )); 
                         } 
                 }
@@ -332,7 +332,7 @@ if( !empty($setmodules) )
             $pagination = generate_pagination("admin_voting.$phpEx?mode=$sort_field&amp;order=$sort_order", $total_polls, $board_config['topics_per_page'], $start). '&nbsp;';
         }
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'PAGINATION' => $pagination,
         'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $board_config['topics_per_page'] ) + 1 ), ceil( $total_polls / $board_config['topics_per_page'] )), 
 
@@ -341,7 +341,7 @@ if( !empty($setmodules) )
 
 // I'm the boss...need the info...
 //
-    $template->pparse('pollbody');
-    include('./page_footer_admin.'.$phpEx);
+    $template_nuke->pparse('pollbody');
+    include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

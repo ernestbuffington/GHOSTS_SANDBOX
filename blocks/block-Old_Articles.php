@@ -27,7 +27,7 @@
 
 if(!defined('NUKE_EVO')) exit;
 
-global $locale, $oldnum, $storynum, $storyhome, $cookie, $categories, $cat, $prefix, $multilingual, $currentlang, $nuke_db, $new_topic, $user_news, $userinfo, $user;
+global $locale, $oldnum, $storynum, $storyhome, $cookie, $categories, $cat, $prefix, $multilingual, $currentlang, $nuke_db, $new_topic, $nuke_user_news, $nuke_userinfo, $nuke_user;
 
 if ($multilingual == 1) {
     if ($categories == 1) {
@@ -48,8 +48,8 @@ if ($multilingual == 1) {
     }
     }
 }
-if (isset($userinfo['storynum']) AND $user_news == 1) {
-    $storynum = $userinfo['storynum'];
+if (isset($nuke_userinfo['storynum']) AND $nuke_user_news == 1) {
+    $storynum = $nuke_userinfo['storynum'];
 } else {
     $storynum = $storyhome;
 }
@@ -60,22 +60,22 @@ $result = $nuke_db->sql_query($sql);
 $vari = 0;
 
 if (!isset($mode) OR empty($mode)) {
-    if(isset($userinfo['umode'])) {
-      $mode = $userinfo['umode'];
+    if(isset($nuke_userinfo['umode'])) {
+      $mode = $nuke_userinfo['umode'];
     } else {
       $mode = "thread";
     }
 }
 if (!isset($order) OR empty($order)) {
-    if(isset($userinfo['uorder'])) {
-      $order = $userinfo['uorder'];
+    if(isset($nuke_userinfo['uorder'])) {
+      $order = $nuke_userinfo['uorder'];
     } else {
       $order = 0;
     }
 }
 if (!isset($thold) OR empty($thold)) {
-    if(isset($userinfo['thold'])) {
-      $thold = $userinfo['thold'];
+    if(isset($nuke_userinfo['thold'])) {
+      $thold = $nuke_userinfo['thold'];
     } else {
       $thold = 0;
     }
@@ -112,8 +112,8 @@ while (list($sid, $title, $time, $comments) = $nuke_db->sql_fetchrow($result)) {
     }
     $vari++;
     if ($vari==$oldnum) {
-    if (isset($userinfo['storyhome'])) {
-        $storynum = $userinfo['storyhome'];
+    if (isset($nuke_userinfo['storyhome'])) {
+        $storynum = $nuke_userinfo['storyhome'];
     } else {
         $storynum = $storyhome;
     }

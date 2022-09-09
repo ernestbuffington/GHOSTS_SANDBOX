@@ -62,14 +62,14 @@ function init_board_config_key($key, $value, $force=false)
 //	user_board_config_key() : get the user choice if defined
 //
 //---------------------------------------------------------------
-function user_board_config_key($key, $user_field='', $over_field='')
+function user_board_config_key($key, $nuke_user_field='', $over_field='')
 {
-	global $board_config, $userdata;
+	global $board_config, $nuke_userdata;
 
 	// get the user fields name if not given
-	if (empty($user_field))
+	if (empty($nuke_user_field))
 	{
-		$user_field = 'user_' . $key;
+		$nuke_user_field = 'user_' . $key;
 	}
 
 	// get the overwrite allowed switch name if not given
@@ -82,7 +82,7 @@ function user_board_config_key($key, $user_field='', $over_field='')
 	if (!isset($board_config[$key])) return;
 
 	// does the user field exists ?
-	if (!isset($userdata[$user_field])) return;
+	if (!isset($nuke_userdata[$nuke_user_field])) return;
 
 	// does the overwrite switch exists ?
 	if (!isset($board_config[$over_field]))
@@ -91,13 +91,13 @@ function user_board_config_key($key, $user_field='', $over_field='')
 	}
 
 	// overwrite with the user data only if not overwrite sat, not anonymous, and logged in
-	if (!intval($board_config[$over_field]) && ($userdata['user_id'] != NUKE_ANONYMOUS) && $userdata['session_logged_in'])
+	if (!intval($board_config[$over_field]) && ($nuke_userdata['user_id'] != NUKE_ANONYMOUS) && $nuke_userdata['session_logged_in'])
 	{
-		$board_config[$key] = $userdata[$user_field];
+		$board_config[$key] = $nuke_userdata[$nuke_user_field];
 	}
 	else
 	{
-		$userdata[$user_field] = $board_config[$key];
+		$nuke_userdata[$nuke_user_field] = $board_config[$key];
 	}
 }
 
@@ -106,32 +106,32 @@ function user_board_config_key($key, $user_field='', $over_field='')
 //	init_board_config() : get the user choice if defined
 //
 //---------------------------------------------------------------
-function init_board_config($mod_name, $config_fields, $sub_name='', $sub_sort=0, $mod_sort=0, $menu_name='Preferences', $menu_sort=0)
+function init_board_config($mod_name, $nuke_config_fields, $sub_name='', $sub_sort=0, $mod_sort=0, $menu_name='Preferences', $menu_sort=0)
 {
 	global $mods;
 
-	@reset($config_fields);
-	// while ( list($config_key, $config_data) = each($config_fields) )
-	foreach( $config_fields as $config_key => $config_data )
+	@reset($nuke_config_fields);
+	// while ( list($nuke_config_key, $nuke_config_data) = each($nuke_config_fields) )
+	foreach( $nuke_config_fields as $nuke_config_key => $nuke_config_data )
 	{
-		if (!isset($config_data['user_only']) || !$config_data['user_only'])
+		if (!isset($nuke_config_data['user_only']) || !$nuke_config_data['user_only'])
 		{
 			// create the key value
-			init_board_config_key($config_key, ( !empty($config_data['values']) ? $config_data['values'][ $config_data['default'] ] : $config_data['default']) );
-			if (!empty($config_data['user']))
+			init_board_config_key($nuke_config_key, ( !empty($nuke_config_data['values']) ? $nuke_config_data['values'][ $nuke_config_data['default'] ] : $nuke_config_data['default']) );
+			if (!empty($nuke_config_data['user']))
 			{
 				// create the "overwrite user choice" value
-				init_board_config_key($config_key . '_over', 0);
+				init_board_config_key($nuke_config_key . '_over', 0);
 
 				// get user choice value
-				user_board_config_key($config_key, $config_data['user']);
+				user_board_config_key($nuke_config_key, $nuke_config_data['user']);
 			}
 		}
 
 		// deliever it for input only if not hidden
-		if (!$config_data['hide'])
+		if (!$nuke_config_data['hide'])
 		{
-			$mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'][$config_key] = $config_data;
+			$mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'][$nuke_config_key] = $nuke_config_data;
 
 			// sort values : overwrite only if not yet provided
 			if (empty($mods[$menu_name]['sort']) || ($mods[$menu_name]['sort'] == 0) )

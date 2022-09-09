@@ -21,16 +21,16 @@ include_once("themes/$theme_Sel/theme.php");
 echo "<LINK REL='StyleSheet' HREF='themes/$theme_Sel/style/style.css' TYPE='text/css' MEDIA='screen'>\n";
 echo "</head><body>\n";
 echo "<h1 align='center'>$pagetitle</h1>\n";
-$user_id=intval($user_id);
-list($uname) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `username` FROM `".$nuke_user_prefix."_users` WHERE `user_id`='$user_id' LIMIT 0,1"));
+$nuke_user_id=intval($nuke_user_id);
+list($uname) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `username` FROM `".$nuke_user_prefix."_users` WHERE `user_id`='$nuke_user_id' LIMIT 0,1"));
 $uname = UsernameColor($uname);
 # default values if none set
-echo "<center><strong>$uname ($user_id)</strong></center><br />";
+echo "<center><strong>$uname ($nuke_user_id)</strong></center><br />";
 echo "<table summary='' align='center' cellpadding='2' cellspacing='2' border='2'>\n";
 echo "<tr>";
 echo "<td nowrap><strong>"._AB_PAGEVIEWED."</strong></td>";
 echo "<td nowrap><strong>"._AB_HITDATE."</strong></td>";
-$result = $nuke_db->sql_query("SELECT `user_id`, `ip_addr`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$user_id' ORDER BY `date` DESC");
+$result = $nuke_db->sql_query("SELECT `user_id`, `ip_addr`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$nuke_user_id' ORDER BY `date` DESC");
 while(list($luserid, $lipaddr, $page, $date_time) = $nuke_db->sql_fetchrow($result)){
   echo "<tr>\n";
   echo "<td>$page</td>\n";

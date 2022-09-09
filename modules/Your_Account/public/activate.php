@@ -48,9 +48,9 @@ if (!defined('CNBYA')) {
         $nuke_db->sql_query("OPTIMIZE TABLE ".$nuke_user_prefix."_users_temp");
     }
 
-    $username  = trim(check_html($username, 'nohtml'));
+    $nuke_username  = trim(check_html($nuke_username, 'nohtml'));
     $check_num = trim(check_html($check_num, 'nohtml'));
-    $result    = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users_temp WHERE username='$username' AND check_num='$check_num'");
+    $result    = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users_temp WHERE username='$nuke_username' AND check_num='$check_num'");
     if ($nuke_db->sql_numrows($result) == 1) {
         $row_act = $nuke_db->sql_fetchrow($result);
     $ya_username = $row_act['username'];
@@ -113,9 +113,9 @@ if (!defined('CNBYA')) {
         echo "<tr><td bgcolor='$bgcolor2'>"._FORUMSDATE.":<br />"._FORUMSDATEMSG."</td><td bgcolor='$bgcolor1'>";
         echo "<input type=\"text\" name=\"user_dateformat\" value=\"D M d, Y g:i a\" size='15' maxlength='14'></td></tr>\n";
         echo "<tr><td bgcolor='$bgcolor2'>"._SIGNATURE.":<br />"._OPTIONAL."<br />"._NOHTML."</td>";
-        echo "<td bgcolor='$bgcolor1'><textarea wrap=\"virtual\" cols=\"50\" rows=\"5\" name=\"user_sig\">$userinfo[user_sig]</textarea><br />"._255CHARMAX."</td></tr>\n";
+        echo "<td bgcolor='$bgcolor1'><textarea wrap=\"virtual\" cols=\"50\" rows=\"5\" name=\"user_sig\">$nuke_userinfo[user_sig]</textarea><br />"._255CHARMAX."</td></tr>\n";
         echo "<tr><td bgcolor='$bgcolor2'>"._EXTRAINFO.":<br />"._OPTIONAL."<br />"._NOHTML."</td>";
-        echo "<td bgcolor='$bgcolor1'><textarea wrap=\"virtual\" cols=\"50\" rows=\"5\" name=\"bio\">$userinfo[bio]</textarea><br />"._CANKNOWABOUT."</td></tr>\n";
+        echo "<td bgcolor='$bgcolor1'><textarea wrap=\"virtual\" cols=\"50\" rows=\"5\" name=\"bio\">$nuke_userinfo[bio]</textarea><br />"._CANKNOWABOUT."</td></tr>\n";
         echo "<input type=\"hidden\" name=\"ya_username\" value=\"$ya_username\">";
         echo "<input type=\"hidden\" name=\"check_num\" value=\"$check_num\">\n";
         echo "<input type=\"hidden\" name=\"ya_time\" value=\"$ya_time\">\n";

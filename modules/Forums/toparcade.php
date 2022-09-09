@@ -43,8 +43,8 @@ $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOF
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_TOPARCADES, $nukeuser);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_TOPARCADES, $nukeuser);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -54,7 +54,7 @@ include('includes/functions_arcade.' . $phpEx);
 //
 $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE"))) ? "Refresh: 0; URL=" : "Location: ";
 
-if (!$userdata['session_logged_in']) {
+if (!$nuke_userdata['session_logged_in']) {
         header($header_location . "modules.php?name=Your_Account");
         exit;
 }
@@ -62,11 +62,11 @@ if (!$userdata['session_logged_in']) {
 // End of auth check
 //
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         'body' => 'toparcade_body.tpl')
 );
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'L_TOPARCADE_FIVE' => $lang['toparcade_five'],
         'L_ARCADE' => $lang['toparcade_players'],
         'NAV_DESC' => '<a class="nav" href="' . append_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a>'
@@ -75,7 +75,7 @@ $template->assign_vars(array(
 
 $nbcol = 3;
 $games_par_page = 12;
-$liste_cat_auth = get_arcade_categories($userdata['user_id'], $userdata['user_level'],'view');
+$liste_cat_auth = get_arcade_categories($nuke_userdata['user_id'], $nuke_userdata['user_level'],'view');
 
 if (empty($liste_cat_auth)) {
         $liste_cat_auth = "''";
@@ -110,13 +110,13 @@ if (!$row = $nuke_db->sql_fetchrow($result)) {
 }
 
 while ((!$fini) ) {
-        $template->assign_block_vars('blkligne', array());
+        $template_nuke->assign_block_vars('blkligne', array());
 
         for ($cg = 1; $cg <= $nbcol; $cg++) {
-                $template->assign_block_vars('blkligne.blkcolonne', array());
+                $template_nuke->assign_block_vars('blkligne.blkcolonne', array());
 
                 if (!$fini) {
-                         $template->assign_block_vars('blkligne.blkcolonne.blkgame', array(
+                         $template_nuke->assign_block_vars('blkligne.blkcolonne.blkgame', array(
                                 'GAMENAME' => '<nobr><a class="cattitle" href="' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a></nobr>')
                         );
 
@@ -136,7 +136,7 @@ while ((!$fini) ) {
                                         $pos = $posreelle;
                                 }
                                 $lastscore = $row2['score_game'];
-                                $template->assign_block_vars('blkligne.blkcolonne.blkgame.blkscore', array(
+                                $template_nuke->assign_block_vars('blkligne.blkcolonne.blkgame.blkscore', array(
                                         'SCORE' => number_format($row2['score_game']),
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
@@ -156,7 +156,7 @@ while ((!$fini) ) {
         }
 }
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'PAGINATION' => generate_pagination(append_sid("toparcade.$phpEx?uid=$uid"), $total_games, $games_par_page, $start),
         'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $games_par_page) + 1), ceil($total_games / $games_par_page)))
 );
@@ -166,8 +166,8 @@ include($phpbb2_root_path . 'hall_of_fame.'.$phpEx);
 //
 // Output page header
 $page_title = $lang['toparcade'];
-include('includes/page_header.'.$phpEx);
-$template->pparse('body');
+include('includes/nuke_page_header.'.$phpEx);
+$template_nuke->pparse('body');
 include('includes/page_tail.'.$phpEx);
 
 ?>

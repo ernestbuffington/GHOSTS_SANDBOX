@@ -28,9 +28,9 @@ $query2 = $network_db->sql_query("SELECT `name`, `radminsuper` FROM `".$prefix."
 list($rname, $radminsuper) = $network_db->sql_fetchrow($query2);
 $network_db->sql_freeresult($query2);
 $admins = explode(",", $admins);
-$auth_user = 0;
-for($i=0; $i < sizeof($admins); $i++) { if($rname == $admins[$i] AND !empty($admins)) { $auth_user = 1; } }
-if($radminsuper == 1 || $auth_user == 1) {
+$nuke_auth_user = 0;
+for($i=0; $i < sizeof($admins); $i++) { if($rname == $admins[$i] AND !empty($admins)) { $nuke_auth_user = 1; } }
+if($radminsuper == 1 || $nuke_auth_user == 1) {
   switch ($op) {
     case "Config":
     case "ConfigUpdate":

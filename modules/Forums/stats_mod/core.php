@@ -63,7 +63,7 @@ include_once('includes/bbcode.' .$phpEx);
 //
 class StatisticsCORE
 {
-    var $template_file = ''; // content template file
+    var $template_nuke_file = ''; // content template file
     var $return_limit = 10;
     var $global_array = array();
     var $use_db_cache = false;
@@ -164,7 +164,7 @@ class StatisticsCORE
     // Run Module
     function run_module()
     {
-        global $stats_template, $template, $stat_db, $board_config;
+        global $stats_template, $template_nuke, $stat_db, $board_config;
 
         if ($this->use_db_cache)
         {
@@ -185,7 +185,7 @@ class StatisticsCORE
         }
 
         // Eat this template class. :)
-        $template->assign_block_vars('modules', array(
+        $template_nuke->assign_block_vars('modules', array(
             'CURRENT_MODULE' => $compiled_output,
             'CACHED' => ($stat_db->use_cache) ? 'true' : 'false',
             'RELOADED' => (!$stat_db->use_cache && $this->use_db_cache) ? 'true' : 'false',
@@ -197,7 +197,7 @@ class StatisticsCORE
 
         if ( ($this->module_info['last_update_time'] != 0) && ($this->module_info['next_update_time'] != 0) )
         {
-            $template->assign_block_vars('modules.switch_display_timestats', array());
+            $template_nuke->assign_block_vars('modules.switch_display_timestats', array());
         }
 
         $stats_template->destroy();
@@ -387,7 +387,7 @@ class StatisticsCORE
     }
 
     // Define content view
-    function define_view($function_call, $data, $auth_data = 0)
+    function define_view($function_call, $data, $nuke_auth_data = 0)
     {
         global $content;
 
@@ -397,7 +397,7 @@ class StatisticsCORE
         }
 
         // bar content class: set_columns
-        return ($content->$function_call($data, $auth_data));
+        return ($content->$function_call($data, $nuke_auth_data));
     }
 
     // Assign specific things to current content view
@@ -467,11 +467,11 @@ class StatisticsCORE
     }
 
     /* $stat_functions->forum_auth()
-    function forum_auth($userdata, $auth = NUKE_AUTH_VIEW)
+    function forum_auth($nuke_userdata, $nuke_auth = NUKE_AUTH_VIEW)
     {
         global $stat_functions;
 
-        return ($stat_functions->forum_auth($userdata, $auth));
+        return ($stat_functions->forum_auth($nuke_userdata, $nuke_auth));
     }*/
 
     //
@@ -529,7 +529,7 @@ $content_values = '';
 
 function init_core()
 {
-    global $stats_config, $core, $stat_db, $stat_functions, $nuke_db, $userdata;
+    global $stats_config, $core, $stat_db, $stat_functions, $nuke_db, $nuke_userdata;
 
     $core = new StatisticsCORE;
 
@@ -564,7 +564,7 @@ function init_core()
     $stat_db = new StatisticsDB;
     $stat_functions = new StatisticsFUNCTIONS;
 
-    $stat_functions->init_auth_settings($userdata);
+    $stat_functions->init_auth_settings($nuke_userdata);
 
 }
 

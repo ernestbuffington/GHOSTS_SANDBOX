@@ -31,10 +31,10 @@ if($totalselected > 0) {
   echo "<td align='center'><strong>"._AB_LASTVIEWED."</strong></td>\n";
   echo "<td align='center'><strong>"._AB_HITS."</strong></td>\n";
   $result = $nuke_db->sql_query("SELECT `user_agent`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` GROUP BY 1");
-  while(list($user_agent, $lastview, $hits) = $nuke_db->sql_fetchrow($result)){
+  while(list($nuke_user_agent, $lastview, $hits) = $nuke_db->sql_fetchrow($result)){
     echo "<tr>";
-    echo "<td>$user_agent</td>";
-    $trackedips = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_agent`='$user_agent'"));
+    echo "<td>$nuke_user_agent</td>";
+    $trackedips = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_agent`='$nuke_user_agent'"));
     echo "<td align='center'>$trackedips</td>\n";
     echo "<td align='center'>".date("Y-m-d \@ H:i:s",$lastview)."</td>";
     echo "<td align='center'>$hits</td>";

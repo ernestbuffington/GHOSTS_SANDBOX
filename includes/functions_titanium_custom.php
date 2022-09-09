@@ -175,10 +175,10 @@ function title_and_meta_tags()
                    $structured_data .= '  "dateModified": "'.$dtm.'",'."\n\n";
                  
 				         list($name) = $nuke_db->sql_ufetchrow("SELECT `informant` FROM `".$prefix."_stories` WHERE `sid`='".$sid."'", SQL_NUM);
-				     list($username) = $nuke_db->sql_ufetchrow("SELECT `name` FROM `".$prefix."_users` WHERE `username`='".$name."'", SQL_NUM);
+				     list($nuke_username) = $nuke_db->sql_ufetchrow("SELECT `name` FROM `".$prefix."_users` WHERE `username`='".$name."'", SQL_NUM);
 				   $structured_data .= '  "author": {'."\n";
                    $structured_data .= '  "@type": "Person",'."\n";
-                   $structured_data .= '  "name": "'.$username.'"'."\n";
+                   $structured_data .= '  "name": "'.$nuke_username.'"'."\n";
                    $structured_data .= '  },'."\n\n";
                  
 				   $structured_data .= ' "publisher": {'."\n";

@@ -542,15 +542,15 @@ function msnl_fSendNls( $emailfile, $msnl_sSender, $sql, $msnl_sEmailaddresses )
 
 		$msnl_asEmailaddresses	= explode( ",", $msnl_sEmailaddresses );
 		
-		foreach ( $msnl_asEmailaddresses as $user_email ) { //Cycle through each ad-hoc email address
+		foreach ( $msnl_asEmailaddresses as $nuke_user_email ) { //Cycle through each ad-hoc email address
 
-			msnl_fDebugMsg( $user_email );
+			msnl_fDebugMsg( $nuke_user_email );
 
 			if ( $msnl_gasModCfg['debug_mode'] != MSNL_VERBOSE ) {  //Do not mail if in verbose debug mode
 
-				if ( !@mail( $user_email, $emailtitle, $emailfile, $headers ) ) { //Mail and test if successful
+				if ( !@mail( $nuke_user_email, $emailtitle, $emailfile, $headers ) ) { //Mail and test if successful
 
-					msnl_fRaiseAppError( _MSNL_ADM_SEND_ERR_MAIL." ".$user_email );	//MSNL_010301_02
+					msnl_fRaiseAppError( _MSNL_ADM_SEND_ERR_MAIL." ".$nuke_user_email );	//MSNL_010301_02
 
 				}
 
@@ -583,19 +583,19 @@ function msnl_fSendNls( $emailfile, $msnl_sSender, $sql, $msnl_sEmailaddresses )
 
 		while( $row = $nuke_db->sql_fetchrow( $result ) ) { //Cycle through the recipients and send
 
-			$user_id			= intval( $row['user_id'] );
+			$nuke_user_id			= intval( $row['user_id'] );
 
-			$user_email		= stripslashes( $row['user_email'] );
+			$nuke_user_email		= stripslashes( $row['user_email'] );
 
-			$prev_user_id = $user_id;
+			$prev_user_id = $nuke_user_id;
 
-			msnl_fDebugMsg( $user_email );
+			msnl_fDebugMsg( $nuke_user_email );
 
 			if ( $msnl_gasModCfg['debug_mode'] != MSNL_VERBOSE ) {  //Do not mail if in verbose debug mode
 
-				if ( !@mail( $user_email, $emailtitle, $emailfile, $headers ) ) { //Mail and test if successful
+				if ( !@mail( $nuke_user_email, $emailtitle, $emailfile, $headers ) ) { //Mail and test if successful
 
-					msnl_fRaiseAppError( _MSNL_ADM_SEND_ERR_MAIL." ".$user_email );	//MSNL_010301_02
+					msnl_fRaiseAppError( _MSNL_ADM_SEND_ERR_MAIL." ".$nuke_user_email );	//MSNL_010301_02
 
 				}
 

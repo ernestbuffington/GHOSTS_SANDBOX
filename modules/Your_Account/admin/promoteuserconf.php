@@ -62,10 +62,10 @@ if (is_mod_admin('super')) {
 /*****[END]********************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
-        for ($i=0; $i < count($auth_modules); $i++) {
-            $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT admins FROM ".$prefix."_modules WHERE mid='$auth_modules[$i]'"));
+        for ($i=0; $i < count($nuke_auth_modules); $i++) {
+            $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT admins FROM ".$prefix."_modules WHERE mid='$nuke_auth_modules[$i]'"));
             $adm = "$row[admins]$add_name";
-            $nuke_db->sql_query("UPDATE ".$prefix."_modules SET admins='$adm,' WHERE mid='$auth_modules[$i]'");
+            $nuke_db->sql_query("UPDATE ".$prefix."_modules SET admins='$adm,' WHERE mid='$nuke_auth_modules[$i]'");
         }
          $add_password = check_html($add_password, 'nohtml');
          $add_aid = check_html($add_aid, 'nohtml');

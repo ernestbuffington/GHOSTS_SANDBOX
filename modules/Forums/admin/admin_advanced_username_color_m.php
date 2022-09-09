@@ -212,11 +212,11 @@ if ($mode == "main" || !$mode)
           FROM ". NUKE_USERS_TABLE ."
           ORDER BY username ASC";
     $r = $nuke_db->sql_query($q);
-    $users = $nuke_db->sql_fetchrowset($r);
+    $nuke_users = $nuke_db->sql_fetchrowset($r);
     echo "                <select name='users_id'>";
     echo '                    <option selected value="" class="post">----------</option>';
-        for ($x = 0; $x < count($users); $x++)
-            echo '<option value="'. $users[$x]['user_id'] .'" class="post">'. $users[$x]['username'] .'</option>';
+        for ($x = 0; $x < count($nuke_users); $x++)
+            echo '<option value="'. $nuke_users[$x]['user_id'] .'" class="post">'. $nuke_users[$x]['username'] .'</option>';
     echo "                </select>";
     echo "            </span>";
     echo "        </td>";
@@ -277,12 +277,12 @@ if ($mode == "main" || !$mode)
 
     if($mode == "del_user")
         {
-    $user     = $HTTP_POST_VARS['delete'];
+    $nuke_user     = $HTTP_POST_VARS['delete'];
     $group     = $HTTP_POST_VARS['group'];
 
     $q = "SELECT user_color_gi
           FROM ". NUKE_USERS_TABLE ."
-          WHERE user_id = '". $user ."'";
+          WHERE user_id = '". $nuke_user ."'";
     $r         = $nuke_db->sql_query($q);
     $row     = $nuke_db->sql_fetchrow($r);
 
@@ -313,7 +313,7 @@ if ($mode == "main" || !$mode)
 
     $q = "UPDATE ". NUKE_USERS_TABLE ."
           SET user_color_gi = '$new_id', user_color_gc = '$new_color'
-          WHERE user_id = '". $user ."'";
+          WHERE user_id = '". $nuke_user ."'";
     $r = $nuke_db->sql_query($q);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -341,13 +341,13 @@ if ($mode == "main" || !$mode)
 
         if ($multi)
             {
-        $users = explode("\n", $multi);
-            for ($x = 0; $x < count($users); $x++)
+        $nuke_users = explode("\n", $multi);
+            for ($x = 0; $x < count($nuke_users); $x++)
                 {
-            $users[$x] = trim(addslashes(stripslashes($users[$x])));
+            $nuke_users[$x] = trim(addslashes(stripslashes($nuke_users[$x])));
             $q = "SELECT user_color_gi, user_id
                   FROM ". NUKE_USERS_TABLE ."
-                  WHERE username = '". $users[$x] ."'";
+                  WHERE username = '". $nuke_users[$x] ."'";
             $r         = $nuke_db->sql_query($q);
             $row     = $nuke_db->sql_fetchrow($r);
 
@@ -450,6 +450,6 @@ if ($mode == "main" || !$mode)
  [ Mod:    AUC Group                           v1.0.0 ]
  ******************************************************/
 
-include('page_footer_admin.' . $phpEx);
+include('nuke_page_footer_admin.' . $phpEx);
 
 ?>

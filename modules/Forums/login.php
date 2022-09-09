@@ -50,8 +50,8 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 //
 // Set page ID for session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_LOGIN);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_LOGIN);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -68,14 +68,14 @@ else
 
 if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($HTTP_POST_VARS['logout']) || isset($HTTP_GET_VARS['logout']) )
 {
-    if( ( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) ) && (!$userdata['session_logged_in'] || isset($HTTP_POST_VARS['admin'])) )
+    if( ( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) ) && (!$nuke_userdata['session_logged_in'] || isset($HTTP_POST_VARS['admin'])) )
     {
-        $username = isset($HTTP_POST_VARS['username']) ? phpbb_clean_username($HTTP_POST_VARS['username']) : '';
+        $nuke_username = isset($HTTP_POST_VARS['username']) ? phpbb_clean_username($HTTP_POST_VARS['username']) : '';
         $password = isset($HTTP_POST_VARS['password']) ? $HTTP_POST_VARS['password'] : '';
 
         $sql = "SELECT user_id, username, user_password, user_active, user_level, user_login_tries, user_last_login_try
             FROM " . NUKE_USERS_TABLE . "
-            WHERE username = '" . str_replace("\\'", "''", $username) . "'";
+            WHERE username = '" . str_replace("\\'", "''", $nuke_username) . "'";
         if ( !($result = $nuke_db->sql_query($sql)) )
         {
             message_die(NUKE_GENERAL_ERROR, 'Error in obtaining userdata', '', __LINE__, __FILE__, $sql);
@@ -99,7 +99,7 @@ if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($
 
                  // Check to see if user is allowed to login again... if his tries are exceeded
                  if ($row['user_last_login_try'] && $board_config['login_reset_time'] && $board_config['max_login_attempts'] &&
-                    $row['user_last_login_try'] >= (time() - ($board_config['login_reset_time'] * 60)) && $row['user_login_tries'] >= $board_config['max_login_attempts'] && $userdata['user_level'] != NUKE_ADMIN)
+                    $row['user_last_login_try'] >= (time() - ($board_config['login_reset_time'] * 60)) && $row['user_login_tries'] >= $board_config['max_login_attempts'] && $nuke_userdata['user_level'] != NUKE_ADMIN)
                  {
                     message_die(NUKE_GENERAL_MESSAGE, sprintf($lang['Login_attempts_exceeded'], $board_config['max_login_attempts'], $board_config['login_reset_time']));
                 }
@@ -109,12 +109,12 @@ if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($
                 if( md5($password) == $row['user_password'] && $row['user_active'] )
                 {
 /*****[END]********************************************
- [ Base:     Evolution Functions               v1.5.0 ]
+ [ Base:     Evolution Functions               v1.5.0 ] 
  ******************************************************/
                     $autologin = ( isset($HTTP_POST_VARS['autologin']) ) ? TRUE : 0;
 
                     $admin = (isset($HTTP_POST_VARS['admin'])) ? 1 : 0;
-                    $session_id = session_begin($row['user_id'], $user_ip, NUKE_PAGE_INDEX, FALSE, $autologin, $admin);
+                    $session_id = nuke_session_begin($row['user_id'], $nuke_user_ip, NUKE_PAGE_INDEX, FALSE, $autologin, $admin);
                     // Reset login tries
                     $nuke_db->sql_query('UPDATE ' . NUKE_USERS_TABLE . ' SET user_login_tries = 0, user_last_login_try = 0 WHERE user_id = ' . $row['user_id']);
 
@@ -147,7 +147,7 @@ if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($
                         message_die(NUKE_GENERAL_ERROR, 'Tried to nuke_redirect to potentially insecure url.');
                     }
 
-                    $template->assign_vars(array(
+                    $template_nuke->assign_vars(array(
                         'META' => '<meta http-equiv=\"refresh\" content=\"3;url=' . append_sid("login.$phpEx?nuke_redirect=$nuke_redirect") . '\">')
                     );
 
@@ -168,7 +168,7 @@ if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($
 					message_die(NUKE_GENERAL_ERROR, 'Tried to nuke_redirect to potentially insecure url.');
 				}
 
-				$template->assign_vars(array(
+				$template_nuke->assign_vars(array(
 					'META' => "<meta http-equiv=\"refresh\" content=\"3;url=login.$phpEx?nuke_redirect=$nuke_redirect\">")
 				);
 
@@ -177,16 +177,16 @@ if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($
 				message_die(NUKE_GENERAL_MESSAGE, $message);
         }
     }
-    else if( ( isset($HTTP_GET_VARS['logout']) || isset($HTTP_POST_VARS['logout']) ) && $userdata['session_logged_in'] )
+    else if( ( isset($HTTP_GET_VARS['logout']) || isset($HTTP_POST_VARS['logout']) ) && $nuke_userdata['session_logged_in'] )
     {
         // session id check
-        if ($sid == '' || $sid != $userdata['session_id'])
+        if ($sid == '' || $sid != $nuke_userdata['session_id'])
         {
             message_die(NUKE_GENERAL_ERROR, 'Invalid_session');
         }
-        if( $userdata['session_logged_in'] )
+        if( $nuke_userdata['session_logged_in'] )
         {
-            session_end($userdata['session_id'], $userdata['user_id']);
+            session_end($nuke_userdata['session_id'], $nuke_userdata['user_id']);
         }
 
         if (!empty($HTTP_POST_VARS['nuke_redirect']) || !empty($HTTP_GET_VARS['nuke_redirect']))
@@ -212,12 +212,12 @@ else
     // Do a full login page dohickey if
     // user not already logged in
     //
-    if( !$userdata['session_logged_in'] || (isset($HTTP_GET_VARS['admin']) && $userdata['session_logged_in'] && $userdata['user_level'] == NUKE_ADMIN))
+    if( !$nuke_userdata['session_logged_in'] || (isset($HTTP_GET_VARS['admin']) && $nuke_userdata['session_logged_in'] && $nuke_userdata['user_level'] == NUKE_ADMIN))
     {
         $page_title = $lang['Login'];
-                include("includes/page_header.php");
+                include("includes/nuke_page_header.php");
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
             'body' => 'login_body.tpl')
         );
 
@@ -255,15 +255,15 @@ else
         }
 
         nuke_redirect("modules.php?name=Your_Account&nuke_redirect=$forward_page");
-        $username = ( $userdata['user_id'] != NUKE_ANONYMOUS ) ? $userdata['username'] : '';
+        $nuke_username = ( $nuke_userdata['user_id'] != NUKE_ANONYMOUS ) ? $nuke_userdata['username'] : '';
 
         $s_hidden_fields = '<input type="hidden" name="nuke_redirect" value="' . $forward_page . '" />';
 
         $s_hidden_fields .= (isset($HTTP_GET_VARS['admin'])) ? '<input type="hidden" name="admin" value="1" />' : '';
 
         make_jumpbox('viewforum.'.$phpEx);
-        $template->assign_vars(array(
-            'USERNAME' => $username,
+        $template_nuke->assign_vars(array(
+            'USERNAME' => $nuke_username,
 
             'L_ENTER_PASSWORD' => (isset($HTTP_GET_VARS['admin'])) ? $lang['Admin_reauthenticate'] : $lang['Enter_password'],
             'L_SEND_PASSWORD' => $lang['Forgotten_password'],
@@ -273,7 +273,7 @@ else
             'S_HIDDEN_FIELDS' => $s_hidden_fields)
         );
 
-        $template->pparse('body');
+        $template_nuke->pparse('body');
 
                 include("includes/page_tail.php");
     }

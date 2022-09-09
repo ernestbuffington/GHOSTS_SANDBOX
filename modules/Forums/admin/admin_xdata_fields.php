@@ -144,11 +144,11 @@ switch ($mode)
 
 			if ($meta['field_type'] != 'special')
 			{
-				$template->set_filenames( array('body' => 'admin/xd_edit_body.tpl') );
+				$template_nuke->set_filenames( array('body' => 'admin/xd_edit_body.tpl') );
 			}
 			else
 			{
-				$template->set_filenames( array('body' => 'admin/xd_edit_body_limited.tpl') );
+				$template_nuke->set_filenames( array('body' => 'admin/xd_edit_body_limited.tpl') );
 			}
 
 			switch ( $meta['field_regexp'] )
@@ -169,7 +169,7 @@ switch ($mode)
 
 			$manditory = (isset($meta['manditory'])) ? intval($meta['manditory']) : 0;
 
-			$template->assign_vars(array(
+			$template_nuke->assign_vars(array(
 				'NAME' => $meta['field_name'],
 				'CODE_NAME' => $meta['code_name'],
 				'DESCRIPTION' => $meta['field_desc'],
@@ -234,7 +234,7 @@ switch ($mode)
 				)
 			);
 
-			$template->assign_vars(array(
+			$template_nuke->assign_vars(array(
 				'L_BASIC_OPTIONS' => $lang['Basic_Options'],
 				'L_ADVANCED_OPTIONS' => $lang['Advanced_Options'],
 				'L_ADVANCED_NOTICE' => $lang['Advanced_warning'],
@@ -290,7 +290,7 @@ switch ($mode)
 				)
 			);
 
-			$template->pparse('body');
+			$template_nuke->pparse('body');
 
 		}
 		else
@@ -394,9 +394,9 @@ switch ($mode)
 			Show the form
 			*/
 
-			$template->set_filenames( array( 'body' => 'admin/xd_edit_body.tpl' ) );
+			$template_nuke->set_filenames( array( 'body' => 'admin/xd_edit_body.tpl' ) );
 
-        	$template->assign_vars(array(
+        	$template_nuke->assign_vars(array(
         			'DEFAULT_AUTH_ALLOW_CHECKED' => ' checked="checked"',
         			'AUTH_ALLOW' => NUKE_XD_AUTH_ALLOW,
         			'AUTH_DENY' => NUKE_XD_AUTH_DENY,
@@ -465,7 +465,7 @@ switch ($mode)
 				)
 			);
 
-			$template->pparse('body');
+			$template_nuke->pparse('body');
   		}
   		else
   		{
@@ -574,15 +574,15 @@ switch ($mode)
 				message_die(NUKE_GENERAL_ERROR, $lang['XData_field_non_existant']);
 			}
 
-			$template->set_filenames( array( 'body' => 'admin/xd_confirm_delete.tpl' ) );
+			$template_nuke->set_filenames( array( 'body' => 'admin/xd_confirm_delete.tpl' ) );
 
-			$template->assign_vars( array(
+			$template_nuke->assign_vars( array(
 				'S_HIDDEN_VARS' => '<input type="hidden" name="name" value="' . $code_name . '" /><input type="hidden" name="mode" value="delete" />',
 				'U_FORM_ACTION' => append_sid("admin_xdata_fields.$phpEx?name=$name")
 				)
 			);
 
-			$template->assign_vars( array(
+			$template_nuke->assign_vars( array(
 				'L_CONFIRM' => $lang['Confirm'],
 				'L_ARE_YOU_SURE' => sprintf($lang['Are_you_sure'], $xd_meta[$name]['field_name']),
 				'L_YES' => $lang['Yes'],
@@ -590,7 +590,7 @@ switch ($mode)
 				)
 			);
 
-			$template->pparse('body');
+			$template_nuke->pparse('body');
 		}
 		elseif ( isset($HTTP_POST_VARS['yes'] ) )
 		{
@@ -652,17 +652,17 @@ if ($mode == 'view')
 {
 
 
-	$template->set_filenames( array('body' => 'admin/xd_view_body.tpl') );
+	$template_nuke->set_filenames( array('body' => 'admin/xd_view_body.tpl') );
 
 	if (count($xd_meta) == 0)
 	{
-		$template->assign_block_vars('switch_no_fields', array());
+		$template_nuke->assign_block_vars('switch_no_fields', array());
 	}
 	else
 	{
 		while ( list($code_name, $meta) = each($xd_meta) )
 		{
-        	$template->assign_block_vars('xd_field', array(
+        	$template_nuke->assign_block_vars('xd_field', array(
 				'FIELD_NAME' => $meta['field_name'],
 				'FIELD_TYPE' => $meta['field_type'],
 				'U_MOVE_UP' => append_sid('admin_xdata_fields.'.$phpEx.'?mode=up&name='.$code_name),
@@ -674,12 +674,12 @@ if ($mode == 'view')
 
         	if ($meta['field_type'] != 'special')
 			{
-				$template->assign_block_vars('xd_field.normal', array());
+				$template_nuke->assign_block_vars('xd_field.normal', array());
 			}
   		}
 	}
 
-	$template->assign_vars(array(
+	$template_nuke->assign_vars(array(
 		'L_XDATA_ADMIN' => $lang['Profile_admin'],
 		'L_FORM_DESCRIPTION' => $lang['Xdata_view_description'],
 		'L_FIELD_NAME' => $lang['Name'],
@@ -697,9 +697,9 @@ if ($mode == 'view')
 		)
 	);
 
-	$template->pparse('body');
+	$template_nuke->pparse('body');
 }
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

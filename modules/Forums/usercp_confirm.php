@@ -43,8 +43,8 @@ include_once('includes/bbcode.'.$phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -75,7 +75,7 @@ if (!preg_match('/^[A-Za-z0-9]+$/', $confirm_id))
 // Try and grab code for this id and session
 $sql = 'SELECT code
     FROM ' . CONFIRM_TABLE . "
-    WHERE session_id = '" . $userdata['session_id'] . "'
+    WHERE session_id = '" . $nuke_userdata['session_id'] . "'
         AND confirm_id = '$confirm_id'";
 $result = $nuke_db->sql_query($sql);
 

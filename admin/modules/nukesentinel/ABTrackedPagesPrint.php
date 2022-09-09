@@ -24,9 +24,9 @@ echo '</head>'."\n";
 echo '<body bgcolor="#FFFFFF" text="#000000" link="#000000" alink="#000000" vlink="#000000">'."\n";
 echo '<h1 align="center">'.$pagetitle.'</h1>'."\n";
 $tid=intval($tid);
-$totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$user_id'"));
+$totalselected = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$nuke_user_id'"));
 if($totalselected > 0) {
-  $result = $nuke_db->sql_query("SELECT `ip_long` FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$user_id' AND `ip_addr`='$ip_addr' LIMIT 0,1");
+  $result = $nuke_db->sql_query("SELECT `ip_long` FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$nuke_user_id' AND `ip_addr`='$ip_addr' LIMIT 0,1");
   list($ip_long) = $nuke_db->sql_fetchrow($result);
   echo '<center><strong>'.$ip_addr.' ('.$ip_long.')</strong></center><br />'."\n";
   echo '<table summary="" align="center" border="0" bgcolor="#000000" cellpadding="2" cellspacing="2">'."\n";
@@ -34,7 +34,7 @@ if($totalselected > 0) {
   echo '<td><strong>'._AB_PAGEVIEWED.'</strong></td>'."\n";
   echo '<td><strong>'._AB_DATE.'</strong></td>'."\n";
   echo '</tr>'."\n";
-  $result = $nuke_db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$user_id' ORDER BY `page`");
+  $result = $nuke_db->sql_query("SELECT `tid`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr`='$ip_addr' AND `user_id`='$nuke_user_id' ORDER BY `page`");
   while(list($ltid, $page, $date_time) = $nuke_db->sql_fetchrow($result)){
     $page = wordwrap($page, 50, "\n", true);
     $page = str_replace("&amp;amp;", "&amp;", htmlentities($page, ENT_QUOTES));

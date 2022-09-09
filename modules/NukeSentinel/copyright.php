@@ -18,9 +18,9 @@ require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 // required information and then copy the file "copyright.php" into your
 // module's directory. It's all, as easy as it sounds ;)
 
-$author_name = 'NukeScripts(tm)';
-$author_email = '';
-$author_homepage = 'http://nukescripts.86it.us';
+$nuke_author_name = 'NukeScripts(tm)';
+$nuke_author_email = '';
+$nuke_author_homepage = 'http://nukescripts.86it.us';
 $license = 'Copyright &#169; 2000-2008 NukeScripts(tm)';
 $download_location = '';
 $module_version = '2.6.01';
@@ -33,6 +33,6 @@ $module_description = 'Advanced site security proudly produced by: NukeScripts(t
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($author_name, $author_email, $author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
 
 ?>

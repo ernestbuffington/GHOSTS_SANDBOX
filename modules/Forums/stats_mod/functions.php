@@ -33,9 +33,9 @@ if (!defined('IN_PHPBB2'))
 class StatisticsFUNCTIONS
 {
     // forum auth variables <- forum_auth()
-//    var $auth_loaded = FALSE;
+//    var $nuke_auth_loaded = FALSE;
 //    var $previous_auth = NUKE_AUTH_VIEW;
-    var $auth_data_sql = '';
+    var $nuke_auth_data_sql = '';
 
     // Sort multi-dimensional array
     function sort_data ($sort_array, $key, $sort_order, $pre_string_sort = -1) 
@@ -103,18 +103,18 @@ class StatisticsFUNCTIONS
 /*    //
     // Forum Auth (Returns an Forum SQL ID String)
     //
-    function forum_auth($userdata, $auth = NUKE_AUTH_VIEW)
+    function forum_auth($nuke_userdata, $nuke_auth = NUKE_AUTH_VIEW)
     {
         global $nuke_db;
 
-        if (($this->auth_loaded) && ($this->previous_auth == $auth))
+        if (($this->auth_loaded) && ($this->previous_auth == $nuke_auth))
         {
             return ($this->auth_data_sql);
         }
         
         $this->auth_data_sql = '';
 
-        $is_auth_ary = auth($auth, NUKE_AUTH_LIST_ALL, $userdata);
+        $is_auth_ary = auth($nuke_auth, NUKE_AUTH_LIST_ALL, $nuke_userdata);
 
         $sql = 'SELECT forum_id 
         FROM ' . NUKE_FORUMS_TABLE;
@@ -133,27 +133,27 @@ class StatisticsFUNCTIONS
         }
     
         $this->auth_loaded = TRUE;
-        $this->previous_auth = $auth;
+        $this->previous_auth = $nuke_auth;
         return ($this->auth_data_sql);
     }*/
 
     //
     // Init Authorization Settings for use in Modules
     //
-    function init_auth_settings($userdata)
+    function init_auth_settings($nuke_userdata)
     {
         global $nuke_db;
 
         $this->auth_data_sql = array();
 
-        $auth_ary = auth(NUKE_AUTH_ALL, NUKE_AUTH_LIST_ALL, $userdata);
+        $nuke_auth_ary = auth(NUKE_AUTH_ALL, NUKE_AUTH_LIST_ALL, $nuke_userdata);
 
-        @reset($auth_ary);
+        @reset($nuke_auth_ary);
 
         // Generate the Forum Authorization Level
-        while (list($forum_id, $auth_setting) = each($auth_ary))
+        while (list($forum_id, $nuke_auth_setting) = each($nuke_auth_ary))
         {
-            $this->auth_data_sql['forum'][$forum_id] = $auth_setting;
+            $this->auth_data_sql['forum'][$forum_id] = $nuke_auth_setting;
         }
         
         $this->auth_loaded = TRUE;
@@ -163,25 +163,25 @@ class StatisticsFUNCTIONS
     //
     // Clean Authorization, adjust it to the current iteration
     //
-    function clean_auth_values($auth_data)
+    function clean_auth_values($nuke_auth_data)
     {
-        $auth_return = array();
+        $nuke_auth_return = array();
         // Get Values out of array
-        $auth_return['auth_key'] = $auth_data[0]; // '$core->data(\'forum_id\')'
-        $auth_condition = $auth_data[1]; // 'auth_view AND auth_read'
-        $auth_type = trim($auth_data[2]); // 'forum'
-        $auth_return['auth_replacement'] = $auth_data[3]; // array('', '$core->data(\'topic_replies\')', '$lang[\'Hidden_from_public_view\']')
+        $nuke_auth_return['auth_key'] = $nuke_auth_data[0]; // '$core->data(\'forum_id\')'
+        $nuke_auth_condition = $nuke_auth_data[1]; // 'auth_view AND auth_read'
+        $nuke_auth_type = trim($nuke_auth_data[2]); // 'forum'
+        $nuke_auth_return['auth_replacement'] = $nuke_auth_data[3]; // array('', '$core->data(\'topic_replies\')', '$lang[\'Hidden_from_public_view\']')
 
-        $auth_return['auth_check'] = array();
-        if ($auth_type == 'forum')
+        $nuke_auth_return['auth_check'] = array();
+        if ($nuke_auth_type == 'forum')
         {
             // ok, check the condition
-            if (strstr($auth_condition, 'AND'))
+            if (strstr($nuke_auth_condition, 'AND'))
             {
                 $split = 'AND';
                 $split_cond = '&&';
             }
-            else if (strstr($auth_condition, 'OR'))
+            else if (strstr($nuke_auth_condition, 'OR'))
             {
                 $split = 'OR';
                 $split_cond = '||';
@@ -189,33 +189,33 @@ class StatisticsFUNCTIONS
             else
             {
                 $split = '';
-                $auth_condition = trim($auth_condition);
-                @reset($this->auth_data_sql[$auth_type]);
-                while (list($forum_id, $auth_cond) = each($this->auth_data_sql[$auth_type]))
+                $nuke_auth_condition = trim($nuke_auth_condition);
+                @reset($this->auth_data_sql[$nuke_auth_type]);
+                while (list($forum_id, $nuke_auth_cond) = each($this->auth_data_sql[$nuke_auth_type]))
                 {
-                    $auth_return['auth_check'][$forum_id] = $this->auth_data_sql[$auth_type][$forum_id][$auth_condition];
+                    $nuke_auth_return['auth_check'][$forum_id] = $this->auth_data_sql[$nuke_auth_type][$forum_id][$nuke_auth_condition];
                 }
             }
 
             if ($split != '')
             {
                 $if_eval = '';
-                $pattern = explode($split, $auth_condition);
+                $pattern = explode($split, $nuke_auth_condition);
                 for ($i = 0; $i < count($pattern); $i++)
                 {
-                    $if_eval .= ($i == 0) ? '($this->auth_data_sql[$auth_type][$forum_id][\'' . trim($pattern[$i]) . '\'])' : ' ' . $split_cond . ' ($this->auth_data_sql[$auth_type][$forum_id][\'' . trim($pattern[$i]) . '\'])';
+                    $if_eval .= ($i == 0) ? '($this->auth_data_sql[$nuke_auth_type][$forum_id][\'' . trim($pattern[$i]) . '\'])' : ' ' . $split_cond . ' ($this->auth_data_sql[$nuke_auth_type][$forum_id][\'' . trim($pattern[$i]) . '\'])';
                 }
 
-                @reset($this->auth_data_sql[$auth_type]);
-                while (list($forum_id, $auth_cond) = @each($this->auth_data_sql[$auth_type]))
+                @reset($this->auth_data_sql[$nuke_auth_type]);
+                while (list($forum_id, $nuke_auth_cond) = @each($this->auth_data_sql[$nuke_auth_type]))
                 {
                     eval('$val = (' . $if_eval . ');');
-                    $auth_return['auth_check'][$forum_id] = $val;
+                    $nuke_auth_return['auth_check'][$forum_id] = $val;
                 }
             }
         }
     
-        return ($auth_return);
+        return ($nuke_auth_return);
     }
 
 }

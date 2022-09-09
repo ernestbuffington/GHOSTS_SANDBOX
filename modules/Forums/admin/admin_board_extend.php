@@ -214,10 +214,10 @@ $submit = isset($HTTP_POST_VARS['submit']);
 // get the real value of board_config
 $sql = "SELECT * FROM " . NUKE_CONFIG_TABLE;
 if ( !$result = $nuke_db->sql_query($sql) ) message_die(NUKE_CRITICAL_ERROR, 'Could not query config information', '', __LINE__, __FILE__, $sql);
-$config = array();
+$nuke_config = array();
 while ($row = $nuke_db->sql_fetchrow($result))
 {
-	$config[ $row['config_name'] ] = $row['config_value'];
+	$nuke_config[ $row['config_name'] ] = $row['config_value'];
 }
 
 // validate
@@ -295,7 +295,7 @@ if ($submit)
 				message_die(NUKE_GENERAL_ERROR, 'Failed to update general configuration for ' . $field_name, '', __LINE__, __FILE__, $sql);
 			}
 		}
-		if ( isset($HTTP_POST_VARS[$field_name . '_over']) && !empty($field['user']) && isset($userdata[ $field['user'] ]) )
+		if ( isset($HTTP_POST_VARS[$field_name . '_over']) && !empty($field['user']) && isset($nuke_userdata[ $field['user'] ]) )
 		{
 			// update
 			$sql = "UPDATE " . NUKE_CONFIG_TABLE . " 
@@ -315,12 +315,12 @@ if ($submit)
 
 
 // template
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
 	'body' => 'admin/board_config_extend_body.tpl')
 );
 
 // header
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 	'L_TITLE'			=> $lang['Configuration_extend'],
 	'L_TITLE_EXPLAIN'	=> $lang['Config_explain'],
 	'L_MOD_NAME'		=> mods_settings_get_lang($menu_name) . ' - ' . mods_settings_get_lang($mod_name) . ( !empty($sub_name) ? ' - ' . mods_settings_get_lang($sub_name) : '' ),
@@ -341,7 +341,7 @@ for ($i = 0; $i < count($menu_keys); $i++)
 			$l_menu = $sub_keys[$i][0][0];
 		}
 	}
-	$template->assign_block_vars('menu', array(
+	$template_nuke->assign_block_vars('menu', array(
 		'CLASS'		=> ($menu_id == $i) ? ( (count($mod_keys[$i]) > 1) ? 'row3' : 'row1' ) : 'row2',
 		'U_MENU'	=> append_sid("./admin_board_extend.$phpEx?menu=$i"),
 		'L_MENU'	=> sprintf( ( ($menu_id == $i) ? '<b>%s</b>' : '%s' ), mods_settings_get_lang($l_menu) ),
@@ -351,12 +351,12 @@ for ($i = 0; $i < count($menu_keys); $i++)
 	{
 		if (count($mod_keys[$i]) > 1 )
 		{
-			$template->assign_block_vars('menu.title_open', array());
+			$template_nuke->assign_block_vars('menu.title_open', array());
 		}
 	}
 	else
 	{
-		$template->assign_block_vars('menu.title_close', array() );
+		$template_nuke->assign_block_vars('menu.title_close', array() );
 	}
 	if ($menu_id == $i)
 	{
@@ -367,7 +367,7 @@ for ($i = 0; $i < count($menu_keys); $i++)
 			{
 				$l_mod = $sub_keys[$i][$j][0];
 			}
-			$template->assign_block_vars('menu.mod', array(
+			$template_nuke->assign_block_vars('menu.mod', array(
 				'CLASS'	=> ( ($menu_id == $i) && ($mod_id == $j) ) ? 'row1' : 'row2',
 				'ALIGN'	=> ( ($menu_id == $i) && ($mod_id == $j) && (count($sub_keys[$i][$j]) > 1) ) ? 'left' : 'center',
 				'U_MOD'	=> append_sid("./admin_board_extend.$phpEx?menu=$i&mod=$j"),
@@ -378,10 +378,10 @@ for ($i = 0; $i < count($menu_keys); $i++)
 			{
 				if ( count($sub_keys[$i][$j]) > 1 )
 				{
-					$template->assign_block_vars('menu.mod.sub', array());
+					$template_nuke->assign_block_vars('menu.mod.sub', array());
 					for ($k = 0; $k < count($sub_keys[$i][$j]); $k++)
 					{
-						$template->assign_block_vars('menu.mod.sub.row', array(
+						$template_nuke->assign_block_vars('menu.mod.sub.row', array(
 							'CLASS'	=> ( ($menu_id == $i) && ($mod_id == $j) && ($sub_id == $k) ) ? 'row1' : 'row1',
 							'U_MOD' => append_sid("./admin_board_extend.$phpEx?menu=$i&mod=$j&msub=$k"),
 							'L_MOD'	=> sprintf( (($sub_id == $k) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($sub_keys[$i][$j][$k]) ),
@@ -406,7 +406,7 @@ while ( list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['
 			@reset($field['values']);
 			while ( list($key, $val) = @each($field['values']) )
 			{
-				$selected = ($config[$field_name] == $val) ? ' checked="checked"' : '';
+				$selected = ($nuke_config[$field_name] == $val) ? ' checked="checked"' : '';
 				$l_key = mods_settings_get_lang($key);
 				$input .= '<input type="radio" name="' . $field_name . '" value="' . $val . '"' . $selected . ' />' . $l_key . '&nbsp;&nbsp;';
 			}
@@ -415,50 +415,50 @@ while ( list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['
 			@reset($field['values']);
 			while ( list($key, $val) = @each($field['values']) )
 			{
-				$selected = ($config[$field_name] == $val) ? ' selected="selected"' : '';
+				$selected = ($nuke_config[$field_name] == $val) ? ' selected="selected"' : '';
 				$l_key = mods_settings_get_lang($key);
 				$input .= '<option value="' . $val . '"' . $selected . '>' . $l_key . '</option>';
 			}
 			$input = '<select name="' . $field_name . '">' . $input . '</select>';
 			break;
 		case 'TINYINT':
-			$input = '<input type="text" name="' . $field_name . '" maxlength="3" size="2" class="post" value="' . $config[$field_name] . '" />';
+			$input = '<input type="text" name="' . $field_name . '" maxlength="3" size="2" class="post" value="' . $nuke_config[$field_name] . '" />';
 			break;
 		case 'SMALLINT':
-			$input = '<input type="text" name="' . $field_name . '" maxlength="5" size="5" class="post" value="' . $config[$field_name] . '" />';
+			$input = '<input type="text" name="' . $field_name . '" maxlength="5" size="5" class="post" value="' . $nuke_config[$field_name] . '" />';
 			break;
 		case 'MEDIUMINT':
-			$input = '<input type="text" name="' . $field_name . '" maxlength="8" size="8" class="post" value="' . $config[$field_name] . '" />';
+			$input = '<input type="text" name="' . $field_name . '" maxlength="8" size="8" class="post" value="' . $nuke_config[$field_name] . '" />';
 			break;
 		case 'INT':
-			$input = '<input type="text" name="' . $field_name . '" maxlength="13" size="11" class="post" value="' . $config[$field_name] . '" />';
+			$input = '<input type="text" name="' . $field_name . '" maxlength="13" size="11" class="post" value="' . $nuke_config[$field_name] . '" />';
 			break;
 		case 'VARCHAR':
 		case 'HTMLVARCHAR':
-			$input = '<input type="text" name="' . $field_name . '" maxlength="255" size="45" class="post" value="' . $config[$field_name] . '" />';
+			$input = '<input type="text" name="' . $field_name . '" maxlength="255" size="45" class="post" value="' . $nuke_config[$field_name] . '" />';
 			break;
 		case 'TEXT':
 		case 'HTMLTEXT':
-			$input = '<textarea rows="5" cols="45" wrap="virtual" name="' . $field_name . '" class="post">' . $config[$field_name] . '</textarea>';
+			$input = '<textarea rows="5" cols="45" wrap="virtual" name="' . $field_name . '" class="post">' . $nuke_config[$field_name] . '</textarea>';
 			break;
 		default:
 			$input = '';
 			if ( !empty($field['get_func']) && function_exists($field['get_func']) )
 			{
-				$input = $field['get_func']($field_name, $config[$field_name]);
+				$input = $field['get_func']($field_name, $nuke_config[$field_name]);
 			}
 			break;
 	}
 
 	// overwrite user choice
 	$override = '';
-	if ( !empty($input) && !empty($field['user']) && isset($userdata[ $field['user'] ]) )
+	if ( !empty($input) && !empty($field['user']) && isset($nuke_userdata[ $field['user'] ]) )
 	{
 		$override = '';
 		@reset($list_yes_no);
 		while ( list($key, $val) = @each($list_yes_no) )
 		{
-			$selected = ($config[$field_name . '_over'] == $val) ? ' checked="checked"' : '';
+			$selected = ($nuke_config[$field_name . '_over'] == $val) ? ' checked="checked"' : '';
 			$l_key = mods_settings_get_lang($key);
 			$override .= '<input type="radio" name="' . $field_name . '_over' . '" value="' . $val . '"' . $selected . ' />' . $l_key . '&nbsp;&nbsp;';
 		}
@@ -466,7 +466,7 @@ while ( list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['
 	}
 
 	// dump to template
-	$template->assign_block_vars('field', array(
+	$template_nuke->assign_block_vars('field', array(
 		'L_NAME'	=> mods_settings_get_lang($field['lang_key']),
 		'L_EXPLAIN'	=> !empty($field['explain']) ? '<br />' . mods_settings_get_lang($field['explain']) : '',
 		'INPUT'		=> $input,
@@ -480,14 +480,14 @@ $s_hidden_fields = '';
 $s_hidden_fields .= '<input type="hidden" name="menu_id" value="' . $menu_id . '" />';
 $s_hidden_fields .= '<input type="hidden" name="mod_id" value="' . $mod_id . '" />';
 $s_hidden_fields .= '<input type="hidden" name="sub_id" value="' . $sub_id . '" />';
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 	'S_ACTION'			=> append_sid("./admin_board_extend.$phpEx"),
 	'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 	)
 );
 
 // footer
-$template->pparse("body");
-include('./page_footer_admin.'.$phpEx);
+$template_nuke->pparse("body");
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

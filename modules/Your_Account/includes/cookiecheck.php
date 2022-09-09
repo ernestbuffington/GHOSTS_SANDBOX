@@ -226,7 +226,7 @@ function ShowCookies()
 // function DeleteCookies()
 /*************************************************************************************/
 function DeleteCookies() {
-global $ya_config,$module_name,$prefix,$user,$username,$CookieArray,$cookie;
+global $ya_config,$module_name,$prefix,$nuke_user,$nuke_username,$CookieArray,$cookie;
 include_once(NUKE_BASE_DIR.'header.php');
 //Show_CNBYA_menu();
 OpenTable();
@@ -235,7 +235,7 @@ OpenTable();
     $r_username    = $cookie[1];
     echo $r_username;
     echo $r_uid;
-    echo $username;
+    echo $nuke_username;
 
     $CookieArray = $_COOKIE;
     $nuke_db->sql_query("DELETE FROM ".$prefix."_session WHERE uname='$r_username'");
@@ -270,9 +270,9 @@ OpenTable();
     }
 
 // menelaos: these lines need some more study: which are usefull, which are not
-unset($user);
+unset($nuke_user);
 unset($cookie);
-$user="";
+$nuke_user="";
 if(isset($_SESSION)){@session_unset();}
 if(isset($_SESSION)){@session_destroy();} 
 if( isset($_COOKIE[session_name()]))

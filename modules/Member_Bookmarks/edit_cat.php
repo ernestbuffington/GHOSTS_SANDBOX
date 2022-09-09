@@ -21,15 +21,15 @@ if (!defined('MODULE_FILE'))
    die ("You can't access this file directly...");
 }
 
-global $prefix, $nuke_db, $cookie, $user;
+global $prefix, $nuke_db, $cookie, $nuke_user;
 
-$userinfo = getusrinfo( $user );
-$userid = $userinfo["user_id"];
+$nuke_userinfo = getusrinfo( $nuke_user );
+$nuke_userid = $nuke_userinfo["user_id"];
 $catname=@htmlentities($catname);
 $catcomment=@htmlentities($catcomment);
 
-if (!isset($userid) || $userid=="")
-        $userid=0;
+if (!isset($nuke_userid) || $nuke_userid=="")
+        $nuke_userid=0;
 
 $index = 1;
 require_once("mainfile.php");
@@ -44,7 +44,7 @@ if ($form_done=="yes")
 	}
 	else
 	{
-		$query = "insert into ".$prefix."_bookmarks_cat (user_id,name,description,mod_date) values ($userid,'$catname','$catcomment',now())";
+		$query = "insert into ".$prefix."_bookmarks_cat (user_id,name,description,mod_date) values ($nuke_userid,'$catname','$catcomment',now())";
 	}
 
 	$nuke_db->sql_query ($query,$nuke_db);

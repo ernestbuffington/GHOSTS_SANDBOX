@@ -43,7 +43,7 @@ if( !empty($setmodules) )
 //
 // Load default header
 //
-$no_page_header = TRUE;
+$no_nuke_page_header = TRUE;
 $phpbb2_root_path = './../';
 require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
@@ -184,7 +184,7 @@ if( isset($HTTP_POST_VARS['submit']) )
                 $adv = 0;
         }
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("admin_forumauth.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id") . '">')
         );
         $message = $lang['Forum_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumauth'],  '<a href="' . append_sid("admin_forumauth.$phpEx") . '">', "</a>");
@@ -216,7 +216,7 @@ if( empty($forum_id) )
         // Output the selection table if no forum id was
         // specified
         //
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 'body' => 'admin/auth_select_body.tpl')
         );
 
@@ -250,7 +250,7 @@ if( empty($forum_id) )
         }
         $select_list .= '</select>';
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'L_AUTH_TITLE' => $lang['Auth_Control_Forum'],
                 'L_AUTH_EXPLAIN' => $lang['Forum_auth_explain'],
                 'L_AUTH_SELECT' => $lang['Select_a_Forum'],
@@ -267,21 +267,21 @@ else
         // Output the authorisation details if an id was
         // specified
         //
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 'body' => 'admin/auth_forum_body.tpl')
         );
 
         $forum_name = $forum_rows[0]['forum_name'];
 
         @reset($simple_auth_ary);
-        while( list($key, $auth_levels) = each($simple_auth_ary))
+        while( list($key, $nuke_auth_levels) = each($simple_auth_ary))
         {
                 $matched = 1;
-                for($k = 0; $k < count($auth_levels); $k++)
+                for($k = 0; $k < count($nuke_auth_levels); $k++)
                 {
                         $matched_type = $key;
 
-                        if ( $forum_rows[0][$forum_auth_fields[$k]] != $auth_levels[$k] )
+                        if ( $forum_rows[0][$forum_auth_fields[$k]] != $nuke_auth_levels[$k] )
                         {
                                 $matched = 0;
                         }
@@ -316,10 +316,10 @@ else
 
                 $simple_auth .= '</select>';
 
-                $template->assign_block_vars('forum_auth_titles', array(
+                $template_nuke->assign_block_vars('forum_auth_titles', array(
                         'CELL_TITLE' => $lang['Simple_mode'])
                 );
-                $template->assign_block_vars('forum_auth_data', array(
+                $template_nuke->assign_block_vars('forum_auth_data', array(
                         'S_AUTH_LEVELS_SELECT' => $simple_auth)
                 );
 
@@ -344,10 +344,10 @@ else
 
                         $cell_title = $field_names[$forum_auth_fields[$j]];
 
-                        $template->assign_block_vars('forum_auth_titles', array(
+                        $template_nuke->assign_block_vars('forum_auth_titles', array(
                                 'CELL_TITLE' => $cell_title)
                         );
-                        $template->assign_block_vars('forum_auth_data', array(
+                        $template_nuke->assign_block_vars('forum_auth_data', array(
                                 'S_AUTH_LEVELS_SELECT' => $custom_auth[$j])
                         );
 
@@ -362,7 +362,7 @@ else
 
         $s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '">';
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'FORUM_NAME' => $forum_name,
 
                 'L_FORUM' => $lang['Forum'],
@@ -380,10 +380,10 @@ else
 
 }
 
-include('./page_header_admin.'.$phpEx);
+include('./nuke_page_header_admin.'.$phpEx);
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

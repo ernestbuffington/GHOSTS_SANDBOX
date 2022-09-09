@@ -28,7 +28,7 @@ $nukeuser = (isset($_COOKIE['user'])) ? explode(':', addslashes(base64_decode($_
 
 require_once(NUKE_INCLUDE_DIR.'sql_layer.php');
 
-function is_group($user, $name) {
+function is_group($nuke_user, $name) {
   global $debugger;
   $debugger->handle_error("Use of deprecated function <strong>".__FUNCTION__."</strong>");
 }
@@ -93,8 +93,8 @@ function delQuotes($string) {
 }
 
 function getusrinfo($trash=0, $force=false) {
-  global $userinfo, $debugger;
-  return $userinfo;
+  global $nuke_userinfo, $debugger;
+  return $nuke_userinfo;
 }
 
 ?>

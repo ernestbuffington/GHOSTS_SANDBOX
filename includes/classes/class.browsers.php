@@ -210,10 +210,10 @@
 		
 		const OPERATING_SYSTEM_UNKNOWN = 'unknown';
 
-		public function __construct($useragent="") {
+		public function __construct($nuke_useragent="") {
 			$this->reset();
-			if( $useragent != "" ) {
-				$this->setUserAgent($useragent);
+			if( $nuke_useragent != "" ) {
+				$this->setUserAgent($nuke_useragent);
 			}
 			else {
 				$this->determine();

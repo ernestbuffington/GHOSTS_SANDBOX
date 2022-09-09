@@ -63,8 +63,8 @@ include('includes/bbcode.'.$phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -120,12 +120,12 @@ else
 //
 if( $mark_read == 'forums' )
 {
-        if( $userdata['session_logged_in'] )
+        if( $nuke_userdata['session_logged_in'] )
         {
                 setcookie($board_config['cookie_name'] . '_f_all', time(), 0, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
         }
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 "META" => '<meta http-equiv="refresh" content="3;url='  .append_sid("index.$phpEx") . '">')
         );
 
@@ -181,11 +181,11 @@ else
  ******************************************************/ 
 if ( $board_config['global_enable']== 1  && $board_config['marquee_disable']== 0  ) 
 { 
-   $template->assign_block_vars('switch_disable_global_marquee', array()); 
+   $template_nuke->assign_block_vars('switch_disable_global_marquee', array()); 
 } 
 else if ( $board_config['global_enable']== 1  &&  $board_config['marquee_disable']== 1  ) 
 { 
-   $template->assign_block_vars('switch_enable_global_marquee', array()); 
+   $template_nuke->assign_block_vars('switch_enable_global_marquee', array()); 
 } 
 /*****[END]********************************************
  [ Mod:    Scrolling Global Announcement        v1.0.1]
@@ -199,7 +199,7 @@ else if ( $board_config['global_enable']== 1  &&  $board_config['marquee_disable
  ******************************************************/
 $sql = "SELECT c.cat_id, c.cat_title, c.cat_order
         FROM " . NUKE_CATEGORIES_TABLE . " c
-        ".(($userdata['user_level']!=NUKE_ADMIN)? "WHERE c.cat_id<>'".NUKE_HIDDEN_CAT."'" :"" )."
+        ".(($nuke_userdata['user_level']!=NUKE_ADMIN)? "WHERE c.cat_id<>'".NUKE_HIDDEN_CAT."'" :"" )."
         ORDER BY c.cat_order";
 /*****[END]********************************************
  [ Mod:     Global Announcements               v1.2.8 ]
@@ -251,17 +251,17 @@ if( ( $total_categories = count($category_rows) ) )
     // Obtain a list of topic ids which contain
     // posts made since user last visited
     //
-    if ($userdata['session_logged_in'])
+    if ($nuke_userdata['session_logged_in'])
     {
         // 60 days limit
-        if ($userdata['user_lastvisit'] < (time() - 5184000))
+        if ($nuke_userdata['user_lastvisit'] < (time() - 5184000))
         {
-            $userdata['user_lastvisit'] = time() - 5184000;
+            $nuke_userdata['user_lastvisit'] = time() - 5184000;
         }
                 $sql = "SELECT t.forum_id, t.topic_id, p.post_time
                         FROM " . NUKE_BB_TOPICS_TABLE . " t, " . NUKE_POSTS_TABLE . " p
                         WHERE p.post_id = t.topic_last_post_id
-                                AND p.post_time > " . $userdata['user_lastvisit'] . "
+                                AND p.post_time > " . $nuke_userdata['user_lastvisit'] . "
                                 AND t.topic_moved_id = '0'";
                 if ( !($result = $nuke_db->sql_query($sql)) )
                 {
@@ -332,7 +332,7 @@ if( ( $total_categories = count($category_rows) ) )
 /*****[BEGIN]******************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
-		if ( !$board_config['bday_hide'] || $userdata['session_logged_in'] )
+		if ( !$board_config['bday_hide'] || $nuke_userdata['session_logged_in'] )
 		{
 			// if birthday_display is set to "Display age (but not day or month)" (eg. NUKE_BIRTHDAY_AGE), we don't display it here,
 			// since this code would make it trivially easy to extrapolate that information.
@@ -349,7 +349,7 @@ if( ( $total_categories = count($category_rows) ) )
 				message_die(NUKE_GENERAL_ERROR, 'Could not query members birthday information', '', __LINE__, __FILE__, $sql);
 			}
 	
-			$user_birthdays = array();
+			$nuke_user_birthdays = array();
 			while ( $row = $nuke_db->sql_fetchrow($result) )
 			{
 				// if birthday_display is set to "Display day and month (but not year)" (eg. NUKE_BIRTHDAY_DATE), set the year
@@ -365,12 +365,12 @@ if( ( $total_categories = count($category_rows) ) )
 				{
 					$color = ' style="color:#' . $theme['fontcolor2'] . '"';
 				}
-				$user_birthdays[] = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $color . '>' . UsernameColor($row['username']) . '</a>' . $age;
+				$nuke_user_birthdays[] = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $color . '>' . UsernameColor($row['username']) . '</a>' . $age;
 			}
 			$nuke_db->sql_freeresult($result);
 	
-			$birthdays = (!empty($user_birthdays)) ?
-				sprintf($lang['Congratulations'],implode(', ',$user_birthdays)) :
+			$birthdays = (!empty($nuke_user_birthdays)) ?
+				sprintf($lang['Congratulations'],implode(', ',$nuke_user_birthdays)) :
 				$lang['No_birthdays'];
 	
 			if ( $board_config['bday_lookahead'] != -1 )
@@ -415,12 +415,12 @@ if( ( $total_categories = count($category_rows) ) )
 					sprintf($lang['No_upcoming'],$board_config['bday_lookahead']);
 			}
 	
-			if ( !empty($user_birthdays) || !empty($upcoming_birthdays) || $board_config['bday_show'] )
+			if ( !empty($nuke_user_birthdays) || !empty($upcoming_birthdays) || $board_config['bday_show'] )
 			{
-				$template->assign_block_vars('birthdays',array());
+				$template_nuke->assign_block_vars('birthdays',array());
 				if ( !empty($upcoming_birthdays) || $board_config['bday_show'] )
 				{
-					$template->assign_block_vars('birthdays.upcoming',array());
+					$template_nuke->assign_block_vars('birthdays.upcoming',array());
 				}
 			}
 		}
@@ -432,16 +432,16 @@ if( ( $total_categories = count($category_rows) ) )
         // Find which forums are visible for this user
         //
         $is_auth_ary = array();
-        $is_auth_ary = auth(NUKE_AUTH_VIEW, NUKE_AUTH_LIST_ALL, $userdata, $forum_data);
+        $is_auth_ary = auth(NUKE_AUTH_VIEW, NUKE_AUTH_LIST_ALL, $nuke_userdata, $forum_data);
 
         //
         // Start output of page
         //
         define('SHOW_ONLINE', true);
         $page_title = $lang['Index'];
-        include("includes/page_header.php");
+        include("includes/nuke_page_header.php");
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 'body' => 'index_body.tpl')
         );
 
@@ -451,7 +451,7 @@ if( ( $total_categories = count($category_rows) ) )
         $total_posts_format = sprintf($l_total_post_s, $total_posts);
         $total_posts_format = str_replace($total_posts, number_format($total_posts), $total_posts_format);
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'TOTAL_POSTS' => $total_posts_format,
 /*****[END]********************************************
  [ Mod:     Number Format Total Posts          v1.0.4 ]
@@ -569,7 +569,7 @@ if( ( $total_categories = count($category_rows) ) )
                 //
                 if (isset($display_categories[$cat_id]) && $display_categories[$cat_id])
                 {
-                        $template->assign_block_vars('catrow', array(
+                        $template_nuke->assign_block_vars('catrow', array(
 /*****[BEGIN]******************************************
  [ Mod:    DHTML Collapsible Forum Index NUKE_MOD     v1.1.1]
  ******************************************************/
@@ -647,7 +647,7 @@ if( ( $total_categories = count($category_rows) ) )
                                                         else
                                                         {
                                                                 $unread_topics = false;
-                                                                if ( $userdata['session_logged_in'] )
+                                                                if ( $nuke_userdata['session_logged_in'] )
                                                                 {
                                                                        if ( !empty($new_topic_data[$forum_id]) )
                                                                         {
@@ -780,7 +780,7 @@ if( ( $total_categories = count($category_rows) ) )
 
                                                         /*--FNA--*/
 
-                                                        $template->assign_block_vars('catrow.forumrow', array(
+                                                        $template_nuke->assign_block_vars('catrow.forumrow', array(
 /*****[BEGIN]******************************************
  [ Mod:    DHTML Collapsible Forum Index NUKE_MOD     v1.1.1]
  ******************************************************/
@@ -855,11 +855,11 @@ if( ( $total_categories = count($category_rows) ) )
 
 							if ($forum_data[$j]['title_is_link'])
 							{
-								$template->assign_block_vars('catrow.forumrow.switch_forum_link_on', array());
+								$template_nuke->assign_block_vars('catrow.forumrow.switch_forum_link_on', array());
 							}
 							else
 							{
-								$template->assign_block_vars('catrow.forumrow.switch_forum_link_off', array());
+								$template_nuke->assign_block_vars('catrow.forumrow.switch_forum_link_off', array());
 							}
 /*****[END]********************************************
  [ Mod:    Forumtitle as Weblink               v1.2.2 ]
@@ -918,9 +918,9 @@ for( $i = 0; $i < count($subforums_list); $i++ )
 	$parent_id = $forum_data['forum_parent'];
 	
 	// Find parent item
-	if( isset($template->_tpldata['catrow.']) )
+	if( isset($template_nuke->_tpldata['catrow.']) )
 	{
-		$data = &$template->_tpldata['catrow.'];
+		$data = &$template_nuke->_tpldata['catrow.'];
 		$count = count($data);
 		for( $j = 0; $j < $count; $j++)
 		{
@@ -1034,7 +1034,7 @@ if (show_glance("index")) {
 //
 // Generate the page
 //
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 include("includes/page_tail.php");
 

@@ -15,7 +15,7 @@
 if(!defined('NUKE_FILE')) 
 	die('Access forbbiden');
 
-global $name, $userinfo, $nukeurl;
+global $name, $nuke_userinfo, $nukeurl;
 
 # check the total number of private messages you have, that are unread.
 $newpms = has_new_or_unread_private_messages();
@@ -23,7 +23,7 @@ $newpms = has_new_or_unread_private_messages();
 if ( !defined('_disable_default_evo_pm_alert') ):
 
 	# if the plugin is active and the cookie does not exist, show the alert.
-	if (get_evo_option('pm_alert_status','int') == 1 && !isset($_COOKIE[get_evo_option('pm_cookie_name')]) && is_active('Private_Messages') == 1 && $name == '' && !defined('ADMIN_FILE') && $newpms > 0 && $userinfo['user_notify_pm'] == 1):
+	if (get_evo_option('pm_alert_status','int') == 1 && !isset($_COOKIE[get_evo_option('pm_cookie_name')]) && is_active('Private_Messages') == 1 && $name == '' && !defined('ADMIN_FILE') && $newpms > 0 && $nuke_userinfo['user_notify_pm'] == 1):
 
 		addCSSToHead(NUKE_CSS_DIR.'jquery.private.messages.alert.min.css?v=1.0.0','file');
 		$CSStoHead  = '<style>'.PHP_EOL;

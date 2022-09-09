@@ -433,7 +433,7 @@ class SimplePie
 	 * @see SimplePie::set_useragent()
 	 * @access private
 	 */
-	var $useragent = SIMPLEPIE_USERAGENT;
+	var $nuke_useragent = SIMPLEPIE_USERAGENT;
 
 	/**
 	 * @var string Feed URL
@@ -583,7 +583,7 @@ class SimplePie
 	 * @see SimplePie::set_author_class()
 	 * @access private
 	 */
-	var $author_class = 'SimplePie_Author';
+	var $nuke_author_class = 'SimplePie_Author';
 
 	/**
 	 * @var string Class used for categories
@@ -695,7 +695,7 @@ class SimplePie
 	 * @see SimplePie::set_feed_url()
 	 * @access private
 	 */
-	var $config_settings = null;
+	var $nuke_config_settings = null;
 
 	/**
 	 * @var integer Stores the number of items to return per-feed with multifeeds.
@@ -2406,10 +2406,10 @@ function embed_wmedia(width, height, link) {
 
 	function get_author($key = 0)
 	{
-		$authors = $this->get_authors();
-		if (isset($authors[$key]))
+		$nuke_authors = $this->get_authors();
+		if (isset($nuke_authors[$key]))
 		{
-			return $authors[$key];
+			return $nuke_authors[$key];
 		}
 		else
 		{
@@ -2419,67 +2419,67 @@ function embed_wmedia(width, height, link) {
 
 	function get_authors()
 	{
-		$authors = array();
-		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'author') as $author)
+		$nuke_authors = array();
+		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'author') as $nuke_author)
 		{
 			$name = null;
 			$uri = null;
 			$email = null;
-			if (isset($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data']))
+			if (isset($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data']))
 			{
-				$name = $this->sanitize($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if (isset($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data']))
+			if (isset($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data']))
 			{
-				$uri = $this->sanitize($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]));
+				$uri = $this->sanitize($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]));
 			}
-			if (isset($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data']))
+			if (isset($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data']))
 			{
-				$email = $this->sanitize($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if ($name !== null || $email !== null || $uri !== null)
 			{
-				$authors[] = new $this->author_class($name, $uri, $email);
+				$nuke_authors[] = new $this->author_class($name, $uri, $email);
 			}
 		}
-		if ($author = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'author'))
+		if ($nuke_author = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'author'))
 		{
 			$name = null;
 			$url = null;
 			$email = null;
-			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data']))
+			if (isset($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data']))
 			{
-				$name = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
+			if (isset($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
 			{
-				$url = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
+				$url = $this->sanitize($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
 			}
-			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
+			if (isset($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
 			{
-				$email = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if ($name !== null || $email !== null || $url !== null)
 			{
-				$authors[] = new $this->author_class($name, $url, $email);
+				$nuke_authors[] = new $this->author_class($name, $url, $email);
 			}
 		}
-		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator') as $author)
+		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator') as $nuke_author)
 		{
-			$authors[] = new $this->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$nuke_authors[] = new $this->author_class($this->sanitize($nuke_author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
-		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_10, 'creator') as $author)
+		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_10, 'creator') as $nuke_author)
 		{
-			$authors[] = new $this->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$nuke_authors[] = new $this->author_class($this->sanitize($nuke_author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
-		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'author') as $author)
+		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'author') as $nuke_author)
 		{
-			$authors[] = new $this->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$nuke_authors[] = new $this->author_class($this->sanitize($nuke_author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
 
-		if (!empty($authors))
+		if (!empty($nuke_authors))
 		{
-			return SimplePie_Misc::array_unique($authors);
+			return SimplePie_Misc::array_unique($nuke_authors);
 		}
 		else
 		{
@@ -3348,10 +3348,10 @@ class SimplePie_Item
 
 	function get_author($key = 0)
 	{
-		$authors = $this->get_authors();
-		if (isset($authors[$key]))
+		$nuke_authors = $this->get_authors();
+		if (isset($nuke_authors[$key]))
 		{
-			return $authors[$key];
+			return $nuke_authors[$key];
 		}
 		else
 		{
@@ -3435,79 +3435,79 @@ class SimplePie_Item
 	 */
 	function get_authors()
 	{
-		$authors = array();
-		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'author') as $author)
+		$nuke_authors = array();
+		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'author') as $nuke_author)
 		{
 			$name = null;
 			$uri = null;
 			$email = null;
-			if (isset($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data']))
+			if (isset($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data']))
 			{
-				$name = $this->sanitize($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if (isset($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data']))
+			if (isset($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data']))
 			{
-				$uri = $this->sanitize($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]));
+				$uri = $this->sanitize($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]));
 			}
-			if (isset($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data']))
+			if (isset($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data']))
 			{
-				$email = $this->sanitize($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if ($name !== null || $email !== null || $uri !== null)
 			{
-				$authors[] = new $this->feed->author_class($name, $uri, $email);
+				$nuke_authors[] = new $this->feed->author_class($name, $uri, $email);
 			}
 		}
-		if ($author = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'author'))
+		if ($nuke_author = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'author'))
 		{
 			$name = null;
 			$url = null;
 			$email = null;
-			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data']))
+			if (isset($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data']))
 			{
-				$name = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
+			if (isset($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
 			{
-				$url = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
+				$url = $this->sanitize($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
 			}
-			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
+			if (isset($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
 			{
-				$email = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if ($name !== null || $email !== null || $url !== null)
 			{
-				$authors[] = new $this->feed->author_class($name, $url, $email);
+				$nuke_authors[] = new $this->feed->author_class($name, $url, $email);
 			}
 		}
-		if ($author = $this->get_item_tags('', 'author'))
+		if ($nuke_author = $this->get_item_tags('', 'author'))
 		{
-			$authors[] = new $this->feed->author_class(null, null, $this->sanitize($author[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT));
+			$nuke_authors[] = new $this->feed->author_class(null, null, $this->sanitize($nuke_author[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT));
 		}
-		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator') as $author)
+		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator') as $nuke_author)
 		{
-			$authors[] = new $this->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$nuke_authors[] = new $this->feed->author_class($this->sanitize($nuke_author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
-		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'creator') as $author)
+		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'creator') as $nuke_author)
 		{
-			$authors[] = new $this->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$nuke_authors[] = new $this->feed->author_class($this->sanitize($nuke_author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
-		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'author') as $author)
+		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'author') as $nuke_author)
 		{
-			$authors[] = new $this->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$nuke_authors[] = new $this->feed->author_class($this->sanitize($nuke_author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
 
-		if (!empty($authors))
+		if (!empty($nuke_authors))
 		{
-			return SimplePie_Misc::array_unique($authors);
+			return SimplePie_Misc::array_unique($nuke_authors);
 		}
-		elseif (($source = $this->get_source()) && ($authors = $source->get_authors()))
+		elseif (($source = $this->get_source()) && ($nuke_authors = $source->get_authors()))
 		{
-			return $authors;
+			return $nuke_authors;
 		}
-		elseif ($authors = $this->feed->get_authors())
+		elseif ($nuke_authors = $this->feed->get_authors())
 		{
-			return $authors;
+			return $nuke_authors;
 		}
 		else
 		{
@@ -5838,10 +5838,10 @@ class SimplePie_Source
 
 	function get_author($key = 0)
 	{
-		$authors = $this->get_authors();
-		if (isset($authors[$key]))
+		$nuke_authors = $this->get_authors();
+		if (isset($nuke_authors[$key]))
 		{
-			return $authors[$key];
+			return $nuke_authors[$key];
 		}
 		else
 		{
@@ -5851,67 +5851,67 @@ class SimplePie_Source
 
 	function get_authors()
 	{
-		$authors = array();
-		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'author') as $author)
+		$nuke_authors = array();
+		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'author') as $nuke_author)
 		{
 			$name = null;
 			$uri = null;
 			$email = null;
-			if (isset($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data']))
+			if (isset($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data']))
 			{
-				$name = $this->sanitize($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if (isset($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data']))
+			if (isset($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data']))
 			{
-				$uri = $this->sanitize($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]));
+				$uri = $this->sanitize($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]));
 			}
-			if (isset($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data']))
+			if (isset($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data']))
 			{
-				$email = $this->sanitize($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($nuke_author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if ($name !== null || $email !== null || $uri !== null)
 			{
-				$authors[] = new $this->item->feed->author_class($name, $uri, $email);
+				$nuke_authors[] = new $this->item->feed->author_class($name, $uri, $email);
 			}
 		}
-		if ($author = $this->get_source_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'author'))
+		if ($nuke_author = $this->get_source_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'author'))
 		{
 			$name = null;
 			$url = null;
 			$email = null;
-			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data']))
+			if (isset($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data']))
 			{
-				$name = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
+			if (isset($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
 			{
-				$url = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
+				$url = $this->sanitize($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
 			}
-			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
+			if (isset($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
 			{
-				$email = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($nuke_author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if ($name !== null || $email !== null || $url !== null)
 			{
-				$authors[] = new $this->item->feed->author_class($name, $url, $email);
+				$nuke_authors[] = new $this->item->feed->author_class($name, $url, $email);
 			}
 		}
-		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator') as $author)
+		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator') as $nuke_author)
 		{
-			$authors[] = new $this->item->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$nuke_authors[] = new $this->item->feed->author_class($this->sanitize($nuke_author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
-		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_DC_10, 'creator') as $author)
+		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_DC_10, 'creator') as $nuke_author)
 		{
-			$authors[] = new $this->item->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$nuke_authors[] = new $this->item->feed->author_class($this->sanitize($nuke_author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
-		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'author') as $author)
+		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'author') as $nuke_author)
 		{
-			$authors[] = new $this->item->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$nuke_authors[] = new $this->item->feed->author_class($this->sanitize($nuke_author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
 
-		if (!empty($authors))
+		if (!empty($nuke_authors))
 		{
-			return SimplePie_Misc::array_unique($authors);
+			return SimplePie_Misc::array_unique($nuke_authors);
 		}
 		else
 		{
@@ -7596,7 +7596,7 @@ class SimplePie_Restriction
 class SimplePie_File
 {
 	var $url;
-	var $useragent;
+	var $nuke_useragent;
 	var $success = true;
 	var $headers = array();
 	var $body;
@@ -7605,7 +7605,7 @@ class SimplePie_File
 	var $error;
 	var $method = SIMPLEPIE_FILE_SOURCE_NONE;
 
-	function SimplePie_File($url, $timeout = 10, $nuke_redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false)
+	function SimplePie_File($url, $timeout = 10, $nuke_redirects = 5, $headers = null, $nuke_useragent = null, $force_fsockopen = false)
 	{
 		if (class_exists('idna_convert'))
 		{
@@ -7614,13 +7614,13 @@ class SimplePie_File
 			$url = SimplePie_Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], $parsed['fragment']);
 		}
 		$this->url = $url;
-		$this->useragent = $useragent;
+		$this->useragent = $nuke_useragent;
 		if (preg_match('/^http(s)?:\/\//i', $url))
 		{
-			if ($useragent === null)
+			if ($nuke_useragent === null)
 			{
-				$useragent = ini_get('user_agent');
-				$this->useragent = $useragent;
+				$nuke_useragent = ini_get('user_agent');
+				$this->useragent = $nuke_useragent;
 			}
 			if (!is_array($headers))
 			{
@@ -7645,7 +7645,7 @@ class SimplePie_File
 				curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
 				curl_setopt($fp, CURLOPT_CONNECTTIMEOUT, $timeout);
 				curl_setopt($fp, CURLOPT_REFERER, $url);
-				curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
+				curl_setopt($fp, CURLOPT_USERAGENT, $nuke_useragent);
 				curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
 				if (!ini_get('open_basedir') && !ini_get('safe_mode') && version_compare(SimplePie_Misc::get_curl_version(), '7.15.2', '>='))
 				{
@@ -7680,7 +7680,7 @@ class SimplePie_File
 						{
 							$this->nuke_redirects++;
 							$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
-							return $this->SimplePie_File($location, $timeout, $nuke_redirects, $headers, $useragent, $force_fsockopen);
+							return $this->SimplePie_File($location, $timeout, $nuke_redirects, $headers, $nuke_useragent, $force_fsockopen);
 						}
 					}
 				}
@@ -7724,7 +7724,7 @@ class SimplePie_File
 					}
 					$out = "GET $get HTTP/1.0\r\n";
 					$out .= "Host: $url_parts[host]\r\n";
-					$out .= "User-Agent: $useragent\r\n";
+					$out .= "User-Agent: $nuke_useragent\r\n";
 					if (function_exists('gzinflate'))
 					{
 						$out .= "Accept-Encoding: gzip,deflate\r\n";
@@ -7761,7 +7761,7 @@ class SimplePie_File
 							{
 								$this->nuke_redirects++;
 								$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
-								return $this->SimplePie_File($location, $timeout, $nuke_redirects, $headers, $useragent, $force_fsockopen);
+								return $this->SimplePie_File($location, $timeout, $nuke_redirects, $headers, $nuke_useragent, $force_fsockopen);
 							}
 							if (isset($this->headers['content-encoding']) && ($this->headers['content-encoding'] == 'gzip' || $this->headers['content-encoding'] == 'deflate'))
 							{
@@ -8659,16 +8659,16 @@ class SimplePie_Misc
 		}
 	}
 
-	function compress_parse_url($scheme = '', $authority = '', $path = '', $query = '', $fragment = '')
+	function compress_parse_url($scheme = '', $nuke_authority = '', $path = '', $query = '', $fragment = '')
 	{
 		$return = '';
 		if ($scheme !== '')
 		{
 			$return .= "$scheme:";
 		}
-		if ($authority !== '')
+		if ($nuke_authority !== '')
 		{
-			$return .= "//$authority";
+			$return .= "//$nuke_authority";
 		}
 		if ($path !== '')
 		{
@@ -11398,7 +11398,7 @@ class SimplePie_Parse_Date
 	 * @access private
 	 * @var array
 	 */
-	var $user = array();
+	var $nuke_user = array();
 
 	/**
 	 * Create new SimplePie_Parse_Date object, and set self::day_pcre,
@@ -12456,7 +12456,7 @@ class SimplePie_XML_Declaration_Parser
 
 class SimplePie_Locator
 {
-	var $useragent;
+	var $nuke_useragent;
 	var $timeout;
 	var $file;
 	var $local = array();
@@ -12470,11 +12470,11 @@ class SimplePie_Locator
 	var $max_checked_feeds = 10;
 	var $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer';
 
-	function SimplePie_Locator(&$file, $timeout = 10, $useragent = null, $file_class = 'SimplePie_File', $max_checked_feeds = 10, $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer')
+	function SimplePie_Locator(&$file, $timeout = 10, $nuke_useragent = null, $file_class = 'SimplePie_File', $max_checked_feeds = 10, $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer')
 	{
 		$this->file =& $file;
 		$this->file_class = $file_class;
-		$this->useragent = $useragent;
+		$this->useragent = $nuke_useragent;
 		$this->timeout = $timeout;
 		$this->max_checked_feeds = $max_checked_feeds;
 		$this->content_type_sniffer_class = $content_type_sniffer_class;
@@ -13009,7 +13009,7 @@ class SimplePie_Sanitize
 	var $cache_class = 'SimplePie_Cache';
 	var $file_class = 'SimplePie_File';
 	var $timeout = 10;
-	var $useragent = '';
+	var $nuke_useragent = '';
 	var $force_fsockopen = false;
 
 	var $replace_url_attributes = array(
@@ -13064,7 +13064,7 @@ class SimplePie_Sanitize
 		}
 	}
 
-	function pass_file_data($file_class = 'SimplePie_File', $timeout = 10, $useragent = '', $force_fsockopen = false)
+	function pass_file_data($file_class = 'SimplePie_File', $timeout = 10, $nuke_useragent = '', $force_fsockopen = false)
 	{
 		if ($file_class)
 		{
@@ -13076,9 +13076,9 @@ class SimplePie_Sanitize
 			$this->timeout = (string) $timeout;
 		}
 
-		if ($useragent)
+		if ($nuke_useragent)
 		{
-			$this->useragent = (string) $useragent;
+			$this->useragent = (string) $nuke_useragent;
 		}
 
 		if ($force_fsockopen)

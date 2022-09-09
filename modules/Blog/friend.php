@@ -53,7 +53,7 @@ if (!is_user())
 
 function FriendSend($sid) 
 {
-    global $user, $cookie, $prefix, $nuke_db, $nuke_user_prefix, $module_name;
+    global $nuke_user, $cookie, $prefix, $nuke_db, $nuke_user_prefix, $module_name;
 
     $sid = intval($sid);
 

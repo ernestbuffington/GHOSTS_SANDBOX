@@ -205,7 +205,7 @@ echo "</script>\n\n";
  [ Mod:     Facebook Mod                       v1.0.0 ]
  ******************************************************/
 
-if (isset($userpage)) {
+if (isset($nuke_userpage)) {
     echo "<script type=\"text/javascript\">\n";
     echo "<!--\n";
     echo "function showimage() {\n";

@@ -48,20 +48,20 @@ else
 {
   while( $row = $nuke_db->sql_fetchrow($result) )
   {
-    $config_name = $row['config_name'];
-    $config_value = $row['config_value'];
-    $default_config[$config_name] = isset($HTTP_POST_VARS['submit']) ? str_replace("'", "\'", $config_value) : $config_value;
+    $nuke_config_name = $row['config_name'];
+    $nuke_config_value = $row['config_value'];
+    $default_config[$nuke_config_name] = isset($HTTP_POST_VARS['submit']) ? str_replace("'", "\'", $nuke_config_value) : $nuke_config_value;
 
-    $new[$config_name] = ( isset($HTTP_POST_VARS[$config_name]) ) ? $HTTP_POST_VARS[$config_name] : $default_config[$config_name];
+    $new[$nuke_config_name] = ( isset($HTTP_POST_VARS[$nuke_config_name]) ) ? $HTTP_POST_VARS[$nuke_config_name] : $default_config[$nuke_config_name];
 
     if( isset($HTTP_POST_VARS['submit']) )
     {
       $sql = "UPDATE " . NUKE_REPUTATION_CONFIG_TABLE . " SET
-        config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
-        WHERE config_name = '$config_name'";
+        config_value = '" . str_replace("\'", "''", $new[$nuke_config_name]) . "'
+        WHERE config_name = '$nuke_config_name'";
       if( !$nuke_db->sql_query($sql) )
       {
-        message_die(NUKE_GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
+        message_die(NUKE_GENERAL_ERROR, "Failed to update general configuration for $nuke_config_name", "", __LINE__, __FILE__, $sql);
       }
     }
   }
@@ -74,7 +74,7 @@ else
   }
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
   "body" => "admin/reputation_config_body.tpl")
 );
 
@@ -93,7 +93,7 @@ $show_stats_to_mods_no = ( !$new['show_stats_to_mods'] ) ? "checked=\"checked\""
 $pm_notify_yes = ( $new['pm_notify'] ) ? "checked=\"checked\"" : "";
 $pm_notify_no = ( !$new['pm_notify'] ) ? "checked=\"checked\"" : "";
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
   "S_CONFIG_ACTION" => append_sid("admin_reputation.$phpEx"),
   "S_DISABLE_REP_SYSTEM_YES" => $disable_rep_yes,
   "S_DISABLE_REP_SYSTEM_NO" => $disable_rep_no,
@@ -139,8 +139,8 @@ $template->assign_vars(array(
 ));
 
 
-$template->pparse("body");
+$template_nuke->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

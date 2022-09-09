@@ -884,7 +884,7 @@ function autoSaveEdit($anid, $year, $day, $month, $hour, $min, $title, $hometext
 
 function displayStory($qid) 
 {
-    global $user, $admin_file, $subject, $story, $bgcolor1, $bgcolor2, $anonymous, $nuke_user_prefix, $prefix, $nuke_db, $multilingual;
+    global $nuke_user, $admin_file, $subject, $story, $bgcolor1, $bgcolor2, $anonymous, $nuke_user_prefix, $prefix, $nuke_db, $multilingual;
 
     include(NUKE_BASE_DIR.'header.php');
 
@@ -1188,7 +1188,7 @@ function previewStory($automated,
 						    $min, 
 						    $qid, 
 							$uid, 
-						 $author, 
+						 $nuke_author, 
 						$subject, 
 					   $hometext, 
 					   $bodytext, 
@@ -1204,7 +1204,7 @@ function previewStory($automated,
 					 $optionText, 
 					    $assotop) 
 {
-    global $user, $admin_file, $boxstuff, $anonymous, $bgcolor1, $bgcolor2, $nuke_user_prefix, $prefix, $nuke_db, $multilingual, $Version_Num;
+    global $nuke_user, $admin_file, $boxstuff, $anonymous, $bgcolor1, $bgcolor2, $nuke_user_prefix, $prefix, $nuke_db, $multilingual, $Version_Num;
 
     include(NUKE_BASE_DIR.'header.php');
 
@@ -1249,17 +1249,17 @@ function previewStory($automated,
     echo "<font class=\"content\">"
         ."<form action=\"".$admin_file.".php\" method=\"post\" name=\"postnews\">"
         ."<strong>"._NAME."</strong><br />"
-        ."<input type=\"text\" name=\"author\" size=\"25\" value=\"$author\">";
+        ."<input type=\"text\" name=\"author\" size=\"25\" value=\"$nuke_author\">";
 /*****[END]********************************************
  [ Mod:     Blogs BBCodes                       v1.0.0 ]
  ******************************************************/
 
-    if ($author != $anonymous) 
+    if ($nuke_author != $anonymous) 
 	{
-        $res = $nuke_db->sql_query("select user_id, user_email from ".$nuke_user_prefix."_users where username='$author'");
+        $res = $nuke_db->sql_query("select user_id, user_email from ".$nuke_user_prefix."_users where username='$nuke_author'");
         list($pm_userid, $email) = $nuke_db->sql_fetchrow($res);
         $pm_userid = intval($pm_userid);
-        echo "&nbsp;&nbsp;<span class=\"content\">[ <a href=\"mailto:$email?Subject=Re: $subject\">"._EMAILUSER."</a> | <a href='modules.php?name=Your_Account&op=userinfo&username=$author'>"._USERPROFILE."</a> | <a href=\"modules.php?name=Private_Messages&amp;mode=post&amp;u=$uid\">"._SENDPM."</a> ]</span>";
+        echo "&nbsp;&nbsp;<span class=\"content\">[ <a href=\"mailto:$email?Subject=Re: $subject\">"._EMAILUSER."</a> | <a href='modules.php?name=Your_Account&op=userinfo&username=$nuke_author'>"._USERPROFILE."</a> | <a href=\"modules.php?name=Private_Messages&amp;mode=post&amp;u=$uid\">"._SENDPM."</a> ]</span>";
     }
     
 	echo "<br /><br /><strong>"._TITLE."</strong><br />"
@@ -1521,7 +1521,7 @@ function postStory($automated,
 						 $min, 
 						 $qid, 
 						 $uid, 
-					  $author, 
+					  $nuke_author, 
 					 $subject, 
 					$hometext, 
 					$bodytext, 
@@ -1562,7 +1562,7 @@ function postStory($automated,
 		$modified = "$year-$month-$day $hour:$min:$sec";
 		
 		if ($uid == 1) 
-		$author = "";
+		$nuke_author = "";
         
 		if ($hometext == $bodytext) 
 		$bodytext = "";
@@ -1582,7 +1582,7 @@ function postStory($automated,
 													    '$hometext', 
 													    '$bodytext', 
 													       '$topic', 
-														  '$author', 
+														  '$nuke_author', 
 														   '$notes', 
 														   '$ihome', 
 													   '$alanguage', 
@@ -1652,7 +1652,7 @@ function postStory($automated,
 	else 
 	{
         if ($uid == 1) 
-		$author = "";
+		$nuke_author = "";
         
 		if ($hometext == $bodytext) 
 		$bodytext = "";
@@ -1702,7 +1702,7 @@ function postStory($automated,
 													           '0', 
 														  	   '0', 
 														  '$topic', 
-														 '$author', 
+														 '$nuke_author', 
 														  '$notes', 
 														  '$ihome', 
 													  '$alanguage', 
@@ -1762,7 +1762,7 @@ function postStory($automated,
 
 function editStory($sid) 
 {
-    global $user, $admin_file, $bgcolor1, $bgcolor2, $aid, $prefix, $nuke_db, $multilingual, $Version_Num, $module_name;
+    global $nuke_user, $admin_file, $bgcolor1, $bgcolor2, $aid, $prefix, $nuke_db, $multilingual, $Version_Num, $module_name;
 
     $aid = substr($aid, 0,25);
     $sid = intval($sid);
@@ -2534,7 +2534,7 @@ function previewAdminStory($automated,
 						  $optionText, 
 						     $assotop) 
 {
-    global $user, $admin_file, $bgcolor1, $bgcolor2, $prefix, $nuke_db, $alanguage, $multilingual, $Version_Num;
+    global $nuke_user, $admin_file, $bgcolor1, $bgcolor2, $prefix, $nuke_db, $alanguage, $multilingual, $Version_Num;
     
 	include(NUKE_BASE_DIR.'header.php');
 
@@ -2869,7 +2869,7 @@ function postAdminStory($automated,
 		$modified = "$year-$month-$day $hour:$min:$sec";
         
 		$notes = "";
-        $author = $aid;
+        $nuke_author = $aid;
         $subject = Fix_Quotes($subject);
         $subject = str_replace("\"", "''", $subject);
         $hometext = Fix_Quotes($hometext);
@@ -2886,7 +2886,7 @@ function postAdminStory($automated,
 													    '$hometext', 
 														'$bodytext', 
 														   '$topic', 
-														  '$author', 
+														  '$nuke_author', 
 														   '$notes', 
 														   '$ihome', 
 													   '$alanguage', 
@@ -3166,7 +3166,7 @@ switch($op)
 					   $min, 
 					   $qid, 
 					   $uid, 
-					$author, 
+					$nuke_author, 
 				   $subject, 
 				  $hometext, 
 				  $bodytext, 

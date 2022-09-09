@@ -72,7 +72,7 @@ global $customlang,
 echo '<!-- FOOTER START -->';
 global 
 	   $index, 
-	    $user, 
+	    $nuke_user, 
 	 $banners, 
 	  $cookie, 
          $nuke_dbi, 

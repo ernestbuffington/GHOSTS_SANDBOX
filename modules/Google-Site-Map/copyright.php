@@ -7,9 +7,9 @@
 /************************************************************************/
 $module_name = basename(dirname(__FILE__));
 $mod_name = 'Google Site Map';
-$author_name = 'Ernest Buffington';
-$author_email = 'ernest.buffington@gmail.com';
-$author_homepage = 'http://theghost.86it.us';
+$nuke_author_name = 'Ernest Buffington';
+$nuke_author_email = 'ernest.buffington@gmail.com';
+$nuke_author_homepage = 'http://theghost.86it.us';
 $license = 'GNU/GPL';
 $download_location = 'http://www.86it.us';
 $module_version = 'v1.0b';
@@ -19,7 +19,7 @@ $mod_cost = '$300.00 US Dollars';
 
 function show_copyright() 
 {
-    global $mod_cost, $forum, $mod_name, $module_name, $release_date, $author_name, $author_email, $author_homepage, $license, $download_location, $module_version, $module_description;
+    global $mod_cost, $forum, $mod_name, $module_name, $release_date, $nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description;
 
     if ($mod_name == "") { $mod_name = str_replace("-", " ", $module_name); }
 
@@ -36,8 +36,8 @@ function show_copyright()
 	if ($release_date != "") { print '&#8226;&nbsp;<strong>Module Release Date:</strong> '.$release_date.'<br />'; }
 	if ($mod_cost != "") { print '&#8226;&nbsp;<strong>Module Cost:</strong> '.$mod_cost.'<br />'; }
 	if ($license != "") { print '&#8226;&nbsp;<strong>License:</strong> '.$license.'<br />'; }
-	if ($author_name != "") { print '&#8226;&nbsp;<strong>Author Name:</strong> '.$author_name.'<br/ >'; }
-	if ($author_email != "") { print '&#8226;&nbsp;<strong>Author E-mail:</strong> '.$author_email.'<br />'; }
+	if ($nuke_author_name != "") { print '&#8226;&nbsp;<strong>Author Name:</strong> '.$nuke_author_name.'<br/ >'; }
+	if ($nuke_author_email != "") { print '&#8226;&nbsp;<strong>Author E-mail:</strong> '.$nuke_author_email.'<br />'; }
 	if ($module_description != "") { print '&#8226;&nbsp;<strong>Module Description:</strong> '.$module_description.'<br />'; }
 	if ($download_location != "") { print '&#8226;&nbsp;<strong>Download:</strong> <a href="'.$download_location.'" target="new">www.86it.us</a>'; }
 	

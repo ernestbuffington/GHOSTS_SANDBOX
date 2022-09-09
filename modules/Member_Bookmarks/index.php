@@ -20,7 +20,7 @@ if (!defined('MODULE_FILE'))
    //die ("You can't access this file directly...");
 }
 
-global $prefix, $nuke_db, $cookie, $user, $theme_name;
+global $prefix, $nuke_db, $cookie, $nuke_user, $theme_name;
 
 $index = 1;
 
@@ -34,13 +34,13 @@ $pagetitle = "86it Developers Network - My ". _MARKSTITLE;
 
 include("header.php");
 
-$userinfo = getusrinfo( $user );
-$userid = $userinfo["user_id"];
+$nuke_userinfo = getusrinfo( $nuke_user );
+$nuke_userid = $nuke_userinfo["user_id"];
 $prefix = 'nuke';
 
-if (!isset($userid) || $userid=="")
+if (!isset($nuke_userid) || $nuke_userid=="")
 {
-  $userid=0;
+  $nuke_userid=0;
 }
 
 
@@ -52,7 +52,7 @@ echo "<br>";
 
 //OpenTable();
 echo "<hr />";
-$cat_query = "select category_id,name,description,mod_date from " . $prefix."_bookmarks_cat  where user_id=" . $userid . " order by name";
+$cat_query = "select category_id,name,description,mod_date from " . $prefix."_bookmarks_cat  where user_id=" . $nuke_userid . " order by name";
 $categories_res = $nuke_db->sql_query ($cat_query, $nuke_db);
 
 echo "<table align=center width=98%>

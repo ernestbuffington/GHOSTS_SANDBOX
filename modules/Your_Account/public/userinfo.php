@@ -33,7 +33,7 @@ if (!defined('MODULE_FILE')) die ("You can't access this file directly...");
 
 if (!defined('CNBYA')) die('CNBYA protection');
 
-$result  = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE username='$username'");
+$result  = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE username='$nuke_username'");
 $num     = $nuke_db->sql_numrows($result);
 $usrinfo = $nuke_db->sql_fetchrow($result);
 
@@ -56,7 +56,7 @@ if ($num > 0):
 	    echo "<div align=\"center\">";
     
 	    if ((strtolower($usrinfo['username']) == strtolower($cookie[1])) AND ($usrinfo['user_password'] == $cookie[2])):
-            echo "<span class=\"option\">$username, "._WELCOMETO." $sitename!</span><br /><br />";
+            echo "<span class=\"option\">$nuke_username, "._WELCOMETO." $sitename!</span><br /><br />";
             echo "<span class=\"content\">"._THISISYOURPAGE."</span></div><br />";
             nav(1);
             echo "<br />";
@@ -74,7 +74,7 @@ if ($num > 0):
         
 		    # AVATAR TYPES START
 			if ($usrinfo['user_avatar_type'] == 1):     # Type 1
-            $user_avatar = $board_config['avatar_path']."/".$usrinfo['user_avatar'];
+            $nuke_user_avatar = $board_config['avatar_path']."/".$usrinfo['user_avatar'];
             
 			elseif($usrinfo['user_avatar_type'] == 2):  # Type 2
             echo "<img src='$usrinfo[user_avatar]'>";
@@ -94,14 +94,14 @@ if ($num > 0):
             $usrinfo['user_website'] = str_replace("https://", "", $usrinfo['user_website']);
         
 		    if (empty($usrinfo['user_website'])) 
-            $userwebsite = _YA_NA;
+            $nuke_userwebsite = _YA_NA;
 			else 
-            $userwebsite = "<a href=\"https://$usrinfo[user_website]\" target=\"new\">$usrinfo[user_website]</a>";
+            $nuke_userwebsite = "<a href=\"https://$usrinfo[user_website]\" target=\"new\">$usrinfo[user_website]</a>";
             
 			if (is_mod_admin($module_name) || $usrinfo['user_viewemail'] == 1) 
-            $user_email = "<a href='mailto:$usrinfo[user_email]'>$usrinfo[user_email]</a>";
+            $nuke_user_email = "<a href='mailto:$usrinfo[user_email]'>$usrinfo[user_email]</a>";
 			else 
-            $user_email = _YA_NA;
+            $nuke_user_email = _YA_NA;
             
 			$usrinfo['user_sig'] = nl2br($usrinfo['user_sig']);
             $usrinfo['user_bio'] = nl2br($usrinfo['user_bio']);
@@ -112,10 +112,10 @@ if ($num > 0):
             # Mod: Advanced Username Color v1.0.5 END
 			 
             echo "<tr>\n<td width='30%' bgcolor='$bgcolor1'>"._REALNAME."</td>\n<td width='70%' bgcolor='$bgcolor1'><strong>$usrinfo[name]</strong></td>\n</tr>\n";
-            echo "<tr>\n<td width='30%' bgcolor='$bgcolor1'>"._EMAIL."</td>\n<td width='70%' bgcolor='$bgcolor1'><strong>$user_email</strong></td>\n</tr>\n";
-            echo "<tr>\n<td width='30%' bgcolor='$bgcolor1'>"._WEBSITE."</td>\n<td width='70%' bgcolor='$bgcolor1'><strong>$userwebsite</strong></td>\n</tr>\n";
+            echo "<tr>\n<td width='30%' bgcolor='$bgcolor1'>"._EMAIL."</td>\n<td width='70%' bgcolor='$bgcolor1'><strong>$nuke_user_email</strong></td>\n</tr>\n";
+            echo "<tr>\n<td width='30%' bgcolor='$bgcolor1'>"._WEBSITE."</td>\n<td width='70%' bgcolor='$bgcolor1'><strong>$nuke_userwebsite</strong></td>\n</tr>\n";
 
-            if(is_mod_admin($module_name) OR is_user() AND $usrinfo['username'] == $username) 
+            if(is_mod_admin($module_name) OR is_user() AND $usrinfo['username'] == $nuke_username) 
             $result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field WHERE need <> '0' ORDER BY pos");
 			else 
 			$result = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_cnbya_field WHERE need <> '0' AND public='1' ORDER BY pos");
@@ -137,11 +137,11 @@ if ($num > 0):
             echo "<tr>\n<td width='30%' bgcolor='$bgcolor1'>"._EXTRAINFO."</td>\n<td width='70%' bgcolor='$bgcolor1'><strong>$usrinfo[bio]</strong></td>\n</tr>\n";
             echo "<tr>\n<td width='30%' bgcolor='$bgcolor1'>"._YA_LASTVISIT."</td>\n<td width='70%' bgcolor='$bgcolor1'><strong>$usrinfo[user_lastvisit]</strong></td>\n</tr>\n";
             
-			$sql2 = "SELECT uname FROM ".$prefix."_session WHERE uname='$username'";
+			$sql2 = "SELECT uname FROM ".$prefix."_session WHERE uname='$nuke_username'";
             $result2 = $nuke_db->sql_query($sql2);
             $row2 = $nuke_db->sql_fetchrow($result2);
-            $username_pm = $username;
-            $active_username = $row2[uname]; // Edited PSL 12-9-04 was killing $username
+            $nuke_username_pm = $nuke_username;
+            $active_username = $row2[uname]; // Edited PSL 12-9-04 was killing $nuke_username
             
 			if (empty($active_username)) 
 		    $online = _OFFLINE; 
@@ -151,12 +151,12 @@ if ($num > 0):
 			echo "<tr>\n<td width='30%' bgcolor='$bgcolor1'>"._USERSTATUS."</td>\n<td width='70%' bgcolor='$bgcolor1'><strong>$online</strong></td>\n</tr>\n";
             
 			if ($Version_Num > 6.9): 
-                if (is_user() AND $cookie[1] == "$username" OR is_mod_admin($module_name)) 
+                if (is_user() AND $cookie[1] == "$nuke_username" OR is_mod_admin($module_name)) 
                     echo "<tr>\n<td width='30%' bgcolor='$bgcolor1'>"._YA_POINTS."</td>\n<td width='70%' bgcolor='$bgcolor1'><strong>$usrinfo[points]</strong></td>\n</tr>\n";
             endif;
             
 			if (($usrinfo['newsletter'] == 1) 
-			AND ($username == $cookie[1]) 
+			AND ($nuke_username == $cookie[1]) 
 			AND ($usrinfo['user_password'] == $cookie[2]) 
 			OR (is_mod_admin($module_name) 
 			AND ($usrinfo['newsletter'] == 1))): 
@@ -164,7 +164,7 @@ if ($num > 0):
                 echo "<tr>\n<td width='30%' bgcolor='$bgcolor1'>"._NEWSLETTER."</td>\n<td width='70%' bgcolor='$bgcolor1'><strong>"._SUBSCRIBED."</strong></td>\n</tr>\n";
              
 			elseif (($usrinfo['newsletter'] == 0) 
-			AND ($username == $cookie[1]) 
+			AND ($nuke_username == $cookie[1]) 
 			AND ($usrinfo['user_password'] == $cookie[2]) 
 			OR (is_mod_admin($module_name) 
 			AND ($usrinfo['newsletter'] == 0))): 
@@ -176,15 +176,15 @@ if ($num > 0):
 			echo "</table>\n";
             echo "</div><br />\n<div align=\"center\">\n";
             
-			if (is_active("Journal") AND $cookie[1] != $username):  
+			if (is_active("Journal") AND $cookie[1] != $nuke_username):  
 			
-                $sql3 = "SELECT jid FROM ".$prefix."_journal WHERE aid='$username' AND status='yes' ORDER BY pdate,jid DESC LIMIT 0,1";
+                $sql3 = "SELECT jid FROM ".$prefix."_journal WHERE aid='$nuke_username' AND status='yes' ORDER BY pdate,jid DESC LIMIT 0,1";
                 $result3 = $nuke_db->sql_query($sq3);
                 $row3 = $nuke_db->sql_fetchrow($result3);
                 $jid = $row3[jid];
             
 			    if (!empty($jid) AND isset($jid)) 
-                echo "[ <a href=\"modules.php?name=Journal&amp;file=search&amp;bywhat=aid&amp;forwhat=$username\">"._READMYJOURNAL."</a> ]<br />";
+                echo "[ <a href=\"modules.php?name=Journal&amp;file=search&amp;bywhat=aid&amp;forwhat=$nuke_username\">"._READMYJOURNAL."</a> ]<br />";
             
 			endif;
             
@@ -208,7 +208,7 @@ if ($num > 0):
             
 			endif;
             
-			if (((is_user() AND $cookie[1] != $username) 
+			if (((is_user() AND $cookie[1] != $nuke_username) 
 			OR is_mod_admin($module_name)) 
 			AND is_active("Private_Messages")): 
 			  echo "<br />[ <a href=\"modules.php?name=Private_Messages&amp;mode=post&amp;u=$usrinfo[user_id]\">"._USENDPRIVATEMSG." $usrinfo[username]</a> ]<br />\n"; 
@@ -216,7 +216,7 @@ if ($num > 0):
 			echo "</div></span>";
          
 		else: 
-            echo "<div align=\"center\">"._NOINFOFOR." $username</div>";
+            echo "<div align=\"center\">"._NOINFOFOR." $nuke_username</div>";
         endif; # end if num = 1
         
 		CloseTable();

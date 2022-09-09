@@ -22,8 +22,8 @@ exit ("Illegal File Access");
 global $evouserinfo_addons, $evouserinfo_username;
 
 if(is_user()):
-    global $userinfo;
-    $evouserinfo_uname = UsernameColor($userinfo['username']);
+    global $nuke_userinfo;
+    $evouserinfo_uname = UsernameColor($nuke_userinfo['username']);
 else: 
     global $lang_evo_userblock;
     $evouserinfo_uname = $lang_evo_userblock['BLOCK']['ANON'];

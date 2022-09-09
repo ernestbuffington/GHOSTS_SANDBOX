@@ -99,11 +99,11 @@ if( $mode != "" )
 
 		$s_hidden_fields .= '<input type="hidden" name="mode" value="save" />';
 
-		$template->set_filenames(array(
+		$template_nuke->set_filenames(array(
 			"body" => "admin/flags_edit_body.tpl")
 		);
 
-		$template->assign_vars(array(
+		$template_nuke->assign_vars(array(
 			"FLAG" => $flag_info['flag_name'],
 			"IMAGE" => ( $flag_info['flag_image'] != "" ) ? $flag_info['flag_image'] : "",
 			// "IMAGE_DISPLAY" => ( $flag_info['flag_image'] != "" ) ? '<img src="../../../images/flags/' . $flag_info['flag_image'] . '" />' : "",
@@ -189,11 +189,11 @@ if( $mode != "" )
 		//
 		// Set template files
 		//
-		$template->set_filenames(array(
+		$template_nuke->set_filenames(array(
 			'body' => 'confirm_body.tpl')
 		);
 
-		$template->assign_vars(array(
+		$template_nuke->assign_vars(array(
 			'MESSAGE_TITLE' => $lang['Flag_confirm'],
 			'MESSAGE_TEXT' => $lang['Confirm_delete_flag'],
 
@@ -269,7 +269,7 @@ if( $mode != "" )
 		// They didn't feel like giving us any information. Oh, too bad, we'll just display the
 		// list then...
 		//
-		$template->set_filenames(array(
+		$template_nuke->set_filenames(array(
 			"body" => "admin/flags_list_body.tpl")
 		);
 		
@@ -283,7 +283,7 @@ if( $mode != "" )
 		$flag_rows = $nuke_db->sql_fetchrowset($result);
 		$flag_count = count($flag_rows);
 		
-		$template->assign_vars(array(
+		$template_nuke->assign_vars(array(
 			"L_FLAGS_TITLE" => $lang['Flags_title'],
 			"L_FLAGS_TEXT" => $lang['Flags_explain'],
 			"L_FLAG" => $lang['Flag_name'],
@@ -304,7 +304,7 @@ if( $mode != "" )
 			$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 	
-			$template->assign_block_vars("flags", array(
+			$template_nuke->assign_block_vars("flags", array(
 				"ROW_COLOR" => "#" . $row_color,
 				"ROW_CLASS" => $row_class,
 
@@ -323,7 +323,7 @@ else
 	//
 	// Show the default page
 	//
-	$template->set_filenames(array(
+	$template_nuke->set_filenames(array(
 		"body" => "admin/flags_list_body.tpl")
 	);
 	
@@ -337,7 +337,7 @@ else
 
 	$flag_rows = $nuke_db->sql_fetchrowset($result);
 	
-	$template->assign_vars(array(
+	$template_nuke->assign_vars(array(
 		"L_FLAGS_TITLE" => $lang['Flags_title'],
 		"L_FLAGS_TEXT" => $lang['Flags_explain'],
 		"L_FLAG" => $lang['Flag_name'],
@@ -357,7 +357,7 @@ else
 		$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
-		$template->assign_block_vars("flags", array(
+		$template_nuke->assign_block_vars("flags", array(
 			"ROW_COLOR" => "#" . $row_color,
 			"ROW_CLASS" => $row_class,
 			"FLAG" => $flag,
@@ -370,8 +370,8 @@ else
 	}
 }
 
-$template->pparse("body");
+$template_nuke->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

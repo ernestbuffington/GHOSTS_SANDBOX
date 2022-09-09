@@ -35,7 +35,7 @@ if (!defined('CNBYA')) {
     die('CNBYA protection');
 }
 
-    global $cookie, $userinfo;
+    global $cookie, $nuke_userinfo;
     include_once(NUKE_BASE_DIR.'header.php');
     title(_YA_AVATARSUCCESS);
     OpenTable();

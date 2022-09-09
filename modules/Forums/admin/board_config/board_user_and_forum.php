@@ -21,7 +21,7 @@ if (!defined('BOARD_CONFIG')) {
     die('Access Denied');
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     "user_and_forum" => "admin/board_config/board_user_and_forum.tpl")
 );
 
@@ -89,12 +89,12 @@ $show_moved_logs_no = (!$new['show_moved_logs']) ? "checked=\"checked\"" : "";
  ******************************************************/
 
 //General Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "DHTML_ID" => "c" . $dhtml_id)
 );
     
 //Language Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "L_ABILITIES_SETTINGS" => $lang['Abilities_settings'],
     "L_MAX_POLL_OPTIONS" => $lang['Max_poll_options'],
     "L_ALLOW_HTML" => $lang['Allow_HTML'],
@@ -156,7 +156,7 @@ $template->assign_vars(array(
 ));
 
 //Data Template Variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "MAX_POLL_OPTIONS" => $new['max_poll_options'],
     "HTML_TAGS" => $html_tags,
     "HTML_YES" => $html_yes,
@@ -225,6 +225,6 @@ $template->assign_vars(array(
  [ Mod:   Resize Posted Images                 v2.4.5 ]
  ******************************************************/
  ));
-$template->pparse("user_and_forum");
+$template_nuke->pparse("user_and_forum");
 
 ?>

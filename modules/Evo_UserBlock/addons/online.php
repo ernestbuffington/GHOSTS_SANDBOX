@@ -23,7 +23,7 @@ global $evouserinfo_addons, $evouserinfo_online;
 
 function evouserinfo_get_members_online() 
 {
-    global $prefix, $nuke_db, $lang_evo_userblock, $evouserinfo_addons, $nuke_user_prefix, $userinfo, $board_config, $Default_Theme;
+    global $prefix, $nuke_db, $lang_evo_userblock, $evouserinfo_addons, $nuke_user_prefix, $nuke_userinfo, $board_config, $Default_Theme;
 
     $sql = "SELECT w.uname, 
 	              w.module, 
@@ -70,13 +70,13 @@ function evouserinfo_get_members_online()
         $url 			= str_replace("&", "&amp;", $url);
         $where 			= '&nbsp;&nbsp;<a href="'.$url.'" alt="'.$module.'" title="'.$module.'">'.$num.'</a>.&nbsp;';
         $where 			= (is_admin()) ? $where : $num.'.&nbsp;';
-        $user_from 		= $session['user_from'];
-        $user_flag 		= str_replace('.png','',$session['user_from_flag']);
+        $nuke_user_from 		= $session['user_from'];
+        $nuke_user_flag 		= str_replace('.png','',$session['user_from_flag']);
         
 		if ($evouserinfo_addons['online_country_flag'] == 'yes'):
-        $user_flag = (($session['user_from_flag']) ? '<span class="countries '.$user_flag.'" title="'.$user_from.'"></span>&nbsp;' : '');
+        $nuke_user_flag = (($session['user_from_flag']) ? '<span class="countries '.$nuke_user_flag.'" title="'.$nuke_user_from.'"></span>&nbsp;' : '');
         else:
-        $user_flag = '';
+        $nuke_user_flag = '';
         endif;
 
         switch( $session['user_avatar_type'] ):
@@ -152,34 +152,34 @@ function evouserinfo_get_members_online()
             $admin_user_level_image = 
 			( $evouserinfo_addons['online_user_level_image'] == 'yes' ) 
 			? '&nbsp;<img style="width: 32px; height: 8px" src="images/evo_userinfo/admin.gif" alt="">' : '';
-            $out['text'] .= $where.$user_flag.'<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;u=
+            $out['text'] .= $where.$nuke_user_flag.'<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;u=
 			'.$session['user_id'].'"'.$tooltip_userinfo.'>'.$uname_color.'</a>'.$admin_user_level_image.'<br />';
             elseif ($level == 3):
             $staff_user_level_image = 
 			( $evouserinfo_addons['online_user_level_image'] == 'yes' ) 
 			? '&nbsp;<img style="width: 32px; height: 8px" src="images/evo_userinfo/staff.gif" alt="">' : '';
-            $out['text'] .= $where.$user_flag.'<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;u=
+            $out['text'] .= $where.$nuke_user_flag.'<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;u=
 			'.$session['user_id'].'"'.$tooltip_userinfo.'>'.$uname_color.'</a>'.$staff_user_level_image.'<br />';
             else:
-            $out['text'] .= $where.$user_flag.'<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;u='.$session['user_id'].'"'.$tooltip_userinfo.'>'.$uname_color.'</a><br />';
+            $out['text'] .= $where.$nuke_user_flag.'<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;u='.$session['user_id'].'"'.$tooltip_userinfo.'>'.$uname_color.'</a><br />';
             endif;
         
-            elseif (is_admin() || $userinfo['user_id'] == $session['user_id']):
+            elseif (is_admin() || $nuke_userinfo['user_id'] == $session['user_id']):
         
             if ($level == 2):
             $admin_user_level_image = 
 			( $evouserinfo_addons['online_user_level_image'] == 'yes' ) 
 			? '&nbsp;<img style="width: 32px; height: 8px" src="images/evo_userinfo/admin.gif" alt="">' : '';
-            $out['text'] .= $where.$user_flag.'<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;u=
+            $out['text'] .= $where.$nuke_user_flag.'<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;u=
 			'.$session['user_id'].'"'.$tooltip_userinfo.'><i>'.$uname_color.'</i></a>'.$admin_user_level_image.'<br />';
             elseif ($level == 3):
             $staff_user_level_image = 
 			( $evouserinfo_addons['online_user_level_image'] == 'yes' ) 
 			? '&nbsp;<img style="width: 32px; height: 8px" src="images/evo_userinfo/staff.gif" alt="">' : '';
-            $out['text'] .= $where.$user_flag.'<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;u=
+            $out['text'] .= $where.$nuke_user_flag.'<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;u=
 			'.$session['user_id'].'"'.$tooltip_userinfo.'><i>'.$uname_color.'</i></a>'.$staff_user_level_image.'<br />';
             else:
-            $out['text'] .= $where.$user_flag.'<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;u='.$session['user_id'].'"'.$tooltip_userinfo.'><i>'.$uname_color.'</i></a><br />';
+            $out['text'] .= $where.$nuke_user_flag.'<a href="modules.php?name=Profile&amp;mode=viewprofile&amp;u='.$session['user_id'].'"'.$tooltip_userinfo.'><i>'.$uname_color.'</i></a><br />';
             endif;
             $hidden++;
 
@@ -220,9 +220,9 @@ function evouserinfo_get_guests_online($start)
             $out['text'] .= $where.$lang_evo_userblock['BLOCK']['ONLINE']['GUEST']."</a><br />\n";
         else:
         
-            $user_agent = $identify->identify_agent();
-            if($user_agent['engine'] == 'bot'):
-                $out['text'] .= $where.$user_agent['ua']."</a><br />\n";
+            $nuke_user_agent = $identify->identify_agent();
+            if($nuke_user_agent['engine'] == 'bot'):
+                $out['text'] .= $where.$nuke_user_agent['ua']."</a><br />\n";
             else:
                 // $out['text'] .= "<br />".$where.$session['uname']."\n";
                 $out['text'] .= $where.$session['uname']."</a><br />\n";
@@ -238,7 +238,7 @@ function evouserinfo_get_guests_online($start)
 
 function evouserinfo_online_display($members, $guests) 
 {
-    global $lang_evo_userblock, $evouserinfo_addons, $userinfo;
+    global $lang_evo_userblock, $evouserinfo_addons, $nuke_userinfo;
     $out = '';
     if($evouserinfo_addons['online_show_members'] == 'yes'):
     

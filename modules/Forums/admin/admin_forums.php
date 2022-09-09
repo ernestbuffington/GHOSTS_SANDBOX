@@ -1061,7 +1061,7 @@ if( !empty($mode) )
 
 
 
-                        $template->set_filenames(array(
+                        $template_nuke->set_filenames(array(
 
                                 "body" => "admin/forum_edit_body.tpl")
 
@@ -1095,7 +1095,7 @@ if( !empty($mode) )
 
 
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
 
 /*****[BEGIN]******************************************
 
@@ -1313,7 +1313,7 @@ if( !empty($mode) )
 
                         );
 
-                        $template->pparse("body");
+                        $template_nuke->pparse("body");
 
                         break;
 
@@ -1825,7 +1825,7 @@ if( !empty($mode) )
 
 
 
-                        $template->set_filenames(array(
+                        $template_nuke->set_filenames(array(
 
                                 "body" => "admin/category_edit_body.tpl")
 
@@ -1837,7 +1837,7 @@ if( !empty($mode) )
 
 
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
 
                                 'CAT_TITLE' => $cat_title,
 
@@ -1861,7 +1861,7 @@ if( !empty($mode) )
 
 
 
-                        $template->pparse("body");
+                        $template_nuke->pparse("body");
 
                         break;
 
@@ -1945,7 +1945,7 @@ if( !empty($mode) )
 
 
 
-                        $template->set_filenames(array(
+                        $template_nuke->set_filenames(array(
 
                                 "body" => "admin/forum_delete_body.tpl")
 
@@ -1957,7 +1957,7 @@ if( !empty($mode) )
 
 
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
 
                                 'NAME' => $name,
 
@@ -1985,7 +1985,7 @@ if( !empty($mode) )
 
 
 
-                        $template->pparse("body");
+                        $template_nuke->pparse("body");
 
                         break;
 
@@ -2173,13 +2173,13 @@ if( !empty($mode) )
 
                         {
 
-                                $user_ids = '';
+                                $nuke_user_ids = '';
 
                                 do
 
                                 {
 
-                                        $user_ids .= (($user_ids != '') ? ', ' : '' ) . $row['user_id'];
+                                        $nuke_user_ids .= (($nuke_user_ids != '') ? ', ' : '' ) . $row['user_id'];
 
                                 }
 
@@ -2197,7 +2197,7 @@ if( !empty($mode) )
 
                                                 AND ug.group_id = a.group_id
 
-                                                AND ug.user_id NOT IN ($user_ids)";
+                                                AND ug.user_id NOT IN ($nuke_user_ids)";
 
                                 if( !$result2 = $nuke_db->sql_query($sql) )
 
@@ -2213,13 +2213,13 @@ if( !empty($mode) )
 
                                 {
 
-                                        $user_ids = '';
+                                        $nuke_user_ids = '';
 
                                         do
 
                                         {
 
-                                                $user_ids .= (($user_ids != '') ? ', ' : '' ) . $row['user_id'];
+                                                $nuke_user_ids .= (($nuke_user_ids != '') ? ', ' : '' ) . $row['user_id'];
 
                                         }
 
@@ -2231,7 +2231,7 @@ if( !empty($mode) )
 
                                                 SET user_level = " . NUKE_USER . "
 
-                                                WHERE user_id IN ($user_ids)
+                                                WHERE user_id IN ($nuke_user_ids)
 
                                                         AND user_level <> " . NUKE_ADMIN;
 
@@ -2399,7 +2399,7 @@ if( !empty($mode) )
 
 
 
-                        $template->set_filenames(array(
+                        $template_nuke->set_filenames(array(
 
                                 "body" => "admin/forum_delete_body.tpl")
 
@@ -2411,7 +2411,7 @@ if( !empty($mode) )
 
 
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
 
                                 'NAME' => $name,
 
@@ -2439,7 +2439,7 @@ if( !empty($mode) )
 
 
 
-                        $template->pparse("body");
+                        $template_nuke->pparse("body");
 
                         break;
 
@@ -2769,7 +2769,7 @@ if( !empty($mode) )
 
         {
 
-                include('./page_footer_admin.'.$phpEx);
+                include('./nuke_page_footer_admin.'.$phpEx);
 
                 exit;
 
@@ -2785,7 +2785,7 @@ if( !empty($mode) )
 
 //
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
 
         "body" => "admin/forum_admin_body.tpl")
 
@@ -2793,7 +2793,7 @@ $template->set_filenames(array(
 
 
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 
         'S_FORUM_ACTION' => append_sid("admin_forums.$phpEx"),
 
@@ -2887,7 +2887,7 @@ if( $total_categories = $nuke_db->sql_numrows($q_categories) )
 
 
 
-                $template->assign_block_vars("catrow", array(
+                $template_nuke->assign_block_vars("catrow", array(
 
                         'S_ADD_FORUM_SUBMIT' => "addforum[$cat_id]",
 
@@ -2929,7 +2929,7 @@ if( $total_categories = $nuke_db->sql_numrows($q_categories) )
 
 
 
-                                $template->assign_block_vars("catrow.forumrow",        array(
+                                $template_nuke->assign_block_vars("catrow.forumrow",        array(
 
                                         'FORUM_NAME' => $forum_rows[$j]['forum_name'],
 
@@ -3013,7 +3013,7 @@ if( $total_categories = $nuke_db->sql_numrows($q_categories) )
 
 									{
 
-										$template->assign_block_vars("catrow.forumrow",	array(
+										$template_nuke->assign_block_vars("catrow.forumrow",	array(
 
 											'FORUM_NAME' => $forum_rows[$k]['forum_name'],
 
@@ -3089,11 +3089,11 @@ if( $total_categories = $nuke_db->sql_numrows($q_categories) )
 
 
 
-$template->pparse("body");
+$template_nuke->pparse("body");
 
 
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 
 

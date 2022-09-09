@@ -51,33 +51,33 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 $sid = get_var('sid', '');
 
 // Start session management
-$userdata = session_pagestart($user_ip, NUKE_PAGE_PROFILE);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_PROFILE);
+init_userprefs($nuke_userdata);
 // End session management
 
 // session id check
-if ($sid == '' || $sid != $userdata['session_id'])
+if ($sid == '' || $sid != $nuke_userdata['session_id'])
 {
     message_die(NUKE_GENERAL_ERROR, 'Invalid_session');
 }
 
 // Obtain initial var settings
-$user_id = get_var(NUKE_POST_USERS_URL, 0);
+$nuke_user_id = get_var(NUKE_POST_USERS_URL, 0);
 
-if (!$user_id)
+if (!$nuke_user_id)
 {
     message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_id_specified']);
 }
 
-$profiledata = get_userdata($user_id);
+$profiledata = get_userdata($nuke_user_id);
 
-if ($profiledata['user_id'] != $userdata['user_id'] && $userdata['user_level'] != NUKE_ADMIN)
+if ($profiledata['user_id'] != $nuke_userdata['user_id'] && $nuke_userdata['user_level'] != NUKE_ADMIN)
 {
     message_die(NUKE_GENERAL_MESSAGE, $lang['Not_Authorised']);
 }
 
 $page_title = $lang['User_acp_title'];
-include('includes/page_header.'.$phpEx);
+include('includes/nuke_page_header.'.$phpEx);
 
 $language = $board_config['default_lang'];
 
@@ -202,18 +202,18 @@ else if ($delete && sizeof($delete_id_list) > 0)
     $hidden_fields .= '<input type="hidden" name="order" value="' . $sort_order . '" />';
     $hidden_fields .= '<input type="hidden" name="' . NUKE_POST_USERS_URL . '" value="' . intval($profiledata['user_id']) . '" />';
     $hidden_fields .= '<input type="hidden" name="start" value="' . $start . '" />';
-    $hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+    $hidden_fields .= '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
 
 	for ($i = 0; $i < sizeof($delete_id_list); $i++)
     {
         $hidden_fields .= '<input type="hidden" name="delete_id_list[]" value="' . intval($delete_id_list[$i]) . '" />';
     }
 
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'confirm' => 'confirm_body.tpl')
     );
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'MESSAGE_TITLE' => $lang['Confirm'],
         'MESSAGE_TEXT'    => $lang['Confirm_delete_attachments'],
 
@@ -224,7 +224,7 @@ else if ($delete && sizeof($delete_id_list) > 0)
         'S_HIDDEN_FIELDS'    => $hidden_fields)
     );
 
-    $template->pparse('confirm');
+    $template_nuke->pparse('confirm');
     
     include('includes/page_tail.'.$phpEx);
 
@@ -233,19 +233,19 @@ else if ($delete && sizeof($delete_id_list) > 0)
 
 $hidden_fields = '';
     
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     'body' => 'uacp_body.tpl')
 );
 
 $total_rows = 0;
     
-$username = $profiledata['username'];
+$nuke_username = $profiledata['username'];
 
 $s_hidden = '<input type="hidden" name="' . NUKE_POST_USERS_URL . '" value="' . intval($profiledata['user_id']) . '" />';
-$s_hidden .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+$s_hidden .= '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
 
 // Assign Template Vars
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'L_SUBMIT'                => $lang['Submit'],
     'L_UACP'                => $lang['UACP'],
     'L_SELECT_SORT_METHOD'    => $lang['Select_sort_method'],
@@ -444,11 +444,11 @@ if (sizeof($attachments) > 0)
             $post_titles = implode('<br />', $post_titles);
 
 			$hidden_field = '<input type="hidden" name="attach_id_list[]" value="' . (int) $attachments[$i]['attach_id'] . '" />';
-            $hidden_field .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+            $hidden_field .= '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
 
             $comment = str_replace("\n", '<br />', $attachments[$i]['comment']);
 
-            $template->assign_block_vars('attachrow', array(
+            $template_nuke->assign_block_vars('attachrow', array(
                 'ROW_NUMBER'        => $i + ($start + 1 ),
                 'ROW_COLOR'            => '#' . $row_color,
                 'ROW_CLASS'            => $row_class,
@@ -473,9 +473,9 @@ if (sizeof($attachments) > 0)
 // Generate Pagination
 if ($do_pagination && $total_rows > $board_config['topics_per_page'])
 {
-    $pagination = generate_pagination('uacp.' . $phpEx . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . NUKE_POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $userdata['session_id'], $total_rows, $board_config['topics_per_page'], $start).'&nbsp;';
+    $pagination = generate_pagination('uacp.' . $phpEx . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . NUKE_POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $nuke_userdata['session_id'], $total_rows, $board_config['topics_per_page'], $start).'&nbsp;';
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'PAGINATION'    => $pagination,
         'PAGE_NUMBER'    => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($total_rows / $board_config['topics_per_page'])), 
 
@@ -483,7 +483,7 @@ if ($do_pagination && $total_rows > $board_config['topics_per_page'])
     );
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 include('includes/page_tail.'.$phpEx);
 

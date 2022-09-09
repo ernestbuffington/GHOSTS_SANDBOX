@@ -33,7 +33,7 @@ if( !empty($setmodules) )
 //
 // Load default header
 //
-$no_page_header = TRUE;
+$no_nuke_page_header = TRUE;
 
 $phpbb2_root_path = "./../";
 require($phpbb2_root_path . 'extension.inc');
@@ -43,7 +43,7 @@ require($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '
 require($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_arcade.' . $phpEx);
 
 $mode = get_var_gf(array('name' => 'mode','intval' => false,'okvar' => array('user','group'),'default' => ''));
-$user_id = get_var_gf(array('name' => NUKE_POST_USERS_URL, 'intval' => true, 'default' => 0 ));
+$nuke_user_id = get_var_gf(array('name' => NUKE_POST_USERS_URL, 'intval' => true, 'default' => 0 ));
 $group_id = get_var_gf(array('name' => NUKE_POST_GROUPS_URL, 'intval' => true, 'default' => 0 ));
 
 // ---------------
@@ -56,7 +56,7 @@ if (!function_exists(check_auth))
 {
   function check_auth($type, $key, $u_access, $is_admin)
   {
-    $auth_user = 0;
+    $nuke_auth_user = 0;
 
     if( count($u_access) )
     {
@@ -76,24 +76,24 @@ if (!function_exists(check_auth))
                     break;
             }
 
-            $auth_user = $auth_user || $result;
+            $nuke_auth_user = $nuke_auth_user || $result;
         }
     }
     else
     {
-        $auth_user = $is_admin;
+        $nuke_auth_user = $is_admin;
     }
 
-    return $auth_user;
+    return $nuke_auth_user;
  }
 }
 //
 // End Functions
 // -------------
 
-if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 'group' && $group_id ) ) )
+if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $nuke_user_id ) || ( $mode == 'group' && $group_id ) ) )
 {
-    $user_level = '';
+    $nuke_user_level = '';
     if ( $mode == 'user' )
     {
         //
@@ -101,7 +101,7 @@ if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $user_id ) || ( 
         //
         $sql = "SELECT g.group_id, u.user_level
                 FROM " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_USERS_TABLE . " u, " . NUKE_GROUPS_TABLE . " g
-                WHERE u.user_id = $user_id 
+                WHERE u.user_id = $nuke_user_id 
                 AND ug.user_id = u.user_id 
                 AND g.group_id = ug.group_id 
                 AND g.group_single_user = " . TRUE;
@@ -167,7 +167,7 @@ if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $user_id ) || ( 
     $message = $lang['Arcade_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_arcadeauth'], '<a href="' . append_sid("admin_arcade_auth.$phpEx?mode=$mode") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
     message_die(NUKE_GENERAL_MESSAGE, $message);
 }
-else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id ) ) || ( $mode == 'group' && $group_id ) )
+else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $nuke_user_id ) ) || ( $mode == 'group' && $group_id ) )
 {
         // MANAGEMENT OF THE RIGHTS FOR A NUKE_USER
     if ( isset($HTTP_POST_VARS['username']) )
@@ -177,7 +177,7 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id 
         {
             message_die(NUKE_GENERAL_MESSAGE, $lang['No_such_user']);
         }
-        $user_id = $this_userdata['user_id'];
+        $nuke_user_id = $this_userdata['user_id'];
     }
 
     $sql = "SELECT * 
@@ -197,7 +197,7 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id 
 
 
     $sql = "SELECT u.user_id, u.username, u.user_level, g.group_id, g.group_name, g.group_single_user FROM " . NUKE_USERS_TABLE . " u, " . NUKE_GROUPS_TABLE . " g, " . NUKE_USER_GROUP_TABLE . " ug WHERE ";
-    $sql .= ( $mode == 'user' ) ? "u.user_id = $user_id AND ug.user_id = u.user_id AND g.group_id = ug.group_id" : "g.group_id = $group_id AND ug.group_id = g.group_id AND u.user_id = ug.user_id";
+    $sql .= ( $mode == 'user' ) ? "u.user_id = $nuke_user_id AND ug.user_id = u.user_id AND g.group_id = ug.group_id" : "g.group_id = $group_id AND ug.group_id = g.group_id AND u.user_id = ug.user_id";
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
         message_die(NUKE_GENERAL_ERROR, "Couldn't obtain user/group information", "", __LINE__, __FILE__, $sql);
@@ -210,16 +210,16 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id 
     $nuke_db->sql_freeresult($result);
 
     
-    $sql = ( $mode == 'user' ) ? "SELECT aa.arcade_catid FROM " . NUKE_AUTH_ARCADE_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = 1" : "SELECT arcade_catid FROM " . NUKE_AUTH_ARCADE_ACCESS_TABLE . " WHERE group_id = $group_id";
+    $sql = ( $mode == 'user' ) ? "SELECT aa.arcade_catid FROM " . NUKE_AUTH_ARCADE_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE. " g WHERE ug.user_id = $nuke_user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = 1" : "SELECT arcade_catid FROM " . NUKE_AUTH_ARCADE_ACCESS_TABLE . " WHERE group_id = $group_id";
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
         message_die(NUKE_GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
     }
 
-    $auth_access = array();
+    $nuke_auth_access = array();
     while($row=$nuke_db->sql_fetchrow($result))
     {
-        $auth_access[$row['arcade_catid']]=1;
+        $nuke_auth_access[$row['arcade_catid']]=1;
     }    
 
     $nbcat = count($arcade_access);
@@ -230,8 +230,8 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id 
         $row_color = ( !( $i % 2 ) ) ? $theme['td_color1'] : $theme['td_color2'];
         if(($arcade_access[$i]['arcade_catauth']==1)||($arcade_access[$i]['arcade_catauth']==2))
         {
-            $selected1 = ( isset($auth_access[$arcade_access[$i]['arcade_catid']]) ) ? 'selected="selected"' : '';
-            $selected0 = ( !isset($auth_access[$arcade_access[$i]['arcade_catid']]) ) ? 'selected="selected"' : '';
+            $selected1 = ( isset($nuke_auth_access[$arcade_access[$i]['arcade_catid']]) ) ? 'selected="selected"' : '';
+            $selected0 = ( !isset($nuke_auth_access[$arcade_access[$i]['arcade_catid']]) ) ? 'selected="selected"' : '';
             $optionlist_acl =  '<select name="private[' . $arcade_access[$i]['arcade_catid'] . ']">';
             if ( $mode=='user' && $ug_info[0]['user_level'] == NUKE_ADMIN )
             {
@@ -248,7 +248,7 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id 
             $optionlist_acl = '&nbsp;';
         }
         
-        $template->assign_block_vars('categorie', array(
+        $template_nuke->assign_block_vars('categorie', array(
             'ROW_COLOR' => '#' . $row_color,
             'ROW_CLASS' => $row_class,
             'CATTITLE' => $arcade_access[$i]['arcade_cattitle'],
@@ -300,20 +300,20 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id 
     //
     // Dump in the page header ...
     //
-    include('./page_header_admin.'.$phpEx);
+    include('./nuke_page_header_admin.'.$phpEx);
 
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         "body" => 'admin/auth_arcade_body.tpl')
     );
 
     $s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="adv" value="' . $adv . '" />';
-    $s_hidden_fields .= ( $mode == 'user' ) ? '<input type="hidden" name="' . NUKE_POST_USERS_URL . '" value="' . $user_id . '" />' : '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
+    $s_hidden_fields .= ( $mode == 'user' ) ? '<input type="hidden" name="' . NUKE_POST_USERS_URL . '" value="' . $nuke_user_id . '" />' : '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
 
     if ( $mode == 'user' )
     {
-        $template->assign_block_vars('switch_user_auth', array());
+        $template_nuke->assign_block_vars('switch_user_auth', array());
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'USERNAME' => $t_username, //$this_userdata['username'],
             'USER_LEVEL' => $lang['User_Level'] . " : " . $s_user_type,
             'USER_GROUP_MEMBERSHIPS' => $lang['Group_memberships'] . ' : ' . $t_usergroup_list)
@@ -321,9 +321,9 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id 
     }
     else
     {
-        $template->assign_block_vars("switch_group_auth", array());
+        $template_nuke->assign_block_vars("switch_group_auth", array());
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:    Group Colors                        v1.0.0 ]
  ******************************************************/
@@ -335,7 +335,7 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $user_id 
         );
     }
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_USER_OR_GROUPNAME' => ( $mode == 'user' ) ? $lang['Username'] : $lang['Group_name'],
 
         'L_AUTH_TITLE' => ( $mode == 'user' ) ? $lang['Auth_Arcade_Control_User'] : $lang['Auth_Arcade_Control_Group'],
@@ -360,15 +360,15 @@ else
     //
     // Select a user/group
     //
-    include('./page_header_admin.'.$phpEx);
+    include('./nuke_page_header_admin.'.$phpEx);
 
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => ( $mode == 'user' ) ? 'admin/user_select_body.tpl' : 'admin/auth_select_body.tpl')
     );
 
     if ( $mode == 'user' )
     {
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'L_FIND_USERNAME' => $lang['Find_username'],
             'U_SEARCH_USER' => append_sid("search.$phpEx?mode=searchuser&amp;popup=1&amp;menu=1"))
         );
@@ -394,7 +394,7 @@ else
             $select_list .= '</select>';
         }
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'S_AUTH_SELECT' => $select_list)
         );
     }
@@ -403,7 +403,7 @@ else
 
     $l_type = ( $mode == 'user' ) ? 'NUKE_USER' : 'AUTH';
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_' . $l_type . '_TITLE' => ( $mode == 'user' ) ? $lang['Auth_Arcade_Control_User'] : $lang['Auth_Arcade_Control_Group'],
         'L_' . $l_type . '_EXPLAIN' => ( $mode == 'user' ) ? $lang['User_arcade_auth_explain'] : $lang['Group_arcade_auth_explain'],
         'L_' . $l_type . '_SELECT' => ( $mode == 'user' ) ? $lang['Select_a_User'] : $lang['Select_a_Group'],
@@ -415,8 +415,8 @@ else
 
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

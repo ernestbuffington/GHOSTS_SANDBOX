@@ -415,17 +415,17 @@ class SMTP
      *
      * @see    hello()
      *
-     * @param string $username The user name
+     * @param string $nuke_username The user name
      * @param string $password The password
-     * @param string $authtype The auth type (CRAM-MD5, PLAIN, LOGIN, XOAUTH2)
+     * @param string $nuke_authtype The auth type (CRAM-MD5, PLAIN, LOGIN, XOAUTH2)
      * @param OAuth  $OAuth    An optional OAuth instance for XOAUTH2 authentication
      *
      * @return bool True if successfully authenticated
      */
     public function authenticate(
-        $username,
+        $nuke_username,
         $password,
-        $authtype = null,
+        $nuke_authtype = null,
         $OAuth = null
     ) {
         if (!$this->server_caps) {
@@ -444,44 +444,44 @@ class SMTP
                 return false;
             }
 
-            $this->edebug('Auth method requested: ' . ($authtype ? $authtype : 'UNSPECIFIED'), self::NUKE_DEBUG_LOWLEVEL);
+            $this->edebug('Auth method requested: ' . ($nuke_authtype ? $nuke_authtype : 'UNSPECIFIED'), self::NUKE_DEBUG_LOWLEVEL);
             $this->edebug(
                 'Auth methods available on the server: ' . implode(',', $this->server_caps['AUTH']),
                 self::NUKE_DEBUG_LOWLEVEL
             );
 
             //If we have requested a specific auth type, check the server supports it before trying others
-            if (null !== $authtype and !in_array($authtype, $this->server_caps['AUTH'])) {
-                $this->edebug('Requested auth method not available: ' . $authtype, self::NUKE_DEBUG_LOWLEVEL);
-                $authtype = null;
+            if (null !== $nuke_authtype and !in_array($nuke_authtype, $this->server_caps['AUTH'])) {
+                $this->edebug('Requested auth method not available: ' . $nuke_authtype, self::NUKE_DEBUG_LOWLEVEL);
+                $nuke_authtype = null;
             }
 
-            if (empty($authtype)) {
+            if (empty($nuke_authtype)) {
                 //If no auth mechanism is specified, attempt to use these, in this order
                 //Try CRAM-MD5 first as it's more secure than the others
                 foreach (['CRAM-MD5', 'LOGIN', 'PLAIN', 'XOAUTH2'] as $method) {
                     if (in_array($method, $this->server_caps['AUTH'])) {
-                        $authtype = $method;
+                        $nuke_authtype = $method;
                         break;
                     }
                 }
-                if (empty($authtype)) {
+                if (empty($nuke_authtype)) {
                     $this->setError('No supported authentication methods found');
 
                     return false;
                 }
-                self::edebug('Auth method selected: ' . $authtype, self::NUKE_DEBUG_LOWLEVEL);
+                self::edebug('Auth method selected: ' . $nuke_authtype, self::NUKE_DEBUG_LOWLEVEL);
             }
 
-            if (!in_array($authtype, $this->server_caps['AUTH'])) {
-                $this->setError("The requested authentication method \"$authtype\" is not supported by the server");
+            if (!in_array($nuke_authtype, $this->server_caps['AUTH'])) {
+                $this->setError("The requested authentication method \"$nuke_authtype\" is not supported by the server");
 
                 return false;
             }
-        } elseif (empty($authtype)) {
-            $authtype = 'LOGIN';
+        } elseif (empty($nuke_authtype)) {
+            $nuke_authtype = 'LOGIN';
         }
-        switch ($authtype) {
+        switch ($nuke_authtype) {
             case 'PLAIN':
                 // Start authentication
                 if (!$this->sendCommand('AUTH', 'AUTH PLAIN', 334)) {
@@ -490,7 +490,7 @@ class SMTP
                 // Send encoded username and password
                 if (!$this->sendCommand(
                     'User & Password',
-                    base64_encode("\0" . $username . "\0" . $password),
+                    base64_encode("\0" . $nuke_username . "\0" . $password),
                     235
                 )
                 ) {
@@ -502,7 +502,7 @@ class SMTP
                 if (!$this->sendCommand('AUTH', 'AUTH LOGIN', 334)) {
                     return false;
                 }
-                if (!$this->sendCommand('Username', base64_encode($username), 334)) {
+                if (!$this->sendCommand('Username', base64_encode($nuke_username), 334)) {
                     return false;
                 }
                 if (!$this->sendCommand('Password', base64_encode($password), 235)) {
@@ -518,7 +518,7 @@ class SMTP
                 $challenge = base64_decode(substr($this->last_reply, 4));
 
                 // Build the response
-                $response = $username . ' ' . $this->hmac($challenge, $password);
+                $response = $nuke_username . ' ' . $this->hmac($challenge, $password);
 
                 // send encoded credentials
                 return $this->sendCommand('Username', base64_encode($response), 235);
@@ -535,7 +535,7 @@ class SMTP
                 }
                 break;
             default:
-                $this->setError("Authentication method \"$authtype\" is not supported");
+                $this->setError("Authentication method \"$nuke_authtype\" is not supported");
 
                 return false;
         }

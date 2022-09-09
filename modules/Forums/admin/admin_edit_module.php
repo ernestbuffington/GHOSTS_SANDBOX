@@ -60,7 +60,7 @@ $cancel = ( isset($HTTP_POST_VARS['cancel']) ) ? TRUE : FALSE;
 
 if ($cancel)
 {
-    $no_page_header = TRUE;
+    $no_nuke_page_header = TRUE;
 }
 
 @include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_statistics.' . $phpEx);
@@ -97,7 +97,7 @@ if ($mode == 'mod_edit')
         message_die(NUKE_GENERAL_ERROR, 'Unable to edit Module.');
     }
 
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/stat_edit_module.tpl')
     );
 
@@ -277,7 +277,7 @@ if ($mode == 'mod_edit')
         message_die(NUKE_GENERAL_ERROR, 'Unable to edit Module.');
     }
 
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/stat_edit_module.tpl')
     );
 
@@ -406,7 +406,7 @@ if ($mode == 'mod_edit')
     }
     else
     {
-        $template->assign_block_vars('switch_groups_there', array());
+        $template_nuke->assign_block_vars('switch_groups_there', array());
     }
 
     if (count($added_groups['group_id']) == 0)
@@ -415,7 +415,7 @@ if ($mode == 'mod_edit')
     }
     else
     {
-        $template->assign_block_vars('switch_groups_selected', array());
+        $template_nuke->assign_block_vars('switch_groups_selected', array());
         $group_added_select = '<select name="added_group">';
 
         for($i = 0; $i < count($added_groups['group_id']); $i++)
@@ -426,7 +426,7 @@ if ($mode == 'mod_edit')
         $group_added_select .= '</select>';
     }
     // Module Edit Panel
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_EDIT_MODULE' => $lang['Edit_module'],
         'L_EDIT_MODULE_EXPLAIN' => $lang['Edit_module_explain'],
         'L_MODULE_INFORMATIONS' => $lang['Module_informations'],
@@ -561,7 +561,7 @@ if ($mode == 'mod_edit')
                 break;
         }
 
-        $template->assign_block_vars('module_admin_fields', array(
+        $template_nuke->assign_block_vars('module_admin_fields', array(
             'L_TITLE' => $lang_title,
             'L_EXPLAIN' => $lang_explain,
             'S_OPTION_FIELD' => $option_field)
@@ -608,7 +608,7 @@ if ($mode == 'mod_edit')
             $s_hidden_fields = '';
         }
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'L_SELECT_MODULE' => $lang['Select_module_pak'],
             'S_SELECT_MODULE' => $module_select_field,
             'S_SELECT_HIDDEN_FIELDS' => $s_hidden_fields)
@@ -616,7 +616,7 @@ if ($mode == 'mod_edit')
 
         $s_hidden_fields = '<input type="hidden" name="fileupload" value="1" /><input type="hidden" name="update_id" value="' . $module_id . '" />';
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'L_INSTALL_MODULE' => $lang['Install_module'],
             'L_INSTALL_MODULE_EXPLAIN' => $lang['Install_module_explain'],
             'L_UPLOAD_MODULE' => $lang['Upload_module_pak'],
@@ -630,7 +630,7 @@ if ($mode == 'mod_edit')
 }
 else if ($mode == 'select_module')
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/stat_select_module.tpl')
     );
 
@@ -659,7 +659,7 @@ else if ($mode == 'select_module')
     
     $module_select_field .= '</select>';
     
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_SELECT_MODULE_TITLE' => $lang['Module_select_title'],
         'L_SELECT_MODULE_EXPLAIN' => $lang['Module_select_explain'],
         'L_MODULE_SELECT' => $lang['Module_select_title'],
@@ -670,11 +670,11 @@ else if ($mode == 'select_module')
 
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 //
 // Page Footer
 //
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

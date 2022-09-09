@@ -35,17 +35,17 @@ if (!defined('CNBYA')) {
     die('CNBYA protection');
 }
 
-    global $cookie, $userinfo;
+    global $cookie, $nuke_userinfo;
     $check = $cookie[1];
     $check2 = $cookie[2];
     $result = $nuke_db->sql_query("SELECT user_id, user_password FROM ".$nuke_user_prefix."_users WHERE username='$check'");
     $row = $nuke_db->sql_fetchrow($result);
     $vuid = $row['user_id'];
     $ccpass = $row['user_password'];
-    if (($user_id == $vuid) AND ($check2 == $ccpass)) {
+    if (($nuke_user_id == $vuid) AND ($check2 == $ccpass)) {
         if(isset($noscore)) $noscore=1; else $noscore=0;
-        $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET umode='$umode', uorder='$uorder', thold='$thold', noscore='$noscore', commentmax='$commentmax' WHERE user_id='$user_id'");
-        yacookie($userinfo[user_id],$userinfo[username],$userinfo[user_password],$userinfo[storynum],$userinfo[umode],$userinfo[uorder],$userinfo[thold],$userinfo[noscore],$userinfo[ublockon],$userinfo[theme],$userinfo[commentmax]);
+        $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET umode='$umode', uorder='$uorder', thold='$thold', noscore='$noscore', commentmax='$commentmax' WHERE user_id='$nuke_user_id'");
+        yacookie($nuke_userinfo[user_id],$nuke_userinfo[username],$nuke_userinfo[user_password],$nuke_userinfo[storynum],$nuke_userinfo[umode],$nuke_userinfo[uorder],$nuke_userinfo[thold],$nuke_userinfo[noscore],$nuke_userinfo[ublockon],$nuke_userinfo[theme],$nuke_userinfo[commentmax]);
         nuke_redirect("modules.php?name=$module_name");
     }
 

@@ -80,7 +80,7 @@ include($phpbb2_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
 if ($submit)
 {
     $message = '';
-    $config_update = FALSE;
+    $nuke_config_update = FALSE;
 
     // Go through all configuration settings
     if ( (intval($stats_config['return_limit']) != intval($HTTP_POST_VARS['return_limit'])) )
@@ -92,10 +92,10 @@ if ($submit)
             message_die(NUKE_GENERAL_ERROR, 'Unable to update statistics config table', '', __LINE__, __FILE__, $sql);
         }
         
-        $config_update = TRUE;
+        $nuke_config_update = TRUE;
     }
 
-    if ($config_update)
+    if ($nuke_config_update)
     {
         $sql = "SELECT * FROM " . STATS_CONFIG_TABLE;
      
@@ -198,11 +198,11 @@ if ($submit)
 
 if ($mode == 'config')
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/stat_config_body.tpl')
     );
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_SUBMIT' => $lang['Submit'],
         'L_RESET' => $lang['Reset'],
         'L_MESSAGES' => $lang['Messages'],
@@ -228,17 +228,17 @@ if ($mode == 'config')
     );
 }
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'VIEWED_INFO' => sprintf($lang['Viewed_info'], $stats_config['page_views']),
     'INSTALL_INFO' => sprintf($lang['Install_info'], create_date($board_config['default_dateformat'], $stats_config['install_date'], $board_config['board_timezone'])),
     'VERSION_INFO' => sprintf($lang['Version_info'], $stats_config['version']))
 );
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 //
 // Page Footer
 //
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

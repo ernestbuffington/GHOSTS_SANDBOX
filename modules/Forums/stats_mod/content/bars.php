@@ -55,7 +55,7 @@ class Content_bars
 
     function init_bars($bars = '')
     {
-        global $board_config, $userdata, $theme, $nuke_db, $stats_template, $phpbb2_root_path;
+        global $board_config, $nuke_userdata, $theme, $nuke_db, $stats_template, $phpbb2_root_path;
         
         if (is_array($bars))
         {
@@ -80,9 +80,9 @@ class Content_bars
         //
         if( !$board_config['override_user_style'] )
         {
-            if( ($userdata['user_id'] != NUKE_ANONYMOUS) && (isset($userdata['user_style'])) )
+            if( ($nuke_userdata['user_id'] != NUKE_ANONYMOUS) && (isset($nuke_userdata['user_style'])) )
             {
-                $style = $userdata['user_style'];
+                $style = $nuke_userdata['user_style'];
                 if( !$theme )
                 {
                     $style =  $board_config['default_style'];
@@ -206,12 +206,12 @@ class Content_bars
         }
 
         // If we are in an auth condition, please clean them first
-        $auth_array = array();
-        $authed = FALSE;
-        if ($auth_data)
+        $nuke_auth_array = array();
+        $nuke_authed = FALSE;
+        if ($nuke_auth_data)
         {
-            $auth_array = $stat_functions->clean_auth_values($auth_data);
-            $authed = TRUE;
+            $nuke_auth_array = $stat_functions->clean_auth_values($nuke_auth_data);
+            $nuke_authed = TRUE;
         }
 
         for ($i = 0; $i < count($core->calculation_data); $i++)
@@ -224,7 +224,7 @@ class Content_bars
 
             $stats_template->assign_block_vars('row', array());
             $row_value = array();
-            $auth_replace = array();
+            $nuke_auth_replace = array();
 
             for ($j = 0; $j < $this->columns; $j++)
             {
@@ -261,24 +261,24 @@ class Content_bars
                 }
                 else
                 {
-                    if (!$authed)
+                    if (!$nuke_authed)
                     {
                         $row_value[$j] = $result;
                     }
                     else
                     {
-                        eval('$auth_key = ' . $auth_array['auth_key'] . ';');
-                        if ($auth_array['auth_check'][$auth_key])
+                        eval('$nuke_auth_key = ' . $nuke_auth_array['auth_key'] . ';');
+                        if ($nuke_auth_array['auth_check'][$nuke_auth_key])
                         {
                             $row_value[$j] = $result;
                         }
                         else
                         {
-                            eval('$result = ' . $auth_array['auth_replacement'][$j] . ';');
-                            $auth_replace[$j]['replace'] = TRUE;
-                            if ( (is_string($auth_array['auth_replacement'][$j])) && (strstr($auth_array['auth_replacement'][$j], '$lang')) )
+                            eval('$result = ' . $nuke_auth_array['auth_replacement'][$j] . ';');
+                            $nuke_auth_replace[$j]['replace'] = TRUE;
+                            if ( (is_string($nuke_auth_array['auth_replacement'][$j])) && (strstr($nuke_auth_array['auth_replacement'][$j], '$lang')) )
                             {
-                                $auth_replace[$j]['lang'] = TRUE;
+                                $nuke_auth_replace[$j]['lang'] = TRUE;
                             }
 
                             $row_value[$j] = $result;
@@ -300,8 +300,8 @@ class Content_bars
                     'ROW' => $i,
                     'VALUE' => $row_value[$j],
                     'ALIGNMENT' => $this->align[$j],
-                    'AUTH_REPLACEMENT' => $auth_replace[$j]['replace'],
-                    'AUTH_LANG_ENTRY' => $auth_replace[$j]['lang'])
+                    'AUTH_REPLACEMENT' => $nuke_auth_replace[$j]['replace'],
+                    'AUTH_LANG_ENTRY' => $nuke_auth_replace[$j]['lang'])
                 );
             }
 

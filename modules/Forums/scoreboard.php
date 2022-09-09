@@ -49,8 +49,8 @@ if (isset($HTTP_GET_VARS['gid']) || isset($HTTP_POST_VARS['gid'])) {
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_SCOREBOARD, $nukeuser);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_SCOREBOARD, $nukeuser);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -66,7 +66,7 @@ if (!($row = $nuke_db->sql_fetchrow($result)) ) {
         message_die(NUKE_GENERAL_MESSAGE, "Category does not exist", '', __LINE__, __FILE__, $sql);
 }
 
-$liste_cat_auth_view = get_arcade_categories($userdata['user_id'], $userdata['user_level'],'view');
+$liste_cat_auth_view = get_arcade_categories($nuke_userdata['user_id'], $nuke_userdata['user_level'],'view');
 $tbauth_view = array();
 $tbauth_view = explode(',',$liste_cat_auth_view);
 
@@ -115,7 +115,7 @@ $nuke_db->sql_freeresult($result);
 //
 // Post URL generation for templating vars
 //
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'URL_ARCADE' => '<nobr><a class="cattitle" href="' . append_sid("arcade.$phpEx") . '">' . $lang['lib_arcade'] . '</a></nobr> ',
         'URL_BESTSCORES' => '<nobr><a class="cattitle" href="' . append_sid("toparcade.$phpEx") . '">' . $lang['best_scores'] . '</a></nobr> ',
         'GAMENAME' => '<nobr><a class="cattitle" href="' . append_sid("games.$phpEx?gid=" . $gid) . '">' . $gamename . '</a></nobr> ')
@@ -134,13 +134,13 @@ $nav_links['up'] = array(
 //
 $page_title = $lang['scoreboard'] ;
 
-include('includes/page_header.'.$phpEx);
+include('includes/nuke_page_header.'.$phpEx);
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         'body' => 'scoreboard_body.tpl')
 );
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'L_POS' => $lang['boardrank'],
         'L_SCORE' => $lang['boardscore'],
         'L_DATE' => $lang['boarddate'],
@@ -160,11 +160,11 @@ if ($total_score) {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $user_gc = UsernameColor($score_rowset[$i]['username']);
+                $nuke_user_gc = UsernameColor($score_rowset[$i]['username']);
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $template->assign_block_vars('scorerow', array(
+                $template_nuke->assign_block_vars('scorerow', array(
                         'ROW_COLOR' => $row_color,
                         'ROW_CLASS' => $row_class,
                         'POS' =>  $score_rowset[$i]['num'],
@@ -176,14 +176,14 @@ if ($total_score) {
                 );
         }
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'PAGINATION' => generate_pagination("scoreboard.$phpEx?gid=$gid", $score_count, $board_config['topics_per_page'], $start),
                 'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($score_count / $board_config['topics_per_page'])),
                 'L_GOTO_PAGE' => $lang['Goto_page'])
         );
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 include('includes/page_tail.'.$phpEx);
 
 ?>

@@ -778,7 +778,7 @@ function utf8_recode($string, $encoding)
     trigger_error('Unknown encoding: ' . $encoding, E_USER_ERROR);
   }
 
-  global $phpbb2_root_path;
+  global $phpbb_root_path;
 
   // iso-8859-* character encoding
   if (preg_match('/iso[_ -]?8859[_ -]?(\\d+)/', $encoding, $array))
@@ -1038,7 +1038,7 @@ function utf8_decode_ncr_callback($m)
 function utf8_case_fold($text, $option = 'full')
 {
   static $uniarray = array();
-  global $phpbb2_root_path;
+  global $phpbb_root_path;
 
   // common is always set
   if (!isset($uniarray['c']))
@@ -1652,14 +1652,14 @@ function utf8_case_fold_nfkc($text, $option = 'full')
     "\xF0\x9D\x9E\xBB"  => "\xCF\x83",
     "\xF0\x9D\x9F\x8A"  => "\xCF\x9D",
   );
-  global $phpbb2_root_path;
+  global $phpbb_root_path;
 
   // do the case fold
   $text = utf8_case_fold($text, $option);
 
   if (!class_exists('utf_normalizer'))
   {
-    global $phpbb2_root_path;
+    global $phpbb_root_path;
     include(NUKE_INCLUDE_DIR . 'utf/utf_normalizer.php');
   }
 
@@ -1749,7 +1749,7 @@ function utf8_case_fold_nfc($text, $option = 'full')
     "\xE1\xBF\xB7"  => "\xE1\xBF\xB6\xCD\x85",
     "\xE1\xBF\xBC"  => "\xCE\xA9\xCD\x85",
   );
-  global $phpbb2_root_path;
+  global $phpbb_root_path;
 
   // perform a small trick, avoid further normalization on composed points that contain U+0345 in their decomposition
   $text = strtr($text, $ypogegrammeni);
@@ -1776,7 +1776,7 @@ function utf8_normalize_nfc($strings)
 
   if (!class_exists('utf_normalizer'))
   {
-    global $phpbb2_root_path;
+    global $phpbb_root_path;
     include(NUKE_INCLUDE_DIR . 'utf/utf_normalizer.php');
   }
 
@@ -1822,7 +1822,7 @@ function utf8_normalize_nfc($strings)
 */
 function utf8_clean_string($text)
 {
-  global $phpbb2_root_path;
+  global $phpbb_root_path;
 
   static $homographs = array();
   if (empty($homographs))

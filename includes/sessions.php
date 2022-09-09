@@ -104,9 +104,9 @@ function phpBB_whoisonline($force=FALSE)
 /*****[BEGIN]******************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-function select_session_url($session_page, $url_qs, $url_ps, $specific, $level, $id, $forum_data, $topic_data, $user_data, $cat_data)
+function select_session_url($session_page, $url_qs, $url_ps, $specific, $level, $id, $forum_data, $topic_data, $nuke_user_data, $cat_data)
 {
-    global $lang, $phpEx, $userdata, $phpbb2_root_path;
+    global $lang, $phpEx, $nuke_userdata, $phpbb2_root_path;
     include_once(NUKE_INCLUDE_DIR.'constants.'. $phpEx);
     unset($location);
 
@@ -151,18 +151,18 @@ function select_session_url($session_page, $url_qs, $url_ps, $specific, $level, 
 
         if ( (@strstr($url_qs, NUKE_POST_USERS_URL .'=')) && (@strstr($url_ps, 'profile.')) )
             {
-            for ($z = 0; $z < count($user_data); $z++)
+            for ($z = 0; $z < count($nuke_user_data); $z++)
                 {
-                if (!$user_data[$z]['user_id'])
+                if (!$nuke_user_data[$z]['user_id'])
                     break;
 
-                if ($specific == $user_data[$z]['user_id'])
+                if ($specific == $nuke_user_data[$z]['user_id'])
                     {
-                $username = $user_data[$z]['username'];
+                $nuke_username = $nuke_user_data[$z]['username'];
                 break;
                     }
                 }
-        $location = str_replace('%u%', '<a href="'. (($url_qs) ? $url_ps .'?'. $url_qs : $url_ps) .'" class="copyright">'. $username .'</a>', $lang['BSH_Viewing_Profile']);
+        $location = str_replace('%u%', '<a href="'. (($url_qs) ? $url_ps .'?'. $url_qs : $url_ps) .'" class="copyright">'. $nuke_username .'</a>', $lang['BSH_Viewing_Profile']);
             }
 
         if ( (@strstr($url_qs, NUKE_POST_CAT_URL .'=')) && (@strstr($url_ps, 'index.')) )
@@ -191,23 +191,23 @@ function select_session_url($session_page, $url_qs, $url_ps, $specific, $level, 
                 $location = sprintf($lang['BSH_Searching_Forums'], '<a href="'. (($url_qs) ? $url_ps .'?'. $url_qs : $url_ps) .'" class="copyright">', '</a>');
             elseif (@strstr($url_ps, 'viewonline.'))
                 $location = sprintf($lang['BSH_Viewing_Onlinelist'], '<a href="'. (($url_qs) ? $url_ps .'?'. $url_qs : $url_ps) .'" class="copyright">', '</a>');
-            elseif ( (@strstr($url_ps, 'privmsg.')) && ($userdata['user_id'] != NUKE_ANONYMOUS) )
+            elseif ( (@strstr($url_ps, 'privmsg.')) && ($nuke_userdata['user_id'] != NUKE_ANONYMOUS) )
                 $location = sprintf($lang['BSH_Viewing_Messages'], '<a href="privmsg.'. $phpEx .'?mode=inbox" class="copyright">', '</a>');
-            elseif ( (@strstr($url_ps, 'privmsg.')) && ($userdata['user_id'] == NUKE_ANONYMOUS) )
+            elseif ( (@strstr($url_ps, 'privmsg.')) && ($nuke_userdata['user_id'] == NUKE_ANONYMOUS) )
                 $location = sprintf($lang['BSH_Viewing_Messages'], '', '');
             elseif (@strstr($url_ps, 'memberlist.'))
                 $location = sprintf($lang['BSH_Viewing_Memberlist'], '<a href="'. (($url_qs) ? $url_ps .'?'. $url_qs : $url_ps) .'" class="copyright">', '</a>');
             elseif ( (@strstr($url_ps, 'profile.')) && (@strstr($url_qs, 'mode=editprofile')) )
                 $location = sprintf($lang['BSH_Editing_Profile'], '<a href="'. (($url_qs) ? $url_ps .'?'. $url_qs : $url_ps) .'" class="copyright">', '</a>');
-            elseif ( (@strstr($url_ps, 'login.')) && ($userdata['user_id'] != NUKE_ANONYMOUS) )
+            elseif ( (@strstr($url_ps, 'login.')) && ($nuke_userdata['user_id'] != NUKE_ANONYMOUS) )
                 $location = sprintf($lang['BSH_Login'], '', '');
-            elseif ( (@strstr($url_ps, 'login.')) && ($userdata['user_id'] == NUKE_ANONYMOUS) )
+            elseif ( (@strstr($url_ps, 'login.')) && ($nuke_userdata['user_id'] == NUKE_ANONYMOUS) )
                 $location = sprintf($lang['BSH_Logout'], '', '');
             elseif (@strstr($url_ps, 'admin/'))
                 $location = sprintf($lang['BSH_Viewing_ACP'], '', '');
-            elseif ( (@strstr($url_ps, 'modcp.')) && ($userdata['user_level'] != NUKE_ADMIN) )
+            elseif ( (@strstr($url_ps, 'modcp.')) && ($nuke_userdata['user_level'] != NUKE_ADMIN) )
                 $location = sprintf($lang['BSH_Moderating_Forum'], '<a href="'. (($url_qs) ? $url_ps .'?'. $url_qs : $url_ps) .'" class="copyright">', '</a>');
-            elseif ( (@strstr($url_ps, 'modcp.')) && ($userdata['user_level'] != NUKE_ADMIN) )
+            elseif ( (@strstr($url_ps, 'modcp.')) && ($nuke_userdata['user_level'] != NUKE_ADMIN) )
                 $location = sprintf($lang['BSH_Moderating_Forum'], '', '');
             elseif (@strstr($url_ps, 'faq.'))
                 $location = sprintf($lang['BSH_Viewing_FAQ'], '<a href="'. (($url_qs) ? $url_ps .'?'. $url_qs : $url_ps) .'" class="copyright">', '</a>');
@@ -308,7 +308,7 @@ function select_session_url($session_page, $url_qs, $url_ps, $specific, $level, 
 // Adds/updates a new session to the database for the given userid.
 // Returns the new session ID on success.
 //
-function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_autologin = 0, $admin = 0)
+function nuke_session_begin($nuke_user_id, $nuke_user_ip, $page_id, $auto_create = 0, $enable_autologin = 0, $admin = 0)
 {
     global $nuke_db, $board_config, $HTTP_COOKIE_VARS, $HTTP_GET_VARS, $SID;
 
@@ -355,15 +355,15 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
     // First off attempt to join with the autologin value if we have one
     // If not, just use the user_id value
     //
-    $userdata = array();
+    $nuke_userdata = array();
 
-    if ($user_id != NUKE_ANONYMOUS)
+    if ($nuke_user_id != NUKE_ANONYMOUS)
     {
-        if (isset($sessiondata['autologinid']) && (string) $sessiondata['autologinid'] != '' && $user_id)
+        if (isset($sessiondata['autologinid']) && (string) $sessiondata['autologinid'] != '' && $nuke_user_id)
         {
             $sql = 'SELECT u.*
                 FROM (' . NUKE_USERS_TABLE . ' u, ' . NUKE_BB_SESSIONS_KEYS_TABLE . ' k)
-                WHERE u.user_id = ' . (int) $user_id . "
+                WHERE u.user_id = ' . (int) $nuke_user_id . "
                     AND u.user_active = 1
                     AND k.user_id = u.user_id
                     AND k.key_id = '" . md5($sessiondata['autologinid']) . "'";
@@ -372,7 +372,7 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
                 message_die(NUKE_CRITICAL_ERROR, 'Error doing DB query userdata row fetch', '', __LINE__, __FILE__, $sql);
             }
 
-            $userdata = $nuke_db->sql_fetchrow($result);
+            $nuke_userdata = $nuke_db->sql_fetchrow($result);
             $nuke_db->sql_freeresult($result);
 
             $enable_autologin = $login = 1;
@@ -380,18 +380,18 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
         else if (!$auto_create)
         {
             $sessiondata['autologinid'] = '';
-            $sessiondata['userid'] = $user_id;
+            $sessiondata['userid'] = $nuke_user_id;
 
             $sql = 'SELECT *
                 FROM ' . NUKE_USERS_TABLE . '
-                WHERE user_id = ' . (int) $user_id . '
+                WHERE user_id = ' . (int) $nuke_user_id . '
                     AND user_active = 1';
             if (!($result = $nuke_db->sql_query($sql, true)))
             {
                 message_die(NUKE_CRITICAL_ERROR, 'Error doing DB query userdata row fetch', '', __LINE__, __FILE__, $sql);
             }
 
-            $userdata = $nuke_db->sql_fetchrow($result);
+            $nuke_userdata = $nuke_db->sql_fetchrow($result);
             $nuke_db->sql_freeresult($result);
 
             $login = 1;
@@ -399,43 +399,43 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
     }
 
     //
-    // At this point either $userdata should be populated or
+    // At this point either $nuke_userdata should be populated or
     // one of the below is true
     // * Key didn't match one in the DB
     // * User does not exist
     // * User is inactive
     //
-    if (!count($userdata) || !is_array($userdata) || !$userdata)
+    if (!count($nuke_userdata) || !is_array($nuke_userdata) || !$nuke_userdata)
     {
         $sessiondata['autologinid'] = '';
-        $sessiondata['userid'] = $user_id = NUKE_ANONYMOUS;
+        $sessiondata['userid'] = $nuke_user_id = NUKE_ANONYMOUS;
         $enable_autologin = $login = 0;
 
         $sql = 'SELECT *
             FROM ' . NUKE_USERS_TABLE . '
-            WHERE user_id = ' . (int) $user_id;
+            WHERE user_id = ' . (int) $nuke_user_id;
         if (!($result = $nuke_db->sql_query($sql, true)))
         {
             message_die(NUKE_CRITICAL_ERROR, 'Error doing DB query userdata row fetch', '', __LINE__, __FILE__, $sql);
         }
 
-        $userdata = $nuke_db->sql_fetchrow($result);
+        $nuke_userdata = $nuke_db->sql_fetchrow($result);
         $nuke_db->sql_freeresult($result);
     }
 
     //
     // Initial ban check against user id, IP and email address
     //
-    preg_match('/(..)(..)(..)(..)/', $user_ip, $user_ip_parts);
+    preg_match('/(..)(..)(..)(..)/', $nuke_user_ip, $nuke_user_ip_parts);
 
     $sql = "SELECT ban_ip, ban_userid, ban_email
         FROM " . NUKE_BANLIST_TABLE . "
-        WHERE ban_ip IN ('" . $user_ip_parts[1] . $user_ip_parts[2] . $user_ip_parts[3] . $user_ip_parts[4] . "', '" . $user_ip_parts[1] . $user_ip_parts[2] . $user_ip_parts[3] . "ff', '" . $user_ip_parts[1] . $user_ip_parts[2] . "ffff', '" . $user_ip_parts[1] . "ffffff')
-            OR ban_userid = '$user_id'";
-    if ( $user_id != NUKE_ANONYMOUS )
+        WHERE ban_ip IN ('" . $nuke_user_ip_parts[1] . $nuke_user_ip_parts[2] . $nuke_user_ip_parts[3] . $nuke_user_ip_parts[4] . "', '" . $nuke_user_ip_parts[1] . $nuke_user_ip_parts[2] . $nuke_user_ip_parts[3] . "ff', '" . $nuke_user_ip_parts[1] . $nuke_user_ip_parts[2] . "ffff', '" . $nuke_user_ip_parts[1] . "ffffff')
+            OR ban_userid = '$nuke_user_id'";
+    if ( $nuke_user_id != NUKE_ANONYMOUS )
     {
-        $sql .= " OR ban_email LIKE '" . str_replace("\'", "''", $userdata['user_email']) . "'
-            OR ban_email LIKE '" . substr(str_replace("\'", "''", $userdata['user_email']), strpos(str_replace("\'", "''", $userdata['user_email']), "@")) . "'";
+        $sql .= " OR ban_email LIKE '" . str_replace("\'", "''", $nuke_userdata['user_email']) . "'
+            OR ban_email LIKE '" . substr(str_replace("\'", "''", $nuke_userdata['user_email']), strpos(str_replace("\'", "''", $nuke_userdata['user_email']), "@")) . "'";
     }
     if ( !($result = $nuke_db->sql_query($sql, true)) )
     {
@@ -454,16 +454,16 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
     // Create or update the session
     //
     $sql = "UPDATE " . NUKE_BB_SESSIONS_TABLE . "
-        SET session_user_id = $user_id, session_start = $current_time, session_time = $current_time, session_page = $page_id, session_logged_in = $login, session_admin = $admin
+        SET session_user_id = $nuke_user_id, session_start = $current_time, session_time = $current_time, session_page = $page_id, session_logged_in = $login, session_admin = $admin
         WHERE session_id = '" . $session_id . "'
-            AND session_ip = '$user_ip'";
+            AND session_ip = '$nuke_user_ip'";
     if ( !$nuke_db->sql_query($sql) || !$nuke_db->sql_affectedrows() )
     {
         $session_id = md5(dss_rand());
 
         $sql = "INSERT INTO " . NUKE_BB_SESSIONS_TABLE . "
             (session_id, session_user_id, session_start, session_time, session_ip, session_page, session_logged_in, session_admin)
-            VALUES ('$session_id', '$user_id', '$current_time', '$current_time', '$user_ip', '$page_id', '$login', '$admin')";
+            VALUES ('$session_id', '$nuke_user_id', '$current_time', '$current_time', '$nuke_user_ip', '$page_id', '$login', '$admin')";
         if ( !$nuke_db->sql_query($sql) )
         {
                 $error = TRUE;
@@ -499,15 +499,15 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
                 }
     }
 
-    if ( $user_id != NUKE_ANONYMOUS )
+    if ( $nuke_user_id != NUKE_ANONYMOUS )
     {
-        $last_visit = ( $userdata['user_session_time'] > 0 ) ? $userdata['user_session_time'] : $current_time;
+        $last_visit = ( $nuke_userdata['user_session_time'] > 0 ) ? $nuke_userdata['user_session_time'] : $current_time;
         if (!$admin)
         {
 
         $sql = "UPDATE " . NUKE_USERS_TABLE . "
             SET user_session_time = $current_time, user_session_page = $page_id, user_lastvisit = $last_visit
-            WHERE user_id = '$user_id'";
+            WHERE user_id = '$nuke_user_id'";
         if ( !$nuke_db->sql_query($sql) )
         {
             message_die(NUKE_CRITICAL_ERROR, 'Error updating last visit time', '', __LINE__, __FILE__, $sql);
@@ -515,7 +515,7 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
 
         }
 
-        $userdata['user_lastvisit'] = $last_visit;
+        $nuke_userdata['user_lastvisit'] = $last_visit;
 
         //
         // Regenerate the auto-login key
@@ -527,13 +527,13 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
             if (isset($sessiondata['autologinid']) && (string) $sessiondata['autologinid'] != '')
             {
                 $sql = 'UPDATE ' . NUKE_BB_SESSIONS_KEYS_TABLE . "
-                    SET last_ip = '$user_ip', key_id = '" . md5($auto_login_key) . "', last_login = $current_time
+                    SET last_ip = '$nuke_user_ip', key_id = '" . md5($auto_login_key) . "', last_login = $current_time
                     WHERE key_id = '" . md5($sessiondata['autologinid']) . "'";
             }
             else
             {
                 $sql = 'INSERT INTO ' . NUKE_BB_SESSIONS_KEYS_TABLE . "(key_id, user_id, last_ip, last_login)
-                    VALUES ('" . md5($auto_login_key) . "', $user_id, '$user_ip', $current_time)";
+                    VALUES ('" . md5($auto_login_key) . "', $nuke_user_id, '$nuke_user_ip', $current_time)";
             }
 
             if ( !$nuke_db->sql_query($sql) )
@@ -550,25 +550,25 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
         }
 
 //        $sessiondata['autologinid'] = (!$admin) ? (( $enable_autologin && $sessionmethod == NUKE_SESSION_METHOD_COOKIE ) ? $auto_login_key : '') : $sessiondata['autologinid'];
-        $sessiondata['userid'] = $user_id;
+        $sessiondata['userid'] = $nuke_user_id;
     }
 
-    $userdata['session_id'] = $session_id;
-    $userdata['session_ip'] = $user_ip;
-    $userdata['session_user_id'] = $user_id;
-    $userdata['session_logged_in'] = $login;
-    $userdata['session_page'] = $page_id;
-    $userdata['session_start'] = $current_time;
-    $userdata['session_time'] = $current_time;
-    $userdata['session_admin'] = $admin;
-    $userdata['session_key'] = $sessiondata['autologinid'];
+    $nuke_userdata['session_id'] = $session_id;
+    $nuke_userdata['session_ip'] = $nuke_user_ip;
+    $nuke_userdata['session_user_id'] = $nuke_user_id;
+    $nuke_userdata['session_logged_in'] = $login;
+    $nuke_userdata['session_page'] = $page_id;
+    $nuke_userdata['session_start'] = $current_time;
+    $nuke_userdata['session_time'] = $current_time;
+    $nuke_userdata['session_admin'] = $admin;
+    $nuke_userdata['session_key'] = $sessiondata['autologinid'];
     setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000, $cookiepath, $cookiedomain, $cookiesecure);
     setcookie($cookiename . '_sid', $session_id, 0, $cookiepath, $cookiedomain, $cookiesecure);
 	setcookie($cookiename . '_fpass', '', $current_time - 31536000, $cookiepath, $cookiedomain, $cookiesecure);
 	// Add the session_key to the userdata array if it is set
     $SID = 'sid=' . $session_id;
 
-    return $userdata;
+    return $nuke_userdata;
 }
 
 //
@@ -576,7 +576,7 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
 // sessions at each page refresh
 //
 // modded by Quake for NOT using $nukeuser
-function session_pagestart($user_ip, $thispage_id, $trash=0)
+function session_pagestart($nuke_user_ip, $thispage_id, $trash=0)
 {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
@@ -594,7 +594,7 @@ function session_pagestart($user_ip, $thispage_id, $trash=0)
     $cookiesecure = $board_config['cookie_secure'];
 
     $current_time = time();
-    unset($userdata);
+    unset($nuke_userdata);
 
     if ( isset($HTTP_COOKIE_VARS[$cookiename . '_sid']) || isset($HTTP_COOKIE_VARS[$cookiename . '_data']) )
     {
@@ -612,7 +612,7 @@ function session_pagestart($user_ip, $thispage_id, $trash=0)
    {
       $session_id = '';
    }
-   if (!empty($cookie) && empty($userdata['session_logged_in'])) {
+   if (!empty($cookie) && empty($nuke_userdata['session_logged_in'])) {
        bblogin($session_id);
    } else {
        $thispage_id = intval($thispage_id);
@@ -673,7 +673,7 @@ if ( isset($HTTP_GET_VARS['pc_tzo']) )
             message_die(NUKE_CRITICAL_ERROR, 'Error doing DB query userdata row fetch', '', __LINE__, __FILE__, $sql);
         }
 
-        $userdata = $nuke_db->sql_fetchrow($result);
+        $nuke_userdata = $nuke_db->sql_fetchrow($result);
         $nuke_db->sql_freeresult($result);
 
 /*****[BEGIN]******************************************
@@ -687,15 +687,15 @@ if ( isset($HTTP_GET_VARS['pc_tzo']) )
         //
         // Did the session exist in the DB?
         //
-        if ( isset($userdata['user_id']) )
+        if ( isset($nuke_userdata['user_id']) )
         {
             //
             // Do not check IP assuming equivalence, if IPv4 we'll check only first 24
             // bits ... I've been told (by vHiker) this should alleviate problems with
             // load balanced et al proxies while retaining some reliance on IP security.
             //
-            $ip_check_s = substr($userdata['session_ip'], 0, 6);
-            $ip_check_u = substr($user_ip, 0, 6);
+            $ip_check_s = substr($nuke_userdata['session_ip'], 0, 6);
+            $ip_check_u = substr($nuke_user_ip, 0, 6);
 
             if ($ip_check_s == $ip_check_u)
             {
@@ -707,23 +707,23 @@ if ( isset($HTTP_GET_VARS['pc_tzo']) )
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-                if ( $current_time - $userdata['session_time'] > 60 || $pc_dateTime_update == True)
+                if ( $current_time - $nuke_userdata['session_time'] > 60 || $pc_dateTime_update == True)
 /*****[END]********************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
                 {
                     // A little trick to reset session_admin on session re-usage
-                    $update_admin = (!defined('IN_ADMIN') && $current_time - $userdata['session_time'] > ($board_config['session_length']+60)) ? ', session_admin = 0' : '';
+                    $update_admin = (!defined('IN_ADMIN') && $current_time - $nuke_userdata['session_time'] > ($board_config['session_length']+60)) ? ', session_admin = 0' : '';
 
                     $sql = "UPDATE " . NUKE_BB_SESSIONS_TABLE . "
                         SET session_time = '$current_time', session_page = $thispage_id$update_admin
-                        WHERE session_id = '" . $userdata['session_id'] . "'";
+                        WHERE session_id = '" . $nuke_userdata['session_id'] . "'";
                     if ( !$nuke_db->sql_query($sql) )
                     {
                         message_die(NUKE_CRITICAL_ERROR, 'Error updating sessions table', '', __LINE__, __FILE__, $sql);
                     }
 
-                    if ( $userdata['user_id'] != NUKE_ANONYMOUS )
+                    if ( $nuke_userdata['user_id'] != NUKE_ANONYMOUS )
                     {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
@@ -737,7 +737,7 @@ if ( isset($HTTP_GET_VARS['pc_tzo']) )
                         }
                         $sql = "UPDATE " . NUKE_USERS_TABLE . "
                             SET user_session_time = '$current_time', user_session_page = '$thispage_id' " . $update_pc_timeOffsets . "
-                            WHERE user_id = " . $userdata['user_id'];
+                            WHERE user_id = " . $nuke_userdata['user_id'];
 /*****[END]********************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
@@ -748,7 +748,7 @@ if ( isset($HTTP_GET_VARS['pc_tzo']) )
                     }
 
                     //
-                    session_clean($userdata['session_id']);
+                    session_clean($nuke_userdata['session_id']);
 
                     setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000, $cookiepath, $cookiedomain, $cookiesecure);
                     setcookie($cookiename . '_sid', $session_id, 0, $cookiepath, $cookiedomain, $cookiesecure);
@@ -758,10 +758,10 @@ if ( isset($HTTP_GET_VARS['pc_tzo']) )
 				// Add the session_key to the userdata array if it is set
 				if ( isset($sessiondata['autologinid']) && $sessiondata['autologinid'] != '' )
 				{
-					$userdata['session_key'] = $sessiondata['autologinid'];
+					$nuke_userdata['session_key'] = $sessiondata['autologinid'];
 				}
 
-                return $userdata;
+                return $nuke_userdata;
             }
         }
     }
@@ -770,18 +770,18 @@ if ( isset($HTTP_GET_VARS['pc_tzo']) )
     // If we reach here then no (valid) session exists. So we'll create a new one,
     // using the cookie user_id if available to pull basic user prefs.
     //
-    $user_id = ( isset($sessiondata['userid']) ) ? intval($sessiondata['userid']) : NUKE_ANONYMOUS;
+    $nuke_user_id = ( isset($sessiondata['userid']) ) ? intval($sessiondata['userid']) : NUKE_ANONYMOUS;
 
-    if ( !($userdata = session_begin($user_id, $user_ip, $thispage_id, TRUE)) )
+    if ( !($nuke_userdata = nuke_session_begin($nuke_user_id, $nuke_user_ip, $thispage_id, TRUE)) )
     {
         message_die(NUKE_CRITICAL_ERROR, 'Error creating user session', '', __LINE__, __FILE__, $sql);
     }
-    global $userinfo;
-    if (!empty($userinfo) && is_array($userinfo)) {
-        $userdata =& $userinfo;
+    global $nuke_userinfo;
+    if (!empty($nuke_userinfo) && is_array($nuke_userinfo)) {
+        $nuke_userdata =& $nuke_userinfo;
     }
 
-    return $userdata;
+    return $nuke_userdata;
 
 }
 
@@ -790,9 +790,9 @@ if ( isset($HTTP_GET_VARS['pc_tzo']) )
 * It will delete the entry in the sessions table for this session,
 * remove the corresponding auto-login key and reset the cookies
 */
-function session_end($session_id, $user_id)
+function session_end($session_id, $nuke_user_id)
 {
-    global $nuke_db, $lang, $board_config, $userdata;
+    global $nuke_db, $lang, $board_config, $nuke_userdata;
     global $HTTP_COOKIE_VARS, $HTTP_GET_VARS, $SID;
 
     $cookiename = $board_config['cookie_name'];
@@ -812,7 +812,7 @@ function session_end($session_id, $user_id)
     //
     $sql = 'DELETE FROM ' . NUKE_BB_SESSIONS_TABLE . "
         WHERE session_id = '$session_id'
-            AND session_user_id = $user_id";
+            AND session_user_id = $nuke_user_id";
     if ( !$nuke_db->sql_query($sql) )
     {
         message_die(NUKE_CRITICAL_ERROR, 'Error removing user session', '', __LINE__, __FILE__, $sql);
@@ -821,11 +821,11 @@ function session_end($session_id, $user_id)
     //
     // Remove this auto-login entry (if applicable)
     //
-    if ( isset($userdata['session_key']) && $userdata['session_key'] != '' )
+    if ( isset($nuke_userdata['session_key']) && $nuke_userdata['session_key'] != '' )
     {
-        $autologin_key = md5($userdata['session_key']);
+        $autologin_key = md5($nuke_userdata['session_key']);
         $sql = 'DELETE FROM ' . NUKE_BB_SESSIONS_KEYS_TABLE . '
-            WHERE user_id = ' . (int) $user_id . "
+            WHERE user_id = ' . (int) $nuke_user_id . "
                 AND key_id = '$autologin_key'";
         if ( !$nuke_db->sql_query($sql) )
         {
@@ -835,7 +835,7 @@ function session_end($session_id, $user_id)
 
     //
     // We expect that message_die will be called after this function,
-    // but just in case it isn't, reset $userdata to the details for a guest
+    // but just in case it isn't, reset $nuke_userdata to the details for a guest
     //
     $sql = 'SELECT *
         FROM ' . NUKE_USERS_TABLE . '
@@ -844,7 +844,7 @@ function session_end($session_id, $user_id)
     {
         message_die(NUKE_CRITICAL_ERROR, 'Error obtaining user details', '', __LINE__, __FILE__, $sql);
     }
-    if ( !($userdata = $nuke_db->sql_fetchrow($result)) )
+    if ( !($nuke_userdata = $nuke_db->sql_fetchrow($result)) )
     {
         message_die(NUKE_CRITICAL_ERROR, 'Error obtaining user details', '', __LINE__, __FILE__, $sql);
     }
@@ -893,14 +893,14 @@ function session_clean($session_id)
 * Reset all login keys for the specified user
 * Called on password changes
 */
-function session_reset_keys($user_id, $user_ip)
+function session_reset_keys($nuke_user_id, $nuke_user_ip)
 {
-	global $nuke_db, $userdata, $board_config;
+	global $nuke_db, $nuke_userdata, $board_config;
 
-	$key_sql = ($user_id == $userdata['user_id'] && !empty($userdata['session_key'])) ? "AND key_id != '" . md5($userdata['session_key']) . "'" : '';
+	$key_sql = ($nuke_user_id == $nuke_userdata['user_id'] && !empty($nuke_userdata['session_key'])) ? "AND key_id != '" . md5($nuke_userdata['session_key']) . "'" : '';
 
 	$sql = 'DELETE FROM ' . NUKE_BB_SESSIONS_KEYS_TABLE . '
-		WHERE user_id = ' . (int) $user_id . "
+		WHERE user_id = ' . (int) $nuke_user_id . "
 			$key_sql";
 
 	if ( !$nuke_db->sql_query($sql) )
@@ -908,8 +908,8 @@ function session_reset_keys($user_id, $user_ip)
 		message_die(NUKE_CRITICAL_ERROR, 'Error removing auto-login keys', '', __LINE__, __FILE__, $sql);
 	}
 
-	$where_sql = 'session_user_id = ' . (int) $user_id;
-	$where_sql .= ($user_id == $userdata['user_id']) ? " AND session_id <> '" . $userdata['session_id'] . "'" : '';
+	$where_sql = 'session_user_id = ' . (int) $nuke_user_id;
+	$where_sql .= ($nuke_user_id == $nuke_userdata['user_id']) ? " AND session_id <> '" . $nuke_userdata['session_id'] . "'" : '';
 	$sql = 'DELETE FROM ' . NUKE_BB_SESSIONS_TABLE . "
 		WHERE $where_sql";
 	if ( !$nuke_db->sql_query($sql) )
@@ -924,8 +924,8 @@ function session_reset_keys($user_id, $user_ip)
 		$current_time = time();
 
 		$sql = 'UPDATE ' . NUKE_BB_SESSIONS_KEYS_TABLE . "
-			SET last_ip = '$user_ip', key_id = '" . md5($auto_login_key) . "', last_login = $current_time
-			WHERE key_id = '" . md5($userdata['session_key']) . "'";
+			SET last_ip = '$nuke_user_ip', key_id = '" . md5($auto_login_key) . "', last_login = $current_time
+			WHERE key_id = '" . md5($nuke_userdata['session_key']) . "'";
 
 		if ( !$nuke_db->sql_query($sql) )
 		{
@@ -933,7 +933,7 @@ function session_reset_keys($user_id, $user_ip)
 		}
 
 		// And now rebuild the cookie
-		$sessiondata['userid'] = $user_id;
+		$sessiondata['userid'] = $nuke_user_id;
 		$sessiondata['autologinid'] = $auto_login_key;
 		$cookiename = $board_config['cookie_name'];
 		$cookiepath = $board_config['cookie_path'];
@@ -942,7 +942,7 @@ function session_reset_keys($user_id, $user_ip)
 
 		setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000, $cookiepath, $cookiedomain, $cookiesecure);
 
-		$userdata['session_key'] = $auto_login_key;
+		$nuke_userdata['session_key'] = $auto_login_key;
 		unset($sessiondata);
 		unset($auto_login_key);
 	}
@@ -956,7 +956,7 @@ function session_reset_keys($user_id, $user_ip)
 //
 function append_sid($url, $non_html_amp = false)
 {
-    global $SID, $admin, $userdata;
+    global $SID, $admin, $nuke_userdata;
     if (preg_match("/admin=1/", $url) || preg_match("/admin\_/", $url) || preg_match("/pane=/", $url)){
                                 //  The format is fine, don't change a thing.
     } else if (preg_match("/Your\_Account/", $url)){
@@ -1020,7 +1020,7 @@ function append_sid($url, $non_html_amp = false)
     global $agent;
     if ($agent['engine'] == 'bot') return $url;
 
-    if (isset($userdata['user_level']) && $userdata['user_level'] > 1) {
+    if (isset($nuke_userdata['user_level']) && $nuke_userdata['user_level'] > 1) {
         if ( !empty($SID) && !preg_match('/sid=/i', $url) )
         {
             $url .= ( ( strpos($url, '?') !== false ) ?  ( ( $non_html_amp ) ? '&' : '&amp;' ) : '?' ) . $SID;

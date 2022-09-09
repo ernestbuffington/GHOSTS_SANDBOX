@@ -96,15 +96,15 @@ GROUP BY SUBSTRING_INDEX(user_regdate,' ',-1), SUBSTRING_INDEX(user_regdate,' ',
 
 $result = $core->sql_query($sql, 'Couldn\'t retrieve users data');
 
-$user_count = $core->sql_numrows($result);
-$user_data = $core->sql_fetchrowset($result);
+$nuke_user_count = $core->sql_numrows($result);
+$nuke_user_data = $core->sql_fetchrowset($result);
 
 $month_array = array();
 
-for ($i = 0; $i < $user_count; $i++)
+for ($i = 0; $i < $nuke_user_count; $i++)
 {
-        $user_data[$i]['month_regdate'] = DateFixMonth($user_data[$i]['month_regdate']);
-    $month_array[$user_data[$i]['year_regdate']][($user_data[$i]['month_regdate']-1)]['num_user'] = $user_data[$i]['num_user'];
+        $nuke_user_data[$i]['month_regdate'] = DateFixMonth($nuke_user_data[$i]['month_regdate']);
+    $month_array[$nuke_user_data[$i]['year_regdate']][($nuke_user_data[$i]['month_regdate']-1)]['num_user'] = $nuke_user_data[$i]['num_user'];
 }
 
 @reset($month_array);

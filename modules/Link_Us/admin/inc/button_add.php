@@ -32,7 +32,7 @@ global $identify;
 
 LinkusAdminMain();
 
-	$config = $nuke_db->sql_ufetchrow("SELECT * FROM `".$prefix."_link_us_config` LIMIT 0,1");
+	$nuke_config = $nuke_db->sql_ufetchrow("SELECT * FROM `".$prefix."_link_us_config` LIMIT 0,1");
 	
 	$ip = $identify->get_ip();
 
@@ -50,7 +50,7 @@ echo "	<td width='40%'><input type='text' name='site_url' size='50'></td>";
 echo " </tr>";
 echo " <tr>";
 echo "	<td width='40%'><b>".$lang_new[$module_name]['SITE_IMAGE'].":</b></td>";
-if($config['button_method'] == 1){ $type = "type='input'"; } else { $type = "type='file'"; }
+if($nuke_config['button_method'] == 1){ $type = "type='input'"; } else { $type = "type='file'"; }
 echo "      <td width='40%'><input name='site_image' ".$type." size='50'><br />( ".$lang_new[$module_name]['IMAGE_TYPES'].": JPEG, PJPEG, JPG, GIF & PNG )</td>";
 echo " </tr>";
 echo " <tr><td colspan='2'>";
@@ -61,9 +61,9 @@ echo " </tr>";
 echo " <tr>";
 echo "     <td width='40%'><b>".$lang_new[$module_name]['BUTTON_TYPE'].":</b></td>";
 echo "     <td width='40%'>
-	<input name='button_type' type='radio' value='1' checked> ".$lang_new[$module_name]['STANDARD_BUTTONS']." ( ".$lang_new[$module_name]['WIDTH']." = " .$config['button_width'] ." x ".$lang_new[$module_name]['HEIGHT']." = ".$config['button_height']." )<br />
-	<input name='button_type' type='radio' value='2'> ".$lang_new[$module_name]['BANNER_BUTTONS']." ( ".$lang_new[$module_name]['WIDTH']." = " .$config['button_banner_width'] ." x ".$lang_new[$module_name]['HEIGHT']." = ".$config['button_banner_height']." )<br />
-	<input name='button_type' type='radio' value='3'> ".$lang_new[$module_name]['RESOURCE_BUTTONS']." ( ".$lang_new[$module_name]['WIDTH']." = " .$config['button_ressource_width'] ." x ".$lang_new[$module_name]['HEIGHT']." = ".$config['button_ressource_height']." )</td>";
+	<input name='button_type' type='radio' value='1' checked> ".$lang_new[$module_name]['STANDARD_BUTTONS']." ( ".$lang_new[$module_name]['WIDTH']." = " .$nuke_config['button_width'] ." x ".$lang_new[$module_name]['HEIGHT']." = ".$nuke_config['button_height']." )<br />
+	<input name='button_type' type='radio' value='2'> ".$lang_new[$module_name]['BANNER_BUTTONS']." ( ".$lang_new[$module_name]['WIDTH']." = " .$nuke_config['button_banner_width'] ." x ".$lang_new[$module_name]['HEIGHT']." = ".$nuke_config['button_banner_height']." )<br />
+	<input name='button_type' type='radio' value='3'> ".$lang_new[$module_name]['RESOURCE_BUTTONS']." ( ".$lang_new[$module_name]['WIDTH']." = " .$nuke_config['button_ressource_width'] ." x ".$lang_new[$module_name]['HEIGHT']." = ".$nuke_config['button_ressource_height']." )</td>";
 echo "   </tr>";
 
 echo "<tr><td><strong>".$lang_new[$module_name]['SUB_YOUR_NAME'].":</strong></td><td><input type='test' name='user_name' size='50'></td></tr>\n";
@@ -80,7 +80,7 @@ echo "<br />";
 echo "<input name='site_hits' type='hidden' value='0'>";
 echo "<input name='site_status' type='hidden' value='1'>";
 echo "<input name='date_added' type='hidden' value='".time()."'>";
-echo "<input type='hidden' name='user_id' value='".$userinfo['user_id']."'>\n";
+echo "<input type='hidden' name='user_id' value='".$nuke_userinfo['user_id']."'>\n";
 echo "<input type='hidden' name='user_ip' value='".$ip."'>\n";
 echo "<input name='op' type='hidden' value='insert_button'>";
 echo "<center><input name='submit' type='submit' value='".$lang_new[$module_name]['ADD_LINK_BUTTON']."'></center>";

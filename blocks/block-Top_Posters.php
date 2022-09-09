@@ -24,7 +24,7 @@ if ( !defined('BLOCK_FILE') ) {
     exit;
 }
 
-global $user, $prefix, $nuke_db, $nxp_toppost_post, $nxp_toppost_poin;
+global $nuke_user, $prefix, $nuke_db, $nxp_toppost_post, $nxp_toppost_poin;
 
 $nxp_toppost_config = array(
      'show_mini' => 5, //number of members to show in block, default=5
@@ -152,9 +152,9 @@ while($nxp_toppost_user_info = $nuke_db->sql_fetchrow($R02))
 		// {
 		// 	$nxp_toppost_from_imag = "<img src='images/blank.gif' width='17' height='11'>";
 		// }
-		$user_flag 		= str_replace('.png','',$nxp_toppost_user_info['user_from_flag']);
+		$nuke_user_flag 		= str_replace('.png','',$nxp_toppost_user_info['user_from_flag']);
         if ($nxp_toppost_user_info['user_from_flag']):
-            $nxp_toppost_from_imag      = '<span class="countries '.$user_flag.'"'.(($nxp_toppost_user_info['user_from']) ? 'title="'.$nxp_toppost_user_info['user_from'].'"' : '').'></span>';
+            $nxp_toppost_from_imag      = '<span class="countries '.$nuke_user_flag.'"'.(($nxp_toppost_user_info['user_from']) ? 'title="'.$nxp_toppost_user_info['user_from'].'"' : '').'></span>';
         else:
             $nxp_toppost_from_imag      = '<span class="countries unknown"></span>';
         endif;			

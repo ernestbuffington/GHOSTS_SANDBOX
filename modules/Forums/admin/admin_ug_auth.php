@@ -48,7 +48,7 @@ if( !empty($setmodules) )
 //
 // Load default header
 //
-$no_page_header = TRUE;
+$no_nuke_page_header = TRUE;
 
 $phpbb2_root_path = "./../";
 require($phpbb2_root_path . 'extension.inc');
@@ -68,7 +68,7 @@ while( list($var, $param) = @each($params) )
         }
 }
 
-$user_id = intval($user_id);
+$nuke_user_id = intval($nuke_user_id);
 $group_id = intval($group_id);
 $adv = intval($adv);
 $mode = htmlspecialchars($mode);
@@ -84,7 +84,7 @@ $forum_auth_fields = array('auth_view', 'auth_read', 'auth_post', 'auth_reply', 
  [ Mod:     Global Announcements               v1.2.8 ]
  ******************************************************/
 
-$auth_field_match = array(
+$nuke_auth_field_match = array(
         'auth_view' => NUKE_AUTH_VIEW,
         'auth_read' => NUKE_AUTH_READ,
         'auth_post' => NUKE_AUTH_POST,
@@ -126,7 +126,7 @@ $field_names = array(
 /*****[BEGIN]******************************************
  [ Mod:    Attachment Mod                      v2.4.1 ]
  ******************************************************/
-attach_setup_usergroup_auth($forum_auth_fields, $auth_field_match, $field_names);
+attach_setup_usergroup_auth($forum_auth_fields, $nuke_auth_field_match, $field_names);
 /*****[END]********************************************
  [ Mod:    Attachment Mod                      v2.4.1 ]
  ******************************************************/
@@ -136,7 +136,7 @@ attach_setup_usergroup_auth($forum_auth_fields, $auth_field_match, $field_names)
 //
 function check_auth($type, $key, $u_access, $is_admin)
 {
-        $auth_user = 0;
+        $nuke_auth_user = 0;
 
         if( count($u_access) )
         {
@@ -156,23 +156,23 @@ function check_auth($type, $key, $u_access, $is_admin)
                                         break;
                         }
 
-                        $auth_user = $auth_user || $result;
+                        $nuke_auth_user = $nuke_auth_user || $result;
                 }
         }
         else
         {
-                $auth_user = $is_admin;
+                $nuke_auth_user = $is_admin;
         }
 
-        return $auth_user;
+        return $nuke_auth_user;
 }
 //
 // End Functions
 // -------------
 
-if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 'group' && $group_id ) ) )
+if ( isset($_POST['submit']) && ( ( $mode == 'user' && $nuke_user_id ) || ( $mode == 'group' && $group_id ) ) )
 {
-        $user_level = '';
+        $nuke_user_level = '';
         if ( $mode == 'user' )
         {
                 //
@@ -180,7 +180,7 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
                 //
                 $sql = "SELECT g.group_id, u.user_level
                         FROM " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_USERS_TABLE . " u, " . NUKE_GROUPS_TABLE . " g
-                        WHERE u.user_id = '$user_id'
+                        WHERE u.user_id = '$nuke_user_id'
                                 AND ug.user_id = u.user_id
                                 AND g.group_id = ug.group_id
                                 AND g.group_single_user = " . TRUE;
@@ -192,7 +192,7 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
                 $row = $nuke_db->sql_fetchrow($result);
 
                 $group_id = intval($row['group_id']);
-                $user_level = intval($row['user_level']);
+                $nuke_user_level = intval($row['user_level']);
 
                 $nuke_db->sql_freeresult($result);
         }
@@ -200,17 +200,17 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
         //
         // Carry out requests
         //
-        if ( $mode == 'user' && $_POST['userlevel'] == 'admin' && $user_level != NUKE_ADMIN )
+        if ( $mode == 'user' && $_POST['userlevel'] == 'admin' && $nuke_user_level != NUKE_ADMIN )
         {
                 //
                 // Make user an admin (if already user)
                 //
-            if ( $userdata['user_id'] != $user_id )
+            if ( $nuke_userdata['user_id'] != $nuke_user_id )
 
                 {
                         $sql = "UPDATE " . NUKE_USERS_TABLE . "
                                 SET user_level = " . NUKE_ADMIN . "
-                                WHERE user_id = '$user_id'";
+                                WHERE user_id = '$nuke_user_id'";
                         if ( !($result = $nuke_db->sql_query($sql)) )
                         {
                                 message_die(NUKE_GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
@@ -248,13 +248,13 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
         }
         else
         {
-                if ( $mode == 'user' && $_POST['userlevel'] == 'user' && $user_level == NUKE_ADMIN )
+                if ( $mode == 'user' && $_POST['userlevel'] == 'user' && $nuke_user_level == NUKE_ADMIN )
                 {
                         //
                         // Make admin a user (if already admin) ... ignore if you're trying
                         // to change yourself from an admin to user!
                         //
-                        if ( $userdata['user_id'] != $user_id )
+                        if ( $nuke_userdata['user_id'] != $nuke_user_id )
                         {
 /*****[BEGIN]******************************************
  [ Mod:     Global Announcements               v1.2.8 ]
@@ -275,7 +275,7 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
                                 //
                                 $sql = "UPDATE " . NUKE_USERS_TABLE . "
                                         SET user_level = " . NUKE_USER . "
-                                        WHERE user_id = '$user_id'";
+                                        WHERE user_id = '$nuke_user_id'";
                                 if ( !($result = $nuke_db->sql_query($sql)) )
                                 {
                                         message_die(NUKE_GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
@@ -319,11 +319,11 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
 
             				while( list($forum_id, $value) = @each($_POST['private']) )
             				{
-            					while( list($auth_field, $exists) = @each($forum_auth_level_fields[$forum_id]) )
+            					while( list($nuke_auth_field, $exists) = @each($forum_auth_level_fields[$forum_id]) )
             					{
             						if ($exists)
             						{
-            							$change_acl_list[$forum_id][$auth_field] = $value;
+            							$change_acl_list[$forum_id][$nuke_auth_field] = $value;
             						}
             					}
             				}
@@ -333,11 +333,11 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
                                 $change_acl_list = array();
                                 for($j = 0; $j < count($forum_auth_fields); $j++)
                                 {
-                                        $auth_field = $forum_auth_fields[$j];
+                                        $nuke_auth_field = $forum_auth_fields[$j];
 
-                                        while( list($forum_id, $value) = @each($_POST['private_' . $auth_field]) )
+                                        while( list($forum_id, $value) = @each($_POST['private_' . $nuke_auth_field]) )
                                         {
-                                                $change_acl_list[$forum_id][$auth_field] = $value;
+                                                $change_acl_list[$forum_id][$nuke_auth_field] = $value;
                                         }
                                 }
                         }
@@ -359,16 +359,16 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
                         }
                         $nuke_db->sql_freeresult($result);
 
-                        $sql = ( $mode == 'user' ) ? "SELECT aa.* FROM " . NUKE_AUTH_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = " . TRUE : "SELECT * FROM " . NUKE_AUTH_ACCESS_TABLE . " WHERE group_id = '$group_id'";
+                        $sql = ( $mode == 'user' ) ? "SELECT aa.* FROM " . NUKE_AUTH_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE. " g WHERE ug.user_id = $nuke_user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = " . TRUE : "SELECT * FROM " . NUKE_AUTH_ACCESS_TABLE . " WHERE group_id = '$group_id'";
                         if ( !($result = $nuke_db->sql_query($sql)) )
                         {
                                 message_die(NUKE_GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
                         }
 
-                        $auth_access = array();
+                        $nuke_auth_access = array();
                         while( $row = $nuke_db->sql_fetchrow($result) )
                         {
-                                $auth_access[$row['forum_id']] = $row;
+                                $nuke_auth_access[$row['forum_id']] = $row;
                         }
                         $nuke_db->sql_freeresult($result);
 
@@ -381,8 +381,8 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
                                 $forum_id = $forum_access[$i]['forum_id'];
 
                                 if (
-                                        ( isset($auth_access[$forum_id]['auth_mod']) && $change_mod_list[$forum_id] != $auth_access[$forum_id]['auth_mod'] ) ||
-                    					( !isset($auth_access[$forum_id]['auth_mod']) && !empty($change_mod_list[$forum_id]) )
+                                        ( isset($nuke_auth_access[$forum_id]['auth_mod']) && $change_mod_list[$forum_id] != $nuke_auth_access[$forum_id]['auth_mod'] ) ||
+                    					( !isset($nuke_auth_access[$forum_id]['auth_mod']) && !empty($change_mod_list[$forum_id]) )
                     				)
                     				{
                     					$update_mod_status[$forum_id] = $change_mod_list[$forum_id];
@@ -391,7 +391,7 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
                                         {
                                                 $forum_auth_action[$forum_id] = 'delete';
                                         }
-                                        else if ( !isset($auth_access[$forum_id]['auth_mod']) )
+                                        else if ( !isset($nuke_auth_access[$forum_id]['auth_mod']) )
                                         {
                                                 $forum_auth_action[$forum_id] = 'insert';
                                         }
@@ -403,33 +403,33 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
 
                                 for($j = 0; $j < count($forum_auth_fields); $j++)
                                 {
-                                        $auth_field = $forum_auth_fields[$j];
+                                        $nuke_auth_field = $forum_auth_fields[$j];
 
-                                        if( $forum_access[$i][$auth_field] == NUKE_AUTH_ACL && isset($change_acl_list[$forum_id][$auth_field]) )
+                                        if( $forum_access[$i][$nuke_auth_field] == NUKE_AUTH_ACL && isset($change_acl_list[$forum_id][$nuke_auth_field]) )
                                         {
-                                                if ( ( empty($auth_access[$forum_id]['auth_mod']) &&
-                                                        ( isset($auth_access[$forum_id][$auth_field]) && $change_acl_list[$forum_id][$auth_field] != $auth_access[$forum_id][$auth_field] ) ||
-                                                        ( !isset($auth_access[$forum_id][$auth_field]) && !empty($change_acl_list[$forum_id][$auth_field]) ) ) ||
+                                                if ( ( empty($nuke_auth_access[$forum_id]['auth_mod']) &&
+                                                        ( isset($nuke_auth_access[$forum_id][$nuke_auth_field]) && $change_acl_list[$forum_id][$nuke_auth_field] != $nuke_auth_access[$forum_id][$nuke_auth_field] ) ||
+                                                        ( !isset($nuke_auth_access[$forum_id][$nuke_auth_field]) && !empty($change_acl_list[$forum_id][$nuke_auth_field]) ) ) ||
                                                         !empty($update_mod_status[$forum_id])
                                                 )
                                                 {
-                                                        $update_acl_status[$forum_id][$auth_field] = ( !empty($update_mod_status[$forum_id]) ) ? 0 :  $change_acl_list[$forum_id][$auth_field];
+                                                        $update_acl_status[$forum_id][$nuke_auth_field] = ( !empty($update_mod_status[$forum_id]) ) ? 0 :  $change_acl_list[$forum_id][$nuke_auth_field];
 
-                                                        if ( isset($auth_access[$forum_id][$auth_field]) && empty($update_acl_status[$forum_id][$auth_field]) && $forum_auth_action[$forum_id] != 'insert' && $forum_auth_action[$forum_id] != 'update' )
+                                                        if ( isset($nuke_auth_access[$forum_id][$nuke_auth_field]) && empty($update_acl_status[$forum_id][$nuke_auth_field]) && $forum_auth_action[$forum_id] != 'insert' && $forum_auth_action[$forum_id] != 'update' )
                                                         {
                                                                 $forum_auth_action[$forum_id] = 'delete';
                                                         }
-                                                        else if ( !isset($auth_access[$forum_id][$auth_field]) && !( $forum_auth_action[$forum_id] == 'delete' && empty($update_acl_status[$forum_id][$auth_field]) ) )
+                                                        else if ( !isset($nuke_auth_access[$forum_id][$nuke_auth_field]) && !( $forum_auth_action[$forum_id] == 'delete' && empty($update_acl_status[$forum_id][$nuke_auth_field]) ) )
                                                         {
                                                                 $forum_auth_action[$forum_id] = 'insert';
                                                         }
-                                                        else if ( isset($auth_access[$forum_id][$auth_field]) && !empty($update_acl_status[$forum_id][$auth_field]) )
+                                                        else if ( isset($nuke_auth_access[$forum_id][$nuke_auth_field]) && !empty($update_acl_status[$forum_id][$nuke_auth_field]) )
                                                         {
                                                                 $forum_auth_action[$forum_id] = 'update';
                                                         }
                                                 }
-                                                else if ( ( empty($auth_access[$forum_id]['auth_mod']) &&
-                                                        ( isset($auth_access[$forum_id][$auth_field]) && $change_acl_list[$forum_id][$auth_field] == $auth_access[$forum_id][$auth_field] ) ) && $forum_auth_action[$forum_id] == 'delete' )
+                                                else if ( ( empty($nuke_auth_access[$forum_id]['auth_mod']) &&
+                                                        ( isset($nuke_auth_access[$forum_id][$nuke_auth_field]) && $change_acl_list[$forum_id][$nuke_auth_field] == $nuke_auth_access[$forum_id][$nuke_auth_field] ) ) && $forum_auth_action[$forum_id] == 'delete' )
                                                 {
                                                         $forum_auth_action[$forum_id] = 'update';
                                                 }
@@ -453,9 +453,9 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
                                         {
                                                 $sql_field = '';
                                                 $sql_value = '';
-                                                while ( list($auth_type, $value) = @each($update_acl_status[$forum_id]) )
+                                                while ( list($nuke_auth_type, $value) = @each($update_acl_status[$forum_id]) )
                                                 {
-                                                        $sql_field .= ( ( $sql_field != '' ) ? ', ' : '' ) . $auth_type;
+                                                        $sql_field .= ( ( $sql_field != '' ) ? ', ' : '' ) . $nuke_auth_type;
                                                         $sql_value .= ( ( $sql_value != '' ) ? ', ' : '' ) . $value;
                                                 }
                                                 $sql_field .= ( ( $sql_field != '' ) ? ', ' : '' ) . 'auth_mod';
@@ -467,9 +467,9 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
                                         else
                                         {
                                                 $sql_values = '';
-                                                while ( list($auth_type, $value) = @each($update_acl_status[$forum_id]) )
+                                                while ( list($nuke_auth_type, $value) = @each($update_acl_status[$forum_id]) )
                                                 {
-                                                        $sql_values .= ( ( $sql_values != '' ) ? ', ' : '' ) . $auth_type . ' = ' . $value;
+                                                        $sql_values .= ( ( $sql_values != '' ) ? ', ' : '' ) . $nuke_auth_type . ' = ' . $value;
                                                 }
                                                 $sql_values .= ( ( $sql_values != '' ) ? ', ' : '' ) . 'auth_mod = ' . ( ( !isset($update_mod_status[$forum_id]) ) ? 0 : $update_mod_status[$forum_id]);
 
@@ -654,7 +654,7 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $user_id ) || ( $mode == 
                 $cache->delete('forum_moderators', 'config');
         }
 }
-else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( $mode == 'group' && $group_id ) )
+else if ( ( $mode == 'user' && ( isset($_POST['username']) || $nuke_user_id ) ) || ( $mode == 'group' && $group_id ) )
 {
         if ( isset($_POST['username']) )
         {
@@ -663,7 +663,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
                 {
                         message_die(NUKE_GENERAL_MESSAGE, $lang['No_such_user']);
                 }
-                $user_id = $this_userdata['user_id'];
+                $nuke_user_id = $this_userdata['user_id'];
         }
 
         //
@@ -708,11 +708,11 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
 //
 // Check if a private user group existis for this user and if not, create one.
 //
-        $sql = "SELECT user_id FROM " . NUKE_USER_GROUP_TABLE . " WHERE user_id = '$user_id'";
+        $sql = "SELECT user_id FROM " . NUKE_USER_GROUP_TABLE . " WHERE user_id = '$nuke_user_id'";
         $result = $nuke_db->sql_query($sql);
         $row = $nuke_db->sql_fetchrow($result);
-        $user_check = $row['user_id'];
-        if ( $user_check != $user_id )
+        $nuke_user_check = $row['user_id'];
+        if ( $nuke_user_check != $nuke_user_id )
         {
             $sql = "SELECT MAX(group_id) AS total
                     FROM " . NUKE_GROUPS_TABLE;
@@ -732,7 +732,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
                 message_die(NUKE_GENERAL_ERROR, 'Could not create private group', '', __LINE__, __FILE__, $sql);
             }
             $sql = "INSERT INTO " . NUKE_USER_GROUP_TABLE . " (group_id, user_id, user_pending)
-                    VALUES ('$group_id', '$user_id', '0')";
+                    VALUES ('$group_id', '$nuke_user_id', '0')";
             if ( !($result = $nuke_db->sql_query($sql)) )
             {
                 message_die(NUKE_GENERAL_ERROR, 'Could not create private group', '', __LINE__, __FILE__, $sql);
@@ -742,7 +742,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
 //  End Private group check.
 //
         $sql = "SELECT u.user_id, u.username, u.user_level, g.group_id, g.group_name, g.group_single_user, ug.user_pending FROM " . NUKE_USERS_TABLE . " u, " . NUKE_GROUPS_TABLE . " g, " . NUKE_USER_GROUP_TABLE . " ug WHERE ";
-        $sql .= ( $mode == 'user' ) ? "u.user_id = '$user_id' AND ug.user_id = u.user_id AND g.group_id = ug.group_id" : "g.group_id = '$group_id' AND ug.group_id = g.group_id AND u.user_id = ug.user_id";
+        $sql .= ( $mode == 'user' ) ? "u.user_id = '$nuke_user_id' AND ug.user_id = u.user_id AND g.group_id = ug.group_id" : "g.group_id = '$group_id' AND ug.group_id = g.group_id AND u.user_id = ug.user_id";
         if ( !($result = $nuke_db->sql_query($sql)) )
         {
                 message_die(NUKE_GENERAL_ERROR, "Couldn't obtain user/group information", "", __LINE__, __FILE__, $sql);
@@ -754,18 +754,18 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
         }
         $nuke_db->sql_freeresult($result);
 
-        $sql = ( $mode == 'user' ) ? "SELECT aa.*, g.group_single_user FROM " . NUKE_AUTH_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = 1" : "SELECT * FROM " . NUKE_AUTH_ACCESS_TABLE . " WHERE group_id = '$group_id'";
+        $sql = ( $mode == 'user' ) ? "SELECT aa.*, g.group_single_user FROM " . NUKE_AUTH_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE. " g WHERE ug.user_id = $nuke_user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = 1" : "SELECT * FROM " . NUKE_AUTH_ACCESS_TABLE . " WHERE group_id = '$group_id'";
         if ( !($result = $nuke_db->sql_query($sql)) )
         {
                 message_die(NUKE_GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
         }
 
-        $auth_access = array();
-        $auth_access_count = array();
+        $nuke_auth_access = array();
+        $nuke_auth_access_count = array();
         while( $row = $nuke_db->sql_fetchrow($result) )
         {
-                $auth_access[$row['forum_id']][] = $row;
-                $auth_access_count[$row['forum_id']]++;
+                $nuke_auth_access[$row['forum_id']][] = $row;
+                $nuke_auth_access_count[$row['forum_id']]++;
         }
         $nuke_db->sql_freeresult($result);
 
@@ -785,35 +785,35 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
                         {
                                 case NUKE_AUTH_ALL:
                                 case NUKE_AUTH_REG:
-                                        $auth_ug[$forum_id][$key] = 1;
+                                        $nuke_auth_ug[$forum_id][$key] = 1;
                                         break;
 
                                 case NUKE_AUTH_ACL:
-                                        $auth_ug[$forum_id][$key] = ( !empty($auth_access_count[$forum_id]) ) ? check_auth(NUKE_AUTH_ACL, $key, $auth_access[$forum_id], $is_admin) : 0;
-                                        $auth_field_acl[$forum_id][$key] = $auth_ug[$forum_id][$key];
+                                        $nuke_auth_ug[$forum_id][$key] = ( !empty($nuke_auth_access_count[$forum_id]) ) ? check_auth(NUKE_AUTH_ACL, $key, $nuke_auth_access[$forum_id], $is_admin) : 0;
+                                        $nuke_auth_field_acl[$forum_id][$key] = $nuke_auth_ug[$forum_id][$key];
 
                                         if ( isset($prev_acl_setting) )
                                         {
-                                                if ( $prev_acl_setting != $auth_ug[$forum_id][$key] && empty($adv) )
+                                                if ( $prev_acl_setting != $nuke_auth_ug[$forum_id][$key] && empty($adv) )
                                                 {
                                                         $adv = 1;
                                                 }
                                         }
 
-                                        $prev_acl_setting = $auth_ug[$forum_id][$key];
+                                        $prev_acl_setting = $nuke_auth_ug[$forum_id][$key];
 
                                         break;
 
                                 case NUKE_AUTH_MOD:
-                                        $auth_ug[$forum_id][$key] = ( !empty($auth_access_count[$forum_id]) ) ? check_auth(NUKE_AUTH_MOD, $key, $auth_access[$forum_id], $is_admin) : 0;
+                                        $nuke_auth_ug[$forum_id][$key] = ( !empty($nuke_auth_access_count[$forum_id]) ) ? check_auth(NUKE_AUTH_MOD, $key, $nuke_auth_access[$forum_id], $is_admin) : 0;
                                         break;
 
                                 case NUKE_AUTH_ADMIN:
-                                        $auth_ug[$forum_id][$key] = $is_admin;
+                                        $nuke_auth_ug[$forum_id][$key] = $is_admin;
                                         break;
 
                                 default:
-                                        $auth_ug[$forum_id][$key] = 0;
+                                        $nuke_auth_ug[$forum_id][$key] = 0;
                                         break;
                         }
                 }
@@ -821,12 +821,12 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
                 //
                 // Is user a moderator?
                 //
-                $auth_ug[$forum_id]['auth_mod'] = ( !empty($auth_access_count[$forum_id]) ) ? check_auth(NUKE_AUTH_MOD, 'auth_mod', $auth_access[$forum_id], 0) : 0;
+                $nuke_auth_ug[$forum_id]['auth_mod'] = ( !empty($nuke_auth_access_count[$forum_id]) ) ? check_auth(NUKE_AUTH_MOD, 'auth_mod', $nuke_auth_access[$forum_id], 0) : 0;
         }
 
         $i = 0;
-        @reset($auth_ug);
-        while( list($forum_id, $user_ary) = @each($auth_ug) )
+        @reset($nuke_auth_ug);
+        while( list($forum_id, $nuke_user_ary) = @each($nuke_auth_ug) )
         {
                 if ( empty($adv) )
                 {
@@ -836,7 +836,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
 
                                 for($j = 0; $j < count($forum_auth_level_fields[$forum_id]); $j++)
                                 {
-                                        if ( !$auth_ug[$forum_id][$forum_auth_level_fields[$forum_id][$j]] )
+                                        if ( !$nuke_auth_ug[$forum_id][$forum_auth_level_fields[$forum_id][$j]] )
                                         {
                                                 $allowed = 0;
                                         }
@@ -844,7 +844,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
 
                                 $optionlist_acl = '<select name="private[' . $forum_id . ']">';
 
-                                if ( $is_admin || $user_ary['auth_mod'] )
+                                if ( $is_admin || $nuke_user_ary['auth_mod'] )
                                 {
                                         $optionlist_acl .= '<option value="1">' . $lang['Allowed_Access'] . '</option>';
                                 }
@@ -878,9 +878,9 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
                                                 {
                                                         $optionlist_acl_adv[$forum_id][$k] = '<select name="private_' . $field_name . '[' . $forum_id . ']">';
 
-                                                        if( isset($auth_field_acl[$forum_id][$field_name]) && !($is_admin || $user_ary['auth_mod']) )
+                                                        if( isset($nuke_auth_field_acl[$forum_id][$field_name]) && !($is_admin || $nuke_user_ary['auth_mod']) )
                                                         {
-                                                                if( !$auth_field_acl[$forum_id][$field_name] )
+                                                                if( !$nuke_auth_field_acl[$forum_id][$field_name] )
                                                                 {
                                                                         $optionlist_acl_adv[$forum_id][$k] .= '<option value="1">' . $lang['ON'] . '</option><option value="0" selected="selected">' . $lang['OFF'] . '</option>';
                                                                 }
@@ -891,7 +891,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
                                                         }
                                                         else
                                                         {
-                                                                if( $is_admin || $user_ary['auth_mod'] )
+                                                                if( $is_admin || $nuke_user_ary['auth_mod'] )
                                                                 {
                                                                         $optionlist_acl_adv[$forum_id][$k] .= '<option value="1">' . $lang['ON'] . '</option>';
                                                                 }
@@ -910,13 +910,13 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
                 }
 
                 $optionlist_mod = '<select name="moderator[' . $forum_id . ']">';
-                $optionlist_mod .= ( $user_ary['auth_mod'] ) ? '<option value="1" selected="selected">' . $lang['Is_Moderator'] . '</option><option value="0">' . $lang['Not_Moderator'] . '</option>' : '<option value="1">' . $lang['Is_Moderator'] . '</option><option value="0" selected="selected">' . $lang['Not_Moderator'] . '</option>';
+                $optionlist_mod .= ( $nuke_user_ary['auth_mod'] ) ? '<option value="1" selected="selected">' . $lang['Is_Moderator'] . '</option><option value="0">' . $lang['Not_Moderator'] . '</option>' : '<option value="1">' . $lang['Is_Moderator'] . '</option><option value="0" selected="selected">' . $lang['Not_Moderator'] . '</option>';
                 $optionlist_mod .= '</select>';
 
                 $row_class = ( !( $i % 2 ) ) ? 'row2' : 'row1';
                 $row_color = ( !( $i % 2 ) ) ? $theme['td_color1'] : $theme['td_color2'];
 
-                $template->assign_block_vars('forums', array(
+                $template_nuke->assign_block_vars('forums', array(
                         'ROW_COLOR' => '#' . $row_color,
                         'ROW_CLASS' => $row_class,
                         'FORUM_NAME' => $forum_access[$i]['forum_name'],
@@ -928,7 +928,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
 
                 if( !$adv )
                 {
-                        $template->assign_block_vars('forums.aclvalues', array(
+                        $template_nuke->assign_block_vars('forums.aclvalues', array(
                                 'S_ACL_SELECT' => $optionlist_acl)
                         );
                 }
@@ -936,7 +936,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
                 {
                         for($j = 0; $j < count($forum_auth_fields); $j++)
                         {
-                                $template->assign_block_vars('forums.aclvalues', array(
+                                $template_nuke->assign_block_vars('forums.aclvalues', array(
                                         'S_ACL_SELECT' => $optionlist_acl_adv[$forum_id][$j])
                                 );
                         }
@@ -944,7 +944,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
 
                 $i++;
         }
-        //@reset($auth_user);
+        //@reset($nuke_auth_user);
 
         if ( $mode == 'user' )
         {
@@ -995,7 +995,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
         $s_column_span = 2; // Two columns always present
         if( !$adv )
         {
-                $template->assign_block_vars('acltype', array(
+                $template_nuke->assign_block_vars('acltype', array(
                         'L_UG_ACL_TYPE' => $lang['Simple_Permission'])
                 );
                 $s_column_span++;
@@ -1006,7 +1006,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
                 {
                         $cell_title = $field_names[$forum_auth_fields[$i]];
 
-                        $template->assign_block_vars('acltype', array(
+                        $template_nuke->assign_block_vars('acltype', array(
                                 'L_UG_ACL_TYPE' => $cell_title)
                         );
                         $s_column_span++;
@@ -1016,26 +1016,26 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
         //
         // Dump in the page header ...
         //
-        include('./page_header_admin.'.$phpEx);
+        include('./nuke_page_header_admin.'.$phpEx);
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 "body" => 'admin/auth_ug_body.tpl')
         );
 
         $adv_switch = ( empty($adv) ) ? 1 : 0;
-        $u_ug_switch = ( $mode == 'user' ) ? NUKE_POST_USERS_URL . "=" . $user_id : NUKE_POST_GROUPS_URL . "=" . $group_id;
+        $u_ug_switch = ( $mode == 'user' ) ? NUKE_POST_USERS_URL . "=" . $nuke_user_id : NUKE_POST_GROUPS_URL . "=" . $group_id;
         $switch_mode = append_sid("admin_ug_auth.$phpEx?mode=$mode&amp;" . $u_ug_switch . "&amp;adv=$adv_switch");
         $switch_mode_text = ( empty($adv) ) ? $lang['Advanced_mode'] : $lang['Simple_mode'];
         $u_switch_mode = '<a href="' . $switch_mode . '">' . $switch_mode_text . '</a>';
 
         $s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="adv" value="' . $adv . '" />';
-        $s_hidden_fields .= ( $mode == 'user' ) ? '<input type="hidden" name="' . NUKE_POST_USERS_URL . '" value="' . $user_id . '" />' : '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
+        $s_hidden_fields .= ( $mode == 'user' ) ? '<input type="hidden" name="' . NUKE_POST_USERS_URL . '" value="' . $nuke_user_id . '" />' : '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
 
         if ( $mode == 'user' )
         {
-                $template->assign_block_vars('switch_user_auth', array());
+                $template_nuke->assign_block_vars('switch_user_auth', array());
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         'USERNAME' => $t_username,
                         'USER_LEVEL' => $lang['User_Level'] . " : " . $s_user_type,
                         'USER_GROUP_MEMBERSHIPS' => $lang['Group_memberships'] . ' : ' . $t_usergroup_list)
@@ -1043,9 +1043,9 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
         }
         else
         {
-                $template->assign_block_vars("switch_group_auth", array());
+                $template_nuke->assign_block_vars("switch_group_auth", array());
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:    Group Colors                        v1.0.0 ]
  ******************************************************/
@@ -1057,7 +1057,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
                 );
         }
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'L_USER_OR_GROUPNAME' => ( $mode == 'user' ) ? $lang['Username'] : $lang['Group_name'],
 
                 'L_AUTH_TITLE' => ( $mode == 'user' ) ? $lang['Auth_Control_User'] : $lang['Auth_Control_Group'],
@@ -1081,15 +1081,15 @@ else
         //
         // Select a user/group
         //
-        include('./page_header_admin.'.$phpEx);
+        include('./nuke_page_header_admin.'.$phpEx);
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 'body' => ( $mode == 'user' ) ? 'admin/user_select_body.tpl' : 'admin/auth_select_body.tpl')
         );
 
         if ( $mode == 'user' )
         {
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         'L_FIND_USERNAME' => $lang['Find_username'],
 
                         'U_SEARCH_USER' => append_sid("search.$phpEx?mode=searchuser&popup=1&menu=1"))
@@ -1116,7 +1116,7 @@ else
                         $select_list .= '</select>';
                 }
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         'S_AUTH_SELECT' => $select_list)
                 );
         }
@@ -1125,7 +1125,7 @@ else
 
         $l_type = ( $mode == 'user' ) ? 'NUKE_USER' : 'AUTH';
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'L_' . $l_type . '_TITLE' => ( $mode == 'user' ) ? $lang['Auth_Control_User'] : $lang['Auth_Control_Group'],
                 'L_' . $l_type . '_EXPLAIN' => ( $mode == 'user' ) ? $lang['User_auth_explain'] : $lang['Group_auth_explain'],
                 'L_' . $l_type . '_SELECT' => ( $mode == 'user' ) ? $lang['Select_a_User'] : $lang['Select_a_Group'],
@@ -1137,8 +1137,8 @@ else
 
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

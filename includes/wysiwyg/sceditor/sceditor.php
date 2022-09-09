@@ -55,7 +55,7 @@ class sceditor
 	
 	function getHtml($name)
 	{
-		global $board_config, $nuke_db, $prefix, $lang, $userinfo;
+		global $board_config, $nuke_db, $prefix, $lang, $nuke_userinfo;
 		$allowed = true;
 		if($_GET['name'] == 'Profile')
 			$allowed = false;
@@ -110,7 +110,7 @@ class sceditor
 		}
 		$JStoHTML .= '	});'.PHP_EOL;
 		# PUT THE BBCODE EDITOR IN SOURCE MODE - NUKE_USER BASED SETTING
-		if($userinfo['sceditor_in_source'] == TRUE)
+		if($nuke_userinfo['sceditor_in_source'] == TRUE)
 			$JStoHTML .= '	$("#'.$name.'").sceditor("instance").sourceMode(true);';
 
 		$JStoHTML .= '	$(document).on("click","#preview,#submit",function(event)'.PHP_EOL;

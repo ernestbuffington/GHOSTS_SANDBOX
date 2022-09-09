@@ -31,9 +31,9 @@ if (!defined('CNBYA')):
      echo "CNBYA protection";
      exit;
 endif;
-    global $cookie, $userinfo;
-	if ((is_user()) AND (strtolower($userinfo['username']) == strtolower($cookie[1])) 
-	AND ($userinfo['user_password'] == $cookie[2])): 
+    global $cookie, $nuke_userinfo;
+	if ((is_user()) AND (strtolower($nuke_userinfo['username']) == strtolower($cookie[1])) 
+	AND ($nuke_userinfo['user_password'] == $cookie[2])): 
         include_once(NUKE_BASE_DIR.'header.php');
         title(_COMMENTSCONFIG);
         # OpenTable();
@@ -45,6 +45,6 @@ endif;
         CloseTable();
         include_once(NUKE_BASE_DIR.'footer.php');
     else:
-        mmain($user);
+        mmain($nuke_user);
     endif;
 ?>

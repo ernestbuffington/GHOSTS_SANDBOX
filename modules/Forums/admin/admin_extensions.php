@@ -164,7 +164,7 @@ if ($submit && $mode == 'extensions')
 
     if ($extension != '' && $add)
     {
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'ADD_EXTENSION'            => $extension,
             'ADD_EXTENSION_EXPLAIN'    => $extension_explain)
         );
@@ -263,11 +263,11 @@ if ($submit && $mode == 'extensions')
 if ($mode == 'extensions')
 {
     // Extensions
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/attach_extensions.tpl')
     );
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_EXTENSIONS_TITLE'        => $lang['Manage_extensions'],
         'L_EXTENSIONS_EXPLAIN'        => $lang['Manage_extensions_explain'],
         'L_SELECT'                    => $lang['Select'],
@@ -285,13 +285,13 @@ if ($mode == 'extensions')
 
     if ($submit)
     {
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'S_ADD_GROUP_SELECT' => group_select('add_group_select', $extension_group))
         );
     }
     else
     {
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'S_ADD_GROUP_SELECT' => group_select('add_group_select'))
         );
     }
@@ -317,7 +317,7 @@ if ($mode == 'extensions')
         {
             if ($submit)
             {
-                $template->assign_block_vars('extension_row', array(
+                $template_nuke->assign_block_vars('extension_row', array(
                     'EXT_ID'            => $extension_row[$i]['ext_id'],
                     'EXTENSION'            => $extension_row[$i]['extension'],
                     'EXTENSION_EXPLAIN'    => $extension_explain_list[$i],
@@ -326,7 +326,7 @@ if ($mode == 'extensions')
             }
             else
             {
-                $template->assign_block_vars('extension_row', array(
+                $template_nuke->assign_block_vars('extension_row', array(
                     'EXT_ID'            => $extension_row[$i]['ext_id'],
                     'EXTENSION'            => $extension_row[$i]['extension'],
                     'EXTENSION_EXPLAIN'    => $extension_row[$i]['comment'],
@@ -491,7 +491,7 @@ if ($submit && $mode == 'groups')
 if ($mode == 'groups')
 {
     // Extension Groups
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/attach_extension_groups.tpl')
     );
 
@@ -513,7 +513,7 @@ if ($mode == 'groups')
 
     $viewgroup = get_var(NUKE_POST_GROUPS_URL, 0);
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_EXTENSION_GROUPS_TITLE'        => $lang['Manage_extension_groups'],
         'L_EXTENSION_GROUPS_EXPLAIN'    => $lang['Manage_extension_groups_explain'],
         'L_EXTENSION_GROUP'                => $lang['Extension_group'],
@@ -572,7 +572,7 @@ if ($mode == 'groups')
 
         $s_allowed = ($extension_group[$i]['allow_group'] == 1) ? 'checked="checked"' : '';
 
-        $template->assign_block_vars('grouprow', array(
+        $template_nuke->assign_block_vars('grouprow', array(
             'GROUP_ID'            => $extension_group[$i]['group_id'],
             'EXTENSION_GROUP'    => $extension_group[$i]['group_name'],
             'UPLOAD_ICON'        => $extension_group[$i]['upload_icon'],
@@ -605,7 +605,7 @@ if ($mode == 'groups')
 
             for ($j = 0; $j < $num_extension; $j++)
             {
-                $template->assign_block_vars('grouprow.extensionrow', array(
+                $template_nuke->assign_block_vars('grouprow.extensionrow', array(
                     'EXPLANATION'    => $extension[$j]['comment'],
                     'EXTENSION'        => $extension[$j]['extension'])
                 );
@@ -724,11 +724,11 @@ if ($submit && $mode == 'forbidden')
 
 if ($mode == 'forbidden')
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/attach_forbidden_extensions.tpl')
     );
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'S_ATTACH_ACTION'        => append_sid('admin_extensions.' . $phpEx . '?mode=forbidden'),
 
         'L_EXTENSIONS_TITLE'    => $lang['Manage_forbidden_extensions'],
@@ -756,7 +756,7 @@ if ($mode == 'forbidden')
     {
         for ($i = 0; $i < $num_extensionrow; $i++)
         {
-                $template->assign_block_vars('extensionrow', array(
+                $template_nuke->assign_block_vars('extensionrow', array(
                     'EXTENSION_ID'        => $extensionrow[$i]['ext_id'],
                     'EXTENSION_NAME'    => $extensionrow[$i]['extension'])
                 );
@@ -819,25 +819,25 @@ if ($add_forum && $e_mode == 'perm' && $group)
 
         if (trim($row['forum_permissions']) == '')
         {
-            $auth_p = array();
+            $nuke_auth_p = array();
         }
         else
         {
-            $auth_p = auth_unpack($row['forum_permissions']);
+            $nuke_auth_p = auth_unpack($row['forum_permissions']);
         }
 
         // Generate array for Auth_Pack, do not add doubled forums
         for ($i = 0; $i < sizeof($add_forums_list); $i++)
         {
-            if (!in_array($add_forums_list[$i], $auth_p))
+            if (!in_array($add_forums_list[$i], $nuke_auth_p))
             {
-                $auth_p[] = $add_forums_list[$i];
+                $nuke_auth_p[] = $add_forums_list[$i];
             }
         }
 
-        $auth_bitstream = auth_pack($auth_p);
+        $nuke_auth_bitstream = auth_pack($nuke_auth_p);
 
-        $sql = 'UPDATE ' . EXTENSION_GROUPS_TABLE . " SET forum_permissions = '" . attach_mod_sql_escape($auth_bitstream) . "' WHERE group_id = " . (int) $group;
+        $sql = 'UPDATE ' . EXTENSION_GROUPS_TABLE . " SET forum_permissions = '" . attach_mod_sql_escape($nuke_auth_bitstream) . "' WHERE group_id = " . (int) $group;
 
         if (!($result = $nuke_db->sql_query($sql)))
         {
@@ -866,21 +866,21 @@ if ($delete_forum && $e_mode == 'perm' && $group)
     $row = $nuke_db->sql_fetchrow($result);
     $nuke_db->sql_freeresult($result);
 
-    $auth_p2 = auth_unpack(trim($row['forum_permissions']));
-    $auth_p = array();
+    $nuke_auth_p2 = auth_unpack(trim($row['forum_permissions']));
+    $nuke_auth_p = array();
 
     // Generate array for Auth_Pack, delete the chosen ones
-    for ($i = 0; $i < sizeof($auth_p2); $i++)
+    for ($i = 0; $i < sizeof($nuke_auth_p2); $i++)
     {
-        if (!in_array($auth_p2[$i], $delete_forums_list))
+        if (!in_array($nuke_auth_p2[$i], $delete_forums_list))
         {
-            $auth_p[] = $auth_p2[$i];
+            $nuke_auth_p[] = $nuke_auth_p2[$i];
         }
     }
 
-    $auth_bitstream = (sizeof($auth_p) > 0) ? auth_pack($auth_p) : '';
+    $nuke_auth_bitstream = (sizeof($nuke_auth_p) > 0) ? auth_pack($nuke_auth_p) : '';
 
-    $sql = 'UPDATE ' . EXTENSION_GROUPS_TABLE . " SET forum_permissions = '" . attach_mod_sql_escape($auth_bitstream) . "' WHERE group_id = " . (int) $group;
+    $sql = 'UPDATE ' . EXTENSION_GROUPS_TABLE . " SET forum_permissions = '" . attach_mod_sql_escape($nuke_auth_bitstream) . "' WHERE group_id = " . (int) $group;
 
     if (!($result = $nuke_db->sql_query($sql)))
     {
@@ -891,7 +891,7 @@ if ($delete_forum && $e_mode == 'perm' && $group)
 // Display the Group Permissions Box for configuring it
 if ($e_mode == 'perm' && $group)
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'perm_box' => 'admin/extension_groups_permissions.tpl')
     );
 
@@ -940,13 +940,13 @@ if ($e_mode == 'perm' && $group)
 
     for ($i = 0; $i < sizeof($forum_perm); $i++)
     {
-        $template->assign_block_vars('allow_option_values', array(
+        $template_nuke->assign_block_vars('allow_option_values', array(
             'VALUE'        => $forum_perm[$i]['forum_id'],
             'OPTION'    => $forum_perm[$i]['forum_name'])
         );
     }
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_GROUP_PERMISSIONS_TITLE'        => sprintf($lang['Group_permissions_title'], trim($group_name)),
         'L_GROUP_PERMISSIONS_EXPLAIN'    => $lang['Group_permissions_explain'],
         'L_REMOVE_SELECTED'                => $lang['Remove_selected'],
@@ -974,13 +974,13 @@ if ($e_mode == 'perm' && $group)
 
     foreach ($forum_option_values as $value => $option)
     {
-        $template->assign_block_vars('forum_option_values', array(
+        $template_nuke->assign_block_vars('forum_option_values', array(
             'VALUE'        => $value,
             'OPTION'    => $option)
         );
     }
 
-    $template->assign_var_from_handle('GROUP_PERMISSIONS_BOX', 'perm_box');
+    $template_nuke->assign_var_from_handle('GROUP_PERMISSIONS_BOX', 'perm_box');
 
     $empty_perm_forums = array();
     $sql = "SELECT forum_id, forum_name FROM " . NUKE_FORUMS_TABLE . " WHERE auth_attachments < " . NUKE_AUTH_ADMIN;
@@ -1036,37 +1036,37 @@ if ($e_mode == 'perm' && $group)
 
     if (sizeof($empty_perm_forums) > 0)
     {
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
             'perm_reg_header' => 'error_body.tpl')
         );
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'ERROR_MESSAGE' => $lang['Note_admin_empty_group_permissions'] . $message)
         );
 
-        $template->assign_var_from_handle('PERM_ERROR_BOX', 'perm_reg_header');
+        $template_nuke->assign_var_from_handle('PERM_ERROR_BOX', 'perm_reg_header');
     }
 }
 
 if ($error)
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'reg_header' => 'error_body.tpl')
     );
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'ERROR_MESSAGE' => $error_msg)
     );
 
-    $template->assign_var_from_handle('ERROR_BOX', 'reg_header');
+    $template_nuke->assign_var_from_handle('ERROR_BOX', 'reg_header');
 }
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'ATTACH_VERSION' => sprintf($lang['Attachment_version'], $attach_config['attach_version']))
 );
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
-include('page_footer_admin.'.$phpEx);
+include('nuke_page_footer_admin.'.$phpEx);
 
 ?>

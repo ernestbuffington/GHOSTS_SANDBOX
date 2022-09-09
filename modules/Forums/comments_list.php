@@ -41,8 +41,8 @@ require_once('includes/bbcode.' . $phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX, $nukeuser);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX, $nukeuser);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -50,7 +50,7 @@ include('includes/functions_arcade.' . $phpEx);
 
 $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE")) ) ? "Refresh: 0; URL=" : "Location: ";
 
-if ( !$userdata['session_logged_in'] )
+if ( !$nuke_userdata['session_logged_in'] )
 {
     header($header_location . "modules.php?name=Your_Account");
     exit;
@@ -59,7 +59,7 @@ if ( !$userdata['session_logged_in'] )
 // End of auth check
 //
 
-include("includes/page_header.php");
+include("includes/nuke_page_header.php");
 
     $comments_sql = "SELECT * FROM " . NUKE_COMMENTS_TABLE . " WHERE comments_value <> '' ";
 
@@ -76,10 +76,10 @@ include("includes/page_header.php");
     $comments_perpage = 15;
 
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
    'body' => 'comments_list_body.tpl'));
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                         'L_ARCADE_COMMENTS_FULL' => $lang['arcade_comments_full'],
                         'L_ARCADE_COMMENTS' => $lang['arcade_comments'],
                         'L_GAME' => $lang['game'],
@@ -117,7 +117,7 @@ while ( $row = $nuke_db->sql_fetchrow($result))
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-            $template->assign_block_vars('commentrow', array(
+            $template_nuke->assign_block_vars('commentrow', array(
                         'GAME_NAME' => '<a href="' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>',
                         'COMMENTS_VALUE' =>  smilies_pass($row['comments_value']),
                         'USERNAME' => '<a href="' . append_sid("statarcade.$phpEx?uid=" . $row['user_id'] ) . '" class="genmed">' . $row['username'] . '</a> ',
@@ -126,7 +126,7 @@ while ( $row = $nuke_db->sql_fetchrow($result))
 
             }
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
                 'MANAGE_COMMENTS' => '<nobr><a class="cattitle" href="' . append_sid("comments.$phpEx") . '">' . $lang['manage_comments'] . '</a></nobr> ',
                 'PAGINATION' => generate_pagination("comments_list.$phpEx?", $comments_total, $comments_perpage, $start),
                 'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $comments_perpage) + 1 ), ceil( $comments_total / $comments_perpage )),
@@ -137,7 +137,7 @@ $template->assign_vars(array(
 // Generate the page end
 //
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 include("includes/page_tail.php");
 
 ?>

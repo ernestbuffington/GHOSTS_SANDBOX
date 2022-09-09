@@ -47,8 +47,8 @@ $current_date = "<i class=\"bi bi-calendar3\"></i>&nbsp;&nbsp;$month/$date/$year
 $actual_time = $current_date;
 
 # Start session management
-$userdata = session_pagestart($user_ip, NUKE_PAGE_TOPIC_VIEW, $nukeuser);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_TOPIC_VIEW, $nukeuser);
+init_userprefs($nuke_userdata);
 # End session management
 
 
@@ -58,7 +58,7 @@ $topic_id = intval($_GET[NUKE_POST_TOPIC_URL]);
 elseif(isset($_POST[NUKE_POST_TOPIC_URL]))
 $topic_id = intval($_POST[NUKE_POST_TOPIC_URL]);
 
-if(!$userdata['session_logged_in']): 
+if(!$nuke_userdata['session_logged_in']): 
 	$header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/",getenv("SERVER_SOFTWARE"))) ? "Refresh: 0; URL=" : "Location: "; 
 	header($header_location . append_sid("login.$phpEx?nuke_redirect=topic_view_users.$phpEx&".NUKE_POST_TOPIC_URL."=$topic_id", true));
 	exit;
@@ -111,14 +111,14 @@ $select_sort_order .= '<input type="hidden" name="'.NUKE_POST_TOPIC_URL.'" value
 
 # Generate page
 $page_title = $lang['Memberlist'];
-include("includes/page_header.php");
+include("includes/nuke_page_header.php");
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
 	'body' => 'viewtopic_whoview.tpl')
 );
 make_jumpbox('viewforum.'.$phpEx);
 
-$template->assign_vars(
+$template_nuke->assign_vars(
 	array(
 	    'L_ACTUAL_TIME' => $actual_time,
 	    'L_LAST_VIEWED_TOPIC_LINK_PREFIX' => $lang['WhoIsViewingThisTopic'],
@@ -180,9 +180,9 @@ if($row = $nuke_db->sql_fetchrow($result)):
 	$i = 0;
 	do
 	{
-		$username = $row['username'];
-		$user_id = $row['user_id'];
-		$user_from = ( !empty($row['user_from']) ) ? $row['user_from'] : '&nbsp;';
+		$nuke_username = $row['username'];
+		$nuke_user_id = $row['user_id'];
+		$nuke_user_from = ( !empty($row['user_from']) ) ? $row['user_from'] : '&nbsp;';
 		$joined	= $row['user_regdate'];
 		
         /*****[BEGIN]******************************************
@@ -216,12 +216,12 @@ if($row = $nuke_db->sql_fetchrow($result)):
 		target="_blank">'.get_evo_icon('evo-sprite facebook tooltip', $lang['Visit_facebook']).'</a>&nbsp;' : '');
 		
 		# Display the users country of origin.
-		$user_flag = (!empty($row['user_from_flag'])) ? 
+		$nuke_user_flag = (!empty($row['user_from_flag'])) ? 
 		'&nbsp;'.get_evo_icon('countries '.str_replace('.png','',$row['user_from_flag'])).'&nbsp;' : '&nbsp;'.get_evo_icon('countries unknown').'&nbsp;';
 		
 		# Send user a private message.
-		$pm	= '<a href="'.append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$user_id").'">'.get_evo_icon('evo-sprite 
-		mail tooltip', sprintf($lang['Send_private_message'],$username)).'</a>';
+		$pm	= '<a href="'.append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$nuke_user_id").'">'.get_evo_icon('evo-sprite 
+		mail tooltip', sprintf($lang['Send_private_message'],$nuke_username)).'</a>';
 		
 		# Website URL
 		$www = ($row['user_website']) ? '<a href="'.$row['user_website'].'" target="_userwww">'.get_evo_icon('evo-sprite globe tooltip', $lang['Visit_website']).'</a>&nbsp;' : '';
@@ -233,7 +233,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
 		 if($row['user_allow_viewonline']):
          $online_status = '<a href="'.append_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_online'],$row['username']).'"'.$online_color.'><img alt="online" src="themes/'.$theme_name.'/forums/images/status/online_bgcolor_one.gif" /></a>';
          
-		 elseif($userdata['user_level'] == NUKE_ADMIN || $userdata['user_id'] == $row['user_id'] ):
+		 elseif($nuke_userdata['user_level'] == NUKE_ADMIN || $nuke_userdata['user_id'] == $row['user_id'] ):
          $online_status = '<em><a href="'.append_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_hidden'],$profiledata['username']).'"'.$hidden_color.'>'.$lang['Hidden'].'</a></em>';
          
 		 else:
@@ -244,19 +244,19 @@ if($row = $nuke_db->sql_fetchrow($result)):
        $online_status = '<span title="'.sprintf($lang['is_offline'], $row['username']) . '"' . $offline_color . '><img alt="online" src="themes/'.$theme_name.'/forums/images/status/offline_bgcolor_one.gif" /></span>';
        endif;
        # Mod: Online/Offline/Hidden v2.2.7 END
- 		if(strlen($user_from) == 6)
-		$user_from = 'The InterWebs';
+ 		if(strlen($nuke_user_from) == 6)
+		$nuke_user_from = 'The InterWebs';
 		 
 		if (!is_admin())
         # Nobody but the admin gives a shit about Anonymous people
-		if($username == 'Anonymous') 
+		if($nuke_username == 'Anonymous') 
 		continue;
 		
-		$template->assign_block_vars('memberrow', array(
+		$template_nuke->assign_block_vars('memberrow', array(
 			'ROW_NUMBER' 	=> $i + ($_GET['start'] + 1),
-			'USERNAME' 		=> UsernameColor($username),
-			'FROM' 			=> $user_from,
-			'FLAG'			=> $user_flag,
+			'USERNAME' 		=> UsernameColor($nuke_username),
+			'FROM' 			=> $nuke_user_from,
+			'FLAG'			=> $nuke_user_flag,
 			'FACEBOOK'		=> $facebook,
 			'VIEW_TIME' 	=> '<i class="bi bi-calendar3"></i> '.$view_time,
 			'VIEW_COUNT' 	=> $view_count,
@@ -267,7 +267,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
 			'ONLINE_STATUS' => $online_status,
 			'TOPICTITLE'    => '<font size="3">'.$topic_title.'</font>',
 			'TOPICLINK'     => '<font size="3"><i class="bi bi-card-heading"></i> '.$topic_link.'</font>',
-			'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$user_id"))
+			'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$nuke_user_id"))
 		);
 
 		$i++;
@@ -297,11 +297,11 @@ else:
 	$total_members = 10;
 endif;
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 	'PAGINATION' => $pagination,
 	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($total_members / $board_config['topics_per_page'])), 
 	'L_GOTO_PAGE' => $lang['Goto_page'])
 );
-$template->pparse('body');
+$template_nuke->pparse('body');
 include("includes/page_tail.$phpEx");
 ?>

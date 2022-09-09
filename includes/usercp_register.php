@@ -61,12 +61,12 @@ $unhtml_specialchars_replace = array('>', '<', '"', '&');
 # agreed to registration conditions/coppa
 function show_coppa()
 {
-	global $userdata, $template, $lang, $phpbb2_root_path, $phpEx;
+	global $nuke_userdata, $template_nuke, $lang, $phpbb2_root_path, $phpEx;
 
-	$template->set_filenames(array(
+	$template_nuke->set_filenames(array(
 			'body' => 'agreement.tpl')
 	);
-	$template->assign_vars(array(
+	$template_nuke->assign_vars(array(
 		'REGISTRATION' => $lang['Registration'],
 		'AGREEMENT' => $lang['Reg_agreement'],
 		"AGREE_OVER_13" => $lang['Agree_over_13'],
@@ -77,7 +77,7 @@ function show_coppa()
 		"U_AGREE_UNDER13" => append_sid("profile.$phpEx?mode=register&amp;agreed=true&amp;coppa=true"))
 	);
 
-	$template->pparse('body');
+	$template_nuke->pparse('body');
 }
 
 $error = FALSE;
@@ -102,9 +102,9 @@ $verification = null;
 	message_die(NUKE_GENERAL_ERROR, sprintf($lang['Error_Check_Num'], append_sid('modules.php?name=Your_Account&op=new_user')));
 	# The user exists, lets keep moving on
 	$verification = $nuke_db->sql_fetchrow($verified);
-	$template->assign_block_vars('switch_silent_password', array());
+	$template_nuke->assign_block_vars('switch_silent_password', array());
  else: 
-	$template->assign_block_vars('switch_ya_merge', array());
+	$template_nuke->assign_block_vars('switch_ya_merge', array());
  endif;
  # Mod: YA Merge v1.0.0 END
 
@@ -207,7 +207,7 @@ $mode == 'register' ):
 	include("includes/functions_post.php");
 
 	if ($mode == 'editprofile'):
-		$user_id = intval($HTTP_POST_VARS['user_id']);
+		$nuke_user_id = intval($HTTP_POST_VARS['user_id']);
 		$current_email = trim(htmlspecialchars($HTTP_POST_VARS['current_email']));
 	endif;
 
@@ -235,7 +235,7 @@ $mode == 'register' ):
 	  $$var = trim(htmlspecialchars($HTTP_POST_VARS[$param]));
 	endwhile;
 
-	$username = (!empty($HTTP_POST_VARS['username'])) ? phpbb_clean_username($HTTP_POST_VARS['username']) : '';
+	$nuke_username = (!empty($HTTP_POST_VARS['username'])) ? phpbb_clean_username($HTTP_POST_VARS['username']) : '';
 	$trim_var_list = array('cur_password' => 'cur_password', 
 	                       'new_password' => 'new_password', 
 					   'password_confirm' => 'password_confirm', 
@@ -305,7 +305,7 @@ $mode == 'register' ):
 
         # Mod: YA Merge v1.0.0 START
 		if ($verification !== null):
-			$username = $verification['username'];
+			$nuke_username = $verification['username'];
 			$rname = $verification['realname'];
 			$email = $verification['user_email'];
 			$new_password = $verification['user_password'];
@@ -313,19 +313,19 @@ $mode == 'register' ):
 		endif;
         # Mod: YA Merge v1.0.0 END
 	else:
-		$attachsig = (isset($HTTP_POST_VARS['attachsig'])) ? (($HTTP_POST_VARS['attachsig']) ? TRUE : 0) : $userdata['user_attachsig'];
-		$allowhtml = (isset($HTTP_POST_VARS['allowhtml'])) ? ((intval($HTTP_POST_VARS['allowhtml'])) ? TRUE : 0) : $userdata['user_allowhtml'];
-		$allowbbcode = (isset($HTTP_POST_VARS['allowbbcode'])) ? ((intval($HTTP_POST_VARS['allowbbcode'])) ? TRUE : 0) : $userdata['user_allowbbcode'];
-		$allowsmilies = (isset($HTTP_POST_VARS['allowsmilies'])) ? ((intval($HTTP_POST_VARS['allowsmilies'])) ? TRUE : 0) : $userdata['user_allowsmile'];
+		$attachsig = (isset($HTTP_POST_VARS['attachsig'])) ? (($HTTP_POST_VARS['attachsig']) ? TRUE : 0) : $nuke_userdata['user_attachsig'];
+		$allowhtml = (isset($HTTP_POST_VARS['allowhtml'])) ? ((intval($HTTP_POST_VARS['allowhtml'])) ? TRUE : 0) : $nuke_userdata['user_allowhtml'];
+		$allowbbcode = (isset($HTTP_POST_VARS['allowbbcode'])) ? ((intval($HTTP_POST_VARS['allowbbcode'])) ? TRUE : 0) : $nuke_userdata['user_allowbbcode'];
+		$allowsmilies = (isset($HTTP_POST_VARS['allowsmilies'])) ? ((intval($HTTP_POST_VARS['allowsmilies'])) ? TRUE : 0) : $nuke_userdata['user_allowsmile'];
 
         # Mod: View/Disable Avatars/Signatures v1.1.2 START
-		$showavatars = (isset($HTTP_POST_VARS['showavatars'])) ? (($HTTP_POST_VARS['showavatars']) ? TRUE : 0) : $userdata['user_showavatars'];
-		$showsignatures = (isset($HTTP_POST_VARS['showsignatures'])) ? (($HTTP_POST_VARS['showsignatures']) ? TRUE : 0) : $userdata['user_showsignatures'];
+		$showavatars = (isset($HTTP_POST_VARS['showavatars'])) ? (($HTTP_POST_VARS['showavatars']) ? TRUE : 0) : $nuke_userdata['user_showavatars'];
+		$showsignatures = (isset($HTTP_POST_VARS['showsignatures'])) ? (($HTTP_POST_VARS['showsignatures']) ? TRUE : 0) : $nuke_userdata['user_showsignatures'];
         # Mod: View/Disable Avatars/Signatures v1.1.2 END
 	endif;
 
     # Mod: Force Word Wrapping - Configurator v1.0.16 START
-	$user_wordwrap = (isset($HTTP_POST_VARS['user_wordwrap'])) ? intval($HTTP_POST_VARS['user_wordwrap']) : $board_config['wrap_def'];
+	$nuke_user_wordwrap = (isset($HTTP_POST_VARS['user_wordwrap'])) ? intval($HTTP_POST_VARS['user_wordwrap']) : $board_config['wrap_def'];
     # Mod: Force Word Wrapping - Configurator v1.0.16 END
 
     # Mod: Birthdays v3.0.0 START
@@ -333,23 +333,23 @@ $mode == 'register' ):
 	$birthday_greeting = (isset($HTTP_POST_VARS['birthday_greeting'])) ? intval($HTTP_POST_VARS['birthday_greeting']) : 0;
     # Mod: Birthdays v3.0.0 END
 
-	$user_style = (isset($HTTP_POST_VARS['style'])) ? $HTTP_POST_VARS['style'] : '';
+	$nuke_user_style = (isset($HTTP_POST_VARS['style'])) ? $HTTP_POST_VARS['style'] : '';
 
 	if(!empty($HTTP_POST_VARS['language'])):
 		if(preg_match('/^[a-z_]+$/i',$HTTP_POST_VARS['language'])):
-		$user_lang = htmlspecialchars($HTTP_POST_VARS['language']);
+		$nuke_user_lang = htmlspecialchars($HTTP_POST_VARS['language']);
 		else:
 		$error = true;
 		$error_msg = $lang['Fields_empty'];
 		endif;
 	else:
-		$user_lang = $board_config['default_lang'];
+		$nuke_user_lang = $board_config['default_lang'];
 	endif;
 
-	$user_timezone = (isset($HTTP_POST_VARS['timezone'])) ? doubleval($HTTP_POST_VARS['timezone']) : $board_config['board_timezone'];
+	$nuke_user_timezone = (isset($HTTP_POST_VARS['timezone'])) ? doubleval($HTTP_POST_VARS['timezone']) : $board_config['board_timezone'];
     
 	# Mod: Member Country Flags v2.0.7 START
-	$user_flag = (!empty($HTTP_POST_VARS['user_flag'])) ? $HTTP_POST_VARS['user_flag'] : '';
+	$nuke_user_flag = (!empty($HTTP_POST_VARS['user_flag'])) ? $HTTP_POST_VARS['user_flag'] : '';
 	# Mod: Member Country Flags v2.0.7 END
 
     # Mod: Advanced Time Management v2.2.0 START
@@ -366,12 +366,12 @@ $mode == 'register' ):
 	endif;
     # Mod: Advanced Time Management v2.2.0 END
 
-	$user_dateformat = (!empty($HTTP_POST_VARS['dateformat'])) ? trim(htmlspecialchars($HTTP_POST_VARS['dateformat'])) : $board_config['default_dateformat'];
+	$nuke_user_dateformat = (!empty($HTTP_POST_VARS['dateformat'])) ? trim(htmlspecialchars($HTTP_POST_VARS['dateformat'])) : $board_config['default_dateformat'];
 
     # Mod: Super Quick Reply v1.3.2 START
-	$user_show_quickreply = (isset($HTTP_POST_VARS['show_quickreply'])) ? intval($HTTP_POST_VARS['show_quickreply']) : 1;
-	$user_quickreply_mode = (isset($HTTP_POST_VARS['quickreply_mode'])) ? (( $HTTP_POST_VARS['quickreply_mode']) ? TRUE : 0) : TRUE;
-	$user_open_quickreply = (isset($HTTP_POST_VARS['open_quickreply'])) ? (( $HTTP_POST_VARS['open_quickreply']) ? TRUE : 0) : TRUE;
+	$nuke_user_show_quickreply = (isset($HTTP_POST_VARS['show_quickreply'])) ? intval($HTTP_POST_VARS['show_quickreply']) : 1;
+	$nuke_user_quickreply_mode = (isset($HTTP_POST_VARS['quickreply_mode'])) ? (( $HTTP_POST_VARS['quickreply_mode']) ? TRUE : 0) : TRUE;
+	$nuke_user_open_quickreply = (isset($HTTP_POST_VARS['open_quickreply'])) ? (( $HTTP_POST_VARS['open_quickreply']) ? TRUE : 0) : TRUE;
     # Mod: Super Quick Reply v1.3.2 END
 
     $sceditor = (isset($HTTP_POST_VARS['sceditor_in_source'])) ? intval($HTTP_POST_VARS['sceditor_in_source']) : 1;
@@ -384,27 +384,27 @@ $mode == 'register' ):
 	$newsletter = (isset($HTTP_POST_VARS['newsletter'])) ? intval($HTTP_POST_VARS['newsletter']) : 0;
     # Mod: YA Merge v1.0.0 END
 
-	$user_avatar_local = (isset($HTTP_POST_VARS['avatarselect']) 
+	$nuke_user_avatar_local = (isset($HTTP_POST_VARS['avatarselect']) 
 	&& !empty($HTTP_POST_VARS['submitavatar']) 
 	&& $board_config['allow_avatar_local']) 
 	? htmlspecialchars($HTTP_POST_VARS['avatarselect']) : ((isset($HTTP_POST_VARS['avatarlocal'])) ? htmlspecialchars($HTTP_POST_VARS['avatarlocal']) : '');
 	
-	$user_avatar_category = (isset($HTTP_POST_VARS['avatarcatname']) && $board_config['allow_avatar_local']) ? htmlspecialchars($HTTP_POST_VARS['avatarcatname']) : '';
+	$nuke_user_avatar_category = (isset($HTTP_POST_VARS['avatarcatname']) && $board_config['allow_avatar_local']) ? htmlspecialchars($HTTP_POST_VARS['avatarcatname']) : '';
 
-	$user_avatar_remoteurl = (!empty($HTTP_POST_VARS['avatarremoteurl']) ) ? trim(htmlspecialchars($HTTP_POST_VARS['avatarremoteurl'])) : '';
+	$nuke_user_avatar_remoteurl = (!empty($HTTP_POST_VARS['avatarremoteurl']) ) ? trim(htmlspecialchars($HTTP_POST_VARS['avatarremoteurl'])) : '';
 
-	$user_avatar_upload = (!empty($HTTP_POST_VARS['avatarurl'])) 
+	$nuke_user_avatar_upload = (!empty($HTTP_POST_VARS['avatarurl'])) 
 	? trim($HTTP_POST_VARS['avatarurl']) : (($HTTP_POST_FILES['avatar']['tmp_name'] != "none") ? $HTTP_POST_FILES['avatar']['tmp_name'] : '');
 
-	$user_avatar_name = (!empty($HTTP_POST_FILES['avatar']['name'])) ? $HTTP_POST_FILES['avatar']['name'] : '';
-	$user_avatar_size = (!empty($HTTP_POST_FILES['avatar']['size'])) ? $HTTP_POST_FILES['avatar']['size'] : 0;
-	$user_avatar_filetype = (!empty($HTTP_POST_FILES['avatar']['type'])) ? $HTTP_POST_FILES['avatar']['type'] : '';
+	$nuke_user_avatar_name = (!empty($HTTP_POST_FILES['avatar']['name'])) ? $HTTP_POST_FILES['avatar']['name'] : '';
+	$nuke_user_avatar_size = (!empty($HTTP_POST_FILES['avatar']['size'])) ? $HTTP_POST_FILES['avatar']['size'] : 0;
+	$nuke_user_avatar_filetype = (!empty($HTTP_POST_FILES['avatar']['type'])) ? $HTTP_POST_FILES['avatar']['type'] : '';
 
-	$user_avatar = (empty($user_avatar_local) && $mode == 'editprofile') ? $userdata['user_avatar'] : 'blank.gif';
-	$user_avatar_type = (empty($user_avatar_local) && $mode == 'editprofile') ? $userdata['user_avatar_type'] : '0';
+	$nuke_user_avatar = (empty($nuke_user_avatar_local) && $mode == 'editprofile') ? $nuke_userdata['user_avatar'] : 'blank.gif';
+	$nuke_user_avatar_type = (empty($nuke_user_avatar_local) && $mode == 'editprofile') ? $nuke_userdata['user_avatar_type'] : '0';
 
 	if((isset($HTTP_POST_VARS['avatargallery']) || isset($HTTP_POST_VARS['submitavatar']) || isset($HTTP_POST_VARS['cancelavatar'])) && (!isset($HTTP_POST_VARS['submit']))):
-		$username = stripslashes($username);
+		$nuke_username = stripslashes($nuke_username);
 		$email = stripslashes($email);
 		$cur_password = htmlspecialchars(stripslashes($cur_password));
 		$new_password = htmlspecialchars(stripslashes($new_password));
@@ -421,8 +421,8 @@ $mode == 'register' ):
 
 		$signature = htmlspecialchars(stripslashes($signature));
 		$sceditor = stripslashes($sceditor);
-		$user_lang = stripslashes($user_lang);
-		$user_dateformat = stripslashes($user_dateformat);
+		$nuke_user_lang = stripslashes($nuke_user_lang);
+		$nuke_user_dateformat = stripslashes($nuke_user_dateformat);
 
         # Mod: XData v1.0.3 START
 		@reset($xdata);
@@ -432,8 +432,8 @@ $mode == 'register' ):
         # Mod: XData v1.0.3 END
 
 		if(!isset($HTTP_POST_VARS['cancelavatar'])):
-			$user_avatar = $user_avatar_category . '/' . $user_avatar_local;
-			$user_avatar_type = NUKE_USER_AVATAR_GALLERY;
+			$nuke_user_avatar = $nuke_user_avatar_category . '/' . $nuke_user_avatar_local;
+			$nuke_user_avatar_type = NUKE_USER_AVATAR_GALLERY;
 		endif;
 	endif;
 endif;
@@ -442,7 +442,7 @@ endif;
 # Let's make sure the user isn't logged in while registering,
 # and ensure that they were trying to register a second time
 # (Prevents double registrations)
-if($verification !== null && ($userdata['session_logged_in'] || $username === $userdata['username'])) 
+if($verification !== null && ($nuke_userdata['session_logged_in'] || $nuke_username === $nuke_userdata['username'])) 
 message_die(NUKE_GENERAL_MESSAGE, $lang['Username_taken'], '', __LINE__, __FILE__);
 
 # Did the user submit? In this case build a query to update the users profile in the DB
@@ -452,12 +452,12 @@ if(isset($HTTP_POST_VARS['submit'])):
 	$passwd_sql = '';
 	
 	if($mode == 'editprofile'):
-		if($user_id != $userdata['user_id']):
+		if($nuke_user_id != $nuke_userdata['user_id']):
 			$error = TRUE;
 			$error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $lang['Wrong_Profile'];
 		endif;
 	elseif($mode == 'register'):
-		if(empty($username) || empty($new_password) || empty($password_confirm) || empty($email)):
+		if(empty($nuke_username) || empty($new_password) || empty($password_confirm) || empty($email)):
 		
 			$error = TRUE;
 			$error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $lang['Fields_empty'];
@@ -481,7 +481,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 			$sql = 'SELECT code
 			FROM ' . CONFIRM_TABLE . "
 			WHERE confirm_id = '$confirm_id'
-			AND session_id = '" . $userdata['session_id'] . "'";
+			AND session_id = '" . $nuke_userdata['session_id'] . "'";
 			
 			if(!($result = $nuke_db->sql_query($sql)))
 			message_die(NUKE_GENERAL_ERROR, 'Could not obtain confirmation code', '', __LINE__, __FILE__, $sql);
@@ -493,7 +493,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 				else:
 					$sql = 'DELETE FROM ' . CONFIRM_TABLE . "
 						WHERE confirm_id = '$confirm_id'
-						AND session_id = '" . $userdata['session_id'] . "'";
+						AND session_id = '" . $nuke_userdata['session_id'] . "'";
 					if (!$nuke_db->sql_query($sql))
 						message_die(NUKE_GENERAL_ERROR, 'Could not delete confirmation code', '', __LINE__, __FILE__, $sql);
 				endif;
@@ -524,7 +524,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 			
 				$sql = "SELECT user_password
 				FROM " . NUKE_USERS_TABLE . "
-				WHERE user_id = '$user_id'";
+				WHERE user_id = '$nuke_user_id'";
 				
 				if(!($result = $nuke_db->sql_query($sql)))
 				message_die(NUKE_GENERAL_ERROR, 'Could not obtain user_password information', '', __LINE__, __FILE__, $sql);
@@ -554,11 +554,11 @@ if(isset($HTTP_POST_VARS['submit'])):
 	endif;
 
 	# Do a ban check on this email address
-	if($email != $userdata['user_email'] || $mode == 'register'):
+	if($email != $nuke_userdata['user_email'] || $mode == 'register'):
 		$result = validate_email($email);
 		
 		if($result['error']):
-			$email = $userdata['user_email'];
+			$email = $nuke_userdata['user_email'];
 			$error = TRUE;
 			$error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $result['error_msg'];
 		endif;
@@ -566,7 +566,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 		if($mode == 'editprofile'):
 			$sql = "SELECT user_password
 			FROM " . NUKE_USERS_TABLE . "
-			WHERE user_id = '$user_id'";
+			WHERE user_id = '$nuke_user_id'";
 			
 			if(!($result = $nuke_db->sql_query($sql)))
 			message_die(NUKE_GENERAL_ERROR, 'Could not obtain user_password information', '', __LINE__, __FILE__, $sql);
@@ -576,7 +576,7 @@ if(isset($HTTP_POST_VARS['submit'])):
             
 			# Base: Evolution Functions v1.5.0 START
 			if($row['user_password'] != md5($cur_password)):
-				$email = $userdata['user_email'];
+				$email = $nuke_userdata['user_email'];
 				$error = TRUE;
 				$error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $lang['Current_password_mismatch'];
 			endif;
@@ -584,14 +584,14 @@ if(isset($HTTP_POST_VARS['submit'])):
 		endif;
 	endif;
 
-	$username_sql = '';
+	$nuke_username_sql = '';
 	if($board_config['allow_namechange'] || $mode == 'register'):
-		if(empty($username)):
+		if(empty($nuke_username)):
 			# Error is already triggered, since one field is empty.
 			$error = TRUE;
-		elseif($username != $userdata['username'] || $mode == 'register'):
-			if(strtolower($username) != strtolower($userdata['username']) || $mode == 'register'):
-				$result = validate_username($username);
+		elseif($nuke_username != $nuke_userdata['username'] || $mode == 'register'):
+			if(strtolower($nuke_username) != strtolower($nuke_userdata['username']) || $mode == 'register'):
+				$result = validate_username($nuke_username);
 				if($result['error']):
 				
 					$error = TRUE;
@@ -600,12 +600,12 @@ if(isset($HTTP_POST_VARS['submit'])):
 			endif;
 
 			if(!$error)
-			$username_sql = "username = '" . str_replace("\'", "''", $username) . "', ";
+			$nuke_username_sql = "username = '" . str_replace("\'", "''", $nuke_username) . "', ";
 		endif;
 	endif;
 
     # Mod: Birthdays v3.0.0 START
-	$bday_locked = $board_config['bday_lock'] && $userdata['user_birthday'] != 0;
+	$bday_locked = $board_config['bday_lock'] && $nuke_userdata['user_birthday'] != 0;
 
 	if(!$bday_locked):
 		$empty_month = empty($bday_month) || $bday_month == $lang['Default_Month'];
@@ -640,8 +640,8 @@ if(isset($HTTP_POST_VARS['submit'])):
 			endif;
 	endswitch;
 
-	$user_birthday = sprintf('%02d%02d%04d',$bday_month,$bday_day,$bday_year);
-	$user_birthday2 = ($birthday_display 
+	$nuke_user_birthday = sprintf('%02d%02d%04d',$bday_month,$bday_day,$bday_year);
+	$nuke_user_birthday2 = ($birthday_display 
 	                   != NUKE_BIRTHDAY_DATE 
 	                   && $birthday_display 
 	                   != NUKE_BIRTHDAY_NONE 
@@ -675,7 +675,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 			if($meta['handle_input'] 
 			&& (($mode == 'register' 
 			&& $meta['default_auth'] == NUKE_XD_AUTH_ALLOW) 
-			|| ($mode != 'register' ? xdata_auth($code_name, $user_id) : 0) || $userdata['user_level'] == NUKE_ADMIN )):
+			|| ($mode != 'register' ? xdata_auth($code_name, $nuke_user_id) : 0) || $nuke_userdata['user_level'] == NUKE_ADMIN )):
 			
 				if(($meta['field_length'] > 0) && (strlen($xdata[$code_name]) > $meta['field_length'])):
 					$error = TRUE;
@@ -698,14 +698,14 @@ if(isset($HTTP_POST_VARS['submit'])):
 				endif;
 
 				if($meta['allow_bbcode']):
-					if(!$userdata['xdata_bbcode'] && $mode != 'register'): 
+					if(!$nuke_userdata['xdata_bbcode'] && $mode != 'register'): 
 						$xdata_bbcode_uid = ( $allowbbcode ) ? make_bbcode_uid() : '';
 						
 						if ($allowbbcode && !empty($xdata_bbcode_uid)): 
-						$nuke_db->sql_query('UPDATE `'.NUKE_USERS_TABLE.'` SET xdata_bbcode="'.$xdata_bbcode_uid.'" WHERE `user_id` ='.$userdata['user_id']);
+						$nuke_db->sql_query('UPDATE `'.NUKE_USERS_TABLE.'` SET xdata_bbcode="'.$xdata_bbcode_uid.'" WHERE `user_id` ='.$nuke_userdata['user_id']);
 						endif;
 				    else: 
-					    $xdata_bbcode_uid = $userdata['xdata_bbcode'];
+					    $xdata_bbcode_uid = $nuke_userdata['xdata_bbcode'];
 					endif;
 				endif;
 
@@ -715,7 +715,7 @@ if(isset($HTTP_POST_VARS['submit'])):
        # Mod: XData v1.0.3 END
 
     # Mod: Force Word Wrapping - Configurator v1.0.16 START
-	if ( $user_wordwrap < $board_config['wrap_min'] || $user_wordwrap > $board_config['wrap_max'] )
+	if ( $nuke_user_wordwrap < $board_config['wrap_min'] || $nuke_user_wordwrap > $board_config['wrap_max'] )
 	{
 		$error = TRUE;
 		$error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $lang['Word_Wrap_Error'];
@@ -728,38 +728,38 @@ if(isset($HTTP_POST_VARS['submit'])):
 
 	if ($HTTP_POST_VARS['avatardel'] == 1 && $mode == 'editprofile')
 	{
-		$avatar_sql = user_avatar_delete($userdata['user_avatar_type'], $userdata['user_avatar']);
+		$avatar_sql = user_avatar_delete($nuke_userdata['user_avatar_type'], $nuke_userdata['user_avatar']);
 	}
-	elseif((!empty($user_avatar_upload) || !empty($user_avatar_name) ) && $board_config['allow_avatar_upload'])
+	elseif((!empty($nuke_user_avatar_upload) || !empty($nuke_user_avatar_name) ) && $board_config['allow_avatar_upload'])
 	{
-		if(!empty($user_avatar_upload)):
-			$avatar_mode = (empty($user_avatar_name)) ? 'remote' : 'local';
+		if(!empty($nuke_user_avatar_upload)):
+			$avatar_mode = (empty($nuke_user_avatar_name)) ? 'remote' : 'local';
 			$avatar_sql = user_avatar_upload($mode, 
 			                          $avatar_mode, 
-						  $userdata['user_avatar'], 
-					 $userdata['user_avatar_type'], 
+						  $nuke_userdata['user_avatar'], 
+					 $nuke_userdata['user_avatar_type'], 
 									        $error, 
 										$error_msg, 
-							   $user_avatar_upload, 
-							     $user_avatar_name, 
-								 $user_avatar_size, 
-							 $user_avatar_filetype);
+							   $nuke_user_avatar_upload, 
+							     $nuke_user_avatar_name, 
+								 $nuke_user_avatar_size, 
+							 $nuke_user_avatar_filetype);
 		
-		elseif(!empty($user_avatar_name)):
+		elseif(!empty($nuke_user_avatar_name)):
 			$l_avatar_size = sprintf($lang['Avatar_filesize'], round($board_config['avatar_filesize'] / 1024));
 			$error = true;
 			$error_msg .= ( ( !empty($error_msg) ) ? '<br />' : '' ) . $l_avatar_size;
 		endif;
 	}
-	elseif($user_avatar_remoteurl != '' && $board_config['allow_avatar_remote'])
+	elseif($nuke_user_avatar_remoteurl != '' && $board_config['allow_avatar_remote'])
 	{
-		user_avatar_delete($userdata['user_avatar_type'], $userdata['user_avatar']);
-		$avatar_sql = user_avatar_url($mode, $error, $error_msg, $user_avatar_remoteurl);
+		user_avatar_delete($nuke_userdata['user_avatar_type'], $nuke_userdata['user_avatar']);
+		$avatar_sql = user_avatar_url($mode, $error, $error_msg, $nuke_user_avatar_remoteurl);
 	}
-	elseif($user_avatar_local != '' && $board_config['allow_avatar_local'])
+	elseif($nuke_user_avatar_local != '' && $board_config['allow_avatar_local'])
 	{
-		user_avatar_delete($userdata['user_avatar_type'], $userdata['user_avatar']);
-		$avatar_sql = user_avatar_gallery($mode, $error, $error_msg, $user_avatar_local, $user_avatar_category);
+		user_avatar_delete($nuke_userdata['user_avatar_type'], $nuke_userdata['user_avatar']);
+		$avatar_sql = user_avatar_gallery($mode, $error, $error_msg, $nuke_user_avatar_local, $nuke_user_avatar_category);
 	}
 	
 	if(!$error)
@@ -769,25 +769,25 @@ if(isset($HTTP_POST_VARS['submit'])):
 
 		if($mode == 'editprofile')
 		{
-			if($email != $userdata['user_email'] && $board_config['require_activation'] != NUKE_USER_ACTIVATION_NONE && $userdata['user_level'] != NUKE_ADMIN):
-				$user_active = 0;
-				$user_actkey = gen_rand_string(true);
+			if($email != $nuke_userdata['user_email'] && $board_config['require_activation'] != NUKE_USER_ACTIVATION_NONE && $nuke_userdata['user_level'] != NUKE_ADMIN):
+				$nuke_user_active = 0;
+				$nuke_user_actkey = gen_rand_string(true);
 				$key_len = 54 - ( strlen($server_url) );
 				$key_len = ( $key_len > 6 ) ? $key_len : 6;
-				$user_actkey = substr($user_actkey, 0, $key_len);
+				$nuke_user_actkey = substr($nuke_user_actkey, 0, $key_len);
 
-				if($userdata['session_logged_in']):
-				session_end($userdata['sid'], $userdata['user_id']);
+				if($nuke_userdata['session_logged_in']):
+				session_end($nuke_userdata['sid'], $nuke_userdata['user_id']);
 				endif;
 			else:
-				$user_active = 1;
-				$user_actkey = '';
+				$nuke_user_active = 1;
+				$nuke_user_actkey = '';
 			endif;
 
             # Mod: Birthdays v3.0.0 START
 			$birthday_sql = '';
-			if(!$board_config['bday_lock'] || $userdata['user_birthday'] == 0)
-			$birthday_sql = "user_birthday = $user_birthday, user_birthday2 = $user_birthday2, ";
+			if(!$board_config['bday_lock'] || $nuke_userdata['user_birthday'] == 0)
+			$birthday_sql = "user_birthday = $nuke_user_birthday, user_birthday2 = $nuke_user_birthday2, ";
 			# Mod: Birthdays v3.0.0 END
 
             # Mod: Force Word Wrapping - Configurator v1.0.16 START
@@ -802,22 +802,22 @@ if(isset($HTTP_POST_VARS['submit'])):
             # Mod: Gender v1.2.6 START
             # Mod: Birthdays v3.0.0 START
 			$sql = "UPDATE ".NUKE_USERS_TABLE."
-			SET ".$username_sql.$passwd_sql." user_email = '".str_replace("\'", "''", $email)."', ".$birthday_sql
+			SET ".$nuke_username_sql.$passwd_sql." user_email = '".str_replace("\'", "''", $email)."', ".$birthday_sql
 			."birthday_display = $birthday_display, birthday_greeting = $birthday_greeting, user_facebook = '"
 			.str_replace("\'", "''", str_replace(' ', '+', $facebook))."', user_website = '".str_replace("\'", "''", $website)
 			."', user_occ = '".str_replace("\'", "''", $occupation)."', user_from = '".str_replace("\'", "''", $location) 
-			."',user_from_flag = '$user_flag', user_interests = '".str_replace("\'", "''", $interests)."', 
+			."',user_from_flag = '$nuke_user_flag', user_interests = '".str_replace("\'", "''", $interests)."', 
 			user_glance_show = '".intval($glance_show)."', user_viewemail = '$viewemail', user_attachsig = $attachsig, user_allowsmile = 
 			'$allowsmilies', user_showavatars = '$showavatars', user_showsignatures = '$showsignatures', user_allowhtml 
 			= '$allowhtml', user_allowbbcode = '$allowbbcode', user_allow_viewonline = '$allowviewonline', user_notify 
 			= '$notifyreply', user_notify_pm = '$notifypm', user_allow_mass_pm = '$allow_mass_pm', user_popup_pm 
-			= '$popup_pm', user_timezone = '$user_timezone', user_time_mode = $time_mode, user_dst_time_lag = $dst_time_lag, user_dateformat 
-			= '".str_replace("\'", "''",$user_dateformat)."', user_show_quickreply = '$user_show_quickreply', sceditor_in_source 
-			= '$sceditor', user_quickreply_mode = '$user_quickreply_mode', user_wordwrap = '" . str_replace("\'", "''", $user_wordwrap) 
-			. "', user_open_quickreply = $user_open_quickreply, user_lang = '".str_replace("\'", "''", $user_lang)."', theme 
-			= '$user_style', user_active = '$user_active', user_actkey = '".str_replace("\'", "''", $user_actkey)."'".$avatar_sql.", user_gender 
+			= '$popup_pm', user_timezone = '$nuke_user_timezone', user_time_mode = $time_mode, user_dst_time_lag = $dst_time_lag, user_dateformat 
+			= '".str_replace("\'", "''",$nuke_user_dateformat)."', user_show_quickreply = '$nuke_user_show_quickreply', sceditor_in_source 
+			= '$sceditor', user_quickreply_mode = '$nuke_user_quickreply_mode', user_wordwrap = '" . str_replace("\'", "''", $nuke_user_wordwrap) 
+			. "', user_open_quickreply = $nuke_user_open_quickreply, user_lang = '".str_replace("\'", "''", $nuke_user_lang)."', theme 
+			= '$nuke_user_style', user_active = '$nuke_user_active', user_actkey = '".str_replace("\'", "''", $nuke_user_actkey)."'".$avatar_sql.", user_gender 
 			= '$gender', name = '".$rname."', newsletter = '".$newsletter."', bio = '".$extra_info."', user_hide_images = '$hide_images'
-			WHERE user_id = '$user_id'";
+			WHERE user_id = '$nuke_user_id'";
             # Mod: Force Word Wrapping - Configurator v1.0.16 END
             # Mod: Super Quick Reply v1.3.2 END
             # Mod: View/Disable Avatars/Signatures v1.1.2 END
@@ -833,24 +833,24 @@ if(isset($HTTP_POST_VARS['submit'])):
 			if(!($result = $nuke_db->sql_query($sql))):
 				message_die(NUKE_GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
 			else: 
-				global $userinfo;
-				$userinfo['theme'] = $user_style;
+				global $nuke_userinfo;
+				$nuke_userinfo['theme'] = $nuke_user_style;
 				UpdateCookie();
 			endif;
 
 			# We remove all stored login keys since the password has been updated
 			# and change the current one (if applicable)
 			if(!empty($passwd_sql))
-			session_reset_keys($user_id, $user_ip);
+			session_reset_keys($nuke_user_id, $nuke_user_ip);
 
             # Mod: XData v1.0.3 START
 			foreach($xdata as $code_name => $value):
-			set_user_xdata($user_id, $code_name, $value);
+			set_user_xdata($nuke_user_id, $code_name, $value);
 			endforeach;
             # Mod: XData v1.0.3 END
 
 			# Commented code below for testing purposes only.
-			if(!$user_active):
+			if(!$nuke_user_active):
 			
 				# The users account has been deactivated, send them an email with a new activation key
 				include("includes/emailer.php");
@@ -861,16 +861,16 @@ if(isset($HTTP_POST_VARS['submit'])):
 					 $emailer->from($board_config['board_email']);
 					 $emailer->replyto($board_config['board_email']);
 
-					 $emailer->use_template('user_activate', stripslashes($user_lang));
+					 $emailer->use_template('user_activate', stripslashes($nuke_user_lang));
 					 $emailer->email_address($email);
 					 $emailer->set_subject($lang['Reactivate']);
 
 					 $emailer->assign_vars(array(
 						 'SITENAME' => $board_config['sitename'],
-						 'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
+						 'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $nuke_username), 0, 25)),
 						 'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
 
-						 'U_ACTIVATE' => $server_url . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey)
+						 'U_ACTIVATE' => $server_url . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $nuke_user_id . '&act_key=' . $nuke_user_actkey)
 					 );
 					 $emailer->send();
 					 $emailer->reset();
@@ -896,10 +896,10 @@ if(isset($HTTP_POST_VARS['submit'])):
 						 $emailer->set_subject($lang['Reactivate']);
 
 						 $emailer->assign_vars(array(
-							 'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
+							 'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $nuke_username), 0, 25)),
 							 'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']),
 
-							 'U_ACTIVATE' => $server_url . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey)
+							 'U_ACTIVATE' => $server_url . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $nuke_user_id . '&act_key=' . $nuke_user_actkey)
 						 );
 						 $emailer->send();
 						 $emailer->reset();
@@ -907,13 +907,13 @@ if(isset($HTTP_POST_VARS['submit'])):
 					 $nuke_db->sql_freeresult($result);
 				 }
 				//evcz mod=>logout
-				global $userinfo;
-				$r_uid = $userinfo['user_id'];
-				$r_username = $userinfo['username'];
+				global $nuke_userinfo;
+				$r_uid = $nuke_userinfo['user_id'];
+				$r_username = $nuke_userinfo['username'];
 				setcookie("user");
 				$nuke_db->sql_query("DELETE FROM ".$prefix."_session WHERE uname='$r_username'");
 				$nuke_db->sql_query("DELETE FROM ".$prefix."_bbsessions WHERE session_user_id='$r_uid'");
-				$user = "";
+				$nuke_user = "";
 				//fine evcz mod=>logout
 				if (is_active("Forums")) 
 				$message = $lang['Profile_updated_inactive'].'<br /><br />'.sprintf($lang['Click_return_index'],  '<a href="'.append_sid("index.$phpEx").'">', '</a>');
@@ -924,11 +924,11 @@ if(isset($HTTP_POST_VARS['submit'])):
 				if(is_active("Forums")): 
 					$message = $lang['Profile_updated'] . '<br /><br />'.sprintf($lang['Click_return_index'],  '<a href="'.append_sid("index.$phpEx").'">', '</a>');
 					$message .= '<br /><br />'.sprintf($lang['Click_return_profile'],  '<a href='
-					.append_sid('profile.php?mode=viewprofile&amp;u='.$userdata['user_id']).'>', '</a>');
+					.append_sid('profile.php?mode=viewprofile&amp;u='.$nuke_userdata['user_id']).'>', '</a>');
 				else:
 					$message = $lang['Profile_updated'].'<br /><br />'.sprintf($lang['Click_return_index'],  '<a href="index.php">', '</a>');
 				endif;
-				# nuke_redirect(append_sid('profile.php?mode=viewprofile&amp;u='.$userdata['user_id']));
+				# nuke_redirect(append_sid('profile.php?mode=viewprofile&amp;u='.$nuke_userdata['user_id']));
 			endif;
 
 			
@@ -953,7 +953,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 			message_die(NUKE_GENERAL_ERROR, 'Could not obtain next user_id information', '', __LINE__, __FILE__, $sql);
 
 			$nuke_db->sql_freeresult($result);
-			$user_id = $row['total'] + 1;
+			$nuke_user_id = $row['total'] + 1;
 
 		    # Get current date
 			$reg_date = date("M d, Y");
@@ -1022,22 +1022,22 @@ if(isset($HTTP_POST_VARS['submit'])):
 												 user_active, 
 												 user_actkey)
 			
-			VALUES ('$user_id', '".str_replace("\'", "''", $username)."', '".$reg_date."', 
+			VALUES ('$nuke_user_id', '".str_replace("\'", "''", $nuke_username)."', '".$reg_date."', 
 			                    '".str_replace("\'", "''", $new_password) . "', 
-								'".str_replace("\'", "''", $email)."', $user_birthday, 
-								              $user_birthday2, 
+								'".str_replace("\'", "''", $email)."', $nuke_user_birthday, 
+								              $nuke_user_birthday2, 
 											$birthday_display, 
 										   $birthday_greeting, 
 								'".str_replace("\'", "''", $website) . "', 
 								'".str_replace("\'", "''", $occupation) . "', 
-								'".str_replace("\'", "''", $location) . "','$user_flag', 
+								'".str_replace("\'", "''", $location) . "','$nuke_user_flag', 
 								'" . str_replace("\'", "''", $interests) . "', 
 								'" . str_replace("\'", "''", $glance_show) . "', 
 								'" . str_replace("\'", "''", $signature) . "', 
 								
 								'$signature_bbcode_uid', 
-								         '$user_avatar', 
-									'$user_avatar_type', 
+								         '$nuke_user_avatar', 
+									'$nuke_user_avatar_type', 
 									       '$viewemail', 
 								
 								'" . str_replace("\'", "''", $facebook)."', 
@@ -1053,17 +1053,17 @@ if(isset($HTTP_POST_VARS['submit'])):
 								     '$notifypm', 
 								'$allow_mass_pm', 
 								     '$popup_pm', 
-								'$user_timezone', 
+								'$nuke_user_timezone', 
 								    '$time_mode', 
 								 '$dst_time_lag', 
 								 
-								 '" . str_replace("\'", "''", $user_dateformat)."', 
+								 '" . str_replace("\'", "''", $nuke_user_dateformat)."', 
 								 
-								 '$user_show_quickreply', 
-								 '$user_quickreply_mode', 
+								 '$nuke_user_show_quickreply', 
+								 '$nuke_user_quickreply_mode', 
 								 
-								 '" . str_replace("\'", "''", $user_wordwrap)."', $user_open_quickreply, 
-								 '".str_replace("\'", "''", $user_lang)."', '$user_style', '1', '1', 
+								 '" . str_replace("\'", "''", $nuke_user_wordwrap)."', $nuke_user_open_quickreply, 
+								 '".str_replace("\'", "''", $nuke_user_lang)."', '$nuke_user_style', '1', '1', 
 								 '".$realname."', 
 								 '".$newsletter."', 
 								 '".$extra_info."', 
@@ -1084,11 +1084,11 @@ if(isset($HTTP_POST_VARS['submit'])):
  ******************************************************/
 			if ( $board_config['require_activation'] == NUKE_USER_ACTIVATION_SELF || $board_config['require_activation'] == NUKE_USER_ACTIVATION_ADMIN || $coppa )
 			{
-				$user_actkey = gen_rand_string(true);
+				$nuke_user_actkey = gen_rand_string(true);
 				$key_len = 54 - (strlen($server_url));
 				$key_len = ( $key_len > 6 ) ? $key_len : 6;
-				$user_actkey = substr($user_actkey, 0, $key_len);
-				$sql .= "0, '" . str_replace("\'", "''", $user_actkey) . "')";
+				$nuke_user_actkey = substr($nuke_user_actkey, 0, $key_len);
+				$sql .= "0, '" . str_replace("\'", "''", $nuke_user_actkey) . "')";
 			}
 			else
 			{
@@ -1109,19 +1109,19 @@ if(isset($HTTP_POST_VARS['submit'])):
 			$group_id = $nuke_db->sql_nextid();
 
 			$sql = "INSERT INTO " . NUKE_USER_GROUP_TABLE . " (user_id, group_id, user_pending)
-				VALUES ('$user_id', '$group_id', '0')";
+				VALUES ('$nuke_user_id', '$group_id', '0')";
 			if( !($result = $nuke_db->sql_query($sql)) )
 			{
 				message_die(NUKE_GENERAL_ERROR, 'Could not insert data into user_group table', '', __LINE__, __FILE__, $sql);
 			}
 
 			// Delete the temporary user now if we are going through the verification stage of registration
-			$nuke_db->sql_query(sprintf('DELETE FROM %s_users_temp WHERE username = "%s"', $nuke_user_prefix, $username));
+			$nuke_db->sql_query(sprintf('DELETE FROM %s_users_temp WHERE username = "%s"', $nuke_user_prefix, $nuke_username));
 
 /*****[BEGIN]******************************************
  [ Mod:     Initial Usergroup                  v1.0.1 ]
  ******************************************************/
-			init_group($user_id);
+			init_group($nuke_user_id);
 /*****[END]********************************************
  [ Mod:     Initial Usergroup                  v1.0.1 ]
  ******************************************************/
@@ -1129,7 +1129,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 /*****[BEGIN]******************************************
  [ Mod:     Welcome PM                         v2.0.0 ]
  ******************************************************/
-			send_pm($user_id,str_replace("\'", "''", $username));
+			send_pm($nuke_user_id,str_replace("\'", "''", $nuke_username));
 /*****[END]********************************************
  [ Mod:     Welcome PM                         v2.0.0 ]
  ******************************************************/
@@ -1139,7 +1139,7 @@ if(isset($HTTP_POST_VARS['submit'])):
  ******************************************************/
 			foreach ($xdata as $code_name => $value)
 			{
-				set_user_xdata($user_id, $code_name, $value);
+				set_user_xdata($nuke_user_id, $code_name, $value);
 			}
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
@@ -1187,10 +1187,10 @@ if(isset($HTTP_POST_VARS['submit'])):
 					$emailer->set_subject($lang['New_account_subject']);
 
 					$emailer->assign_vars(array(
-					'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
+					'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $nuke_username), 0, 25)),
 					'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']),
 
-					'U_ACTIVATE' => $server_url . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey)
+					'U_ACTIVATE' => $server_url . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $nuke_user_id . '&act_key=' . $nuke_user_actkey)
 					);
 					$emailer->send();
 					$emailer->reset();
@@ -1208,7 +1208,7 @@ if ( $error )
 	//
 	// If an error occured we need to stripslashes on returned data
 	//
-	$username = stripslashes($username);
+	$nuke_username = stripslashes($nuke_username);
 	$email = stripslashes($email);
 	$cur_password = '';
 	$new_password = '';
@@ -1255,19 +1255,19 @@ if ( $error )
 /*****[BEGIN]******************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
-	$user_wordwrap = stripslashes($user_wordwrap);
+	$nuke_user_wordwrap = stripslashes($nuke_user_wordwrap);
 /*****[END]********************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
-	$user_lang = stripslashes($user_lang);
-	$user_dateformat = stripslashes($user_dateformat);
+	$nuke_user_lang = stripslashes($nuke_user_lang);
+	$nuke_user_dateformat = stripslashes($nuke_user_dateformat);
 
 }
 else if ( $mode == 'editprofile' && !isset($HTTP_POST_VARS['avatargallery']) && !isset($HTTP_POST_VARS['submitavatar']) && !isset($HTTP_POST_VARS['cancelavatar']) )
 {
-	$user_id = $userdata['user_id'];
-	$username = $userdata['username'];
-	$email = $userdata['user_email'];
+	$nuke_user_id = $nuke_userdata['user_id'];
+	$nuke_username = $nuke_userdata['username'];
+	$email = $nuke_userdata['user_email'];
 	$cur_password = '';
 	$new_password = '';
 	$password_confirm = '';
@@ -1275,39 +1275,39 @@ else if ( $mode == 'editprofile' && !isset($HTTP_POST_VARS['avatargallery']) && 
 /*****[BEGIN]******************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
-	preg_match('/(..)(..)(....)/', sprintf('%08d',$userdata['user_birthday']), $bday_parts);
+	preg_match('/(..)(..)(....)/', sprintf('%08d',$nuke_userdata['user_birthday']), $bday_parts);
 	$bday_month = $bday_parts[1];
 	$bday_day = $bday_parts[2];
 	$bday_year = $bday_parts[3];
-	$birthday_display = $userdata['birthday_display'];
-	$birthday_greeting = $userdata['birthday_greeting'];
+	$birthday_display = $nuke_userdata['birthday_display'];
+	$birthday_greeting = $nuke_userdata['birthday_greeting'];
 /*****[END]********************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
-	$facebook = $userdata['user_facebook'];
-	$website = $userdata['user_website'];
-	$userdata['user_from'] = str_replace(".gif", "", $userdata['user_from']);
-	$location = $userdata['user_from'];
+	$facebook = $nuke_userdata['user_facebook'];
+	$website = $nuke_userdata['user_website'];
+	$nuke_userdata['user_from'] = str_replace(".gif", "", $nuke_userdata['user_from']);
+	$location = $nuke_userdata['user_from'];
 /*****[BEGIN]******************************************
  [ Mod:     Member Country Flags               v2.0.7 ]
  ******************************************************/
-	$user_flag = $userdata['user_from_flag'];
+	$nuke_user_flag = $nuke_userdata['user_from_flag'];
 /*****[END]********************************************
  [ Mod:     Member Country Flags               v2.0.7 ]
  ******************************************************/
-	$occupation = $userdata['user_occ'];
-	$interests = $userdata['user_interests'];
+	$occupation = $nuke_userdata['user_occ'];
+	$interests = $nuke_userdata['user_interests'];
 /*****[BEGIN]******************************************
  [ Mod:    Gender                              v1.2.6 ]
  ******************************************************/
-	$gender = $userdata['user_gender'];
+	$gender = $nuke_userdata['user_gender'];
 /*****[END]********************************************
  [ Mod:    Gender                              v1.2.6 ]
  ******************************************************/
 /*****[BEGIN]******************************************
  [ Mod:    At a Glance Options                 v1.0.0 ]
  ******************************************************/
-	$glance_show = $userdata['user_glance_show'];
+	$glance_show = $nuke_userdata['user_glance_show'];
 /*****[END]********************************************
  [ Mod:    At a Glance Options                 v1.0.0 ]
  ******************************************************/
@@ -1315,7 +1315,7 @@ else if ( $mode == 'editprofile' && !isset($HTTP_POST_VARS['avatargallery']) && 
 /*****[BEGIN]******************************************
  [ Mod:    Hide Images                         v1.0.0 ]
  ******************************************************/
-	$hide_images = $userdata['user_hide_images'];
+	$hide_images = $nuke_userdata['user_hide_images'];
 /*****[END]********************************************
  [ Mod:    Hide Images                         v1.0.0 ]
  ******************************************************/
@@ -1323,18 +1323,18 @@ else if ( $mode == 'editprofile' && !isset($HTTP_POST_VARS['avatargallery']) && 
 /*****[BEGIN]******************************************
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
-	$allow_mass_pm=$userdata['user_allow_mass_pm'];
+	$allow_mass_pm=$nuke_userdata['user_allow_mass_pm'];
 /*****[END]********************************************
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
-	$signature_bbcode_uid = $userdata['user_sig_bbcode_uid'];
-	$signature = ($signature_bbcode_uid != '') ? preg_replace("/:(([a-z0-9]+:)?)$signature_bbcode_uid(=|\])/si", '\\3', $userdata['user_sig']) : $userdata['user_sig'];
+	$signature_bbcode_uid = $nuke_userdata['user_sig_bbcode_uid'];
+	$signature = ($signature_bbcode_uid != '') ? preg_replace("/:(([a-z0-9]+:)?)$signature_bbcode_uid(=|\])/si", '\\3', $nuke_userdata['user_sig']) : $nuke_userdata['user_sig'];
 
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
 	$xd_meta = get_xd_metadata();
-	$xdata = get_user_xdata($userdata['user_id']);
+	$xdata = get_user_xdata($nuke_userdata['user_id']);
 	foreach ($xdata as $name => $value)
 	{
 /*****[ANFANG]*****************************************
@@ -1358,52 +1358,52 @@ else if ( $mode == 'editprofile' && !isset($HTTP_POST_VARS['avatargallery']) && 
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
 
-	$viewemail = $userdata['user_viewemail'];
-	$notifypm = $userdata['user_notify_pm'];
-	$popup_pm = $userdata['user_popup_pm'];
-	$notifyreply = $userdata['user_notify'];
-	$attachsig = $userdata['user_attachsig'];
-	$allowhtml = $userdata['user_allowhtml'];
-	$allowbbcode = $userdata['user_allowbbcode'];
-	$allowsmilies = $userdata['user_allowsmile'];
+	$viewemail = $nuke_userdata['user_viewemail'];
+	$notifypm = $nuke_userdata['user_notify_pm'];
+	$popup_pm = $nuke_userdata['user_popup_pm'];
+	$notifyreply = $nuke_userdata['user_notify'];
+	$attachsig = $nuke_userdata['user_attachsig'];
+	$allowhtml = $nuke_userdata['user_allowhtml'];
+	$allowbbcode = $nuke_userdata['user_allowbbcode'];
+	$allowsmilies = $nuke_userdata['user_allowsmile'];
 /*****[BEGIN]******************************************
  [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
  ******************************************************/
-	$showavatars = $userdata['user_showavatars'];
-	$showsignatures = $userdata['user_showsignatures'];
+	$showavatars = $nuke_userdata['user_showavatars'];
+	$showsignatures = $nuke_userdata['user_showsignatures'];
 /*****[END]********************************************
  [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
  ******************************************************/
-	$allowviewonline = $userdata['user_allow_viewonline'];
+	$allowviewonline = $nuke_userdata['user_allow_viewonline'];
 
-	$user_avatar = ( $userdata['user_allowavatar'] ) ? $userdata['user_avatar'] : '';
-	$user_avatar_type = ( $userdata['user_allowavatar'] ) ? $userdata['user_avatar_type'] : NUKE_USER_AVATAR_NONE;
+	$nuke_user_avatar = ( $nuke_userdata['user_allowavatar'] ) ? $nuke_userdata['user_avatar'] : '';
+	$nuke_user_avatar_type = ( $nuke_userdata['user_allowavatar'] ) ? $nuke_userdata['user_avatar_type'] : NUKE_USER_AVATAR_NONE;
 
-	$user_style = $userdata['theme'];
+	$nuke_user_style = $nuke_userdata['theme'];
 /*****[BEGIN]******************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
-	$user_wordwrap = $userdata['user_wordwrap'];
+	$nuke_user_wordwrap = $nuke_userdata['user_wordwrap'];
 /*****[END]********************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
-	$user_lang = $userdata['user_lang'];
-	$user_timezone = $userdata['user_timezone'];
+	$nuke_user_lang = $nuke_userdata['user_lang'];
+	$nuke_user_timezone = $nuke_userdata['user_timezone'];
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-	$time_mode=$userdata['user_time_mode'];
-	$dst_time_lag=$userdata['user_dst_time_lag'];
+	$time_mode=$nuke_userdata['user_time_mode'];
+	$dst_time_lag=$nuke_userdata['user_dst_time_lag'];
 /*****[END]********************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-	$user_dateformat = $userdata['user_dateformat'];
+	$nuke_user_dateformat = $nuke_userdata['user_dateformat'];
 /*****[BEGIN]******************************************
  [ Mod:     Super Quick Reply                  v1.3.2 ]
  ******************************************************/
-	$user_show_quickreply = $userdata['user_show_quickreply'];
-	$user_quickreply_mode = $userdata['user_quickreply_mode'];
-	$user_open_quickreply = $userdata['user_open_quickreply'];
+	$nuke_user_show_quickreply = $nuke_userdata['user_show_quickreply'];
+	$nuke_user_quickreply_mode = $nuke_userdata['user_quickreply_mode'];
+	$nuke_user_open_quickreply = $nuke_userdata['user_open_quickreply'];
 /*****[END]********************************************
  [ Mod:     Super Quick Reply                  v1.3.2 ]
  ******************************************************/
@@ -1411,9 +1411,9 @@ else if ( $mode == 'editprofile' && !isset($HTTP_POST_VARS['avatargallery']) && 
 /*****[BEGIN]******************************************
  [ Mod:    YA Merge                            v1.0.0 ]
  ******************************************************/
-	$rname = $userdata['name'];
-	$extra_info = $userdata['bio'];
-	$newsletter = $userdata['newsletter'];
+	$rname = $nuke_userdata['name'];
+	$extra_info = $nuke_userdata['bio'];
+	$newsletter = $nuke_userdata['newsletter'];
 /*****[END]********************************************
  [ Mod:    YA Merge                            v1.0.0 ]
  ******************************************************/
@@ -1422,13 +1422,13 @@ else if ( $mode == 'editprofile' && !isset($HTTP_POST_VARS['avatargallery']) && 
 //
 // Default pages
 //
-include("includes/page_header.php");
+include("includes/nuke_page_header.php");
 
 make_jumpbox('viewforum.'.$phpEx);
 
 if ( $mode == 'editprofile' )
 {
-	if ( $user_id != $userdata['user_id'] )
+	if ( $nuke_user_id != $nuke_userdata['user_id'] )
 	{
 		$error = TRUE;
 		$error_msg = $lang['Wrong_Profile'];
@@ -1441,7 +1441,7 @@ if( isset($HTTP_POST_VARS['avatargallery']) && !$error )
 
 	$avatar_category = ( !empty($HTTP_POST_VARS['avatarcategory']) ) ? htmlspecialchars($HTTP_POST_VARS['avatarcategory']) : '';
 
-	$template->set_filenames(array(
+	$template_nuke->set_filenames(array(
 			'body' => 'profile_avatar_gallery.tpl')
 	);
 
@@ -1461,7 +1461,7 @@ if( isset($HTTP_POST_VARS['avatargallery']) && !$error )
  [ Mod:     Gender                             v1.2.6 ]
  [ Mod:     Birthdays                          v3.0.0 ]
  ******************************************************/
-	display_avatar_gallery($mode, $avatar_category, $user_id, $email, $current_email, $coppa, $username, $new_password, $cur_password, $password_confirm, $website, $location, $user_flag, $occupation, $interests, $glance_show, $signature, $viewemail, $notifypm, $allow_mass_pm, $popup_pm, $notifyreply, $attachsig, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $allowviewonline, $user_style, $user_wordwrap, $user_lang, $bday_month, $bday_day, $bday_year, $birthday_display, $birthday_greeting, $user_timezone, $time_mode, $dst_time_lag, $user_dateformat, $user_show_quickreply, $user_quickreply_mode, $user_open_quickreply, $userdata['session_id'], $xdata, $rname, $extra_info, $newsletter, $hide_images, $gender, $facebook);
+	display_avatar_gallery($mode, $avatar_category, $nuke_user_id, $email, $current_email, $coppa, $nuke_username, $new_password, $cur_password, $password_confirm, $website, $location, $nuke_user_flag, $occupation, $interests, $glance_show, $signature, $viewemail, $notifypm, $allow_mass_pm, $popup_pm, $notifyreply, $attachsig, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $allowviewonline, $nuke_user_style, $nuke_user_wordwrap, $nuke_user_lang, $bday_month, $bday_day, $bday_year, $birthday_display, $birthday_greeting, $nuke_user_timezone, $time_mode, $dst_time_lag, $nuke_user_dateformat, $nuke_user_show_quickreply, $nuke_user_quickreply_mode, $nuke_user_open_quickreply, $nuke_userdata['session_id'], $xdata, $rname, $extra_info, $newsletter, $hide_images, $gender, $facebook);
 /*****[END]********************************************
  [ Mod:     Birthdays                          v3.0.0 ]
  [ Mod:     Gender                             v1.2.6 ]
@@ -1487,55 +1487,55 @@ else
 		$coppa = FALSE;
 	}
 
-	if ( !isset($user_style) )
+	if ( !isset($nuke_user_style) )
 	{
-		$user_style = $board_config['default_style'];
+		$nuke_user_style = $board_config['default_style'];
 	}
 
 	$avatar_img = '<img style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="' . $board_config['avatar_gallery_path'] . '/blank.png" alt="" border="0" />';
-	if ( $user_avatar_type )
+	if ( $nuke_user_avatar_type )
 	{
-		switch( $user_avatar_type )
+		switch( $nuke_user_avatar_type )
 		{
 			# user_allowavatar = 1
 			case NUKE_USER_AVATAR_UPLOAD:
-				$avatar_img = ( $board_config['allow_avatar_upload'] ) ? '<img style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" border="0" />' : '';
+				$avatar_img = ( $board_config['allow_avatar_upload'] ) ? '<img style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="' . $board_config['avatar_path'] . '/' . $nuke_user_avatar . '" alt="" border="0" />' : '';
 				break;
 
 			# user_allowavatar = 2
 			case NUKE_USER_AVATAR_REMOTE:
-				// $avatar_img = resize_avatar($user_avatar);
-				$avatar_img = '<img style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="' . resize_avatar($user_avatar) . '" alt="" border="0" />';
+				// $avatar_img = resize_avatar($nuke_user_avatar);
+				$avatar_img = '<img style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="' . resize_avatar($nuke_user_avatar) . '" alt="" border="0" />';
 				break;
 
 			# user_allowavatar = 3
 			case NUKE_USER_AVATAR_GALLERY:
-				$avatar_img = ( $board_config['allow_avatar_local'] ) ? '<img style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="' . $board_config['avatar_gallery_path'] . '/' . (($user_avatar == 'blank.gif' || $user_avatar == 'gallery/blank.gif') ? 'blank.png' : $user_avatar) . '" alt="" border="0" />' : '';
+				$avatar_img = ( $board_config['allow_avatar_local'] ) ? '<img style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="' . $board_config['avatar_gallery_path'] . '/' . (($nuke_user_avatar == 'blank.gif' || $nuke_user_avatar == 'gallery/blank.gif') ? 'blank.png' : $nuke_user_avatar) . '" alt="" border="0" />' : '';
 				break;
 		}
 	}
 
 	$s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="coppa" value="' . $coppa . '" />';
-	$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+	$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
 
 	if( $mode == 'editprofile' )
 	{
-		$s_hidden_fields .= '<input type="hidden" name="user_id" value="' . $userdata['user_id'] . '" />';
+		$s_hidden_fields .= '<input type="hidden" name="user_id" value="' . $nuke_userdata['user_id'] . '" />';
 	//
 	// Send the users current email address. If they change it, and account activation is turned on
 	// the user account will be disabled and the user will have to reactivate their account.
 	//
-		$s_hidden_fields .= '<input type="hidden" name="current_email" value="' . $userdata['user_email'] . '" />';
+		$s_hidden_fields .= '<input type="hidden" name="current_email" value="' . $nuke_userdata['user_email'] . '" />';
 	}
 
-	if ( !empty($user_avatar_local) )
+	if ( !empty($nuke_user_avatar_local) )
 	{
-		$s_hidden_fields .= '<input type="hidden" name="avatarlocal" value="' . $user_avatar_local . '" /><input type="hidden" name="avatarcatname" value="' . $user_avatar_category . '" />';
+		$s_hidden_fields .= '<input type="hidden" name="avatarlocal" value="' . $nuke_user_avatar_local . '" /><input type="hidden" name="avatarcatname" value="' . $nuke_user_avatar_category . '" />';
 	}
 
-	$html_status =  ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
-	$bbcode_status = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode']  ) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
-	$smilies_status = ( $userdata['user_allowsmile'] && $board_config['allow_smilies']  ) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
+	$html_status =  ( $nuke_userdata['user_allowhtml'] && $board_config['allow_html'] ) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
+	$bbcode_status = ( $nuke_userdata['user_allowbbcode'] && $board_config['allow_bbcode']  ) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
+	$smilies_status = ( $nuke_userdata['user_allowsmile'] && $board_config['allow_smilies']  ) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
 
 /*****[BEGIN]******************************************
  [ Mod:    Gender                              v1.2.6 ]
@@ -1632,16 +1632,16 @@ else
 
 	if ( $error )
 	{
-		$template->set_filenames(array(
+		$template_nuke->set_filenames(array(
 			'reg_header' => 'error_body.tpl')
 			);
-		$template->assign_vars(array(
+		$template_nuke->assign_vars(array(
 			'ERROR_MESSAGE' => $error_msg)
 			);
-		$template->assign_var_from_handle('ERROR_BOX', 'reg_header');
+		$template_nuke->assign_var_from_handle('ERROR_BOX', 'reg_header');
 	}
 
-	$template->set_filenames(array(
+	$template_nuke->set_filenames(array(
 	'body' => 'profile_add_body.tpl')
 	);
 /*****[BEGIN]******************************************
@@ -1655,27 +1655,27 @@ else
 	switch ( $can_disable_mass_pm )
 	{
 		case 'A':
-			if ( $userdata['user_level'] == NUKE_ADMIN )
+			if ( $nuke_userdata['user_level'] == NUKE_ADMIN )
 			{
-				$template->assign_block_vars('switch_can_disable_mass_pm', array());
+				$template_nuke->assign_block_vars('switch_can_disable_mass_pm', array());
 			} else
 			{
-				$template->assign_block_vars('switch_can_not_disable_mass_pm', array());
+				$template_nuke->assign_block_vars('switch_can_not_disable_mass_pm', array());
 			}
 		break;
 
 		case 'M':
-			if ( $userdata['user_level'] == NUKE_ADMIN || $userdata['user_level'] == NUKE_MOD )
+			if ( $nuke_userdata['user_level'] == NUKE_ADMIN || $nuke_userdata['user_level'] == NUKE_MOD )
 			{
-				$template->assign_block_vars('switch_can_disable_mass_pm', array());
+				$template_nuke->assign_block_vars('switch_can_disable_mass_pm', array());
 			} else
 			{
-				$template->assign_block_vars('switch_can_not_disable_mass_pm', array());
+				$template_nuke->assign_block_vars('switch_can_not_disable_mass_pm', array());
 			}
 		break;
 
 		default:
-			$template->assign_block_vars('switch_can_disable_mass_pm', array());
+			$template_nuke->assign_block_vars('switch_can_disable_mass_pm', array());
 		break;
 	}
 /*****[END]********************************************
@@ -1684,7 +1684,7 @@ else
 
 	if ( $mode == 'editprofile' )
 	{
-		$template->assign_block_vars('switch_edit_profile', array());
+		$template_nuke->assign_block_vars('switch_edit_profile', array());
 	}
 
 /*****[BEGIN]******************************************
@@ -1698,7 +1698,7 @@ else
 
 	$default_flag_image = 'unknown.png';
 
-	$selected = ( isset($user_flag) ) ? '' : ' selected';
+	$selected = ( isset($nuke_user_flag) ) ? '' : ' selected';
 
 	$flag_select  = '<select class="user_from_flag_select" name="user_flag">';
 	$flag_select .= '	<option value="blank"'.$selected.'>'.$lang['Select_Country'].'</option>';
@@ -1707,19 +1707,19 @@ else
 		/**
 		 *	coding added to add new reponsive theme support
 		 */
-		$template->assign_block_vars('country_flags', array(
+		$template_nuke->assign_block_vars('country_flags', array(
 
 			'FLAG_NAME' 	=> str_replace('_', ' ', $flag_row['flag_name']),
 			'FLAG_IMAGE' 	=> $flag_row['flag_image'],
-			'FLAG_SELECTED' => ( isset( $user_flag) ) ? ((str_replace('.png', '', $user_flag) == str_replace('.png', '', $flag_row['flag_image'])) ? ' selected' : '' ) : ''
+			'FLAG_SELECTED' => ( isset( $nuke_user_flag) ) ? ((str_replace('.png', '', $nuke_user_flag) == str_replace('.png', '', $flag_row['flag_image'])) ? ' selected' : '' ) : ''
 
 		));
 
-		$selected = ( isset( $user_flag) ) ? ((str_replace('.png','',$user_flag) == str_replace('.png', '', $flag_row['flag_image'])) ? ' selected' : '' ) : '';
+		$selected = ( isset( $nuke_user_flag) ) ? ((str_replace('.png','',$nuke_user_flag) == str_replace('.png', '', $flag_row['flag_image'])) ? ' selected' : '' ) : '';
 		$flag_select .= '	<option value="'.$flag_row['flag_image'].'"'.$selected.'>'.$flag_row['flag_name'].'</option>';
-		// if ( isset( $user_flag ) && $user_flag == str_replace('.png', '', $flag_row['flag_image']) )
+		// if ( isset( $nuke_user_flag ) && $nuke_user_flag == str_replace('.png', '', $flag_row['flag_image']) )
 		// {
-			$flag_start_image = str_replace('.png', '', $user_flag);
+			$flag_start_image = str_replace('.png', '', $nuke_user_flag);
 		// }
 
 	endwhile;
@@ -1731,11 +1731,11 @@ else
 
 	if ( ($mode == 'register') || ($board_config['allow_namechange']) )
 	{
-		$template->assign_block_vars('switch_namechange_allowed', array());
+		$template_nuke->assign_block_vars('switch_namechange_allowed', array());
 	}
 	else
 	{
-		$template->assign_block_vars('switch_namechange_disallowed', array());
+		$template_nuke->assign_block_vars('switch_namechange_disallowed', array());
 	}
 
 /*****[BEGIN]******************************************
@@ -1745,11 +1745,11 @@ else
 	while ( list($code_name, $info) = each($xd_meta) )
 	{
 
-		if ( xdata_auth($code_name, $userdata['user_id']) || intval($userdata['user_level']) == NUKE_ADMIN )
+		if ( xdata_auth($code_name, $nuke_userdata['user_id']) || intval($nuke_userdata['user_level']) == NUKE_ADMIN )
 		{
 			if ($info['display_register'] == NUKE_XD_DISPLAY_NORMAL)
 			{
-				$template->assign_block_vars('xdata', array(
+				$template_nuke->assign_block_vars('xdata', array(
 					'CODE_NAME' => $code_name,
 					'NAME' => $info['field_name'],
 					'DESCRIPTION' => $info['field_desc'],
@@ -1761,23 +1761,23 @@ else
 				switch ($info['field_type'])
 				{
 					case 'text':
-						$template->assign_block_vars('xdata.switch_type_text', array());
+						$template_nuke->assign_block_vars('xdata.switch_type_text', array());
 						break;
 
 					case 'checkbox':
-					   $template->assign_block_vars('xdata.switch_type_checkbox', array( 'CHECKED' => ($xdata[$code_name] == 1) ? ' checked="checked"' : ''  ));
+					   $template_nuke->assign_block_vars('xdata.switch_type_checkbox', array( 'CHECKED' => ($xdata[$code_name] == 1) ? ' checked="checked"' : ''  ));
 					   break;
 
 					case 'textarea':
-						$template->assign_block_vars('xdata.switch_type_textarea', array());
+						$template_nuke->assign_block_vars('xdata.switch_type_textarea', array());
 						break;
 
 					case 'radio':
-						$template->assign_block_vars('xdata.switch_type_radio', array());
+						$template_nuke->assign_block_vars('xdata.switch_type_radio', array());
 
 						while ( list( , $option) = each($info['values_array']) )
 						{
-							$template->assign_block_vars('xdata.switch_type_radio.options', array(
+							$template_nuke->assign_block_vars('xdata.switch_type_radio.options', array(
 								'OPTION' => $option,
 								'CHECKED' => ($xdata[$code_name] == $option) ? 'checked="checked"' : ''
 								)
@@ -1786,11 +1786,11 @@ else
 						break;
 
 					case 'select':
-						$template->assign_block_vars('xdata.switch_type_select', array());
+						$template_nuke->assign_block_vars('xdata.switch_type_select', array());
 
 						while ( list( , $option) = each($info['values_array']) )
 						{
-							$template->assign_block_vars('xdata.switch_type_select.options', array(
+							$template_nuke->assign_block_vars('xdata.switch_type_select.options', array(
 								'OPTION' => $option,
 								'SELECTED' => ($xdata[$code_name] == $option) ? 'selected="selected"' : ''
 								)
@@ -1801,7 +1801,7 @@ else
  [ Mod:    XData Date Conversion               v0.1.1 ]
  ******************************************************/
 					case 'date':
-						$template->assign_block_vars('xdata.switch_type_date', array());
+						$template_nuke->assign_block_vars('xdata.switch_type_date', array());
 						break;
 
 /*****[ENDE]*******************************************
@@ -1811,26 +1811,26 @@ else
 			}
 			elseif ($info['display_register'] == NUKE_XD_DISPLAY_ROOT)
 			{
-				$template->assign_block_vars('xdata',
+				$template_nuke->assign_block_vars('xdata',
 					array(
 						'CODE_NAME' => $code_name,
 						'NAME' => $xd_meta[$code_name]['field_name'],
 						'DESCRIPTION' => $xd_meta[$code_name]['field_desc'],
 						'VALUE' => isset($xdata[$code_name]) ? str_replace('"', '&quot;', $xdata[$code_name]) : ''
 					) );
-				$template->assign_block_vars('xdata.switch_is_'.$code_name, array());
+				$template_nuke->assign_block_vars('xdata.switch_is_'.$code_name, array());
 
 				switch ($info['field_type'])
 				{
 					case 'checkbox':
-						$template->assign_block_vars('xdata.switch_type_checkbox', array( 'CHECKED' => ($xdata[$code_name] == $lang['true']) ? ' checked="checked"' : ''  ));
+						$template_nuke->assign_block_vars('xdata.switch_type_checkbox', array( 'CHECKED' => ($xdata[$code_name] == $lang['true']) ? ' checked="checked"' : ''  ));
 						break;
 
 					case 'radio':
 
 						while ( list( , $option) = each($info['values_array']) )
 						{
-							$template->assign_block_vars('xdata.switch_is_'.$code_name.'.options', array(
+							$template_nuke->assign_block_vars('xdata.switch_is_'.$code_name.'.options', array(
 								'OPTION' => $option,
 								'CHECKED' => ($xdata[$code_name] == $option) ? 'checked="checked"' : ''
 								)
@@ -1842,7 +1842,7 @@ else
 
 						while ( list( , $option) = each($info['values_array']) )
 						{
-							$template->assign_block_vars('xdata.switch_is_'.$code_name.'.options', array(
+							$template_nuke->assign_block_vars('xdata.switch_is_'.$code_name.'.options', array(
 								'OPTION' => $option,
 								'SELECTED' => ($xdata[$code_name] == $option) ? 'selected="selected"' : ''
 								)
@@ -1888,7 +1888,7 @@ else
 
 		$sql = 'SELECT COUNT(session_id) AS attempts
 			FROM ' . CONFIRM_TABLE . "
-			WHERE session_id = '" . $userdata['session_id'] . "'";
+			WHERE session_id = '" . $nuke_userdata['session_id'] . "'";
 		if (!($result = $nuke_db->sql_query($sql)))
 		{
 			message_die(NUKE_GENERAL_ERROR, 'Could not obtain confirm code count', '', __LINE__, __FILE__, $sql);
@@ -1908,10 +1908,10 @@ else
 		$code = dss_rand();
 		$code = strtoupper(str_replace('0', 'o', substr($code, 0, 6)));
 
-		$confirm_id = md5(uniqid($user_ip));
+		$confirm_id = md5(uniqid($nuke_user_ip));
 
 		$sql = 'INSERT INTO ' . CONFIRM_TABLE . " (confirm_id, session_id, code)
-			VALUES ('$confirm_id', '". $userdata['session_id'] . "', '$code')";
+			VALUES ('$confirm_id', '". $nuke_userdata['session_id'] . "', '$code')";
 		if (!$nuke_db->sql_query($sql))
 		{
 			message_die(NUKE_GENERAL_ERROR, 'Could not insert new confirm code information', '', __LINE__, __FILE__, $sql);
@@ -1922,7 +1922,7 @@ else
 		$confirm_image = (GZIPSUPPORT) ? '<img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id") . '" alt="" title="" />' : '<img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=1") . '" alt="" title="" /><img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=2") . '" alt="" title="" /><img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=3") . '" alt="" title="" /><img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=4") . '" alt="" title="" /><img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=5") . '" alt="" title="" /><img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=6") . '" alt="" title="" />';
 		$s_hidden_fields .= '<input type="hidden" name="confirm_id" value="' . $confirm_id . '" />';
 
-		$template->assign_block_vars('switch_confirm', array());
+		$template_nuke->assign_block_vars('switch_confirm', array());
 	}
 
 /*****[BEGIN]******************************************
@@ -1930,7 +1930,7 @@ else
  ******************************************************/
 	if ( $board_config['wrap_enable'] )
 	{
-		$template->assign_block_vars('force_word_wrapping',array());
+		$template_nuke->assign_block_vars('force_word_wrapping',array());
 	}
 /*****[END]********************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
@@ -1943,8 +1943,8 @@ else
 	$ini_val = ( phpversion() >= '4.0.0' ) ? 'ini_get' : 'get_cfg_var';
 	$form_enctype = ( @$ini_val('file_uploads') == '0' || strtolower(@$ini_val('file_uploads') == 'off') || phpversion() == '4.0.4pl1' || !$board_config['allow_avatar_upload'] || ( phpversion() < '4.0.3' && @$ini_val('open_basedir') != '' ) ) ? '' : 'enctype="multipart/form-data"';
 
-	$template->assign_vars(array(
-				'USERNAME' => isset($username) ? $username : '',
+	$template_nuke->assign_vars(array(
+				'USERNAME' => isset($nuke_username) ? $nuke_username : '',
 				'CUR_PASSWORD' => isset($cur_password) ? $cur_password : '',
 				'NEW_PASSWORD' => isset($new_password) ? $new_password : '',
 				'PASSWORD_CONFIRM' => isset($password_confirm) ? $password_confirm : '',
@@ -2047,7 +2047,7 @@ else
 
  				'L_SCEDITOR_PANEL' => $lang['sceditor_options'],
 				'L_SCEDITOR_STATE' => $lang['sceditor_state'],
-				'SCEDITOR_SELECT' => select_box('sceditor_in_source', $userinfo['sceditor_in_source'], array('0' => $lang['sceditor_display_mode'], '1' => $lang['sceditor_editor_mode'])),
+				'SCEDITOR_SELECT' => select_box('sceditor_in_source', $nuke_userinfo['sceditor_in_source'], array('0' => $lang['sceditor_display_mode'], '1' => $lang['sceditor_editor_mode'])),
 				'SCEDITOR_STATE' => $wysiwyg,
 
 				'WEBSITE' => $website,
@@ -2161,11 +2161,11 @@ else
 /*****[BEGIN]******************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
-				'WRAP_ROW' => ( $mode == 'register' ) ? $board_config['wrap_def'] : $user_wordwrap,
+				'WRAP_ROW' => ( $mode == 'register' ) ? $board_config['wrap_def'] : $nuke_user_wordwrap,
 /*****[END]********************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
-				'LANGUAGE_SELECT' => language_select($user_lang, 'language'),
+				'LANGUAGE_SELECT' => language_select($nuke_user_lang, 'language'),
 /*****[BEGIN]******************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
@@ -2202,7 +2202,7 @@ else
 /*****[END]********************************************
  [ Base:    Theme Management                   v1.0.2 ]
  ******************************************************/
-				'TIMEZONE_SELECT' => tz_select($user_timezone, 'timezone'),
+				'TIMEZONE_SELECT' => tz_select($nuke_user_timezone, 'timezone'),
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
@@ -2231,15 +2231,15 @@ else
 /*****[END]********************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-				'DATE_FORMAT' => $user_dateformat,
+				'DATE_FORMAT' => $nuke_user_dateformat,
 /*****[BEGIN]******************************************
  [ Mod:     Super Quick Reply                  v1.3.2 ]
  ******************************************************/
-				'QUICK_REPLY_SELECT' => quick_reply_select($user_show_quickreply, 'show_quickreply'),
-				'QUICK_REPLY_MODE_BASIC' => ( $user_quickreply_mode==0 ) ? 'checked="checked"' : '',
-				'QUICK_REPLY_MODE_ADVANCED' => ( $user_quickreply_mode!=0 ) ? 'checked="checked"' : '',
-				'OPEN_QUICK_REPLY_YES' => ( $user_open_quickreply ) ? 'checked="checked"' : '',
-				'OPEN_QUICK_REPLY_NO' => ( !$user_open_quickreply ) ? 'checked="checked"' : '',
+				'QUICK_REPLY_SELECT' => quick_reply_select($nuke_user_show_quickreply, 'show_quickreply'),
+				'QUICK_REPLY_MODE_BASIC' => ( $nuke_user_quickreply_mode==0 ) ? 'checked="checked"' : '',
+				'QUICK_REPLY_MODE_ADVANCED' => ( $nuke_user_quickreply_mode!=0 ) ? 'checked="checked"' : '',
+				'OPEN_QUICK_REPLY_YES' => ( $nuke_user_open_quickreply ) ? 'checked="checked"' : '',
+				'OPEN_QUICK_REPLY_NO' => ( !$nuke_user_open_quickreply ) ? 'checked="checked"' : '',
 /*****[END]********************************************
  [ Mod:     Super Quick Reply                  v1.3.2 ]
  ******************************************************/
@@ -2437,27 +2437,27 @@ else
 /*****[BEGIN]******************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
-		if ( !$board_config['bday_lock'] || $userdata['user_birthday'] == 0 )
+		if ( !$board_config['bday_lock'] || $nuke_userdata['user_birthday'] == 0 )
 		{
 			$block = ( $board_config['bday_require'] == TRUE ) ? 'birthday_required' : 'birthday_optional';
-			$template->assign_block_vars($block, array());
-			$template->birthday_interface();
+			$template_nuke->assign_block_vars($block, array());
+			$template_nuke->birthday_interface();
 		}
 
 		if ( $board_config['bday_greeting'] != 0 )
 		{
-			$template->assign_block_vars('birthdays_greeting',array());
+			$template_nuke->assign_block_vars('birthdays_greeting',array());
 			if ($board_config['bday_greeting'] & (1<<(NUKE_BIRTHDAY_EMAIL-1)))
 			{
-				$template->assign_block_vars('birthdays_greeting.birthdays_email',array());
+				$template_nuke->assign_block_vars('birthdays_greeting.birthdays_email',array());
 			}
 			if ($board_config['bday_greeting'] & (1<<(NUKE_BIRTHDAY_PM-1)))
 			{
-				$template->assign_block_vars('birthdays_greeting.birthdays_pm',array());
+				$template_nuke->assign_block_vars('birthdays_greeting.birthdays_pm',array());
 			}
 			if ($board_config['bday_greeting'] & (1<<(NUKE_BIRTHDAY_POPUP-1)))
 			{
-				$template->assign_block_vars('birthdays_greeting.birthdays_popup',array());
+				$template_nuke->assign_block_vars('birthdays_greeting.birthdays_popup',array());
 			}
 		}
 /*****[END]********************************************
@@ -2471,33 +2471,33 @@ else
 		//
 		if ( $mode != 'register' )
 		{
-				if ( $userdata['user_allowavatar'] && ( $board_config['allow_avatar_upload'] || $board_config['allow_avatar_local'] || $board_config['allow_avatar_remote'] ) )
+				if ( $nuke_userdata['user_allowavatar'] && ( $board_config['allow_avatar_upload'] || $board_config['allow_avatar_local'] || $board_config['allow_avatar_remote'] ) )
 				{
-						$template->assign_block_vars('switch_avatar_block', array() );
+						$template_nuke->assign_block_vars('switch_avatar_block', array() );
 
 						if ( $board_config['allow_avatar_upload'] && file_exists(@phpbb_realpath('./' . $board_config['avatar_path'])) )
 						{
 								if ( !empty($form_enctype) )
 								{
-										$template->assign_block_vars('switch_avatar_block.switch_avatar_local_upload', array() );
+										$template_nuke->assign_block_vars('switch_avatar_block.switch_avatar_local_upload', array() );
 								}
-								$template->assign_block_vars('switch_avatar_block.switch_avatar_remote_upload', array() );
+								$template_nuke->assign_block_vars('switch_avatar_block.switch_avatar_remote_upload', array() );
 						}
 
 						if ( $board_config['allow_avatar_remote'] )
 						{
-								$template->assign_block_vars('switch_avatar_block.switch_avatar_remote_link', array() );
+								$template_nuke->assign_block_vars('switch_avatar_block.switch_avatar_remote_link', array() );
 						}
 
 						if ( $board_config['allow_avatar_local'] && file_exists(@phpbb_realpath('./' . $board_config['avatar_gallery_path'])) )
 						{
-								$template->assign_block_vars('switch_avatar_block.switch_avatar_local_gallery', array() );
+								$template_nuke->assign_block_vars('switch_avatar_block.switch_avatar_local_gallery', array() );
 						}
 				}
 		}
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 include("includes/page_tail.php");
 

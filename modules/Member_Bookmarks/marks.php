@@ -21,7 +21,7 @@ if (!defined('MODULE_FILE'))
    die ("You can't access this file directly...");
 }
 
-global $prefix, $nuke_db, $cookie, $user, $theme_name;
+global $prefix, $nuke_db, $cookie, $nuke_user, $theme_name;
 $index = 1;
 require_once("mainfile.php");
 $module_name = basename(dirname(__FILE__));
@@ -29,12 +29,12 @@ get_lang($module_name);
 $pagetitle = "86it Developers Network - My " . _MARKSTITLE;
 include("header.php");
 
-$userinfo = getusrinfo( $user );
-$userid = $userinfo["user_id"];
+$nuke_userinfo = getusrinfo( $nuke_user );
+$nuke_userid = $nuke_userinfo["user_id"];
 $catname=@htmlentities($catname);
 
-if (!isset($userid) || $userid=="")
-        $userid=0;
+if (!isset($nuke_userid) || $nuke_userid=="")
+        $nuke_userid=0;
 
 //Sometimes we don't know the category name
 if ((!isset($catname) || $catname=="") && (isset($category) && $category!=""))
@@ -52,7 +52,7 @@ echo "<hr />";
 
 //OpenTable();
 
-$marks_query = "select id,name,url,description,mod_date,popup from " . $prefix . "_bookmarks where user_id=" . $userid . " and category_id='" . $category . "' order by name";
+$marks_query = "select id,name,url,description,mod_date,popup from " . $prefix . "_bookmarks where user_id=" . $nuke_userid . " and category_id='" . $category . "' order by name";
 
 $marks_res = $nuke_db->sql_query ($marks_query,$nuke_db);
 

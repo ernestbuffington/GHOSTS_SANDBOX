@@ -92,16 +92,16 @@ LIMIT " . $core->return_limit;
 $result = $core->sql_query($sql, 'Unable to retrieve users data');
 
 $total_posts_thismonth = 0;
-$user_count = $core->sql_numrows($result);
-$user_data = $core->sql_fetchrowset($result);
+$nuke_user_count = $core->sql_numrows($result);
+$nuke_user_data = $core->sql_fetchrowset($result);
 
-for ($i = 0; $i < $user_count; $i++)
+for ($i = 0; $i < $nuke_user_count; $i++)
 {
-    $total_posts_thismonth += $user_data[$i]['user_posts'];
+    $total_posts_thismonth += $nuke_user_data[$i]['user_posts'];
 }
 
-$content->init_math('user_posts', $user_data[0]['user_posts'], $total_posts_thismonth);
-$core->set_data($user_data);
+$content->init_math('user_posts', $nuke_user_data[0]['user_posts'], $total_posts_thismonth);
+$core->set_data($nuke_user_data);
 
 $core->define_view('set_rows', array(
     '$core->pre_defined()',

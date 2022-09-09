@@ -31,13 +31,13 @@ if (!defined('IN_PHPBB2'))
 
 if ( isset($HTTP_POST_VARS['submit']) )
 {
-    $username = ( !empty($HTTP_POST_VARS['username']) ) ? phpbb_clean_username($HTTP_POST_VARS['username']) : '';
+    $nuke_username = ( !empty($HTTP_POST_VARS['username']) ) ? phpbb_clean_username($HTTP_POST_VARS['username']) : '';
     $email = ( !empty($HTTP_POST_VARS['email']) ) ? trim(strip_tags(htmlspecialchars($HTTP_POST_VARS['email']))) : '';
 
         $sql = "SELECT user_id, username, user_email, user_active, user_lang
                 FROM " . NUKE_USERS_TABLE . "
                 WHERE user_email = '" . str_replace("\'", "''", $email) . "'
-            AND username = '" . str_replace("\'", "''", $username) . "'";
+            AND username = '" . str_replace("\'", "''", $nuke_username) . "'";
     if ( $result = $nuke_db->sql_query($sql) )
     {
         if ( $row = $nuke_db->sql_fetchrow($result) )
@@ -47,19 +47,19 @@ if ( isset($HTTP_POST_VARS['submit']) )
                 message_die(NUKE_GENERAL_MESSAGE, $lang['No_send_account_inactive']);
             }
 
-            $username = $row['username'];
-            $user_id = $row['user_id'];
+            $nuke_username = $row['username'];
+            $nuke_user_id = $row['user_id'];
 
-            $user_actkey = gen_rand_string(true);
+            $nuke_user_actkey = gen_rand_string(true);
             $key_len = 54 - strlen($server_url);
             $key_len = ($key_len > 6) ? $key_len : 6;
-            $user_actkey = substr($user_actkey, 0, $key_len);
-            $user_password = gen_rand_string(false);
+            $nuke_user_actkey = substr($nuke_user_actkey, 0, $key_len);
+            $nuke_user_password = gen_rand_string(false);
 /*****[BEGIN]******************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
                         $sql = "UPDATE " . NUKE_USERS_TABLE . "
-                SET user_newpasswd = '" . md5($user_password) . "', user_actkey = '$user_actkey'  
+                SET user_newpasswd = '" . md5($nuke_user_password) . "', user_actkey = '$nuke_user_actkey'  
                 WHERE user_id = " . $row['user_id'];
 /*****[END]********************************************
  [ Base:     Evolution Functions               v1.5.0 ]
@@ -81,16 +81,16 @@ if ( isset($HTTP_POST_VARS['submit']) )
 
             $emailer->assign_vars(array(
                 'SITENAME' => $board_config['sitename'], 
-                'USERNAME' => $username,
-                'PASSWORD' => $user_password,
+                'USERNAME' => $nuke_username,
+                'PASSWORD' => $nuke_user_password,
                 'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '', 
 
-                'U_ACTIVATE' => $server_url . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey)
+                'U_ACTIVATE' => $server_url . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $nuke_user_id . '&act_key=' . $nuke_user_actkey)
             );
             $emailer->send();
             $emailer->reset();
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 'META' => '<meta http-equiv="refresh" content="15;url=' . append_sid("index.$phpEx") . '">')
             );
 
@@ -110,22 +110,22 @@ if ( isset($HTTP_POST_VARS['submit']) )
 }
 else
 {
-    $username = '';
+    $nuke_username = '';
     $email = '';
 }
 
 //
 // Output basic page
 //
-include("includes/page_header.php");
+include("includes/nuke_page_header.php");
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     'body' => 'profile_send_pass.tpl')
 );
 make_jumpbox('viewforum.'.$phpEx);
 
-$template->assign_vars(array(
-    'USERNAME' => $username,
+$template_nuke->assign_vars(array(
+    'USERNAME' => $nuke_username,
     'EMAIL' => $email,
 
         'L_SEND_PASSWORD' => $lang['Send_password'],
@@ -138,7 +138,7 @@ $template->assign_vars(array(
     'S_PROFILE_ACTION' => append_sid("profile.$phpEx?mode=sendpassword"))
 );
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 include("includes/page_tail.php");
 

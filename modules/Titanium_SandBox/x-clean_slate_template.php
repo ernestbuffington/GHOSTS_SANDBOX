@@ -13,9 +13,9 @@ print "</div><hr />";
 # TEST CODE GOES HERE - START
 ###########################################################################################################################################################################
 
-    # start SIMPLE CODE TEST
-	print '<div align="center"><h1>Hello World</h1></div>';
-    # end SIMPLE CODE TEST
+require_once './includes/classes/class.modules.php';
+use Control\Module;
+$module = new \Control\Module();
 
 ###########################################################################################################################################################################			
 # TEST CODE GOES HERE - END

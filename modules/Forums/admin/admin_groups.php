@@ -97,7 +97,7 @@ if ( isset($HTTP_POST_VARS['edit']) || isset($HTTP_POST_VARS['new']) )
         //
         // Ok they are editing a group or creating a new group
         //
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 'body' => 'admin/group_edit_body.tpl')
         );
 
@@ -144,7 +144,7 @@ if ( isset($HTTP_POST_VARS['edit']) || isset($HTTP_POST_VARS['new']) )
  ******************************************************/
 
                 $mode = 'editgroup';
-                $template->assign_block_vars('group_edit', array());
+                $template_nuke->assign_block_vars('group_edit', array());
 
         }
         else if ( isset($HTTP_POST_VARS['new']) )
@@ -274,7 +274,7 @@ if ( isset($HTTP_POST_VARS['edit']) || isset($HTTP_POST_VARS['new']) )
 
         $s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'GROUP_NAME' => $group_info['group_name'],
                 'GROUP_DESCRIPTION' => $group_info['group_description'],
                 'GROUP_MODERATOR' => $group_moderator,
@@ -412,7 +412,7 @@ if ( isset($HTTP_POST_VARS['edit']) || isset($HTTP_POST_VARS['new']) )
                 'S_HIDDEN_FIELDS' => $s_hidden_fields)
         );
 
-        $template->pparse('body');
+        $template_nuke->pparse('body');
 
 }
 else if ( isset($HTTP_POST_VARS['group_update']) )
@@ -877,11 +877,11 @@ else
                 $select_list .= '</select>';
         }
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 'body' => 'admin/group_select_body.tpl')
         );
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'L_GROUP_TITLE' => $lang['Group_administration'],
                 'L_GROUP_EXPLAIN' => $lang['Group_admin_explain'],
                 'L_GROUP_SELECT' => $lang['Select_group'],
@@ -894,12 +894,12 @@ else
 
         if ( $select_list != '' )
         {
-                $template->assign_block_vars('select_box', array());
+                $template_nuke->assign_block_vars('select_box', array());
         }
 
-        $template->pparse('body');
+        $template_nuke->pparse('body');
 }
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

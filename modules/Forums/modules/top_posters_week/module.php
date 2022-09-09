@@ -95,18 +95,18 @@ LIMIT " . $core->return_limit;
 
 $result = $core->sql_query($sql, 'Couldn\'t retrieve topposters data');
 
-$user_count = $core->sql_numrows($result);
-$user_data = $core->sql_fetchrowset($result);
+$nuke_user_count = $core->sql_numrows($result);
+$nuke_user_data = $core->sql_fetchrowset($result);
 
 $total_posts_thisweek = 0;
 
-for ($i = 0; $i < $user_count; $i++)
+for ($i = 0; $i < $nuke_user_count; $i++)
 {
-    $total_posts_thisweek += intval($user_data[$i]['user_posts']);
+    $total_posts_thisweek += intval($nuke_user_data[$i]['user_posts']);
 }
 
-$content->init_math('user_posts', $user_data[0]['user_posts'], $total_posts_thisweek);
-$core->set_data($user_data);
+$content->init_math('user_posts', $nuke_user_data[0]['user_posts'], $total_posts_thisweek);
+$core->set_data($nuke_user_data);
 
 $core->define_view('set_rows', array(
     '$core->pre_defined()',

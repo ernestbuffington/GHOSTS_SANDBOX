@@ -40,7 +40,7 @@ $module_name = basename(dirname(dirname(__FILE__)));
 $phpbb2_root_path = './../';
 require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     "body" => "admin/logs_body.tpl")
 );
 
@@ -74,7 +74,7 @@ if(!$result = $nuke_db->sql_query($sql))
 }
 $row = $nuke_db->sql_fetchrow($result);
 $all_admin_authorized = $row['all_admin'];
-if ( $all_admin_authorized == '0' && $userdata['user_id'] <> '2' && !is_mod_admin($module_name) && $userdata['user_view_log'] <> '1' )
+if ( $all_admin_authorized == '0' && $nuke_userdata['user_id'] <> '2' && !is_mod_admin($module_name) && $nuke_userdata['user_view_log'] <> '1' )
 {
     message_die(NUKE_GENERAL_MESSAGE, $lang['Admin_not_authorized']);
 }
@@ -106,7 +106,7 @@ else
 $select_sort_order .= '</select>';
     
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'L_LOG_ACTIONS_TITLE' => $lang['Log_action_title'],
     'L_LOG_ACTION_EXPLAIN' => $lang['Log_action_explain'],
     'L_CHOOSE_SORT' => $lang['Choose_sort_method'],
@@ -171,9 +171,9 @@ $sql = "SELECT *
         $id_log = $rows[$i]['log_id'];
         $action = ucfirst($rows[$i]['mode']); 
         $topic = $rows[$i]['topic_id']; 
-        $user_id = $rows[$i]['user_id']; 
-        $username = $rows[$i]['username'];
-        $user_ip = decode_ip($rows[$i]['user_ip']);
+        $nuke_user_id = $rows[$i]['user_id']; 
+        $nuke_username = $rows[$i]['username'];
+        $nuke_user_ip = decode_ip($rows[$i]['user_ip']);
         $date = $rows[$i]['time']; 
 
         $sql = "SELECT topic_title 
@@ -184,7 +184,7 @@ $sql = "SELECT *
            message_die(NUKE_CRITICAL_ERROR, "Could not query topic_title informations", "", __LINE__, __FILE__, $sql); 
         }
         $topic_title = $nuke_db->sql_fetchrow($result);
-        $temp_url = append_sid('admin_users.'.$phpEx.'?mode=edit&u=' . $user_id); 
+        $temp_url = append_sid('admin_users.'.$phpEx.'?mode=edit&u=' . $nuke_user_id); 
         $temp2_url = ('./../../../modules.php?name=Forums&file=viewtopic&t=' . $topic);
 
         if ($topic_title['topic_title']) {
@@ -196,7 +196,7 @@ $sql = "SELECT *
         
         $sql = "SELECT user_level
             FROM " . NUKE_USERS_TABLE . "
-            WHERE user_id = $user_id";
+            WHERE user_id = $nuke_user_id";
         
         if(!$result = $nuke_db->sql_query($sql)) 
         { 
@@ -205,14 +205,14 @@ $sql = "SELECT *
         $row = $nuke_db->sql_fetchrow($result);
         $level = $row['user_level'];
 
-         $template->assign_block_vars('record_row', array( 
+         $template_nuke->assign_block_vars('record_row', array( 
             'ID_LOG' => $id_log,
             'ACTION' => $action,
             'TOPIC' => $topic_title,
-            'USER_ID' => $user_id,
-            'USERNAME' => '<a href="' . $temp_url . '" target=_new>' . UsernameColor($username) . '</a>', 
-            'USER_IP' => $user_ip,
-            'U_WHOIS_IP' => 'http://network-tools.com/default.asp?prog=express&Netnic=whois.arin.net&host=' . $user_ip, 
+            'USER_ID' => $nuke_user_id,
+            'USERNAME' => '<a href="' . $temp_url . '" target=_new>' . UsernameColor($nuke_username) . '</a>', 
+            'USER_IP' => $nuke_user_ip,
+            'U_WHOIS_IP' => 'http://network-tools.com/default.asp?prog=express&Netnic=whois.arin.net&host=' . $nuke_user_ip, 
             'DATE' => create_date($board_config['default_dateformat'], $date, $board_config['board_timezone'])) 
          );
     }
@@ -265,15 +265,15 @@ else
         $total_records = 10;
     }
     
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'PAGINATION' => $pagination,
         'PAGE_NUMBER' => ( $total_records == '0' ) ? '&nbsp;' : sprintf($lang['Page_of'], ( floor( $start / $board_config['topics_per_page'] ) + 1 ), ceil( $total_records / $board_config['topics_per_page'] )),     
         'L_GOTO_PAGE' => $lang['Goto_page'],
         'GROUPS' => GetColorGroups(1))
     );
 
-$template->pparse("body");
+$template_nuke->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

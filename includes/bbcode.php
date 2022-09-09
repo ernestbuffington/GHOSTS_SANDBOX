@@ -60,8 +60,8 @@ $bbcode_tpl = null;
 # Nathan Codding, Sept 26 2001.
 function load_bbcode_template()
 {
-    global $template;
-    $tpl_filename = $template->make_filename('bbcode.tpl');
+    global $template_nuke;
+    $tpl_filename = $template_nuke->make_filename('bbcode.tpl');
     $tpl = fread(fopen($tpl_filename, 'r'), filesize($tpl_filename));
 
     # replace \ with \\ and then ' with \'.
@@ -202,7 +202,7 @@ function prepare_bbcode_template($bbcode_tpl)
  ******************************************************/
 function replacer($mode, $bb)
 {
-    global $userdata, $lang, $board_config, $phpEx;
+    global $nuke_userdata, $lang, $board_config, $phpEx;
     switch($mode) 
     {
       case 'img':
@@ -222,20 +222,20 @@ function replacer($mode, $bb)
     $replacer .= "<a href=\"modules.php?name=Forums&amp;file=login\">" . $lang['Login'] . "</a>";
     $replacer .= '</td></tr></table>';
 
-    if ($userdata['session_logged_in'])
+    if ($nuke_userdata['session_logged_in'])
     {
         switch($mode) {
           case 'img':
-          $user_option = $userdata['user_hide_images'];
+          $nuke_user_option = $nuke_userdata['user_hide_images'];
           break;
           default:
-          $user_option = 0;
+          $nuke_user_option = 0;
           break;
         }
             $replacer = '<table width="40%" cellspacing="1" cellpadding="3" border="0"><tr><td class="quote">';
             $replacer .= sprintf($lang['Image_Blocked'], "<a href=\"" . append_sid('profile.' . $phpEx) . "\">", "</a>");
             $replacer .= '</td></tr></table>';
-        if ($user_option) {
+        if ($nuke_user_option) {
             return $replacer;
         } else {
             return $bb;
@@ -244,17 +244,17 @@ function replacer($mode, $bb)
     } else {
          switch($mode) {
           case 'img':
-          $config = $board_config['hide_images'];
+          $nuke_config = $board_config['hide_images'];
           break;
           case 'link':
-          $config = $board_config['hide_links'];
+          $nuke_config = $board_config['hide_links'];
           break;
           case 'email':
-           $config = $board_config['hide_emails'];
+           $nuke_config = $board_config['hide_emails'];
           break;
         }
 
-        if ($config) {
+        if ($nuke_config) {
           return $replacer;
         } else {
           return $bb;
@@ -323,7 +323,7 @@ function bbencode_third_pass($text, $uid, $deprotect)
  */
 function bbencode_second_pass($text, $uid)
 {
-    global $lang, $bbcode_tpl, $userdata, $board_config;
+    global $lang, $bbcode_tpl, $nuke_userdata, $board_config;
 
     $text = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1&#058;", $text);
 
@@ -727,14 +727,14 @@ function bbencode_first_pass($text, $uid)
 
 } // bbencode_first_pass()
 
-function evo_mention($user)
+function evo_mention($nuke_user)
 {
 	global $nuke_db, $bbcode_tpl, $lang;
 	
 
-	$row = $nuke_db->sql_ufetchrow("SELECT `user_id`, `username` FROM `".NUKE_USERS_TABLE."` WHERE `username` = '".$user."'");
-	// return $user.' - '.$row['user_id'];
-  return '<a href="modules.php?name=Private_Messages&mode=post&u='.$row['user_id'].'" target="_blank" alt="'.$lang['Send_private_message'].'" title="'.$lang['Send_private_message'].'">'.$user.'</a>';
+	$row = $nuke_db->sql_ufetchrow("SELECT `user_id`, `username` FROM `".NUKE_USERS_TABLE."` WHERE `username` = '".$nuke_user."'");
+	// return $nuke_user.' - '.$row['user_id'];
+  return '<a href="modules.php?name=Private_Messages&mode=post&u='.$row['user_id'].'" target="_blank" alt="'.$lang['Send_private_message'].'" title="'.$lang['Send_private_message'].'">'.$nuke_user.'</a>';
 }
 
 function evo_mention_callback($matches)
@@ -1337,7 +1337,7 @@ function bbencode_second_pass_php($text, $uid, $bbcode_tpl)
  */
 function make_clickable($text)
 {
-    global $userdata, $lang, $phpEx, $u_login_logout, $board_config;
+    global $nuke_userdata, $lang, $phpEx, $u_login_logout, $board_config;
 
     $text = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1&#058;", $text);
 
@@ -1538,7 +1538,7 @@ function word_wrap_pass($message)
 /*****[BEGIN]******************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
-    global $userdata, $board_config;
+    global $nuke_userdata, $board_config;
 
     if ( !$board_config['wrap_enable'] )
     {
@@ -1563,7 +1563,7 @@ function word_wrap_pass($message)
         {
             for ($snum=0;$snum < strlen($ampText);$snum++)
             {
-                addWrap($ampText[$snum],$ampText[$snum+1],$userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
+                addWrap($ampText[$snum],$ampText[$snum+1],$nuke_userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
             }
             $ampText = '';
             $tempText .= '<';
@@ -1582,23 +1582,23 @@ function word_wrap_pass($message)
         {
             for ($snum=0;$snum < strlen($ampText);$snum++)
             {
-                addWrap($ampText[$snum],$ampText[$snum+1],$userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
+                addWrap($ampText[$snum],$ampText[$snum+1],$nuke_userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
             }
             $ampText = '&';
         }
         elseif (strlen($ampText) < $longestAmp && $curChar == ';' && function_exists('html_entity_decode') &&
                (strlen(html_entity_decode("$ampText;")) == 1 || preg_match('/^&#[0-9]+$/',$ampText)))
         {
-            addWrap($ampText.';',$message[$num+1],$userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
+            addWrap($ampText.';',$message[$num+1],$nuke_userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
             $ampText = '';
         }
         elseif (strlen($ampText) >= $longestAmp || $curChar == ';')
         {
             for ($snum=0;$snum < strlen($ampText);$snum++)
             {
-                addWrap($ampText[$snum],$ampText[$snum+1],$userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
+                addWrap($ampText[$snum],$ampText[$snum+1],$nuke_userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
             }
-            addWrap($curChar,$message[$num+1],$userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
+            addWrap($curChar,$message[$num+1],$nuke_userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
             $ampText = '';
         }
         elseif (strlen($ampText) != 0 && strlen($ampText) < $longestAmp)
@@ -1607,7 +1607,7 @@ function word_wrap_pass($message)
         }
         else
         {
-            addWrap($curChar,$message[$num+1],$userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
+            addWrap($curChar,$message[$num+1],$nuke_userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
         }
     }
 

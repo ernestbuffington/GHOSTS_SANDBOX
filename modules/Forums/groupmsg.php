@@ -72,8 +72,8 @@ if ( !empty($board_config['privmsg_disable']) )
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_PRIVMSGS);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_PRIVMSGS);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -96,10 +96,10 @@ if ( !empty($group_id) )
             FROM ".NUKE_GROUPS_TABLE . " g, ".NUKE_USER_GROUP_TABLE . " ug
             WHERE g.group_single_user <> 1 AND g.group_id='".$group_id."'
             AND (
-                        ('".$userdata['user_level']."'='".NUKE_ADMIN."') OR
-                        (g.group_allow_pm='".NUKE_AUTH_MOD."' AND g.group_moderator = '" . $userdata['user_id']."') OR
-                        (g.group_allow_pm='".NUKE_AUTH_ACL."' AND ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ) OR
-                        (g.group_allow_pm='".NUKE_AUTH_REG."' AND '".$userdata['user_id']."'!='".NUKE_ANONYMOUS."' ) OR
+                        ('".$nuke_userdata['user_level']."'='".NUKE_ADMIN."') OR
+                        (g.group_allow_pm='".NUKE_AUTH_MOD."' AND g.group_moderator = '" . $nuke_userdata['user_id']."') OR
+                        (g.group_allow_pm='".NUKE_AUTH_ACL."' AND ug.user_id = " . $nuke_userdata['user_id'] . " AND ug.group_id = g.group_id ) OR
+                        (g.group_allow_pm='".NUKE_AUTH_REG."' AND '".$nuke_userdata['user_id']."'!='".NUKE_ANONYMOUS."' ) OR
                         (g.group_allow_pm='".NUKE_AUTH_ALL."')
                 )" ;
         $result = $nuke_db->sql_query($sql);
@@ -118,7 +118,7 @@ if ( !empty($group_id) )
     }
     elseif ($group_id == 'users')
     {
-        if( $userdata['user_level']!=NUKE_ADMIN ) message_die(NUKE_GENERAL_ERROR, $lang['Not_Authorised']);
+        if( $nuke_userdata['user_level']!=NUKE_ADMIN ) message_die(NUKE_GENERAL_ERROR, $lang['Not_Authorised']);
         $sql = "SELECT distinct user_id, user_lang, user_email, username, user_notify_pm,user_active,user_allow_mass_pm
             FROM " . NUKE_USERS_TABLE." WHERE user_allow_mass_pm > 1
                     AND user_id <> " . NUKE_ANONYMOUS." ORDER BY user_lang";
@@ -126,7 +126,7 @@ if ( !empty($group_id) )
     }
     elseif ($group_id == 'admins')
     {
-        if( $userdata['user_level']!=NUKE_ADMIN ) message_die(NUKE_GENERAL_ERROR, $lang['Not_Authorised']);
+        if( $nuke_userdata['user_level']!=NUKE_ADMIN ) message_die(NUKE_GENERAL_ERROR, $lang['Not_Authorised']);
         $sql = "SELECT distinct user_id, user_lang, user_email, username, user_notify_pm,user_active,user_allow_mass_pm
             FROM " . NUKE_USERS_TABLE." WHERE user_allow_mass_pm > 1
                     AND user_level = '2' ORDER BY user_lang";
@@ -134,7 +134,7 @@ if ( !empty($group_id) )
     }
     elseif ($group_id == 'moderators')
     {
-        if( $userdata['user_level']!=NUKE_ADMIN ) message_die(NUKE_GENERAL_ERROR, $lang['Not_Authorised']);
+        if( $nuke_userdata['user_level']!=NUKE_ADMIN ) message_die(NUKE_GENERAL_ERROR, $lang['Not_Authorised']);
         $sql = "SELECT distinct user_id, user_lang, user_email, username, user_notify_pm,user_active,user_allow_mass_pm
             FROM " . NUKE_USERS_TABLE." WHERE user_allow_mass_pm > 1
                     AND user_level = '3' ORDER BY user_lang";
@@ -183,7 +183,7 @@ $error = FALSE;
     }
     else
     {
-        $html_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_html']) ) ? 0 : TRUE ) : $userdata['user_allowhtml'];
+        $html_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_html']) ) ? 0 : TRUE ) : $nuke_userdata['user_allowhtml'];
     }
 
     if ( !$board_config['allow_bbcode'] )
@@ -192,7 +192,7 @@ $error = FALSE;
     }
     else
     {
-        $bbcode_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_bbcode']) ) ? 0 : TRUE ) : $userdata['user_allowbbcode'];
+        $bbcode_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_bbcode']) ) ? 0 : TRUE ) : $nuke_userdata['user_allowbbcode'];
     }
 
     if ( !$board_config['allow_smilies'] )
@@ -201,11 +201,11 @@ $error = FALSE;
     }
     else
     {
-        $smilies_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_smilies']) ) ? 0 : TRUE ) : $userdata['user_allowsmile'];
+        $smilies_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_smilies']) ) ? 0 : TRUE ) : $nuke_userdata['user_allowsmile'];
     }
 
-    $attach_sig = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['attach_sig']) ) ? TRUE : 0 ) : $userdata['user_attachsig'];
-    $user_sig = ( $userdata['user_sig'] != '' && $board_config['allow_sig'] ) ? $userdata['user_sig'] : "";
+    $attach_sig = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['attach_sig']) ) ? TRUE : 0 ) : $nuke_userdata['user_attachsig'];
+    $nuke_user_sig = ( $nuke_userdata['user_sig'] != '' && $board_config['allow_sig'] ) ? $nuke_userdata['user_sig'] : "";
 
     if ( $submit)
     {
@@ -214,7 +214,7 @@ $error = FALSE;
         //
         $sql = "SELECT MAX(privmsgs_date) AS last_post_time
             FROM " . NUKE_PRIVMSGS_TABLE . "
-            WHERE privmsgs_from_userid = " . $userdata['user_id'];
+            WHERE privmsgs_from_userid = " . $nuke_userdata['user_id'];
         if ( $result = $nuke_db->sql_query($sql) )
         {
             $nuke_db_row = $nuke_db->sql_fetchrow($result);
@@ -306,7 +306,7 @@ $error = FALSE;
             }
 
             $sql_info = "INSERT INTO " . NUKE_PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig)
-                VALUES (" . NUKE_PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", str_replace("[USERNAME]",$to_userdata['username'],$privmsg_subject)) . "', " . $userdata['user_id'] . ", " . $to_userdata['user_id'] . ", $msg_time, '$user_ip', $html_on, $bbcode_on, $smilies_on, $attach_sig)";
+                VALUES (" . NUKE_PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", str_replace("[USERNAME]",$to_userdata['username'],$privmsg_subject)) . "', " . $nuke_userdata['user_id'] . ", " . $to_userdata['user_id'] . ", $msg_time, '$nuke_user_ip', $html_on, $bbcode_on, $smilies_on, $attach_sig)";
 
             if ( !($result = $nuke_db->sql_query($sql_info)) )
             {
@@ -355,12 +355,12 @@ $error = FALSE;
 /*****[BEGIN]******************************************
  [ Mod:     Extended PM Notification           v1.1.5 ]
  ******************************************************/
-                    'SENDER_USERNAME' => htmlspecialchars($userdata['username']),
+                    'SENDER_USERNAME' => htmlspecialchars($nuke_userdata['username']),
                     'PM_MESSAGE' => $privmsg_message,
 /*****[END]********************************************
  [ Mod:     Extended PM Notification           v1.1.5 ]
  ******************************************************/
-                    'FROM' => $userdata['username'],
+                    'FROM' => $nuke_userdata['username'],
                     'SITENAME' => $board_config['sitename'],
                     'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
 /*****[BEGIN]******************************************
@@ -379,7 +379,7 @@ $error = FALSE;
             }
             $i++;
         }
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("privmsg.$phpEx?folder=inbox") . '">')
         );
         $msg = $lang['PM_delivered'] . '<br /><br />'.sprintf($lang['Mass_pm_count'],$i,$n).'<br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid("privmsg.$phpEx?folder=inbox") . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
@@ -408,7 +408,7 @@ $error = FALSE;
         if ( $mode == 'post' )
         {
             $page_title = $lang['Send_mass_pm'];
-            $user_sig = ( $userdata['user_sig'] != '' && $board_config['allow_sig'] ) ? $userdata['user_sig'] : '';
+            $nuke_user_sig = ( $nuke_userdata['user_sig'] != '' && $board_config['allow_sig'] ) ? $nuke_userdata['user_sig'] : '';
 
         }
     }
@@ -416,7 +416,7 @@ $error = FALSE;
     // Start output, first preview, then errors then post form
     //
     $page_title = $lang['Send_mass_pm'];
-    include('includes/page_header.'.$phpEx);
+    include('includes/nuke_page_header.'.$phpEx);
 
     if ( $preview && !$error )
     {
@@ -437,15 +437,15 @@ $error = FALSE;
         //
         if ( !$html_on )
         {
-            if ( $user_sig != '' || !$userdata['user_allowhtml'] )
+            if ( $nuke_user_sig != '' || !$nuke_userdata['user_allowhtml'] )
             {
-                $user_sig = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $user_sig);
+                $nuke_user_sig = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $nuke_user_sig);
             }
         }
 
-        if ( $attach_sig && $user_sig != '' && $userdata['user_sig_bbcode_uid'] )
+        if ( $attach_sig && $nuke_user_sig != '' && $nuke_userdata['user_sig_bbcode_uid'] )
         {
-            $user_sig = bbencode_second_pass($user_sig, $userdata['user_sig_bbcode_uid']);
+            $nuke_user_sig = bbencode_second_pass($nuke_user_sig, $nuke_userdata['user_sig_bbcode_uid']);
         }
 
         if ( $bbcode_on )
@@ -453,9 +453,9 @@ $error = FALSE;
             $preview_message = bbencode_second_pass($preview_message, $bbcode_uid);
         }
 
-        if ( $attach_sig && $user_sig != '' )
+        if ( $attach_sig && $nuke_user_sig != '' )
         {
-            $preview_message = $preview_message . '<br /><br />_________________<br />' . $user_sig;
+            $preview_message = $preview_message . '<br /><br />_________________<br />' . $nuke_user_sig;
         }
 
         if ( count($orig_word) )
@@ -475,15 +475,15 @@ $error = FALSE;
 
         $preview_message = make_clickable($preview_message);
         $preview_message = str_replace("\n", '<br />', $preview_message);
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
             "preview" => 'privmsgs_preview.tpl')
         );
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'TOPIC_TITLE' => $preview_subject,
             'POST_SUBJECT' => $preview_subject,
             'MESSAGE_TO' => $group_name.' ('. $PM_count.')',
-            'MESSAGE_FROM' => $userdata['username'],
+            'MESSAGE_FROM' => $nuke_userdata['username'],
             'POST_DATE' => create_date($board_config['default_dateformat'], time(), $board_config['board_timezone']),
             'MESSAGE' => $preview_message,
             'L_SUBJECT' => $lang['Subject'],
@@ -494,7 +494,7 @@ $error = FALSE;
             'L_POSTED' => $lang['Posted'])
         );
 
-        $template->assign_var_from_handle('POST_PREVIEW_BOX', 'preview');
+        $template_nuke->assign_var_from_handle('POST_PREVIEW_BOX', 'preview');
     }
 
     //
@@ -502,19 +502,19 @@ $error = FALSE;
     //
     if ($error)
     {
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
             'reg_header' => 'error_body.tpl')
         );
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'ERROR_MESSAGE' => $error_msg)
         );
-        $template->assign_var_from_handle('ERROR_BOX', 'reg_header');
+        $template_nuke->assign_var_from_handle('ERROR_BOX', 'reg_header');
     }
 
     //
     // Load templates
     //
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'posting_body.tpl')
     );
     make_jumpbox('viewforum.'.$phpEx);
@@ -522,7 +522,7 @@ $error = FALSE;
     //
     // Enable extensions in posting_body
     //
-    $template->assign_block_vars('switch_groupmsg', array());
+    $template_nuke->assign_block_vars('switch_groupmsg', array());
 
     //
     // HTML toggle selection
@@ -530,7 +530,7 @@ $error = FALSE;
     if ( $board_config['allow_html'] )
     {
         $html_status = $lang['HTML_is_ON'];
-        $template->assign_block_vars('switch_html_checkbox', array());
+        $template_nuke->assign_block_vars('switch_html_checkbox', array());
     }
     else
     {
@@ -543,7 +543,7 @@ $error = FALSE;
     if ( $board_config['allow_bbcode'] )
     {
         $bbcode_status = $lang['BBCode_is_ON'];
-        $template->assign_block_vars('switch_bbcode_checkbox', array());
+        $template_nuke->assign_block_vars('switch_bbcode_checkbox', array());
     }
     else
     {
@@ -556,7 +556,7 @@ $error = FALSE;
     if ( $board_config['allow_smilies'] )
     {
         $smilies_status = $lang['Smilies_are_ON'];
-        $template->assign_block_vars('switch_smilies_checkbox', array());
+        $template_nuke->assign_block_vars('switch_smilies_checkbox', array());
     }
     else
     {
@@ -567,9 +567,9 @@ $error = FALSE;
     // Signature toggle selection - only show if
     // the user has a signature
     //
-    if ( $user_sig != '' )
+    if ( $nuke_user_sig != '' )
     {
-        $template->assign_block_vars('switch_signature_checkbox', array());
+        $template_nuke->assign_block_vars('switch_signature_checkbox', array());
     }
 
     if ( $mode == 'post' )
@@ -581,21 +581,21 @@ $error = FALSE;
     FROM ".NUKE_GROUPS_TABLE . " g, ".NUKE_USER_GROUP_TABLE . " ug
     WHERE g.group_single_user <> 1
         AND (
-                ('".$userdata['user_level']."'='".NUKE_ADMIN."') OR
-                (g.group_allow_pm='".NUKE_AUTH_MOD."' AND g.group_moderator = '" . $userdata['user_id']."') OR
-                (g.group_allow_pm='".NUKE_AUTH_ACL."' AND ug.user_id = " . $userdata['user_id'] . " AND ug.group_id = g.group_id ) OR
-                (g.group_allow_pm='".NUKE_AUTH_REG."' AND '".$userdata['user_id']."'!='".NUKE_ANONYMOUS."' ) OR
+                ('".$nuke_userdata['user_level']."'='".NUKE_ADMIN."') OR
+                (g.group_allow_pm='".NUKE_AUTH_MOD."' AND g.group_moderator = '" . $nuke_userdata['user_id']."') OR
+                (g.group_allow_pm='".NUKE_AUTH_ACL."' AND ug.user_id = " . $nuke_userdata['user_id'] . " AND ug.group_id = g.group_id ) OR
+                (g.group_allow_pm='".NUKE_AUTH_REG."' AND '".$nuke_userdata['user_id']."'!='".NUKE_ANONYMOUS."' ) OR
                 (g.group_allow_pm='".NUKE_AUTH_ALL."')
         )" ;
     if( !$g_result = $nuke_db->sql_query($sql) )
     message_die(NUKE_GENERAL_ERROR, "Could not select group names!", __LINE__, __FILE__, $sql);
     $group_list = $nuke_db->sql_fetchrowset($g_result);
-    if( $userdata['user_level']!=NUKE_ADMIN && empty($group_list)) message_die(NUKE_GENERAL_ERROR, $lang['Mass_pm_not_allowed']);
+    if( $nuke_userdata['user_level']!=NUKE_ADMIN && empty($group_list)) message_die(NUKE_GENERAL_ERROR, $lang['Mass_pm_not_allowed']);
     $groupname = $_REQUEST[NUKE_POST_GROUPS_URL];
     $select_list = '<select name = "' . NUKE_POST_GROUPS_URL . '">';
-    $select_list .= ($userdata['user_level']==NUKE_ADMIN) ? '<option value = "users" '. (($groupname=='users') ? ' SELECTED ' : '' ).'>' . $lang['All_users'] .'</option>':'';
-    $select_list .= ($userdata['user_level']==NUKE_ADMIN) ? '<option value = "admins" '. (($groupname=='admins') ? ' SELECTED ' : '' ).'>' . $lang['All_admins'] .'</option>':'';
-    $select_list .= ($userdata['user_level']==NUKE_ADMIN) ? '<option value = "moderators" '. (($groupname=='moderators') ? ' SELECTED ' : '' ).'>' . $lang['All_mods'] .'</option>':'';
+    $select_list .= ($nuke_userdata['user_level']==NUKE_ADMIN) ? '<option value = "users" '. (($groupname=='users') ? ' SELECTED ' : '' ).'>' . $lang['All_users'] .'</option>':'';
+    $select_list .= ($nuke_userdata['user_level']==NUKE_ADMIN) ? '<option value = "admins" '. (($groupname=='admins') ? ' SELECTED ' : '' ).'>' . $lang['All_admins'] .'</option>':'';
+    $select_list .= ($nuke_userdata['user_level']==NUKE_ADMIN) ? '<option value = "moderators" '. (($groupname=='moderators') ? ' SELECTED ' : '' ).'>' . $lang['All_mods'] .'</option>':'';
     for($i = 0;$i < count($group_list); $i++)
     {
         $select_list .= '<option value = "' . $group_list[$i]['group_id'].'"'. (($group_list[$i]['group_id']==$groupname) ? ' SELECTED ' : '').'>'.$group_list[$i]['group_name'] .'</option>';
@@ -607,7 +607,7 @@ $error = FALSE;
     //
     generate_smilies('inline', NUKE_PAGE_PRIVMSGS);
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'SUBJECT' => preg_replace($html_entities_match, $html_entities_replace, $privmsg_subject),
         'USERNAME' => $select_list,
         'MESSAGE' => $privmsg_message,
@@ -675,7 +675,7 @@ $error = FALSE;
         'S_BBCODE_CHECKED' => ( !$bbcode_on ) ? ' checked="checked"' : '',
         'S_SMILIES_CHECKED' => ( !$smilies_on ) ? ' checked="checked"' : '',
         'S_SIGNATURE_CHECKED' => ( $attach_sig ) ? ' checked="checked"' : '',
-        'S_NAMES_SELECT' => $user_names_select,
+        'S_NAMES_SELECT' => $nuke_user_names_select,
         'S_HIDDEN_FORM_FIELDS' => $s_hidden_fields,
         'S_POST_ACTION' => append_sid("groupmsg.$phpEx"),
 
@@ -683,7 +683,7 @@ $error = FALSE;
         'U_VIEW_FORUM' => append_sid("privmsg.$phpEx"))
     );
 
-    $template->pparse('body');
+    $template_nuke->pparse('body');
 
     include('includes/page_tail.'.$phpEx);
 //
@@ -695,12 +695,12 @@ $error = FALSE;
 //
 $page_title = $lang['Private_Messaging'];
 
-include('includes/page_header.'.$phpEx);
+include('includes/nuke_page_header.'.$phpEx);
 
 //
 // Load templates
 //
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     'body' => 'privmsgs_body.tpl')
 );
 make_jumpbox('viewforum.'.$phpEx);
@@ -708,7 +708,7 @@ make_jumpbox('viewforum.'.$phpEx);
 //
 // Dump vars to template
 //
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'L_SUBJECT' => $lang['Subject'],
     'L_DATE' => $lang['Date'],
     'L_DISPLAY_MESSAGES' => $lang['Display_messages'],
@@ -717,7 +717,7 @@ $template->assign_vars(array(
     'S_PRIVMSGS_ACTION' => append_sid("groupmsg.$phpEx?folder=$folder"),
 )
 );
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 include('includes/page_tail.'.$phpEx);
 include(NUKE_BASE_DIR.'footer.php');

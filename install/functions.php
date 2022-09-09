@@ -99,14 +99,14 @@ function generate_config(){
     $contents = @fread ($handle, filesize ($filename));
     @fclose ($handle);
 
-    $contents = str_replace("%dbhost%", $_SESSION['dbhost_a'], $contents);
-    $contents = str_replace("%dbname%", $_SESSION['dbname_a'], $contents);
-    $contents = str_replace("%dbuname%", $_SESSION['dbuser_a'], $contents);
-    $contents = str_replace("%dbpass%", $_SESSION['dbpass_a'], $contents);
+    $contents = str_replace("%dbhost%", $_SESSION['nuke_dbhost'], $contents);
+    $contents = str_replace("%dbname%", $_SESSION['nuke_dbname'], $contents);
+    $contents = str_replace("%dbuname%", $_SESSION['nuke_dbuname'], $contents);
+    $contents = str_replace("%dbpass%", $_SESSION['nuke_dbpass'], $contents);
     
 	$contents = str_replace("%prefix%", $_SESSION['prefix'], $contents);
-    $contents = str_replace("%user_prefix%", $_SESSION['user_prefix'], $contents);
-    $contents = str_replace("%dbtype%", $_SESSION['dbtype'], $contents);
+    $contents = str_replace("%user_prefix%", $_SESSION['nuke_user_prefix'], $contents);
+    $contents = str_replace("%dbtype%", $_SESSION['nuke_dbtype'], $contents);
 
     $filename = 'config.php';
 
@@ -219,10 +219,10 @@ function validate_data($post){
 	$error = '';
     $message = '';
     
-	$nuke_dbhost = (isset($_POST['dbhost_a'])) ? $_POST['dbhost_a'] : $error .= '<font color="red">'.$install_lang['dbhost_error'].'</font><br />';
-    $nuke_dbname = (isset($_POST['dbname_a'])) ? $_POST['dbname_a'] : $error .= '<font color="red">'.$install_lang['dbname_error'].'</font><br />';
-    $nuke_dbuser_a = (isset($_POST['dbuser_a'])) ? $_POST['dbuser_a'] : $error .= '<font color="red">'.$install_lang['dbuser_error'].'</font>br />';
-    $nuke_dbpass = (isset($_POST['dbpass_a'])) ? $_POST['dbpass_a'] : '';
+	$nuke_dbhost = (isset($_POST['nuke_dbhost'])) ? $_POST['nuke_dbhost'] : $error .= '<font color="red">'.$install_lang['dbhost_error'].'</font><br />';
+    $nuke_dbname = (isset($_POST['nuke_dbname'])) ? $_POST['nuke_dbname'] : $error .= '<font color="red">'.$install_lang['dbname_error'].'</font><br />';
+    $nuke_dbuname = (isset($_POST['nuke_dbuname'])) ? $_POST['nuke_dbuname'] : $error .= '<font color="red">'.$install_lang['dbuser_error'].'</font>br />';
+    $nuke_dbpass = (isset($_POST['nuke_dbpass'])) ? $_POST['nuke_dbpass'] : '';
     
 	$prefix = (isset($_POST['prefix'])) ? $_POST['prefix'] : $error .= '<font color="red">'.$install_lang['prefix_error'].'</font><br />';
     
@@ -233,7 +233,7 @@ function validate_data($post){
         return $error;
     }
 
-    if (!($server_check = @mysqli_connect($nuke_dbhost, $nuke_dbuser_a, $nuke_dbpass, $nuke_dbname))){
+    if (!($server_check = @mysqli_connect($nuke_dbhost, $nuke_dbuname, $nuke_dbpass, $nuke_dbname))){
         $error .= '<font color="red">'.$install_lang['connection_failed'].'</font><br />';
     }
 
@@ -242,14 +242,14 @@ function validate_data($post){
         return $error;
     }
 
-    $_SESSION['dbhost_a'] = $nuke_dbhost;
-    $_SESSION['dbname_a'] = $nuke_dbname;
-    $_SESSION['dbuser_a'] = $nuke_dbuser_a;
-    $_SESSION['dbpass_a'] = $nuke_dbpass;
+    $_SESSION['nuke_dbhost'] = $nuke_dbhost;
+    $_SESSION['nuke_dbname'] = $nuke_dbname;
+    $_SESSION['nuke_dbuname'] = $nuke_dbuname;
+    $_SESSION['nuke_dbpass'] = $nuke_dbpass;
     
 	$_SESSION['prefix'] = $prefix;
-    $_SESSION['user_prefix'] = $nuke_user_prefix;
-    $_SESSION['dbtype'] = $nuke_dbtype;
+    $_SESSION['nuke_user_prefix'] = $nuke_user_prefix;
+    $_SESSION['nuke_dbtype'] = $nuke_dbtype;
 
     if (generate_config()){
         $message .= '<font color="green">'.$install_lang['config_success'].'</font><br />';
@@ -382,12 +382,12 @@ function validate_admin(){
  [ Mod:    Auto Admin Protection               v2.0.0 ]
  ******************************************************/
 		$cookie_location = str_replace('/install.php', '', $_SERVER['PHP_SELF']);
-		$user_nick = $_POST['admin_nick'];
-		$user_pass = md5($_POST['admin_pass']);
+		$nuke_user_nick = $_POST['admin_nick'];
+		$nuke_user_pass = md5($_POST['admin_pass']);
 /*****[BEGIN]******************************************
  [ Mod:    Auto Admin Login                    v2.0.0 ]
  ******************************************************/
-		$cookiedata_admin = base64_encode("$user_nick:$user_pass:english:1:new");
+		$cookiedata_admin = base64_encode("$nuke_user_nick:$nuke_user_pass:english:1:new");
 		setcookie('admin',$cookiedata_admin,time()+2592000,$cookie_location);
 /******************************************************
  [ Mod:    Auto Admin Login                    v2.0.0 ]
@@ -395,13 +395,13 @@ function validate_admin(){
 /*****[BEGIN]******************************************
  [ Mod:    Auto First User Login               v1.0.0 ]
  ******************************************************/
-        $cookiedata = base64_encode("2:$user_nick:$user_pass");
+        $cookiedata = base64_encode("2:$nuke_user_nick:$nuke_user_pass");
         setcookie('user',$cookiedata,time()+2592000,$cookie_location);
 /*****[END]********************************************
  [ Mod:    Auto First User Login               v1.0.0 ]
  ******************************************************/
-        $user_regdate = date('M d, Y');
-        $user_avatar = 'blank.gif';
+        $nuke_user_regdate = date('M d, Y');
+        $nuke_user_avatar = 'blank.gif';
         $commentlimit = 4096;
         if ($_POST['admin_website'] == 'http://'){
 			$url = '';
@@ -409,12 +409,12 @@ function validate_admin(){
 			$url = $_POST['admin_website'];
 		}
 
-        if (!mysqli_query($server_check, "INSERT INTO `" . $_SESSION['prefix'] . "_authors` VALUES ('$user_nick', 'God', '".$url."', '".$_POST['admin_email']."', '$user_pass', '0', '1', '')")){
+        if (!mysqli_query($server_check, "INSERT INTO `" . $_SESSION['prefix'] . "_authors` VALUES ('$nuke_user_nick', 'God', '".$url."', '".$_POST['admin_email']."', '$nuke_user_pass', '0', '1', '')")){
             $error = true;
             $message .= '<font color="red">'.$install_lang['god_fail'].'</font><br />';
         }
 
-        if (!mysqli_query($server_check, "INSERT INTO " . $_SESSION['user_prefix'] . "_users (`user_id`, `username`, `user_email`, `user_website`, `user_avatar`, `user_regdate`, `user_password`, `theme`, `commentmax`, `user_level`, `user_lang`, `user_dateformat`, `user_color_gc`, `user_color_gi`, `user_posts`) VALUES (NULL,'$user_nick','".$_POST['admin_email']."','".$url."','".$user_avatar."','".$user_regdate."','$user_pass','XtremeV4','".$commentlimit."', '2', 'english','D M d, Y g:i a','d12727','--1--', '1')")){
+        if (!mysqli_query($server_check, "INSERT INTO " . $_SESSION['nuke_user_prefix'] . "_users (`user_id`, `username`, `user_email`, `user_website`, `user_avatar`, `user_regdate`, `user_password`, `theme`, `commentmax`, `user_level`, `user_lang`, `user_dateformat`, `user_color_gc`, `user_color_gi`, `user_posts`) VALUES (NULL,'$nuke_user_nick','".$_POST['admin_email']."','".$url."','".$nuke_user_avatar."','".$nuke_user_regdate."','$nuke_user_pass','XtremeV4','".$commentlimit."', '2', 'english','D M d, Y g:i a','d12727','--1--', '1')")){
 			$error = true;
 			$message .= '<font color="red">'.$install_lang['user_fail'].'</font><br />';
 		}
@@ -439,28 +439,28 @@ function site_form($display=1,$return=false){
     }
 
     while($row = @mysqli_fetch_assoc($result)){
-        $config_name = $row['config_name'];
-        $config_value = $row['config_value'];
-        $default_config[$config_name] = isset($_POST['submit']) ? str_replace("'", "\'", $config_value) : $config_value;
-        $new[$config_name] = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $default_config[$config_name];
+        $nuke_config_name = $row['config_name'];
+        $nuke_config_value = $row['config_value'];
+        $default_config[$nuke_config_name] = isset($_POST['submit']) ? str_replace("'", "\'", $nuke_config_value) : $nuke_config_value;
+        $new[$nuke_config_name] = ( isset($_POST[$nuke_config_name]) ) ? $_POST[$nuke_config_name] : $default_config[$nuke_config_name];
 
         if ($submit){
-            $sql = "UPDATE " . $_SESSION['prefix'] . "_bbconfig SET config_value = '" . str_replace("\'", "''", $new[$config_name]) . "' WHERE config_name = '$config_name'";
+            $sql = "UPDATE " . $_SESSION['prefix'] . "_bbconfig SET config_value = '" . str_replace("\'", "''", $new[$nuke_config_name]) . "' WHERE config_name = '$nuke_config_name'";
             if (!mysqli_query($server_check, $sql)){
-                $error .= $install_lang['update_fail'].' '.$config_name.'<br />'.mysqli_error($server_check);
+                $error .= $install_lang['update_fail'].' '.$nuke_config_name.'<br />'.mysqli_error($server_check);
                 return $error;
             }
 
-            if ($config_name == "server_name"){
-                $sql = "UPDATE " . $_SESSION['prefix'] . "_config SET nukeurl = 'http://" . str_replace("\'", "''", $new[$config_name]) . "'";
+            if ($nuke_config_name == "server_name"){
+                $sql = "UPDATE " . $_SESSION['prefix'] . "_config SET nukeurl = 'http://" . str_replace("\'", "''", $new[$nuke_config_name]) . "'";
                 if (!mysqli_query($server_check, $sql)){
-                    $error .= $install_lang['update_fail'].' '.$config_name.'<br />'.mysqli_error($server_check);
+                    $error .= $install_lang['update_fail'].' '.$nuke_config_name.'<br />'.mysqli_error($server_check);
                     return $error;
                 }
             }
         }
 
-        if ($config_name == 'cookie_name'){
+        if ($nuke_config_name == 'cookie_name'){
             $cookie_name = str_replace('.', '_', $new['cookie_name']);
         }
     }

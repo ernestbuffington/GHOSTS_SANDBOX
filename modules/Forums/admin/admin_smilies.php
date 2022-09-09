@@ -45,14 +45,14 @@ $phpbb2_root_path = "./../";
 require($phpbb2_root_path . 'extension.inc');
 
 $cancel = ( isset($HTTP_POST_VARS['cancel']) || isset($_POST['cancel']) ) ? true : false;
-$no_page_header = $cancel;
+$no_nuke_page_header = $cancel;
 
 //
 // Load default header
 //
 if ((!empty($HTTP_GET_VARS['export_pack']) && $HTTP_GET_VARS['export_pack'] == 'send') || (!empty($_GET['export_pack']) && $_GET['export_pack'] == 'send'))
 {
-	$no_page_header = true;
+	$no_nuke_page_header = true;
 }
 
 require('./pagestart.' . $phpEx);
@@ -217,11 +217,11 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
 
                 $hidden_vars = "<input type='hidden' name='mode' value='import'>";
 
-                $template->set_filenames(array(
+                $template_nuke->set_filenames(array(
                         "body" => "admin/smile_import_body.tpl")
                 );
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         "L_SMILEY_TITLE" => $lang['smiley_title'],
                         "L_SMILEY_EXPLAIN" => $lang['smiley_import_inst'],
                         "L_SMILEY_IMPORT" => $lang['smiley_import'],
@@ -237,7 +237,7 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
                         "S_HIDDEN_FIELDS" => $hidden_vars)
                 );
 
-                $template->pparse("body");
+                $template_nuke->pparse("body");
         }
 }
 else if( isset($HTTP_POST_VARS['export_pack']) || isset($HTTP_GET_VARS['export_pack']) )
@@ -283,7 +283,7 @@ else if( isset($HTTP_POST_VARS['add']) || isset($HTTP_GET_VARS['add']) )
         // Admin has selected to add a smiley.
         //
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 "body" => "admin/smile_edit_body.tpl")
         );
 
@@ -295,7 +295,7 @@ else if( isset($HTTP_POST_VARS['add']) || isset($HTTP_GET_VARS['add']) )
 
         $s_hidden_fields = '<input type="hidden" name="mode" value="savenew" />';
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 "L_SMILEY_TITLE" => $lang['smiley_title'],
                 "L_SMILEY_CONFIG" => $lang['smiley_config'],
                 "L_SMILEY_EXPLAIN" => $lang['smile_desc'],
@@ -313,7 +313,7 @@ else if( isset($HTTP_POST_VARS['add']) || isset($HTTP_GET_VARS['add']) )
                 "S_SMILEY_BASEDIR" => $phpbb2_root_path . $board_config['smilies_path'])
         );
 
-        $template->pparse("body");
+        $template_nuke->pparse("body");
 }
 else if ( $mode != "" )
 {
@@ -346,13 +346,13 @@ else if ( $mode != "" )
      			else
      			{
      				// Present the confirmation screen to the user
-     				$template->set_filenames(array(
+     				$template_nuke->set_filenames(array(
      					'body' => 'admin/confirm_body.tpl')
      				);
 
      				$hidden_fields = '<input type="hidden" name="mode" value="delete" /><input type="hidden" name="id" value="' . $smiley_id . '" />';
 
-     				$template->assign_vars(array(
+     				$template_nuke->assign_vars(array(
      					'MESSAGE_TITLE' => $lang['Confirm'],
      					'MESSAGE_TEXT' => $lang['Confirm_delete_smiley'],
 
@@ -362,7 +362,7 @@ else if ( $mode != "" )
      					'S_CONFIRM_ACTION' => append_sid("admin_smilies.$phpEx"),
      					'S_HIDDEN_FIELDS' => $hidden_fields)
      				);
-     				$template->pparse('body');
+     				$template_nuke->pparse('body');
      			}
       			break;
 
@@ -399,13 +399,13 @@ else if ( $mode != "" )
                                 $filename_list .= '<option value="' . $smiley_images[$i] . '"' . $smiley_selected . '>' . $smiley_images[$i] . '</option>';
                         }
 
-                        $template->set_filenames(array(
+                        $template_nuke->set_filenames(array(
                                 "body" => "admin/smile_edit_body.tpl")
                         );
 
                         $s_hidden_fields = '<input type="hidden" name="mode" value="save" /><input type="hidden" name="smile_id" value="' . $smile_data['smilies_id'] . '" />';
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
                                 "SMILEY_CODE" => $smile_data['code'],
                                 "SMILEY_EMOTICON" => $smile_data['emoticon'],
 
@@ -426,7 +426,7 @@ else if ( $mode != "" )
                                 "S_SMILEY_BASEDIR" => $phpbb2_root_path . $board_config['smilies_path'])
                         );
 
-                        $template->pparse("body");
+                        $template_nuke->pparse("body");
                         break;
 
                 case "save":
@@ -536,11 +536,11 @@ else
 
         $smilies = $nuke_db->sql_fetchrowset($result);
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 "body" => "admin/smile_list_body.tpl")
         );
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 "L_ACTION" => $lang['Action'],
                 "L_SMILEY_TITLE" => $lang['smiley_title'],
                 "L_SMILEY_TEXT" => $lang['smile_desc'],
@@ -571,7 +571,7 @@ else
                 $row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
                 $row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
-                $template->assign_block_vars("smiles", array(
+                $template_nuke->assign_block_vars("smiles", array(
                         "ROW_COLOR" => "#" . $row_color,
                         "ROW_CLASS" => $row_class,
 
@@ -587,7 +587,7 @@ else
         //
         // Spit out the page.
         //
-        $template->pparse("body");
+        $template_nuke->pparse("body");
 }
 
 $cache->delete('smilies', 'config');
@@ -595,6 +595,6 @@ $cache->delete('smilies', 'config');
 //
 // Page Footer
 //
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

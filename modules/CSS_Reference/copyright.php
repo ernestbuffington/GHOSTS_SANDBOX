@@ -27,9 +27,9 @@ require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 // required information and then copy the file "copyright.php" into your
 // module's directory. It's all, as easy as it sounds ;)
 
-$author_name = "Ernest \"TheGhost\" Buffington";
-$author_email = "ernest.buffingtonton@gmail.com";
-$author_homepage = "http://cvs.86it.us";
+$nuke_author_name = "Ernest \"TheGhost\" Buffington";
+$nuke_author_email = "ernest.buffingtonton@gmail.com";
+$nuke_author_homepage = "http://cvs.86it.us";
 $license = "Lifetime";
 $download_location = "";
 $module_version = "1.2";
@@ -42,6 +42,6 @@ $module_description = "CSS Reference";
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($author_name, $author_email, $author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
 
 ?>

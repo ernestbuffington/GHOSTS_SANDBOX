@@ -21,9 +21,9 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
     exit('Access Denied');
 }
 
-function ne_save_config($config_name, $config_value){
+function ne_save_config($nuke_config_name, $nuke_config_value){
     global $prefix, $nuke_db, $cache;
-    $nuke_db->sql_query("UPDATE ".$prefix."_nsnne_config SET config_value='$config_value' WHERE config_name='$config_name'");
+    $nuke_db->sql_query("UPDATE ".$prefix."_nsnne_config SET config_value='$nuke_config_value' WHERE config_name='$nuke_config_name'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -35,29 +35,29 @@ function ne_save_config($config_name, $config_value){
 
 function ne_get_configs(){
     global $prefix, $nuke_db, $cache;
-    static $config;
-    if(isset($config)) return $config;
+    static $nuke_config;
+    if(isset($nuke_config)) return $nuke_config;
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    if(($config = $cache->load('news', 'config')) === false) {
+    if(($nuke_config = $cache->load('news', 'config')) === false) {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $configresult = $nuke_db->sql_query("SELECT config_name, config_value FROM ".$prefix."_nsnne_config");
-        while (list($config_name, $config_value) = $nuke_db->sql_fetchrow($configresult)) {
-            $config[$config_name] = $config_value;
+        $nuke_configresult = $nuke_db->sql_query("SELECT config_name, config_value FROM ".$prefix."_nsnne_config");
+        while (list($nuke_config_name, $nuke_config_value) = $nuke_db->sql_fetchrow($nuke_configresult)) {
+            $nuke_config[$nuke_config_name] = $nuke_config_value;
         }
-        $nuke_db->sql_freeresult($configresult);
+        $nuke_db->sql_freeresult($nuke_configresult);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $cache->save('news', 'config', $config);
+        $cache->save('news', 'config', $nuke_config);
     }
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    return $config;
+    return $nuke_config;
 }
 
 function automated_news() 

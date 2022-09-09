@@ -90,13 +90,13 @@ class utf_normalizer
     // Note: we do not check for $GLOBALS['utf_canonical_decomp']. It is assumed they are always loaded together
     if (!isset($GLOBALS['utf_nfc_qc']))
     {
-      global $phpbb2_root_path;
+      global $phpbb_root_path;
       include(NUKE_INCLUDE_DIR . 'utf/data/utf_nfc_qc.php');
     }
 
     if (!isset($GLOBALS['utf_canonical_decomp']))
     {
-      global $phpbb2_root_path;
+      global $phpbb_root_path;
       include(NUKE_INCLUDE_DIR . 'utf/data/utf_canonical_decomp.php');
     }
 
@@ -130,13 +130,13 @@ class utf_normalizer
 
     if (!isset($GLOBALS['utf_nfc_qc']))
     {
-      global $phpbb2_root_path;
+      global $phpbb_root_path;
       include(NUKE_INCLUDE_DIR . 'utf/data/utf_nfc_qc.php');
     }
 
     if (!isset($GLOBALS['utf_canonical_decomp']))
     {
-      global $phpbb2_root_path;
+      global $phpbb_root_path;
       include(NUKE_INCLUDE_DIR . 'utf/data/utf_canonical_decomp.php');
     }
 
@@ -162,13 +162,13 @@ class utf_normalizer
 
     if (!isset($GLOBALS['utf_nfkc_qc']))
     {
-      global $phpbb2_root_path;
+      global $phpbb_root_path;
       include(NUKE_INCLUDE_DIR . 'utf/data/utf_nfkc_qc.php');
     }
 
     if (!isset($GLOBALS['utf_compatibility_decomp']))
     {
-      global $phpbb2_root_path;
+      global $phpbb_root_path;
       include(NUKE_INCLUDE_DIR . 'utf/data/utf_compatibility_decomp.php');
     }
 
@@ -194,7 +194,7 @@ class utf_normalizer
 
     if (!isset($GLOBALS['utf_canonical_decomp']))
     {
-      global $phpbb2_root_path;
+      global $phpbb_root_path;
       include(NUKE_INCLUDE_DIR . 'utf/data/utf_canonical_decomp.php');
     }
 
@@ -220,7 +220,7 @@ class utf_normalizer
 
     if (!isset($GLOBALS['utf_compatibility_decomp']))
     {
-      global $phpbb2_root_path;
+      global $phpbb_root_path;
       include(NUKE_INCLUDE_DIR . 'utf/data/utf_compatibility_decomp.php');
     }
 
@@ -247,14 +247,14 @@ class utf_normalizer
     // Load some commonly-used tables
     if (!isset($utf_jamo_index, $utf_jamo_type, $utf_combining_class))
     {
-      global $phpbb2_root_path;
+      global $phpbb_root_path;
       include(NUKE_INCLUDE_DIR . 'utf/data/utf_normalizer_common.php');
     }
 
     // Load the canonical composition table
     if (!isset($utf_canonical_comp))
     {
-      global $phpbb2_root_path;
+      global $phpbb_root_path;
       include(NUKE_INCLUDE_DIR . 'utf/data/utf_canonical_comp.php');
     }
 
@@ -949,7 +949,7 @@ class utf_normalizer
     // Load some commonly-used tables
     if (!isset($utf_combining_class))
     {
-      global $phpbb2_root_path;
+      global $phpbb_root_path;
       include(NUKE_INCLUDE_DIR . 'utf/data/utf_normalizer_common.php');
     }
 

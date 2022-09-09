@@ -43,7 +43,7 @@ if( !empty($setmodules) )
 //
 // Let's set the root dir for phpBB
 //
-$no_page_header = FALSE;
+$no_nuke_page_header = FALSE;
 $phpbb2_root_path = "./../";
 require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
@@ -106,11 +106,11 @@ if( !empty($mode) )
 
         $s_hidden_fields .= '<input type="hidden" name="mode" value="save" />';
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
             "body" => "admin/quicksearch_edit.tpl")
         );
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                  "SEARCH_NMAE" => $search_info['search_name'],
             "SEARCH_URL1" => $search_info['search_url1'],
             "SEARCH_URL2" => $search_info['search_url2'],
@@ -206,7 +206,7 @@ if( !empty($mode) )
     }
     else
     {
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
             "body" => "admin/quicksearch_body.tpl")
         );
         
@@ -221,7 +221,7 @@ if( !empty($mode) )
         $search_rows = $nuke_db->sql_fetchrowset($result);
         $search_count = count($search_rows);
         
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             "L_SEARCHS_TITLE" => $lang['Search_title'],
             "L_SEARCHS_TEXT" => $lang['Search_explain'],
             "L_SEARCH_NAME" => $lang['Search_name'],
@@ -241,7 +241,7 @@ if( !empty($mode) )
             $row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
             $row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
     
-            $template->assign_block_vars("addsearch", array(
+            $template_nuke->assign_block_vars("addsearch", array(
                 "ROW_COLOR" => "#" . $row_color,
                 "ROW_CLASS" => $row_class,
                 "SEARCH_NAME" => $search_name,
@@ -257,7 +257,7 @@ else
     //
     // Show the default page
     //
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         "body" => "admin/quicksearch_body.tpl")
     );
     
@@ -272,7 +272,7 @@ else
     $search_rows = array();
     $search_rows = $nuke_db->sql_fetchrowset($result);
     
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         "L_SEARCHS_TITLE" => $lang['Search_title'],
         "L_SEARCHS_TEXT" => $lang['Search_explain'],
         "L_SEARCH_NAME" => $lang['Search_name'],
@@ -292,7 +292,7 @@ else
         $row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
         $row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
         
-        $template->assign_block_vars("addsearch", array(
+        $template_nuke->assign_block_vars("addsearch", array(
             "ROW_COLOR" => "#" . $row_color,
             "ROW_CLASS" => $row_class,
             "SEARCH_NAME" => $search_name,
@@ -303,8 +303,8 @@ else
     }
 }
 
-$template->pparse("body");
+$template_nuke->pparse("body");
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

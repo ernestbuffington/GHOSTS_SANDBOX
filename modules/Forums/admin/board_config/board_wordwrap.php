@@ -26,7 +26,7 @@ if (!defined('BOARD_CONFIG')) {
     die('Access Denied');
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     "wordwrap" => "admin/board_config/board_wordwrap.tpl")
 );
 
@@ -41,12 +41,12 @@ $wrap_enable_no = ( !$new['wrap_enable'] ) ? "checked=\"checked\"" : "";
 
 
 //General Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "DHTML_ID" => "c" . $dhtml_id)
 );
     
 //Language Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
@@ -62,7 +62,7 @@ $template->assign_vars(array(
 ));
 
 //Data Template Variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
@@ -75,6 +75,6 @@ $template->assign_vars(array(
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
 ));
-$template->pparse("wordwrap");
+$template_nuke->pparse("wordwrap");
 
 ?>

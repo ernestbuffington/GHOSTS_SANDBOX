@@ -169,7 +169,7 @@ class BBCode
 
 	public static function evo_spoil( $hidden_content )
 	{
-		$template  = '
+		$template_nuke  = '
 		<style type="text/css">
 		.spoiler-container {
 			display: block;
@@ -217,12 +217,12 @@ class BBCode
 		</style>
 		';
 
-		// $template  = addCSStoHead( 'includes/css/bbcode.css' );
-		$template .= '<div class="spoiler-container">';
-		$template .= '	Spoiler: <button class="btn btn-mod btn-border" type="button" id="reveal-spoiler" name="spoiler">Show</button>';
-		$template .= '	<div id="spoiler-contents">Phones Broken</div>';
-		$template .= '</div>';
-		$template .= '<script type="text/javascript">
+		// $template_nuke  = addCSStoHead( 'includes/css/bbcode.css' );
+		$template_nuke .= '<div class="spoiler-container">';
+		$template_nuke .= '	Spoiler: <button class="btn btn-mod btn-border" type="button" id="reveal-spoiler" name="spoiler">Show</button>';
+		$template_nuke .= '	<div id="spoiler-contents">Phones Broken</div>';
+		$template_nuke .= '</div>';
+		$template_nuke .= '<script type="text/javascript">
 			var hidden_content = document.getElementById("spoiler-contents");
 			document.getElementById("reveal-spoiler").addEventListener("click", function (event) 
 			{
@@ -236,7 +236,7 @@ class BBCode
 				}
 			});
 		</script>';
-		return $template;
+		return $template_nuke;
 	}
 
 
@@ -359,13 +359,13 @@ class BBCode
 		return BBCode::evo_mention( $matches[1] );
 	}
 
-	public static function evo_mention( $user )
+	public static function evo_mention( $nuke_user )
 	{
 		global $nuke_db, $customlang;
 		
 		// modules.php?name=Private_Messages&mode=post&pm_uname=Lonestar
-		// $row = $nuke_db->sql_ufetchrow("SELECT `user_id`, `username` FROM `".NUKE_USERS_TABLE."` WHERE `username` = '".$user."'");
-		return '<a href="modules.php?name=Private_Messages&mode=post&pm_uname='.$user.'" target="_blank" alt="'.$customlang['global']['send_pm'].'" title="'.$customlang['global']['send_pm'].'">'.$user.'</a>';
+		// $row = $nuke_db->sql_ufetchrow("SELECT `user_id`, `username` FROM `".NUKE_USERS_TABLE."` WHERE `username` = '".$nuke_user."'");
+		return '<a href="modules.php?name=Private_Messages&mode=post&pm_uname='.$nuke_user.'" target="_blank" alt="'.$customlang['global']['send_pm'].'" title="'.$customlang['global']['send_pm'].'">'.$nuke_user.'</a>';
 	}
 
 	public static function split_bbcodes($text)

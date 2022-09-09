@@ -361,13 +361,13 @@ function create_color($mode, $code)
 // create the percent bar & box
 function create_percent_box($box, $percent_color, $percent_width)
 {
-  global $template;
+  global $template_nuke;
 
-  $template->set_filenames(array(
+  $template_nuke->set_filenames(array(
     'percent_box' => 'admin/rebuild_search_percent.tpl')
   );
 
-  $template->assign_vars(array(
+  $template_nuke->assign_vars(array(
     'PERCENT_COLOR' => $percent_color,
     'PERCENT_WIDTH' => round($percent_width)
     )
@@ -375,11 +375,11 @@ function create_percent_box($box, $percent_color, $percent_width)
 
   if ( $box == 'session' )
   {
-    $template->assign_var_from_handle('SESSION_PERCENT_BOX', 'percent_box');
+    $template_nuke->assign_var_from_handle('SESSION_PERCENT_BOX', 'percent_box');
   }
   else
   {
-    $template->assign_var_from_handle('TOTAL_PERCENT_BOX', 'percent_box');
+    $template_nuke->assign_var_from_handle('TOTAL_PERCENT_BOX', 'percent_box');
   }
 
   return;

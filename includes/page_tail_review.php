@@ -51,13 +51,13 @@ if (!defined('IN_PHPBB2'))
 // Show the overall footer.
 //
 global $popup, $admin_file;
-$admin_link = ( $userdata['user_level'] == NUKE_ADMIN ) ? '<a href="'.$admin_file.'.php?op=forums">' . $lang['Admin_panel'] . '</a><br /><br />' : '';
+$admin_link = ( $nuke_userdata['user_level'] == NUKE_ADMIN ) ? '<a href="'.$admin_file.'.php?op=forums">' . $lang['Admin_panel'] . '</a><br /><br />' : '';
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     'overall_footer' => ( empty($gen_simple_header) ) ? 'overall_footer.tpl' : 'simple_footer.tpl')
 );
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'PHPBB_VERSION' => '2' . $board_config['version'],
     'TRANSLATION_INFO' => ( isset($lang['TRANSLATION_INFO']) ) ? $lang['TRANSLATION_INFO'] : '',
     'ADMIN_LINK' => $admin_link)

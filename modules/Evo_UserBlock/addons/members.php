@@ -25,16 +25,16 @@ global $evouserinfo_addons, $evouserinfo_members;
 # group memberships
 function evouserinfo_members () 
 {
-    global $userinfo, $nuke_db, $prefix, $nuke_user_prefix, $evouserinfo_members, $lang_evo_userblock;
+    global $nuke_userinfo, $nuke_db, $prefix, $nuke_user_prefix, $evouserinfo_members, $lang_evo_userblock;
     
     $evouserinfo_members = '<div style="font-weight: bold">'.$lang_evo_userblock['BLOCK']['MEMBERS']['MEMBERS'].'</div>';
 
     $in_group = array();
     
 	# Select all groups where the user is a member
-    if(isset($userinfo['groups'])) 
+    if(isset($nuke_userinfo['groups'])) 
 	{
-	   foreach ($userinfo['groups'] as $id1 => $name) 
+	   foreach ($nuke_userinfo['groups'] as $id1 => $name) 
 	   {
           $in_group[] = $id1;
     
@@ -69,7 +69,7 @@ function evouserinfo_members ()
 			               FROM '.$prefix.'_bbgroups g, 
 			               '.$prefix.'_bbuser_group ug
             
-			               WHERE ug.user_id = '.$userinfo['user_id'].'
+			               WHERE ug.user_id = '.$nuke_userinfo['user_id'].'
 				           AND ug.group_id = g.group_id
 				           AND ug.user_pending = 1
 				           AND g.group_single_user = 0

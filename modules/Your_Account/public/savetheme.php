@@ -35,7 +35,7 @@ if (!defined('CNBYA')) {
     die('CNBYA protection');
 }
 
-global $cookie, $userinfo;
+global $cookie, $nuke_userinfo;
 $check = $cookie[1];
 $check2 = $cookie[2];
 
@@ -43,10 +43,10 @@ $row = get_user_field(array('user_id', 'user_password'), $check);
 $vuid = $row['user_id'];
 $ccpass = $row['user_password'];
 
-if (($user_id == $vuid) AND ($check2 == $ccpass)) {
+if (($nuke_user_id == $vuid) AND ($check2 == $ccpass)) {
     if (empty($theme)) $theme = $Default_Theme;
 	if(ThemeAllowed($theme)) {
-		ChangeTheme($theme, $user_id);
+		ChangeTheme($theme, $nuke_user_id);
 	}
 }
 

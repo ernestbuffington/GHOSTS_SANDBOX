@@ -39,24 +39,24 @@ function attach_faq_include($lang_file)
 /**
 * Setup Basic Authentication (includes/auth.php)
 */
-function attach_setup_basic_auth($type, &$auth_fields, &$a_sql)
+function attach_setup_basic_auth($type, &$nuke_auth_fields, &$a_sql)
 {
     switch ($type)
     {
         case NUKE_AUTH_ALL:
             $a_sql .= ', a.auth_attachments, a.auth_download';
-            $auth_fields[] = 'auth_attachments';
-            $auth_fields[] = 'auth_download';
+            $nuke_auth_fields[] = 'auth_attachments';
+            $nuke_auth_fields[] = 'auth_download';
         break;
 
         case NUKE_AUTH_ATTACH:
             $a_sql = 'a.auth_attachments';
-            $auth_fields = array('auth_attachments');
+            $nuke_auth_fields = array('auth_attachments');
         break;
 
         case AUTH_DOWNLOAD:
             $a_sql = 'a.auth_download';
-            $auth_fields = array('auth_download');
+            $nuke_auth_fields = array('auth_download');
         break;
 
         default:
@@ -100,18 +100,18 @@ function attach_setup_forum_auth(&$simple_auth_ary, &$forum_auth_fields, &$field
 /**
 * Setup Usergroup Authentication (admin/admin_ug_auth.php)
 */
-function attach_setup_usergroup_auth(&$forum_auth_fields, &$auth_field_match, &$field_names)
+function attach_setup_usergroup_auth(&$forum_auth_fields, &$nuke_auth_field_match, &$field_names)
 {
     global $lang;
 
     // Post Attachments
     $forum_auth_fields[] = 'auth_attachments';
-    $auth_field_match['auth_attachments'] = NUKE_AUTH_ATTACH;
+    $nuke_auth_field_match['auth_attachments'] = NUKE_AUTH_ATTACH;
     $field_names['auth_attachments'] = $lang['Auth_attach'];
 
     // Download Attachments
     $forum_auth_fields[] = 'auth_download';
-    $auth_field_match['auth_download'] = AUTH_DOWNLOAD;
+    $nuke_auth_field_match['auth_download'] = AUTH_DOWNLOAD;
     $field_names['auth_download'] = $lang['Auth_download'];
 }
 
@@ -149,7 +149,7 @@ function attach_build_auth_levels($is_auth, &$s_auth_can)
 */
 function attachment_quota_settings($admin_mode, $submit = false, $mode)
 {
-    global $template, $nuke_db, $HTTP_POST_VARS, $HTTP_GET_VARS, $lang, $lang, $phpbb2_root_path, $phpEx, $attach_config;
+    global $template_nuke, $nuke_db, $HTTP_POST_VARS, $HTTP_GET_VARS, $lang, $lang, $phpbb2_root_path, $phpEx, $attach_config;
 
     // Make sure constants got included
     include_once($phpbb2_root_path . 'attach_mod/includes/constants.'.$phpEx);
@@ -173,7 +173,7 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
     include_once($phpbb2_root_path . 'attach_mod/includes/functions_selects.' . $phpEx);
     include_once($phpbb2_root_path . 'attach_mod/includes/functions_admin.' . $phpEx);
 
-    $user_id = 0;
+    $nuke_user_id = 0;
 
     if ($admin_mode == 'user')
     {
@@ -182,17 +182,17 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
 
         if (!$submit && $mode != 'save')
         {
-            $user_id = get_var(NUKE_POST_USERS_URL, 0);
+            $nuke_user_id = get_var(NUKE_POST_USERS_URL, 0);
             $u_name = get_var('username', '');
 
-            if (!$user_id && !$u_name)
+            if (!$nuke_user_id && !$u_name)
             {
                 message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_id_specified'] );
             }
 
-            if ($user_id)
+            if ($nuke_user_id)
             {
-                $this_userdata['user_id'] = $user_id;
+                $this_userdata['user_id'] = $nuke_user_id;
             }
             else
             {
@@ -200,13 +200,13 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
                 $this_userdata = get_userdata($HTTP_POST_VARS['username'], true);
             }
 
-            $user_id = (int) $this_userdata['user_id'];
+            $nuke_user_id = (int) $this_userdata['user_id'];
         }
         else
         {
-            $user_id = get_var('id', 0);
+            $nuke_user_id = get_var('id', 0);
 
-            if (!$user_id)
+            if (!$nuke_user_id)
             {
                 message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_id_specified'] );
             }
@@ -217,7 +217,7 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
     {
         // Show the contents
         $sql = 'SELECT quota_limit_id, quota_type FROM ' . QUOTA_TABLE . '
-            WHERE user_id = ' . (int) $user_id;
+            WHERE user_id = ' . (int) $nuke_user_id;
 
         if( !($result = $nuke_db->sql_query($sql)) )
         {
@@ -249,7 +249,7 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
         }
         $nuke_db->sql_freeresult($result);
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'S_SELECT_UPLOAD_QUOTA'        => quota_limit_select('user_upload_quota', $upload_quota),
             'S_SELECT_PM_QUOTA'            => quota_limit_select('user_pm_quota', $pm_quota),
             'L_UPLOAD_QUOTA'            => $lang['Upload_quota'],
@@ -259,8 +259,8 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
 
     if ($admin_mode == 'user' && $submit && $HTTP_POST_VARS['deleteuser'])
     {
-        process_quota_settings($admin_mode, $user_id, QUOTA_UPLOAD_LIMIT, 0);
-        process_quota_settings($admin_mode, $user_id, QUOTA_PM_LIMIT, 0);
+        process_quota_settings($admin_mode, $nuke_user_id, QUOTA_UPLOAD_LIMIT, 0);
+        process_quota_settings($admin_mode, $nuke_user_id, QUOTA_PM_LIMIT, 0);
     }
     else if ($admin_mode == 'user' && $submit && $mode == 'save')
     {
@@ -268,8 +268,8 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
         $upload_quota = get_var('user_upload_quota', 0);
         $pm_quota = get_var('user_pm_quota', 0);
 
-        process_quota_settings($admin_mode, $user_id, QUOTA_UPLOAD_LIMIT, $upload_quota);
-        process_quota_settings($admin_mode, $user_id, QUOTA_PM_LIMIT, $pm_quota);
+        process_quota_settings($admin_mode, $nuke_user_id, QUOTA_UPLOAD_LIMIT, $upload_quota);
+        process_quota_settings($admin_mode, $nuke_user_id, QUOTA_PM_LIMIT, $pm_quota);
     }
 
     if ($admin_mode == 'group' && $mode == 'newgroup')
@@ -316,7 +316,7 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
         }
         $nuke_db->sql_freeresult($result);
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'S_SELECT_UPLOAD_QUOTA'    => quota_limit_select('group_upload_quota', $upload_quota),
             'S_SELECT_PM_QUOTA'        => quota_limit_select('group_pm_quota', $pm_quota),
             'L_UPLOAD_QUOTA'        => $lang['Upload_quota'],
@@ -350,21 +350,21 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
 * Groups are able to be grabbed, but it's not used within the Attachment Mod. ;)
 * (includes/usercp_viewprofile.php)
 */
-function display_upload_attach_box_limits($user_id, $group_id = 0)
+function display_upload_attach_box_limits($nuke_user_id, $group_id = 0)
 {
-    global $attach_config, $board_config, $phpbb2_root_path, $lang, $nuke_db, $template, $phpEx, $userdata, $profiledata;
+    global $attach_config, $board_config, $phpbb2_root_path, $lang, $nuke_db, $template_nuke, $phpEx, $nuke_userdata, $profiledata;
 
     if (intval($attach_config['disable_mod']))
     {
         return;
     }
 
-    if ($userdata['user_level'] != NUKE_ADMIN && $userdata['user_id'] != $user_id)
+    if ($nuke_userdata['user_level'] != NUKE_ADMIN && $nuke_userdata['user_id'] != $nuke_user_id)
     {
         return;
     }
 
-    if (!$user_id)
+    if (!$nuke_user_id)
     {
         return;
     }
@@ -372,13 +372,13 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
     // Return if the user is not within the to be listed Group
     if ($group_id)
     {
-        if (!user_in_group($user_id, $group_id))
+        if (!user_in_group($nuke_user_id, $group_id))
         {
             return;
         }
     }
 
-    $user_id = (int) $user_id;
+    $nuke_user_id = (int) $nuke_user_id;
     $group_id = (int) $group_id;
 
     $attachments = new attach_posting();
@@ -445,11 +445,11 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
     {
         if (is_array($profiledata))
         {
-            $attachments->get_quota_limits($profiledata, $user_id);
+            $attachments->get_quota_limits($profiledata, $nuke_user_id);
         }
         else
         {
-            $attachments->get_quota_limits($userdata, $user_id);
+            $attachments->get_quota_limits($nuke_userdata, $nuke_user_id);
         }
     }
 
@@ -464,7 +464,7 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 
     if ($upload_filesize_limit == 0)
     {
-        $user_quota = $lang['Unlimited'];
+        $nuke_user_quota = $lang['Unlimited'];
     }
     else
     {
@@ -472,22 +472,22 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 
         if ($upload_filesize_limit >= 1048576)
         {
-            $user_quota = (round($upload_filesize_limit / 1048576 * 100) / 100) . ' ' . $size_lang;
+            $nuke_user_quota = (round($upload_filesize_limit / 1048576 * 100) / 100) . ' ' . $size_lang;
         }
         else if ($upload_filesize_limit >= 1024)
         {
-            $user_quota = (round($upload_filesize_limit / 1024 * 100) / 100) . ' ' . $size_lang;
+            $nuke_user_quota = (round($upload_filesize_limit / 1024 * 100) / 100) . ' ' . $size_lang;
         }
         else
         {
-            $user_quota = ($upload_filesize_limit) . ' ' . $size_lang;
+            $nuke_user_quota = ($upload_filesize_limit) . ' ' . $size_lang;
         }
     }
 
     // Get all attach_id's the specific user posted, but only uploads to the board and not Private Messages
     $sql = 'SELECT attach_id
         FROM ' . ATTACHMENTS_TABLE . '
-        WHERE user_id_1 = ' . (int) $user_id . '
+        WHERE user_id_1 = ' . (int) $nuke_user_id . '
             AND privmsgs_id = 0
         GROUP BY attach_id';
 
@@ -512,15 +512,15 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 
     if ($upload_filesize >= 1048576)
     {
-        $user_uploaded = (round($upload_filesize / 1048576 * 100) / 100) . ' ' . $size_lang;
+        $nuke_user_uploaded = (round($upload_filesize / 1048576 * 100) / 100) . ' ' . $size_lang;
     }
     else if ($upload_filesize >= 1024)
     {
-        $user_uploaded = (round($upload_filesize / 1024 * 100) / 100) . ' ' . $size_lang;
+        $nuke_user_uploaded = (round($upload_filesize / 1024 * 100) / 100) . ' ' . $size_lang;
     }
     else
     {
-        $user_uploaded = ($upload_filesize) . ' ' . $size_lang;
+        $nuke_user_uploaded = ($upload_filesize) . ' ' . $size_lang;
     }
 
     $upload_limit_pct = ( $upload_filesize_limit > 0 ) ? round(( $upload_filesize / $upload_filesize_limit ) * 100) : 0;
@@ -533,15 +533,15 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 
     $l_box_size_status = sprintf($lang['Upload_percent_profile'], $upload_limit_pct);
 
-    $template->assign_block_vars('switch_upload_limits', array());
+    $template_nuke->assign_block_vars('switch_upload_limits', array());
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_UACP'            => $lang['UACP'],
         'L_UPLOAD_QUOTA'    => $lang['Upload_quota'],
-        //'U_UACP'            => $phpbb2_root_path . 'uacp.' . $phpEx . '?u=' . $user_id . '&amp;sid=' . $userdata['session_id'],
-        'U_UACP' => append_sid('uacp.' . $phpEx . '?u=' . $user_id . '&amp;sid=' . $userdata['session_id']),
-        'UPLOADED'            => sprintf($lang['User_uploaded_profile'], $user_uploaded),
-        'QUOTA'                => sprintf($lang['User_quota_profile'], $user_quota),
+        //'U_UACP'            => $phpbb2_root_path . 'uacp.' . $phpEx . '?u=' . $nuke_user_id . '&amp;sid=' . $nuke_userdata['session_id'],
+        'U_UACP' => append_sid('uacp.' . $phpEx . '?u=' . $nuke_user_id . '&amp;sid=' . $nuke_userdata['session_id']),
+        'UPLOADED'            => sprintf($lang['User_uploaded_profile'], $nuke_user_uploaded),
+        'QUOTA'                => sprintf($lang['User_quota_profile'], $nuke_user_quota),
         'UPLOAD_LIMIT_IMG_WIDTH'    => $upload_limit_img_length,
         'UPLOAD_LIMIT_PERCENT'        => $upload_limit_pct,
         'PERCENT_FULL'                => $l_box_size_status)

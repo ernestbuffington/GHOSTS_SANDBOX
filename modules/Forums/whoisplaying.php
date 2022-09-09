@@ -20,16 +20,16 @@ if (!defined('IN_PHPBB2')) die('Hacking attempt');
 if (!function_exists('get_arcade_categories')) 
 include('includes/functions_arcade.'.$phpEx);
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         'whoisplaying' => 'whoisplaying_body.tpl')
 );
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         "L_WHOISPLAYING" => $lang['whoisplaying'])
 );
 
 if(!isset($liste_cat_auth)):
-$liste_cat_auth = get_arcade_categories($userdata['user_id'], $userdata['user_level'],'view');
+$liste_cat_auth = get_arcade_categories($nuke_userdata['user_id'], $nuke_userdata['user_level'],'view');
 if (empty($liste_cat_auth)) 
 $liste_cat_auth = "''";
 endif;
@@ -95,7 +95,7 @@ for($i=0 ; $i<$nbplayers ; $i++):
 	 else 
          $player_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=
 		 ".$players[$i]['user_id']).'"'.$style_color.'><i>'.$players[$i]['username'].'</i></a>';
-         if ($players[$i]['user_allow_viewonline'] || $userdata['user_level'] == NUKE_ADMIN): 
+         if ($players[$i]['user_allow_viewonline'] || $nuke_userdata['user_level'] == NUKE_ADMIN): 
             if (!isset($games_names[ $players[$i]['game_id'] ])): 
                 $games_names[ $players[$i]['game_id'] ] = $players[$i]['game_name'] ;
                 $games_players[ $players[$i]['game_id'] ] = $player_link ;
@@ -109,7 +109,7 @@ endfor;
 foreach($games_names AS $key => $val): 
  if ($games_players[$key]!=''): 
    $class = ($class == 'row1') ? 'row2' : 'row1';
-   $template->assign_block_vars('whoisplaying_row', array(
+   $template_nuke->assign_block_vars('whoisplaying_row', array(
    'CLASS' => $class,
    'GAME' => '<a href="' . append_sid("games.$phpEx?gid=" . $key) . '">' . $val . '</a>',
    'PLAYER_LIST' => $games_players[$key])
@@ -117,5 +117,5 @@ foreach($games_names AS $key => $val):
  endif;
 endforeach;
 
-$template->assign_var_from_handle('WHOISPLAYING', 'whoisplaying');
+$template_nuke->assign_var_from_handle('WHOISPLAYING', 'whoisplaying');
 ?>

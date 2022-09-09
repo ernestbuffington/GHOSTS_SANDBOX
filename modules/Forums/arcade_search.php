@@ -43,8 +43,8 @@ include('includes/constants.'. $phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_ARCADES, $nukeuser);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_ARCADES, $nukeuser);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -52,7 +52,7 @@ include('includes/functions_arcade.' . $phpEx);
 //
 // Start auth check
 //
-if (!$userdata['session_logged_in']) {
+if (!$nuke_userdata['session_logged_in']) {
         $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE")) ) ? "Refresh: 0; URL=" : "Location: ";
         header($header_location . "modules.php?name=Your_Account");
         exit;
@@ -100,11 +100,11 @@ switch ( $arcade_config['game_order']) {
 }
 
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         'body' => 'arcade_body.tpl')
 );
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'URL_ARCADE' => '<nobr><a class="cattitle" href="' . append_sid("arcade.$phpEx") . '">' . $lang['lib_arcade'] . '</a></nobr> ',
         'URL_BESTSCORES' => '<nobr><a class="cattitle" href="' . append_sid("toparcade.$phpEx") . '">' . $lang['best_scores'] . '</a></nobr> ',
         'URL_SCOREBOARD' => '<nobr><a class="cattitle" href="' . append_sid("scoreboard.$phpEx?gid=$gid") . '">' . $lang['scoreboard'] . '</a></nobr> ',
@@ -121,7 +121,7 @@ $template->assign_vars(array(
         'L_ARCADE' => $lang['lib_arcade'])
 );
 
-$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . NUKE_GAMES_TABLE . " g LEFT JOIN " . NUKE_USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . NUKE_SCORES_TABLE . " s ON s.game_id = g.game_id AND s.user_id = " . $userdata['user_id'] . " ORDER BY $order_by";
+$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . NUKE_GAMES_TABLE . " g LEFT JOIN " . NUKE_USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . NUKE_SCORES_TABLE . " s ON s.game_id = g.game_id AND s.user_id = " . $nuke_userdata['user_id'] . " ORDER BY $order_by";
 
 if( !($result = $nuke_db->sql_query($sql)) ) {
         message_die(NUKE_GENERAL_ERROR, "Unable to retrieve game AND score data", '', __LINE__, __FILE__, $sql);
@@ -141,7 +141,7 @@ while( $row = $nuke_db->sql_fetchrow($result) ) {
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-        $template->assign_block_vars('gamerow', array(
+        $template_nuke->assign_block_vars('gamerow', array(
                 'GAMENAME' => $row['game_name'],
                 'GAMEPIC' => ( $row['game_pic'] != '' ) ? "<a href='" . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . "'><img src='".$phpbb2_root_path ."games/pics/" . $row['game_pic'] . "' align='absmiddle' border='0' width='30' height='30' alt='" . $row['game_name'] . "' ></a>" : '' ,
                 'GAMESET' => ( $row['game_set'] != 0  ) ? $lang['game_actual_nbset'] . $row['game_set'] : '',
@@ -155,22 +155,22 @@ while( $row = $nuke_db->sql_fetchrow($result) ) {
                 'GAMEID' => $row['game_id'],
                 'DATEHIGH' => "<nobr>" . create_date( $board_config['default_dateformat'] , $row['game_highdate'] , $board_config['board_timezone'] ) . "</nobr>",
                 'YOURDATEHIGH' => "<nobr>" . create_date( $board_config['default_dateformat'] , $row['score_date'] , $board_config['board_timezone'] ) . "</nobr>",
-                'IMGFIRST' => ( $row['game_highuser'] == $userdata['user_id'] ) ? "&nbsp;&nbsp;<img src='".$phpbb2_root_path ."templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
+                'IMGFIRST' => ( $row['game_highuser'] == $nuke_userdata['user_id'] ) ? "&nbsp;&nbsp;<img src='".$phpbb2_root_path ."templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
                 'ADD_FAV' => ($arcade_config['use_fav_category'])?'<td class="row1" width="25" align="center" valign="center"><a href="' . append_sid("arcade.$phpEx?favori=" . $row['game_id'] ) .'"><img src="modules/Forums/templates/subSilver/images/favs.gif" border=0 alt="'.$lang['add_fav'].'"></a></td>':'',
                 'GAMEPOPUPLINK' => "<a href='javascript:Arcade_Popup(\"".append_sid("gamespopup.$phpEx?gid=".$row['game_id'] )."\", \"New_Window\",\"".$row['game_width']."\",\"".$row['game_height']."\", \"no\")'>New Window</a>",
                 'GAMELINK' => '<nobr><a href="' . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . '">' . $row['game_name'] . '</a></nobr> ' )
         );
 
         if ( $row['game_highscore'] !=0 ) {
-                $template->assign_block_vars('gamerow.recordrow',array());
+                $template_nuke->assign_block_vars('gamerow.recordrow',array());
         }
 
         if ( $row['score_game'] !=0 ) {
-                $template->assign_block_vars('gamerow.yourrecordrow',array());
+                $template_nuke->assign_block_vars('gamerow.yourrecordrow',array());
         }
         else
         {
-            $template->assign_block_vars('gamerow.playrecordrow',array()) ;
+            $template_nuke->assign_block_vars('gamerow.playrecordrow',array()) ;
         }
          }
 }
@@ -179,7 +179,7 @@ while( $row = $nuke_db->sql_fetchrow($result) ) {
 //Sets the number of total search results to be displayed.
 $l_search_matches = ( $total_match_count == 1 ) ? sprintf($lang['Found_search_match'], $total_match_count) : sprintf($lang['Found_search_matches'], $total_match_count);
 
-$template->assign_block_vars('arcade_search', array(
+$template_nuke->assign_block_vars('arcade_search', array(
                 'L_SEARCH_MATCHES' => $l_search_matches));
 
 
@@ -190,8 +190,8 @@ $template->assign_block_vars('arcade_search', array(
 include($phpbb2_root_path . 'headingarcade.'.$phpEx);
 include($phpbb2_root_path . 'whoisplaying.'.$phpEx);
 $page_title = $lang['arcade'];
-include('includes/page_header.'.$phpEx);
-$template->pparse('body');
+include('includes/nuke_page_header.'.$phpEx);
+$template_nuke->pparse('body');
 include('includes/page_tail.'.$phpEx);
 
 }
@@ -207,11 +207,11 @@ $arcade_config = read_arcade_config();
 //Total number of Newest Games to display
 $total_match_count = 25;
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         'body' => 'arcade_body.tpl')
 );
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'URL_ARCADE' => '<nobr><a class="cattitle" href="' . append_sid("arcade.$phpEx") . '">' . $lang['lib_arcade'] . '</a></nobr> ',
         'URL_BESTSCORES' => '<nobr><a class="cattitle" href="' . append_sid("toparcade.$phpEx") . '">' . $lang['best_scores'] . '</a></nobr> ',
         'URL_SCOREBOARD' => '<nobr><a class="cattitle" href="' . append_sid("scoreboard.$phpEx?gid=$gid") . '">' . $lang['scoreboard'] . '</a></nobr> ',
@@ -228,7 +228,7 @@ $template->assign_vars(array(
         'L_ARCADE' => $lang['lib_arcade'])
 );
 
-$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . NUKE_GAMES_TABLE . " g LEFT JOIN " . NUKE_USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . NUKE_SCORES_TABLE . " s ON s.game_id = g.game_id AND s.user_id = " . $userdata['user_id'] . " ORDER BY g.game_order DESC LIMIT 0, $total_match_count";
+$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . NUKE_GAMES_TABLE . " g LEFT JOIN " . NUKE_USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . NUKE_SCORES_TABLE . " s ON s.game_id = g.game_id AND s.user_id = " . $nuke_userdata['user_id'] . " ORDER BY g.game_order DESC LIMIT 0, $total_match_count";
 
 if( !($result = $nuke_db->sql_query($sql)) ) {
         message_die(NUKE_GENERAL_ERROR, "Unable to retrieve game AND score data", '', __LINE__, __FILE__, $sql);
@@ -243,7 +243,7 @@ while( $row = $nuke_db->sql_fetchrow($result) ) {
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-        $template->assign_block_vars('gamerow', array(
+        $template_nuke->assign_block_vars('gamerow', array(
                 'GAMENAME' => $row['game_name'],
                 'GAMEPIC' => ( $row['game_pic'] != '' ) ? "<a href='" . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . "'><img src='".$phpbb2_root_path ."games/pics/" . $row['game_pic'] . "' align='absmiddle' border='0' width='30' height='30' alt='" . $row['game_name'] . "' ></a>" : '' ,
                 'GAMESET' => ( $row['game_set'] != 0  ) ? $lang['game_actual_nbset'] . $row['game_set'] : '',
@@ -257,22 +257,22 @@ while( $row = $nuke_db->sql_fetchrow($result) ) {
                 'GAMEID' => $row['game_id'],
                 'DATEHIGH' => "<nobr>" . create_date( $board_config['default_dateformat'] , $row['game_highdate'] , $board_config['board_timezone'] ) . "</nobr>",
                 'YOURDATEHIGH' => "<nobr>" . create_date( $board_config['default_dateformat'] , $row['score_date'] , $board_config['board_timezone'] ) . "</nobr>",
-                'IMGFIRST' => ( $row['game_highuser'] == $userdata['user_id'] ) ? "&nbsp;&nbsp;<img src='".$phpbb2_root_path ."templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
+                'IMGFIRST' => ( $row['game_highuser'] == $nuke_userdata['user_id'] ) ? "&nbsp;&nbsp;<img src='".$phpbb2_root_path ."templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
                 'ADD_FAV' => ($arcade_config['use_fav_category'])?'<td class="row1" width="25" align="center" valign="center"><a href="' . append_sid("arcade.$phpEx?favori=" . $row['game_id'] ) .'"><img src="modules/Forums/templates/subSilver/images/favs.gif" border=0 alt="'.$lang['add_fav'].'"></a></td>':'',
                 'GAMEPOPUPLINK' => "<a href='javascript:Arcade_Popup(\"".append_sid("gamespopup.$phpEx?gid=".$row['game_id'] )."\", \"New_Window\",\"".$row['game_width']."\",\"".$row['game_height']."\", \"no\")'>New Window</a>",
                 'GAMELINK' => '<nobr><a href="' . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . '">' . $row['game_name'] . '</a></nobr> ' )
         );
 
         if ( $row['game_highscore'] !=0 ) {
-                $template->assign_block_vars('gamerow.recordrow',array());
+                $template_nuke->assign_block_vars('gamerow.recordrow',array());
         }
 
         if ( $row['score_game'] !=0 ) {
-                $template->assign_block_vars('gamerow.yourrecordrow',array());
+                $template_nuke->assign_block_vars('gamerow.yourrecordrow',array());
         }
         else
         {
-            $template->assign_block_vars('gamerow.playrecordrow',array()) ;
+            $template_nuke->assign_block_vars('gamerow.playrecordrow',array()) ;
         }
          }
 
@@ -281,7 +281,7 @@ while( $row = $nuke_db->sql_fetchrow($result) ) {
 //Sets the number of total search results to be displayed.
 $l_search_matches = ( $total_match_count == 1 ) ? sprintf($lang['Found_search_match'], $total_match_count) : sprintf($lang['Found_search_matches'], $total_match_count);
 
-$template->assign_block_vars('arcade_search', array(
+$template_nuke->assign_block_vars('arcade_search', array(
                 'L_SEARCH_MATCHES' => $l_search_matches));
 
 
@@ -292,8 +292,8 @@ $template->assign_block_vars('arcade_search', array(
 include($phpbb2_root_path . 'headingarcade.'.$phpEx);
 include($phpbb2_root_path . 'whoisplaying.'.$phpEx);
 $page_title = $lang['arcade'];
-include('includes/page_header.'.$phpEx);
-$template->pparse('body');
+include('includes/nuke_page_header.'.$phpEx);
+$template_nuke->pparse('body');
 include('includes/page_tail.'.$phpEx);
 
 }
@@ -366,14 +366,14 @@ switch ( $arcade_config['game_order']) {
 }
 
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         'body' => 'arcade_body.tpl')
 );
 
-$template->assign_block_vars('arcade_search', array(
+$template_nuke->assign_block_vars('arcade_search', array(
                 'L_SEARCH_MATCHES' => $l_search_matches));
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'URL_ARCADE' => '<nobr><a class="cattitle" href="' . append_sid("arcade.$phpEx") . '">' . $lang['lib_arcade'] . '</a></nobr> ',
         'URL_BESTSCORES' => '<nobr><a class="cattitle" href="' . append_sid("toparcade.$phpEx") . '">' . $lang['best_scores'] . '</a></nobr> ',
         'URL_SCOREBOARD' => '<nobr><a class="cattitle" href="' . append_sid("scoreboard.$phpEx?gid=$gid") . '">' . $lang['scoreboard'] . '</a></nobr> ',
@@ -390,7 +390,7 @@ $template->assign_vars(array(
         'L_ARCADE' => $lang['lib_arcade'])
 );
 
-$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . NUKE_GAMES_TABLE . " g LEFT JOIN " . NUKE_USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . NUKE_SCORES_TABLE . " s ON s.game_id = g.game_id AND s.user_id = " . $userdata['user_id'] . " $where_search ORDER BY $order_by";
+$sql = "SELECT g.*, u.username, u.user_id, s.score_game, s.score_date FROM " . NUKE_GAMES_TABLE . " g LEFT JOIN " . NUKE_USERS_TABLE . " u ON g.game_highuser = u.user_id LEFT JOIN " . NUKE_SCORES_TABLE . " s ON s.game_id = g.game_id AND s.user_id = " . $nuke_userdata['user_id'] . " $where_search ORDER BY $order_by";
 
 if( !($result = $nuke_db->sql_query($sql)) ) {
         message_die(NUKE_GENERAL_ERROR, "Could not read from the games/users table", '', __LINE__, __FILE__, $sql);
@@ -404,7 +404,7 @@ while( $row = $nuke_db->sql_fetchrow($result) ) {
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-        $template->assign_block_vars('gamerow', array(
+        $template_nuke->assign_block_vars('gamerow', array(
                 'GAMENAME' => $row['game_name'],
                 'GAMEPIC' => ( $row['game_pic'] != '' ) ? "<a href='" . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . "'><img src='".$phpbb2_root_path ."games/pics/" . $row['game_pic'] . "' align='absmiddle' border='0' width='30' height='30' alt='" . $row['game_name'] . "' ></a>" : '' ,
                 'GAMESET' => ( $row['game_set'] != 0  ) ? $lang['game_actual_nbset'] . $row['game_set'] : '',
@@ -418,22 +418,22 @@ while( $row = $nuke_db->sql_fetchrow($result) ) {
                 'GAMEID' => $row['game_id'],
                 'DATEHIGH' => "<nobr>" . create_date( $board_config['default_dateformat'] , $row['game_highdate'] , $board_config['board_timezone'] ) . "</nobr>",
                 'YOURDATEHIGH' => "<nobr>" . create_date( $board_config['default_dateformat'] , $row['score_date'] , $board_config['board_timezone'] ) . "</nobr>",
-                'IMGFIRST' => ( $row['game_highuser'] == $userdata['user_id'] ) ? "&nbsp;&nbsp;<img src='".$phpbb2_root_path ."templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
+                'IMGFIRST' => ( $row['game_highuser'] == $nuke_userdata['user_id'] ) ? "&nbsp;&nbsp;<img src='".$phpbb2_root_path ."templates/" . $theme['template_name'] . "/images/couronne.gif' align='absmiddle'>" : "" ,
                 'ADD_FAV' => ($arcade_config['use_fav_category'])?'<td class="row1" width="25" align="center" valign="center"><a href="' . append_sid("arcade.$phpEx?favori=" . $row['game_id'] ) .'"><img src="modules/Forums/templates/subSilver/images/favs.gif" border=0 alt="'.$lang['add_fav'].'"></a></td>':'',
                 'GAMEPOPUPLINK' => "<a href='javascript:Arcade_Popup(\"".append_sid("gamespopup.$phpEx?gid=".$row['game_id'] )."\", \"New_Window\",\"".$row['game_width']."\",\"".$row['game_height']."\", \"no\")'>New Window</a>",
                 'GAMELINK' => '<nobr><a href="' . append_sid("games.$phpEx?gid=" . $row['game_id'] ) . '">' . $row['game_name'] . '</a></nobr> ' )
         );
 
         if ( $row['game_highscore'] !=0 ) {
-                $template->assign_block_vars('gamerow.recordrow',array());
+                $template_nuke->assign_block_vars('gamerow.recordrow',array());
         }
 
         if ( $row['score_game'] !=0 ) {
-                $template->assign_block_vars('gamerow.yourrecordrow',array());
+                $template_nuke->assign_block_vars('gamerow.yourrecordrow',array());
         }
         else
         {
-            $template->assign_block_vars('gamerow.playrecordrow',array());
+            $template_nuke->assign_block_vars('gamerow.playrecordrow',array());
         }
 }
 
@@ -442,8 +442,8 @@ while( $row = $nuke_db->sql_fetchrow($result) ) {
 include($phpbb2_root_path . 'headingarcade.'.$phpEx);
 include($phpbb2_root_path . 'whoisplaying.'.$phpEx);
 $page_title = $lang['arcade'];
-include('includes/page_header.'.$phpEx);
-$template->pparse('body');
+include('includes/nuke_page_header.'.$phpEx);
+$template_nuke->pparse('body');
 include('includes/page_tail.'.$phpEx);
 
 ?>

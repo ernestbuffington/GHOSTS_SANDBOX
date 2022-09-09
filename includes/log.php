@@ -37,15 +37,15 @@ function log_write($file, $output, $title = 'General Error') {
     global $cookie, $identify;
 
     if(isset($cookie) && is_array($cookie)) {
-        $username = $cookie[1];
+        $nuke_username = $cookie[1];
     } else {
         if(isset($_COOKIE['user']) && !empty($_COOKIE['user'])) {
             $ucookie = explode(':', base64_decode($_COOKIE['user']));
         }
         if(isset($ucookie) && is_array($ucookie) && !empty($ucookie[1])) {
-            $username = $ucookie[1];
+            $nuke_username = $ucookie[1];
         } else {
-            $username = _ANONYMOUS;
+            $nuke_username = _ANONYMOUS;
         }
     }
     $ip = GetHostByName($identify->get_ip());
@@ -61,7 +61,7 @@ function log_write($file, $output, $title = 'General Error') {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-    $wdata .= "User: ".UsernameColor($username)."\n";
+    $wdata .= "User: ".UsernameColor($nuke_username)."\n";
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/

@@ -14,7 +14,7 @@ if (!defined('MODULE_FILE'))
 
 function _file_repository_index()
 {
-	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $themes, $admin, $user;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $themes, $admin, $nuke_user;
 	OpenTable();
 	echo '<br />';
 	_index_navigation_header();

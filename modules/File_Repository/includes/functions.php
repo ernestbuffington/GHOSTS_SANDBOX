@@ -550,9 +550,9 @@ function _category_parents_name($parentid,$title='',$did='',$version='',$color=f
 
 function _check_users_permissions($section)
 {
-	global $settings, $admin, $user;
+	global $settings, $admin, $nuke_user;
 	$priv = $section - 2;
-	if (($section == 0) || ($section == 1 AND is_user($user)) || ($section == 2 && is_admin($admin)) || ($section > 2 && _check_users_group($priv)) || is_admin($admin)):
+	if (($section == 0) || ($section == 1 AND is_user($nuke_user)) || ($section == 2 && is_admin($admin)) || ($section > 2 && _check_users_group($priv)) || is_admin($admin)):
 		$permission = true;
 	else:
 		$permission = false;
@@ -562,12 +562,12 @@ function _check_users_permissions($section)
 
 function _check_users_group($gid) 
 {
-	global $prefix, $nuke_db, $userinfo, $module_name, $user;
+	global $prefix, $nuke_db, $nuke_userinfo, $module_name, $nuke_user;
 	if (is_mod_admin($module_name)) 
 		return true;
-	elseif (is_user($user)) 
+	elseif (is_user($nuke_user)) 
 	{
-		$guid = $userinfo['user_id'];
+		$guid = $nuke_userinfo['user_id'];
 		$result = $nuke_db->sql_query("SELECT COUNT(*) FROM `"._USER_GROUP_TABLE."` WHERE group_id='".$gid."' AND user_id='".$guid."' AND user_pending != '1'");
 		list($ingroup) = $nuke_db->sql_fetchrow($result);
 		if ($ingroup > 0) 
@@ -1046,7 +1046,7 @@ function _image_viewer($slideshow)
 
 function _index_navigation_header()
 {
-	global $nuke_db, $admin_file, $lang_new, $module_name, $admin, $settings, $bgcolor, $userinfo;		
+	global $nuke_db, $admin_file, $lang_new, $module_name, $admin, $settings, $bgcolor, $nuke_userinfo;		
 	echo '<table style="width: 100%;" border="0" cellpadding="4" cellspacing="1" class="forumline">'."\n";
 	echo '	<tr'._bgColor(2).'>'."\n";
 	echo '	  <td'._tdcss(false,'center',_sh(),6).'>'._suh($lang_new[$module_name]['MODULE']).'</td>'."\n";
@@ -1188,7 +1188,7 @@ function _index_navigation_header()
 	echo '  </tr>'."\n";
 	echo '</table>'."\n";
 
-	$sql 	 = "SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isapproved` = 0 && `isbroken` = 0 && `suid` = '".$userinfo['user_id']."' ORDER BY `date`";
+	$sql 	 = "SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `isapproved` = 0 && `isbroken` = 0 && `suid` = '".$nuke_userinfo['user_id']."' ORDER BY `date`";
 	$result  = $nuke_db->sql_query($sql);
 	$waiting = $nuke_db->sql_numrows($result);
 
@@ -1534,7 +1534,7 @@ function _textarea($n,$v,$r=false)
 
 function _timestamp($date,$format='M d, Y g:i a') 
 {
-	global $userinfo;
+	global $nuke_userinfo;
 	$date = @date_create($date);
 	return _sut(@date_format($date,$format));
 }

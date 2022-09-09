@@ -14,7 +14,7 @@ if (!defined('MODULE_FILE'))
 
 function _show_list_newdownloads()
 {
-	global $nuke_db, $admin_file, $lang_new, $module_name, $userinfo, $settings, $admin, $user;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $nuke_userinfo, $settings, $admin, $nuke_user;
 	
 	$counter = 0;
 	$allweekdownloads = 0;
@@ -79,7 +79,7 @@ function _show_list_newdownloads()
 
 function _show_list_newdownloads_dates()
 {
-	global $nuke_db, $admin_file, $lang_new, $module_name, $userinfo, $settings, $themes, $admin, $user;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $nuke_userinfo, $settings, $themes, $admin, $nuke_user;
 	
 	OpenTable();
 	_index_navigation_header();

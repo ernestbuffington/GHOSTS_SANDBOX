@@ -37,7 +37,7 @@ if( !empty($setmodules) )
 //
 // Load default header
 //
-$no_page_header = TRUE;
+$no_nuke_page_header = TRUE;
 $phpbb2_root_path = './../';
 require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
@@ -130,9 +130,9 @@ if ( isset($HTTP_POST_VARS['submit']) )
                 }
 
                 $email_headers = 'X-AntiAbuse: Board servername - ' . $board_config['server_name'] . "\n";
-                $email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
-                $email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
-                $email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
+                $email_headers .= 'X-AntiAbuse: User_id - ' . $nuke_userdata['user_id'] . "\n";
+                $email_headers .= 'X-AntiAbuse: Username - ' . $nuke_userdata['username'] . "\n";
+                $email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($nuke_user_ip) . "\n";
 
                 $emailer->use_template('admin_send_email');
                 $emailer->email_address($board_config['board_email']);
@@ -153,13 +153,13 @@ if ( isset($HTTP_POST_VARS['submit']) )
 
 if ( $error )
 {
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 'reg_header' => 'error_body.tpl')
         );
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'ERROR_MESSAGE' => $error_msg)
         );
-        $template->assign_var_from_handle('ERROR_BOX', 'reg_header');
+        $template_nuke->assign_var_from_handle('ERROR_BOX', 'reg_header');
 }
 
 //
@@ -188,13 +188,13 @@ $select_list .= '</select>';
 //
 // Generate page
 //
-include('./page_header_admin.'.$phpEx);
+include('./nuke_page_header_admin.'.$phpEx);
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         'body' => 'admin/user_email_body.tpl')
 );
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'MESSAGE' => $message,
         'SUBJECT' => $subject,
 
@@ -211,8 +211,8 @@ $template->assign_vars(array(
         'S_GROUP_SELECT' => $select_list)
 );
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

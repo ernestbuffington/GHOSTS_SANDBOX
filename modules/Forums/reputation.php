@@ -36,8 +36,8 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 include($phpbb2_root_path . 'reputation_common.'.$phpEx);
 include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_reputation.' . $phpEx);
 
-$userdata = session_pagestart($user_ip, NUKE_PAGE_REPUTATION);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_REPUTATION);
+init_userprefs($nuke_userdata);
 
 if ( empty($HTTP_GET_VARS["a"]) )
 {
@@ -47,15 +47,15 @@ $action = $HTTP_GET_VARS["a"];
 
 $page_title = $lang['Reputation'];
 $gen_simple_header = TRUE;
-include('includes/page_header.'.$phpEx);
+include('includes/nuke_page_header.'.$phpEx);
 include('includes/functions_reputation.'.$phpEx);
 include('includes/bbcode.'.$phpEx);
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         'body' => 'reputation.tpl')
 );
 
-if ( !$userdata['session_logged_in'] )
+if ( !$nuke_userdata['session_logged_in'] )
 {
   $message = $lang['Guests_cant_view_history'];
   message_die(NUKE_GENERAL_MESSAGE, $message);
@@ -81,7 +81,7 @@ switch( $action  )
       message_die(NUKE_GENERAL_MESSAGE, $lang['No_check_code']);
     }
 
-    $userid = intval($HTTP_POST_VARS['user_id_to_give']);
+    $nuke_userid = intval($HTTP_POST_VARS['user_id_to_give']);
     $postid = intval($HTTP_POST_VARS['post_id_to_give']);
     $repsum = intval($HTTP_POST_VARS['rep_sum_to_give']);
     $repneg = intval($HTTP_POST_VARS['rep_neg_to_give']);
@@ -89,7 +89,7 @@ switch( $action  )
     $reptime = time();
     $ccode = htmlspecialchars($HTTP_POST_VARS['ccode']);
 
-    if ($repsum > $userdata['user_reputation'])
+    if ($repsum > $nuke_userdata['user_reputation'])
     {
       message_die(NUKE_GENERAL_ERROR, $lang['Cant_give_more_than_have']);
     }
@@ -118,20 +118,20 @@ switch( $action  )
       message_die(NUKE_GENERAL_MESSAGE, $lang['Wrong_check_code']);
     }
 
-    if ( $userdata['user_level'] != NUKE_ADMIN && $userdata['user_level'] != NUKE_MOD )
+    if ( $nuke_userdata['user_level'] != NUKE_ADMIN && $nuke_userdata['user_level'] != NUKE_MOD )
     {
       // Is the user the same as the last one the GIVER has given the reputation to?
       // And get the last reputation given time of the GIVER to compute flood time
       $sql = "SELECT r.user_id, r.user_id_2, r.rep_time
           FROM " . NUKE_REPUTATION_TABLE . " AS r
-          WHERE r.user_id_2 = " . $userdata['user_id'] . "
+          WHERE r.user_id_2 = " . $nuke_userdata['user_id'] . "
           ORDER BY r.rep_time DESC LIMIT 1";
       if ( !($result = $nuke_db->sql_query($sql)) )
       {
         message_die(NUKE_GENERAL_ERROR, "Could not obtain user", '', __LINE__, __FILE__, $sql);
       }
       $row = $nuke_db->sql_fetchrow($result);
-      if ($row['user_id'] == $userid)
+      if ($row['user_id'] == $nuke_userid)
       {
         message_die(NUKE_GENERAL_MESSAGE, $lang['Cant_give_the_same_user']);
       }
@@ -143,21 +143,21 @@ switch( $action  )
 
     $sql = "SELECT u.user_id, u.username, u.user_reputation
         FROM " . NUKE_USERS_TABLE . " AS u
-        WHERE u.user_id = " . $userid;
+        WHERE u.user_id = " . $nuke_userid;
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
       message_die(NUKE_GENERAL_ERROR, "Could not obtain user", '', __LINE__, __FILE__, $sql);
     }
     $row = $nuke_db->sql_fetchrow($result);
-    if ($userdata['user_reputation'] > $row['user_reputation'])
+    if ($nuke_userdata['user_reputation'] > $row['user_reputation'])
     {
-      if ($userdata['user_reputation'] >= $rep_config['medal1_to_earn']) // >= medal1?
+      if ($nuke_userdata['user_reputation'] >= $rep_config['medal1_to_earn']) // >= medal1?
       {
         $mul = 1.4;
-      } else if ($userdata['user_reputation'] >= $rep_config['medal2_to_earn']) // >= medal2 && < medal1
+      } else if ($nuke_userdata['user_reputation'] >= $rep_config['medal2_to_earn']) // >= medal2 && < medal1
       {
         $mul = 1.3;
-      } else if ($userdata['user_reputation'] >= $rep_config['medal3_to_earn']) // >=medal3 && <medal2 && <medal1
+      } else if ($nuke_userdata['user_reputation'] >= $rep_config['medal3_to_earn']) // >=medal3 && <medal2 && <medal1
       {
         $mul = 1.2;
       } else
@@ -173,14 +173,14 @@ switch( $action  )
     $sign_rep = ($repneg == 0) ? '+ ' . $repsum_mul : '- ' . $repsum_mul;
     $sql = "INSERT INTO " . NUKE_REPUTATION_TABLE . "
         (user_id, user_id_2, post_id, rep_sum, rep_neg,  rep_comment, rep_time)
-        VALUES ('$userid', '$userdata[user_id]', '$postid', '$repsum_mul', '$repneg', '$repcom', '$reptime')";
+        VALUES ('$nuke_userid', '$nuke_userdata[user_id]', '$postid', '$repsum_mul', '$repneg', '$repcom', '$reptime')";
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
       message_die(NUKE_GENERAL_ERROR, "Could not insert reputation for the user", '', __LINE__, __FILE__, $sql);
     }
     $sql = "UPDATE " . NUKE_USERS_TABLE . "
         SET user_reputation = user_reputation $sign_rep
-        WHERE user_id = " . $userid;
+        WHERE user_id = " . $nuke_userid;
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
       message_die(NUKE_GENERAL_ERROR, "Could not update reputation for the user", '', __LINE__, __FILE__, $sql);
@@ -192,7 +192,7 @@ switch( $action  )
     }
     $sql = "UPDATE " . NUKE_USERS_TABLE . "
         SET user_reputation = user_reputation - $repsum
-        WHERE user_id = " . $userdata[user_id];
+        WHERE user_id = " . $nuke_userdata[user_id];
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
       message_die(NUKE_GENERAL_ERROR, "Could not update reputation for the user", '', __LINE__, __FILE__, $sql);
@@ -200,19 +200,19 @@ switch( $action  )
 
     if ($rep_config['pm_notify'] != 0)
     {
-      r_send_pm($userdata['user_id'], $userid, $repsum_mul, $user_ip);
+      r_send_pm($nuke_userdata['user_id'], $nuke_userid, $repsum_mul, $nuke_user_ip);
     }
 
-    $msg = $lang['Reputation_has_given'] . '<br /><br />' . sprintf($lang['Click_here_return_rep'], '<a href="' . append_sid("reputation.$phpEx?a=stats&amp;u=".$userid) . '">', '</a> ') . '<br /><br />' . sprintf('%s'.$lang['Close_window'].'%s', '<a href="javascript:self.close();void(0);">', '</a>');
-    //$msg = $lang['Reputation_has_given'] . '<br /><br />' . sprintf($lang['Click_here_return_rep'], '<a href="modules.php?name=Forums&amp;file=reputation&amp;a=stats&amp;u=$userid)">', '</a> ') . '<br /><br />' . sprintf('%s'.$lang['Close_window'].'%s', '<a href="javascript:self.close();void(0);">', '</a>');
+    $msg = $lang['Reputation_has_given'] . '<br /><br />' . sprintf($lang['Click_here_return_rep'], '<a href="' . append_sid("reputation.$phpEx?a=stats&amp;u=".$nuke_userid) . '">', '</a> ') . '<br /><br />' . sprintf('%s'.$lang['Close_window'].'%s', '<a href="javascript:self.close();void(0);">', '</a>');
+    //$msg = $lang['Reputation_has_given'] . '<br /><br />' . sprintf($lang['Click_here_return_rep'], '<a href="modules.php?name=Forums&amp;file=reputation&amp;a=stats&amp;u=$nuke_userid)">', '</a> ') . '<br /><br />' . sprintf('%s'.$lang['Close_window'].'%s', '<a href="javascript:self.close();void(0);">', '</a>');
     message_die(NUKE_GENERAL_MESSAGE, $msg);
     break;
 
   case 'add':
-    if ($userdata['user_reputation'] == 0)
+    if ($nuke_userdata['user_reputation'] == 0)
     {
       message_die(NUKE_GENERAL_MESSAGE, $lang['You_have_zero_rep']);
-    } else if ($userdata['user_reputation'] < 0)
+    } else if ($nuke_userdata['user_reputation'] < 0)
     {
       message_die(NUKE_GENERAL_MESSAGE, $lang['You_have_neg_rep']);
     }
@@ -220,10 +220,10 @@ switch( $action  )
     {
       message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_id_specified']);
     }
-    $userid = intval($HTTP_GET_VARS[NUKE_POST_USERS_URL]);
+    $nuke_userid = intval($HTTP_GET_VARS[NUKE_POST_USERS_URL]);
     $sql = "SELECT u.user_id, u.username
         FROM " . NUKE_USERS_TABLE . " AS u
-        WHERE u.user_id = " . $userid;
+        WHERE u.user_id = " . $nuke_userid;
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
       message_die(NUKE_GENERAL_ERROR, "Could not obtain user", '', __LINE__, __FILE__, $sql);
@@ -232,7 +232,7 @@ switch( $action  )
     {
       message_die(NUKE_GENERAL_MESSAGE, $lang['No_such_user']);
     } else {
-      $username = $row['username'];
+      $nuke_username = $row['username'];
     }
     if ( empty($HTTP_GET_VARS[NUKE_POST_POST_URL]) )
     {
@@ -242,27 +242,27 @@ switch( $action  )
     {
       message_die(NUKE_GENERAL_MESSAGE, $lang['No_check_code']);
     }
-    if ($row['user_id'] == $userdata['user_id'])
+    if ($row['user_id'] == $nuke_userdata['user_id'])
     {
       message_die(NUKE_GENERAL_MESSAGE, $lang['Cant_give_yourself']);
     }
     $ccode = $HTTP_GET_VARS["c"];
     $postid = intval($HTTP_GET_VARS[NUKE_POST_POST_URL]);
 
-    if ( $userdata['user_level'] != NUKE_ADMIN && $userdata['user_level'] != NUKE_MOD )
+    if ( $nuke_userdata['user_level'] != NUKE_ADMIN && $nuke_userdata['user_level'] != NUKE_MOD )
     {
       // Is the user the same as the last one the GIVER has given the reputation to?
       // And get the last reputation given time of the GIVER to compute flood time
       $sql = "SELECT r.user_id, r.user_id_2, r.rep_time
           FROM " . NUKE_REPUTATION_TABLE . " AS r
-          WHERE r.user_id_2 = " . $userdata['user_id'] . "
+          WHERE r.user_id_2 = " . $nuke_userdata['user_id'] . "
           ORDER BY r.rep_time DESC LIMIT 1";
       if ( !($result = $nuke_db->sql_query($sql)) )
       {
         message_die(NUKE_GENERAL_ERROR, "Could not obtain user", '', __LINE__, __FILE__, $sql);
       }
       $row = $nuke_db->sql_fetchrow($result);
-      if ($row['user_id'] == $userid)
+      if ($row['user_id'] == $nuke_userid)
       {
         message_die(NUKE_GENERAL_MESSAGE, $lang['Cant_give_the_same_user']);
       }
@@ -286,18 +286,18 @@ switch( $action  )
       message_die(NUKE_GENERAL_MESSAGE, $lang['Wrong_check_code']);
     }
 
-    $template->assign_block_vars("rep_add", array(
+    $template_nuke->assign_block_vars("rep_add", array(
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-      "USERNAME" => UsernameColor($username),
+      "USERNAME" => UsernameColor($nuke_username),
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-      "U_USERID" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $userid),
+      "U_USERID" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $nuke_userid),
       "STATREP_COLOR" => ($rep_sum >= 0) ? "green" : "red",
-      "REPSUM" => round($userdata['user_reputation'],1),
-      "USER_ID_TO_GIVE" => $userid,
+      "REPSUM" => round($nuke_userdata['user_reputation'],1),
+      "USER_ID_TO_GIVE" => $nuke_userid,
       "POST_ID_TO_GIVE" => $postid,
 
       "L_REPUTATIONGIVING" => $lang['Rep_giving'],
@@ -316,11 +316,11 @@ switch( $action  )
 
     if ($rep_config['default_amount'] > 0)
     {
-      $template->assign_vars(array(
+      $template_nuke->assign_vars(array(
         "SIMPLE_HIDDEN" => '<input type="hidden" name="rep_sum_to_give" value="' . $rep_config['default_amount'] . '">'
       ));
     } else {
-      $template->assign_block_vars("rep_add.switch_adv_mode", array(
+      $template_nuke->assign_block_vars("rep_add.switch_adv_mode", array(
       ));
     }
     break;
@@ -402,7 +402,7 @@ switch( $action  )
     $active_user_count_sum = $row['count_sum'];
 
     $pagination = generate_pagination("reputation.$phpEx?a=globalstats", $total_count, 15, $start). '&nbsp;';
-    $template->assign_block_vars("rep_globalstats", array(
+    $template_nuke->assign_block_vars("rep_globalstats", array(
       "L_WHO" => $lang['Who'],
       "L_WHOM" => $lang['Whom'],
       "L_DIR" => $lang['Dir'],
@@ -484,7 +484,7 @@ switch( $action  )
       // Start auth check
       //
       $is_auth = array();
-      $is_auth = auth(NUKE_AUTH_ALL, $row['forum_id'], $userdata);
+      $is_auth = auth(NUKE_AUTH_ALL, $row['forum_id'], $nuke_userdata);
 
       if( !$is_auth['auth_view'] || !$is_auth['auth_read'] )
       {
@@ -495,7 +495,7 @@ switch( $action  )
       // End auth check
       //
 
-      $template->assign_block_vars("rep_globalstats.row", array(
+      $template_nuke->assign_block_vars("rep_globalstats.row", array(
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -519,7 +519,7 @@ switch( $action  )
 
   case 'stats':
   default:
-    if ( $rep_config['show_stats_to_mods'] == 1 && $userdata['user_level'] != NUKE_ADMIN && $userdata['user_level'] != NUKE_MOD )
+    if ( $rep_config['show_stats_to_mods'] == 1 && $nuke_userdata['user_level'] != NUKE_ADMIN && $nuke_userdata['user_level'] != NUKE_MOD )
     {
       message_die(NUKE_GENERAL_MESSAGE, $lang['Stats_only_for_admins']);
     }
@@ -528,10 +528,10 @@ switch( $action  )
       message_die(NUKE_GENERAL_MESSAGE, $lang['No_user_id_specified']);
     }
     $start = ( isset($HTTP_GET_VARS['start']) ) ? intval($HTTP_GET_VARS['start']) : 0;
-    $userid = intval($HTTP_GET_VARS[NUKE_POST_USERS_URL]);
+    $nuke_userid = intval($HTTP_GET_VARS[NUKE_POST_USERS_URL]);
     $sql = "SELECT u.user_id, u.username, u.user_reputation
         FROM " . NUKE_USERS_TABLE . " AS u
-        WHERE u.user_id = " . $userid . "
+        WHERE u.user_id = " . $nuke_userid . "
         GROUP BY u.user_id";
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
@@ -541,13 +541,13 @@ switch( $action  )
     {
       message_die(NUKE_GENERAL_MESSAGE, $lang['No_such_user']);
     } else {
-      $username = $row['username'];
+      $nuke_username = $row['username'];
       $rep_sum = round($row['user_reputation'],1);
     }
 
     $sql = "SELECT COUNT(user_id) AS total_count
         FROM " . NUKE_REPUTATION_TABLE . " AS r
-        WHERE r.user_id = " . $userid . " OR r.user_id_2 = " . $userid;
+        WHERE r.user_id = " . $nuke_userid . " OR r.user_id_2 = " . $nuke_userid;
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
       message_die(NUKE_GENERAL_ERROR, "Could not obtain reputation stats for this user", '', __LINE__, __FILE__, $sql);
@@ -557,7 +557,7 @@ switch( $action  )
 
     $sql = "SELECT r.*
         FROM " . NUKE_REPUTATION_TABLE . " AS r
-        WHERE r.user_id = " . $userid . " OR r.user_id_2 = " . $userid;
+        WHERE r.user_id = " . $nuke_userid . " OR r.user_id_2 = " . $nuke_userid;
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
       message_die(NUKE_GENERAL_ERROR, "Could not obtain reputation stats for this user", '', __LINE__, __FILE__, $sql);
@@ -571,29 +571,29 @@ switch( $action  )
     $rep_given_poss = 0;  // Кол-во положительных отданных голосов
     while ($row = $nuke_db->sql_fetchrow($result))
     {
-      if ($row['rep_neg'] == 1 && $row['user_id'] == $userid) {
+      if ($row['rep_neg'] == 1 && $row['user_id'] == $nuke_userid) {
         $rep_negs++;
-      } else if ($row['rep_neg'] == 0 && $row['user_id'] == $userid)  {
+      } else if ($row['rep_neg'] == 0 && $row['user_id'] == $nuke_userid)  {
         $rep_poss++;
-      } else if ($row['rep_neg'] == 1 && $row['user_id'] != $userid)  {
+      } else if ($row['rep_neg'] == 1 && $row['user_id'] != $nuke_userid)  {
         $rep_given_sum = $rep_given_sum + $row['rep_sum'];
         $rep_given_negs++;
-      } else if ($row['rep_neg'] == 0 && $row['user_id'] != $userid)  {
+      } else if ($row['rep_neg'] == 0 && $row['user_id'] != $nuke_userid)  {
         $rep_given_sum = $rep_given_sum + $row['rep_sum'];
         $rep_given_poss++;
       }
     }
 
-    $pagination = generate_pagination("reputation.$phpEx?a=stats&amp;" . NUKE_POST_USERS_URL . "=" . $userid . "&amp;", $total_count, 15, $start). '&nbsp;';
-    $template->assign_block_vars("rep_stats", array(
+    $pagination = generate_pagination("reputation.$phpEx?a=stats&amp;" . NUKE_POST_USERS_URL . "=" . $nuke_userid . "&amp;", $total_count, 15, $start). '&nbsp;';
+    $template_nuke->assign_block_vars("rep_stats", array(
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-      "USERNAME" => UsernameColor($username),
+      "USERNAME" => UsernameColor($nuke_username),
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-      "U_USERID" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $userid),
+      "U_USERID" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $nuke_userid),
       "STATREP_COLOR" => ($rep_sum >= 0) ? "green" : "red",
       "STATREP_SUM" => $rep_sum,
       "STATREP_SUMPOS" => $rep_poss,
@@ -634,7 +634,7 @@ switch( $action  )
           t.topic_id = p.topic_id
         LEFT JOIN " . NUKE_FORUMS_TABLE . " AS f ON
           f.forum_id = t.forum_id
-        WHERE r.user_id = " . $userid . " OR r.user_id_2 = " . $userid . "
+        WHERE r.user_id = " . $nuke_userid . " OR r.user_id_2 = " . $nuke_userid . "
         ORDER BY r.rep_time DESC
         LIMIT $start,15";
     if ( !($result = $nuke_db->sql_query($sql)) )
@@ -666,7 +666,7 @@ switch( $action  )
       // Start auth check
       //
       $is_auth = array();
-      $is_auth = auth(NUKE_AUTH_ALL, $row['forum_id'], $userdata);
+      $is_auth = auth(NUKE_AUTH_ALL, $row['forum_id'], $nuke_userdata);
 
       if( !$is_auth['auth_view'] || !$is_auth['auth_read'] )
       {
@@ -675,8 +675,8 @@ switch( $action  )
       }
       //
       // End auth check
-      $template->assign_block_vars("rep_stats.row", array(
-        "ROW" => ($row['user_id'] == $userid) ? "row1" : "row3",
+      $template_nuke->assign_block_vars("rep_stats.row", array(
+        "ROW" => ($row['user_id'] == $nuke_userid) ? "row1" : "row3",
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -698,11 +698,11 @@ switch( $action  )
     break;
 }
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
   "L_CLOSEWINDOW" => $lang['Close_window'],
 ));
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 include('includes/page_tail.'.$phpEx);
 
 ?>

@@ -56,18 +56,18 @@ function Show_CNBYA_menu(){
     CloseTable();
 }
 
-function ya_userCheck($username){
+function ya_userCheck($nuke_username){
     global $stop, $nuke_user_prefix, $nuke_db, $ya_config, $prefix;
 	
 	// Remove any whitespace
-	$username = trim($username);
+	$nuke_username = trim($nuke_username);
 	
-    if (!Validate($username, 'username', '', 1, 1)){
+    if (!Validate($nuke_username, 'username', '', 1, 1)){
         $stop = "<center>"._ERRORINVNICK."</center><br />";
     }
 	
-    if (strlen($username) > $ya_config['nick_max']) $stop = "<center>"._YA_NICKLENGTH."</center>";
-    if (strlen($username) < $ya_config['nick_min']) $stop = "<center>"._YA_NICKLENGTH."</center>";
+    if (strlen($nuke_username) > $ya_config['nick_max']) $stop = "<center>"._YA_NICKLENGTH."</center>";
+    if (strlen($nuke_username) < $ya_config['nick_min']) $stop = "<center>"._YA_NICKLENGTH."</center>";
 	
     $result = $nuke_db->sql_query("SELECT disallow_username FROM ". $prefix ."_bbdisallow");
     $disallowed = $nuke_db->sql_fetchrowset($result);
@@ -83,7 +83,7 @@ function ya_userCheck($username){
 		
 		if (!empty($BadNickList) && is_array($BadNickList)){
 			for($i=0; $i<count($BadNickList); $i++){
-				if (strtolower(trim($BadNickList[$i])) == strtolower($username)){
+				if (strtolower(trim($BadNickList[$i])) == strtolower($nuke_username)){
 					$stop = "<center>"._NAMERESTRICTED."</center><br />";
 					break;
 				}
@@ -91,9 +91,9 @@ function ya_userCheck($username){
 		}
 	}
 	
-    if (strrpos($username,' ') > 0) $stop = "<center>"._NICKNOSPACES."</center>";
-    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT username FROM ".$nuke_user_prefix."_users WHERE username='$username'")) > 0) $stop = "<center>"._NICKTAKEN."</center><br />";
-    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT username FROM ".$nuke_user_prefix."_users_temp WHERE username='$username'")) > 0) $stop = "<center>"._NICKTAKEN."</center><br />";
+    if (strrpos($nuke_username,' ') > 0) $stop = "<center>"._NICKNOSPACES."</center>";
+    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT username FROM ".$nuke_user_prefix."_users WHERE username='$nuke_username'")) > 0) $stop = "<center>"._NICKTAKEN."</center><br />";
+    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT username FROM ".$nuke_user_prefix."_users_temp WHERE username='$nuke_username'")) > 0) $stop = "<center>"._NICKTAKEN."</center><br />";
 	
     return ($stop);
 }
@@ -106,37 +106,37 @@ global $ya_config, $adminmail;
     }
 }
 
-function ya_mailCheck($user_email) {
+function ya_mailCheck($nuke_user_email) {
     global $stop, $nuke_user_prefix, $nuke_db, $ya_config;
 	
-    $user_email = strtolower($user_email);
+    $nuke_user_email = strtolower($nuke_user_email);
 	
-    if ((!$user_email) || (empty($user_email)) || (!preg_match("/^[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,6}$/i", $user_email))) $stop = "<center>"._ERRORINVEMAIL."</center><br />";
+    if ((!$nuke_user_email) || (empty($nuke_user_email)) || (!preg_match("/^[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,6}$/i", $nuke_user_email))) $stop = "<center>"._ERRORINVEMAIL."</center><br />";
 	
     if ($ya_config['bad_mail'] > ""){
         $BadMailList = explode("\n", $ya_config['bad_mail']);
 		
         for($i=0; $i<count($BadMailList); $i++){
-            if (substr($user_email, -strlen(trim($BadMailList[$i]))) == strtolower(trim($BadMailList[$i]))){
+            if (substr($nuke_user_email, -strlen(trim($BadMailList[$i]))) == strtolower(trim($BadMailList[$i]))){
 				$stop = "<center>"._MAILBLOCKED." <strong>".$BadMailList[$i]."</strong></center><br />";
 				break;
 			}
        	}
     }
 	
-    if (strrpos($user_email,' ') > 0) $stop = "<center>"._ERROREMAILSPACES."</center><br />";
-    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT user_email FROM ".$nuke_user_prefix."_users WHERE user_email='$user_email'")) > 0) $stop = "<center>"._EMAILREGISTERED."</center><br />";
-    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT user_email FROM ".$nuke_user_prefix."_users WHERE user_email='".md5($user_email)."'")) > 0) $stop = "<center>"._EMAILNOTUSABLE."</center><br />";
-    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT user_email FROM ".$nuke_user_prefix."_users_temp WHERE user_email='$user_email'")) > 0) $stop = "<center>"._EMAILREGISTERED."</center><br />";
+    if (strrpos($nuke_user_email,' ') > 0) $stop = "<center>"._ERROREMAILSPACES."</center><br />";
+    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT user_email FROM ".$nuke_user_prefix."_users WHERE user_email='$nuke_user_email'")) > 0) $stop = "<center>"._EMAILREGISTERED."</center><br />";
+    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT user_email FROM ".$nuke_user_prefix."_users WHERE user_email='".md5($nuke_user_email)."'")) > 0) $stop = "<center>"._EMAILNOTUSABLE."</center><br />";
+    if ($nuke_db->sql_numrows($nuke_db->sql_query("SELECT user_email FROM ".$nuke_user_prefix."_users_temp WHERE user_email='$nuke_user_email'")) > 0) $stop = "<center>"._EMAILREGISTERED."</center><br />";
     
 	return ($stop);
 }
 
-function ya_passCheck($user_pass1, $user_pass2) {
+function ya_passCheck($nuke_user_pass1, $nuke_user_pass2) {
     global $stop, $ya_config;
-    if (strlen($user_pass1) > $ya_config['pass_max']) $stop = "<center>"._YA_PASSLENGTH."</center><br />";
-    if (strlen($user_pass1) < $ya_config['pass_min']) $stop = "<center>"._YA_PASSLENGTH."</center><br />";
-    if ($user_pass1 != $user_pass2) $stop = "<center>"._PASSWDNOMATCH."</center><br />";
+    if (strlen($nuke_user_pass1) > $ya_config['pass_max']) $stop = "<center>"._YA_PASSLENGTH."</center><br />";
+    if (strlen($nuke_user_pass1) < $ya_config['pass_min']) $stop = "<center>"._YA_PASSLENGTH."</center><br />";
+    if ($nuke_user_pass1 != $nuke_user_pass2) $stop = "<center>"._PASSWDNOMATCH."</center><br />";
     return($stop);
 }
 
@@ -147,22 +147,22 @@ function ya_fixtext($ya_fixtext) {
 }
 
 // function improved by Peter
-function ya_save_config($config_name, $config_value, $config_param=""){
+function ya_save_config($nuke_config_name, $nuke_config_value, $nuke_config_param=""){
     global $prefix, $nuke_db, $cache;
-    Fix_Quotes($config_value);
-    if($config_param == 'html') {
-        $config_name = check_html($config_name, 'nohtml');
-        $config_value = check_html($config_value, 'html');
-        $nuke_db -> sql_query("UPDATE ".$prefix."_cnbya_config SET config_value='$config_value' WHERE config_name='$config_name'");
+    Fix_Quotes($nuke_config_value);
+    if($nuke_config_param == 'html') {
+        $nuke_config_name = check_html($nuke_config_name, 'nohtml');
+        $nuke_config_value = check_html($nuke_config_value, 'html');
+        $nuke_db -> sql_query("UPDATE ".$prefix."_cnbya_config SET config_value='$nuke_config_value' WHERE config_name='$nuke_config_name'");
     }
-    if($config_param == 'nohtml') {
-        $config_name = check_html($config_name, 'nohtml');
-        $config_value = ya_fixtext(check_html($config_value, 'nohtml'));
-        $nuke_db -> sql_query("UPDATE ".$prefix."_cnbya_config SET config_value='$config_value' WHERE config_name='$config_name'");
+    if($nuke_config_param == 'nohtml') {
+        $nuke_config_name = check_html($nuke_config_name, 'nohtml');
+        $nuke_config_value = ya_fixtext(check_html($nuke_config_value, 'nohtml'));
+        $nuke_db -> sql_query("UPDATE ".$prefix."_cnbya_config SET config_value='$nuke_config_value' WHERE config_name='$nuke_config_name'");
     } else {
-        $config_name=check_html($config_name, 'nohtml');
-        $config_value = intval($config_value);
-        $nuke_db -> sql_query("UPDATE ".$prefix."_cnbya_config SET config_value='$config_value' WHERE config_name='$config_name'");
+        $nuke_config_name=check_html($nuke_config_name, 'nohtml');
+        $nuke_config_value = intval($nuke_config_value);
+        $nuke_db -> sql_query("UPDATE ".$prefix."_cnbya_config SET config_value='$nuke_config_value' WHERE config_name='$nuke_config_name'");
     }
 }
 
@@ -177,11 +177,11 @@ function ya_get_configs(){
 /*****['END']******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-      $configresult = $nuke_db->sql_query("SELECT config_name, config_value FROM ".$prefix."_cnbya_config");
-      while (list($config_name, $config_value) = $nuke_db->sql_fetchrow($configresult)) {
-          $ya_config[$config_name] = $config_value;
+      $nuke_configresult = $nuke_db->sql_query("SELECT config_name, config_value FROM ".$prefix."_cnbya_config");
+      while (list($nuke_config_name, $nuke_config_value) = $nuke_db->sql_fetchrow($nuke_configresult)) {
+          $ya_config[$nuke_config_name] = $nuke_config_value;
       }
-      $nuke_db->sql_freeresult($configresult);
+      $nuke_db->sql_freeresult($nuke_configresult);
 /*****['BEGIN']****************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -200,10 +200,10 @@ function yacookie($setuid, $setusername, $setpass, $setstorynum, $setumode, $set
     $ctime = time();
 
     $guest = 1;
-    $user_agent = $identify->identify_agent();
+    $nuke_user_agent = $identify->identify_agent();
     if (is_user()) {
         $guest = 0;
-    } elseif($user_agent['engine'] == 'bot') {
+    } elseif($nuke_user_agent['engine'] == 'bot') {
         $guest = 3;
     }
 
@@ -348,8 +348,8 @@ function asearch() {
     CloseTable();
 }
 
-function mmain($user) {
-    global $stop, $module_name, $nuke_redirect, $mode, $t, $f, $ya_config, $user, $p;
+function mmain($nuke_user) {
+    global $stop, $module_name, $nuke_redirect, $mode, $t, $f, $ya_config, $nuke_user, $p;
     if(!is_user()) {
         include_once(NUKE_BASE_DIR.'header.php');
         mt_srand ((double)microtime()*1000000);

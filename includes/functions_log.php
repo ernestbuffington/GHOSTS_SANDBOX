@@ -29,10 +29,10 @@ if (!defined('IN_PHPBB2'))
     die('Hacking attempt');
 }
 
-function log_action($action, $new_topic_id, $topic_id, $user_id, $forum_id, $new_forum_id)
+function log_action($action, $new_topic_id, $topic_id, $nuke_user_id, $forum_id, $new_forum_id)
 {
     global $nuke_db;
-    if (!isset($user_id) || empty($user_id)) {
+    if (!isset($nuke_user_id) || empty($nuke_user_id)) {
         return;
     }
 
@@ -92,7 +92,7 @@ function log_action($action, $new_topic_id, $topic_id, $user_id, $forum_id, $new
 
     $sql = "SELECT session_ip
         FROM " . NUKE_BB_SESSIONS_TABLE . "
-        WHERE session_user_id = $user_id ";
+        WHERE session_user_id = $nuke_user_id ";
 
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
@@ -100,11 +100,11 @@ function log_action($action, $new_topic_id, $topic_id, $user_id, $forum_id, $new
     }
     $row = $nuke_db->sql_fetchrow($result);
     $nuke_db->sql_freeresult($result);
-    $user_ip = $row['session_ip'];
+    $nuke_user_ip = $row['session_ip'];
 
     $sql = "SELECT username
         FROM " . NUKE_USERS_TABLE . "
-        WHERE user_id = $user_id ";
+        WHERE user_id = $nuke_user_id ";
 
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
@@ -112,13 +112,13 @@ function log_action($action, $new_topic_id, $topic_id, $user_id, $forum_id, $new
     }
     $row2 = $nuke_db->sql_fetchrow($result);
     $nuke_db->sql_freeresult($result);
-    $username = $row2['username'];
-    $username = addslashes($username);
+    $nuke_username = $row2['username'];
+    $nuke_username = addslashes($nuke_username);
 
     $time = time();
 
     $sql = "INSERT INTO " . NUKE_BB_LOGS_TABLE . " (mode, topic_id, user_id, username, user_ip, time, new_topic_id, forum_id, new_forum_id, last_post_id)
-        VALUES ('$action', '$topic_id', '$user_id', '$username', '$user_ip', '$time', '$new_topic_id', '$forum_id', '$new_forum_id', '$last_post_id')";
+        VALUES ('$action', '$topic_id', '$nuke_user_id', '$nuke_username', '$nuke_user_ip', '$time', '$new_topic_id', '$forum_id', '$new_forum_id', '$last_post_id')";
 
     if ( !($result = $nuke_db->sql_query($sql)) )
     {

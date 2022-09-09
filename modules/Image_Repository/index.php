@@ -35,8 +35,8 @@ define('_IMAGE_REPOSITORY_INDEX', TRUE);
 //-------------------------------------------------------------------------
 //	INCLUDE THE LANGUAGE FILES FOR THIS MODULE.
 //-------------------------------------------------------------------------
-if(file_exists(NUKE_MODULES_DIR.$module_name.'/language/lang-'.$userinfo['user_lang'].'.php'))
-	include_once(NUKE_MODULES_DIR.$module_name.'/language/lang-'.$userinfo['user_lang'].'.php');
+if(file_exists(NUKE_MODULES_DIR.$module_name.'/language/lang-'.$nuke_userinfo['user_lang'].'.php'))
+	include_once(NUKE_MODULES_DIR.$module_name.'/language/lang-'.$nuke_userinfo['user_lang'].'.php');
 else
 	include_once(NUKE_MODULES_DIR.$module_name.'/language/lang-english.php');
 //-------------------------------------------------------------------------

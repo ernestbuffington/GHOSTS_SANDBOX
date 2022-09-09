@@ -138,10 +138,10 @@ while ($row2 = $nuke_db->sql_fetchrow($result2)):
 	elseif ($permission == 6 && !empty($groups) && is_array($groups)): 
 
 	    $ingroup = false;
-	    global $userinfo;
+	    global $nuke_userinfo;
 	
 	    foreach ($groups as $group): 
-		     if (isset($userinfo['groups'][$group])) 
+		     if (isset($nuke_userinfo['groups'][$group])) 
 		     $ingroup = true;
 	    endforeach;
 		
@@ -600,10 +600,10 @@ while ($row2 = $nuke_db->sql_fetchrow($result2)):
 				while ($row6 = $nuke_db->sql_fetchrow($result6)): 
 					$titoloforum = $row6['forum_name'];
 					$fid = $row6['forum_id'];
-					$auth_view = $row6['auth_view'];
-					$auth_read = $row6['auth_read'];
+					$nuke_auth_view = $row6['auth_view'];
+					$nuke_auth_read = $row6['auth_read'];
 					print '<tr><td></td><td>';
-					if ($auth_view && !is_user()): 
+					if ($nuke_auth_view && !is_user()): 
 						print '<font color="#FF0000"><i class="fa fa-lock"></i></font>';
 						print $titoloforum.'</td></tr>';
 					else: 
@@ -708,11 +708,11 @@ while ($row2 = $nuke_db->sql_fetchrow($result2)):
 			   while ($row11 = $nuke_db->sql_fetchrow($result11)): 
 				if(($row11['user_allow_viewonline'] == 0) OR ($row11['username'] == 'Anonymous'))
 			    continue;
-				$user=$row11['username'];
+				$nuke_user=$row11['username'];
 				$ciduser=$row11['user_id'];
 				print '<tr><td></td><td><font color="green"><i style="vertical-align: absmiddle;" 
 				class="fa fa-unlock-alt"></i></font> <a 
-				href="modules.php?name=Profile&amp;mode=viewprofile&amp;u='.$ciduser.'">PHP-Nuke Titanium &#187; User Profile &#187; '.$user.'</a></td>';
+				href="modules.php?name=Profile&amp;mode=viewprofile&amp;u='.$ciduser.'">PHP-Nuke Titanium &#187; User Profile &#187; '.$nuke_user.'</a></td>';
 				if($xml):
                 $sitemap->addItem('/modules.php?name=Profile&mode=viewprofile&u='.$ciduser.'', '0.8', 'daily', 'Today');
                 endif;

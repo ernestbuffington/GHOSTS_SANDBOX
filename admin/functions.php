@@ -405,9 +405,9 @@ function GraphicAdmin($pos=1)
     curl_setopt($curl, CURLOPT_USERAGENT, $agent);
     curl_setopt($curl, CURLOPT_REFERER, 'https://'.$domain.'/');
     $dir = NUKE_BASE_DIR.'includes/log';
-    $config['cookie_file'] = $dir.'/'.$_SERVER['REMOTE_ADDR'].'.txt';
-    curl_setopt($curl, CURLOPT_COOKIEFILE, $config['cookie_file']);
-    curl_setopt($curl, CURLOPT_COOKIEJAR, $config['cookie_file']);
+    $nuke_config['cookie_file'] = $dir.'/'.$_SERVER['REMOTE_ADDR'].'.txt';
+    curl_setopt($curl, CURLOPT_COOKIEFILE, $nuke_config['cookie_file']);
+    curl_setopt($curl, CURLOPT_COOKIEJAR, $nuke_config['cookie_file']);
 	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     $page = curl_exec($curl);	
@@ -579,7 +579,7 @@ function GraphicAdmin($pos=1)
 		echo '    <td class="row1" style="text-align:center;">';
 		echo '      <table style="text-align: center; width: 100%;" border="0" cellpadding="0" cellspacing="1" class="forumline">';
 		echo '        <tr>';
-		echo '          <td class="row1">'.sprintf($admlang['admin']['no_rights'], UsernameColor($userinfo['username'])).'</td>';
+		echo '          <td class="row1">'.sprintf($admlang['admin']['no_rights'], UsernameColor($nuke_userinfo['username'])).'</td>';
 		echo '        </tr>';
 		echo '      </table>';
 		echo '    </td>'."\n";

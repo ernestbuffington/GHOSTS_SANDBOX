@@ -32,7 +32,7 @@
 
 if(!defined('NUKE_EVO')) exit;
 
-global $nuke_db, $admin, $user, $prefix, $nuke_user_prefix, $cookie, $def_module, $currentlang, $cookie, $cache;
+global $nuke_db, $admin, $nuke_user, $prefix, $nuke_user_prefix, $cookie, $def_module, $currentlang, $cookie, $cache;
 
 if (file_exists(NUKE_LANGUAGE_DIR.'Sommaire/lang-'.$currentlang.'.php')) {
     include_once(NUKE_LANGUAGE_DIR.'Sommaire/lang-'.$currentlang.'.php');
@@ -484,7 +484,7 @@ $cache->save('sommaire_row3', 'block', $row3);
                 elseif($moduleinthisgroup[$som_groupmenu][$keyinthisgroup]!="SOMMAIRE_HR") {
                     for ($z=0;$z<count($module);$z++) { //pour chaque module activé et visible on va regarder où on l'affiche
                         if ($module[$z]!=$main_module && (($is_admin===1 AND $view[$z] == 2) OR $view[$z] != 2) && $moduleinthisgroup[$som_groupmenu][$keyinthisgroup]==$module[$z]) {
-                            $isin = ($mod_group[$z]==0 || ($userpoints>0 && $userpoints>=$pointsneeded[$mod_group[$z]])) ? 1 : 0 ;
+                            $isin = ($mod_group[$z]==0 || ($nuke_userpoints>0 && $nuke_userpoints>=$pointsneeded[$mod_group[$z]])) ? 1 : 0 ;
                             if ($view[$z]==1 && $is_user==0 && ($invisible[0]==3 || $invisible[0]==5)) { //on n'affiche pas si c'est un visiteur et que l'on a coché 'modules invisbles' dans l'admin du sommaire
                             }
                             elseif ($view[$z]==1 && $is_user==1 && $invisible[0]==5 && $isin==0) {//on n'affiche pas si c'est un membre, qui n'est pas dans le bon groupe et que l'on a coché 'modules invisibles' dans l'admin du sommaire
@@ -645,7 +645,7 @@ $cache->save('sommaire_row3', 'block', $row3);
                                 //gestion des groupes
                                 $isin=0;
                                 if ($is_user==1 && ($invisible[0]==5 || $invisible[0]==4) && $view[$z]==1){
-                                    $isin = ($mod_group[$z]==0 || ($userpoints>0 && $userpoints>=$pointsneeded[$mod_group[$z]])) ? 1 : 0 ;
+                                    $isin = ($mod_group[$z]==0 || ($nuke_userpoints>0 && $nuke_userpoints>=$pointsneeded[$mod_group[$z]])) ? 1 : 0 ;
                                 }
 
                                 if($is_user==1 && $view[$z]==1 && $invisible[0]==4 && $isin==0) {// c'est un membre, qui n'est pas dans le groupe pouvant visualiser ce module

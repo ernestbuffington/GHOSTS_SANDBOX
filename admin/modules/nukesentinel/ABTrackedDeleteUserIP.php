@@ -12,8 +12,8 @@
 /* See CREDITS.txt for all contributors                 */
 /********************************************************/
 
-$nuke_db->sql_query("DELETE FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$user_id' AND `ip_addr`='$ip_addr'");
+$nuke_db->sql_query("DELETE FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$nuke_user_id' AND `ip_addr`='$ip_addr'");
 $nuke_db->sql_query("OPTIMIZE TABLE `".$prefix."_nsnst_tracked_ips`");
-Header("Location: ".$admin_file.".php?op=$xop&user_id=$user_id&min=$min&showmodule=$showmodule");
+Header("Location: ".$admin_file.".php?op=$xop&user_id=$nuke_user_id&min=$min&showmodule=$showmodule");
 
 ?>

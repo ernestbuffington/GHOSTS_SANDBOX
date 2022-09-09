@@ -31,7 +31,7 @@ if(!isset($min)) $min=0;
 if(!isset($max)) $max=$min+$perpage;
 if(!isset($column)) $column='';
 if(!isset($direction)) $direction='';
-if(!isset($user_id)) $user_id='';
+if(!isset($nuke_user_id)) $nuke_user_id='';
 if(!isset($ip_addr)) $ip_addr='';
 if(!$column or $column=="") $column = "date";
 if(!$direction or $direction=="") $direction = "desc";

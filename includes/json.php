@@ -781,9 +781,9 @@ if (class_exists('PEAR_Error')) {
     class Services_JSON_Error extends PEAR_Error
     {
         function __construct($message = 'unknown error', $code = null,
-                                     $mode = null, $options = null, $userinfo = null)
+                                     $mode = null, $options = null, $nuke_userinfo = null)
         {
-            parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
+            parent::PEAR_Error($message, $code, $mode, $options, $nuke_userinfo);
         }
     }
 
@@ -795,7 +795,7 @@ if (class_exists('PEAR_Error')) {
     class Services_JSON_Error
     {
         function __construct($message = 'unknown error', $code = null,
-                                     $mode = null, $options = null, $userinfo = null)
+                                     $mode = null, $options = null, $nuke_userinfo = null)
         {
 
         }

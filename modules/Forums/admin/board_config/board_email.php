@@ -21,7 +21,7 @@ if (!defined('BOARD_CONFIG')) {
     die('Access Denied');
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     "email" => "admin/board_config/board_email.tpl")
 );
 
@@ -38,12 +38,12 @@ $smtp_auth_no       = ( $new['smtp_auth'] == 0 ) ? 'checked="checked"' : '';
 $smtp_auth_view     = ( $new['smtp_auth'] == 1 ) ? '' : ' style="display:none"';
 
 //General Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "DHTML_ID" => "c" . $dhtml_id)
 );
     
 //Language Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "L_EMAIL_SETTINGS"        => $lang['Email_settings'],
     "L_ADMIN_EMAIL"           => $lang['Admin_email'],
     "L_EMAIL_SIG"             => $lang['Email_sig'],
@@ -64,7 +64,7 @@ $template->assign_vars(array(
 ));
 
 //Data Template Variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "EMAIL_FROM"            => $new['board_email'],
     "EMAIL_SIG"             => $new['board_email_sig'],
     "SMTP_YES"              => $smtp_yes,
@@ -81,6 +81,6 @@ $template->assign_vars(array(
     "SMTP_AUTH_NO"          => $smtp_auth_no,
     "SMTP_AUTH_VIEW"        => $smtp_auth_view,
  ));
-$template->pparse("email");
+$template_nuke->pparse("email");
 
 ?>

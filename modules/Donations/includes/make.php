@@ -207,9 +207,9 @@ function make_donation () {
 	echo "<input type=\"hidden\" name=\"no_note\" value=\"1\">\n";
 	echo "<input type=\"hidden\" name=\"on0\" value=\"Info\">\n";
 	if(is_user()) {
-		 global $userinfo;
+		 global $nuke_userinfo;
         //Get username and id
-        $uname = "message|".$userinfo['user_id'] . "|". $userinfo['username'];
+        $uname = "message|".$nuke_userinfo['user_id'] . "|". $nuke_userinfo['username'];
         echo "<input type=\"hidden\" name=\"on1\" value=\"".$uname."\">\n";
 	} else {
 		echo "<input type=\"hidden\" name=\"on1\" value=\"message\">\n";

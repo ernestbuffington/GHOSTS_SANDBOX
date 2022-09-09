@@ -26,8 +26,8 @@ if(!defined('IN_PHPBB2'))
 
 function get_related_topics($topic_id)
 {
-	global $board_config, $nuke_db, $lang, $template, $theme, $images, $phpEx;
-	global $userdata, $HTTP_COOKIE_VARS;
+	global $board_config, $nuke_db, $lang, $template_nuke, $theme, $images, $phpEx;
+	global $nuke_userdata, $HTTP_COOKIE_VARS;
 
 	//
 	// Fetch all words that appear in the title of $topic_id
@@ -51,7 +51,7 @@ function get_related_topics($topic_id)
 	// Only search for related topics in the forums where the user has read access
 	//
 	$is_auth = array();
-	$is_auth = auth(NUKE_AUTH_READ, NUKE_AUTH_LIST_ALL, $userdata);
+	$is_auth = auth(NUKE_AUTH_READ, NUKE_AUTH_LIST_ALL, $nuke_userdata);
 
 	$forum_ids = array(0);
 	while( list($forum_id, $forum_auth) = @each($is_auth) )
@@ -96,11 +96,11 @@ function get_related_topics($topic_id)
 	//
 	// Output to page
 	//
-	$template->set_filenames(array(
+	$template_nuke->set_filenames(array(
 		'related_topics' => 'viewtopic_related_body.tpl'
 	));
 
-	$template->assign_vars(array(
+	$template_nuke->assign_vars(array(
 		'L_RELATED_TOPICS' => $lang['Related_topics'],
 
 		'L_AUTHOR' => $lang['Author'],
@@ -210,9 +210,9 @@ function get_related_topics($topic_id)
 		$tracking_forums = ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f']) ) ? unserialize($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f']) : '';
 
 		$newest_post_img = '';
-		if( $userdata['session_logged_in'] )
+		if( $nuke_userdata['session_logged_in'] )
 		{
-			if( $row['post_time'] > $userdata['user_lastvisit'] ) 
+			if( $row['post_time'] > $nuke_userdata['user_lastvisit'] ) 
 			{
 				if( !empty($tracking_topics) || !empty($tracking_forums) || isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f_all']) )
 				{
@@ -293,7 +293,7 @@ function get_related_topics($topic_id)
 		$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
-		$template->assign_block_vars('topicrow', array(
+		$template_nuke->assign_block_vars('topicrow', array(
 			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 
@@ -316,7 +316,7 @@ function get_related_topics($topic_id)
 		$i++;
 	}
 
-	$template->assign_var_from_handle('RELATED_TOPICS', 'related_topics');
+	$template_nuke->assign_var_from_handle('RELATED_TOPICS', 'related_topics');
 	return;
 }
 

@@ -440,7 +440,7 @@ function modadmin_ajax_header ()
 
 function modadmin_block () 
 {
-    global $lang_evo_userblock, $admin_file, $module_collapse, $Default_Theme, $module_name, $board_config, $userinfo, $modadmin_module_cats, $bgcolor2, $admlang;
+    global $lang_evo_userblock, $admin_file, $module_collapse, $Default_Theme, $module_name, $board_config, $nuke_userinfo, $modadmin_module_cats, $bgcolor2, $admlang;
 
     $inactive = modadmin_get_inactive();
 

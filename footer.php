@@ -55,7 +55,7 @@ function footmsg()
 	   $use_cache,
 	       $index,
 	      $prefix,
-		    $user, 
+		    $nuke_user, 
 	 $nuke_user_prefix,
 	      $cookie,
 	    $storynum,

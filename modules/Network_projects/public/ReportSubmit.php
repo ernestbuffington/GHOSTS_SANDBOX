@@ -45,9 +45,9 @@ if($project['allowreports'] > 0) {
   }
   echo "</select></td></tr>\n";
   echo "<tr><td bgcolor='$bgcolor2'>"._NETWORK_USERNAME.":</td>\n";
-  echo "<td><input type='text' name='submitter_name' size='30' value='".$userinfo['username']."'></td></tr>\n";
+  echo "<td><input type='text' name='submitter_name' size='30' value='".$nuke_userinfo['username']."'></td></tr>\n";
   echo "<tr><td bgcolor='$bgcolor2'>"._NETWORK_EMAILADDRESS.":</td>\n";
-  echo "<td><input type='text' name='submitter_email' size='30' value='".$userinfo['user_email']."'></td></tr>\n";
+  echo "<td><input type='text' name='submitter_email' size='30' value='".$nuke_userinfo['user_email']."'></td></tr>\n";
   echo "<tr><td bgcolor='$bgcolor2'>"._NETWORK_SUMMARY.":</td>\n";
   echo "<td><input type='text' name='report_name' size='30'></td></tr>\n";
   echo "<tr><td bgcolor='$bgcolor2' valign='top'>"._NETWORK_DESCRIPTION.":</td>\n";

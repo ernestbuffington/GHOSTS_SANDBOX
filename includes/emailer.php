@@ -139,31 +139,31 @@ class emailer
                 $this->extra_headers .= trim($headers) . "\n";
         }
 
-        function use_template($template_file, $template_lang = '')
+        function use_template($template_nuke_file, $template_nuke_lang = '')
         {
                 global $board_config, $phpbb2_root_path;
 
-                if (trim($template_file) == '')
+                if (trim($template_nuke_file) == '')
                 {
                         message_die(NUKE_GENERAL_ERROR, 'No template file set', '', __LINE__, __FILE__);
                 }
 
-                if (trim($template_lang) == '')
+                if (trim($template_nuke_lang) == '')
                 {
-                        $template_lang = $board_config['default_lang'];
+                        $template_nuke_lang = $board_config['default_lang'];
                 }
 
-                if (empty($this->tpl_msg[$template_lang . $template_file]))
+                if (empty($this->tpl_msg[$template_nuke_lang . $template_nuke_file]))
                 {
-                        $tpl_file = $phpbb2_root_path . 'language/lang_' . $template_lang . '/email/' . $template_file . '.tpl';
+                        $tpl_file = $phpbb2_root_path . 'language/lang_' . $template_nuke_lang . '/email/' . $template_nuke_file . '.tpl';
 
                         if (!@file_exists(@phpbb_realpath($tpl_file)))
                         {
-                                $tpl_file = $phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/email/' . $template_file . '.tpl';
+                                $tpl_file = $phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/email/' . $template_nuke_file . '.tpl';
 
                                 if (!@file_exists(@phpbb_realpath($tpl_file)))
                                 {
-                                        message_die(NUKE_GENERAL_ERROR, 'Could not find email template file :: ' . $template_file, '', __LINE__, __FILE__);
+                                        message_die(NUKE_GENERAL_ERROR, 'Could not find email template file :: ' . $template_nuke_file, '', __LINE__, __FILE__);
                                 }
                         }
 
@@ -172,11 +172,11 @@ class emailer
                                 message_die(NUKE_GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_file, '', __LINE__, __FILE__);
                         }
 
-                        $this->tpl_msg[$template_lang . $template_file] = fread($fd, filesize($tpl_file));
+                        $this->tpl_msg[$template_nuke_lang . $template_nuke_file] = fread($fd, filesize($tpl_file));
                         fclose($fd);
                 }
 
-                $this->msg = $this->tpl_msg[$template_lang . $template_file];
+                $this->msg = $this->tpl_msg[$template_nuke_lang . $template_nuke_file];
 
                 return true;
         }

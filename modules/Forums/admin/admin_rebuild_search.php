@@ -32,7 +32,7 @@ if ( !empty($setmodules) )
 //
 // Let's set the root dir for phpBB
 //
-$no_page_header = true;
+$no_nuke_page_header = true;
 $phpbb2_root_path = "./../";
 require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
@@ -415,7 +415,7 @@ if ( $mode == 'submit' || $mode == 'refresh' )
     }
   }
 
-  $template->set_filenames(array(
+  $template_nuke->set_filenames(array(
       "body"      => "admin/rebuild_search_progress.tpl"
     )
   );
@@ -448,12 +448,12 @@ if ( $mode == 'submit' || $mode == 'refresh' )
     $processing_messages .= sprintf($lang['Processing_next_posts'], $post_limit);
 
     // show the cancel button when refreshing
-    $template->assign_block_vars("cancel_button", array(
+    $template_nuke->assign_block_vars("cancel_button", array(
       )
     );
 
     // create the meta tag for refresh
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
       "META" => '<meta http-equiv="refresh" content="'.$refresh_rate.';url='.$form_action.'">')
     );
   }
@@ -529,13 +529,13 @@ if ( $mode == 'submit' || $mode == 'refresh' )
 
   // create the output of page
   $page_title = $lang['Page_title'];
-  include('./page_header_admin.'.$phpEx);
+  include('./nuke_page_header_admin.'.$phpEx);
 
   // create the percent boxes
   create_percent_box('session', create_percent_color($session_percent), $session_percent);
   create_percent_box('total', create_percent_color($total_percent), $total_percent);
 
-  $template->assign_vars(array(
+  $template_nuke->assign_vars(array(
     'L_REBUILD_SEARCH_PROGRESS' => $lang['Rebuild_search_progress'],
     'L_REBUILD_SEARCH'        => $lang['Rebuild_search'],
     'L_NEXT'                => $next_button,
@@ -606,9 +606,9 @@ else  // show the input page
 {
   // create the page
   $page_title = $lang['Page_title'];
-  include('./page_header_admin.'.$phpEx);
+  include('./nuke_page_header_admin.'.$phpEx);
 
-  $template->set_filenames(array(
+  $template_nuke->set_filenames(array(
       "body" => "admin/rebuild_search.tpl")
   );
 
@@ -638,7 +638,7 @@ else  // show the input page
       $last_saved_processing = sprintf($lang['Info_processing_stopped'], $last_saved_post_id, $total_posts_processed, $last_saved_date);
       $clear_search_disabled = 'disabled="disabled"';
 
-      $template->assign_block_vars("start_select_input", array());
+      $template_nuke->assign_block_vars("start_select_input", array());
     }
     elseif ( $last_session_details['rebuild_session_status'] == REBUILD_SEARCH_ABORTED )
     {
@@ -650,7 +650,7 @@ else  // show the input page
       }
       $clear_search_disabled = 'disabled="disabled"';
 
-      $template->assign_block_vars("start_select_input", array());
+      $template_nuke->assign_block_vars("start_select_input", array());
     }
     else  // when finished
     {
@@ -659,25 +659,25 @@ else  // show the input page
         $last_saved_processing = sprintf($lang['Info_processing_finished_new'], $last_saved_post_id, $total_posts_processed, $last_saved_date, ($total_posts - $total_posts_processed));
         $clear_search_disabled = 'disabled="disabled"';
 
-        $template->assign_block_vars("start_select_input", array());
+        $template_nuke->assign_block_vars("start_select_input", array());
       }
       else
       {
         $last_saved_processing = sprintf($lang['Info_processing_finished'], $total_posts, $last_saved_date);
 
-        $template->assign_block_vars("start_text_input", array());
+        $template_nuke->assign_block_vars("start_text_input", array());
       }
     }
 
-    $template->assign_block_vars("last_saved_info", array());
+    $template_nuke->assign_block_vars("last_saved_info", array());
   }
   else
   {
-    $template->assign_block_vars("start_text_input", array());
+    $template_nuke->assign_block_vars("start_text_input", array());
   }
 
   // create the output of page
-  $template->assign_vars(array(
+  $template_nuke->assign_vars(array(
     'L_REBUILD_SEARCH'    => $lang['Rebuild_search'],
     'L_REBUILD_SEARCH_DESC' => $lang['Rebuild_search_desc'],
 
@@ -731,7 +731,7 @@ else  // show the input page
 
     'LAST_SAVED_PROCESSING'   => $last_saved_processing,
 
-    'SESSION_ID'          => $userdata['session_id'],
+    'SESSION_ID'          => $nuke_userdata['session_id'],
 
     'REBUILD_SEARCH_VERSION'  => REBUILD_SEARCH_VERSION,
 
@@ -741,11 +741,11 @@ else  // show the input page
   );
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 //
 // Page Footer
 //
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

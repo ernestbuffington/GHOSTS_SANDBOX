@@ -37,7 +37,7 @@ require('./pagestart.' . $phpEx);
 //
 // constants
 //
-$auths = array(
+$nuke_auths = array(
 	NUKE_AUTH_ALL	=> $lang['Forum_ALL'],
 	NUKE_AUTH_REG	=> $lang['Forum_REG'],
 	NUKE_AUTH_MOD	=> $lang['Forum_MOD'],
@@ -68,7 +68,7 @@ function icons_read()
 
 function icons_write()
 {
-	global $phpEx, $phpbb2_root_path, $template;
+	global $phpEx, $phpbb2_root_path, $template_nuke;
 	global $icones, $icon_defined_special, $map_icon;
 
 	// rebuild the map
@@ -79,34 +79,34 @@ function icons_write()
 	}
 
 	// set the outfile template
-	$template->set_filenames(array(
+	$template_nuke->set_filenames(array(
 		'outfile' => 'admin/icons_def_icons.tpl')
 	);
 
 	// process the icones
 	for ($i=0; $i < count($icones); $i++)
 	{
-		$auth = "''";
+		$nuke_auth = "''";
 		switch ($icones[$i]['auth'])
 		{
 			case NUKE_AUTH_REG:
-				$auth = 'NUKE_AUTH_REG';
+				$nuke_auth = 'NUKE_AUTH_REG';
 				break;
 			case NUKE_AUTH_MOD:
-				$auth = 'NUKE_AUTH_MOD';
+				$nuke_auth = 'NUKE_AUTH_MOD';
 				break;
 			case NUKE_AUTH_ADMIN:
-				$auth = 'NUKE_AUTH_ADMIN';
+				$nuke_auth = 'NUKE_AUTH_ADMIN';
 				break;
 			default:
-				$auth = 'NUKE_AUTH_ALL';
+				$nuke_auth = 'NUKE_AUTH_ALL';
 				break;
 		}
-		$template->assign_block_vars('_outfile_icon', array(
+		$template_nuke->assign_block_vars('_outfile_icon', array(
 			'IND'	=> $icones[$i]['ind'],
 			'IMG'	=> str_replace("''", "\'", $icones[$i]['img']),
 			'ALT'	=> str_replace("''", "\'", $icones[$i]['alt']),
-			'AUTH'	=> $auth,
+			'AUTH'	=> $nuke_auth,
 			)
 		);
 	}
@@ -115,7 +115,7 @@ function icons_write()
 	@reset($icon_defined_special);
 	while (list($key, $data) = @each($icon_defined_special))
 	{
-		$template->assign_block_vars('_outfile_default', array(
+		$template_nuke->assign_block_vars('_outfile_default', array(
 			'NAME'		=> str_replace("''", "\'", $key),
 			'LANG_KEY'	=> str_replace("''", "\'", $data['lang_key']),
 			'ICON'		=> empty($data['icon']) ? 0 : $data['icon'],
@@ -125,8 +125,8 @@ function icons_write()
 
 	// generate a var for the content
 	$file_data = '_file_data';
-	$template->assign_var_from_handle($file_data, 'outfile');
-	$res = $template->_tpldata['.'][0][$file_data];
+	$template_nuke->assign_var_from_handle($file_data, 'outfile');
+	$res = $template_nuke->_tpldata['.'][0][$file_data];
 
 	// output the file
 	$filename = './../../../includes/def_icons.' . $phpEx;
@@ -285,12 +285,12 @@ if ($mode == 'del')
 			}
 
 			// send the confirm or replace template
-			$template->set_filenames(array(
+			$template_nuke->set_filenames(array(
 				'body' => 'admin/admin_icons_delete_body.tpl')
 			);
 
 			// header
-			$template->assign_vars(array(
+			$template_nuke->assign_vars(array(
 				'L_TITLE'					=> $lang['Icon'],
 				'L_TITLE_EXPLAIN'			=> $lang['Icons_settings_explain'],
 				'L_TITLE_DELETE'			=> $lang['Icons_delete'],
@@ -301,7 +301,7 @@ if ($mode == 'del')
 			);
 
 			// vars
-			$template->assign_vars(array(
+			$template_nuke->assign_vars(array(
 				'MESSAGE'	=> ($used ? $lang['Icons_delete_explain'] : $lang['Icons_confirm_delete']),
 				'ICON'		=> get_icon_title($icon, 2, -1, true),
 				)
@@ -328,16 +328,16 @@ if ($mode == 'del')
 				}
 
 				// display the icons
-				$template->assign_block_vars('replace',array());
+				$template_nuke->assign_block_vars('replace',array());
 				$nb_row = intval( (count($tmp)-1) / $icon_per_row )+1;
 				$offset = 0;
 				for ($i=0; $i < $nb_row; $i++)
 				{
-					$template->assign_block_vars('replace.row',array());
+					$template_nuke->assign_block_vars('replace.row',array());
 					for ($j=0; ( ($j < $icon_per_row) && ($offset < count($tmp)) ); $j++)
 					{
 						// send to cell or cell_none
-						$template->assign_block_vars('replace.row.cell', array(
+						$template_nuke->assign_block_vars('replace.row.cell', array(
 							'ICON_ID'		=> $tmp[$offset]['ind'],
 							'ICON_CHECKED'	=> ($tmp[$offset]['ind'] == 0) ? ' checked="checked"' : '',
 							'ICON_IMG'		=> get_icon_title($tmp[$offset]['ind'], 2, -1, true),
@@ -351,7 +351,7 @@ if ($mode == 'del')
 			// system
 			$s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="icon" value="' . $icon . '" />';
-			$template->assign_vars(array(
+			$template_nuke->assign_vars(array(
 				'NAV_SEPARATOR'		=> $nav_separator,
 				'S_ACTION'			=> append_sid("./admin_icons.$phpEx"),
 				'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
@@ -359,8 +359,8 @@ if ($mode == 'del')
 			);
 
 			// footer
-			$template->pparse('body');
-			include('./page_footer_admin.'.$phpEx);
+			$template_nuke->pparse('body');
+			include('./nuke_page_footer_admin.'.$phpEx);
 		}
 		else
 		{
@@ -519,12 +519,12 @@ if ($mode == 'edit')
 	if ($mode == 'edit')
 	{
 		// template
-		$template->set_filenames(array(
+		$template_nuke->set_filenames(array(
 			'body' => 'admin/admin_icons_edit_body.tpl')
 		);
 
 		// header
-		$template->assign_vars(array(
+		$template_nuke->assign_vars(array(
 			'L_TITLE'			=> $lang['Icon'],
 			'L_TITLE_KEY'		=> $lang['Icon_key'],
 			'L_TITLE_EXPLAIN'	=> $lang['Icons_settings_explain'],
@@ -558,8 +558,8 @@ if ($mode == 'edit')
 
 		// prepare auth level list
 		$s_auths = '';
-		@reset($auths);
-		while (list($key, $data) = @each($auths))
+		@reset($nuke_auths);
+		while (list($key, $data) = @each($nuke_auths))
 		{
 			$selected = ($icon_auth == $key) ? ' selected="selected"' : '';
 			$s_auths .= sprintf('<option value="%s"%s>%s</option>', $key, $selected, $data);
@@ -593,7 +593,7 @@ if ($mode == 'edit')
 		$s_langs = '<select name="lang_key_pickup_list" onChange="javascript:icon_title.value=this.options[this.selectedIndex].value; this.selectedIndex=0;">' . $s_langs . '</select>';
 
 		// vars
-		$template->assign_vars(array(
+		$template_nuke->assign_vars(array(
 			'ICON_TITLE_KEY'	=> $icon_title,
 			'ICON_TITLE'		=> isset($lang[$icon_title]) ? '<br />' . $lang[$icon_title] : '',
 			'ICON'				=> $pic,
@@ -610,7 +610,7 @@ if ($mode == 'edit')
 		{
 			if (isset($lang[ $data['lang_key'] ]))
 			{
-				$template->assign_block_vars('defaults', array(
+				$template_nuke->assign_block_vars('defaults', array(
 					'NAME'		=> $lang[ $data['lang_key'] ],
 					'ID'		=> $key,
 					'CHECKED'	=> @in_array($key, $icon_ids) ? ' checked="checked"' : '',
@@ -625,7 +625,7 @@ if ($mode == 'edit')
 		{
 			$s_hidden_fields .= '<input type="hidden" name="icon" value="' . $icon . '" />';
 		}
-		$template->assign_vars(array(
+		$template_nuke->assign_vars(array(
 			'NAV_SEPARATOR'		=> $nav_separator,
 			'S_ACTION'			=> append_sid("./admin_icons.$phpEx"),
 			'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
@@ -633,8 +633,8 @@ if ($mode == 'edit')
 		);
 
 		// footer
-		$template->pparse('body');
-		include('./page_footer_admin.'.$phpEx);
+		$template_nuke->pparse('body');
+		include('./nuke_page_footer_admin.'.$phpEx);
 	}
 }
 
@@ -658,12 +658,12 @@ if ($mode == '')
 	if ($total_posts <= 0) $total_posts = 1;
 
 	// template
-	$template->set_filenames(array(
+	$template_nuke->set_filenames(array(
 		'body' => 'admin/admin_icons_body.tpl')
 	);
 
 	// header
-	$template->assign_vars(array(
+	$template_nuke->assign_vars(array(
 		'L_TITLE'			=> $lang['Icon'],
 		'L_TITLE_KEY'		=> $lang['Icon_key'],
 		'L_TITLE_KEY'		=> $lang['Icon_key'],
@@ -686,12 +686,12 @@ if ($mode == '')
 	// display icons
 	for ($i=0; $i < count($icones); $i++)
 	{
-		$template->assign_block_vars('row', array(
+		$template_nuke->assign_block_vars('row', array(
 			'ICON'		=> get_icon_title($icones[$i]['ind'], 1, -1, true),
 			'ICON_KEY'	=> $icones[$i]['img'],
 			'L_LANG'	=> isset($lang[ $icones[$i]['alt'] ]) ? $lang[ $icones[$i]['alt'] ] : $icones[$i]['alt'],
 			'LANG_KEY'	=> isset($lang[ $icones[$i]['alt'] ]) ? '&nbsp;&nbsp;(' . $icones[$i]['alt'] . ')' : '',
-			'L_AUTH'	=> $auths[ $icones[$i]['auth'] ],
+			'L_AUTH'	=> $nuke_auths[ $icones[$i]['auth'] ],
 			'USAGE'		=> (intval($icones[$i]['usage']) > 0) ? $icones[$i]['usage'] . '&nbsp;(' . ( round( ($icones[$i]['usage'] * 100 )/ $total_posts ) ) . '%)' : '',
 			'U_EDIT'	=> append_sid("./admin_icons.$phpEx?mode=edit&icon=" . $icones[$i]['ind']),
 			'U_DELETE'	=> append_sid("./admin_icons.$phpEx?mode=del&icon=" . $icones[$i]['ind']),
@@ -706,7 +706,7 @@ if ($mode == '')
 		{
 			if ( ($data['icon'] == $icones[$i]['ind']) && isset($lang[ $data['lang_key'] ]) )
 			{
-				$template->assign_block_vars('row.default', array(
+				$template_nuke->assign_block_vars('row.default', array(
 					'L_DEFAULT' => $lang[ $data['lang_key'] ],
 					)
 				);
@@ -716,7 +716,7 @@ if ($mode == '')
 
 	// system
 	$s_hidden_fields = '';
-	$template->assign_vars(array(
+	$template_nuke->assign_vars(array(
 		'NAV_SEPARATOR'		=> $nav_separator,
 		'S_ACTION'			=> append_sid("./admin_icons.$phpEx"),
 		'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
@@ -724,8 +724,8 @@ if ($mode == '')
 	);
 
 	// footer
-	$template->pparse('body');
-	include('./page_footer_admin.'.$phpEx);
+	$template_nuke->pparse('body');
+	include('./nuke_page_footer_admin.'.$phpEx);
 }
 
 ?>

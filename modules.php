@@ -45,7 +45,7 @@ global $name;
 
 if($name): 
     # Mod: Lock Modules v1.0.0 START
-    global $nuke_db, $prefix, $user, $lock_modules;
+    global $nuke_db, $prefix, $nuke_user, $lock_modules;
 
     if(($lock_modules && $name != 'Your_Account') 
 	&& !is_admin() 
@@ -108,10 +108,10 @@ if($name):
 			elseif($view == 6 && !empty($groups) && is_array($groups)): 
 			    
 				$ingroup = false;
-			    global $userinfo;
+			    global $nuke_userinfo;
 
 			    foreach($groups as $group): 
-    			     if(isset($userinfo['groups'][$group])):
+    			     if(isset($nuke_userinfo['groups'][$group])):
 					 $ingroup = true;
                  	 # Group Cookie Control START
 					 list($groupname) = $nuke_db->sql_ufetchrow("SELECT `group_name` FROM ".$prefix."_bbgroups WHERE `group_id`=".$group."", SQL_NUM);

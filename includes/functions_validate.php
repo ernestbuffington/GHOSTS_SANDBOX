@@ -79,22 +79,22 @@ if (!defined('IN_PHPBB2'))
 // Also checks if it includes the " character, which we don't allow in usernames.
 // Used for registering, changing names, and posting anonymously with a username
 //
-function validate_username($username)
+function validate_username($nuke_username)
 {
-        global $nuke_db, $lang, $userdata;
+        global $nuke_db, $lang, $nuke_userdata;
 
         // Remove doubled up spaces
-        $username = preg_replace('#\s+#', ' ', trim($username));
-        $username = phpbb_clean_username($username);
+        $nuke_username = preg_replace('#\s+#', ' ', trim($nuke_username));
+        $nuke_username = phpbb_clean_username($nuke_username);
 
     $sql = "SELECT username
         FROM " . NUKE_USERS_TABLE . "
-                WHERE LOWER(username) = '" . strtolower($username) . "'";
+                WHERE LOWER(username) = '" . strtolower($nuke_username) . "'";
         if ($result = $nuke_db->sql_query($sql))
         {
                 while ($row = $nuke_db->sql_fetchrow($result))
                 {
-                        if (($userdata['session_logged_in'] && $row['username'] != $userdata['username']) || !$userdata['session_logged_in'])
+                        if (($nuke_userdata['session_logged_in'] && $row['username'] != $nuke_userdata['username']) || !$nuke_userdata['session_logged_in'])
                         {
                                 $nuke_db->sql_freeresult($result);
                                 return array('error' => true, 'error_msg' => $lang['Username_taken']);
@@ -105,7 +105,7 @@ function validate_username($username)
 
         $sql = "SELECT group_name
                 FROM " . NUKE_GROUPS_TABLE . "
-                WHERE LOWER(group_name) = '" . strtolower($username) . "'";
+                WHERE LOWER(group_name) = '" . strtolower($nuke_username) . "'";
         if ($result = $nuke_db->sql_query($sql))
         {
                 if ($row = $nuke_db->sql_fetchrow($result))
@@ -124,7 +124,7 @@ function validate_username($username)
         $nuke_db->sql_freeresult($result);
         for ($i=0; $i < count($BadNickList); $i++) {
             if(!empty($BadNickList[$i])) {
-                if (preg_match("#\b(" . str_replace("\*", ".*?", preg_quote($BadNickList[$i], '#')) . ")\b#i", $username))
+                if (preg_match("#\b(" . str_replace("\*", ".*?", preg_quote($BadNickList[$i], '#')) . ")\b#i", $nuke_username))
                 {
                         return array('error' => true, 'error_msg' => $lang['Username_disallowed']);
                 }
@@ -139,7 +139,7 @@ function validate_username($username)
                 {
                         do
                         {
-                                if (preg_match("#\b(" . str_replace("\*", ".*?", preg_quote($row['disallow_username'], '#')) . ")\b#i", $username))
+                                if (preg_match("#\b(" . str_replace("\*", ".*?", preg_quote($row['disallow_username'], '#')) . ")\b#i", $nuke_username))
                                 {
                                         $nuke_db->sql_freeresult($result);
                                         return array('error' => true, 'error_msg' => $lang['Username_disallowed']);
@@ -158,7 +158,7 @@ function validate_username($username)
                 {
                         do
                         {
-                                if (preg_match("#\b(" . str_replace("\*", ".*?", preg_quote($row['word'], '#')) . ")\b#i", $username))
+                                if (preg_match("#\b(" . str_replace("\*", ".*?", preg_quote($row['word'], '#')) . ")\b#i", $nuke_username))
                                 {
                                         $nuke_db->sql_freeresult($result);
                                         return array('error' => true, 'error_msg' => $lang['Username_disallowed']);
@@ -173,7 +173,7 @@ function validate_username($username)
 /*****[BEGIN]******************************************
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
-        if (strstr($username, '"') || strstr($username, '&quot;') || strstr($username, chr(160)) || strstr($username, ';') || strstr($username, chr(173)))
+        if (strstr($nuke_username, '"') || strstr($nuke_username, '&quot;') || strstr($nuke_username, chr(160)) || strstr($nuke_username, ';') || strstr($nuke_username, chr(173)))
 /*****[END]********************************************
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/

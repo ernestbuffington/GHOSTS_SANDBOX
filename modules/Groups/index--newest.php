@@ -51,7 +51,7 @@ include(NUKE_PHPBB2_DIR.'common.php');
 /*****[BEGIN]******************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
-function generate_user_info(&$row, $date_format, $group_mod, &$from, &$flag, &$posts, &$joined, &$poster_avatar, &$profile_img, &$profile, &$search_img, &$search, &$pm_img, &$pm, &$email_img, &$email, &$www_img, &$www, &$userdata, &$online_status_img, &$online_status) 
+function generate_user_info(&$row, $date_format, $group_mod, &$from, &$flag, &$posts, &$joined, &$poster_avatar, &$profile_img, &$profile, &$search_img, &$search, &$pm_img, &$pm, &$email_img, &$email, &$www_img, &$www, &$nuke_userdata, &$online_status_img, &$online_status) 
 {
         global $lang, $images, $board_config, $online_color, $offline_color, $hidden_color;
 /*****[END]********************************************
@@ -123,7 +123,7 @@ function generate_user_info(&$row, $date_format, $group_mod, &$from, &$flag, &$p
                 $online_status_img = '<a href="' . append_sid("viewonline.$phpEx") . '"><img src="' . $images['icon_online'] . '" alt="' . sprintf($lang['is_online'], $row['username']) . '" title="' . sprintf($lang['is_online'], $row['username']) . '" /></a>';
                 $online_status = '<strong><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_online'], $row['username']) . '"' . $online_color . '>' . $lang['Online'] . '</a></strong>';
             } 
-            elseif (!empty($row['user_allow_viewonline']) || $group_mod || $userdata['user_id'] == $row['user_id']) 
+            elseif (!empty($row['user_allow_viewonline']) || $group_mod || $nuke_userdata['user_id'] == $row['user_id']) 
             {
                 $online_status_img = '<a href="' . append_sid("viewonline.$phpEx") . '"><img src="' . $images['icon_hidden'] . '" alt="' . sprintf($lang['is_hidden'], $row['username']) . '" title="' . sprintf($lang['is_hidden'], $row['username']) . '" /></a>';
                 $online_status = '<strong><em><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_hidden'], $row['username']) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em></strong>';
@@ -152,8 +152,8 @@ global $cache;
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, PAGE_GROUPCP);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, PAGE_GROUPCP);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -198,8 +198,8 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                 message_die(NUKE_GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
         }
         $row = $nuke_db->sql_fetchrow($result);
-        if ( $row['group_moderator'] != $userdata['user_id'] && $userdata['user_level'] != NUKE_ADMIN ) {
-                $template->assign_vars(array(
+        if ( $row['group_moderator'] != $nuke_userdata['user_id'] && $nuke_userdata['user_level'] != NUKE_ADMIN ) {
+                $template_nuke->assign_vars(array(
                         'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
                 );
                 $message = $lang['Not_group_moderator'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
@@ -209,7 +209,7 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
         if ( !($result = $nuke_db->sql_query($sql)) ) {
                 message_die(NUKE_GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
         }
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
         );
         $message = $lang['Group_type_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
@@ -219,14 +219,14 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
         // First, joining a group
         // If the user isn't logged in nuke_redirect them to login
         //
-        if ( !is_user() || !$userdata['session_logged_in']) {
+        if ( !is_user() || !$nuke_userdata['session_logged_in']) {
                 nuke_redirect(append_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
-        } else if ( $sid !== $userdata['session_id'] )
+        } else if ( $sid !== $nuke_userdata['session_id'] )
     	{
     		message_die(NUKE_GENERAL_ERROR, $lang['Session_invalid']);
     	}
 
-        $sql = "SELECT ug.user_id, g.group_type, group_count, group_count_max FROM (" . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g) WHERE g.group_id = '$group_id' AND ( g.group_type <> " . NUKE_GROUP_HIDDEN . " OR (g.group_count <= '".$userdata['user_posts']."' AND g.group_count_max > '".$userdata['user_posts']."')) AND ug.group_id = g.group_id";
+        $sql = "SELECT ug.user_id, g.group_type, group_count, group_count_max FROM (" . NUKE_USER_GROUP_TABLE . " ug, " . NUKE_GROUPS_TABLE . " g) WHERE g.group_id = '$group_id' AND ( g.group_type <> " . NUKE_GROUP_HIDDEN . " OR (g.group_count <= '".$nuke_userdata['user_posts']."' AND g.group_count_max > '".$nuke_userdata['user_posts']."')) AND ug.group_id = g.group_id";
         if ( !($result = $nuke_db->sql_query($sql)) ) {
                 message_die(NUKE_GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
         }
@@ -237,15 +237,15 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                 //if ( $row['group_type'] == NUKE_GROUP_OPEN ) {
         if (	$row = $nuke_db->sql_fetchrow($result) )
         {
-            $is_autogroup_enable = ($row['group_count'] <= $userdata['user_posts'] && $row['group_count_max'] > $userdata['user_posts']) ? true : false;
+            $is_autogroup_enable = ($row['group_count'] <= $nuke_userdata['user_posts'] && $row['group_count_max'] > $nuke_userdata['user_posts']) ? true : false;
                 if ( $row['group_type'] == NUKE_GROUP_OPEN || $is_autogroup_enable)
 	            {
 /*****[END]********************************************
  [ Mod:    Auto Group                          v1.2.2 ]
  ******************************************************/
                         do  {
-                                if ( $userdata['user_id'] == $row['user_id'] ) {
-                                        $template->assign_vars(array(
+                                if ( $nuke_userdata['user_id'] == $row['user_id'] ) {
+                                        $template_nuke->assign_vars(array(
                                                 'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
                                         );
                                         $message = $lang['Already_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
@@ -253,7 +253,7 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                                 }
                         } while ( $row = $nuke_db->sql_fetchrow($result) );
                 } else {
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
                                 'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
                         );
                         $message = $lang['This_closed_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
@@ -262,7 +262,7 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
         } else {
                 message_die(NUKE_GENERAL_MESSAGE, $lang['No_groups_exist']);
         }
-        $sql = "INSERT INTO " . NUKE_USER_GROUP_TABLE . " (group_id, user_id, user_pending) VALUES ('$group_id', " . $userdata['user_id'] . ",'".(($is_autogroup_enable)? 0 : 1)."')";
+        $sql = "INSERT INTO " . NUKE_USER_GROUP_TABLE . " (group_id, user_id, user_pending) VALUES ('$group_id', " . $nuke_userdata['user_id'] . ",'".(($is_autogroup_enable)? 0 : 1)."')";
         if ( !($result = $nuke_db->sql_query($sql)) ) {
                 message_die(NUKE_GENERAL_ERROR, "Error inserting user group subscription", "", __LINE__, __FILE__, $sql);
         }
@@ -296,7 +296,7 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
         $emailer->send();
         $emailer->reset();
         }
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
         );
         $message = ($is_autogroup_enable) ? $lang['Group_added'] : $lang['Group_joined'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
@@ -308,9 +308,9 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
         //
         if ( $cancel ) {
                 nuke_redirect(append_sid("groupcp.$phpEx", true));
-        } elseif ( !is_user() || !$userdata['session_logged_in'] )  {
+        } elseif ( !is_user() || !$nuke_userdata['session_logged_in'] )  {
                 nuke_redirect('modules.php?name=Your_Account&amp;nuke_redirect=groupcp.php&amp;' . NUKE_POST_GROUPS_URL . '='.$group_id);
-        } else if ( $sid !== $userdata['session_id'] )
+        } else if ( $sid !== $nuke_userdata['session_id'] )
         {
  		     message_die(NUKE_GENERAL_ERROR, $lang['Session_invalid']);
  	    }
@@ -322,7 +322,7 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                     SET user_color_gc = '',
                     user_color_gi  = '',
                     user_rank = 0
-                    WHERE user_id = " . $userdata['user_id'];
+                    WHERE user_id = " . $nuke_userdata['user_id'];
             if ( !$nuke_db->sql_query($sql) ) {
                     message_die(NUKE_GENERAL_ERROR, 'Could not remove color from user', '', __LINE__, __FILE__, $sql);
             }
@@ -337,18 +337,18 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
  [ Mod:     Group Colors and Ranks             v1.0.0 ]
  ******************************************************/
                 $sql = "DELETE FROM " . NUKE_USER_GROUP_TABLE . "
-                        WHERE user_id = " . $userdata['user_id'] . "
+                        WHERE user_id = " . $nuke_userdata['user_id'] . "
                 AND group_id = '$group_id'";
                 if ( !($result = $nuke_db->sql_query($sql)) )
                 {
                         message_die(NUKE_GENERAL_ERROR, 'Could not delete group memebership data', '', __LINE__, __FILE__, $sql);
                 }
 
-                if ( $userdata['user_level'] != NUKE_ADMIN && $userdata['user_level'] == NUKE_MOD )
+                if ( $nuke_userdata['user_level'] != NUKE_ADMIN && $nuke_userdata['user_level'] == NUKE_MOD )
                 {
                         $sql = "SELECT COUNT(auth_mod) AS is_auth_mod
                                 FROM (" . NUKE_AUTH_ACCESS_TABLE . " aa, " . NUKE_USER_GROUP_TABLE . " ug)
-                                WHERE ug.user_id = " . $userdata['user_id'] . "
+                                WHERE ug.user_id = " . $nuke_userdata['user_id'] . "
                                         AND aa.group_id = ug.group_id
                                         AND aa.auth_mod = '1'";
                         if ( !($result = $nuke_db->sql_query($sql)) )
@@ -360,7 +360,7 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                         {
                                 $sql = "UPDATE " . NUKE_USERS_TABLE . "
                                         SET user_level = " . NUKE_USER . "
-                                        WHERE user_id = " . $userdata['user_id'];
+                                        WHERE user_id = " . $nuke_userdata['user_id'];
                                 if ( !($result = $nuke_db->sql_query($sql)) )
                                 {
                                         message_die(NUKE_GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
@@ -368,7 +368,7 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                         }
                 }
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
                 );
 
@@ -381,16 +381,16 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                 $unsub_msg = ( isset($_POST['unsub']) ) ? $lang['Confirm_unsub'] : $lang['Confirm_unsub_pending'];
 
                 $s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" /><input type="hidden" name="unsub" value="1" />';
-                $s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+                $s_hidden_fields .= '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
 
                 $page_title = $lang['Group_Control_Panel'];
-                include(NUKE_INCLUDE_DIR.'page_header.'.$phpEx);
+                include(NUKE_INCLUDE_DIR.'nuke_page_header.'.$phpEx);
 
-                $template->set_filenames(array(
+                $template_nuke->set_filenames(array(
                         'confirm' => 'confirm_body.tpl')
                 );
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         'MESSAGE_TITLE' => $lang['Confirm'],
                         'MESSAGE_TEXT' => $unsub_msg,
                         'L_YES' => $lang['Yes'],
@@ -399,7 +399,7 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                         'S_HIDDEN_FIELDS' => $s_hidden_fields)
                 );
 
-                $template->pparse('confirm');
+                $template_nuke->pparse('confirm');
 
                 include(NUKE_INCLUDE_DIR.'page_tail.'.$phpEx);
         }
@@ -437,7 +437,7 @@ else if ( $group_id )
         {
                 $group_moderator = $group_info['group_moderator'];
 
-                if ( $group_moderator == $userdata['user_id'] || $userdata['user_level'] == NUKE_ADMIN )
+                if ( $group_moderator == $nuke_userdata['user_id'] || $nuke_userdata['user_level'] == NUKE_ADMIN )
                 {
                         $is_moderator = TRUE;
                 }
@@ -450,14 +450,14 @@ else if ( $group_id )
                         if ( !is_user() )
                         {
                                 nuke_redirect(append_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
-                        } else if ( $sid !== $userdata['session_id'] )
+                        } else if ( $sid !== $nuke_userdata['session_id'] )
             			{
             				message_die(NUKE_GENERAL_ERROR, $lang['Session_invalid']);
             			}
 
                         if ( !$is_moderator )
                         {
-                                $template->assign_vars(array(
+                                $template_nuke->assign_vars(array(
                                         'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
                                 );
 
@@ -468,11 +468,11 @@ else if ( $group_id )
 
                         if ( isset($_POST['add']) )
                         {
-                $username = ( isset($_POST['username']) ) ? phpbb_clean_username($_POST['username']) : '';
+                $nuke_username = ( isset($_POST['username']) ) ? phpbb_clean_username($_POST['username']) : '';
 
                                 $sql = "SELECT user_id, user_email, user_lang, user_level
                                         FROM " . NUKE_USERS_TABLE . "
-                                        WHERE username = '" . str_replace("\'", "''", $username) . "'";
+                                        WHERE username = '" . str_replace("\'", "''", $nuke_username) . "'";
                                 if ( !($result = $nuke_db->sql_query($sql)) )
                                 {
                                         message_die(NUKE_GENERAL_ERROR, "Could not get user information", $lang['Error'], __LINE__, __FILE__, $sql);
@@ -480,7 +480,7 @@ else if ( $group_id )
 
                                 if ( !($row = $nuke_db->sql_fetchrow($result)) )
                                 {
-                                        $template->assign_vars(array(
+                                        $template_nuke->assign_vars(array(
                                                 'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
                                         );
 
@@ -491,7 +491,7 @@ else if ( $group_id )
 
                                 if ( $row['user_id'] == NUKE_ANONYMOUS )
                                 {
-                                        $template->assign_vars(array(
+                                        $template_nuke->assign_vars(array(
                                                 'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
                                         );
 
@@ -576,7 +576,7 @@ else if ( $group_id )
                                 }
                                 else
                                 {
-                                        $template->assign_vars(array(
+                                        $template_nuke->assign_vars(array(
                                                 'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
                                         );
 
@@ -709,11 +709,11 @@ else if ( $group_id )
                                                                 }
                                                                 while ( $row = $nuke_db->sql_fetchrow($result) );
 
-                                                                while( list($user_id, $group_list) = @each($group_check) )
+                                                                while( list($nuke_user_id, $group_list) = @each($group_check) )
                                                                 {
                                                                         if ( count($group_list) == 1 )
                                                                         {
-                                                                                $remove_mod_sql .= ( ( $remove_mod_sql != '' ) ? ', ' : '' ) . $user_id;
+                                                                                $remove_mod_sql .= ( ( $remove_mod_sql != '' ) ? ', ' : '' ) . $nuke_user_id;
                                                                         }
                                                                 }
 
@@ -918,7 +918,7 @@ else if ( $group_id )
         {
                 for($i = 0; $i < $members_count; $i++)
                 {
-                        if ( $group_members[$i]['user_id'] == $userdata['user_id'] && is_user() )
+                        if ( $group_members[$i]['user_id'] == $nuke_userdata['user_id'] && is_user() )
                         {
                                 $is_group_member = TRUE;
                         }
@@ -929,7 +929,7 @@ else if ( $group_id )
 /*****[BEGIN]******************************************
  [ Mod:    Auto Group                          v1.2.2 ]
  ******************************************************/
-        $is_autogroup_enable = ($group_info['group_count'] <= $userdata['user_posts'] && $group_info['group_count_max'] > $userdata['user_posts']) ? true : false;
+        $is_autogroup_enable = ($group_info['group_count'] <= $nuke_userdata['user_posts'] && $group_info['group_count_max'] > $nuke_userdata['user_posts']) ? true : false;
 /*****[END]********************************************
  [ Mod:    Auto Group                          v1.2.2 ]
  ******************************************************/
@@ -937,19 +937,19 @@ else if ( $group_id )
         {
                 for($i = 0; $i < $modgroup_pending_count; $i++)
                 {
-                        if ( $modgroup_pending_list[$i]['user_id'] == $userdata['user_id'] && is_user() )
+                        if ( $modgroup_pending_list[$i]['user_id'] == $nuke_userdata['user_id'] && is_user() )
                         {
                                 $is_group_pending_member = TRUE;
                         }
                 }
         }
 
-        if ( $userdata['user_level'] == NUKE_ADMIN )
+        if ( $nuke_userdata['user_level'] == NUKE_ADMIN )
         {
                 $is_moderator = TRUE;
         }
 
-        if ( $userdata['user_id'] == $group_info['group_moderator'] )
+        if ( $nuke_userdata['user_id'] == $group_info['group_moderator'] )
         {
                 $is_moderator = TRUE;
 
@@ -959,13 +959,13 @@ else if ( $group_id )
         }
         else if ( $is_group_member || $is_group_pending_member )
         {
-                $template->assign_block_vars('switch_unsubscribe_group_input', array());
+                $template_nuke->assign_block_vars('switch_unsubscribe_group_input', array());
 
                 $group_details =  ( $is_group_pending_member ) ? $lang['Pending_this_group'] : $lang['Member_this_group'];
 
                 $s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
         }
-        else if ( $userdata['user_id'] == NUKE_ANONYMOUS )
+        else if ( $nuke_userdata['user_id'] == NUKE_ANONYMOUS )
         {
                 $group_details =  $lang['Login_to_join'];
                 $s_hidden_fields = '';
@@ -974,7 +974,7 @@ else if ( $group_id )
         {
                 if ( $group_info['group_type'] == NUKE_GROUP_OPEN )
                 {
-                        $template->assign_block_vars('switch_subscribe_group_input', array());
+                        $template_nuke->assign_block_vars('switch_subscribe_group_input', array());
 
                         $group_details =  $lang['This_open_group'];
                         $s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
@@ -998,7 +998,7 @@ else if ( $group_id )
                 {
                     if ($is_autogroup_enable)
                     {
-                            $template->assign_block_vars('switch_subscribe_group_input', array());
+                            $template_nuke->assign_block_vars('switch_subscribe_group_input', array());
                             $group_details =  sprintf ($lang['This_closed_group'],$lang['Join_auto']);
                             $s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
                     } else
@@ -1011,7 +1011,7 @@ else if ( $group_id )
 		        {
                     if ($is_autogroup_enable)
                     {
-                            $template->assign_block_vars('switch_subscribe_group_input', array());
+                            $template_nuke->assign_block_vars('switch_subscribe_group_input', array());
                             $group_details =  sprintf ($lang['This_hidden_group'],$lang['Join_auto']);
                             $s_hidden_fields = '<input type="hidden" name="' . NUKE_POST_GROUPS_URL . '" value="' . $group_id . '" />';
                     } else
@@ -1026,12 +1026,12 @@ else if ( $group_id )
         }
 
         $page_title = $lang['Group_Control_Panel'];
-        include(NUKE_INCLUDE_DIR.'page_header.'.$phpEx);
+        include(NUKE_INCLUDE_DIR.'nuke_page_header.'.$phpEx);
 
         //
         // Load templates
         //
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
                 'info' => 'groupcp_info_body.tpl',
                 'pendinginfo' => 'groupcp_pending_info.tpl')
         );
@@ -1043,24 +1043,24 @@ else if ( $group_id )
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-        $username = UsernameColor($group_moderator['username']);
+        $nuke_username = UsernameColor($group_moderator['username']);
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-        $user_id = $group_moderator['user_id'];
+        $nuke_user_id = $group_moderator['user_id'];
 		$flag    = $group_moderator['user_from_flag'];
 
 /*****[BEGIN]******************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
-        generate_user_info($group_moderator, $board_config['default_dateformat'], $is_moderator, $from, $flag, $posts, $joined, $poster_avatar, $profile_img, $profile, $search_img, $search, $pm_img, $pm, $email_img, $email, $www_img, $www, $userdata, $online_status_img, $online_status);
+        generate_user_info($group_moderator, $board_config['default_dateformat'], $is_moderator, $from, $flag, $posts, $joined, $poster_avatar, $profile_img, $profile, $search_img, $search, $pm_img, $pm, $email_img, $email, $www_img, $www, $nuke_userdata, $online_status_img, $online_status);
 /*****[END]********************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
 
-        $s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+        $s_hidden_fields .= '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'L_GROUP_INFORMATION' => $lang['Group_Information'],
                 'L_GROUP_NAME' => $lang['Group_name'],
                 'L_GROUP_DESC' => $lang['Group_description'],
@@ -1096,7 +1096,7 @@ else if ( $group_id )
                 'GROUP_DETAILS' => $group_details,
                 'MOD_ROW_COLOR' => '#' . $theme['td_color1'],
                 'MOD_ROW_CLASS' => $theme['td_class1'],
-                'MOD_USERNAME' => $username,
+                'MOD_USERNAME' => $nuke_username,
                 'MOD_FROM' => $from,
 /*****[BEGIN]******************************************
  [ Mod:     Country Flags                      v2.0.7 ]
@@ -1128,7 +1128,7 @@ else if ( $group_id )
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
 
-                'U_MOD_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$user_id"),
+                'U_MOD_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id"),
                 'U_SEARCH_USER' => append_sid("search.$phpEx?mode=searchuser&popup=1"),
 
                 'S_GROUP_OPEN_TYPE' => NUKE_GROUP_OPEN,
@@ -1151,16 +1151,16 @@ else if ( $group_id )
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $username = UsernameColor($group_members[$i]['username']);
+                $nuke_username = UsernameColor($group_members[$i]['username']);
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $user_id = $group_members[$i]['user_id'];
+                $nuke_user_id = $group_members[$i]['user_id'];
 
 /*****[BEGIN]******************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
-                generate_user_info($group_members[$i], $board_config['default_dateformat'], $is_moderator, $from, $flag, $posts, $joined, $poster_avatar, $profile_img, $profile, $search_img, $search, $pm_img, $pm, $email_img, $email, $www_img, $www, $userdata, $online_status_img, $online_status);
+                generate_user_info($group_members[$i], $board_config['default_dateformat'], $is_moderator, $from, $flag, $posts, $joined, $poster_avatar, $profile_img, $profile, $search_img, $search, $pm_img, $pm, $email_img, $email, $www_img, $www, $nuke_userdata, $online_status_img, $online_status);
 /*****[END]********************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
@@ -1170,10 +1170,10 @@ else if ( $group_id )
                         $row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
                         $row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
-                        $template->assign_block_vars('member_row', array(
+                        $template_nuke->assign_block_vars('member_row', array(
                                 'ROW_COLOR' => '#' . $row_color,
                                 'ROW_CLASS' => $row_class,
-                                'USERNAME' => $username,
+                                'USERNAME' => $nuke_username,
                                 'FROM' => $from,
 /*****[BEGIN]******************************************
  [ Mod:     Country Flags                      v2.0.7 ]
@@ -1184,7 +1184,7 @@ else if ( $group_id )
  ******************************************************/
                                 'JOINED' => $joined,
                                 'POSTS' => $posts,
-                                'USER_ID' => $user_id,
+                                'USER_ID' => $nuke_user_id,
                                 'AVATAR_IMG' => $poster_avatar,
                                 'PROFILE_IMG' => $profile_img,
                                 'PROFILE' => $profile,
@@ -1205,12 +1205,12 @@ else if ( $group_id )
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
 
-                                'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$user_id"))
+                                'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id"))
                         );
 
                         if ( $is_moderator )
                         {
-                                $template->assign_block_vars('member_row.switch_mod_option', array());
+                                $template_nuke->assign_block_vars('member_row.switch_mod_option', array());
                         }
                 }
         }
@@ -1220,15 +1220,15 @@ else if ( $group_id )
                 //
                 // No group members
                 //
-                $template->assign_block_vars('switch_no_members', array());
-                $template->assign_vars(array(
+                $template_nuke->assign_block_vars('switch_no_members', array());
+                $template_nuke->assign_vars(array(
                         'L_NO_MEMBERS' => $lang['No_group_members'])
                 );
         }
 
         $current_page = ( !$members_count ) ? 1 : ceil( $members_count / $board_config['topics_per_page'] );
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
                 'PAGINATION' => generate_pagination("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id", $members_count, $board_config['topics_per_page'], $start),
                 'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $board_config['topics_per_page'] ) + 1 ), $current_page ),
 
@@ -1240,8 +1240,8 @@ else if ( $group_id )
                 //
                 // No group members
                 //
-                $template->assign_block_vars('switch_hidden_group', array());
-                $template->assign_vars(array(
+                $template_nuke->assign_block_vars('switch_hidden_group', array());
+                $template_nuke->assign_vars(array(
                         'L_HIDDEN_MEMBERS' => $lang['Group_hidden_members'])
                 );
         }
@@ -1262,16 +1262,16 @@ else if ( $group_id )
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                                $username = UsernameColor($modgroup_pending_list[$i]['username']);
+                                $nuke_username = UsernameColor($modgroup_pending_list[$i]['username']);
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                                $user_id = $modgroup_pending_list[$i]['user_id'];
+                                $nuke_user_id = $modgroup_pending_list[$i]['user_id'];
 
 /*****[BEGIN]******************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
-                                generate_user_info($modgroup_pending_list[$i], $board_config['default_dateformat'], $is_moderator, $from, $flag, $posts, $joined, $poster_avatar, $profile_img, $profile, $search_img, $search, $pm_img, $pm, $email_img, $email, $www_img, $www, $userdata, $online_status_img, $online_status);
+                                generate_user_info($modgroup_pending_list[$i], $board_config['default_dateformat'], $is_moderator, $from, $flag, $posts, $joined, $poster_avatar, $profile_img, $profile, $search_img, $search, $pm_img, $pm, $email_img, $email, $www_img, $www, $nuke_userdata, $online_status_img, $online_status);
 /*****[END]********************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
@@ -1279,12 +1279,12 @@ else if ( $group_id )
                                 $row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
                                 $row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
-                                $user_select = '<input type="checkbox" name="member[]" value="' . $user_id . '">';
+                                $nuke_user_select = '<input type="checkbox" name="member[]" value="' . $nuke_user_id . '">';
 
-                                $template->assign_block_vars('pending_members_row', array(
+                                $template_nuke->assign_block_vars('pending_members_row', array(
                                         'ROW_CLASS' => $row_class,
                                         'ROW_COLOR' => '#' . $row_color,
-                                        'USERNAME' => $username,
+                                        'USERNAME' => $nuke_username,
                                         'FROM' => $from,
 /*****[BEGIN]******************************************
  [ Mod:     Country Flags                      v2.0.7 ]
@@ -1295,7 +1295,7 @@ else if ( $group_id )
  ******************************************************/
                                         'JOINED' => $joined,
                                         'POSTS' => $posts,
-                                        'USER_ID' => $user_id,
+                                        'USER_ID' => $nuke_user_id,
                                         'AVATAR_IMG' => $poster_avatar,
                                         'PROFILE_IMG' => $profile_img,
                                         'PROFILE' => $profile,
@@ -1316,30 +1316,30 @@ else if ( $group_id )
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
 
-                                        'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$user_id"))
+                                        'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id"))
                                 );
                         }
 
-                        $template->assign_block_vars('switch_pending_members', array() );
+                        $template_nuke->assign_block_vars('switch_pending_members', array() );
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
                                 'L_SELECT' => $lang['Select'],
                                 'L_APPROVE_SELECTED' => $lang['Approve_selected'],
                                 'L_DENY_SELECTED' => $lang['Deny_selected'])
                         );
 
-                        $template->assign_var_from_handle('PENDING_USER_BOX', 'pendinginfo');
+                        $template_nuke->assign_var_from_handle('PENDING_USER_BOX', 'pendinginfo');
 
                 }
         }
 
         if ( $is_moderator )
         {
-                $template->assign_block_vars('switch_mod_option', array());
-                $template->assign_block_vars('switch_add_member', array());
+                $template_nuke->assign_block_vars('switch_mod_option', array());
+                $template_nuke->assign_block_vars('switch_add_member', array());
         }
 
-        $template->pparse('info');
+        $template_nuke->pparse('info');
 }
 else
 {
@@ -1354,7 +1354,7 @@ else
         {
                 $sql = "SELECT g.group_id, g.group_name, g.group_type, ug.user_pending
                         FROM (" . NUKE_GROUPS_TABLE . " g, " . NUKE_USER_GROUP_TABLE . " ug)
-                        WHERE ug.user_id = " . $userdata['user_id'] . "
+                        WHERE ug.user_id = " . $nuke_userdata['user_id'] . "
                                 AND ug.group_id = g.group_id
                                 AND g.group_single_user <> " . TRUE . "
                         ORDER BY g.group_name, ug.user_id";
@@ -1408,11 +1408,11 @@ else
 /*****[BEGIN]******************************************
  [ Mod:    Auto Group                          v1.2.2 ]
  ******************************************************/
-                $is_autogroup_enable = ($row['group_count'] <= $userdata['user_posts'] && $row['group_count_max'] > $userdata['user_posts']) ? true : false;
+                $is_autogroup_enable = ($row['group_count'] <= $nuke_userdata['user_posts'] && $row['group_count_max'] > $nuke_userdata['user_posts']) ? true : false;
 /*****[END]********************************************
  [ Mod:    Auto Group                          v1.2.2 ]
  ******************************************************/
-                if  ( $row['group_type'] != NUKE_GROUP_HIDDEN || $userdata['user_level'] == NUKE_ADMIN || $is_autogroup_enable )
+                if  ( $row['group_type'] != NUKE_GROUP_HIDDEN || $nuke_userdata['user_level'] == NUKE_ADMIN || $is_autogroup_enable )
                 {
                         $s_group_list_opt .='<option value="' . $row['group_id'] . '">' . $row['group_name'] . '</option>';
                 }
@@ -1425,36 +1425,36 @@ else
                 // Load and process templates
                 //
                 $page_title = $lang['Group_Control_Panel'];
-                include(NUKE_INCLUDE_DIR.'page_header.'.$phpEx);
+                include(NUKE_INCLUDE_DIR.'nuke_page_header.'.$phpEx);
 
-                $template->set_filenames(array(
+                $template_nuke->set_filenames(array(
                         'user' => 'groupcp_user_body.tpl')
                 );
                 make_jumpbox('viewforum.'.$phpEx);
 
                 if ( $s_pending_groups_opt != '' || $s_member_groups_opt != '' )
                 {
-                        $template->assign_block_vars('switch_groups_joined', array() );
+                        $template_nuke->assign_block_vars('switch_groups_joined', array() );
                 }
 
                 if ( $s_member_groups_opt != '' )
                 {
-                        $template->assign_block_vars('switch_groups_joined.switch_groups_member', array() );
+                        $template_nuke->assign_block_vars('switch_groups_joined.switch_groups_member', array() );
                 }
 
                 if ( $s_pending_groups_opt != '' )
                 {
-                        $template->assign_block_vars('switch_groups_joined.switch_groups_pending', array() );
+                        $template_nuke->assign_block_vars('switch_groups_joined.switch_groups_pending', array() );
                 }
 
                 if ( $s_group_list_opt != '' )
                 {
-                        $template->assign_block_vars('switch_groups_remaining', array() );
+                        $template_nuke->assign_block_vars('switch_groups_remaining', array() );
                 }
 
-                $s_hidden_fields = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+                $s_hidden_fields = '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         'L_GROUP_MEMBERSHIP_DETAILS' => $lang['Group_member_details'],
                         'L_JOIN_A_GROUP' => $lang['Group_member_join'],
                         'L_YOU_BELONG_GROUPS' => $lang['Current_memberships'],
@@ -1472,7 +1472,7 @@ else
                         'GROUP_MEMBER_SELECT' => $s_member_groups)
                 );
 
-                $template->pparse('user');
+                $template_nuke->pparse('user');
         }
         else
         {

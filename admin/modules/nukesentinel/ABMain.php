@@ -61,24 +61,24 @@ echo '<option value="1"'.$sel2.'>'._AB_SITEDISABLED.'</option>'."\n";
 echo '</select></td></tr>'."\n";
 echo '<tr><td>'.help_img(_AB_HELP_004).' '._AB_TEMPLATE.':</td>'."\n";
 echo '<td><select name="xsite_reason">'."\n";
-$templatedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
-$templatelist = "";
-while($func=$templatedir->read()) {
+$template_nukedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
+$template_nukelist = "";
+while($func=$template_nukedir->read()) {
   if(substr($func, 0, 6) == "admin_") {
-    $templatelist .= "$func ";
+    $template_nukelist .= "$func ";
   }
 }
-closedir($templatedir->handle);
-$templatelist = explode(" ", $templatelist);
-sort($templatelist);
-for($i=0; $i < sizeof($templatelist); $i++) {
-  if($templatelist[$i]!="") {
-    $bl = str_replace("admin_","",$templatelist[$i]);
+closedir($template_nukedir->handle);
+$template_nukelist = explode(" ", $template_nukelist);
+sort($template_nukelist);
+for($i=0; $i < sizeof($template_nukelist); $i++) {
+  if($template_nukelist[$i]!="") {
+    $bl = str_replace("admin_","",$template_nukelist[$i]);
     $bl = str_replace(".tpl","",$bl);
     $bl = str_replace("_"," ",$bl);
     echo '<option';
-    if($templatelist[$i]==$ip_sets['site_reason']) { echo ' selected="selected"'; }
-    echo ' value="'.$templatelist[$i].'">'.ucfirst($bl).'</option>'."\n";
+    if($template_nukelist[$i]==$ip_sets['site_reason']) { echo ' selected="selected"'; }
+    echo ' value="'.$template_nukelist[$i].'">'.ucfirst($bl).'</option>'."\n";
   }
 }
 echo '</select></td></tr>'."\n";
@@ -170,24 +170,24 @@ echo '<option value="3"'.$selproxy4.'>'._AB_PROXYSTRONG.'</option>'."\n";
 echo '</select></td></tr>'."\n";
 echo '<tr><td>'.help_img(_AB_HELP_045).' '._AB_TEMPLATE.':</td>'."\n";
 echo '<td><select name="xproxy_reason">'."\n";
-$templatedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
-$templatelist = "";
-while($func=$templatedir->read()) {
+$template_nukedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
+$template_nukelist = "";
+while($func=$template_nukedir->read()) {
   if(substr($func, 0, 6) == "abuse_") {
-    $templatelist .= "$func ";
+    $template_nukelist .= "$func ";
   }
 }
-closedir($templatedir->handle);
-$templatelist = explode(" ", $templatelist);
-sort($templatelist);
-for($i=0; $i < sizeof($templatelist); $i++) {
-  if($templatelist[$i]!="") {
-    $bl = str_replace("abuse_","",$templatelist[$i]);
+closedir($template_nukedir->handle);
+$template_nukelist = explode(" ", $template_nukelist);
+sort($template_nukelist);
+for($i=0; $i < sizeof($template_nukelist); $i++) {
+  if($template_nukelist[$i]!="") {
+    $bl = str_replace("abuse_","",$template_nukelist[$i]);
     $bl = str_replace(".tpl","",$bl);
     $bl = str_replace("_"," ",$bl);
     echo '<option';
-    if($templatelist[$i]==$ip_sets['proxy_reason']) { echo ' selected="selected"'; }
-    echo ' value="'.$templatelist[$i].'">'.ucfirst($bl).'</option>'."\n";
+    if($template_nukelist[$i]==$ip_sets['proxy_reason']) { echo ' selected="selected"'; }
+    echo ' value="'.$template_nukelist[$i].'">'.ucfirst($bl).'</option>'."\n";
   }
 }
 echo '</select></td></tr>'."\n";

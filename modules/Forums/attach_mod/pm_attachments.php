@@ -48,7 +48,7 @@ class attach_pm extends attach_parent
     */
     function preview_attachments()
     {
-        global $attach_config, $userdata;
+        global $attach_config, $nuke_userdata;
 
         if (!intval($attach_config['allow_pm_attach']))
         {
@@ -63,7 +63,7 @@ class attach_pm extends attach_parent
     */
     function insert_attachment_pm($a_privmsgs_id)
     {
-        global $nuke_db, $mode, $attach_config, $privmsg_sent_id, $userdata, $to_userdata, $HTTP_POST_VARS;
+        global $nuke_db, $mode, $attach_config, $privmsg_sent_id, $nuke_userdata, $to_userdata, $HTTP_POST_VARS;
 
         $a_privmsgs_id = (int) $a_privmsgs_id;
 
@@ -172,18 +172,18 @@ class attach_pm extends attach_parent
     */
     function display_attach_box_limits()
     {
-        global $folder, $attach_config, $board_config, $template, $lang, $userdata, $nuke_db;
+        global $folder, $attach_config, $board_config, $template_nuke, $lang, $nuke_userdata, $nuke_db;
 
-        if (!$attach_config['allow_pm_attach'] && $userdata['user_level'] != NUKE_ADMIN)
+        if (!$attach_config['allow_pm_attach'] && $nuke_userdata['user_level'] != NUKE_ADMIN)
         {
             return;
         }
 
-        $this->get_quota_limits($userdata);
+        $this->get_quota_limits($nuke_userdata);
 
         $pm_filesize_limit = (!$attach_config['pm_filesize_limit']) ? $attach_config['attachment_quota'] : $attach_config['pm_filesize_limit'];
 
-        $pm_filesize_total = get_total_attach_pm_filesize('to_user', (int) $userdata['user_id']);
+        $pm_filesize_total = get_total_attach_pm_filesize('to_user', (int) $nuke_userdata['user_id']);
 
         $attach_limit_pct = ( $pm_filesize_limit > 0 ) ? round(( $pm_filesize_total / $pm_filesize_limit ) * 100) : 0;
         $attach_limit_img_length = ( $pm_filesize_limit > 0 ) ? round(( $pm_filesize_total / $pm_filesize_limit ) * $board_config['privmsg_graphic_length']) : 0;
@@ -195,7 +195,7 @@ class attach_pm extends attach_parent
 
         $l_box_size_status = sprintf($lang['Attachbox_limit'], $attach_limit_pct);
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'ATTACHBOX_LIMIT_IMG_WIDTH'    => $attach_limit_img_length,
             'ATTACHBOX_LIMIT_PERCENT'    => $attach_limit_pct,
             'ATTACH_BOX_SIZE_STATUS'    => $l_box_size_status)
@@ -207,7 +207,7 @@ class attach_pm extends attach_parent
     */
     function privmsgs_attachment_mod($mode)
     {
-        global $attach_config, $template, $lang, $userdata, $HTTP_POST_VARS, $phpbb2_root_path, $phpEx, $nuke_db;
+        global $attach_config, $template_nuke, $lang, $nuke_userdata, $HTTP_POST_VARS, $phpbb2_root_path, $phpEx, $nuke_db;
         global $confirm, $delete, $delete_all, $post_id, $privmsgs_id, $privmsg_id, $submit, $refresh, $mark_list, $folder;
 
         if ($folder != 'outbox')
@@ -241,7 +241,7 @@ class attach_pm extends attach_parent
 
 		if (($this->pm_delete_attachments || $delete) && sizeof($mark_list))
         {
-            if (!$userdata['session_logged_in'])
+            if (!$nuke_userdata['session_logged_in'])
             {
                 $header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')) ) ? 'Refresh: 0; URL=' : 'Location: ';
                 nuke_redirect(append_sid("login.$phpEx?nuke_redirect=privmsg&amp;folder=inbox", true));

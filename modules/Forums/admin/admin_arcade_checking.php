@@ -241,6 +241,6 @@ echo "    <tr>\n"
 
 echo "</table>";
 
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

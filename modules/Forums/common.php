@@ -84,7 +84,7 @@ if (isset($HTTP_SESSION_VARS) && !is_array($HTTP_SESSION_VARS))
 if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals')) == 'on')
 {
     // PHP4+ path
-    $not_unset = array('HTTP_GET_VARS', 'HTTP_POST_VARS', 'HTTP_COOKIE_VARS', 'HTTP_SERVER_VARS', 'HTTP_SESSION_VARS', 'HTTP_ENV_VARS', 'HTTP_POST_FILES', 'phpEx', 'phpbb_root_path', 'name', 'admin', 'nukeuser', 'user', 'no_page_header', 'cookie', 'db', 'prefix', 'cancel');
+    $not_unset = array('HTTP_GET_VARS', 'HTTP_POST_VARS', 'HTTP_COOKIE_VARS', 'HTTP_SERVER_VARS', 'HTTP_SESSION_VARS', 'HTTP_ENV_VARS', 'HTTP_POST_FILES', 'phpEx', 'phpbb_root_path', 'name', 'admin', 'nukeuser', 'user', 'no_nuke_page_header', 'cookie', 'db', 'prefix', 'cancel');
     //$not_unset = array('HTTP_GET_VARS', 'HTTP_POST_VARS', 'HTTP_COOKIE_VARS', 'HTTP_SERVER_VARS', 'HTTP_SESSION_VARS', 'HTTP_ENV_VARS', 'HTTP_POST_FILES', 'phpEx', 'phpbb_root_path');
 
     // Not only will array_merge give a warning if a parameter
@@ -193,7 +193,7 @@ if ($_POST != $HTTP_POST_VARS) {
 // malicious rewriting of language and otherarray values via
 // URI params
 //
-$userdata = array();
+$nuke_userdata = array();
 $theme = array();
 $images = array();
 $lang = array();
@@ -234,7 +234,7 @@ unset($nuke_dbpasswd);
 // Quake: sorry fella, we are using a better ip tracker :)
 //$client_ip = ( !empty($HTTP_SERVER_VARS['REMOTE_ADDR']) ) ? $HTTP_SERVER_VARS['REMOTE_ADDR'] : ( ( !empty($HTTP_ENV_VARS['REMOTE_ADDR']) ) ? $HTTP_ENV_VARS['REMOTE_ADDR'] : getenv('REMOTE_ADDR') );
 $client_ip = $identify->get_ip();
-$user_ip = encode_ip($client_ip);
+$nuke_user_ip = encode_ip($client_ip);
 
 //
 // Setup forum wide options, if this fails
@@ -257,7 +257,7 @@ include($phpbb2_root_path . 'attach_mod/attachment_mod.php');
  [ Mod:     Disable Board Message              v1.0.0 ]
  [ Mod:     Admin view board while disabled    v1.0.0 ]
  ******************************************************/
-if( $board_config['board_disable'] && !defined("IN_ADMIN") && !defined("IN_LOGIN") && ($board_config['board_disable_adminview'] && $userinfo['user_level'] != 2) )
+if( $board_config['board_disable'] && !defined("IN_ADMIN") && !defined("IN_LOGIN") && ($board_config['board_disable_adminview'] && $nuke_userinfo['user_level'] != 2) )
 {
     if ( $board_config['board_disable_msg'] != "" )
     {

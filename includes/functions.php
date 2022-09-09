@@ -348,13 +348,13 @@ function get_db_stat($mode)
 }
 
 // added at phpBB 2.0.11 to properly format the username
-function phpbb_clean_username($username)
+function phpbb_clean_username($nuke_username)
 {
-    $username = substr(htmlspecialchars(str_replace("\'", "'", trim($username))), 0, 25);
-    $username = phpbb_rtrim($username, "\\");
-    $username = str_replace("'", "\'", $username);
+    $nuke_username = substr(htmlspecialchars(str_replace("\'", "'", trim($nuke_username))), 0, 25);
+    $nuke_username = phpbb_rtrim($nuke_username, "\\");
+    $nuke_username = str_replace("'", "\'", $nuke_username);
 
-    return $username;
+    return $nuke_username;
 }
 /**
 * This function is a wrapper for ltrim, as charlist is only supported in php >= 4.1.0
@@ -442,14 +442,14 @@ function dss_rand()
 }
 
 //
-// Get Userdata, $user can be username or user_id. If force_str is true, the username will be forced.
+// Get Userdata, $nuke_user can be username or user_id. If force_str is true, the username will be forced.
 //
-function get_userdata($user, $force_str = false) 
+function get_userdata($nuke_user, $force_str = false) 
 {
     global $nuke_db;
-    $user = (!is_numeric($user) || $force_str) ? phpbb_clean_username($user) : intval($user);
+    $nuke_user = (!is_numeric($nuke_user) || $force_str) ? phpbb_clean_username($nuke_user) : intval($nuke_user);
     $sql = "SELECT * FROM ".NUKE_USERS_TABLE." WHERE ";
-    $sql .= (( is_integer($user)) ? "user_id = $user" : "username = '".str_replace("\'", "''", $user)."'" )." AND user_id <> ".NUKE_ANONYMOUS;
+    $sql .= (( is_integer($nuke_user)) ? "user_id = $nuke_user" : "username = '".str_replace("\'", "''", $nuke_user)."'" )." AND user_id <> ".NUKE_ANONYMOUS;
     if(!($result = $nuke_db->sql_query($sql))) 
 	{
         message_die(NUKE_GENERAL_ERROR, 'Tried obtaining data for a non-existent user', '', __LINE__, __FILE__, $sql);
@@ -464,15 +464,15 @@ function get_userdata($user, $force_str = false)
  * FUNCTION set_user_xdata
  *
  * Sets a specefic custom profile field ($which_xdata) to the specefied
- * value ($value) for the user ($user).
+ * value ($value) for the user ($nuke_user).
  *
- * @param int|string $user        - user_id or username of the user we're editing
+ * @param int|string $nuke_user        - user_id or username of the user we're editing
  * @param int|string $which_xdata - the profile field being changed
  * @param mixed $value            - value to assign
  * @global class $nuke_db
  * @return null
  */
-function set_user_xdata($user, $which_xdata, $value)
+function set_user_xdata($nuke_user, $which_xdata, $value)
 {
     global $nuke_db;
 
@@ -480,20 +480,20 @@ function set_user_xdata($user, $which_xdata, $value)
     $value = str_replace("\\'", "'", $value);
     $value = str_replace("'", "\\'", $value);
 
-    $user_is_name = (!is_numeric($user)) ? true : false;
+    $nuke_user_is_name = (!is_numeric($nuke_user)) ? true : false;
 	$xd_is_name = (!is_numeric($which_xdata)) ? true : false;
 
-    if($user_is_name)
+    if($nuke_user_is_name)
     {
-        $user = phpbb_clean_username($user);
+        $nuke_user = phpbb_clean_username($nuke_user);
     }
 
-    $user_where = ($user_is_name) ? ('u.username = \''.$user.'\'') : ('u.user_id = '.$user);
+    $nuke_user_where = ($nuke_user_is_name) ? ('u.username = \''.$nuke_user.'\'') : ('u.user_id = '.$nuke_user);
 	$field_where = ($xd_is_name) ? ('xf.code_name = \''.$which_xdata.'\'') : ('xf.field_id = '.$which_xdata);
 
     $sql = "SELECT u.user_id, xf.field_id FROM ("
         .NUKE_USERS_TABLE. " AS u, ".NUKE_XDATA_FIELDS_TABLE." AS xf)
-        WHERE " .$user_where. " AND ".$field_where."
+        WHERE " .$nuke_user_where. " AND ".$field_where."
         LIMIT 1";
 
     if(!($result = $nuke_db->sql_query($sql)))
@@ -528,39 +528,39 @@ function set_user_xdata($user, $which_xdata, $value)
 /**
  * FUNCTION get_user_xdata
  *
- * retrieves the custom profile field data for the user ($user)
+ * retrieves the custom profile field data for the user ($nuke_user)
  * similar to get_userdata
  *
- * @param int|string $user
+ * @param int|string $nuke_user
  * @param bool $force_str
  * @global class $nuke_db
  * @global array $lang
  * @return array $data
  */
-function get_user_xdata($user, $force_str = false)
+function get_user_xdata($nuke_user, $force_str = false)
 {
     global $nuke_db;
-    $is_name = ((intval($user) == 0) || $force_str);
+    $is_name = ((intval($nuke_user) == 0) || $force_str);
 
-    if(!isset($user) || empty($user)) return '';
+    if(!isset($nuke_user) || empty($nuke_user)) return '';
 
     if($is_name)
     {
-        $user = trim(htmlspecialchars($user));
-        $user = substr(str_replace("\\'", "'", $user), 0, 25);
-        $user = str_replace("'", "\\'", $user);
+        $nuke_user = trim(htmlspecialchars($nuke_user));
+        $nuke_user = substr(str_replace("\\'", "'", $nuke_user), 0, 25);
+        $nuke_user = str_replace("'", "\\'", $nuke_user);
 
         $sql = "SELECT xf.field_type, xf.code_name, xd.xdata_value
 				FROM ".NUKE_XDATA_DATA_TABLE." xd, ".NUKE_USERS_TABLE." u, ".NUKE_XDATA_FIELDS_TABLE." xf
- 				WHERE xf.field_id = xd.field_id AND xd.user_id = u.user_id AND u.username = '".$user."'";
+ 				WHERE xf.field_id = xd.field_id AND xd.user_id = u.user_id AND u.username = '".$nuke_user."'";
     }
     else
     {
-        $user = intval($user);
+        $nuke_user = intval($nuke_user);
 
         $sql = "SELECT xf.field_type, xf.code_name, xd.xdata_value
 				FROM ".NUKE_XDATA_DATA_TABLE." xd, ".NUKE_XDATA_FIELDS_TABLE." xf
-				WHERE xf.field_id = xd.field_id AND xd.user_id = ".$user;
+				WHERE xf.field_id = xd.field_id AND xd.user_id = ".$nuke_user;
     }
 
     if(!($result = $nuke_db->sql_query($sql)))
@@ -648,11 +648,11 @@ function get_xd_metadata($force_refresh = false)
     return $meta;
 }
 
-function xdata_auth($fields, $userid, $meta = false)
+function xdata_auth($fields, $nuke_userid, $meta = false)
 {
     global $nuke_db;
 
-    if(!isset($userid) || empty($userid)) return '';
+    if(!isset($nuke_userid) || empty($nuke_userid)) return '';
 
     if ($field_id == false)
     {
@@ -688,7 +688,7 @@ function xdata_auth($fields, $userid, $meta = false)
 			WHERE xf.field_id = xa.field_id
 			  AND xa.group_id = ug.group_id
 			  AND xa.group_id = g.group_id
-			  AND ug.user_id = $userid
+			  AND ug.user_id = $nuke_userid
 			  AND $field_sql
 			ORDER BY g.group_single_user ASC";
 
@@ -697,22 +697,22 @@ function xdata_auth($fields, $userid, $meta = false)
         message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_obtaining_field_auth'], '', __LINE__, __FILE__, $sql);
    }
 
-   $auth = array();
+   $nuke_auth = array();
    foreach($meta as $key => $value)
    {
-        $auth[$key] = $value['default_auth'];
+        $nuke_auth[$key] = $value['default_auth'];
    }
 
    while($data = $nuke_db->sql_fetchrow($result))
    {
-        $auth[$data['code_name']] = ( $data['auth_value'] == NUKE_XD_AUTH_ALLOW);
+        $nuke_auth[$data['code_name']] = ( $data['auth_value'] == NUKE_XD_AUTH_ALLOW);
    }
 
    if(!is_array($fields))
    {
-        return $auth[$fields];
+        return $nuke_auth[$fields];
    }
-   return $auth;
+   return $nuke_auth;
 }
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
@@ -735,11 +735,11 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
 /*****[BEGIN]******************************************
  [ Mod:     Global Announcements               v1.2.8 ]
  ******************************************************/
-    global $template, $userdata, $lang, $nuke_db, $nav_links, $phpEx, $SID;
+    global $template_nuke, $nuke_userdata, $lang, $nuke_db, $nav_links, $phpEx, $SID;
 /*****[END]********************************************
  [ Mod:     Global Announcements               v1.2.8 ]
  ******************************************************/
-    $is_auth = auth(NUKE_AUTH_VIEW, NUKE_AUTH_LIST_ALL, $userdata);
+    $is_auth = auth(NUKE_AUTH_VIEW, NUKE_AUTH_LIST_ALL, $nuke_userdata);
 /*****[BEGIN]******************************************
  [ Mod:     Global Announcements               v1.2.8 ]
  [ Mod:     Forumtitle as Weblink              v1.2.2 ]
@@ -748,7 +748,7 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
         FROM (".NUKE_CATEGORIES_TABLE." c, ".NUKE_FORUMS_TABLE." f)
         WHERE f.cat_id = c.cat_id
 		AND f.title_is_link = 0
-        ".(($userdata['user_level'] == NUKE_ADMIN)? "" : " AND c.cat_id<>'".NUKE_HIDDEN_CAT."'" )."
+        ".(($nuke_userdata['user_level'] == NUKE_ADMIN)? "" : " AND c.cat_id<>'".NUKE_HIDDEN_CAT."'" )."
         GROUP BY c.cat_id, c.cat_title, c.cat_order
         ORDER BY c.cat_order";
 /*****[END]********************************************
@@ -871,13 +871,13 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
     // Let the jumpbox work again in sites having additional session id checks.
 //    if ( !empty($SID) )
 //    {
-        $boxstring .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+        $boxstring .= '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
 //    }
 
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'jumpbox' => 'jumpbox.tpl')
     );
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_GO' => $lang['Go'],
         'L_JUMP_TO' => $lang['Jump_to'],
         'L_SELECT_FORUM' => $lang['Select_forum'],
@@ -885,21 +885,21 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
         'S_JUMPBOX_SELECT' => $boxstring,
         'S_JUMPBOX_ACTION' => append_sid($action))
     );
-    $template->assign_var_from_handle('JUMPBOX', 'jumpbox');
+    $template_nuke->assign_var_from_handle('JUMPBOX', 'jumpbox');
 
     return;
 }
 
 //
 // Initialise user settings on page load
-function init_userprefs($userdata)
+function init_userprefs($nuke_userdata)
 {
-    global $board_config, $theme, $images, $template, $lang, $phpEx, $phpbb2_root_path, $nuke_db, $nav_links;
+    global $board_config, $theme, $images, $template_nuke, $lang, $phpEx, $phpbb2_root_path, $nuke_db, $nav_links;
 
 /*****[BEGIN]******************************************
  [ Mod:     Post Icons                         v1.0.1 ]
  ******************************************************/
-	global $nuke_db, $mods, $list_yes_no, $userdata;
+	global $nuke_db, $mods, $list_yes_no, $nuke_userdata;
 
 	//	get all the mods settings
 	$dir = @opendir(NUKE_INCLUDE_DIR . 'mods_settings');
@@ -915,21 +915,21 @@ function init_userprefs($userdata)
  [ Mod:     Post Icons                         v1.0.1 ]
  ******************************************************/
 
-    if ( $userdata['user_id'] != NUKE_ANONYMOUS )
+    if ( $nuke_userdata['user_id'] != NUKE_ANONYMOUS )
     {
-        if ( !empty($userdata['user_lang']))
+        if ( !empty($nuke_userdata['user_lang']))
         {
-            $default_lang = phpbb_ltrim(basename(phpbb_rtrim($userdata['user_lang'])), "'");
+            $default_lang = phpbb_ltrim(basename(phpbb_rtrim($nuke_userdata['user_lang'])), "'");
         }
 
-        if ( !empty($userdata['user_dateformat']) )
+        if ( !empty($nuke_userdata['user_dateformat']) )
         {
-            $board_config['default_dateformat'] = $userdata['user_dateformat'];
+            $board_config['default_dateformat'] = $nuke_userdata['user_dateformat'];
         }
 
-        if ( isset($userdata['user_timezone']) )
+        if ( isset($nuke_userdata['user_timezone']) )
         {
-            $board_config['board_timezone'] = $userdata['user_timezone'];
+            $board_config['board_timezone'] = $nuke_userdata['user_timezone'];
         }
     }
 
@@ -940,7 +940,7 @@ function init_userprefs($userdata)
 
 	if ( !file_exists(@phpbb_realpath($phpbb2_root_path . 'language/lang_' . $default_lang . '/lang_main.'.$phpEx)) )
 	{
-		if ( $userdata['user_id'] != NUKE_ANONYMOUS )
+		if ( $nuke_userdata['user_id'] != NUKE_ANONYMOUS )
 		{
 			// For logged in users, try the board default language next
 			$default_lang = phpbb_ltrim(basename(phpbb_rtrim($board_config['default_lang'])), "'");
@@ -961,11 +961,11 @@ function init_userprefs($userdata)
 
 	// If we've had to change the value in any way then let's write it back to the database
 	// before we go any further since it means there is something wrong with it
-	if ( $userdata['user_id'] != NUKE_ANONYMOUS && $userdata['user_lang'] !== $default_lang )
+	if ( $nuke_userdata['user_id'] != NUKE_ANONYMOUS && $nuke_userdata['user_lang'] !== $default_lang )
 	{
 		$sql = 'UPDATE ' . NUKE_USERS_TABLE . "
 			SET user_lang = '" . $default_lang . "'
-			WHERE user_lang = '" . $userdata['user_lang'] . "'";
+			WHERE user_lang = '" . $nuke_userdata['user_lang'] . "'";
 
 		if ( !($result = $nuke_db->sql_query($sql)) )
 		{
@@ -973,7 +973,7 @@ function init_userprefs($userdata)
 		}
 
 		$board_config['default_lang'] = $default_lang;
-		$userdata['user_lang'] = $default_lang;
+		$nuke_userdata['user_lang'] = $default_lang;
 	}
 	elseif ( $board_config['default_lang'] !== $default_lang )
 	{
@@ -1026,9 +1026,9 @@ function init_userprefs($userdata)
 
     if ( !$board_config['override_user_style'] )
     {
-        if ( $userdata['user_id'] != NUKE_ANONYMOUS && $userdata['user_style'] > 0 )
+        if ( $nuke_userdata['user_id'] != NUKE_ANONYMOUS && $nuke_userdata['user_style'] > 0 )
         {
-            if ( $theme = setup_style($userdata['user_style']) )
+            if ( $theme = setup_style($nuke_userdata['user_style']) )
             {
                 return;
             }
@@ -1065,7 +1065,7 @@ function init_userprefs($userdata)
 
 function setup_style($style)
 {
-    global $nuke_db, $prefix, $board_config, $template, $images, $phpbb2_root_path, $name, $user, $cookie;
+    global $nuke_db, $prefix, $board_config, $template_nuke, $images, $phpbb2_root_path, $name, $nuke_user, $cookie;
 
     if($name == "Forums"){
         $default_style=$board_config['default_style'];
@@ -1121,28 +1121,28 @@ function setup_style($style)
 
     $ThemeSel = get_theme();
     if (file_exists("themes/$ThemeSel/forums/index_body.tpl")) {
-        $template_name = "forums";
-        $template_path = "themes/$ThemeSel/";
+        $template_nuke_name = "forums";
+        $template_nuke_path = "themes/$ThemeSel/";
     } else {
-        $template_name = $row['template_name'];
-        $template_path = $phpbb2_root_path . 'templates/';
+        $template_nuke_name = $row['template_name'];
+        $template_nuke_path = $phpbb2_root_path . 'templates/';
     }
-    $template = new Template($template_path . $template_name, $board_config, $nuke_db);
+    $template_nuke = new Template($template_nuke_path . $template_nuke_name, $board_config, $nuke_db);
 
-    if ( $template )
+    if ( $template_nuke )
     {
-        $current_template_path = $template_path . $template_name;
+        $current_template_path = $template_nuke_path . $template_nuke_name;
 
         $ThemeSel = get_theme();
-        if (file_exists("themes/$ThemeSel/$template_name/index_body.tpl")) {
-            include($template_path . $template_name . '/' . $template_name . '.cfg');
+        if (file_exists("themes/$ThemeSel/$template_nuke_name/index_body.tpl")) {
+            include($template_nuke_path . $template_nuke_name . '/' . $template_nuke_name . '.cfg');
         } else {
-            @include($template_path . $template_name . '/' . $template_name . '.cfg');
+            @include($template_nuke_path . $template_nuke_name . '/' . $template_nuke_name . '.cfg');
         }
 
         if ( !defined('TEMPLATE_CONFIG') )
         {
-            message_die(NUKE_CRITICAL_ERROR, "Could not open $template_name template config file", '', __LINE__, __FILE__);
+            message_die(NUKE_CRITICAL_ERROR, "Could not open $template_nuke_name template config file", '', __LINE__, __FILE__);
         }
 
         //$img_lang = ( file_exists(@phpbb_realpath($phpbb2_root_path . $current_template_path . '/images/lang_' . $board_config['default_lang'])) ) ? $board_config['default_lang'] : 'english';
@@ -1180,7 +1180,7 @@ function create_date($format, $gmepoch, $tz)
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-    global $board_config, $lang, $userdata, $pc_dateTime;
+    global $board_config, $lang, $nuke_userdata, $pc_dateTime;
 /*****[END]********************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
@@ -1198,19 +1198,19 @@ function create_date($format, $gmepoch, $tz)
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-if ( $userdata['user_id'] != NUKE_ANONYMOUS )
+if ( $nuke_userdata['user_id'] != NUKE_ANONYMOUS )
 {
-    switch ( $userdata['user_time_mode'] )
+    switch ( $nuke_userdata['user_time_mode'] )
     {
         case MANUAL_DST:
-            $dst_sec = $userdata['user_dst_time_lag'] * 60;
+            $dst_sec = $nuke_userdata['user_dst_time_lag'] * 60;
             return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec), $translate) : @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec);
             break;
         case SERVER_SWITCH:
             if (!empty($gmepoch) && is_long($gmepoch)) {
-                $dst_sec = date('I', $gmepoch) * $userdata['user_dst_time_lag'] * 60;
+                $dst_sec = date('I', $gmepoch) * $nuke_userdata['user_dst_time_lag'] * 60;
             } else {
-                $dst_sec = date('I') * $userdata['user_dst_time_lag'] * 60;
+                $dst_sec = date('I') * $nuke_userdata['user_dst_time_lag'] * 60;
             }
             return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec), $translate) : @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec);
             break;
@@ -1223,8 +1223,8 @@ if ( $userdata['user_id'] != NUKE_ANONYMOUS )
                 $tzo_sec = $pc_dateTime['pc_timezoneOffset'];
             } else
             {
-                $user_pc_timeOffsets = explode("/", $userdata['user_pc_timeOffsets']);
-                $tzo_sec = $user_pc_timeOffsets[0];
+                $nuke_user_pc_timeOffsets = explode("/", $nuke_userdata['user_pc_timeOffsets']);
+                $tzo_sec = $nuke_user_pc_timeOffsets[0];
             }
             return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + $tzo_sec), $translate) : @gmdate($format, $gmepoch + $tzo_sec);
             break;
@@ -1234,8 +1234,8 @@ if ( $userdata['user_id'] != NUKE_ANONYMOUS )
                 $tzo_sec = $pc_dateTime['pc_timeOffset'];
             } else
             {
-                $user_pc_timeOffsets = explode("/", $userdata['user_pc_timeOffsets']);
-                $tzo_sec = (isset($user_pc_timeOffsets[1])) ? $user_pc_timeOffsets[1] : '';
+                $nuke_user_pc_timeOffsets = explode("/", $nuke_userdata['user_pc_timeOffsets']);
+                $tzo_sec = (isset($nuke_user_pc_timeOffsets[1])) ? $nuke_user_pc_timeOffsets[1] : '';
             }
             return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + $tzo_sec), $translate) : @gmdate($format, $gmepoch + $tzo_sec);
             break;
@@ -1253,9 +1253,9 @@ if ( $userdata['user_id'] != NUKE_ANONYMOUS )
             break;
         case SERVER_SWITCH:
             if (!empty($gmepoch) && is_long($gmepoch)) {
-                $dst_sec = date('I', $gmepoch) * $userdata['user_dst_time_lag'] * 60;
+                $dst_sec = date('I', $gmepoch) * $nuke_userdata['user_dst_time_lag'] * 60;
             } else {
-                $dst_sec = date('I') * $userdata['user_dst_time_lag'] * 60;
+                $dst_sec = date('I') * $nuke_userdata['user_dst_time_lag'] * 60;
             }
             return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec), $translate) : @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec);
             break;
@@ -1524,7 +1524,7 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 //
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
-    global $nuke_db, $template, $board_config, $theme, $lang, $phpEx, $phpbb2_root_path, $nav_links, $gen_simple_header, $images, $userdata, $user_ip, $session_length, $starttime;
+    global $nuke_db, $template_nuke, $board_config, $theme, $lang, $phpEx, $phpbb2_root_path, $nav_links, $gen_simple_header, $images, $nuke_userdata, $nuke_user_ip, $session_length, $starttime;
     static $has_died, $msg_history;
 	
 	if ( !isset($msg_history) || ( isset($msg_history) && !is_array($msg_history) ) )
@@ -1634,10 +1634,10 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
         }
     }
 
-    if( empty($userdata) && ( $msg_code == NUKE_GENERAL_MESSAGE || $msg_code == NUKE_GENERAL_ERROR ) )
+    if( empty($nuke_userdata) && ( $msg_code == NUKE_GENERAL_MESSAGE || $msg_code == NUKE_GENERAL_ERROR ) )
     {
-		$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
-		init_userprefs($userdata);
+		$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+		init_userprefs($nuke_userdata);
     }
 
     //
@@ -1669,13 +1669,13 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
  [ Mod:    Simply Merge Threads                v1.0.1 ]
  ******************************************************/
 
-        /*if ( empty($template) )
+        /*if ( empty($template_nuke) )
         {
             $ThemeSel = get_theme();
             if (file_exists("themes/$ThemeSel/forums/".$board_config['board_template']."/index_body.tpl")) {
-                $template = new Template("themes/$ThemeSel/forums/".$board_config['board_template']."");
+                $template_nuke = new Template("themes/$ThemeSel/forums/".$board_config['board_template']."");
             } else {
-                $template = new Template($phpbb2_root_path . 'templates/' . $board_config['board_template']);
+                $template_nuke = new Template($phpbb2_root_path . 'templates/' . $board_config['board_template']);
             }
         }*/
         if ( empty($theme) )
@@ -1688,11 +1688,11 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
         //
         if ( !defined('IN_ADMIN') )
         {
-                        include("includes/page_header.$phpEx");
+                        include("includes/nuke_page_header.$phpEx");
         }
         else
         {
-            include($phpbb2_root_path . 'admin/page_header_admin.'.$phpEx);
+            include($phpbb2_root_path . 'admin/nuke_page_header_admin.'.$phpEx);
         }
     }
 
@@ -1774,22 +1774,22 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
         if ( !defined('IN_ADMIN') )
         {
-            $template->set_filenames(array(
+            $template_nuke->set_filenames(array(
                 'message_body' => 'message_body.tpl')
             );
         }
         else
         {
-            $template->set_filenames(array(
+            $template_nuke->set_filenames(array(
                 'message_body' => 'admin/admin_message_body.tpl')
             );
         }
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'MESSAGE_TITLE' => $msg_title,
             'MESSAGE_TEXT' => $msg_text)
         );
-        $template->pparse('message_body');
+        $template_nuke->pparse('message_body');
 
         if ( !defined('IN_ADMIN') )
         {
@@ -1797,7 +1797,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
         }
         else
         {
-            include($phpbb2_root_path . 'admin/page_footer_admin.'.$phpEx);
+            include($phpbb2_root_path . 'admin/nuke_page_footer_admin.'.$phpEx);
         }
     }
     else
@@ -1823,13 +1823,13 @@ function phpbb_realpath($path)
 
 // modded by Quake for NOT using $nukeuser
 function bblogin($session_id) {
-        global $userdata, $user_ip, $session_length, $session_id, $nuke_db, $nuke_file_path, $cookie;
+        global $nuke_userdata, $nuke_user_ip, $session_length, $session_id, $nuke_db, $nuke_file_path, $cookie;
         define("IN_LOGIN", true);
         $nuid = $cookie[0];
         $sql = "SELECT s.*
                 FROM " . NUKE_BB_SESSIONS_TABLE . " s
                 WHERE s.session_id = '$session_id'
-                AND s.session_ip = '$user_ip'";
+                AND s.session_ip = '$nuke_user_ip'";
         if ( !($result = $nuke_db->sql_query($sql)) )
         {
                 message_die(NUKE_CRITICAL_ERROR, 'Error doing DB query userdata row fetch : session_pagestar');
@@ -1854,8 +1854,8 @@ function bblogin($session_id) {
                 } else {
                     if( $password == $rowresult['user_password'] && $rowresult['user_active'] ) {
                         $autologin = 0;
-                        $userdata = session_begin($rowresult['user_id'], $user_ip, NUKE_PAGE_INDEX, $session_length, FALSE, $autologin);
-                        $session_id = $userdata['session_id'];
+                        $nuke_userdata = nuke_session_begin($rowresult['user_id'], $nuke_user_ip, NUKE_PAGE_INDEX, $session_length, FALSE, $autologin);
+                        $session_id = $nuke_userdata['session_id'];
                         if(!$session_id ) {
                             message_die(NUKE_CRITICAL_ERROR, "Couldn't start session : login", "", __LINE__, __FILE__);
                         } else {
@@ -1876,9 +1876,9 @@ function bblogin($session_id) {
  [ Mod:     At a Glance Options                v1.0.0 ]
  ******************************************************/
 function show_glance($where) {
-    global $userdata, $board_config;
+    global $nuke_userdata, $board_config;
 
-    $mode = ($board_config['glance_show_override']) ? $board_config['glance_show'] : $userdata['user_glance_show'];
+    $mode = ($board_config['glance_show_override']) ? $board_config['glance_show'] : $nuke_userdata['user_glance_show'];
 
     if(intval($mode) == 0) {
         return false;
@@ -1902,15 +1902,15 @@ function show_glance($where) {
 /*****[BEGIN]******************************************
  [ Mod:   Log Actions Mod - Topic View         v2.0.0 ]
  ******************************************************/
-function allow_log_view($user_level) {
-    global $board_config, $userdata;
-      if ($board_config['logs_view_level'] == NUKE_ADMIN && $user_level == NUKE_ADMIN) {
+function allow_log_view($nuke_user_level) {
+    global $board_config, $nuke_userdata;
+      if ($board_config['logs_view_level'] == NUKE_ADMIN && $nuke_user_level == NUKE_ADMIN) {
            return true;
            exit;
-      } elseif ($board_config['logs_view_level'] == NUKE_MOD && ($user_level == NUKE_MOD || $user_level == NUKE_ADMIN)) {
+      } elseif ($board_config['logs_view_level'] == NUKE_MOD && ($nuke_user_level == NUKE_MOD || $nuke_user_level == NUKE_ADMIN)) {
            return true;
            exit;
-      } elseif ($board_config['logs_view_level'] == NUKE_USER && $user_level >= NUKE_USER && $userdata['user_id'] != NUKE_ANONYMOUS) {
+      } elseif ($board_config['logs_view_level'] == NUKE_USER && $nuke_user_level >= NUKE_USER && $nuke_userdata['user_id'] != NUKE_ANONYMOUS) {
            return true;
            exit;
       } elseif ($board_config['logs_view_level'] == "0") {
@@ -2003,8 +2003,8 @@ function is_category_collapsed($cat_id)
 //
 function password_check ($mode, $id, $password, $nuke_redirect)
 {
-	global $nuke_db, $template, $theme, $board_config, $lang, $phpEx, $phpbb2_root_path, $gen_simple_header;
-	global $userdata;
+	global $nuke_db, $template_nuke, $theme, $board_config, $lang, $phpEx, $phpbb2_root_path, $gen_simple_header;
+	global $nuke_userdata;
 	global $HTTP_COOKIE_VARS;
 	$cookie_name = $board_config['cookie_name'];
 	$cookie_path = $board_config['cookie_path'];
@@ -2038,7 +2038,7 @@ function password_check ($mode, $id, $password, $nuke_redirect)
 	}
 	$passdata[$id] = md5($password);
 	setcookie($savename, serialize($passdata), 0, $cookie_path, $cookie_domain, $cookie_secure);
-	$template->assign_vars(array(
+	$template_nuke->assign_vars(array(
 		'META' => '<meta http-equiv="refresh" content="3; url="' . $nuke_redirect . '" />'
 		)
 	);
@@ -2047,23 +2047,23 @@ function password_check ($mode, $id, $password, $nuke_redirect)
 }
 function password_box ($mode, $s_form_action)
 {
-	global $nuke_db, $template, $theme, $board_config, $lang, $phpEx, $phpbb2_root_path, $gen_simple_header;
-	global $userdata;
+	global $nuke_db, $template_nuke, $theme, $board_config, $lang, $phpEx, $phpbb2_root_path, $gen_simple_header;
+	global $nuke_userdata;
 	$l_enter_password = ( $mode == 'topic' ) ? $lang['Enter_topic_password'] : $lang['Enter_forum_password'];
 	$page_title = $l_enter_password;
-	include('includes/page_header.php');
-	$template->set_filenames(array(
+	include('includes/nuke_page_header.php');
+	$template_nuke->set_filenames(array(
 		'body' => 'password_body.tpl'
 		)
 	);
-	$template->assign_vars(array(
+	$template_nuke->assign_vars(array(
 		'L_ENTER_PASSWORD' => $l_enter_password,
 		'L_SUBMIT' => $lang['Submit'],
 		'L_CANCEL' => $lang['Cancel'],
 		'S_FORM_ACTION' => $s_form_action
 		)
 	);
-	$template->pparse('body');
+	$template_nuke->pparse('body');
 	include('includes/page_tail.php');
 }
 ?>

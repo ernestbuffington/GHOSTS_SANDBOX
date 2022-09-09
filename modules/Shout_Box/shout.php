@@ -1,7 +1,7 @@
 <?php
 function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid) 
 {
-    global $currentlang, $cache, $top_content, $mid_content, $bottom_content, $ShoutMarqueeheight, $nsnst_const, $userinfo, $prefix, $nuke_db, $top_out, $board_config;
+    global $currentlang, $cache, $top_content, $mid_content, $bottom_content, $ShoutMarqueeheight, $nsnst_const, $nuke_userinfo, $prefix, $nuke_db, $top_out, $board_config;
 	
     if (!empty($currentlang)) 
     include_once(NUKE_MODULES_DIR.'Shout_Box/lang-block/lang-'.$currentlang.'.php');
@@ -12,7 +12,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
     $BannedShouter = '';
 
     $is_user = is_user();
-    $username = $userinfo['username'];
+    $nuke_username = $nuke_userinfo['username'];
 
     if ((($conf = $cache->load('conf', 'shoutbox')) == false) || empty($conf)) 
 	{
@@ -117,7 +117,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 		{
             foreach ($nameblock as $name) 
 			{
-                if ($username == $name['name']) 
+                if ($nuke_username == $name['name']) 
 				{
                     $BannedShouter = "yes";
                     break;
@@ -133,42 +133,42 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 			// start processing shout
 			if (isset($shoutuid) && !empty($shoutuid)) 
 			{
-				$username = $shoutuid;
+				$nuke_username = $shoutuid;
 			}
 			
 			// remove whitespace off ends of nickname
-			$username = trim($username);
+			$nuke_username = trim($nuke_username);
 			
 			if($conf['anonymouspost']== 'yes') 
 			{
-				$unum = strlen($username);
+				$unum = strlen($nuke_username);
 			
 				if ($unum < 2) 
 				{ 
 				  $ShoutError = _NICKTOOSHORT; 
 				}
 				
-				if (!$username || $username == _NAME) 
+				if (!$nuke_username || $nuke_username == _NAME) 
 				{ 
 				   $ShoutError = _NONICK; 
 				}
 				
-				if (preg_match("/\.xxx/i", $username) && $conf['blockxxx']== 'yes') 
+				if (preg_match("/\.xxx/i", $nuke_username) && $conf['blockxxx']== 'yes') 
 				{ 
-				  $username = "Anonymous"; 
+				  $nuke_username = "Anonymous"; 
 				}
 				
-				if (preg_match("#javascript:(.*)#i", $username)) 
+				if (preg_match("#javascript:(.*)#i", $nuke_username)) 
 				{ 
-				   $username = "Anonymous"; 
+				   $nuke_username = "Anonymous"; 
 				}
-				$username = htmlspecialchars($username, ENT_QUOTES);
-				$username = str_replace("&amp;amp;", "&amp;",$username);
+				$nuke_username = htmlspecialchars($nuke_username, ENT_QUOTES);
+				$nuke_username = str_replace("&amp;amp;", "&amp;",$nuke_username);
 			}
 			
-			if (!$is_user && !empty($username) && $username != "Anonymous") 
+			if (!$is_user && !empty($nuke_username) && $nuke_username != "Anonymous") 
 			{
-				$username = str_replace(" ", "_",$username);
+				$nuke_username = str_replace(" ", "_",$nuke_username);
 			}
 
 			$ShoutComment = trim($ShoutComment); // remove whitespace off ends of shout
@@ -369,7 +369,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 			if($conf['nameblock']== 'yes') {
 				if (is_array($nameblock)) {
 					foreach ($nameblock as $name) {
-						if($username == $name['name']) {
+						if($nuke_username == $name['name']) {
 							$ShoutError = _BANNEDNICK;
 						}
 					}
@@ -377,8 +377,8 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 			}
 
 			// check for anonymous users cloning/ghosting registered members' nicknames
-			if (!is_user() && !empty($username) && $username != "Anonymous") {
-				$sql = "SELECT `username` FROM `".$prefix."_users` WHERE `username`='$username'";
+			if (!is_user() && !empty($nuke_username) && $nuke_username != "Anonymous") {
+				$sql = "SELECT `username` FROM `".$prefix."_users` WHERE `username`='$nuke_username'";
 				$nameresult = $nuke_db->sql_query($sql);
 				if ($row = $nuke_db->sql_fetchrow($nameresult)) {
 					$ShoutError = _NOCLONINGNICKS;
@@ -389,14 +389,14 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 			//look for bad words, then censor them.
 			if($conf['censor']== 'yes') {
 				// start Anonymous nickname censor check here. If bad, replace bad nick with 'Anonymous'
-				if (!$is_user && !empty($username) && $username != "Anonymous") {
+				if (!$is_user && !empty($nuke_username) && $nuke_username != "Anonymous") {
 					if (is_array($censor)) {
 						foreach ($censor as $word) {
-							if ($username != 'Anonymous') {
+							if ($nuke_username != 'Anonymous') {
 								$one = strtolower($word['text']);
-								$usernameL = strtolower($username);
-								if (stristr($usernameL, $one) !== false) {
-									$username = "Anonymous";
+								$nuke_usernameL = strtolower($nuke_username);
+								if (stristr($nuke_usernameL, $one) !== false) {
+									$nuke_username = "Anonymous";
 								}
 							}
 						}
@@ -432,15 +432,15 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 			}
 			$nuke_db->sql_freeresult($result);
 
-			if ($conf['anonymouspost'] == 'no' && $username == 'Anonymous') {
+			if ($conf['anonymouspost'] == 'no' && $nuke_username == 'Anonymous') {
 					$ShoutError = _ONLYREGISTERED2;
 			}
 
 			if (!$ShoutError) {
 
 				if ($is_user) {
-					$day = EvoDate('d/m/Y', time(), $userinfo['user_timezone']);
-					$time = EvoDate('H:i', time(), $userinfo['user_timezone']);
+					$day = EvoDate('d/m/Y', time(), $nuke_userinfo['user_timezone']);
+					$time = EvoDate('H:i', time(), $nuke_userinfo['user_timezone']);
 				} else {
 					$day = EvoDate('d/m/Y', time(), $board_config['board_timezone']);
 					$time = EvoDate('H:i', time(), $board_config['board_timezone']);
@@ -448,14 +448,14 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 
 				$currentTime = time();
 
-				$sql = "INSERT INTO ".$prefix."_shoutbox_shouts (id,name,comment,date,time,ip,timestamp) VALUES ('0','$username','$ShoutComment','$day','$time','$uip','$currentTime')";
+				$sql = "INSERT INTO ".$prefix."_shoutbox_shouts (id,name,comment,date,time,ip,timestamp) VALUES ('0','$nuke_username','$ShoutComment','$day','$time','$uip','$currentTime')";
 				$nuke_db->sql_query($sql);
 
 				$PreviousShoutComment = '';
 				$PreviousComment = '';
 			} else {
-				if ($username != _NAME) {
-					$PreviousUsername = $username;
+				if ($nuke_username != _NAME) {
+					$PreviousUsername = $nuke_username;
 				}
 				if ($PreviousShoutComment != _SB_MESSAGE) {
 					$PreviousComment = $PreviousShoutComment;
@@ -466,7 +466,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 
         //Display Content From here on down
 
-        if (!is_user() && !empty($username) && $username != "Anonymous") { $username = "Anonymous"; }
+        if (!is_user() && !empty($nuke_username) && $nuke_username != "Anonymous") { $nuke_username = "Anonymous"; }
 
         $ThemeSel = get_theme();
         $sql = "SELECT * FROM `".$prefix."_shoutbox_theme_images` WHERE `themeName`='$ThemeSel'";
@@ -557,7 +557,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
             $mid_content .= "<strong>"._SB_ADMIN.":</strong> ".$stickyRow0['comment'];
             if ($conf['date']== 'yes') {
                 if ($is_user) {
-                    $unixTime = EvoDate($userinfo['user_dateformat'], $stickyRow0['timestamp'], $userinfo['user_timezone']);
+                    $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $stickyRow0['timestamp'], $nuke_userinfo['user_timezone']);
                     $mid_content .= "<br />$unixTime";
                 } else {
                     $unixTime = EvoDate($board_config['default_dateformat'], $stickyRow0['timestamp'], $board_config['board_timezone']);
@@ -577,7 +577,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
             $mid_content .= "<strong>"._SB_ADMIN.":</strong> ".$stickyRow1['comment'];
             if ($conf['date']== 'yes') {
                 if ($is_user) {
-                    $unixTime = EvoDate($userinfo['user_dateformat'], $stickyRow1['timestamp'], $userinfo['user_timezone']);
+                    $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $stickyRow1['timestamp'], $nuke_userinfo['user_timezone']);
                     $mid_content .= "<br />$unixTime";
                 } else {
                     $unixTime = EvoDate($board_config['default_dateformat'], $stickyRow1['timestamp'], $board_config['board_timezone']);
@@ -617,7 +617,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
                 $ShoutComment = preg_replace("/\[\/u\]/i","</span>","$ShoutComment");
             }
 
-            if ($username == 'Anonymous') {
+            if ($nuke_username == 'Anonymous') {
     /*****[BEGIN]******************************************
      [ Mod:    Advanced Username Color             v1.0.5 ]
      ******************************************************/
@@ -656,7 +656,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
                     // reads unix timestamp && formats it to the viewer's timezone
                     if ($is_user) 
 					{
-                        $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
+                        $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $row['timestamp'], $nuke_userinfo['user_timezone']);
                         $tempContent[$i] .= "<br />$unixTime<br /><br />"; # added a space between shouts
                     } 
 					else 
@@ -700,7 +700,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
         // bottom half
 		$bottom_content .= "<form name=\"shoutform1\" method=\"post\" action=\"modules.php?name=Your_Account\" style=\"margin-bottom: 0px; margin-top: 0px\" id=\"shoutform1\">";
 		
-        if ($conf['anonymouspost'] == 'no' && $username == 'Anonymous') 
+        if ($conf['anonymouspost'] == 'no' && $nuke_username == 'Anonymous') 
 		{
             $bottom_content .= "<div style=\"padding: 1px;\" align=\"center\" class=\"content\"><a href=\"modules.php?name=Shout_Box\">"._SHOUTHISTORY."</a>";
             $bottom_content .= "&nbsp;<span style=\"cursor: pointer;\" onmouseover=\"SBspeed=4\" onmouseout=\"SBspeed=1\"><img src=\"$up_img\" 
@@ -721,7 +721,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
             $bottom_content .= "<tr>";
         
 		    $bottom_content .= "<td align=\"center\"".(($SBpos == 'center') ? " colspan=\"".(($conf['anonymouspost']== 'yes' 
-			&& $username == 'Anonymous') ? '3' : '2')."\" style=\"padding: 5px 0;\"" : '') . ">";
+			&& $nuke_username == 'Anonymous') ? '3' : '2')."\" style=\"padding: 5px 0;\"" : '') . ">";
             
 			$bottom_content .= "<div align=\"center\"><a href=\"modules.php?name=Shout_Box\">"._SHOUTHISTORY."</a></div>";
             $bottom_content .= "<span style=\"cursor: pointer;\" onmouseover=\"SBspeed=4\" onmouseout=\"SBspeed=1\"><img 
@@ -752,7 +752,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
                 $ShoutTextWidth = $conf['textWidth'] - 4;
             }
 			
-            if ($conf['anonymouspost']== 'yes' && $username == 'Anonymous') {
+            if ($conf['anonymouspost']== 'yes' && $nuke_username == 'Anonymous') {
                 if ($PreviousUsername) { $boxtext = $PreviousUsername; } else { $boxtext = _NAME; }
                 
 				if ($SBpos == 'center') 

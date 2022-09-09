@@ -35,13 +35,13 @@ get_lang($module_name);
 
 $pagetitle = "- "._SHOUTHISTORY;
 
-global $nuke_db, $user, $prefix, $username, $nsnst_const, $userinfo, $cache;
+global $nuke_db, $nuke_user, $prefix, $nuke_username, $nsnst_const, $nuke_userinfo, $cache;
 
-global $username;
+global $nuke_username;
 
-$username = $userinfo['username'];
+$nuke_username = $nuke_userinfo['username'];
 
-if (empty($username)) { $username = "Anonymous"; }
+if (empty($nuke_username)) { $nuke_username = "Anonymous"; }
 
 include_once(NUKE_MODULES_DIR.'Shout_Box/shout.php');
 
@@ -91,13 +91,13 @@ if($conf['nameblock'] == "yes" && $Action != "UserBanned") {
     $sql = "SELECT * FROM ".$prefix."_shoutbox_nameblock";
     $nameresult = $nuke_db->sql_query($sql);
     while ($badname = $nuke_db->sql_fetchrow($nameresult)) {
-        if($username == $badname['name']) { $Action = "UserBanned"; break; }
+        if($nuke_username == $badname['name']) { $Action = "UserBanned"; break; }
     }
 }
 
 function searchHistory($where, $sbsearchtext, $results, $style, $order, $page) 
 {
-	global $nuke_db, $prefix, $username, $userinfo, $board_config;
+	global $nuke_db, $prefix, $nuke_username, $nuke_userinfo, $board_config;
     include_once(NUKE_BASE_DIR.'header.php');
 
     $sbsearchtext = htmlspecialchars($sbsearchtext, ENT_QUOTES);
@@ -235,7 +235,7 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page)
             $nuke_db->sql_freeresult($nameresultN);
 
             // Disallow Anonymous users from seeing links to users' accounts
-            if ($username == "Anonymous") 
+            if ($nuke_username == "Anonymous") 
 			{
                 if (!empty($rowN['user_avatar']) && $rowN['user_avatar'] != "blank.gif" && ($rowN['user_avatar'] != "gallery/blank.gif") && (stristr($rowN['user_avatar'],'.') == TRUE)) 
 				{
@@ -257,7 +257,7 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page)
                             // reads unix timestamp && formats it to the viewer's timezone
                             if (is_user()) 
 							{
-                                $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
+                                $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $row['timestamp'], $nuke_userinfo['user_timezone']);
                                 echo "<br />&nbsp;$unixTime";
 
                             } 
@@ -291,7 +291,7 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page)
                             // reads unix timestamp && formats it to the viewer's timezone
                             if (is_user()) 
 							{
-                                $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
+                                $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $row['timestamp'], $nuke_userinfo['user_timezone']);
                                 echo "<br />$unixTime";
                             } 
 							else 
@@ -338,7 +338,7 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page)
                                 // reads unix timestamp && formats it to the viewer's timezone
                                 if (is_user()) 
 								{
-                                    $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
+                                    $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $row['timestamp'], $nuke_userinfo['user_timezone']);
                                     echo '&nbsp;'.$unixTime;
                                 } 
 								else 
@@ -353,7 +353,7 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page)
                             }
                         }
 						// registered members edit/delete posts
-                        if (($conf['delyourlastpost'] == "yes") && ($username == $row['name'])) {
+                        if (($conf['delyourlastpost'] == "yes") && ($nuke_username == $row['name'])) {
                             echo " &#91; <a title=\""._EDIT."\" href=\"modules.php?name=Shout_Box&amp;Action=Edit&amp;shoutID=".$row['id']."&amp;page=$page\">"._EDIT."</a> | <a title=\""._DELETE."\" href=\"modules.php?name=Shout_Box&amp;Action=Delete&amp;shoutID=".$row['id']."&amp;page=$page\">"._DELETE."</a> &#93;";
                         }
                         
@@ -379,7 +379,7 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page)
                                 // reads unix timestamp && formats it to the viewer's timezone
                                 if (is_user()) 
 								{
-                                    $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
+                                    $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $row['timestamp'], $nuke_userinfo['user_timezone']);
                                     echo '&nbsp;'.$unixTime;
                                 } 
 								else 
@@ -394,7 +394,7 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page)
                             }
                         }
                         // registered members edit/delete posts
-                        if (($conf['delyourlastpost'] == "yes") && ($username == $row['name'])) 
+                        if (($conf['delyourlastpost'] == "yes") && ($nuke_username == $row['name'])) 
 						{
                             echo " &#91; <a title=\""._EDIT."\" href=\"modules.php?name=Shout_Box&amp;Action=Edit&amp;shoutID=".$row['id']."&amp;page=$page\">"._EDIT."</a> | <a title=\""._DELETE."\" href=\"modules.php?name=Shout_Box&amp;Action=Delete&amp;shoutID=".$row['id']."&amp;page=$page\">"._DELETE."</a> &#93;";
                         }
@@ -414,7 +414,7 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page)
                             // reads unix timestamp && formats it to the viewer's timezone
                             if (is_user()) 
 							{
-                                $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
+                                $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $row['timestamp'], $nuke_userinfo['user_timezone']);
                                 echo "<br />$unixTime";
 								
                             } 
@@ -503,13 +503,13 @@ function showSearchBox($sbsearchtext, $where, $style, $results, $order)
 }
 
 function shoutDelete($page, $shoutID) {
-    global $nuke_db, $username, $prefix, $conf;
+    global $nuke_db, $nuke_username, $prefix, $conf;
     if ($conf['delyourlastpost'] == "yes" && !empty($shoutID)) {
         $sql = "SELECT `name` FROM `".$prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
         $nameresult = $nuke_db->sql_query($sql);
         $row = $nuke_db->sql_fetchrow($nameresult);
         $nuke_db->sql_freeresult($nameresult);
-        if ($row['name'] == $username) {
+        if ($row['name'] == $nuke_username) {
             $sqlD = "DELETE FROM `".$prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
             $nuke_db->sql_query($sqlD);
         }
@@ -519,7 +519,7 @@ function shoutDelete($page, $shoutID) {
 }
 
 function shoutEdit($page, $shoutID, $ShoutError) {
-    global $nuke_db, $prefix, $conf, $username;
+    global $nuke_db, $prefix, $conf, $nuke_username;
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
     if ($conf['delyourlastpost'] == "yes" && !empty($shoutID)) {
@@ -527,7 +527,7 @@ function shoutEdit($page, $shoutID, $ShoutError) {
         $nameresult = $nuke_db->sql_query($sql);
         $row = $nuke_db->sql_fetchrow($nameresult);
         $nuke_db->sql_freeresult($nameresult);
-        if ($row['name'] == $username) {
+        if ($row['name'] == $nuke_username) {
             // strip out link code here (added back in later if saved)
             $ShoutComment = $row['comment'];
             $ShoutComment = str_replace("&#91;<a rel=\"nofollow\" target=\"_blank\" href=\"", "",$ShoutComment);
@@ -593,13 +593,13 @@ function shoutEdit($page, $shoutID, $ShoutError) {
 }
 
 function shoutSave($page, $shoutID, $ShoutComment) {
-    global $nuke_db, $username, $prefix, $conf;
+    global $nuke_db, $nuke_username, $prefix, $conf;
     if ($conf['delyourlastpost'] == "yes" && !empty($shoutID)) {
         $sql = "SELECT `name` FROM `".$prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
         $nameresult = $nuke_db->sql_query($sql);
         $row = $nuke_db->sql_fetchrow($nameresult);
         $nuke_db->sql_freeresult($nameresult);
-        if ($row['name'] == $username) {
+        if ($row['name'] == $nuke_username) {
             $ShoutComment = trim($ShoutComment); // remove whitespace off ends of shout
             $ShoutComment = preg_replace('/\s+/', ' ', $ShoutComment); // convert double spaces in middle of shout to single space
             $num = strlen($ShoutComment);
@@ -816,7 +816,7 @@ function findAvatar($row_avatar)
 
 function showHistory($page) 
 {
-    global $nuke_db, $prefix, $username, $userinfo, $board_config;
+    global $nuke_db, $prefix, $nuke_username, $nuke_userinfo, $board_config;
     include_once(NUKE_BASE_DIR.'header.php');
     global $conf;
 
@@ -900,7 +900,7 @@ function showHistory($page)
         $nuke_db->sql_freeresult($nameresultN);
 
         // Disallow Anonymous users from seeing links to users' accounts
-        if ($username == "Anonymous") 
+        if ($nuke_username == "Anonymous") 
 		{
             if (!empty($rowN['user_avatar']) && ($rowN['user_avatar'] != "blank.gif") && ($rowN['user_avatar'] != "gallery/blank.gif") && (stristr($rowN['user_avatar'],'.') == TRUE)) 
 			{
@@ -922,7 +922,7 @@ function showHistory($page)
                         // reads unix timestamp && formats it to the viewer's timezone
                         if (is_user()) 
 						{
-                            $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
+                            $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $row['timestamp'], $nuke_userinfo['user_timezone']);
                             echo "<br />&nbsp;$unixTime";
                         } 
 						else 
@@ -949,7 +949,7 @@ function showHistory($page)
                     if (!empty($row['timestamp'])) {
                         // reads unix timestamp && formats it to the viewer's timezone
                         if (is_user()) {
-                            $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
+                            $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $row['timestamp'], $nuke_userinfo['user_timezone']);
                             echo "<br />$unixTime";
                         } else {
                             $unixTime = EvoDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);
@@ -984,7 +984,7 @@ function showHistory($page)
                         if (!empty($row['timestamp'])) {
                             // reads unix timestamp && formats it to the viewer's timezone
                             if (is_user()) {
-                                $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
+                                $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $row['timestamp'], $nuke_userinfo['user_timezone']);
                                 echo '&nbsp;'.$unixTime;
                             } else {
                                 $unixTime = EvoDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);
@@ -995,7 +995,7 @@ function showHistory($page)
                         }
                     }
                     // registered members edit/delete posts
-                    if (($conf['delyourlastpost'] == "yes") && ($username == $row['name'])) {
+                    if (($conf['delyourlastpost'] == "yes") && ($nuke_username == $row['name'])) {
                         echo " &#91; <a title=\""._EDIT."\" href=\"modules.php?name=Shout_Box&amp;Action=Edit&amp;shoutID=".$row['id']."&amp;page=$page\">"._EDIT."</a> | <a title=\""._DELETE."\" href=\"modules.php?name=Shout_Box&amp;Action=Delete&amp;shoutID=".$row['id']."&amp;page=$page\">"._DELETE."</a> &#93;";
                     }
                     echo "</td></tr></table>";
@@ -1015,7 +1015,7 @@ function showHistory($page)
                         if (!empty($row['timestamp'])) {
                             // reads unix timestamp && formats it to the viewer's timezone
                             if (is_user()) {
-                                $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
+                                $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $row['timestamp'], $nuke_userinfo['user_timezone']);
                                 echo '&nbsp;'."$unixTime";
                             } else {
                                 $unixTime = EvoDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);
@@ -1026,7 +1026,7 @@ function showHistory($page)
                         }
                     }
                     // registered members edit/delete posts
-                    if (($conf['delyourlastpost'] == "yes") && ($username == $row['name'])) {
+                    if (($conf['delyourlastpost'] == "yes") && ($nuke_username == $row['name'])) {
                         echo " &#91; <a title=\""._EDIT."\" href=\"modules.php?name=Shout_Box&amp;Action=Edit&amp;shoutID=".$row['id']."&amp;page=$page\">"._EDIT."</a> | <a title=\""._DELETE."\" href=\"modules.php?name=Shout_Box&amp;Action=Delete&amp;shoutID=".$row['id']."&amp;page=$page\">"._DELETE."</a> &#93;";
                     }
                     echo "</td></tr>\n";
@@ -1038,7 +1038,7 @@ function showHistory($page)
                     if (!empty($row['timestamp'])) {
                             // reads unix timestamp && formats it to the viewer's timezone
                         if (is_user()) {
-                            $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
+                            $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $row['timestamp'], $nuke_userinfo['user_timezone']);
                             echo "<br />$unixTime";
                         } else {
                             $unixTime = EvoDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);

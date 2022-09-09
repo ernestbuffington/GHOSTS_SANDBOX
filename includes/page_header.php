@@ -60,12 +60,12 @@ if(!file_exists(@phpbb_realpath($phpbb2_root_path.'language/lang_'.$board_config
 include_once($phpbb2_root_path . 'language/lang_english/lang_adv_time.' . $phpEx);
 else
 include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx);
-if(($userdata['user_id'] != NUKE_ANONYMOUS && $userdata['user_time_mode'] >= 4)
-|| ($userdata['user_id'] == NUKE_ANONYMOUS && $board_config['default_time_mode'] >= 4)):
+if(($nuke_userdata['user_id'] != NUKE_ANONYMOUS && $nuke_userdata['user_time_mode'] >= 4)
+|| ($nuke_userdata['user_id'] == NUKE_ANONYMOUS && $board_config['default_time_mode'] >= 4)):
     global $pc_dateTime, $HTTP_SESSION_VARS, $HTTP_GET_VARS;
     if(!isset($pc_dateTime['pc_timezoneOffset']) && !isset($HTTP_GET_VARS['pc_tzo'])):
         $template->assign_block_vars('switch_send_pc_dateTime', array());
-		if($userdata['user_pc_timeOffsets'] != '0'):
+		if($nuke_userdata['user_pc_timeOffsets'] != '0'):
         $template->assign_block_vars('switch_valid_time', array());
 		endif;
 	else:
@@ -83,7 +83,7 @@ $template->set_filenames(array(
 );
 
 # Generate logged in/logged out status
-if($userdata['session_logged_in']):
+if($nuke_userdata['session_logged_in']):
   $u_login_logout = 'modules.php?name=Your_Account&amp;op=logout&amp;nuke_redirect=Forums';
   # Mod: Advanced Username Color v1.0.5 START
   $l_login_logout = $lang['Logout'];
@@ -93,7 +93,7 @@ else:
   $l_login_logout = $lang['Login'];
 endif;
 
-$s_last_visit = ( $userdata['session_logged_in'] ) ? create_date($board_config['default_dateformat'], $userdata['user_lastvisit'], $board_config['board_timezone']) : '';
+$s_last_visit = ( $nuke_userdata['session_logged_in'] ) ? create_date($board_config['default_dateformat'], $nuke_userdata['user_lastvisit'], $board_config['board_timezone']) : '';
 
 # Get basic (usernames + totals) online
 # situation
@@ -105,7 +105,7 @@ $l_online_users = '';
 if(defined('SHOW_ONLINE'))
 {
    # Mod: Online Time v1.0.0 START
-   $user_forum_sql = (!empty($forum_id)) ? "AND s.session_page = ".intval($forum_id) : '';
+   $nuke_user_forum_sql = (!empty($forum_id)) ? "AND s.session_page = ".intval($forum_id) : '';
    $sql = "SELECT u.username, 
                    u.user_id, 
 	 u.user_allow_viewonline, 
@@ -117,15 +117,15 @@ if(defined('SHOW_ONLINE'))
            WHERE u.user_id = s.session_user_id
            AND s.session_time >= ".(time() - $board_config['online_time'])."
            AND u.user_allow_viewonline = 1
-		   $user_forum_sql
+		   $nuke_user_forum_sql
            ORDER BY u.username ASC, s.session_ip ASC";
    # Mod: Online Time v1.0.0 END
 
    if(!($result = $nuke_db->sql_query($sql)))
    message_die(NUKE_GENERAL_ERROR, 'Could not obtain user/online information', '', __LINE__, __FILE__, $sql);
 
-   $userlist_ary = array();
-   $userlist_visible = array();
+   $nuke_userlist_ary = array();
+   $nuke_userlist_visible = array();
 
    $prev_user_id = 0;
    $prev_user_ip = $prev_session_ip = '';
@@ -139,15 +139,15 @@ if(defined('SHOW_ONLINE'))
           $row['username'] = UsernameColor($row['username']);
           # Mod: Advanced Username Color v1.0.5 END
           if($row['user_allow_viewonline']):
-            $user_online_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.$row['username'].'</a>';
+            $nuke_user_online_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.$row['username'].'</a>';
             $logged_visible_online++;
           else:
-            $user_online_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'"><i>'.$row['username'].'</i></a>';
+            $nuke_user_online_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'"><i>'.$row['username'].'</i></a>';
             $logged_hidden_online++;
           endif;
           # Mod: Hidden Status Viewing v1.0.0 START
-          if($row['user_allow_viewonline'] || $userdata['user_level'] == NUKE_ADMIN || $userdata['user_id'] == $row['user_id'])
-          $online_userlist .= ( $online_userlist != '' ) ? ', ' . $user_online_link : $user_online_link;
+          if($row['user_allow_viewonline'] || $nuke_userdata['user_level'] == NUKE_ADMIN || $nuke_userdata['user_id'] == $row['user_id'])
+          $online_userlist .= ( $online_userlist != '' ) ? ', ' . $nuke_user_online_link : $nuke_user_online_link;
           # Mod: Hidden Status Viewing v1.0.0 END
        endif;
        $prev_user_id = $row['user_id'];
@@ -222,7 +222,7 @@ if(defined('SHOW_ONLINE'))
 
 
 # Mod: Users of the day v2.1.0 START
-$users_list_delay = 24;
+$nuke_users_list_delay = 24;
 
 $sql = "SELECT user_id, 
               username, 
@@ -244,35 +244,35 @@ $day_users = 0;
 while($row = $nuke_db->sql_fetchrow($result)):
 	if($row['user_allow_viewonline']):
       # Mod: Advanced Username Color v1.0.5 START
-	  $user_day_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
+	  $nuke_user_day_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
       # Mod: Advanced Username Color v1.0.5 END
 	else:
       # Mod: Advanced Username Color v1.0.5 START
-	  $user_day_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'"><i>'.UsernameColor($row['username']).'</i></a>';
+	  $nuke_user_day_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'"><i>'.UsernameColor($row['username']).'</i></a>';
       # Mod: Advanced Username Color v1.0.5 END
 	endif;
 	
-	if($row['user_allow_viewonline'] || $userdata['user_level'] == NUKE_ADMIN):
-		if($row['user_session_time'] >= (time() - $users_list_delay * 3600 )):
-			$day_userlist .= ( $day_userlist <> '' ) ? ', ' . $user_day_link : $user_day_link;
+	if($row['user_allow_viewonline'] || $nuke_userdata['user_level'] == NUKE_ADMIN):
+		if($row['user_session_time'] >= (time() - $nuke_users_list_delay * 3600 )):
+			$day_userlist .= ( $day_userlist <> '' ) ? ', ' . $nuke_user_day_link : $nuke_user_day_link;
 			$day_users++;
 		endif;
 	endif;
 endwhile;
 
-$day_userlist = sprintf($lang['day_userlist_users'], $day_users, $users_list_delay) . ' ' . $day_userlist;
+$day_userlist = sprintf($lang['day_userlist_users'], $day_users, $nuke_users_list_delay) . ' ' . $day_userlist;
 # Mod: Users of the day v2.1.0 END
 
 # Obtain number of new private messages
 # if user is logged in
-if(($userdata['session_logged_in']) && (empty($gen_simple_header))):
-   if($userdata['user_new_privmsg']):
-      $l_message_new = ( $userdata['user_new_privmsg'] == 1 ) ? $lang['New_pm'] : $lang['New_pms'];
-      $l_privmsgs_text = sprintf($l_message_new, $userdata['user_new_privmsg']);
-      if($userdata['user_last_privmsg'] > $userdata['user_lastvisit']):
+if(($nuke_userdata['session_logged_in']) && (empty($gen_simple_header))):
+   if($nuke_userdata['user_new_privmsg']):
+      $l_message_new = ( $nuke_userdata['user_new_privmsg'] == 1 ) ? $lang['New_pm'] : $lang['New_pms'];
+      $l_privmsgs_text = sprintf($l_message_new, $nuke_userdata['user_new_privmsg']);
+      if($nuke_userdata['user_last_privmsg'] > $nuke_userdata['user_lastvisit']):
          $sql = "UPDATE ".NUKE_USERS_TABLE."
-                 SET user_last_privmsg = ".$userdata['user_lastvisit']."
-                 WHERE user_id = ".$userdata['user_id'];
+                 SET user_last_privmsg = ".$nuke_userdata['user_lastvisit']."
+                 WHERE user_id = ".$nuke_userdata['user_id'];
          if(!$nuke_db->sql_query($sql))
          message_die(NUKE_GENERAL_ERROR, 'Could not update private message new/read time for user', '', __LINE__, __FILE__, $sql);
          # Mod: Suppress Popup v1.0.0 START
@@ -298,9 +298,9 @@ if(($userdata['session_logged_in']) && (empty($gen_simple_header))):
       $icon_pm = $images['pm_no_new_msg'];
     endif;
 
-   if($userdata['user_unread_privmsg']):
-     $l_message_unread = ( $userdata['user_unread_privmsg'] == 1 ) ? $lang['Unread_pm'] : $lang['Unread_pms'];
-     $l_privmsgs_text_unread = sprintf($l_message_unread, $userdata['user_unread_privmsg']);
+   if($nuke_userdata['user_unread_privmsg']):
+     $l_message_unread = ( $nuke_userdata['user_unread_privmsg'] == 1 ) ? $lang['Unread_pm'] : $lang['Unread_pms'];
+     $l_privmsgs_text_unread = sprintf($l_message_unread, $nuke_userdata['user_unread_privmsg']);
    else:
      $l_privmsgs_text_unread = $lang['No_unread_pm'];
    endif;
@@ -411,8 +411,8 @@ $gfx = "<br />".security_code($gfxchk, 'small')."<br />";
 # Mod: Advanced Security Code Control v1.0.0 END
 
 # Mod: Advanced Time Management v2.2.0 START
-if($userdata['user_id'] != NUKE_ANONYMOUS):
-  switch($userdata['user_time_mode']):
+if($nuke_userdata['user_id'] != NUKE_ANONYMOUS):
+  switch($nuke_userdata['user_time_mode']):
      case MANUAL_DST:
      $time_message = sprintf($lang['All_times'], $l_timezone) . $lang['dst_enabled_mode'];
      break;
@@ -653,14 +653,14 @@ $template->assign_vars(array(
 );
 
 # Mod: Disable Board Admin Override v0.1.1 START
-if($userdata['user_level'] == NUKE_ADMIN): 
+if($nuke_userdata['user_level'] == NUKE_ADMIN): 
   if($board_config['board_disable'] == 1) 
   $template->assign_block_vars('boarddisabled', array());
 endif;
 # Mod: Disable Board Admin Override v0.1.1 END
 
 # Login box?
-if(!$userdata['session_logged_in']):
+if(!$nuke_userdata['session_logged_in']):
     $template->assign_block_vars('switch_user_logged_out', array());
     # Allow autologin?
     if(!isset($board_config['allow_autologin']) || $board_config['allow_autologin']):
@@ -669,7 +669,7 @@ if(!$userdata['session_logged_in']):
     endif;
 else:
     $template->assign_block_vars('switch_user_logged_in', array());
-    if(!empty($userdata['user_popup_pm']))
+    if(!empty($nuke_userdata['user_popup_pm']))
     $template->assign_block_vars('switch_enable_pm_popup', array());
 endif;
 
@@ -677,22 +677,22 @@ endif;
 $current_time = time() + (3600 * $board_config['board_timezone']);
 $starttime = ( $board_config['bday_lookahead'] > 0 ) ? strtotime('-'.$board_config['bday_lookahead'].' day') : $current_time;
 # the greeting will be sent up to seven days after the birthday
-if($userdata['birthday_greeting'] != 0 && ($userdata['user_next_birthday'] < gmdate('Y',$current_time)+1) 
-&& $userdata['user_birthday'] >= gmdate('md0000',$starttime) && $userdata['user_birthday'] <= gmdate('md9999',$current_time)):
+if($nuke_userdata['birthday_greeting'] != 0 && ($nuke_userdata['user_next_birthday'] < gmdate('Y',$current_time)+1) 
+&& $nuke_userdata['user_birthday'] >= gmdate('md0000',$starttime) && $nuke_userdata['user_birthday'] <= gmdate('md9999',$current_time)):
    $sql = "UPDATE ".NUKE_USERS_TABLE. "
 		   SET user_next_birthday = ".(gmdate('Y',$current_time)+1)."
-		   WHERE user_id = ".$userdata['user_id'];
+		   WHERE user_id = ".$nuke_userdata['user_id'];
    if(!$nuke_db->sql_query($sql))
    message_die(NUKE_GENERAL_ERROR, 'Could not update birthday information', '', __LINE__, __FILE__, $sql);
-   switch($userdata['birthday_greeting']):
+   switch($nuke_userdata['birthday_greeting']):
 	  case NUKE_BIRTHDAY_EMAIL:
 	  include('includes/emailer.'.$phpEx);
 	  $emailer = new emailer($board_config['smtp_delivery']);
   	  $emailer->from($board_config['board_email']);
 	  $emailer->replyto($board_config['board_email']);
- 	  $emailer->use_template('user_birthday',stripslashes($userdata['user_lang']));
+ 	  $emailer->use_template('user_birthday',stripslashes($nuke_userdata['user_lang']));
 	  $emailer->set_subject($lang['View_Birthdays']);
-	  $emailer->email_address($userdata['user_email']);
+	  $emailer->email_address($nuke_userdata['user_email']);
 	  $emailer->assign_vars(array(
 	  'SITENAME' => $board_config['sitename'],
 	  'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '')
@@ -760,13 +760,13 @@ $template->pparse('overall_header');
 
 # Mod: Disable Board Admin Override v0.1.1 START
 # Mod: Disable Board Message v1.0.0 START
-if($userdata['user_level'] != NUKE_ADMIN && $board_config['board_disable'] && !defined("IN_ADMIN") && !defined("IN_LOGIN")):
+if($nuke_userdata['user_level'] != NUKE_ADMIN && $board_config['board_disable'] && !defined("IN_ADMIN") && !defined("IN_LOGIN")):
     if($board_config['board_disable_msg'] != "")
     message_die(NUKE_GENERAL_MESSAGE, $board_config['board_disable_msg'], 'Information');
     else
     message_die(NUKE_GENERAL_MESSAGE, 'Board_disable', 'Information');
 else:
-    if($userdata['user_level'] == NUKE_ADMIN && $board_config['board_disable_adminview'] != '1' && $board_config['board_disable'] && !defined("IN_ADMIN") && !defined("IN_LOGIN")):
+    if($nuke_userdata['user_level'] == NUKE_ADMIN && $board_config['board_disable_adminview'] != '1' && $board_config['board_disable'] && !defined("IN_ADMIN") && !defined("IN_LOGIN")):
       if($board_config['board_disable_msg'] != "")
       message_die(NUKE_GENERAL_MESSAGE, $board_config['board_disable_msg'], 'Information');
       else

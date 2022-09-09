@@ -27,8 +27,8 @@ $core->set_content('statistical');
 //
 // Get the user-definable variables
 // -- exclude_images (TRUE/FALSE)
-$user_variables = $core->get_user_defines();
-$exclude_images = intval($user_variables['exclude_images']);
+$nuke_user_variables = $core->get_user_defines();
+$exclude_images = intval($nuke_user_variables['exclude_images']);
 
 $core->set_view('rows', $core->return_limit);
 $core->set_view('columns', 7);

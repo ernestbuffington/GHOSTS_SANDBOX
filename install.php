@@ -65,13 +65,13 @@ if ($safemodcheck == 'On' || $safemodcheck == 'on' || $safemodcheck == true){
 if (isset($_POST['download_file']) && !empty($_SESSION['configData']) && !$_POST['continue']){
     header("Content-Type: text/x-delimtext; name=config.php");
     header("Content-disposition: attachment; filename=config.php");
-    $configData = $_SESSION['configData'];
-    echo $configData;
+    $nuke_configData = $_SESSION['configData'];
+    echo $nuke_configData;
     exit;
 }
 
 if ($step >= 5){
-    if (!$server_check = mysqli_connect($_SESSION['dbhost_a'], $_SESSION['dbuser_a'], $_SESSION['dbpass_a'], $_SESSION['dbname_a'])){
+    if (!$server_check = mysqli_connect($_SESSION['nuke_dbhost'], $_SESSION['nuke_dbuname'], $_SESSION['nuke_dbpass'], $_SESSION['nuke_dbname'])){
         die ($install_lang['couldnt_connect'] . mysqli_error($server_check));
     }
 }
@@ -256,7 +256,7 @@ if ($step == 1){
 		echo '<center><div style="color:#D29A2B;"><strong>'.$nuke_name.' '.$install_lang['installer_heading'].' '.$step.' '.$install_lang['installer_heading2'].' '.$total_steps.'</strong></div></center>';
 		echo '<fieldset><legend>'.$install_lang['mysql_info'].'</legend>';
 		echo '  <dl>';
-		echo '    <dt><label>'.$install_lang['dbhost_a'].'</label></dt>';
+		echo '    <dt><label>'.$install_lang['nuke_dbhost'].'</label></dt>';
 		echo '    <dd><input type="text" value="localhost" name="dbhost" size="50" class="input" /></dd>';
 		echo '  </dl>';
 		echo '  <dl>';

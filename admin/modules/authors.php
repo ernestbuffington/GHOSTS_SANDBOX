@@ -64,25 +64,25 @@ function displayadmins()
         while ($row = $nuke_db->sql_fetchrow($result)) 
         {
             $admlanguage    = $row['admlanguage'];
-            $authorID       = substr($row['aid'], 0,25);
+            $nuke_authorID       = substr($row['aid'], 0,25);
             $name           = substr($row['name'], 0,50);
             if (empty($admlanguage)) 
                 $admlanguage = $admlang['global']['all'];
 
             if($row['url'])
-                $authorURL = '<span style="float:right;"><a href="'.$row['url'].'"><span class="ml-sprite ml-www tooltip"></span></a></span>';
+                $nuke_authorURL = '<span style="float:right;"><a href="'.$row['url'].'"><span class="ml-sprite ml-www tooltip"></span></a></span>';
             else
-                $authorURL = '';
+                $nuke_authorURL = '';
 
             $row_class = ($countAuthor % 2) ? 'row1' : 'row2';
 
             echo '  <tr>'."\n";
             echo '    <td class="'.$row_class.'" style="text-align: center;">'.$countAuthor.'</td>'."\n";
-            echo '    <td class="'.$row_class.'"><span style="float:left;">'.$authorID.'</span>'.$authorURL.'</td>'."\n";
+            echo '    <td class="'.$row_class.'"><span style="float:left;">'.$nuke_authorID.'</span>'.$nuke_authorURL.'</td>'."\n";
             echo '    <td class="'.$row_class.'">'.$row['email'].'</td>'."\n";
             echo '    <td class="'.$row_class.'" style="text-align: center;">'.$admlanguage.'</td>'."\n";
-            echo '    <td class="'.$row_class.'" style="text-align: center;"><a href="'.$admin_file.'.php?op=modifyadmin&amp;chng_aid='.$authorID.'">'.$admlang['authors']['modify'].'</a></td>'."\n";
-            echo '    <td class="'.$row_class.'" style="text-align: center;">'.(($name == 'God') ? $admlang['authors']['main'] : '<a href="'.$admin_file.'.php?op=deladmin&amp;del_aid='.$authorID.'">'.$admlang['global']['delete'].'</a>').'</td>'."\n";
+            echo '    <td class="'.$row_class.'" style="text-align: center;"><a href="'.$admin_file.'.php?op=modifyadmin&amp;chng_aid='.$nuke_authorID.'">'.$admlang['authors']['modify'].'</a></td>'."\n";
+            echo '    <td class="'.$row_class.'" style="text-align: center;">'.(($name == 'God') ? $admlang['authors']['main'] : '<a href="'.$admin_file.'.php?op=deladmin&amp;del_aid='.$nuke_authorID.'">'.$admlang['global']['delete'].'</a>').'</td>'."\n";
             echo '  </tr>'."\n";
             $countAuthor++;
         }
@@ -353,7 +353,7 @@ function modifyadmin($chng_aid)
     }
 }
 
-function updateadmin($chng_aid, $chng_name, $chng_email, $chng_url, $chng_radminsuper, $chng_pwd, $chng_pwd2, $chng_admlanguage, $adm_aid, $auth_modules) {
+function updateadmin($chng_aid, $chng_name, $chng_email, $chng_url, $chng_radminsuper, $chng_pwd, $chng_pwd2, $chng_admlanguage, $adm_aid, $nuke_auth_modules) {
     global $admin, $prefix, $nuke_db, $admin_file;
     if (is_admin()) {
         Validate($chng_aid, 'username', 'Modify Authors', 0, 1, 0, 2, 'Nickname:', '<br /><center>'. _GOBACK .'</center>');
@@ -407,8 +407,8 @@ function updateadmin($chng_aid, $chng_name, $chng_email, $chng_url, $chng_radmin
                     $nuke_db->sql_query("UPDATE ".$prefix."_authors SET radminsuper='$chng_radminsuper' WHERE name='$chng_name' AND aid='$adm_aid'");
                     $nuke_db->sql_query("UPDATE ".$prefix."_modules SET admins='$adm' WHERE mid='".intval($row['mid'])."'");
                 }
-                for ($i=0, $maxi=count($auth_modules); $i < $maxi; $i++) {
-                    $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT admins FROM ".$prefix."_modules WHERE mid='".intval($auth_modules[$i])."'"));
+                for ($i=0, $maxi=count($nuke_auth_modules); $i < $maxi; $i++) {
+                    $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT admins FROM ".$prefix."_modules WHERE mid='".intval($nuke_auth_modules[$i])."'"));
                     if(!empty($row['admins'])) {
                         $admins = explode(",", $row['admins']);
                         for ($a=0, $maxa = count($admins); $a < $maxa; $a++) {
@@ -419,7 +419,7 @@ function updateadmin($chng_aid, $chng_name, $chng_email, $chng_url, $chng_radmin
                     }
                     if ($dummy != 1) {
                         $adm = $row['admins'].$chng_name;
-                        $nuke_db->sql_query("UPDATE ".$prefix."_modules SET admins='$adm,' WHERE mid='".intval($auth_modules[$i])."'");
+                        $nuke_db->sql_query("UPDATE ".$prefix."_modules SET admins='$adm,' WHERE mid='".intval($nuke_auth_modules[$i])."'");
                     }
                     $dummy = '';
                 }
@@ -458,8 +458,8 @@ function updateadmin($chng_aid, $chng_name, $chng_email, $chng_url, $chng_radmin
                     $nuke_db->sql_query("UPDATE ".$prefix."_authors SET radminsuper='$chng_radminsuper' WHERE name='$chng_name' AND aid='$adm_aid'");
                     $nuke_db->sql_query("UPDATE ".$prefix."_modules SET admins='$adm' WHERE mid='".intval($row['mid'])."'");
                 }
-                for ($i=0, $maxi=count($auth_modules); $i < $maxi; $i++) {
-                    $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT admins FROM ".$prefix."_modules WHERE mid='".intval($auth_modules[$i])."'"));
+                for ($i=0, $maxi=count($nuke_auth_modules); $i < $maxi; $i++) {
+                    $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT admins FROM ".$prefix."_modules WHERE mid='".intval($nuke_auth_modules[$i])."'"));
                     if(!empty($row['admins'])) {
                         $admins = explode(",", $row['admins']);
                         for ($a=0, $maxa=count($admins); $a < $maxa; $a++) {
@@ -470,7 +470,7 @@ function updateadmin($chng_aid, $chng_name, $chng_email, $chng_url, $chng_radmin
                     }
                     if ($dummy != 1) {
                         $adm = $row['admins'].$chng_name;
-                        $nuke_db->sql_query("UPDATE ".$prefix."_modules SET admins='$adm,' WHERE mid='".intval($auth_modules[$i])."'");
+                        $nuke_db->sql_query("UPDATE ".$prefix."_modules SET admins='$adm,' WHERE mid='".intval($nuke_auth_modules[$i])."'");
                     }
                     $dummy = '';
                 }
@@ -504,13 +504,13 @@ function deladmin2($del_aid) {
         $row2 = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT name FROM ".$prefix."_authors WHERE aid='$del_aid'"));
         while ($row = $nuke_db->sql_fetchrow($result)) {
             $admins = explode(",", $row['admins']);
-            $auth_user = 0;
+            $nuke_auth_user = 0;
             for ($i=0, $maxi=count($admins); $i < $maxi; $i++) {
                 if ($row2['name'] == $admins[$i]) {
-                    $auth_user = 1;
+                    $nuke_auth_user = 1;
                 }
             }
-            if ($auth_user == 1) {
+            if ($nuke_auth_user == 1) {
                 $radminarticle = 1;
             }
         }
@@ -575,7 +575,7 @@ switch ($op) {
 
     case "UpdateAuthor":
         echo $chng_aid;
-        updateadmin($chng_aid, $chng_name, $chng_email, $chng_url, $chng_radminsuper, $chng_pwd, $chng_pwd2, $chng_admlanguage, $adm_aid, $auth_modules);
+        updateadmin($chng_aid, $chng_name, $chng_email, $chng_url, $chng_radminsuper, $chng_pwd, $chng_pwd2, $chng_admlanguage, $adm_aid, $nuke_auth_modules);
     break;
 
     case "AddAuthor":
@@ -595,10 +595,10 @@ switch ($op) {
 /*****[END]********************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
-        for ($i=0,$maxi=count($auth_modules); $i < $maxi; $i++) {
-            $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT admins FROM ".$prefix."_modules WHERE mid='".intval($auth_modules[$i])."'"));
+        for ($i=0,$maxi=count($nuke_auth_modules); $i < $maxi; $i++) {
+            $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT admins FROM ".$prefix."_modules WHERE mid='".intval($nuke_auth_modules[$i])."'"));
             $adm = $row['admins'] . $add_name;
-            $nuke_db->sql_query("UPDATE ".$prefix."_modules SET admins='$adm,' WHERE mid='".intval($auth_modules[$i])."'");
+            $nuke_db->sql_query("UPDATE ".$prefix."_modules SET admins='$adm,' WHERE mid='".intval($nuke_auth_modules[$i])."'");
         }
         $result = $nuke_db->sql_query("insert into " . $prefix . "_authors values ('$add_aid', '$add_name', '$add_url', '$add_email', '$add_pwd', '0', '$add_radminsuper', '$add_admlanguage')");
         if (!$result) {

@@ -294,18 +294,18 @@ function get_themes($mode='user_themes')
 }
 
 function GetThemeSelect($name, $mode='user_themes', $other_user=false, $extra='', $current='', $show_default=1) {
-    global $userinfo;
-    if($other_user) $userinfo = $other_user;
+    global $nuke_userinfo;
+    if($other_user) $nuke_userinfo = $other_user;
 
     $themes = get_themes($mode);
     $select = "<select name=\"" . $name . "\" $extra>";
     if($show_default) {
-        $dSelect = (is_default($userinfo['theme'])) ? "selected" : "";
+        $dSelect = (is_default($nuke_userinfo['theme'])) ? "selected" : "";
         $select .= "<option value=\"\" $dSelect>"._THEMES_DEFAULT."</option>";
     }
     foreach($themes as $theme) {
         $name = (!empty($theme['custom_name'])) ? $theme['custom_name'] : $theme['theme_name'];
-        $selected = (($userinfo['theme'] == $theme['theme_name']) || ($current == $theme['theme_name'])) ? "selected" : "";
+        $selected = (($nuke_userinfo['theme'] == $theme['theme_name']) || ($current == $theme['theme_name'])) ? "selected" : "";
         $select .= "<option value=\"" . $theme['theme_name'] . "\" $selected>" . $name . "</option>";
     }
     $select .= "</select>";
@@ -334,10 +334,10 @@ function ThemeCount($theme) {
 }
 
 function ChangeTheme($theme, $who) {
-    global $nuke_db, $nuke_user_prefix, $userinfo;
-	if(!$who) { $who = $userinfo['user_id']; }
+    global $nuke_db, $nuke_user_prefix, $nuke_userinfo;
+	if(!$who) { $who = $nuke_userinfo['user_id']; }
     $nuke_db->sql_query('UPDATE ' . $nuke_user_prefix . '_users SET theme="' . $theme . '" WHERE user_id = "' . $who . '"');
-	$userinfo['theme'] = $theme;
+	$nuke_userinfo['theme'] = $theme;
     UpdateCookie();
     nuke_redirect($_SERVER['REQUEST_URI']);
     return true;

@@ -21,17 +21,17 @@ if (!defined('BOARD_CONFIG')) {
     die('Access Denied');
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     "coppa" => "admin/board_config/board_coppa.tpl")
 );
 
 //General Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "DHTML_ID" => "c" . $dhtml_id)
 );
     
 //Language Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "L_COPPA_SETTINGS" => $lang['COPPA_settings'],
     "L_COPPA_FAX" => $lang['COPPA_fax'],
     "L_COPPA_MAIL" => $lang['COPPA_mail'],
@@ -39,10 +39,10 @@ $template->assign_vars(array(
 ));
 
 //Data Template Variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "COPPA_MAIL" => $new['coppa_mail'],
     "COPPA_FAX" => $new['coppa_fax'],
  ));
-$template->pparse("coppa");
+$template_nuke->pparse("coppa");
 
 ?>

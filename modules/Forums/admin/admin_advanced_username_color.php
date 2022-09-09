@@ -172,9 +172,9 @@ if($mode == "main" || !$mode)
     while($row     = $nuke_db -> sql_fetchrow($r))
         {    
         if ($w != 1)
-            $links = '&nbsp;&nbsp;<a href="admin_advanced_username_color.'. $phpEx .'?mode=move_up&amp;id='. $row['group_id'] .'&amp;sid='. $userdata['session_id'] .'">Up</a>';
+            $links = '&nbsp;&nbsp;<a href="admin_advanced_username_color.'. $phpEx .'?mode=move_up&amp;id='. $row['group_id'] .'&amp;sid='. $nuke_userdata['session_id'] .'">Up</a>';
         else
-            $links = '&nbsp;&nbsp;<a href="admin_advanced_username_color.'. $phpEx .'?mode=move_down&amp;id='. $row['group_id'] .'&amp;sid='. $userdata['session_id'] .'">Down</a>';
+            $links = '&nbsp;&nbsp;<a href="admin_advanced_username_color.'. $phpEx .'?mode=move_down&amp;id='. $row['group_id'] .'&amp;sid='. $nuke_userdata['session_id'] .'">Down</a>';
             
     echo "    <tr>";
     echo "        <td align='left' width='25%' class='row2'>";
@@ -648,6 +648,6 @@ if($mode == "main" || !$mode)
     message_die(NUKE_GENERAL_MESSAGE, $lang['add_success'] . "<br /><br />" . sprintf($lang['Return_to_config'], "<a href=admin_advanced_username_color.php>", "</a>"), $lang['success']);        
         }
 
-include('page_footer_admin.' . $phpEx);
+include('nuke_page_footer_admin.' . $phpEx);
 
 ?>

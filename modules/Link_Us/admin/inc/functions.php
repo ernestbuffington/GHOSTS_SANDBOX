@@ -65,12 +65,12 @@ function check_image_type($type) {
 function LinkusAdminMain(){
 	
 		global $prefix, $nuke_db, $lang_new, $module_name, $admin_file;	
-		$config = $nuke_db->sql_ufetchrow("SELECT * FROM `".$prefix."_link_us_config` LIMIT 0,1");
+		$nuke_config = $nuke_db->sql_ufetchrow("SELECT * FROM `".$prefix."_link_us_config` LIMIT 0,1");
 		list($pending) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT COUNT(*) FROM `".$prefix."_link_us` WHERE `site_status` = '3'"));
 		
-		if (!empty($config) || is_array($config)) {
+		if (!empty($nuke_config) || is_array($nuke_config)) {
 		
-		$uploaddir = $config['upload_file'];
+		$uploaddir = $nuke_config['upload_file'];
 
 	OpenTable();
 

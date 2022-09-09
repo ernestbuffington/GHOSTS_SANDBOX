@@ -18,7 +18,7 @@
 
 if(!defined('NUKE_EVO')) exit;
 
-global $prefix, $nuke_db, $user, $admin, $ab_config, $currentlang;
+global $prefix, $nuke_db, $nuke_user, $admin, $ab_config, $currentlang;
 
 $usemarquee = 1;
 $scrolldirection = "Down";

@@ -92,7 +92,7 @@ if (!is_user())
 } 
 else 
 {
-	global $userinfo, $bgcolor1, $bgcolor2;
+	global $nuke_userinfo, $bgcolor1, $bgcolor2;
 
 	$evouserinfo_login .= '<div style="padding-left: 11px;">';
     $evouserinfo_login .= '  <font color="#3498DB"><i class="far fa-file-image" aria-hidden="true"></i></font> <a 
@@ -106,7 +106,7 @@ else
 
     $evouserinfo_login .= '<div style="padding-left: 10px;">';
     $evouserinfo_login .= '  <font color="#EC7063"><i class="fas fa-user" aria-hidden="true"></i></font> <a 
-	href="modules.php?name=Profile&mode=viewprofile&u='.$userinfo['user_id'].'">'.$lang_evo_userblock['BLOCK']['LOGIN']['MYPROFILE'].'</a>';
+	href="modules.php?name=Profile&mode=viewprofile&u='.$nuke_userinfo['user_id'].'">'.$lang_evo_userblock['BLOCK']['LOGIN']['MYPROFILE'].'</a>';
     $evouserinfo_login .= '</div>';
 
     $evouserinfo_login .= '<div style="padding-left: 8px;">';

@@ -34,10 +34,10 @@ if($totalselected > 0) {
   echo '<td align="center"><strong>'._AB_HITS.'</strong></td>'."\n";
   echo '</tr>'."\n";
   $result = $nuke_db->sql_query("SELECT `user_id`, `username`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` GROUP BY 2");
-  while(list($userid,$username,$lastview,$hits) = $nuke_db->sql_fetchrow($result)){
-    $trackedips = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$userid'"));
+  while(list($nuke_userid,$nuke_username,$lastview,$hits) = $nuke_db->sql_fetchrow($result)){
+    $trackedips = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$nuke_userid'"));
     echo '<tr bgcolor="#ffffff">'."\n";
-    if($userid != 1) { echo '<td>'.UsernameColor($username).'</td>'."\n"; } else { echo '<td>'.$anonymous.'</td>'."\n"; }
+    if($nuke_userid != 1) { echo '<td>'.UsernameColor($nuke_username).'</td>'."\n"; } else { echo '<td>'.$anonymous.'</td>'."\n"; }
     echo '<td align="center">'.$trackedips.'</td>'."\n";
     echo '<td align="center">'.date("Y-m-d \@ H:i:s",$lastview).'</td>'."\n";
     echo '<td align="center">'.$hits.'</td>'."\n";

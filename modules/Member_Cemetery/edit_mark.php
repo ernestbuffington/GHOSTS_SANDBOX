@@ -1,17 +1,17 @@
 <?php
 if (!defined('MODULE_FILE')) die ("You can't access this file directly...");
-global $prefix, $nuke_db, $cookie, $user;
+global $prefix, $nuke_db, $cookie, $nuke_user;
 if((isset($_POST['popup']) && !empty($_POST['popup'])) && (isset($_GET['popup']) && !empty($_GET['popup']))) 
 $popup = (isset($_GET['popup']) && !stristr($_GET['popup'],'..') && !stristr($_GET['popup'],'://')) ? addslashes(trim($_GET['popup'])) : false;
 else 
 $popup = (isset($_REQUEST['popup']) && !stristr($_REQUEST['popup'],'..') && !stristr($_REQUEST['popup'],'://')) ? addslashes(trim($_REQUEST['popup'])) : false;
-$userinfo = getusrinfo($user);
-$userid = $userinfo["user_id"];
+$nuke_userinfo = getusrinfo($nuke_user);
+$nuke_userid = $nuke_userinfo["user_id"];
 $markurl=@htmlentities($markurl);
 $markname=@htmlentities($markname);
 $markcomment=@htmlentities($markcomment);
-if (!isset($userid) || $userid == "")
-$userid=0;
+if (!isset($nuke_userid) || $nuke_userid == "")
+$nuke_userid=0;
 $index = 1;
 require_once("mainfile.php");
 $module_name = basename(dirname(__FILE__));
@@ -26,7 +26,7 @@ if ($form_done=="yes" && (isset($catid) && $catid != "")):
 	if (isset($markid) && $markid != "")
 		$query = "update ".$prefix."_cemetery set name='$markname',url='$markurl',category_id=$catid,description='$markcomment',mod_date=now(),popup=$popup where id=$markid";
 	else
-		$query = "insert into ".$prefix."_cemetery (user_id,category_id,name,url,description,mod_date,popup) values ($userid,$catid,'$markname','$markurl','$markcomment',now(),$popup)";
+		$query = "insert into ".$prefix."_cemetery (user_id,category_id,name,url,description,mod_date,popup) values ($nuke_userid,$catid,'$markname','$markurl','$markcomment',now(),$popup)";
 	$nuke_db->sql_query ($query,$nuke_db);
 	$catquery = "update " . $prefix . "_cemetery_cat set mod_date=now() where category_id=$catid";
 	$nuke_db->sql_query ($catquery,$nuke_db);
@@ -56,7 +56,7 @@ OpenTable();
 <table align=center>
 <tr><td><? echo _CATEGORY ?></td><td><select name=catid>
 <?
-$getcatquery = "select * from " . $prefix . "_cemetery_cat where user_id=$userid order by name";
+$getcatquery = "select * from " . $prefix . "_cemetery_cat where user_id=$nuke_userid order by name";
 $cat_ret = $nuke_db->sql_query  ($getcatquery,$nuke_db);
 for ($i=0;$i<$nuke_db->sql_numrows ($cat_ret,$nuke_db);$i++):
 	$catrow = $nuke_db->sql_fetchrow($cat_ret);

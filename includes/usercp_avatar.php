@@ -71,7 +71,7 @@ function check_image_type(&$type, &$error, &$error_msg)
 
 function user_avatar_delete($avatar_type, $avatar_file)
 {
-		global $board_config, $userdata;
+		global $board_config, $nuke_userdata;
 	$avatar_file = basename($avatar_file);
 
 		if ( $avatar_type == NUKE_USER_AVATAR_UPLOAD && !empty($avatar_file) )
@@ -144,11 +144,11 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 	    $headers[] = 'Accept: image/gif, image/x-bitmap, image/jpeg, image/pjpeg';              
 	    $headers[] = 'Connection: Keep-Alive';         
 	    $headers[] = 'Content-type: application/x-www-form-urlencoded;charset=UTF-8';         
-	    $user_agent = 'php';         
+	    $nuke_user_agent = 'php';         
 	    $process = curl_init($url);         
 	    curl_setopt($process, CURLOPT_HTTPHEADER, $headers);         
 	    curl_setopt($process, CURLOPT_HEADER, 0);         
-	    curl_setopt($process, CURLOPT_USERAGENT, $user_agent); //check here         
+	    curl_setopt($process, CURLOPT_USERAGENT, $nuke_user_agent); //check here         
 	    curl_setopt($process, CURLOPT_TIMEOUT, 30);         
 	    curl_setopt($process, CURLOPT_RETURNTRANSFER, 1);         
 	    curl_setopt($process, CURLOPT_FOLLOWLOCATION, 1);         
@@ -242,7 +242,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
  [ Mod:     Gender                             v1.2.6 ]
  [ Mod:     Birthdays                          v3.0.0 ]
  ******************************************************/
-function display_avatar_gallery($mode, $category, $user_id, $email, $current_email, $coppa, $username, $new_password, $cur_password, $password_confirm, $website, $location, $user_flag, $occupation, $interests, $glance_show, $signature, $viewemail, $notifypm, $allow_mass_pm, $popup_pm, $notifyreply, $attachsig, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $hideonline, $style, $wrap, $language, $bday_month, $bday_day, $bday_year, $birthday_display, $birthday_greeting, $timezone, $time_mode, $dst_time_lag, $dateformat, $show_quickreply, $quickreply_mode, $user_open_quickreply, $session_id, $xdata = false, $rname, $extra_info, $newsletter, $hide_images, $gender, $facebook)
+function display_avatar_gallery($mode, $category, $nuke_user_id, $email, $current_email, $coppa, $nuke_username, $new_password, $cur_password, $password_confirm, $website, $location, $nuke_user_flag, $occupation, $interests, $glance_show, $signature, $viewemail, $notifypm, $allow_mass_pm, $popup_pm, $notifyreply, $attachsig, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $hideonline, $style, $wrap, $language, $bday_month, $bday_day, $bday_year, $birthday_display, $birthday_greeting, $timezone, $time_mode, $dst_time_lag, $dateformat, $show_quickreply, $quickreply_mode, $nuke_user_open_quickreply, $session_id, $xdata = false, $rname, $extra_info, $newsletter, $hide_images, $gender, $facebook)
 /*****[END]********************************************
  [ Mod:     Birthdays                          v3.0.0 ]
  [ Mod:     Gender                             v1.2.6 ]
@@ -258,7 +258,7 @@ function display_avatar_gallery($mode, $category, $user_id, $email, $current_ema
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
 {
-		global $board_config, $nuke_db, $template, $lang, $images, $theme, $phpbb2_root_path, $phpEx, $userdata;
+		global $board_config, $nuke_db, $template_nuke, $lang, $images, $theme, $phpbb2_root_path, $phpEx, $nuke_userdata;
 
 		$dir = @opendir($board_config['avatar_gallery_path']);
 
@@ -314,18 +314,18 @@ function display_avatar_gallery($mode, $category, $user_id, $email, $current_ema
 		$s_colspan = 0;
 		for($i = 0; $i < count($avatar_images[$category]); $i++)
 		{
-				$template->assign_block_vars("avatar_row", array());
+				$template_nuke->assign_block_vars("avatar_row", array());
 
 				$s_colspan = max($s_colspan, count($avatar_images[$category][$i]));
 
 				for($j = 0; $j < count($avatar_images[$category][$i]); $j++)
 				{
-						$template->assign_block_vars('avatar_row.avatar_column', array(
+						$template_nuke->assign_block_vars('avatar_row.avatar_column', array(
 								"AVATAR_IMAGE" => $board_config['avatar_gallery_path'] . '/' . $category . '/' . $avatar_images[$category][$i][$j],
 								"AVATAR_NAME" => $avatar_name[$category][$i][$j])
 						);
 
-						$template->assign_block_vars('avatar_row.avatar_option_column', array(
+						$template_nuke->assign_block_vars('avatar_row.avatar_option_column', array(
 								"S_OPTIONS_AVATAR" => $avatar_images[$category][$i][$j])
 						);
 				}
@@ -388,7 +388,7 @@ function display_avatar_gallery($mode, $category, $user_id, $email, $current_ema
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
 
-		$template->assign_vars(array(
+		$template_nuke->assign_vars(array(
 				'L_USERID' => $s_hidden_vars,
 				'L_AVATAR_GALLERY' => $lang['Avatar_gallery'],
 				'L_SELECT_AVATAR' => $lang['Select_avatar'],

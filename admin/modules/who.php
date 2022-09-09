@@ -47,7 +47,7 @@ if (!defined('ADMIN_FILE')) {
    die ("Illegal File Access");
 }
 
-global $prefix, $nuke_db, $bgcolor2, $sitename, $bgcolor1, $prefix, $language, $multilingual, $user, $admin, $bgcolor, $admin_file, $nuke_user_prefix, $admdata, $nsnst_const;
+global $prefix, $nuke_db, $bgcolor2, $sitename, $bgcolor1, $prefix, $language, $multilingual, $nuke_user, $admin, $bgcolor, $admin_file, $nuke_user_prefix, $admdata, $nsnst_const;
 
 if (is_mod_admin()) {
 
@@ -68,7 +68,7 @@ if($guest == 0 || $guest == 2) {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-    $usercolor = UsernameColor($uname);
+    $nuke_usercolor = UsernameColor($uname);
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -76,7 +76,7 @@ if($guest == 0 || $guest == 2) {
 /*****[BEGIN]******************************************
  [ Mod:    CNBYA Modifications                 v1.0.0 ]
  ******************************************************/
-        $uname = "<img src=\"images/4nwho/ur-member.gif\" valign=\"middle\" border=\"0\" alt=\"$uname\">&nbsp;$usercolor&nbsp;&nbsp;<a href=\"modules.php?name=Your_Account&amp;op=userinfo&amp;username=$uname\"><img src=\"images/4nwho/info.gif\" valign=\"middle\" border=\"0\" alt=\"" . _4nwho13 . "\"></a><a href=\"modules.php?name=Your_Account&amp;file=admin&amp;op=modifyUser&amp;chng_uid=$uname\"><img src=\"images/4nwho/edit.gif\" valign=\"middle\" border=\"0\" alt=\"" . _4nwho08 . "\"></a>&nbsp;<a href=\"modules.php?name=Your_Account&amp;file=admin&amp;op=deleteUser&amp;chng_uid=$uname\"><img src=\"images/4nwho/delete.gif\" valign=\"middle\" border=\"0\" alt=\"" . _4nwho20 . "\"></a>";
+        $uname = "<img src=\"images/4nwho/ur-member.gif\" valign=\"middle\" border=\"0\" alt=\"$uname\">&nbsp;$nuke_usercolor&nbsp;&nbsp;<a href=\"modules.php?name=Your_Account&amp;op=userinfo&amp;username=$uname\"><img src=\"images/4nwho/info.gif\" valign=\"middle\" border=\"0\" alt=\"" . _4nwho13 . "\"></a><a href=\"modules.php?name=Your_Account&amp;file=admin&amp;op=modifyUser&amp;chng_uid=$uname\"><img src=\"images/4nwho/edit.gif\" valign=\"middle\" border=\"0\" alt=\"" . _4nwho08 . "\"></a>&nbsp;<a href=\"modules.php?name=Your_Account&amp;file=admin&amp;op=deleteUser&amp;chng_uid=$uname\"><img src=\"images/4nwho/delete.gif\" valign=\"middle\" border=\"0\" alt=\"" . _4nwho20 . "\"></a>";
 /*****[END]********************************************
  [ Mod:    CNBYA Modifications                 v1.0.0 ]
  ******************************************************/
@@ -415,12 +415,12 @@ $result4thd = $nuke_db->sql_query("SELECT uname, guest FROM " . $prefix . "_sess
 $member_online_count = $nuke_db->sql_numrows($result4thd);
 $DataOnlineWho .= "<img src=\"images/4nwho/group-1.gif\" height=\"14\" width=\"17\" alt=\"" . _4nwho03 . "\">&nbsp;&nbsp;" . _4nwho17 . "&nbsp;<strong>$guest_online_count</strong>&nbsp;" . _4nwho18 . "&nbsp;<strong>$member_online_count</strong>&nbsp;" . _4nwho19 . "";
     if (is_user()) {
-        list($user_id) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_id FROM " . $nuke_user_prefix . "_users WHERE username='$uname'"));
+        list($nuke_user_id) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_id FROM " . $nuke_user_prefix . "_users WHERE username='$uname'"));
         }
 $result2 = $nuke_db->sql_query("SELECT uname FROM " . $prefix . "_session WHERE guest='0' OR guest='2' ORDER BY uname ASC");
 $member_online_count = $nuke_db->sql_numrows($result2);
     if (is_user()) {
-       list($user_id) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_id FROM " . $nuke_user_prefix . "_users WHERE username='$uname'"));
+       list($nuke_user_id) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_id FROM " . $nuke_user_prefix . "_users WHERE username='$uname'"));
      } else {
 $result2 = $nuke_db->sql_query("SELECT uname FROM " . $prefix . "_session WHERE guest='0' OR guest='2' ORDER BY uname ASC");
 $member_online_count = $nuke_db->sql_numrows($result2);

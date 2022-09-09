@@ -91,98 +91,98 @@ function base64_unpack($string)
 * Per Forum based Extension Group Permissions (Encode Number) -> Theoretically up to 158 Forums saveable. :)
 * We are using a base of 64, but splitting it to one-char and two-char numbers. :)
 */
-function auth_pack($auth_array)
+function auth_pack($nuke_auth_array)
 {
     $one_char_encoding = '#';
     $two_char_encoding = '.';
     $one_char = $two_char = false;
-    $auth_cache = '';
+    $nuke_auth_cache = '';
     
-	for ($i = 0; $i < sizeof($auth_array); $i++)
+	for ($i = 0; $i < sizeof($nuke_auth_array); $i++)
     {
-        $val = base64_pack(intval($auth_array[$i]));
+        $val = base64_pack(intval($nuke_auth_array[$i]));
         if (strlen($val) == 1 && !$one_char)
         {
-            $auth_cache .= $one_char_encoding;
+            $nuke_auth_cache .= $one_char_encoding;
             $one_char = true;
         }
         else if (strlen($val) == 2 && !$two_char)
         {        
-            $auth_cache .= $two_char_encoding;
+            $nuke_auth_cache .= $two_char_encoding;
             $two_char = true;
         }
         
-        $auth_cache .= $val;
+        $nuke_auth_cache .= $val;
     }
 
-    return $auth_cache;
+    return $nuke_auth_cache;
 }
 
 /**
 * Reverse the auth_pack process
 */
-function auth_unpack($auth_cache)
+function auth_unpack($nuke_auth_cache)
 {
     $one_char_encoding = '#';
     $two_char_encoding = '.';
 
-    $auth = array();
-    $auth_len = 1;
+    $nuke_auth = array();
+    $nuke_auth_len = 1;
     
-    for ($pos = 0; $pos < strlen($auth_cache); $pos += $auth_len)
+    for ($pos = 0; $pos < strlen($nuke_auth_cache); $pos += $nuke_auth_len)
     {
-        $forum_auth = substr($auth_cache, $pos, 1);
+        $forum_auth = substr($nuke_auth_cache, $pos, 1);
         if ($forum_auth == $one_char_encoding)
         {
-            $auth_len = 1;
+            $nuke_auth_len = 1;
             continue;
         }
         else if ($forum_auth == $two_char_encoding)
         {
-            $auth_len = 2;
+            $nuke_auth_len = 2;
             $pos--;
             continue;
         }
         
-        $forum_auth = substr($auth_cache, $pos, $auth_len);
+        $forum_auth = substr($nuke_auth_cache, $pos, $nuke_auth_len);
         $forum_id = base64_unpack($forum_auth);
-        $auth[] = intval($forum_id);
+        $nuke_auth[] = intval($forum_id);
     }
-    return $auth;
+    return $nuke_auth;
 }
 
 /**
 * Used for determining if Forum ID is authed, please use this Function on all Posting Screens
 */
-function is_forum_authed($auth_cache, $check_forum_id)
+function is_forum_authed($nuke_auth_cache, $check_forum_id)
 {
     $one_char_encoding = '#';
     $two_char_encoding = '.';
 
-    if (trim($auth_cache) == '')
+    if (trim($nuke_auth_cache) == '')
     {
         return true;
     }
 
-    $auth = array();
-    $auth_len = 1;
+    $nuke_auth = array();
+    $nuke_auth_len = 1;
     
-    for ($pos = 0; $pos < strlen($auth_cache); $pos+=$auth_len)
+    for ($pos = 0; $pos < strlen($nuke_auth_cache); $pos+=$nuke_auth_len)
     {
-        $forum_auth = substr($auth_cache, $pos, 1);
+        $forum_auth = substr($nuke_auth_cache, $pos, 1);
         if ($forum_auth == $one_char_encoding)
         {
-            $auth_len = 1;
+            $nuke_auth_len = 1;
             continue;
         }
         else if ($forum_auth == $two_char_encoding)
         {
-            $auth_len = 2;
+            $nuke_auth_len = 2;
             $pos--;
             continue;
         }
         
-        $forum_auth = substr($auth_cache, $pos, $auth_len);
+        $forum_auth = substr($nuke_auth_cache, $pos, $nuke_auth_len);
         $forum_id = (int) base64_unpack($forum_auth);
         if ($forum_id == $check_forum_id)
         {
@@ -656,7 +656,7 @@ function get_total_attach_filesize($attach_ids)
 /**
 * Count Filesize for Attachments in Users PM Boxes (Do not count the SENT Box)
 */
-function get_total_attach_pm_filesize($direction, $user_id)
+function get_total_attach_pm_filesize($direction, $nuke_user_id)
 {
     global $nuke_db;
 
@@ -666,12 +666,12 @@ function get_total_attach_pm_filesize($direction, $user_id)
     }
     else
     {
-        $user_sql = ($direction == 'from_user') ? '(a.user_id_1 = ' . intval($user_id) . ')' : '(a.user_id_2 = ' . intval($user_id) . ')';
+        $nuke_user_sql = ($direction == 'from_user') ? '(a.user_id_1 = ' . intval($nuke_user_id) . ')' : '(a.user_id_2 = ' . intval($nuke_user_id) . ')';
     }
 
     $sql = 'SELECT a.attach_id
 		FROM ' . ATTACHMENTS_TABLE . ' a, ' . NUKE_PRIVMSGS_TABLE . " p
-        WHERE $user_sql 
+        WHERE $nuke_user_sql 
             AND a.privmsgs_id <> 0 AND a.privmsgs_id = p.privmsgs_id
             AND p.privmsgs_type <> " . NUKE_PRIVMSGS_SENT_MAIL;
 
@@ -849,14 +849,14 @@ function delete_extension($filename)
 /** 
 * Check if a user is within Group
 */
-function user_in_group($user_id, $group_id)
+function user_in_group($nuke_user_id, $group_id)
 {
     global $nuke_db;
 
-    $user_id = (int) $user_id;
+    $nuke_user_id = (int) $nuke_user_id;
     $group_id = (int) $group_id;
 
-    if (!$user_id || !$group_id)
+    if (!$nuke_user_id || !$group_id)
     {
         return false;
     }
@@ -866,7 +866,7 @@ function user_in_group($user_id, $group_id)
         WHERE g.group_single_user = 0
 			AND u.user_pending = 0
             AND u.group_id = g.group_id
-            AND u.user_id = $user_id 
+            AND u.user_id = $nuke_user_id 
             AND g.group_id = $group_id
         LIMIT 1";
             

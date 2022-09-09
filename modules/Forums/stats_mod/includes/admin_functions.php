@@ -375,17 +375,17 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
 
         for ($i = 0; $i < count($entries); $i++)
         {
-            $config_array = array();
+            $nuke_config_array = array();
 
             $vars = explode(' ', $entries[$i]);
             for ($j = 0; $j < count($vars); $j++)
             {
                 $values = explode(':', $vars[$j]);
-                $config_array[trim($values[0])] = trim($values[1]);
+                $nuke_config_array[trim($values[0])] = trim($values[1]);
             }
 
             $sql = "INSERT INTO " . MODULE_ADMIN_TABLE . " (module_id, config_name, config_value, config_type, config_title, config_explain, config_trigger) 
-            VALUES (" . $module_id . ", '" . $config_array['option'] . "', '" . $config_array['default'] . "', '" . $config_array['type'] . "', '" . $config_array['title'] . "', '" . $config_array['explain'] . "', '" . $config_array['trigger'] . "')";
+            VALUES (" . $module_id . ", '" . $nuke_config_array['option'] . "', '" . $nuke_config_array['default'] . "', '" . $nuke_config_array['type'] . "', '" . $nuke_config_array['title'] . "', '" . $nuke_config_array['explain'] . "', '" . $nuke_config_array['trigger'] . "')";
 
             if (!($result = $nuke_db->sql_query($sql)))
             {

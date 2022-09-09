@@ -80,7 +80,7 @@ global $locked_width,
 	    $nuke_user_prefix, 
 	         $prefix, 
 	     $admin_file, 
-	       $userinfo, 
+	       $nuke_userinfo, 
 		  $ThemeInfo,
    $titanium_browser, 
 	     $theme_name;
@@ -88,10 +88,10 @@ global $locked_width,
 echo "\n\n<!-- THEME HEADER START -->\n"; # set background here in themes/Inferno/css/maintable.php
 
 # Check if a Registered User is Logged-In
-$username = is_user() ? $userinfo['username'] : _ANONYMOUS;
+$nuke_username = is_user() ? $nuke_userinfo['username'] : _ANONYMOUS;
 
 # Setup the Welcome Information for the User
-if ($username === _ANONYMOUS)
+if ($nuke_username === _ANONYMOUS)
 {
    $theuser  = '<div align="center">Please <a href="modules.php?name=Your_Account"><u>Login</u></a> or <a href="modules.php?name=Your_Account&amp;op=new_user"><u>Register</u></a>&nbsp;&nbsp;</div>';
    # start 4th line of header
@@ -101,7 +101,7 @@ if ($username === _ANONYMOUS)
 }
 else
 {
-    if(intval($userinfo['user_new_privmsg']) == 1 )
+    if(intval($nuke_userinfo['user_new_privmsg']) == 1 )
 	{
 	  $theuser  .= '<div align="center" id="theuser"><strong>';
       $theuser  .= sprintf(_YOUHAVE_1_MSGS,'(<a href="modules.php?name=Private_Messages">'.has_new_or_unread_private_messages().'</a>)');
@@ -109,7 +109,7 @@ else
 	  $newmessages = sprintf(_YOUHAVE_1_MSGS,'(<a href="modules.php?name=Private_Messages">'.has_new_or_unread_private_messages().'</a>)');
 	}
 	else
-	if(intval($userinfo['user_new_privmsg']) > 1 )
+	if(intval($nuke_userinfo['user_new_privmsg']) > 1 )
 	{
 	  $theuser  .= '<div align="center" id="theuser"><strong>';
 	  $theuser  .= sprintf(_YOUHAVE_X_MSGS,'(<a href="modules.php?name=Private_Messages">'.has_new_or_unread_private_messages().'</a>)');
@@ -199,13 +199,13 @@ endif;
 
 $date .= '::: QUOTE OF THE DAY "Stop Fixing Shit That Is Not Broken! by ErnStoy" ::: Todays date <font color="'.$textcolor2.'">'.date('m-d-Y').'</font>';
 
-if ($username === _ANONYMOUS)
+if ($nuke_username === _ANONYMOUS)
 $moreuser_info .= '::: There is so much more here to see, it takes 30 seconds to register an account and we don\'t even verify with e-mail! Just register we promise you won\'t be sorry...';
 
-if ($username === _ANONYMOUS)
+if ($nuke_username === _ANONYMOUS)
 $marquee_one = $moreuser_info.' ::: Your Monitor Resolution is <font color="'.$textcolor2.'">'.$screen_res.'</font> ::: '.$newmessages.'';
 else
-$marquee_one = $date.' '.$connected.' Welcome back <strong><font color='.$textcolor2.'><span class="blink-one">'.$username.'</span></font></strong> It\'s quite awesome to see you my friend! We are so glad you could make it back over to visit... We know with your super tight busy schedule and all, it most certainly must have been quite a task! ::: '.$newmessages.' ::: Your current Monitor Resolution is <font color='.$textcolor2.'>'.$screen_res.'</font> '.$moreuser_info.' ::: Your current browser version is <font color="'.$textcolor2.'">'.$titanium_browser->getVersion().'</font> ::: '.$scrollmsg.'</div>';
+$marquee_one = $date.' '.$connected.' Welcome back <strong><font color='.$textcolor2.'><span class="blink-one">'.$nuke_username.'</span></font></strong> It\'s quite awesome to see you my friend! We are so glad you could make it back over to visit... We know with your super tight busy schedule and all, it most certainly must have been quite a task! ::: '.$newmessages.' ::: Your current Monitor Resolution is <font color='.$textcolor2.'>'.$screen_res.'</font> '.$moreuser_info.' ::: Your current browser version is <font color="'.$textcolor2.'">'.$titanium_browser->getVersion().'</font> ::: '.$scrollmsg.'</div>';
 
 //$bullshit2 = 'Sept 28th 2019, Oct 4th 2019, Oct 5th 2019, Oct 11th 2019, Oct 13th 2019, Oct 14th 2019 Oct 20th 2019, Oct 22nd 2019, Oct 24th 2019';
 # right finger

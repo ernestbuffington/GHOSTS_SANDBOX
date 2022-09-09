@@ -31,7 +31,7 @@ define('REGEX_UNION','#\w?\s?union\s\w*?\s?(select|all|distinct|insert|update|dr
 @require_once(NUKE_DB_DIR.'db.php');
 
 // Load required configs
-global $remote, $nsnst_const, $admin_file, $userinfo, $currentlang, $cache, $nukeurl, $name;
+global $remote, $nsnst_const, $admin_file, $nuke_userinfo, $currentlang, $cache, $nukeurl, $name;
 
 $identify = new identify();
 
@@ -107,12 +107,12 @@ $nsnst_const['remote_ip'] = "none";
 if (!nsnst_valid_ip($nsnst_const['remote_addr'])) 
 $nsnst_const['remote_addr'] = "none"; 
 
-if(isset($user) && is_array($user)): 
-  $user = implode(":", $user);
-  $user = base64_encode($user);
+if(isset($nuke_user) && is_array($nuke_user)): 
+  $nuke_user = implode(":", $nuke_user);
+  $nuke_user = base64_encode($nuke_user);
 endif;
 
-$uinfo = (isset($userinfo)) ? $userinfo : null;
+$uinfo = (isset($nuke_userinfo)) ? $nuke_userinfo : null;
 
 if ((isset($uinfo) && isset($uinfo['user_id']) && isset($uinfo['username'])) && $uinfo['user_id'] > 1 && !empty($uinfo['username'])): 
   $nsnst_const['ban_user_id'] = $uinfo['user_id'];
@@ -520,7 +520,7 @@ if($ab_config['track_active'] == 1 AND !is_excluded($nsnst_const['remote_ip'])):
 		$ban_username2 = $nsnst_const['ban_username'];
 	endif;
 
-	$user_agent = $nsnst_const['user_agent'];
+	$nuke_user_agent = $nsnst_const['user_agent'];
 
 	$refered_from = htmlentities ($nsnst_const['referer'], ENT_QUOTES);
 	$nuke_db->sql_query("INSERT INTO `".$prefix."_nsnst_tracked_ips` (`user_id`, 
@@ -542,7 +542,7 @@ if($ab_config['track_active'] == 1 AND !is_excluded($nsnst_const['remote_ip'])):
 										   '".addslashes($nsnst_const['ban_time'])."', 
 										  '".addslashes($nsnst_const['remote_ip'])."', 
 										'".addslashes($nsnst_const['remote_long'])."', 
-								 '".addslashes($pg)."', '".addslashes($user_agent)."', 
+								 '".addslashes($pg)."', '".addslashes($nuke_user_agent)."', 
 								                                      '$refered_from', 
 										 '".addslashes($nsnst_const['forward_ip'])."', 
 										  '".addslashes($nsnst_const['client_ip'])."', 
@@ -1180,28 +1180,28 @@ function abget_blockerrow($reason)
   return $blocker_row;
 }
 
-function abget_admin($author)
+function abget_admin($nuke_author)
 {
   global $prefix, $nuke_db;
-  if (preg_match(REGEX_UNION, $author)) 
+  if (preg_match(REGEX_UNION, $nuke_author)) 
   block_ip($blocker_array[1]); 
-  if (preg_match(REGEX_UNION, base64_decode($author))) 
+  if (preg_match(REGEX_UNION, base64_decode($nuke_author))) 
   block_ip($blocker_array[1]); 
-  $author = $nuke_db->sql_escapestring($author);
-  $adminresult = $nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_admins` WHERE `aid`='$author'");
+  $nuke_author = $nuke_db->sql_escapestring($nuke_author);
+  $adminresult = $nuke_db->sql_query("SELECT * FROM `".$prefix."_nsnst_admins` WHERE `aid`='$nuke_author'");
   $admin_row = $nuke_db->sql_fetchrow($adminresult);
   $nuke_db->sql_freeresult($adminresult);
   return $admin_row;
 }
 
-function abget_config($config_name)
+function abget_config($nuke_config_name)
 {
   global $prefix, $nuke_db;
   static $abget_config;
   if (isset($abget_config)) { return $abget_config; }
-  $configresult = $nuke_db->sql_query("SELECT `config_value` FROM `".$prefix."_nsnst_config` WHERE `config_name`='$config_name'");
-  list($abget_config) = $nuke_db->sql_fetchrow($configresult);
-  $nuke_db->sql_freeresult($configresult);
+  $nuke_configresult = $nuke_db->sql_query("SELECT `config_value` FROM `".$prefix."_nsnst_config` WHERE `config_name`='$nuke_config_name'");
+  list($abget_config) = $nuke_db->sql_fetchrow($nuke_configresult);
+  $nuke_db->sql_freeresult($nuke_configresult);
   return $abget_config;
 }
 
@@ -1217,11 +1217,11 @@ function abget_configs()
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-	  $configresult = $nuke_db->sql_query("SELECT `config_name`, `config_value` FROM `".$prefix."_nsnst_config`");
-	  while (list($config_name, $config_value) = $nuke_db->sql_fetchrow($configresult)):
-		$sentinel[$config_name] = $config_value;
+	  $nuke_configresult = $nuke_db->sql_query("SELECT `config_name`, `config_value` FROM `".$prefix."_nsnst_config`");
+	  while (list($nuke_config_name, $nuke_config_value) = $nuke_db->sql_fetchrow($nuke_configresult)):
+		$sentinel[$nuke_config_name] = $nuke_config_value;
 	  endwhile;
-	  $nuke_db->sql_freeresult($configresult);
+	  $nuke_db->sql_freeresult($nuke_configresult);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -1295,7 +1295,7 @@ function write_ban($banip, $htip, $blocker_row)
 	  
 	  $bantemp = str_replace("*", "0", $banip);
 	  $banlong = sprintf("%u", ip2long($bantemp));
-	  $nuke_db->sql_query("INSERT INTO `".$prefix."_nsnst_blocked_ips` VALUES ('$banip', '$banlong', '".addslashes($nsnst_const['ban_user_id'])."', '$ban_username', '".addslashes($user_agent)."', '".addslashes($nsnst_const['ban_time'])."', '$addby', '".addslashes($blocker_row['blocker'])."', '$querystring', '$getstring', '$poststring', '".addslashes($nsnst_const['forward_ip'])."', '".addslashes($nsnst_const['client_ip'])."', '".addslashes($nsnst_const['remote_addr'])."', '".addslashes($nsnst_const['remote_port'])."', '".addslashes($nsnst_const['request_method'])."', '$abexpires', '$c2c')");
+	  $nuke_db->sql_query("INSERT INTO `".$prefix."_nsnst_blocked_ips` VALUES ('$banip', '$banlong', '".addslashes($nsnst_const['ban_user_id'])."', '$ban_username', '".addslashes($nuke_user_agent)."', '".addslashes($nsnst_const['ban_time'])."', '$addby', '".addslashes($blocker_row['blocker'])."', '$querystring', '$getstring', '$poststring', '".addslashes($nsnst_const['forward_ip'])."', '".addslashes($nsnst_const['client_ip'])."', '".addslashes($nsnst_const['remote_addr'])."', '".addslashes($nsnst_const['remote_port'])."', '".addslashes($nsnst_const['request_method'])."', '$abexpires', '$c2c')");
 	  if (!empty($ab_config['htaccess_path']) AND $blocker_row['htaccess'] > 0 AND file_exists($ab_config['htaccess_path'])): 
 		$ipfile = file($ab_config['htaccess_path']);
 		$ipfile = implode("", $ipfile);
@@ -1486,18 +1486,18 @@ function is_god($admin)
   return $GodSave = 0;
 }
 
-function abget_template($template="") 
+function abget_template($template_nuke="") 
 {
   global $sitename, $adminmail, $ab_config, $nsnst_const, $nuke_db, $prefix, $ip, $abmatch;
-  if (!empty($template) && preg_match('/\.php/', $template)) $template = '';
-  if(empty($template)) { $template = "abuse_default.tpl"; }
+  if (!empty($template_nuke) && preg_match('/\.php/', $template_nuke)) $template_nuke = '';
+  if(empty($template_nuke)) { $template_nuke = "abuse_default.tpl"; }
   //$sitename = $nuke_config['sitename'];
   //$adminmail = $nuke_config['adminmail'];
   $adminmail = str_replace("@", "(at)", $adminmail);
   $adminmail = str_replace(".", "(dot)", $adminmail);
   $adminmail2 = urlencode($adminmail);
   $querystring = get_query_string();
-  $filename = NUKE_INCLUDE_DIR."nukesentinel/abuse/".$template;
+  $filename = NUKE_INCLUDE_DIR."nukesentinel/abuse/".$template_nuke;
   if(!file_exists($filename)) { $filename = NUKE_INCLUDE_DIR."nukesentinel/abuse/abuse_default.tpl"; }
   $handle = @fopen($filename, "r");
   $display_page = fread($handle, filesize($filename));
@@ -1785,8 +1785,8 @@ if(ini_get("register_globals")):
   if($ab_config['http_auth'] == 1 AND strpos($sapi_name,"cgi")===FALSE):
 	if (basename($_SERVER['PHP_SELF'], '.php')==$admin_file):
 	  $allowPassageToAdmin = FALSE;
-	  $authresult = $nuke_db->sql_query("SELECT `login`, `password_md5` FROM `".$prefix."_nsnst_admins`");
-	  while ($getauth = $nuke_db->sql_fetchrow($authresult)):
+	  $nuke_authresult = $nuke_db->sql_query("SELECT `login`, `password_md5` FROM `".$prefix."_nsnst_admins`");
+	  while ($getauth = $nuke_db->sql_fetchrow($nuke_authresult)):
 /*****[BEGIN]******************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/

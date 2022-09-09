@@ -32,15 +32,15 @@
 define('CP_INCLUDE_DIR', dirname(dirname(dirname(__FILE__))));
 require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 
-$author_name        = "DarkForgeGFX";
-$author_email       = "darkforgegfx [at] darkforgegfx [dot] com";
-$author_homepage    = "http://www.darkforgegfx.com";
+$nuke_author_name        = "DarkForgeGFX";
+$nuke_author_email       = "darkforgegfx [at] darkforgegfx [dot] com";
+$nuke_author_homepage    = "http://www.darkforgegfx.com";
 $based_on           = "--";
 $license            = "GPL";
 $download_location  = "http://www.darkforgegfx.com";
 $module_version     = "1.0.0";
 $module_description = "To show and administrate several methods of backlinks to your website.";
 
-show_copyright($author_name, $author_email, $author_homepage, $based_on, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $based_on, $license, $download_location, $module_version, $module_description);
 
 ?>

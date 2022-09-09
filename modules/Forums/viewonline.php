@@ -53,8 +53,8 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 //
 // Start session management
 //
-$userdata = session_pagestart($user_ip, NUKE_PAGE_VIEWONLINE);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_VIEWONLINE);
+init_userprefs($nuke_userdata);
 //
 // End session management
 //
@@ -64,14 +64,14 @@ init_userprefs($userdata);
 //
 $page_title = $lang['Who_is_online'];
 
-include("includes/page_header.php");
+include("includes/nuke_page_header.php");
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     'body' => 'viewonline_body.tpl')
 );
 
 make_jumpbox('viewforum.'.$phpEx);
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'L_WHOSONLINE' => $lang['Who_is_Online'],
         'L_ONLINE_EXPLAIN' => $lang['Online_explain'],
         'L_USERNAME' => $lang['Username'],
@@ -88,7 +88,7 @@ $template->assign_vars(array(
 
     $q = "SELECT username, user_id FROM ". NUKE_USERS_TABLE ."";
     $r = $nuke_db->sql_query($q);
-    $users_data = $nuke_db->sql_fetchrowset($r);
+    $nuke_users_data = $nuke_db->sql_fetchrowset($r);
 
     $q = "SELECT topic_id, topic_title FROM ". NUKE_BB_TOPICS_TABLE ."";
     $r = $nuke_db->sql_query($q);
@@ -121,7 +121,7 @@ else
 // Get auth data
 //
 $is_auth_ary = array();
-$is_auth_ary = auth(NUKE_AUTH_VIEW, NUKE_AUTH_LIST_ALL, $userdata);
+$is_auth_ary = auth(NUKE_AUTH_VIEW, NUKE_AUTH_LIST_ALL, $nuke_userdata);
 
 //
 // Get user list
@@ -162,23 +162,23 @@ while ( $row = $nuke_db->sql_fetchrow($result) )
     $view_online = false;
     if ( $row['session_logged_in'] )
     {
-        $user_id = $row['user_id'];
-        if ( $user_id != $prev_user )
+        $nuke_user_id = $row['user_id'];
+        if ( $nuke_user_id != $prev_user )
         {
-            $username = $row['username'];
+            $nuke_username = $row['username'];
             $style_color = '';
             if ( $row['user_level'] == NUKE_ADMIN )
             {
-                $username = '<b style="color:#' . $theme['fontcolor3'] . '">' . $username . '</strong>';
+                $nuke_username = '<b style="color:#' . $theme['fontcolor3'] . '">' . $nuke_username . '</strong>';
             }
             else if ( $row['user_level'] == NUKE_MOD )
             {
-                $username = '<b style="color:#' . $theme['fontcolor2'] . '">' . $username . '</strong>';
+                $nuke_username = '<b style="color:#' . $theme['fontcolor2'] . '">' . $nuke_username . '</strong>';
             }
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-            $username = UsernameColor($row['username']);
+            $nuke_username = UsernameColor($row['username']);
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -188,12 +188,12 @@ while ( $row = $nuke_db->sql_fetchrow($result) )
 /*****[BEGIN]******************************************
  [ Mod:    Hidden Status Viewing               v1.0.0 ]
  ******************************************************/
-                $view_online = ( $userdata['user_level'] == NUKE_ADMIN || $userdata['user_id'] == $user_id ) ? true : false;
+                $view_online = ( $nuke_userdata['user_level'] == NUKE_ADMIN || $nuke_userdata['user_id'] == $nuke_user_id ) ? true : false;
 /*****[END]********************************************
  [ Mod:    Hidden Status Viewing               v1.0.0 ]
  ******************************************************/
                 $hidden_users++;
-                $username = '<i>' . $username . '</i>';
+                $nuke_username = '<i>' . $nuke_username . '</i>';
             }
             else
             {
@@ -203,14 +203,14 @@ while ( $row = $nuke_db->sql_fetchrow($result) )
 
             $which_counter = 'reg_counter';
             $which_row = 'reg_user_row';
-            $prev_user = $user_id;
+            $prev_user = $nuke_user_id;
         }
     }
     else
     {
         if ( $row['session_ip'] != $prev_ip )
         {
-            $username = $lang['Guest'];
+            $nuke_username = $lang['Guest'];
             $view_online = true;
             $guest_users++;
             $which_counter = 'guest_counter';
@@ -359,7 +359,7 @@ while ( $row = $nuke_db->sql_fetchrow($result) )
 /*****[BEGIN]******************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-        // $BSH = select_session_url($row['session_page'], $row['session_url_qs'], $row['session_url_ps'], $row['session_url_specific'], $userdata['user_level'], $row['user_id'], $forums_data, $topics_data, $users_data, $cats_data);
+        // $BSH = select_session_url($row['session_page'], $row['session_url_qs'], $row['session_url_ps'], $row['session_url_specific'], $nuke_userdata['user_level'], $row['user_id'], $forums_data, $topics_data, $nuke_users_data, $cats_data);
         // $location = $BSH;
 /*****[END]********************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
@@ -368,13 +368,13 @@ while ( $row = $nuke_db->sql_fetchrow($result) )
         $row_color = ( $$which_counter % 2 ) ? $theme['td_color1'] : $theme['td_color2'];
         $row_class = ( $$which_counter % 2 ) ? $theme['td_class1'] : $theme['td_class2'];
 
-        $template->assign_block_vars("$which_row", array(
+        $template_nuke->assign_block_vars("$which_row", array(
             'ROW_COLOR' => '#' . $row_color,
             'ROW_CLASS' => $row_class,
-            'USERNAME' => $username,
+            'USERNAME' => $nuke_username,
             'LASTUPDATE' => create_date($board_config['default_dateformat'], $row['session_time'], $board_config['board_timezone']),
             'FORUM_LOCATION' => $location,
-            'U_USER_PROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $user_id),
+            'U_USER_PROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $nuke_user_id),
             'U_FORUM_LOCATION' => append_sid($location_url))
         );
         $$which_counter++;
@@ -402,26 +402,26 @@ else if( $guest_users == 1 )
 else
     $l_g_user_s = $lang['Guest_users_online'];
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'TOTAL_REGISTERED_USERS_ONLINE' => sprintf($l_r_user_s, $registered_users) . sprintf($l_h_user_s, $hidden_users),
     'TOTAL_GUEST_USERS_ONLINE' => sprintf($l_g_user_s, $guest_users))
 );
 
 if ( $registered_users + $hidden_users == 0 )
 {
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_NO_REGISTERED_USERS_BROWSING' => $lang['No_users_browsing'])
     );
 }
 
 if ( $guest_users == 0 )
 {
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_NO_GUESTS_BROWSING' => $lang['No_users_browsing'])
     );
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 include("includes/page_tail.php");
 
 ?>

@@ -20,7 +20,7 @@
 /**
 * Delete Attachment(s) from post(s) (intern)
 */
-function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, $user_id = 0)
+function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, $nuke_user_id = 0)
 {
     global $nuke_db;
 
@@ -182,7 +182,7 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
     if ($page == NUKE_PAGE_PRIVMSGS)
     {
         $sql_id = 'privmsgs_id';
-        if ($user_id)
+        if ($nuke_user_id)
         {
             $post_id_array_2 = array();
 
@@ -200,28 +200,28 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
                                 
                 if ($privmsgs_type == NUKE_PRIVMSGS_READ_MAIL || $privmsgs_type == NUKE_PRIVMSGS_NEW_MAIL || $privmsgs_type == NUKE_PRIVMSGS_UNREAD_MAIL)
                 {
-                    if ($row['privmsgs_to_userid'] == $user_id)
+                    if ($row['privmsgs_to_userid'] == $nuke_user_id)
                     {
                         $post_id_array_2[] = $row['privmsgs_id'];
                     }
                 }
                 else if ($privmsgs_type == NUKE_PRIVMSGS_SENT_MAIL)
                 {
-                    if ($row['privmsgs_from_userid'] == $user_id)
+                    if ($row['privmsgs_from_userid'] == $nuke_user_id)
                     {
                         $post_id_array_2[] = $row['privmsgs_id'];
                     }
                 }
                 else if ($privmsgs_type == NUKE_PRIVMSGS_SAVED_OUT_MAIL)
                 {
-                    if ($row['privmsgs_from_userid'] == $user_id)
+                    if ($row['privmsgs_from_userid'] == $nuke_user_id)
                     {
                         $post_id_array_2[] = $row['privmsgs_id'];
                     }
                 }
                 else if ($privmsgs_type == NUKE_PRIVMSGS_SAVED_IN_MAIL)
                 {
-                    if ($row['privmsgs_to_userid'] == $user_id)
+                    if ($row['privmsgs_to_userid'] == $nuke_user_id)
                     {
                         $post_id_array_2[] = $row['privmsgs_id'];
                     }

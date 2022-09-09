@@ -176,17 +176,17 @@ switch($pmaction)
         }
         $private_message = str_replace("\n", '<br />', $private_message);
         
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
         'viewmsg_body' => 'admin/admin_priv_msgs_view_body.tpl')
         );
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
         'L_SUBJECT' => $lang['Subject'],
         'L_TO' => $lang['To'],
         'L_FROM' => $lang['From'],
         'L_SENT_DATE' => $lang['Sent_Date'],
         'L_PRIVATE_MESSAGES' => $aprvmUtil->modName)
         );
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
         'SUBJECT' => $privmsg['privmsgs_subject'],
         'FROM' => $aprvmUtil->id_2_name($privmsg['privmsgs_from_userid']),
         'FROM_IP' => ($board_config['aprvmIP']) ? ' : ('.decode_ip($privmsg['privmsgs_ip']).')' : '',
@@ -197,14 +197,14 @@ switch($pmaction)
         
         if ($board_config['aprvmView'])
         {
-            $template->assign_block_vars('popup_switch', array());
-            $template->pparse('viewmsg_body');
+            $template_nuke->assign_block_vars('popup_switch', array());
+            $template_nuke->pparse('viewmsg_body');
             $aprvmUtil->copyright();
             break;
         }
         else
         {
-            $template->assign_var_from_handle('PM_MESSAGE', 'viewmsg_body');
+            $template_nuke->assign_var_from_handle('PM_MESSAGE', 'viewmsg_body');
         }
     }
     case 'remove_old':
@@ -212,7 +212,7 @@ switch($pmaction)
         if ($pmaction == 'remove_old')
         {
             // Build user sql list
-            $user_id_sql_list = '';
+            $nuke_user_id_sql_list = '';
             $sql = 'SELECT user_id FROM '. NUKE_USERS_TABLE .'
                WHERE user_id <> '. NUKE_ANONYMOUS;
             if(!$result = $nuke_db->sql_query($sql))
@@ -221,13 +221,13 @@ switch($pmaction)
             }
             while($row = $nuke_db->sql_fetchrow($result))
             {
-                $user_id_sql_list .= ($user_id_sql_list != '') ? ', '.$row['user_id'] : $row['user_id'];
+                $nuke_user_id_sql_list .= ($nuke_user_id_sql_list != '') ? ', '.$row['user_id'] : $row['user_id'];
             }
             
             // Get orphan PM ids
             $priv_msgs_id_sql_list = '';
             $sql = 'SELECT privmsgs_id FROM '. NUKE_PRIVMSGS_TABLE ."$archive_text
-                WHERE privmsgs_to_userid NOT IN ($user_id_sql_list)";
+                WHERE privmsgs_to_userid NOT IN ($nuke_user_id_sql_list)";
             //print $sql;
             if(!$result = $nuke_db->sql_query($sql))
             {
@@ -339,7 +339,7 @@ switch($pmaction)
         {
             $view_url = (!$board_config['aprvmView']) ? append_sid($aprvmUtil->urlStart.'&pmaction=view_message&view_id='.$row['privmsgs_id']) : '#';
             $onclick_url = ($board_config['aprvmView']) ? "JavaScript:window.open('" . append_sid($aprvmUtil->urlStart.'&pmaction=view_message&view_id=' . $row['privmsgs_id']) . "', '_privmsg', 'HEIGHT=450,resizable=yes,WIDTH=550')" : '';
-            $template->assign_block_vars('msgrow', array(
+            $template_nuke->assign_block_vars('msgrow', array(
             'ROW_CLASS' => (!(++$i% 2)) ? $theme['td_class1'] : $theme['td_class2'],
             'ATTACHMENT_INFO' => (defined('ATTACH_VERSION')) ? 'Not Here Yet' : '',
             'PM_ID' => $row['privmsgs_id'],
@@ -354,34 +354,34 @@ switch($pmaction)
             );
             if ($mode != 'archive' && $board_config['aprvmArchive'])
             {
-                $template->assign_block_vars('msgrow.archive_avail_switch_msg', array());
+                $template_nuke->assign_block_vars('msgrow.archive_avail_switch_msg', array());
             }
         }
         
         if ($i == 0)
         {
-            $template->assign_block_vars('empty_switch', array());
-            $template->assign_var('L_NO_PMS', $lang['No_PMS']);
+            $template_nuke->assign_block_vars('empty_switch', array());
+            $template_nuke->assign_var('L_NO_PMS', $lang['No_PMS']);
         }
         
         $aprvmUtil->do_pagination();
         
         if ($mode != 'archive' && $board_config['aprvmArchive'])
         {
-            $template->assign_block_vars('archive_avail_switch', array());
+            $template_nuke->assign_block_vars('archive_avail_switch', array());
         }
         else {
             /* Send the comment area to the archive only parts to prevent JS errors */
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
             'JS_ARCHIVE_COMMENT_1' => '/* ',
             'JS_ARCHIVE_COMMENT_2' => ' */'));
         }
         
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
         'body' => 'admin/admin_priv_msgs_body.tpl')
         );
         
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
         "L_SELECT_SORT_METHOD" => $lang['Select_sort_method'],
         "L_SUBJECT" => $lang['Subject'],
         "L_TO" => $lang['To'],
@@ -438,16 +438,16 @@ switch($pmaction)
         
         if ($status_message != '')
         {
-            $template->assign_block_vars('statusrow', array());
-            $template->assign_vars(array(
+            $template_nuke->assign_block_vars('statusrow', array());
+            $template_nuke->assign_vars(array(
             'L_STATUS' => $lang['Status'],
             'I_STATUS_MESSAGE' => $status_message)
             );
         }
 
-        $template->pparse('body');
+        $template_nuke->pparse('body');
         $aprvmUtil->copyright($page_title, '2001-2003');
-        include('page_footer_admin.'.$phpEx);
+        include('nuke_page_footer_admin.'.$phpEx);
         break;
     }
 }
@@ -497,17 +497,17 @@ class aprvmUtils
     {
         global $board_config, $nuke_db, $HTTP_GET_VARS, $status_message, $lang, $cache;
 
-        $configList = array('aprvmArchive', 'aprvmVersion', 'aprvmView', 'aprvmRows', 'aprvmIP');
-        $configLangs = array('aprvmArchive' => $lang['Archive_Feature'],
+        $nuke_configList = array('aprvmArchive', 'aprvmVersion', 'aprvmView', 'aprvmRows', 'aprvmIP');
+        $nuke_configLangs = array('aprvmArchive' => $lang['Archive_Feature'],
                             'aprvmVersion' => $lang['Version'],
                             'aprvmView' => $lang['PM_View_Type'],
                             'aprvmRows' => $lang['Rows_Per_Page'],
                             'aprvmIP' => $lang['Show_IP']);
-        $configDefaults = array('0', $this->modVersion, '0', '25', '1');
+        $nuke_configDefaults = array('0', $this->modVersion, '0', '25', '1');
                                 //off, version, inline, 25, yes
         //Check for an update config command
         //Also do an array check to make sure our config is in our config list array to update
-        if (isset($HTTP_GET_VARS['config_name']) && in_array($HTTP_GET_VARS['config_name'], $configList))
+        if (isset($HTTP_GET_VARS['config_name']) && in_array($HTTP_GET_VARS['config_name'], $nuke_configList))
         {
             $sql = 'UPDATE '. NUKE_CONFIG_TABLE . "
                     set config_value = '{$HTTP_GET_VARS['config_value']}'
@@ -522,20 +522,20 @@ class aprvmUtils
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-            $status_message .= sprintf($lang['Updated_Config'], $configLangs[$HTTP_GET_VARS['config_name']]);
+            $status_message .= sprintf($lang['Updated_Config'], $nuke_configLangs[$HTTP_GET_VARS['config_name']]);
         }            
         
         //Loop through and see if a config name is set, if not set up a default
-        foreach($configList as $num => $val)
+        foreach($nuke_configList as $num => $val)
         {
             if (!isset($board_config[$val]))
             {
                 $sql = 'INSERT INTO '. NUKE_CONFIG_TABLE . "
                     (config_name, config_value)
                     VALUES
-                    ('$val', '{$configDefaults[$num]}')";
+                    ('$val', '{$nuke_configDefaults[$num]}')";
                 $nuke_db->sql_query($sql);
-                $board_config[$val] = $configDefaults[$num];
+                $board_config[$val] = $nuke_configDefaults[$num];
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -543,7 +543,7 @@ class aprvmUtils
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-                $status_message .= sprintf($lang['Inserted_Default_Value'], $configLangs[$HTTP_GET_VARS['config_name']]);
+                $status_message .= sprintf($lang['Inserted_Default_Value'], $nuke_configLangs[$HTTP_GET_VARS['config_name']]);
             }
 
         }
@@ -578,11 +578,11 @@ class aprvmUtils
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-            $status_message .= sprintf($lang['Updated_Config'], $configLangs['aprvmVersion']);
+            $status_message .= sprintf($lang['Updated_Config'], $nuke_configLangs['aprvmVersion']);
         }
     }
 
-    function resync($type, $user_id, $num = 1)
+    function resync($type, $nuke_user_id, $num = 1)
     {
         global $nuke_db;
 
@@ -601,7 +601,7 @@ class aprvmUtils
 
             $sql = "UPDATE " . NUKE_USERS_TABLE . "
                 SET $sql 
-                WHERE user_id = $user_id";
+                WHERE user_id = $nuke_user_id";
             if ( !$nuke_db->sql_query($sql) )
             {
                 message_die(NUKE_GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
@@ -713,7 +713,7 @@ class aprvmUtils
     
     function do_pagination($mode = 'normal')
     {
-        global $nuke_db, $filter_from_text, $filter_to_text, $filter_from, $filter_to, $lang, $template, $order;
+        global $nuke_db, $filter_from_text, $filter_to_text, $filter_from, $filter_to, $lang, $template_nuke, $order;
         global $mode, $pmtype, $sort, $pmtype_text, $archive_text, $start, $archive_start, $topics_per_pg, $phpEx;
 
         $sql = 'SELECT count(*) AS total FROM ' . NUKE_PRIVMSGS_TABLE . $this->inArchiveText." pm
@@ -731,7 +731,7 @@ class aprvmUtils
 
         $pagination = generate_pagination($this->urlPage, $total_pms, $topics_per_pg, $start)."&nbsp;";
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             "PAGINATION" => $pagination,
             "PAGE_NUMBER" => sprintf($lang['Page_of'], ( floor( $start / $topics_per_pg ) + 1 ), ceil( $total_pms / $topics_per_pg )),
 
@@ -948,11 +948,11 @@ class aprvmManager
         $this->doDelete();
         if (count($this->syncNums))
         {
-            foreach($this->syncNums as $user_id => $type)
+            foreach($this->syncNums as $nuke_user_id => $type)
             {
                 foreach($type as $pmType => $num)
                 {
-                    $aprvmUtil->resync($pmType, $user_id, $num);
+                    $aprvmUtil->resync($pmType, $nuke_user_id, $num);
                 }
             }
         }

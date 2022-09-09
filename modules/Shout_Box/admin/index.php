@@ -158,7 +158,7 @@ function ShoutBoxAdminMenu($ShoutMenuOptionActive) {
 // Start 'Manage Shouts' code (Default page)
 
 function manageShouts($page, $pruned) {
-    global $prefix, $nuke_db, $admin, $admin_file, $sbURL, $module_name, $shout_conf, $rowColor, $userinfo, $board_config;
+    global $prefix, $nuke_db, $admin, $admin_file, $sbURL, $module_name, $shout_conf, $rowColor, $nuke_userinfo, $board_config;
     include_once(NUKE_BASE_DIR.'header.php');
     LinkAdmin();
     $ShoutMenuOptionActive = 1;
@@ -259,7 +259,7 @@ function manageShouts($page, $pruned) {
         if (!empty($shout['timestamp'])) {
             // reads unix timestamp and formats it to the viewer's timezone
             if (is_user()) {
-                $unixTime = EvoDate($userinfo['user_dateformat'], $shout['timestamp'], $userinfo['user_timezone']);
+                $unixTime = EvoDate($nuke_userinfo['user_dateformat'], $shout['timestamp'], $nuke_userinfo['user_timezone']);
                 echo $unixTime;
             } else {
                 $unixTime = EvoDate($board_config['default_dateformat'], $shout['timestamp'], $board_config['board_timezone']);

@@ -13,9 +13,9 @@ require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 
 $module_name = basename(dirname(__FILE__));
 $mod_name = "facebook SandBox";
-$author_email = "";
-$author_homepage = "";
-$author_name = "";
+$nuke_author_email = "";
+$nuke_author_homepage = "";
+$nuke_author_name = "";
 $license = "";
 $based_on = "Built From Scratch";
 $download_location = "";
@@ -23,5 +23,5 @@ $module_version = "v4.3";
 $release_date = "02/09/2012";
 $module_description = "facebook SandBox";
 $mod_cost = "";
-show_copyright($author_name, $author_email, $author_homepage, $based_on, $license, $download_location, $module_version, $module_description, $release_date, $mod_cost);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $based_on, $license, $download_location, $module_version, $module_description, $release_date, $mod_cost);
 ?>

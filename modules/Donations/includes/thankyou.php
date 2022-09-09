@@ -158,10 +158,10 @@ if ((isset($_SESSION['PP_D']) && is_array($_SESSION['PP_D'])) ||
     $uname = '';
     $uid = '';
     if (is_user()) {
-        global $userinfo;
-        if (isset($userinfo['username']) && !empty($userinfo['username'])) {
-            $uname = $userinfo['username'];
-            $uid = $userinfo['user_id'];
+        global $nuke_userinfo;
+        if (isset($nuke_userinfo['username']) && !empty($nuke_userinfo['username'])) {
+            $uname = $nuke_userinfo['username'];
+            $uid = $nuke_userinfo['user_id'];
         }
     }
 

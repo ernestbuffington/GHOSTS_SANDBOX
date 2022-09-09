@@ -76,10 +76,10 @@ if ($HTTP_GET_VARS['action'] == "edit")
     $adRow = $row;
   }
   $nuke_db->sql_freeresult($result);
-  $template->set_filenames(array(
+  $template_nuke->set_filenames(array(
   "body" => "admin/inline_ad_code_edit.tpl")
   );
-  $template->assign_vars(array(
+  $template_nuke->assign_vars(array(
   "L_CONFIGURATION_TITLE" => $lang['ad_managment'],
   "L_SUBMIT" => $lang['Submit'],
   "L_RESET" => $lang['Reset'],
@@ -90,7 +90,7 @@ if ($HTTP_GET_VARS['action'] == "edit")
   "S_HIDDEN_FIELDS" => '<input type="hidden" name="action" value="edit" /><input type="hidden" name="ad_id" value="' . $adRow['ad_id'] . '" />',
   "S_ACTION" => append_sid("admin_inline_ad_code.$phpEx"))
   );
-  $template->pparse("body");
+  $template_nuke->pparse("body");
 }
 elseif ($HTTP_GET_VARS['action'] == "delete")
 {
@@ -107,10 +107,10 @@ elseif ($HTTP_GET_VARS['action'] == "delete")
 }
 elseif ($HTTP_GET_VARS['action'] == "add")
 {
-  $template->set_filenames(array(
+  $template_nuke->set_filenames(array(
   "body" => "admin/inline_ad_code_edit.tpl")
   );
-  $template->assign_vars(array(
+  $template_nuke->assign_vars(array(
   "L_CONFIGURATION_TITLE" => $lang['ad_managment'],
   "L_SUBMIT" => $lang['Submit'],
   "L_RESET" => $lang['Reset'],
@@ -121,7 +121,7 @@ elseif ($HTTP_GET_VARS['action'] == "add")
   "S_HIDDEN_FIELDS" => '',
   "S_ACTION" => append_sid("admin_inline_ad_code.$phpEx"))
   );
-  $template->pparse("body");
+  $template_nuke->pparse("body");
 }
 else
 {
@@ -139,10 +139,10 @@ else
   $ad_count = $nuke_db->sql_numrows($result);
   $nuke_db->sql_freeresult($result);
 
-  $template->set_filenames(array(
+  $template_nuke->set_filenames(array(
   "body" => "admin/inline_ad_code_body.tpl")
   );
-  $template->assign_vars(array(
+  $template_nuke->assign_vars(array(
   "L_CONFIGURATION_TITLE" => $lang['inline_ads'],
   "L_CONFIGURATION_EXPLAIN" => $lang['ad_code_about'],
   "L_EDIT" => $lang['Edit'],
@@ -155,14 +155,14 @@ else
   for($i = 0; $i < $ad_count; $i++)
   {
     $ad_id = $adRow[$i]['ad_id'];
-    $template->assign_block_vars('ad_row',array( 'AD_NAME' => $adRow[$i]['ad_name'],
+    $template_nuke->assign_block_vars('ad_row',array( 'AD_NAME' => $adRow[$i]['ad_name'],
     'S_AD_EDIT' => append_sid("admin_inline_ad_code.$phpEx?action=edit&id=$ad_id"),
     'S_AD_DELETE' => append_sid("admin_inline_ad_code.$phpEx?action=delete&id=$ad_id")
     )
     );
   }
-  $template->pparse("body");
+  $template_nuke->pparse("body");
 }
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

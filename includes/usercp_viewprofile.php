@@ -91,7 +91,7 @@ $ranks_sql = query_ranks();
 //
 // Output page header and profile_view template
 //
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     'body' => 'profile_view_body.tpl')
 );
 
@@ -151,18 +151,18 @@ endif;
 /*****[BEGIN]******************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
-	$user_ranks = generate_ranks($profiledata, $ranks_sql);
+	$nuke_user_ranks = generate_ranks($profiledata, $ranks_sql);
 
-	$user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
-	$user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'] . '<br />');
-	$user_rank_02 = ($user_ranks['rank_02'] == '') ? '' : ($user_ranks['rank_02'] . '<br />');
-	$user_rank_02_img = ($user_ranks['rank_02_img'] == '') ? '' : ($user_ranks['rank_02_img'] . '<br />');
-	$user_rank_03 = ($user_ranks['rank_03'] == '') ? '' : ($user_ranks['rank_03'] . '<br />');
-	$user_rank_03_img = ($user_ranks['rank_03_img'] == '') ? '' : ($user_ranks['rank_03_img'] . '<br />');
-	$user_rank_04 = ($user_ranks['rank_04'] == '') ? '' : ($user_ranks['rank_04'] . '<br />');
-	$user_rank_04_img = ($user_ranks['rank_04_img'] == '') ? '' : ($user_ranks['rank_04_img'] . '<br />');
-	$user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . '<br />');
-	$user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
+	$nuke_user_rank_01 = ($nuke_user_ranks['rank_01'] == '') ? '' : ($nuke_user_ranks['rank_01'] . '<br />');
+	$nuke_user_rank_01_img = ($nuke_user_ranks['rank_01_img'] == '') ? '' : ($nuke_user_ranks['rank_01_img'] . '<br />');
+	$nuke_user_rank_02 = ($nuke_user_ranks['rank_02'] == '') ? '' : ($nuke_user_ranks['rank_02'] . '<br />');
+	$nuke_user_rank_02_img = ($nuke_user_ranks['rank_02_img'] == '') ? '' : ($nuke_user_ranks['rank_02_img'] . '<br />');
+	$nuke_user_rank_03 = ($nuke_user_ranks['rank_03'] == '') ? '' : ($nuke_user_ranks['rank_03'] . '<br />');
+	$nuke_user_rank_03_img = ($nuke_user_ranks['rank_03_img'] == '') ? '' : ($nuke_user_ranks['rank_03_img'] . '<br />');
+	$nuke_user_rank_04 = ($nuke_user_ranks['rank_04'] == '') ? '' : ($nuke_user_ranks['rank_04'] . '<br />');
+	$nuke_user_rank_04_img = ($nuke_user_ranks['rank_04_img'] == '') ? '' : ($nuke_user_ranks['rank_04_img'] . '<br />');
+	$nuke_user_rank_05 = ($nuke_user_ranks['rank_05'] == '') ? '' : ($nuke_user_ranks['rank_05'] . '<br />');
+	$nuke_user_rank_05_img = ($nuke_user_ranks['rank_05_img'] == '') ? '' : ($nuke_user_ranks['rank_05_img'] . '<br />');
 /*****[END]********************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
@@ -185,7 +185,7 @@ $location .= ($profiledata['user_from']) ? $profiledata['user_from'] : '';
  [ Mod:     Member Country Flags               v2.0.7 ]
  ******************************************************/
 
-if (!empty($profiledata['user_viewemail']) || ($profiledata['username'] == $userdata['username']) || $userdata['user_level'] == NUKE_ADMIN)
+if (!empty($profiledata['user_viewemail']) || ($profiledata['username'] == $nuke_userdata['username']) || $nuke_userdata['user_level'] == NUKE_ADMIN)
 {
     $email_uri = ( $board_config['board_email_form'] ) ? append_sid("profile.$phpEx?mode=email&amp;".NUKE_POST_USERS_URL
 	.'='.$profiledata['user_id']) : 'mailto:' .$profiledata['user_email'];
@@ -266,9 +266,9 @@ if ( !empty($profiledata['user_gender']))
  * @since 2.0.9e
  */
 if ($profiledata['user_lastvisit'] != 0)
-	$user_last_visit = date($board_config['default_dateformat'],$profiledata['user_lastvisit']);
+	$nuke_user_last_visit = date($board_config['default_dateformat'],$profiledata['user_lastvisit']);
 else
-	$user_last_visit = $lang['not_available'];
+	$nuke_user_last_visit = $lang['not_available'];
 
 //
 // Generate page
@@ -276,19 +276,19 @@ else
 /*****[BEGIN]******************************************
  [ Mod:    User Administration Link on Profile v1.0.0 ]
  ******************************************************/
-if($userdata['user_level'] == NUKE_ADMIN)
+if($nuke_userdata['user_level'] == NUKE_ADMIN)
 {
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         "L_USER_ADMIN_FOR" => $lang['User_admin_for'],
         "U_ADMIN_PROFILE" => append_sid("modules/Forums/admin/admin_users.$phpEx?mode=edit&amp;u=" . $profiledata['user_id']))
     );
-    $template->assign_block_vars("switch_user_admin", array());
+    $template_nuke->assign_block_vars("switch_user_admin", array());
 }
 /*****[END]********************************************
  [ Mod:    User Administration Link on Profile v1.0.0 ]
  ******************************************************/
 $page_title = $lang['Viewing_profile'];
-include("includes/page_header.php");
+include("includes/nuke_page_header.php");
 /*****[BEGIN]******************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
@@ -296,7 +296,7 @@ if ($profiledata['user_session_time'] >= (time()-$board_config['online_time'])):
 
     if ($profiledata['user_allow_viewonline']):
         $online_status = '<a href="'.append_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_online'], $profiledata['username']).'"'.$online_color.'>'.$lang['Online'].'</a>';
-    elseif ( $userdata['user_level'] == NUKE_ADMIN || $userdata['user_id'] == $profiledata['user_id'] ):
+    elseif ( $nuke_userdata['user_level'] == NUKE_ADMIN || $nuke_userdata['user_id'] == $profiledata['user_id'] ):
         $online_status = '<em><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_hidden'], $profiledata['username']) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em>';
     else:
         $online_status = '<span title="' . sprintf($lang['is_offline'], $profiledata['username']) . '"' . $offline_color . '>' . $lang['Offline'] . '</span>';
@@ -389,7 +389,7 @@ if ($rep_config['rep_disable'] == 0)
 /*****[BEGIN]******************************************
  [ Mod:    View Sig                            v1.0.0 ]
  ******************************************************/
-$user_sig = '';
+$nuke_user_sig = '';
 if(!empty($profiledata['user_sig'])) {
     include_once('includes/bbcode.'.$phpEx);
     include_once('includes/functions_post.'.$phpEx);
@@ -401,24 +401,24 @@ if(!empty($profiledata['user_sig'])) {
     $signature_bbcode_uid = $profiledata['user_sig_bbcode_uid'];
     $signature = ( $signature_bbcode_uid != '' ) ? preg_replace("/:(([a-z0-9]+:)?)$signature_bbcode_uid\]/si", ']', $profiledata['user_sig']) : $profiledata['user_sig'];
     $bbcode_uid = $profiledata['user_sig_bbcode_uid'];
-    $user_sig = prepare_message($profiledata['user_sig'], $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+    $nuke_user_sig = prepare_message($profiledata['user_sig'], $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
 
-    if( $user_sig != '' )
+    if( $nuke_user_sig != '' )
     {
 
-        if ( $bbcode_on  == 1 ) { $user_sig = bbencode_second_pass($user_sig, $bbcode_uid); }
-        if ( $bbcode_on  == 1 ) { $user_sig = bbencode_first_pass($user_sig, $bbcode_uid); }
-        if ( $bbcode_on  == 1 ) { $user_sig = make_clickable($user_sig); }
-        if ( $smilies_on == 1 ) { $user_sig = smilies_pass($user_sig); }
+        if ( $bbcode_on  == 1 ) { $nuke_user_sig = bbencode_second_pass($nuke_user_sig, $bbcode_uid); }
+        if ( $bbcode_on  == 1 ) { $nuke_user_sig = bbencode_first_pass($nuke_user_sig, $bbcode_uid); }
+        if ( $bbcode_on  == 1 ) { $nuke_user_sig = make_clickable($nuke_user_sig); }
+        if ( $smilies_on == 1 ) { $nuke_user_sig = smilies_pass($nuke_user_sig); }
 
-        $template->assign_block_vars('user_sig', array());
+        $template_nuke->assign_block_vars('user_sig', array());
 
-        $user_sig = nl2br($user_sig);
-        $user_sig = html_entity_decode($user_sig);
+        $nuke_user_sig = nl2br($nuke_user_sig);
+        $nuke_user_sig = html_entity_decode($nuke_user_sig);
     }
     else
     {
-        $user_sig = '';
+        $nuke_user_sig = '';
     }
 }
 /*****[END]********************************************
@@ -428,13 +428,13 @@ if(!empty($profiledata['user_sig'])) {
  [ Mod:    YA Merge                            v1.0.0 ]
  ******************************************************/
 if($profiledata['bio']) {
-    $template->assign_block_vars('user_extra', array());
+    $template_nuke->assign_block_vars('user_extra', array());
 }
 /*****[END]********************************************
  [ Mod:    YA Merge                            v1.0.0 ]
  ******************************************************/
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -453,16 +453,16 @@ $template->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
-	'USER_RANK_01' => $user_rank_01,
-	'USER_RANK_01_IMG' => $user_rank_01_img,
-	'USER_RANK_02' => $user_rank_02,
-	'USER_RANK_02_IMG' => $user_rank_02_img,
-	'USER_RANK_03' => $user_rank_03,
-	'USER_RANK_03_IMG' => $user_rank_03_img,
-	'USER_RANK_04' => $user_rank_04,
-	'USER_RANK_04_IMG' => $user_rank_04_img,
-	'USER_RANK_05' => $user_rank_05,
-	'USER_RANK_05_IMG' => $user_rank_05_img,
+	'USER_RANK_01' => $nuke_user_rank_01,
+	'USER_RANK_01_IMG' => $nuke_user_rank_01_img,
+	'USER_RANK_02' => $nuke_user_rank_02,
+	'USER_RANK_02_IMG' => $nuke_user_rank_02_img,
+	'USER_RANK_03' => $nuke_user_rank_03,
+	'USER_RANK_03_IMG' => $nuke_user_rank_03_img,
+	'USER_RANK_04' => $nuke_user_rank_04,
+	'USER_RANK_04_IMG' => $nuke_user_rank_04_img,
+	'USER_RANK_05' => $nuke_user_rank_05,
+	'USER_RANK_05_IMG' => $nuke_user_rank_05_img,
 /*****[END]********************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
@@ -502,7 +502,7 @@ $template->assign_vars(array(
  * Mod: Display the users last visit date and time.
  * @since 2.0.9e
  */
-	'USER_LAST_VISIT' => $user_last_visit,
+	'USER_LAST_VISIT' => $nuke_user_last_visit,
   'EDIT_THIS_USER' => sprintf($lang['Edit_Forum_User_ACP'],'<a href="'.append_sid("modules/Forums/admin/admin_users.$phpEx?mode=edit&amp;u=" . $profiledata['user_id']).'">','</a>'),
   'BAN_THIS_USER_IP' => sprintf($lang['Ban_Forum_User_IP'],'<a href="'.$admin_file.'.php?op=ABBlockedIPAdd&amp;tip='.$profiledata['last_ip'].'">','</a>'),
   'SUSPEND_THIS_USER' => sprintf($lang['Suspend_This_User'],'<a href="modules.php?name=Your_Account&amp;file=admin&amp;op=suspendUser&amp;chng_uid='.$profiledata['user_id'].'">','</a>'),
@@ -550,7 +550,7 @@ $template->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:    View Sig                            v1.0.0 ]
  ******************************************************/
-    'USER_SIG' => $user_sig,
+    'USER_SIG' => $nuke_user_sig,
     'L_SIG' => $lang['Signature'],
 /*****[END]********************************************
  [ Mod:    View Sig                            v1.0.0 ]
@@ -665,7 +665,7 @@ while ( list($code_name, $info) = each($xd_meta) )
  ******************************************************/
 		if ($info['field_type'] == 'date')
 		{
-				$value = create_date($userdata['user_dateformat'], $value, $userdata['user_timezone']);
+				$value = create_date($nuke_userdata['user_dateformat'], $value, $nuke_userdata['user_timezone']);
 		}
 /*****[ENDE]*******************************************
  [ Mod:    XData Date Conversion               v0.1.1 ]
@@ -696,7 +696,7 @@ while ( list($code_name, $info) = each($xd_meta) )
     {
         if ( isset($xdata[$code_name]) )
         {
-            $template->assign_block_vars('xdata', array(
+            $template_nuke->assign_block_vars('xdata', array(
                 'NAME' => $info['field_name'],
                 'VALUE' => $value
                 )
@@ -707,12 +707,12 @@ while ( list($code_name, $info) = each($xd_meta) )
     {
         if ( isset($xdata[$code_name]) )
         {
-            $template->assign_vars( array( $code_name => $value ) );
-            $template->assign_block_vars( "switch_$code_name", array() );
+            $template_nuke->assign_vars( array( $code_name => $value ) );
+            $template_nuke->assign_block_vars( "switch_$code_name", array() );
         }
         else
         {
-            $template->assign_block_vars( "switch_no_$code_name", array() );
+            $template_nuke->assign_block_vars( "switch_no_$code_name", array() );
         }
     }
 }
@@ -738,14 +738,14 @@ while ( list($code_name, $info) = each($xd_meta) )
 /*****[BEGIN]******************************************
  [ Mod:    Admin User Notes                    v1.0.0 ]
  ******************************************************/
-if ( $userdata['user_level'] == NUKE_ADMIN )
+if ( $nuke_userdata['user_level'] == NUKE_ADMIN )
 {
-  $template->assign_block_vars('switch_admin_notes', array());
+  $template_nuke->assign_block_vars('switch_admin_notes', array());
 }
 /*****[END]********************************************
  [ Mod:    Admin User Notes                    v1.0.0 ]
  ******************************************************/
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 /*****[BEGIN]******************************************
  [ Mod:    YA Merge                            v1.0.0 ]
@@ -779,7 +779,7 @@ $template->pparse('body');
 // }
 // define_once('CNBYA',true);
 
-// $username = $profiledata['username'];
+// $nuke_username = $profiledata['username'];
 // $usrinfo = $profiledata;
 // $incsdir = dir(NUKE_MODULES_DIR."Your_Account/includes");
 // $incslist = '';

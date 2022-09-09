@@ -73,7 +73,7 @@ class attach_parent
     /**
     * Get Quota Limits
     */
-    function get_quota_limits($userdata_quota, $user_id = 0)
+    function get_quota_limits($nuke_userdata_quota, $nuke_user_id = 0)
     {
         global $attach_config, $nuke_db;
 
@@ -91,7 +91,7 @@ class attach_parent
 //        $priority = 'group;user';
         $priority = 'user;group';
 
-        if ($userdata_quota['user_level'] == NUKE_ADMIN)
+        if ($nuke_userdata_quota['user_level'] == NUKE_ADMIN)
         {
             $attach_config['pm_filesize_limit'] = 0; // Unlimited
             $attach_config['upload_filesize_limit'] = 0; // Unlimited
@@ -111,9 +111,9 @@ class attach_parent
             $default = 'attachment_quota';
         }
 
-        if (!$user_id)
+        if (!$nuke_user_id)
         {
-            $user_id = intval($userdata_quota['user_id']);
+            $nuke_user_id = intval($nuke_userdata_quota['user_id']);
         }
 
         $priority = explode(';', $priority);
@@ -129,7 +129,7 @@ class attach_parent
                     WHERE g.group_single_user = 0
 						AND u.user_pending = 0
                         AND u.group_id = g.group_id
-                        AND u.user_id = ' . $user_id;
+                        AND u.user_id = ' . $nuke_user_id;
 
                 if (!($result = $nuke_db->sql_query($sql)))
                 {
@@ -178,7 +178,7 @@ class attach_parent
                 // Get User Quota, if the user is not in a group or the group has no quotas
                 $sql = 'SELECT l.quota_limit
 					FROM ' . QUOTA_TABLE . ' q, ' . QUOTA_LIMITS_TABLE . ' l
-                    WHERE q.user_id = ' . $user_id . '
+                    WHERE q.user_id = ' . $nuke_user_id . '
                         AND q.user_id <> 0
                         AND q.quota_type = ' . $quota_type . '
                         AND q.quota_limit_id = l.quota_limit_id
@@ -249,7 +249,7 @@ class attach_parent
     */
     function handle_attachments($mode)
     {
-        global $is_auth, $attach_config, $refresh, $HTTP_POST_VARS, $post_id, $submit, $preview, $error, $error_msg, $lang, $template, $userdata, $nuke_db;
+        global $is_auth, $attach_config, $refresh, $HTTP_POST_VARS, $post_id, $submit, $preview, $error, $error_msg, $lang, $template_nuke, $nuke_userdata, $nuke_db;
 
         //
         // ok, what shall we do ;)
@@ -271,7 +271,7 @@ class attach_parent
                 $mode = 'editpost';
             }
 
-            if ($userdata['user_level'] == NUKE_ADMIN)
+            if ($nuke_userdata['user_level'] == NUKE_ADMIN)
             {
                 $is_auth['auth_attachments'] = 1;
                 $max_attachments = ADMIN_MAX_ATTACHMENTS;
@@ -285,7 +285,7 @@ class attach_parent
         }
         else
         {
-            if ($userdata['user_level'] == NUKE_ADMIN)
+            if ($nuke_userdata['user_level'] == NUKE_ADMIN)
             {
                 $max_attachments = ADMIN_MAX_ATTACHMENTS;
             }
@@ -373,38 +373,38 @@ class attach_parent
 
         if ($this->page == NUKE_PAGE_PRIVMSGS)
         {
-            if ($userdata['user_level'] == NUKE_ADMIN)
+            if ($nuke_userdata['user_level'] == NUKE_ADMIN)
             {
-                $auth = TRUE;
+                $nuke_auth = TRUE;
             }
             else
             {
-                $auth = (intval($attach_config['allow_pm_attach'])) ? TRUE : FALSE;
+                $nuke_auth = (intval($attach_config['allow_pm_attach'])) ? TRUE : FALSE;
             }
 
 			if (sizeof($attachments) == 1)
             {
-                $template->assign_block_vars('switch_attachments',array());
+                $template_nuke->assign_block_vars('switch_attachments',array());
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                     'L_DELETE_ATTACHMENTS'        => $lang['Delete_attachment'])
                 );
             }
 			else if (sizeof($attachments) > 0)
             {
-                $template->assign_block_vars('switch_attachments',array());
+                $template_nuke->assign_block_vars('switch_attachments',array());
 
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                     'L_DELETE_ATTACHMENTS'        => $lang['Delete_attachments'])
                 );
             }
         }
         else
         {
-            $auth = ($is_auth['auth_edit'] || $is_auth['auth_mod']) ? TRUE : FALSE;
+            $nuke_auth = ($is_auth['auth_edit'] || $is_auth['auth_mod']) ? TRUE : FALSE;
         }
 
-        if (!$submit && $mode == 'editpost' && $auth)
+        if (!$submit && $mode == 'editpost' && $nuke_auth)
         {
             if (!$refresh && !$preview && !$error && !isset($HTTP_POST_VARS['del_poll_option']))
             {
@@ -760,27 +760,27 @@ class attach_parent
 
         if ($message_type == 'pm')
         {
-            global $userdata, $to_userdata;
+            global $nuke_userdata, $to_userdata;
 
             $post_id = 0;
             $privmsgs_id = (int) $message_id;
-            $user_id_1 = (int) $userdata['user_id'];
-            $user_id_2 = (int) $to_userdata['user_id'];
+            $nuke_user_id_1 = (int) $nuke_userdata['user_id'];
+            $nuke_user_id_2 = (int) $to_userdata['user_id'];
 			$sql_id = 'privmsgs_id';
         }
         else if ($message_type = 'post')
         {
-            global $post_info, $userdata;
+            global $post_info, $nuke_userdata;
 
             $post_id = (int) $message_id;
             $privmsgs_id = 0;
-            $user_id_1 = (isset($post_info['poster_id'])) ? (int) $post_info['poster_id'] : 0;
-            $user_id_2 = 0;
+            $nuke_user_id_1 = (isset($post_info['poster_id'])) ? (int) $post_info['poster_id'] : 0;
+            $nuke_user_id_2 = 0;
 			$sql_id = 'post_id';
 
-            if (!$user_id_1)
+            if (!$nuke_user_id_1)
             {
-                $user_id_1 = (int) $userdata['user_id'];
+                $nuke_user_id_1 = (int) $nuke_userdata['user_id'];
             }
         }
 
@@ -845,8 +845,8 @@ class attach_parent
                         'attach_id'        => (int) $attach_id,
                         'post_id'        => (int) $post_id,
                         'privmsgs_id'    => (int) $privmsgs_id,
-                        'user_id_1'        => (int) $user_id_1,
-                        'user_id_2'        => (int) $user_id_2
+                        'user_id_1'        => (int) $nuke_user_id_1,
+                        'user_id_2'        => (int) $nuke_user_id_2
                     );
 
                     $sql = 'INSERT INTO ' . ATTACHMENTS_TABLE . ' ' . attach_mod_sql_build_array('INSERT', $sql_ary);
@@ -891,8 +891,8 @@ class attach_parent
                     'attach_id'        => (int) $attach_id,
                     'post_id'        => (int) $post_id,
                     'privmsgs_id'    => (int) $privmsgs_id,
-                    'user_id_1'        => (int) $user_id_1,
-                    'user_id_2'        => (int) $user_id_2
+                    'user_id_1'        => (int) $nuke_user_id_1,
+                    'user_id_2'        => (int) $nuke_user_id_2
                 );
 
                 $sql = 'INSERT INTO ' . ATTACHMENTS_TABLE . ' ' . attach_mod_sql_build_array('INSERT', $sql_ary);
@@ -911,7 +911,7 @@ class attach_parent
     */
     function display_attachment_bodies()
     {
-        global $attach_config, $nuke_db, $is_auth, $lang, $mode, $phpEx, $template, $upload_dir, $userdata, $HTTP_POST_VARS, $forum_id;
+        global $attach_config, $nuke_db, $is_auth, $lang, $mode, $phpEx, $template_nuke, $upload_dir, $nuke_userdata, $HTTP_POST_VARS, $forum_id;
         global $phpbb2_root_path;
 
         // Choose what to display
@@ -938,7 +938,7 @@ class attach_parent
             {
                 $value_posted = ($this->posted_attachments_body == 0) ? 0 : 1;
             }
-            $template->assign_block_vars('show_apcp', array());
+            $template_nuke->assign_block_vars('show_apcp', array());
         }
         else
         {
@@ -946,11 +946,11 @@ class attach_parent
             $this->posted_attachments_body = 1;
         }
 
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
             'attachbody' => 'posting_attach_body.tpl')
         );
 
-        display_compile_cache_clear($template->files['attachbody'], 'attachbody');
+        display_compile_cache_clear($template_nuke->files['attachbody'], 'attachbody');
 
         $s_hidden = '<input type="hidden" name="add_attachment_body" value="' . $value_add . '" />';
         $s_hidden .= '<input type="hidden" name="posted_attachments_body" value="' . $value_posted . '" />';
@@ -964,7 +964,7 @@ class attach_parent
             $u_rules_id = $forum_id;
         }
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'L_ATTACH_POSTING_CP'           => $lang['Attach_posting_cp'],
             'L_ATTACH_POSTING_CP_EXPLAIN'   => $lang['Attach_posting_cp_explain'],
             'L_OPTIONS'                     => $lang['Options'],
@@ -984,7 +984,7 @@ class attach_parent
         {
             if (intval($attach_config['show_apcp']))
             {
-                $template->assign_block_vars('switch_posted_attachments', array());
+                $template_nuke->assign_block_vars('switch_posted_attachments', array());
             }
 
 			for ($i = 0; $i < sizeof($this->attachment_list); $i++)
@@ -1003,7 +1003,7 @@ class attach_parent
                     $hidden .= '<input type="hidden" name="comment_list[]" value="' . $this->attachment_comment_list[$i] . '" />';
                 }
 
-                $template->assign_block_vars('hidden_row', array(
+                $template_nuke->assign_block_vars('hidden_row', array(
                     'S_HIDDEN' => $hidden)
                 );
             }
@@ -1015,7 +1015,7 @@ class attach_parent
 
             $form_enctype = 'enctype="multipart/form-data"';
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 'L_ADD_ATTACH_TITLE'    => $lang['Add_attachment_title'],
                 'L_ADD_ATTACH_EXPLAIN'    => $lang['Add_attachment_explain'],
                 'L_ADD_ATTACHMENT'        => $lang['Add_attachment'],
@@ -1032,7 +1032,7 @@ class attach_parent
         {
             init_display_template('attachbody', '{POSTED_ATTACHMENTS_BODY}', 'posted_attachments_body.tpl');
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 'L_POSTED_ATTACHMENTS'    => $lang['Posted_attachments'],
                 'L_UPDATE_COMMENT'        => $lang['Update_comment'],
                 'L_UPLOAD_NEW_VERSION'    => $lang['Upload_new_version'],
@@ -1052,7 +1052,7 @@ class attach_parent
                     $download_link = append_sid('download.' . $phpEx . '?id=' . $this->attachment_id_list[$i]);
                 }
 
-                $template->assign_block_vars('attach_row', array(
+                $template_nuke->assign_block_vars('attach_row', array(
                     'FILE_NAME'            => $this->attachment_filename_list[$i],
                     'ATTACH_FILENAME'    => $this->attachment_list[$i],
                     'FILE_COMMENT'        => $this->attachment_comment_list[$i],
@@ -1062,19 +1062,19 @@ class attach_parent
                 );
 
                 // Thumbnail there ? And is the User Admin or Mod ? Then present the 'Delete Thumbnail' Button
-                if (intval($this->attachment_thumbnail_list[$i]) == 1 && ((isset($is_auth['auth_mod']) && $is_auth['auth_mod']) || $userdata['user_level'] == NUKE_ADMIN))
+                if (intval($this->attachment_thumbnail_list[$i]) == 1 && ((isset($is_auth['auth_mod']) && $is_auth['auth_mod']) || $nuke_userdata['user_level'] == NUKE_ADMIN))
                 {
-                    $template->assign_block_vars('attach_row.switch_thumbnail', array());
+                    $template_nuke->assign_block_vars('attach_row.switch_thumbnail', array());
                 }
 
                 if ($this->attachment_id_list[$i])
                 {
-                    $template->assign_block_vars('attach_row.switch_update_attachment', array());
+                    $template_nuke->assign_block_vars('attach_row.switch_update_attachment', array());
                 }
             }
         }
 
-        $template->assign_var_from_handle('ATTACHBOX', 'attachbody');
+        $template_nuke->assign_var_from_handle('ATTACHBOX', 'attachbody');
     }
 
     /**
@@ -1082,7 +1082,7 @@ class attach_parent
     */
     function upload_attachment()
     {
-        global $HTTP_POST_FILES, $nuke_db, $HTTP_POST_VARS, $error, $error_msg, $lang, $attach_config, $userdata, $upload_dir, $forum_id;
+        global $HTTP_POST_FILES, $nuke_db, $HTTP_POST_VARS, $error, $error_msg, $lang, $attach_config, $nuke_userdata, $upload_dir, $forum_id;
 
         $this->post_attach = ($this->filename != '') ? TRUE : FALSE;
 
@@ -1121,7 +1121,7 @@ class attach_parent
 
             $allowed_filesize = ($row['max_filesize']) ? $row['max_filesize'] : $attach_config['max_filesize'];
             $cat_id = intval($row['cat_id']);
-            $auth_cache = trim($row['forum_permissions']);
+            $nuke_auth_cache = trim($row['forum_permissions']);
 
             // check Filename
             if (preg_match("#[\\/:*?\"<>|]#i", $this->filename))
@@ -1168,7 +1168,7 @@ class attach_parent
             }
 
             // Check Forum Permissions
-            if (!$error && $this->page != NUKE_PAGE_PRIVMSGS && $userdata['user_level'] != NUKE_ADMIN && !is_forum_authed($auth_cache, $forum_id) && trim($auth_cache) != '')
+            if (!$error && $this->page != NUKE_PAGE_PRIVMSGS && $nuke_userdata['user_level'] != NUKE_ADMIN && !is_forum_authed($nuke_auth_cache, $forum_id) && trim($nuke_auth_cache) != '')
             {
                 $error = TRUE;
                 if(!empty($error_msg))
@@ -1212,7 +1212,7 @@ class attach_parent
 
                     if (!$new_filename)
                     {
-                        $u_id = (intval($userdata['user_id']) == NUKE_ANONYMOUS) ? 0 : intval($userdata['user_id']);
+                        $u_id = (intval($nuke_userdata['user_id']) == NUKE_ANONYMOUS) ? 0 : intval($nuke_userdata['user_id']);
                         $new_filename = $u_id . '_' . $this->filetime . '.' . $this->extension;
                     }
 
@@ -1226,7 +1226,7 @@ class attach_parent
                 }
                 else
                 {
-                    $u_id = (intval($userdata['user_id']) == NUKE_ANONYMOUS) ? 0 : intval($userdata['user_id']);
+                    $u_id = (intval($nuke_userdata['user_id']) == NUKE_ANONYMOUS) ? 0 : intval($nuke_userdata['user_id']);
                     $this->attach_filename = $u_id . '_' . $this->filetime . '.' . $this->extension;
                 }
 
@@ -1352,7 +1352,7 @@ class attach_parent
 					}
 				}
 			}
-            if (!$error && $userdata['user_level'] != NUKE_ADMIN && $cat_id == IMAGE_CAT)
+            if (!$error && $nuke_userdata['user_level'] != NUKE_ADMIN && $cat_id == IMAGE_CAT)
             {
                 list($width, $height) = image_getdimension($upload_dir . '/' . $this->attach_filename);
 
@@ -1371,7 +1371,7 @@ class attach_parent
             }
 
             // check Filesize
-            if (!$error && $allowed_filesize != 0 && $this->filesize > $allowed_filesize && $userdata['user_level'] != NUKE_ADMIN)
+            if (!$error && $allowed_filesize != 0 && $this->filesize > $allowed_filesize && $nuke_userdata['user_level'] != NUKE_ADMIN)
             {
                 $size_lang = ($allowed_filesize >= 1048576) ? $lang['MB'] : ( ($allowed_filesize >= 1024) ? $lang['KB'] : $lang['Bytes'] );
 
@@ -1419,7 +1419,7 @@ class attach_parent
 
             }
 
-            $this->get_quota_limits($userdata);
+            $this->get_quota_limits($nuke_userdata);
 
             // Check our user quota
             if ($this->page != NUKE_PAGE_PRIVMSGS)
@@ -1428,7 +1428,7 @@ class attach_parent
                 {
                     $sql = 'SELECT attach_id
                         FROM ' . ATTACHMENTS_TABLE . '
-                        WHERE user_id_1 = ' . (int) $userdata['user_id'] . '
+                        WHERE user_id_1 = ' . (int) $nuke_userdata['user_id'] . '
                             AND privmsgs_id = 0
                         GROUP BY attach_id';
 
@@ -1498,7 +1498,7 @@ class attach_parent
             {
                 if ($attach_config['pm_filesize_limit'])
                 {
-                    $total_filesize = get_total_attach_pm_filesize('from_user', $userdata['user_id']);
+                    $total_filesize = get_total_attach_pm_filesize('from_user', $nuke_userdata['user_id']);
 
                     if (($total_filesize + $this->filesize) > $attach_config['pm_filesize_limit'])
                     {
@@ -1514,16 +1514,16 @@ class attach_parent
                 $to_user = (isset($HTTP_POST_VARS['username']) ) ? $HTTP_POST_VARS['username'] : '';
 
                 // Check Receivers PM Quota
-                if (!empty($to_user) && $userdata['user_level'] != NUKE_ADMIN)
+                if (!empty($to_user) && $nuke_userdata['user_level'] != NUKE_ADMIN)
                 {
                     $u_data = get_userdata($to_user, true);
 
-                    $user_id = (int) $u_data['user_id'];
-                    $this->get_quota_limits($u_data, $user_id);
+                    $nuke_user_id = (int) $u_data['user_id'];
+                    $this->get_quota_limits($u_data, $nuke_user_id);
 
                     if ($attach_config['pm_filesize_limit'])
                     {
-                        $total_filesize = get_total_attach_pm_filesize('to_user', $user_id);
+                        $total_filesize = get_total_attach_pm_filesize('to_user', $nuke_user_id);
 
                         if (($total_filesize + $this->filesize) > $attach_config['pm_filesize_limit'])
                         {
@@ -1652,7 +1652,7 @@ class attach_posting extends attach_parent
     */
     function preview_attachments()
     {
-        global $attach_config, $is_auth, $userdata;
+        global $attach_config, $is_auth, $nuke_userdata;
 
         if (intval($attach_config['disable_mod']) || !$is_auth['auth_attachments'])
         {
@@ -1667,7 +1667,7 @@ class attach_posting extends attach_parent
     */
     function insert_attachment($post_id)
     {
-        global $nuke_db, $is_auth, $mode, $userdata, $error, $error_msg;
+        global $nuke_db, $is_auth, $mode, $nuke_userdata, $error, $error_msg;
 
         // Insert Attachment ?
         if (!empty($post_id) && ($mode == 'newtopic' || $mode == 'reply' || $mode == 'editpost') && $is_auth['auth_attachments'])

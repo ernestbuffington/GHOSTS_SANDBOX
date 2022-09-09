@@ -50,7 +50,7 @@ $cancel = ( isset($HTTP_POST_VARS['cancel']) ) ? TRUE : FALSE;
 
 if ($cancel)
 {
-    $no_page_header = TRUE;
+    $no_nuke_page_header = TRUE;
 }
 
 require('pagestart.' . $phpEx);
@@ -113,7 +113,7 @@ if ($cancel)
 // BEGIN Install Module
 if (($mode == 'mod_install') && ($submit))
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/stat_install_module.tpl')
     );
 
@@ -265,10 +265,10 @@ if (($mode == 'mod_install') && ($submit))
     }
 
     // Prepare Template
-    $template->assign_block_vars('switch_install_module', array());
+    $template_nuke->assign_block_vars('switch_install_module', array());
 
     // Info Array
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_INSTALL_MODULE' => $lang['Install_module'],
         'L_INSTALL_MODULE_EXPLAIN' => $lang['Install_module_explain'],
         'L_MODULE_NAME' => $lang['Module_name'],
@@ -300,7 +300,7 @@ if (($mode == 'mod_install') && ($submit))
     {
         $language = str_replace('lang_', '', $key);
 
-        $template->assign_block_vars('languages', array(
+        $template_nuke->assign_block_vars('languages', array(
             'MODULE_LANGUAGE' => $language)
         );
 
@@ -312,14 +312,14 @@ if (($mode == 'mod_install') && ($submit))
         $s_hidden_fields .= '<input type="hidden" name="update_id" value="' . $update_id . '">';
     }
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'S_HIDDEN_FIELDS' => $s_hidden_fields)
     );
 }
 
 if (($mode == 'mod_install') && (!$submit))
 {
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/stat_install_module.tpl')
     );
 
@@ -345,7 +345,7 @@ if (($mode == 'mod_install') && (!$submit))
 
         if (count($module_paks) > 0)
         {
-            $template->assign_block_vars('switch_select_module', array());
+            $template_nuke->assign_block_vars('switch_select_module', array());
 
             $module_select_field = '<select name="selected_pak_file">';
 
@@ -360,7 +360,7 @@ if (($mode == 'mod_install') && (!$submit))
             
             $s_hidden_fields = '<input type="hidden" name="fileselect" value="1">';
 
-            $template->assign_vars(array(
+            $template_nuke->assign_vars(array(
                 'L_SELECT_MODULE' => $lang['Select_module_pak'],
                 'S_SELECT_MODULE' => $module_select_field,
                 'S_SELECT_HIDDEN_FIELDS' => $s_hidden_fields)
@@ -368,11 +368,11 @@ if (($mode == 'mod_install') && (!$submit))
         
         }
 
-        $template->assign_block_vars('switch_upload_module', array());
+        $template_nuke->assign_block_vars('switch_upload_module', array());
 
         $s_hidden_fields = '<input type="hidden" name="fileupload" value="1">';
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'L_INSTALL_MODULE' => $lang['Install_module'],
             'L_INSTALL_MODULE_EXPLAIN' => $lang['Install_module_explain'],
             'L_UPLOAD_MODULE' => $lang['Upload_module_pak'],
@@ -409,7 +409,7 @@ if ($mode == 'mod_manage')
         deactivate($module_id);
     }
     
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         'body' => 'admin/stat_manage_body.tpl')
     );
 
@@ -425,7 +425,7 @@ if ($mode == 'mod_manage')
         message_die(NUKE_GENERAL_MESSAGE, 'No installed Modules found.');
     }
 
-    $template->assign_vars(array(
+    $template_nuke->assign_vars(array(
         'L_EDIT' => $lang['Edit'],
         'L_DELETE' => $lang['Delete'],
         'L_MOVE_UP' => $lang['Move_up'],
@@ -439,7 +439,7 @@ if ($mode == 'mod_manage')
         $module_id = intval($row['module_id']);
         $module_active = (intval($row['active'])) ? TRUE : FALSE;
 
-        $template->assign_block_vars('modulerow', array(
+        $template_nuke->assign_block_vars('modulerow', array(
             'MODULE_NAME' => trim($row['long_name']),
             'MODULE_DESC' => trim(nl2br($row['extra_info'])),
 
@@ -473,11 +473,11 @@ if ($mode == 'mod_delete')
 
         $hidden_fields = '<input type="hidden" name="mode" value="'.$mode.'" /><input type="hidden" name="module_id" value="'.$module_id.'" />';
             
-        $template->set_filenames(array(
+        $template_nuke->set_filenames(array(
             'body' => 'confirm_body.tpl')
         );
 
-        $template->assign_vars(array(
+        $template_nuke->assign_vars(array(
             'MESSAGE_TITLE' => $lang['Confirm'],
             'MESSAGE_TEXT' => $lang['Confirm_delete_module'],
 
@@ -694,11 +694,11 @@ if ($mode == 'mod_delete')
     }
 }
 // END Delete Module
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 //
 // Page Footer
 //
-include('./page_footer_admin.'.$phpEx);
+include('./nuke_page_footer_admin.'.$phpEx);
 
 ?>

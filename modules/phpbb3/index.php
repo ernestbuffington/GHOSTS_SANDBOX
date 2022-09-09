@@ -13,17 +13,15 @@
 
 /**
 */
-if (!defined('MODULE_FILE')) {
-   die ("You can't access this file directly...");
-}
+
 /**
 * @ignore
 */
 define('IN_PHPBB', true);
-$phpbb_root_path = (defined('NUKE_PHPBB3_DIR')) ? NUKE_PHPBB3_DIR : './';
+$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-include(NUKE_PHPBB3_DIR . 'common.' . $phpEx);
-include(NUKE_PHPBB3_DIR . 'includes/functions_display.' . $phpEx);
+include($phpbb_root_path . 'common.' . $phpEx);
+include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 
 // Start session management
 $user->session_begin();

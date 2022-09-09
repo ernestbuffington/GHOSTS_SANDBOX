@@ -60,7 +60,7 @@ function prepare_message($message, $html_on, $bbcode_on, $smile_on, $bbcode_uid 
 /*****[BEGIN]******************************************
  [ Mod:     adminHtml                          v1.0.3 ]
  ******************************************************/
-        global $board_config, $html_entities_match, $html_entities_replace, $userdata;
+        global $board_config, $html_entities_match, $html_entities_replace, $nuke_userdata;
 /*****[END]********************************************
  [ Mod:     adminHtml                          v1.0.3 ]
  ******************************************************/
@@ -98,7 +98,7 @@ function prepare_message($message, $html_on, $bbcode_on, $smile_on, $bbcode_uid 
 /*****[BEGIN]******************************************
  [ Mod:     adminHtml                          v1.0.3 ]
  ******************************************************/
-        if($userdata['user_level'] == NUKE_ADMIN)
+        if($nuke_userdata['user_level'] == NUKE_ADMIN)
         {
             //do nothing
         }
@@ -145,23 +145,23 @@ function unprepare_message($message)
 /*****[BEGIN]******************************************
  [ Mod:    Must first vote to see results      v1.0.0 ]
  ******************************************************/
-function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$bbcode_uid, &$subject, &$message, &$poll_title, &$poll_options, &$poll_length, &$poll_view_toggle)
+function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$nuke_username, &$bbcode_uid, &$subject, &$message, &$poll_title, &$poll_options, &$poll_length, &$poll_view_toggle)
 /*****[END]********************************************
  [ Mod:    Must first vote to see results      v1.0.0 ]
  ******************************************************/
 {
-        global $board_config, $userdata, $lang, $phpEx, $phpbb2_root_path;
+        global $board_config, $nuke_userdata, $lang, $phpEx, $phpbb2_root_path;
 
         // Check username
-        if (!empty($username))
+        if (!empty($nuke_username))
         {
-        $username = phpbb_clean_username($username);
+        $nuke_username = phpbb_clean_username($nuke_username);
 
-                if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && $username != $userdata['username']))
+                if (!$nuke_userdata['session_logged_in'] || ($nuke_userdata['session_logged_in'] && $nuke_username != $nuke_userdata['username']))
                 {
                         include("includes/functions_validate.php");
 
-                        $result = validate_username($username);
+                        $result = validate_username($nuke_username);
                         if ($result['error'])
                         {
                                 $error_msg .= (!empty($error_msg)) ? '<br />' . $result['error_msg'] : $result['error_msg'];
@@ -169,7 +169,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
                 }
                 else
                 {
-                        $username = '';
+                        $nuke_username = '';
                 }
         }
 
@@ -271,7 +271,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        global $board_config, $lang, $nuke_db, $phpbb2_root_path, $phpEx, $userdata, $user_ip;
+        global $board_config, $lang, $nuke_db, $phpbb2_root_path, $phpEx, $nuke_userdata, $nuke_user_ip;
 
             /*--FNA--*/
 
@@ -285,7 +285,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
         //
         // Retreive authentication info to determine if this user has moderator status
         //
-        $is_auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata);
+        $is_auth = auth(NUKE_AUTH_ALL, $forum_id, $nuke_userdata);
         $is_mod = $is_auth['auth_mod'];
 
         if (($mode == 'newtopic' || $mode == 'reply' || $mode == 'editpost') && !$is_mod)
@@ -296,7 +296,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
                 //
                 // Flood control
                 //
-                $where_sql = ($userdata['user_id'] == NUKE_ANONYMOUS) ? "poster_ip = '$user_ip'" : 'poster_id = ' . $userdata['user_id'];
+                $where_sql = ($nuke_userdata['user_id'] == NUKE_ANONYMOUS) ? "poster_ip = '$nuke_user_ip'" : 'poster_id = ' . $nuke_userdata['user_id'];
                 $sql = "SELECT MAX(post_time) AS last_post_time
                         FROM " . NUKE_POSTS_TABLE . "
                         WHERE $where_sql";
@@ -323,7 +323,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 /*****[BEGIN]******************************************
  [ Mod:     Post Icons                         v1.0.1 ]
  ******************************************************/
-                $sql  = ($mode != "editpost") ? "INSERT INTO " . NUKE_BB_TOPICS_TABLE . " (topic_title, topic_poster, topic_time, forum_id, topic_status, topic_type, topic_icon, topic_vote) VALUES ('$post_subject', " . $userdata['user_id'] . ", '$current_time', '$forum_id', " . NUKE_TOPIC_UNLOCKED . ", '$topic_type', $post_icon, '$topic_vote')" : "UPDATE " . NUKE_BB_TOPICS_TABLE . " SET topic_title = '$post_subject', topic_icon=$post_icon, topic_type = $topic_type " . (($post_data['edit_vote'] || !empty($poll_title)) ? ", topic_vote = " . $topic_vote : "") . " WHERE topic_id = '$topic_id'";
+                $sql  = ($mode != "editpost") ? "INSERT INTO " . NUKE_BB_TOPICS_TABLE . " (topic_title, topic_poster, topic_time, forum_id, topic_status, topic_type, topic_icon, topic_vote) VALUES ('$post_subject', " . $nuke_userdata['user_id'] . ", '$current_time', '$forum_id', " . NUKE_TOPIC_UNLOCKED . ", '$topic_type', $post_icon, '$topic_vote')" : "UPDATE " . NUKE_BB_TOPICS_TABLE . " SET topic_title = '$post_subject', topic_icon=$post_icon, topic_type = $topic_type " . (($post_data['edit_vote'] || !empty($poll_title)) ? ", topic_vote = " . $topic_vote : "") . " WHERE topic_id = '$topic_id'";
 /*****[END]********************************************
  [ Mod:     Post Icons                         v1.0.1 ]
  ******************************************************/
@@ -343,11 +343,11 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
  ******************************************************/
 if ($mode == 'newtopic')
            if ( $topic_type == NUKE_POST_GLOBAL_ANNOUNCE )
-           log_action('Global Announcement', '', $topic_id, $userdata['user_id'], '', '');
+           log_action('Global Announcement', '', $topic_id, $nuke_userdata['user_id'], '', '');
            if ( $topic_type == NUKE_POST_ANNOUNCE )
-           log_action('Announcement', '', $topic_id, $userdata['user_id'], '', '');
+           log_action('Announcement', '', $topic_id, $nuke_userdata['user_id'], '', '');
            else if ( $topic_type == NUKE_POST_STICKY )
-           log_action('Sticky', '', $topic_id, $userdata['user_id'], '', '');
+           log_action('Sticky', '', $topic_id, $nuke_userdata['user_id'], '', '');
 /*****[END]********************************************
  [ Mod:     Log Moderator Actions              v1.1.6 ]
  ******************************************************/
@@ -356,7 +356,7 @@ if ($mode == 'newtopic')
 /*****[BEGIN]******************************************
  [ Mod:     Post Icons                         v1.0.1 ]
  ******************************************************/
-        $sql = ($mode != "editpost") ? "INSERT INTO " . NUKE_POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_sig, post_icon) VALUES ('$topic_id', '$forum_id', " . $userdata['user_id'] . ", '$post_username', '$current_time', '$user_ip', '$bbcode_on', '$html_on', '$smilies_on', '$attach_sig', $post_icon)" : "UPDATE " . NUKE_POSTS_TABLE . " SET post_username = '$post_username', enable_bbcode = '$bbcode_on', enable_html = '$html_on', enable_smilies = '$smilies_on', enable_sig = '$attach_sig', post_icon = $post_icon" . $edited_sql . " WHERE post_id = '$post_id'";
+        $sql = ($mode != "editpost") ? "INSERT INTO " . NUKE_POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_sig, post_icon) VALUES ('$topic_id', '$forum_id', " . $nuke_userdata['user_id'] . ", '$post_username', '$current_time', '$nuke_user_ip', '$bbcode_on', '$html_on', '$smilies_on', '$attach_sig', $post_icon)" : "UPDATE " . NUKE_POSTS_TABLE . " SET post_username = '$post_username', enable_bbcode = '$bbcode_on', enable_html = '$html_on', enable_smilies = '$smilies_on', enable_sig = '$attach_sig', post_icon = $post_icon" . $edited_sql . " WHERE post_id = '$post_id'";
 /*****[END]********************************************
  [ Mod:     Post Icons                         v1.0.1 ]
  ******************************************************/
@@ -463,9 +463,9 @@ if ($mode == 'newtopic')
 //
 // Update post stats and details
 //
-function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_id, &$user_id)
+function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_id, &$nuke_user_id)
 {
-        global $nuke_db, $userdata;
+        global $nuke_db, $nuke_userdata;
 
         $sign = ($mode == 'delete') ? '- 1' : '+ 1';
         $forum_update_sql = "forum_posts = forum_posts $sign";
@@ -570,7 +570,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
         {
                 $sql = "UPDATE " . NUKE_USERS_TABLE . "
                         SET user_posts = user_posts $sign
-                        WHERE user_id = '$user_id'";
+                        WHERE user_id = '$nuke_user_id'";
                 if (!$nuke_db->sql_query($sql))
                 {
                         message_die(NUKE_GENERAL_ERROR, 'Error in posting', '', __LINE__, __FILE__, $sql);
@@ -580,13 +580,13 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 /*****[BEGIN]******************************************
  [ Mod:    Auto Group                          v1.2.2 ]
  ******************************************************/
-    if ($userdata['user_level'] == NUKE_USER) {
+    if ($nuke_userdata['user_level'] == NUKE_USER) {
     	$sql = "SELECT ug.user_id, g.group_id as g_id, u.user_posts, g.group_count, g.group_count_max FROM ".NUKE_USERS_TABLE." u, " . NUKE_GROUPS_TABLE . " g
-    		LEFT JOIN ". NUKE_USER_GROUP_TABLE." ug ON g.group_id=ug.group_id AND ug.user_id=$user_id
-    		WHERE u.user_id=$user_id
+    		LEFT JOIN ". NUKE_USER_GROUP_TABLE." ug ON g.group_id=ug.group_id AND ug.user_id=$nuke_user_id
+    		WHERE u.user_id=$nuke_user_id
     		AND g.group_single_user=0
     		AND g.group_count_enable=1
-    		AND g.group_moderator<>$user_id
+    		AND g.group_moderator<>$nuke_user_id
     		ORDER BY g.group_count_max ASC";
     	if ( !($result = $nuke_db->sql_query($sql)) )
     	{
@@ -594,26 +594,26 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
     	}
     	while ($group_data = $nuke_db->sql_fetchrow($result))
     	{
-            $user_already_added = (empty($group_data['user_id'])) ? FALSE : TRUE;
-            $user_add = ($group_data['group_count'] == $group_data['user_posts'] && $user_id!=NUKE_ANONYMOUS) ? TRUE : FALSE;
-            $user_remove = ($group_data['group_count'] > $group_data['user_posts'] || $group_data['group_count_max'] < $group_data['user_posts']) ? TRUE : FALSE;
-    		if ($user_add && !$user_already_added)
+            $nuke_user_already_added = (empty($group_data['user_id'])) ? FALSE : TRUE;
+            $nuke_user_add = ($group_data['group_count'] == $group_data['user_posts'] && $nuke_user_id!=NUKE_ANONYMOUS) ? TRUE : FALSE;
+            $nuke_user_remove = ($group_data['group_count'] > $group_data['user_posts'] || $group_data['group_count_max'] < $group_data['user_posts']) ? TRUE : FALSE;
+    		if ($nuke_user_add && !$nuke_user_already_added)
     		{
     			//user join a autogroup
     			$sql = "INSERT INTO " . NUKE_USER_GROUP_TABLE . " (group_id, user_id, user_pending)
-    				VALUES (".$group_data['g_id'].", $user_id, '0')";
+    				VALUES (".$group_data['g_id'].", $nuke_user_id, '0')";
     			if ( !($nuke_db->sql_query($sql)) )
     			{
     				message_die(NUKE_GENERAL_ERROR, 'Error insert users, group count', '', __LINE__, __FILE__, $sql);
     			}
-    			add_group_attributes($user_id, $group_data['g_id']);
+    			add_group_attributes($nuke_user_id, $group_data['g_id']);
     		} else
-    		if ( $user_already_added && $user_remove)
+    		if ( $nuke_user_already_added && $nuke_user_remove)
     		{
     			//remove user from auto group
     			$sql = "DELETE FROM " . NUKE_USER_GROUP_TABLE . "
     				WHERE group_id=".$group_data['g_id']."
-    				AND user_id=$user_id";
+    				AND user_id=$nuke_user_id";
     			if ( !($nuke_db->sql_query($sql)) )
     			{
     				message_die(NUKE_GENERAL_ERROR, 'Could not remove users, group count', '', __LINE__, __FILE__, $sql);
@@ -642,7 +642,7 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        global $board_config, $lang, $nuke_db, $phpbb2_root_path, $phpEx, $userdata, $user_ip;
+        global $board_config, $lang, $nuke_db, $phpbb2_root_path, $phpEx, $nuke_userdata, $nuke_user_ip;
 
         if ($mode != 'poll_delete')
         {
@@ -745,7 +745,7 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 //
 function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topic_id, &$post_id, &$notify_user)
 {
-        global $board_config, $lang, $nuke_db, $phpbb2_root_path, $phpEx, $userdata, $user_ip;
+        global $board_config, $lang, $nuke_db, $phpbb2_root_path, $phpEx, $nuke_userdata, $nuke_user_ip;
 
         $current_time = time();
 
@@ -760,12 +760,12 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
                                 message_die(NUKE_GENERAL_ERROR, 'Could not obtain banlist', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $user_id_sql = '';
+                        $nuke_user_id_sql = '';
                         while ($row = $nuke_db->sql_fetchrow($result))
                         {
                                 if (isset($row['ban_userid']) && !empty($row['ban_userid']))
                                 {
-                                        $user_id_sql .= ', ' . $row['ban_userid'];
+                                        $nuke_user_id_sql .= ', ' . $row['ban_userid'];
                                 }
                         }
 /*****[BEGIN]******************************************
@@ -774,7 +774,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
                         $sql = "SELECT u.user_id, u.user_email, u.user_lang, pt.post_text, u.username
                                 FROM " . NUKE_TOPICS_WATCH_TABLE . " tw, " . NUKE_USERS_TABLE . " u, " . NUKE_POSTS_TEXT_TABLE . " pt
                                 WHERE tw.topic_id = '$topic_id'
-                                        AND tw.user_id NOT IN (" . $userdata['user_id'] . ", " . NUKE_ANONYMOUS . $user_id_sql . ")
+                                        AND tw.user_id NOT IN (" . $nuke_userdata['user_id'] . ", " . NUKE_ANONYMOUS . $nuke_user_id_sql . ")
                                         AND tw.notify_status = " . NUKE_TOPIC_WATCH_UN_NOTIFIED . "
                                         AND u.user_id = tw.user_id
                                         AND pt.post_id = '$post_id'";
@@ -813,7 +813,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 
                         if ($row = $nuke_db->sql_fetchrow($result))
                         {
-                                //$user_name = $row["username"];
+                                //$nuke_user_name = $row["username"];
                                 $text = $row["post_text"];
                                 $poster_name = $row_topic["username"];
                                 if(!empty($row_attach[0])) {
@@ -863,7 +863,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
                                     $topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, unprepare_message($topic_title)) : unprepare_message($topic_title);
 
                                     @reset($bcc_list_ary);
-                                    @reset($user_name);
+                                    @reset($nuke_user_name);
 
                                     $notify_body_pattern    = array(
                                         '{USERNAME}',
@@ -919,9 +919,9 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
                                     $content = str_replace( '{U_STOP_WATCHING_TOPIC}', '<a href="'.$email_data['stop_watching'].'">'.$email_data['stop_watching'].'</a>', $content );
                                     $content = str_replace( '{EMAIL_SIG}', $email_data['signature'], $content );
 
-                                    while (list($user_lang, $bcc_list) = each($bcc_list_ary))
+                                    while (list($nuke_user_lang, $bcc_list) = each($bcc_list_ary))
                                     {
-                                        $name_list = $user_name[$user_lang];
+                                        $name_list = $nuke_user_name[$nuke_user_lang];
                                         $headers[] = 'From: '.$email_data['from'];
                                         for ($i = 0; $i < count($bcc_list); $i++):
                                             $headers[] = 'Bcc: '.$bcc_list[$i];
@@ -949,7 +949,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
                 $sql = "SELECT topic_id
                         FROM " . NUKE_TOPICS_WATCH_TABLE . "
                         WHERE topic_id = '$topic_id'
-                                AND user_id = " . $userdata['user_id'];
+                                AND user_id = " . $nuke_userdata['user_id'];
                 if (!($result = $nuke_db->sql_query($sql)))
                 {
                         message_die(NUKE_GENERAL_ERROR, 'Could not obtain topic watch information', '', __LINE__, __FILE__, $sql);
@@ -961,7 +961,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
                 {
                         $sql = "DELETE FROM " . NUKE_TOPICS_WATCH_TABLE . "
                                 WHERE topic_id = '$topic_id'
-                                        AND user_id = " . $userdata['user_id'];
+                                        AND user_id = " . $nuke_userdata['user_id'];
                         if (!$nuke_db->sql_query($sql))
                         {
                                 message_die(NUKE_GENERAL_ERROR, 'Could not delete topic watch information', '', __LINE__, __FILE__, $sql);
@@ -970,7 +970,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
                 else if ($notify_user && empty($row['topic_id']))
                 {
                         $sql = "INSERT INTO " . NUKE_TOPICS_WATCH_TABLE . " (user_id, topic_id, notify_status)
-                                VALUES (" . $userdata['user_id'] . ", '$topic_id', '0')";
+                                VALUES (" . $nuke_userdata['user_id'] . ", '$topic_id', '0')";
                         if (!$nuke_db->sql_query($sql))
                         {
                                 message_die(NUKE_GENERAL_ERROR, 'Could not insert topic watch information', '', __LINE__, __FILE__, $sql);
@@ -985,7 +985,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 //
 function generate_smilies($mode, $page_id)
 {
-        global $nuke_db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb2_root_path, $user_ip, $session_length, $starttime, $userdata;
+        global $nuke_db, $board_config, $template_nuke, $lang, $images, $theme, $phpEx, $phpbb2_root_path, $nuke_user_ip, $session_length, $starttime, $nuke_userdata;
 
         $inline_columns = 4;
         $inline_rows = 5;
@@ -993,22 +993,22 @@ function generate_smilies($mode, $page_id)
 
         if ($mode == 'window')
         {
-                $userdata = session_pagestart($user_ip, $page_id);
-                init_userprefs($userdata);
+                $nuke_userdata = session_pagestart($nuke_user_ip, $page_id);
+                init_userprefs($nuke_userdata);
 
                 $gen_simple_header = TRUE;
 
                 $page_title = $lang['Emoticons'];
         if ( defined('IN_ADMIN') )
         {
-            include("./page_header_admin.php");
+            include("./nuke_page_header_admin.php");
         }
         else
         {
-                include("includes/page_header_review.php");
+                include("includes/nuke_page_header_review.php");
         }
 
-                $template->set_filenames(array(
+                $template_nuke->set_filenames(array(
                         'smiliesbody' => 'posting_smilies.tpl')
                 );
         }
@@ -1044,10 +1044,10 @@ function generate_smilies($mode, $page_id)
                         {
                                 if (!$col)
                                 {
-                                        $template->assign_block_vars('smilies_row', array());
+                                        $template_nuke->assign_block_vars('smilies_row', array());
                                 }
 
-                                $template->assign_block_vars('smilies_row.smilies_col', array(
+                                $template_nuke->assign_block_vars('smilies_row.smilies_col', array(
                                         'SMILEY_CODE' => $data['code'],
                                         'SMILEY_IMG' => $board_config['smilies_path'] . '/' . $smile_url,
                                         'SMILEY_DESC' => $data['emoticon'])
@@ -1072,15 +1072,15 @@ function generate_smilies($mode, $page_id)
 
                         if ($mode == 'inline' && $num_smilies > $inline_rows * $inline_columns)
                         {
-                                $template->assign_block_vars('switch_smilies_extra', array());
+                                $template_nuke->assign_block_vars('switch_smilies_extra', array());
 
-                                $template->assign_vars(array(
+                                $template_nuke->assign_vars(array(
                                         'L_MORE_SMILIES' => $lang['More_emoticons'],
                                         'U_MORE_SMILIES' => append_sid("posting.$phpEx?mode=smilies&popup=1"))
                                 );
                         }
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
                                 'L_EMOTICONS' => $lang['Emoticons'],
                                 'L_CLOSE_WINDOW' => $lang['Close_window'],
                                 'S_SMILIES_COLSPAN' => $s_colspan)
@@ -1090,7 +1090,7 @@ function generate_smilies($mode, $page_id)
 
         if ($mode == 'window')
         {
-                $template->pparse('smiliesbody');
+                $template_nuke->pparse('smiliesbody');
 
                 include("includes/page_tail_review.php");
         }

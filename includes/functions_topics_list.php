@@ -80,11 +80,11 @@ include_once('includes/bbcode.' . $phpEx);
 //--------------------------------------------------
 function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=false, $display_nav_tree=true, $footer='', $inbox=true, $select_field='', $select_type=0, $select_formname='', $select_values=array())
 {
-    global $nuke_db, $template, $board_config, $userdata, $phpEx, $lang, $images, $HTTP_COOKIE_VARS, $tree;
+    global $nuke_db, $template_nuke, $board_config, $nuke_userdata, $phpEx, $lang, $images, $HTTP_COOKIE_VARS, $tree;
     static $box_id;
 
     // save template state
-    $sav_tpl = $template->_tpldata;
+    $sav_tpl = $template_nuke->_tpldata;
 
     // init
     if (empty($tpl))
@@ -157,7 +157,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
     {
         // standard read
         $is_auth = array();
-        $is_auth = auth(NUKE_AUTH_ALL, NUKE_AUTH_LIST_ALL, $userdata);
+        $is_auth = auth(NUKE_AUTH_ALL, NUKE_AUTH_LIST_ALL, $nuke_userdata);
     }
 
     // topic icon present
@@ -170,13 +170,13 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
     }
 
     // choose template
-    $template->set_filenames(array(
+    $template_nuke->set_filenames(array(
         $tpl => $tpl . '.tpl')
     );
 
     // check if user replied to the topics
-    $user_topics = array();
-    if ($userdata['user_id'] != NUKE_ANONYMOUS)
+    $nuke_user_topics = array();
+    if ($nuke_userdata['user_id'] != NUKE_ANONYMOUS)
     {
         // get all the topic ids to display
         $topic_ids = array();
@@ -196,20 +196,20 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
             $s_topic_ids = implode(', ', $topic_ids);
             $sql = "SELECT DISTINCT topic_id FROM " . NUKE_POSTS_TABLE . " 
                     WHERE topic_id IN ($s_topic_ids)
-                        AND poster_id = " . $userdata['user_id'];
+                        AND poster_id = " . $nuke_userdata['user_id'];
             if ( !($result = $nuke_db->sql_query($sql)) )
             {
                message_die(NUKE_GENERAL_ERROR, 'Could not obtain post information', '', __LINE__, __FILE__, $sql);
             }
             while ($row = $nuke_db->sql_fetchrow($result))
             {
-                $user_topics[NUKE_POST_TOPIC_URL . $row['topic_id']] = true;
+                $nuke_user_topics[NUKE_POST_TOPIC_URL . $row['topic_id']] = true;
             }
         }
     }
 
     // initiate
-    $template->assign_block_vars($tpl, array(
+    $template_nuke->assign_block_vars($tpl, array(
         'FORMNAME'        => $select_formname,
         'FIELDNAME'        => $select_field,
         )
@@ -251,7 +251,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
         $topic_title        = ( count($orig_word) ) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_title']) : $topic_rowset[$i]['topic_title'];
         $replies            = $topic_rowset[$i]['topic_replies'];
         $topic_type            = $topic_rowset[$i]['topic_type'];
-        $user_replied        = ( !empty($user_topics) && isset($user_topics[$topic_rowset[$i]['topic_id']]) );
+        $nuke_user_replied        = ( !empty($nuke_user_topics) && isset($nuke_user_topics[$topic_rowset[$i]['topic_id']]) );
         $force_type_display    = false;
         $forum_id            = $topic_rowset[$i]['forum_id'];
 
@@ -304,41 +304,41 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
             }
             else if( $topic_rowset[$i]['topic_type'] == NUKE_POST_GLOBAL_ANNOUNCE )
             {
-                $folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_global_announce'] : $images['folder_global_announce'];
-                $folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_global_announce_new'] : $images['folder_global_announce_new'];
+                $folder = ($nuke_user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_global_announce'] : $images['folder_global_announce'];
+                $folder_new = ($nuke_user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_global_announce_new'] : $images['folder_global_announce_new'];
             }
             else if( $topic_rowset[$i]['topic_type'] == NUKE_POST_ANNOUNCE )
             {
-                $folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_announce'] : $images['folder_announce'];
-                $folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_announce_new'] : $images['folder_announce_new'];
+                $folder = ($nuke_user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_announce'] : $images['folder_announce'];
+                $folder_new = ($nuke_user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_announce_new'] : $images['folder_announce_new'];
             }
             else if( $topic_rowset[$i]['topic_type'] == NUKE_POST_STICKY )
             {
-                $folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_sticky'] : $images['folder_sticky'];
-                $folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_sticky_new'] : $images['folder_sticky_new'];
+                $folder = ($nuke_user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_sticky'] : $images['folder_sticky'];
+                $folder_new = ($nuke_user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_sticky_new'] : $images['folder_sticky_new'];
             }
             else if( $topic_rowset[$i]['topic_status'] == NUKE_TOPIC_LOCKED )
             {
-                $folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_locked'] : $images['folder_locked'];
-                $folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_locked_new'] : $images['folder_locked_new'];
+                $folder = ($nuke_user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_locked'] : $images['folder_locked'];
+                $folder_new = ($nuke_user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_locked_new'] : $images['folder_locked_new'];
             }
             else
             {
                 if($replies >= $board_config['hot_threshold'])
                 {
-                    $folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_hot'] : $images['folder_hot'];
-                    $folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_hot_new'] : $images['folder_hot_new'];
+                    $folder = ($nuke_user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_hot'] : $images['folder_hot'];
+                    $folder_new = ($nuke_user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_hot_new'] : $images['folder_hot_new'];
                 }
                 else
                 {
-                    $folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder'] : $images['folder'];
-                    $folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_new'] : $images['folder_new'];
+                    $folder = ($nuke_user_replied && defined('USER_REPLIED_ICON')) ? $images['folder'] : $images['folder'];
+                    $folder_new = ($nuke_user_replied && defined('USER_REPLIED_ICON')) ? $images['folder_new'] : $images['folder_new'];
                 }
             }
             $newest_post_img = '';
-            if ( $userdata['session_logged_in'] && ($topic_item_type == NUKE_POST_TOPIC_URL) )
+            if ( $nuke_userdata['session_logged_in'] && ($topic_item_type == NUKE_POST_TOPIC_URL) )
             {
-                if( $topic_rowset[$i]['post_time'] > $userdata['user_lastvisit'] ) 
+                if( $topic_rowset[$i]['post_time'] > $nuke_userdata['user_lastvisit'] ) 
                 {
                     if( !empty($tracking_topics) || !empty($tracking_forums) || !empty($tracking_all) )
                     {
@@ -521,17 +521,17 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
             if ($split_box && ($i != 0))
             {
                 // footer
-                $template->assign_block_vars($tpl . '.row', array(
+                $template_nuke->assign_block_vars($tpl . '.row', array(
                     'COLSPAN'        => $span_all,
                     )
                 );
 
                 // table closure
-                $template->assign_block_vars($tpl . '.row.footer_table', array());
+                $template_nuke->assign_block_vars($tpl . '.row.footer_table', array());
 
                 // spacing
-                $template->assign_block_vars($tpl . '.row', array());
-                $template->assign_block_vars($tpl . '.row.spacer', array());
+                $template_nuke->assign_block_vars($tpl . '.row', array());
+                $template_nuke->assign_block_vars($tpl . '.row.spacer', array());
 
                 // unset header
                 $header_sent = false;
@@ -561,7 +561,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
                     $sub_title = $lang['Topics'];
                     break;
             }
-            $template->assign_block_vars($tpl . '.row', array(
+            $template_nuke->assign_block_vars($tpl . '.row', array(
                 'L_TITLE'        => (!$split_box) ? $main_title : $sub_title,
                 'L_REPLIES'        => $lang['Replies'],
                 'L_AUTHOR'        => $lang['Author'],
@@ -575,7 +575,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
             if ($split_box || ($i == 0))
             {
                 $box_id++;
-                $template->assign_block_vars($tpl . '.row.header_table', array(
+                $template_nuke->assign_block_vars($tpl . '.row.header_table', array(
                     'COLSPAN'        => $span_left,
                     'BOX_ID'        => $box_id,
                     )
@@ -584,7 +584,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
                 // selection fields
                 if ($select_multi)
                 {
-                    $template->assign_block_vars($tpl . '.row.header_table.multi_selection', array());
+                    $template_nuke->assign_block_vars($tpl . '.row.header_table.multi_selection', array());
                 }
 
                 // set header
@@ -594,12 +594,12 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
             // not in box, send a row title
             if ($split_type && !$split_box)
             {
-                $template->assign_block_vars($tpl . '.row', array(
+                $template_nuke->assign_block_vars($tpl . '.row', array(
                     'L_TITLE'        => $sub_title,
                     'COLSPAN'        => $span_all,
                     )
                 );
-                $template->assign_block_vars($tpl . '.row.header_row', array());
+                $template_nuke->assign_block_vars($tpl . '.row.header_row', array());
             }
         }
 
@@ -645,9 +645,9 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
         // send topic to template
         $selected = (!empty($select_values) && in_array($topic_rowset[$i]['topic_id'], $select_values));
         $color = !$color;
-        $template->assign_block_vars( $tpl . '.row', array(
+        $template_nuke->assign_block_vars( $tpl . '.row', array(
             'ROW_CLASS'                => ($color || !defined('TOPIC_ALTERNATE_ROW_CLASS')) ? 'row1' : 'row2',
-            'ROW_FOLDER_CLASS'        => ($user_replied && defined('USER_REPLIED_CLASS')) ? USER_REPLIED_CLASS : ( ($color || !defined('TOPIC_ALTERNATE_ROW_CLASS')) ? 'row1' : 'row2' ),
+            'ROW_FOLDER_CLASS'        => ($nuke_user_replied && defined('USER_REPLIED_CLASS')) ? USER_REPLIED_CLASS : ( ($color || !defined('TOPIC_ALTERNATE_ROW_CLASS')) ? 'row1' : 'row2' ),
             'FORUM_ID'                => $forum_id,
             'TOPIC_ID'                => $topic_id,
             'TOPIC_FOLDER_IMG'        => $folder_image,
@@ -673,35 +673,35 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
             'L_SELECT'                => ($selected && ($select_multi || $select_unique)) ? 'checked="checked"' : '',
             )
         );
-        $template->assign_block_vars( $tpl . '.row.topic', array());
+        $template_nuke->assign_block_vars( $tpl . '.row.topic', array());
 
         // selection fields
         if ($select_multi)
         {
-            $template->assign_block_vars($tpl . '.row.topic.multi_selection', array());
+            $template_nuke->assign_block_vars($tpl . '.row.topic.multi_selection', array());
         }
         if ($select_unique)
         {
-            $template->assign_block_vars($tpl . '.row.topic.single_selection', array());
+            $template_nuke->assign_block_vars($tpl . '.row.topic.single_selection', array());
         }
 
         // icons
         if ($icon_installed)
         {
-            $template->assign_block_vars( $tpl . '.row.topic.icon', array());
+            $template_nuke->assign_block_vars( $tpl . '.row.topic.icon', array());
         }
 
         // nav tree asked
         if ($display_nav_tree && !empty($nav_tree))
         {
-            $template->assign_block_vars( $tpl . '.row.topic.nav_tree', array());
+            $template_nuke->assign_block_vars( $tpl . '.row.topic.nav_tree', array());
         }
     } // end for topic_rowset read
 
     // send an header if missing
     if (!$header_sent)
     {
-        $template->assign_block_vars($tpl . '.row', array(
+        $template_nuke->assign_block_vars($tpl . '.row', array(
             'L_TITLE'        => $list_title,
             'L_REPLIES'        => $lang['Replies'],
             'L_AUTHOR'        => $lang['Author'],
@@ -712,7 +712,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
         );
 
         // open a new box
-        $template->assign_block_vars($tpl . '.row.header_table', array(
+        $template_nuke->assign_block_vars($tpl . '.row.header_table', array(
             'COLSPAN'        => $span_left,
             )
         );
@@ -722,49 +722,49 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
     if (count($topic_rowset) == 0)
     {
         // send no topics notice
-        $template->assign_block_vars( $tpl . '.row', array(
+        $template_nuke->assign_block_vars( $tpl . '.row', array(
             'L_NO_TOPICS'    => $lang['No_search_match'],
             'COLSPAN'        => $span_all,
             )
         );
-        $template->assign_block_vars( $tpl . '.row.no_topics', array());
+        $template_nuke->assign_block_vars( $tpl . '.row.no_topics', array());
     }
 
     // bottom line
     if (!empty($footer))
     {
-        $template->assign_block_vars( $tpl . '.row', array(
+        $template_nuke->assign_block_vars( $tpl . '.row', array(
             'COLSPAN'        => $span_all,
             'FOOTER'        => $footer,
             )
         );
-        $template->assign_block_vars( $tpl . '.row.bottom', array());
+        $template_nuke->assign_block_vars( $tpl . '.row.bottom', array());
     }
 
     // table closure
-    $template->assign_block_vars( $tpl . '.row', array(
+    $template_nuke->assign_block_vars( $tpl . '.row', array(
         'COLSPAN'        => $span_all,
         )
     );
-    $template->assign_block_vars( $tpl . '.row.footer_table', array());
+    $template_nuke->assign_block_vars( $tpl . '.row.footer_table', array());
 
     // spacing
     if (empty($footer))
     {
         // spacing
-        $template->assign_block_vars($tpl . '.row', array());
-        $template->assign_block_vars($tpl . '.row.spacer', array());
+        $template_nuke->assign_block_vars($tpl . '.row', array());
+        $template_nuke->assign_block_vars($tpl . '.row.spacer', array());
     }
 
     // transfert to a var
-    $template->assign_var_from_handle('_box', $tpl);
-    $res = $template->_tpldata['.'][0]['_box'];
+    $template_nuke->assign_var_from_handle('_box', $tpl);
+    $res = $template_nuke->_tpldata['.'][0]['_box'];
 
     // restore template saved state
-    $template->_tpldata = $sav_tpl;
+    $template_nuke->_tpldata = $sav_tpl;
 
     // assign value to the main template
-    $template->assign_vars(array($box => $res));
+    $template_nuke->assign_vars(array($box => $res));
 }
 
 ?>

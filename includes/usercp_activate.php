@@ -81,7 +81,7 @@ if ( $row = $nuke_db->sql_fetchrow($result) )
 {
         if ( $row['user_active'] && empty($row['user_actkey']) )
         {
-                $template->assign_vars(array(
+                $template_nuke->assign_vars(array(
                         'META' => '<meta http-equiv="refresh" content="10;url=' . append_sid("index.$phpEx") . '">')
                 );
 
@@ -91,11 +91,11 @@ if ( $row = $nuke_db->sql_fetchrow($result) )
         {
             if (intval($board_config['require_activation']) == NUKE_USER_ACTIVATION_ADMIN && $row['user_newpasswd'] == '')
             {
-                if (!$userdata['session_logged_in'])
+                if (!$nuke_userdata['session_logged_in'])
                 {
                     nuke_redirect(append_sid('login.' . $phpEx . '?nuke_redirect=profile.' . $phpEx . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $row['user_id'] . '&act_key=' . trim($HTTP_GET_VARS['act_key'])));
                 }
-                else if ($userdata['user_level'] != NUKE_ADMIN)
+                else if ($nuke_userdata['user_level'] != NUKE_ADMIN)
                 {
                     message_die(NUKE_GENERAL_MESSAGE, $lang['Not_Authorised']);
                 }
@@ -131,7 +131,7 @@ if ( $row = $nuke_db->sql_fetchrow($result) )
                         $emailer->send();
                         $emailer->reset();
 
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
                                 'META' => '<meta http-equiv="refresh" content="10;url=' . append_sid("index.$phpEx") . '">')
                         );
 
@@ -139,7 +139,7 @@ if ( $row = $nuke_db->sql_fetchrow($result) )
                 }
                 else
                 {
-                        $template->assign_vars(array(
+                        $template_nuke->assign_vars(array(
                                 'META' => '<meta http-equiv="refresh" content="10;url=' . append_sid("index.$phpEx") . '">')
                         );
 

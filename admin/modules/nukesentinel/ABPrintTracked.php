@@ -33,11 +33,11 @@ if($totalselected > 0) {
   echo "<td align='center'><strong>"._AB_LASTVIEWED."</strong></td>\n";
   echo "<td align='center'><strong>"._AB_HITS."</strong></td>\n";
   $result = $nuke_db->sql_query("SELECT `user_id`, `username`, `ip_addr`, `ip_long`, MAX(`date`), COUNT(*), MIN(`tid`), `c2c` FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 2,3,4 ORDER BY `ip_addr`");
-  while(list($userid,$username,$ipaddr,$ip_long,$lastview,$hits,$tid,$c2c) = $nuke_db->sql_fetchrow($result)){
+  while(list($nuke_userid,$nuke_username,$ipaddr,$ip_long,$lastview,$hits,$tid,$c2c) = $nuke_db->sql_fetchrow($result)){
     echo "<tr>";
-      $username = UsernameColor($username);
-    if($userid != 1) {
-      echo "<td>$username</td>";
+      $nuke_username = UsernameColor($nuke_username);
+    if($nuke_userid != 1) {
+      echo "<td>$nuke_username</td>";
     } else {
       echo "<td>&nbsp;</td>";
     }

@@ -46,14 +46,14 @@ include_once(NUKE_MODULES_DIR.$module_name.'/includes/functions.php');
 $ya_config = ya_get_configs();
 
 get_lang($module_name);
-$userpage = 1;
+$nuke_userpage = 1;
 
 global $cookie;
 
-$username = Fix_Quotes($_REQUEST['username']);
+$nuke_username = Fix_Quotes($_REQUEST['username']);
 $nuke_redirect = $_REQUEST['nuke_redirect'];
 $module = $_REQUEST['module'];
-$user_password = $_REQUEST['user_password'];
+$nuke_user_password = $_REQUEST['user_password'];
 $mode = $_REQUEST['mode'];
 $t = $_REQUEST['t'];
 $p = $_REQUEST['p'];
@@ -162,18 +162,18 @@ switch($op):
         # endif;
 
         # Mod: User IP Lock v1.0.0 START
-        if(!compare_ips($username)):
+        if(!compare_ips($nuke_username)):
             DisplayError('Your IP is not valid for this user');
             exit;
         endif;
         # Mod: User IP Lock v1.0.0 END
 
-        $result  = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE username='$username'");
+        $result  = $nuke_db->sql_query("SELECT * FROM ".$nuke_user_prefix."_users WHERE username='$nuke_username'");
         $setinfo = $nuke_db->sql_fetchrow($result);
         
 		# menelaos: check of the member agreed with the TOS and update the database field
         if (($ya_config['tos'] == intval(1)) AND ($_POST['tos_yes'] == intval(1))): 
-        $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET agreedtos='1' WHERE username='$username'");
+        $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET agreedtos='1' WHERE username='$nuke_username'");
         endif;
 		
 		$forward = str_replace("nuke_redirect=", "", "$nuke_redirect");
@@ -200,23 +200,23 @@ switch($op):
 		  AND $setinfo['user_active'] >0 AND $setinfo['user_level'] >0): 
         
           $nuke_dbpass     = $setinfo['user_password'];
-          $non_crypt_pass = $user_password;
-          $old_crypt_pass = crypt($user_password,substr($nuke_dbpass,0,2));
+          $non_crypt_pass = $nuke_user_password;
+          $old_crypt_pass = crypt($nuke_user_password,substr($nuke_dbpass,0,2));
           
 		  # Base: Evolution Functions v1.5.0 START
-          $new_pass = EvoCrypt($user_password);
+          $new_pass = EvoCrypt($nuke_user_password);
           # Base: Evolution Functions v1.5.0 START
 
-          $new_pass = md5($user_password);
-          $evo_crypt = EvoCrypt($user_password);
+          $new_pass = md5($nuke_user_password);
+          $evo_crypt = EvoCrypt($nuke_user_password);
           
 		  //Reset to md5x1
           if (($nuke_dbpass == $evo_crypt) 
 		  || (($nuke_dbpass == $non_crypt_pass) 
 		  || ($nuke_dbpass == $old_crypt_pass))): 
 		  
-            $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET user_password='$new_pass' WHERE username='$username'");
-            $result = $nuke_db->sql_query("SELECT user_password FROM ".$nuke_user_prefix."_users WHERE username='$username'");
+            $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET user_password='$new_pass' WHERE username='$nuke_username'");
+            $result = $nuke_db->sql_query("SELECT user_password FROM ".$nuke_user_prefix."_users WHERE username='$nuke_username'");
             list($nuke_dbpass) = $nuke_db->sql_fetchrow($result);
           
 		  endif;
@@ -226,8 +226,8 @@ switch($op):
 			# Does it need another md5?
         	if (md5($nuke_dbpass) == $new_pass): 
 			
-                $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET user_password='$new_pass' WHERE username='$username'");
-                $result = $nuke_db->sql_query("SELECT user_password FROM ".$nuke_user_prefix."_users WHERE username='$username'");
+                $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET user_password='$new_pass' WHERE username='$nuke_username'");
+                $result = $nuke_db->sql_query("SELECT user_password FROM ".$nuke_user_prefix."_users WHERE username='$nuke_username'");
                 
 				list($nuke_dbpass) = $nuke_db->sql_fetchrow($result);
                 
@@ -277,7 +277,7 @@ switch($op):
        # Base: NukeSentinel v2.5.00 START
       
 	   $nuke_db->sql_query("DELETE FROM ".$prefix."_session WHERE uname='$uname' AND guest='1'");
-       $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET last_ip='$uname' WHERE username='$username'");
+       $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET last_ip='$uname' WHERE username='$nuke_username'");
         
 	   endif;
 
@@ -294,7 +294,7 @@ switch($op):
       nuke_redirect("modules.php?name=Forums&file=$forward&mode=$mode&p=$p");
 	  elseif(empty($nuke_redirect)): 
 	      if ($board_config['loginpage'] == 1): 
-          nuke_redirect("modules.php?name=Your_Account&op=userinfo&bypass=1&username=$username");
+          nuke_redirect("modules.php?name=Your_Account&op=userinfo&bypass=1&username=$nuke_username");
           else:
           nuke_redirect("modules.php?name=Forums");
           endif;
@@ -367,7 +367,7 @@ switch($op):
         setcookie($cookiename.'_sid','', $current_time - 31536000, $cookiepath, $cookiedomain, $cookiesecure);
         # Mod: Forum Logout v1.0.0 END
 
-        $user = "";
+        $nuke_user = "";
 
         if (!empty($nuke_redirect)): 
             nuke_redirect("modules.php?name=$nuke_redirect");
@@ -383,7 +383,7 @@ switch($op):
     break;
     case "new_user":
     if (is_user()): 
-    mmain($user);
+    mmain($nuke_user);
     else:
 	  # if new user registration is allowed 
       if ($ya_config['allowuserreg']==0):
@@ -428,7 +428,7 @@ switch($op):
     break;
     case "new_confirm":
         if (is_user()): 
-            mmain($user);
+            mmain($nuke_user);
         else:
             if ($ya_config['allowuserreg']==0):
                 if ($ya_config['requireadmin'] == 1):
@@ -446,7 +446,7 @@ switch($op):
     case "new_finish":
         ya_expire();
 		if (is_user()): 
-        mmain($user);
+        mmain($nuke_user);
 		else: 
 		    if ($ya_config['allowuserreg']==0): 
                 
@@ -498,7 +498,7 @@ switch($op):
     break;
     case "userinfo":
         # Mod: YA Merge v1.0.0 START
-        list($uid) = $nuke_db->sql_ufetchrow('SELECT user_id FROM '.$nuke_user_prefix.'_users WHERE username="'.$username.'"', SQL_NUM);
+        list($uid) = $nuke_db->sql_ufetchrow('SELECT user_id FROM '.$nuke_user_prefix.'_users WHERE username="'.$nuke_username.'"', SQL_NUM);
         nuke_redirect("modules.php?name=Profile&mode=viewprofile&u=".$uid);
         exit;
         # Mod: YA Merge v1.0.0 END
@@ -513,7 +513,7 @@ switch($op):
         DeleteCookies();
     break;
     default:
-        mmain($user);
+        mmain($nuke_user);
     break;
 endswitch;
 ?>

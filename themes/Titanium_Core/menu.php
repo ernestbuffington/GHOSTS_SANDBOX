@@ -54,35 +54,35 @@
 #------------------------------------#
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])){ exit('Access Denied');}
 
-global $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $user, $cookie, $prefix, $sitekey, $nuke_db, $name, $banners, $nuke_user_prefix, $userinfo, $admin, $admin_file, $ThemeInfo;
+global $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $nuke_user, $cookie, $prefix, $sitekey, $nuke_db, $name, $banners, $nuke_user_prefix, $nuke_userinfo, $admin, $admin_file, $ThemeInfo;
 
-global $headeruserinfo_avatar, $avatar_overide_size, $make_xtreme_avatar_small, $board_config, $userinfo;
+global $headeruserinfo_avatar, $avatar_overide_size, $make_xtreme_avatar_small, $board_config, $nuke_userinfo;
 # START - this was added for the very whimpy small themes that have no block width! by Ernest Buffington 08/06/2019
 if($make_xtreme_avatar_small == true):
   $board_config['avatar_max_height'] = 18;
   $board_config['avatar_max_width'] = 18;
 endif;
 # END - this was added for the very whimpy small themes that have no block width! by Ernest Buffington 08/06/2019
-if(is_user() && $userinfo['user_avatar']):
-  switch( $userinfo['user_avatar_type']):
+if(is_user() && $nuke_userinfo['user_avatar']):
+  switch( $nuke_userinfo['user_avatar_type']):
 		# user_allowavatar = 1
 		case NUKE_USER_AVATAR_UPLOAD:
 			$headeruserinfo_avatar .= ( $board_config['allow_avatar_upload'] ) 
 			? '<img class="rounded-corners-header" style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '.$board_config['avatar_max_width'].'px;" src="' 
-			. $board_config['avatar_path'] . '/' . $userinfo['user_avatar'] . '" alt="" border="0" />' : '';
+			. $board_config['avatar_path'] . '/' . $nuke_userinfo['user_avatar'] . '" alt="" border="0" />' : '';
 			break;
 		# user_allowavatar = 2
 		case NUKE_USER_AVATAR_REMOTE:
 			$headeruserinfo_avatar .= '<img class="rounded-corners-header" style="max-height: '.$board_config['avatar_max_height'].'px; 
 			max-width: '.$board_config['avatar_max_width'].'px;" src="
-			'.avatar_resize($userinfo['user_avatar']).'" alt="" border="0" />';
+			'.avatar_resize($nuke_userinfo['user_avatar']).'" alt="" border="0" />';
 			break;
 		# user_allowavatar = 3
 		case NUKE_USER_AVATAR_GALLERY:
 			$headeruserinfo_avatar .= ( $board_config['allow_avatar_local'] ) ? '<img class="rounded-corners-header" 
 			style="max-height: '.$board_config['avatar_max_height'].'px; max-width: '
-			.$board_config['avatar_max_width'].'px;" src="' . $board_config['avatar_gallery_path'] . '/' . (($userinfo['user_avatar'] == 'blank.gif' || $userinfo['user_avatar'] 
-			== 'gallery/blank.gif') ? 'blank.png' : $userinfo['user_avatar']) . '" alt="" border="0" />' : '';
+			.$board_config['avatar_max_width'].'px;" src="' . $board_config['avatar_gallery_path'] . '/' . (($nuke_userinfo['user_avatar'] == 'blank.gif' || $nuke_userinfo['user_avatar'] 
+			== 'gallery/blank.gif') ? 'blank.png' : $nuke_userinfo['user_avatar']) . '" alt="" border="0" />' : '';
 			break;
   endswitch;
 else:
@@ -160,7 +160,7 @@ else:
    echo '</div>';
 
    echo '<div class="btn-group">';
-   echo '       <a href="modules.php?name=Your_Account" class="btn btn-primary dropbtn" role="button">'.$headeruserinfo_avatar.' '.$userinfo['username'].'</a>';
+   echo '       <a href="modules.php?name=Your_Account" class="btn btn-primary dropbtn" role="button">'.$headeruserinfo_avatar.' '.$nuke_userinfo['username'].'</a>';
    echo '</div>';
    
    
@@ -375,7 +375,7 @@ if (is_user())
 
    # Logged in My Account ##############################################################################################################################################
    echo '<div class="btn-group">';                                                                                                                                     #
-    echo '       <a class="btn dropbtn btn-primary dropdown-toggle" data-toggle="dropdown" role="button">'.$headeruserinfo_avatar.' '.$userinfo['username'].'</a>';    #
+    echo '       <a class="btn dropbtn btn-primary dropdown-toggle" data-toggle="dropdown" role="button">'.$headeruserinfo_avatar.' '.$nuke_userinfo['username'].'</a>';    #
     echo '       <ul class="dropdown-menu dropbtn dropdown-content" role="menu">';                                                                                     #
     echo '         <li><strong><a href="modules.php?name=Private_Messages" class="btn btn-primary dropbtn" role="button">Message Center</a></strong></li>';            #
     echo '         <li><strong><a href="modules.php?name=Member_Bookmarks" class="btn btn-primary dropbtn" role="button">My Bookmarks</a></strong></li>';             #
@@ -485,7 +485,7 @@ if (is_user())
 
    # Logged in My Account ##############################################################################################################################################
    echo '<div class="btn-group">';                                                                                                                                     #
-    echo '       <a class="btn dropbtn btn-primary dropdown-toggle" data-toggle="dropdown" role="button">'.$headeruserinfo_avatar.' '.$userinfo['username'].'</a>';    #
+    echo '       <a class="btn dropbtn btn-primary dropdown-toggle" data-toggle="dropdown" role="button">'.$headeruserinfo_avatar.' '.$nuke_userinfo['username'].'</a>';    #
     echo '       <ul class="dropdown-menu dropbtn dropdown-content" role="menu">';                                                                                     #
     echo '         <li><strong><a href="modules.php?name=Private_Messages" class="btn btn-primary dropbtn" role="button">Message Center</a></strong></li>';            #
     echo '         <li><strong><a href="modules.php?name=Member_Bookmarks" class="btn btn-primary dropbtn" role="button">My Bookmarks</a></strong></li>';             #
@@ -595,7 +595,7 @@ if (is_user())
 
    # Logged in My Account ##############################################################################################################################################
    echo '<div class="btn-group">';                                                                                                                                     #
-    echo '       <a class="btn dropbtn btn-primary dropdown-toggle" data-toggle="dropdown" role="button">'.$headeruserinfo_avatar.' '.$userinfo['username'].'</a>';    #
+    echo '       <a class="btn dropbtn btn-primary dropdown-toggle" data-toggle="dropdown" role="button">'.$headeruserinfo_avatar.' '.$nuke_userinfo['username'].'</a>';    #
     echo '       <ul class="dropdown-menu dropbtn dropdown-content" role="menu">';                                                                                     #
     echo '         <li><strong><a href="modules.php?name=Private_Messages" class="btn btn-primary dropbtn" role="button">Message Center</a></strong></li>';            #
     echo '         <li><strong><a href="modules.php?name=Member_Bookmarks" class="btn btn-primary dropbtn" role="button">My Bookmarks</a></strong></li>';             #
@@ -705,7 +705,7 @@ if (is_user())
 
    # Logged in My Account ##############################################################################################################################################
    echo '<div class="btn-group">';                                                                                                                                     #
-    echo '       <a class="btn dropbtn btn-primary dropdown-toggle" data-toggle="dropdown" role="button">'.$headeruserinfo_avatar.' '.$userinfo['username'].'</a>';    #
+    echo '       <a class="btn dropbtn btn-primary dropdown-toggle" data-toggle="dropdown" role="button">'.$headeruserinfo_avatar.' '.$nuke_userinfo['username'].'</a>';    #
     echo '       <ul class="dropdown-menu dropbtn dropdown-content" role="menu">';                                                                                     #
     echo '         <li><strong><a href="modules.php?name=Private_Messages" class="btn btn-primary dropbtn" role="button">Message Center</a></strong></li>';            #
     echo '         <li><strong><a href="modules.php?name=Member_Bookmarks" class="btn btn-primary dropbtn" role="button">My Bookmarks</a></strong></li>';             #
@@ -815,7 +815,7 @@ if (is_user())
 
    # Logged in My Account #######################################################################################################################################
     echo '<div class="btn-group">';                                                                                                                             #
-    echo '<a class="btn dropbtn btn-primary dropdown-toggle" data-toggle="dropdown" role="button">'.$headeruserinfo_avatar.' '.$userinfo['username'].'</a>';    # 
+    echo '<a class="btn dropbtn btn-primary dropdown-toggle" data-toggle="dropdown" role="button">'.$headeruserinfo_avatar.' '.$nuke_userinfo['username'].'</a>';    # 
 	echo '<ul class="dropdown-menu dropbtn dropdown-content" role="menu">';                                                                                     #
     echo '<li><strong><a href="modules.php?name=Private_Messages" class="btn btn-primary dropbtn" role="button">Message Center</a></strong></li>';              #
     echo '<li><strong><a href="modules.php?name=Member_Bookmarks" class="btn btn-primary dropbtn" role="button">My Bookmarks</a></strong></li>';               #
@@ -922,7 +922,7 @@ echo '<div class="btn-group">';
   
    # Logged in My Account ##############################################################################################################################################
    echo '<div class="btn-group">';                                                                                                                                     #
-    echo '       <a class="btn dropbtn btn-primary dropdown-toggle" data-toggle="dropdown" role="button">'.$headeruserinfo_avatar.' '.$userinfo['username'].'</a>';    #
+    echo '       <a class="btn dropbtn btn-primary dropdown-toggle" data-toggle="dropdown" role="button">'.$headeruserinfo_avatar.' '.$nuke_userinfo['username'].'</a>';    #
     echo '       <ul class="dropdown-menu dropbtn dropdown-content" role="menu">';                                                                                     #
     echo '         <li><strong><a href="modules.php?name=Private_Messages" class="btn btn-primary dropbtn" role="button">Message Center</a></strong></li>';            #
     echo '         <li><strong><a href="modules.php?name=Member_Bookmarks" class="btn btn-primary dropbtn" role="button">My Bookmarks</a></strong></li>';             #

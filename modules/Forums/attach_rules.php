@@ -41,28 +41,28 @@ $forum_id = get_var('f', 0);
 $privmsg = (!$forum_id) ? true : false;
 
 // Start Session Management
-$userdata = session_pagestart($user_ip, NUKE_PAGE_INDEX);
-init_userprefs($userdata);
+$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+init_userprefs($nuke_userdata);
 
 // Display the allowed Extension Groups and Upload Size
 if ($privmsg)
 {
-    $auth['auth_attachments'] = ($userdata['user_level'] != NUKE_ADMIN) ? intval($attach_config['allow_pm_attach']) : true;
-    $auth['auth_view'] = true;
+    $nuke_auth['auth_attachments'] = ($nuke_userdata['user_level'] != NUKE_ADMIN) ? intval($attach_config['allow_pm_attach']) : true;
+    $nuke_auth['auth_view'] = true;
     $_max_filesize = $attach_config['max_filesize_pm'];
 }
 else
 {
-    $auth = auth(NUKE_AUTH_ALL, $forum_id, $userdata);
+    $nuke_auth = auth(NUKE_AUTH_ALL, $forum_id, $nuke_userdata);
     $_max_filesize = $attach_config['max_filesize'];
 }
 
-if (!($auth['auth_attachments'] && $auth['auth_view']))
+if (!($nuke_auth['auth_attachments'] && $nuke_auth['auth_view']))
 {
     message_die(NUKE_GENERAL_ERROR, 'You are not allowed to call this file (ID:2)');
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     'body' => 'posting_attach_rules.tpl')
 );
 
@@ -85,9 +85,9 @@ $nuke_db->sql_freeresult($result);
 $nothing = true;
 for ($i = 0; $i < $num_rows; $i++)
 {
-    $auth_cache = trim($rows[$i]['forum_permissions']);
+    $nuke_auth_cache = trim($rows[$i]['forum_permissions']);
 
-    $permit = ($privmsg) ? true : ((is_forum_authed($auth_cache, $forum_id)) || trim($rows[$i]['forum_permissions']) == '');
+    $permit = ($privmsg) ? true : ((is_forum_authed($nuke_auth_cache, $forum_id)) || trim($rows[$i]['forum_permissions']) == '');
 
     if ($permit)
     {
@@ -108,7 +108,7 @@ for ($i = 0; $i < $num_rows; $i++)
 
         $max_filesize = ($det_filesize == 0) ? $lang['Unlimited'] : $det_filesize . ' ' . $size_lang;
 
-        $template->assign_block_vars('group_row', array(
+        $template_nuke->assign_block_vars('group_row', array(
             'GROUP_RULE_HEADER' => sprintf($lang['Group_rule_header'], $group_name, $max_filesize))
         );
 
@@ -128,7 +128,7 @@ for ($i = 0; $i < $num_rows; $i++)
 
         for ($j = 0; $j < $e_num_rows; $j++)
         {
-            $template->assign_block_vars('group_row.extension_row', array(
+            $template_nuke->assign_block_vars('group_row.extension_row', array(
                 'EXTENSION' => $e_rows[$j]['extension'])
             );
         }
@@ -137,9 +137,9 @@ for ($i = 0; $i < $num_rows; $i++)
 
 $gen_simple_header = TRUE;
 $page_title = $lang['Attach_rules_title'];
-include('includes/page_header.' . $phpEx);
+include('includes/nuke_page_header.' . $phpEx);
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     'L_RULES_TITLE'            => $lang['Attach_rules_title'],
     'L_CLOSE_WINDOW'        => $lang['Close_window'],
     'L_EMPTY_GROUP_PERMS'    => $lang['Note_user_empty_group_permissions'])
@@ -147,10 +147,10 @@ $template->assign_vars(array(
 
 if ($nothing)
 {
-    $template->assign_block_vars('switch_nothing', array());
+    $template_nuke->assign_block_vars('switch_nothing', array());
 }
 
-$template->pparse('body');
+$template_nuke->pparse('body');
 
 include('includes/page_tail.' . $phpEx);
 

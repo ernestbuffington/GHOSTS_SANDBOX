@@ -19,14 +19,14 @@
 ************************************************************************/
 defined('NUKE_EVO') or die('Just go away, Shit Head!');
 
-global $nuke_db, $prefix, $userinfo;
-global $evouserinfo_avatar, $board_config, $userinfo, $bgcolor4; 
+global $nuke_db, $prefix, $nuke_userinfo;
+global $evouserinfo_avatar, $board_config, $nuke_userinfo, $bgcolor4; 
 
 $max_height = '59';
 $max_width = '59';
 
 $z = 3;
-$row1_result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".NUKE_USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT ".$z."");
+$row1_result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".NUKE_USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$nuke_userinfo['username']."' ORDER BY `last_visit` DESC LIMIT ".$z."");
 
 $row1   = '<div align="center">';
 $row1  .= '<table bgcolor="'.$bgcolor4.'" border="0" width="200">';
@@ -105,7 +105,7 @@ $row1 .= '</td>';
 	$row1 .= '</table>';
 $row1 .= '</div>';
 
-$row2_result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".NUKE_USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 3, ".$z."");
+$row2_result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".NUKE_USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$nuke_userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 3, ".$z."");
 
 $row2   = '<div align="center">';
 $row2  .= '<table bgcolor="'.$bgcolor4.'" border="0" width="200">';
@@ -184,7 +184,7 @@ $row2 .= '</td>';
 	$row2 .= '</table>';
 $row2 .= '</div>';
 
-$row3_result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".NUKE_USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 6, ".$z."");
+$row3_result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".NUKE_USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$nuke_userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 6, ".$z."");
 
 $row3   = '<div align="center">';
 $row3  .= '<table bgcolor="'.$bgcolor4.'" border="0" width="200">';
@@ -263,7 +263,7 @@ $row3 .= '</td>';
 	$row3 .= '</table>';
 $row3 .= '</div>';
 
-$row4_result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".NUKE_USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 9, ".$z."");
+$row4_result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".NUKE_USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$nuke_userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 9, ".$z."");
 
 $row4   = '<div align="center">';
 $row4  .= '<table bgcolor="'.$bgcolor4.'" border="0" width="200">';

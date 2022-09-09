@@ -22,7 +22,7 @@ exit("Hacking attempt");
 include_once( NUKE_INCLUDE_DIR.'functions_mods_settings.'.$phpEx);
 # mod definition
 $mod_name = 'Icons_settings';
-$config_fields = array(
+$nuke_config_fields = array(
 	'icon_per_row' => array(
 		'lang_key'	=> 'Icons_per_row',
 		'explain'	=> 'Icons_per_row_explain',
@@ -31,5 +31,5 @@ $config_fields = array(
 		),
 );
 # init config table
-init_board_config($mod_name, $config_fields);
+init_board_config($mod_name, $nuke_config_fields);
 ?>

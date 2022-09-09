@@ -51,7 +51,7 @@ if (!defined('BOARD_CONFIG')) {
 
 
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
 
     "birthdays" => "admin/board_config/board_birthdays.tpl")
 
@@ -77,7 +77,7 @@ $bday_popup_enabled = ( $new['bday_greeting'] & 1<<(NUKE_BIRTHDAY_POPUP-1) ) ? "
 
 //General Template variables
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 
     "DHTML_ID" => "c" . $dhtml_id)
 
@@ -87,7 +87,7 @@ $template->assign_vars(array(
 
 //Language Template variables
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 
     "L_BIRTHDAYS" => $lang['Birthdays'],
 	"L_BDAY_SHOW" => $lang['bday_show'],
@@ -117,7 +117,7 @@ $template->assign_vars(array(
 
 //Data Template Variables
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 
     "BDAY_SHOW_YES" => $bday_show_yes,
 	"BDAY_SHOW_NO" => $bday_show_no,
@@ -141,7 +141,7 @@ $template->assign_vars(array(
 
  ));
 
-$template->pparse("birthdays");
+$template_nuke->pparse("birthdays");
 
 
 

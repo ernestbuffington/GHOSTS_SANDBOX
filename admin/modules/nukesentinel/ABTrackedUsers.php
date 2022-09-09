@@ -111,23 +111,23 @@ if($totalselected > 0) {
   echo "<td align='center'><strong>"._AB_HITS."</strong></td>\n";
   echo "<td align='center'><strong>"._AB_FUNCTIONS."</strong></td>\n</tr>\n";
   $result = $nuke_db->sql_query("SELECT `user_id`, `username`, MAX(`date`), COUNT(*) FROM `".$prefix."_nsnst_tracked_ips` $modfilter GROUP BY 2 ORDER BY $column $direction LIMIT $min, $perpage");
-  while(list($userid,$username,$lastview,$hits) = $nuke_db->sql_fetchrow($result)){
+  while(list($nuke_userid,$nuke_username,$lastview,$hits) = $nuke_db->sql_fetchrow($result)){
     echo "<tr onmouseover=\"this.style.backgroundColor='$bgcolor2'\" onmouseout=\"this.style.backgroundColor='$bgcolor1'\" bgcolor='$bgcolor1'>";
     echo "<td>";
-    if($userid != 1) {
-    	$user_color = UsernameColor($username);
-      echo "<a href='modules.php?name=Your_Account&amp;op=userinfo&amp;username=$username' target='_blank'>$user_color</a>";
+    if($nuke_userid != 1) {
+    	$nuke_user_color = UsernameColor($nuke_username);
+      echo "<a href='modules.php?name=Your_Account&amp;op=userinfo&amp;username=$nuke_username' target='_blank'>$nuke_user_color</a>";
     } else {
       echo "$anonymous";
     }
     echo "</td>";
-    $trackedips = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$userid'"));
-    echo "<td align='center'><a href='".$admin_file.".php?op=ABTrackedUsersIPs&amp;user_id=$userid' target='_blank'>$trackedips</a></td>\n";
+    $trackedips = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT DISTINCT(`ip_addr`) FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$nuke_userid'"));
+    echo "<td align='center'><a href='".$admin_file.".php?op=ABTrackedUsersIPs&amp;user_id=$nuke_userid' target='_blank'>$trackedips</a></td>\n";
     echo "<td align='center'>".date("Y-m-d \@ H:i:s",$lastview)."</td>";
     echo "<td align='center'>$hits</td>";
-    echo "<td align='center'>&nbsp;<a href='".$admin_file.".php?op=ABPrintTrackedUsersPages&amp;user_id=$userid' target='_blank'><img src='images/nukesentinel/print.png' height='16' width='16' alt='"._AB_PRINT."' title='"._AB_PRINT."' border='0' /></a>&nbsp;<a ";
-    echo "href='".$admin_file.".php?op=ABTrackedUsersPages&amp;user_id=$userid' target='_blank'><img src='images/nukesentinel/view.png' height='16' width='16' alt='"._AB_VIEW."' title='"._AB_VIEW."' border='0' /></a>&nbsp;<a ";
-    echo "href='".$admin_file.".php?op=ABTrackedDeleteUser&amp;user_id=$userid&amp;min=$min&amp;column=$column&amp;direction=$direction&amp;showmodule=$showmodule&amp;xop=$op'><img src='images/nukesentinel/delete.png' height='16' width='16' alt='"._AB_DELETE."' title='"._AB_DELETE."' border='0' /></a>&nbsp;</td>";
+    echo "<td align='center'>&nbsp;<a href='".$admin_file.".php?op=ABPrintTrackedUsersPages&amp;user_id=$nuke_userid' target='_blank'><img src='images/nukesentinel/print.png' height='16' width='16' alt='"._AB_PRINT."' title='"._AB_PRINT."' border='0' /></a>&nbsp;<a ";
+    echo "href='".$admin_file.".php?op=ABTrackedUsersPages&amp;user_id=$nuke_userid' target='_blank'><img src='images/nukesentinel/view.png' height='16' width='16' alt='"._AB_VIEW."' title='"._AB_VIEW."' border='0' /></a>&nbsp;<a ";
+    echo "href='".$admin_file.".php?op=ABTrackedDeleteUser&amp;user_id=$nuke_userid&amp;min=$min&amp;column=$column&amp;direction=$direction&amp;showmodule=$showmodule&amp;xop=$op'><img src='images/nukesentinel/delete.png' height='16' width='16' alt='"._AB_DELETE."' title='"._AB_DELETE."' border='0' /></a>&nbsp;</td>";
     echo "</tr>";
   }
   // End IP Stats

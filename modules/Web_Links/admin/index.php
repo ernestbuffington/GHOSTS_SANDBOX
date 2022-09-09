@@ -481,12 +481,12 @@ function LinksModLink($lid) {
 
         //Individual user information
         $result6 = $nuke_db->sql_query("SELECT rating FROM " . $prefix . "_links_votedata WHERE ratinguser = '$ratinguser'");
-            $usertotalcomments = $nuke_db->sql_numrows($result6);
-            $useravgrating = 0;
-            while($row6 = $nuke_db->sql_fetchrow($result6)) $useravgrating = $useravgrating + $rating2;
-            $useravgrating = $useravgrating / $usertotalcomments;
-            $useravgrating = number_format($useravgrating, 1);
-            echo "<tr><td bgcolor=$colorswitch>$ratinguser</td><td bgcolor=$colorswitch>$ratinghostname</td><td bgcolor=$colorswitch>$rating</td><td bgcolor=$colorswitch>$useravgrating</td><td bgcolor=$colorswitch>$usertotalcomments</td><td bgcolor=$colorswitch>$formatted_date  </span></strong></td><td bgcolor=$colorswitch><center><strong><a href=".$admin_file.".php?op=LinksDelVote&lid=$lid&rid=$ratingdbid>X</a></strong></center></td></tr><br />";
+            $nuke_usertotalcomments = $nuke_db->sql_numrows($result6);
+            $nuke_useravgrating = 0;
+            while($row6 = $nuke_db->sql_fetchrow($result6)) $nuke_useravgrating = $nuke_useravgrating + $rating2;
+            $nuke_useravgrating = $nuke_useravgrating / $nuke_usertotalcomments;
+            $nuke_useravgrating = number_format($nuke_useravgrating, 1);
+            echo "<tr><td bgcolor=$colorswitch>$ratinguser</td><td bgcolor=$colorswitch>$ratinghostname</td><td bgcolor=$colorswitch>$rating</td><td bgcolor=$colorswitch>$nuke_useravgrating</td><td bgcolor=$colorswitch>$nuke_usertotalcomments</td><td bgcolor=$colorswitch>$formatted_date  </span></strong></td><td bgcolor=$colorswitch><center><strong><a href=".$admin_file.".php?op=LinksDelVote&lid=$lid&rid=$ratingdbid>X</a></strong></center></td></tr><br />";
         $x++;
         if ($colorswitch=="$bgcolor1") $colorswitch="$bgcolor2";
         else $colorswitch="$bgcolor1";

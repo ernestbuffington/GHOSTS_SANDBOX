@@ -163,7 +163,7 @@ function deepStrip($data) {
 
 function deepPurifier($data) {
 	global $html_auth, $admin;
-    static $config, $purifier;
+    static $nuke_config, $purifier;
 
     //Error check
     if (empty($data))       return $data;
@@ -175,24 +175,24 @@ function deepPurifier($data) {
         return $data;
     }
 	
-	if (!isset($config) || empty($config)) {
+	if (!isset($nuke_config) || empty($nuke_config)) {
         require_once(NUKE_INCLUDE_DIR.'HTMLPurifier/HTMLPurifier.auto.php');
-    	$config = HTMLPurifier_Config::createDefault();
-		$config->set('Core.Encoding', 'UTF-8');
-		$config->set('HTML.Doctype', 'HTML 4.01 Transitional');
+    	$nuke_config = HTMLPurifier_Config::createDefault();
+		$nuke_config->set('Core.Encoding', 'UTF-8');
+		$nuke_config->set('HTML.Doctype', 'HTML 4.01 Transitional');
 		
         if (!is_god($admin) || (is_god($admin) && !$html_auth)) {
-			$config->set('HTML.Trusted', true);
-			$config->set('HTML.SafeObject', true);
-			$config->set('HTML.SafeEmbed', true);
-			$config->set('HTML.AllowedElements', array('div','script','object','p','span','pre','b','i','u','strong','em','sup','a','img','table','tr','td','tbody','thead','param'));
-			$config->set('Output.FlashCompat', true);
-			$config->set('Attr.EnableID', true);
-			$config->set('Filter.Custom', array( new HTMLPurifier_Filter_Iframe() ));
-			$config->set('Filter.Custom', array( new HTMLPurifier_Filter_YouTube() ));
+			$nuke_config->set('HTML.Trusted', true);
+			$nuke_config->set('HTML.SafeObject', true);
+			$nuke_config->set('HTML.SafeEmbed', true);
+			$nuke_config->set('HTML.AllowedElements', array('div','script','object','p','span','pre','b','i','u','strong','em','sup','a','img','table','tr','td','tbody','thead','param'));
+			$nuke_config->set('Output.FlashCompat', true);
+			$nuke_config->set('Attr.EnableID', true);
+			$nuke_config->set('Filter.Custom', array( new HTMLPurifier_Filter_Iframe() ));
+			$nuke_config->set('Filter.Custom', array( new HTMLPurifier_Filter_YouTube() ));
         }
 		
-        $purifier = new HTMLPurifier($config);
+        $purifier = new HTMLPurifier($nuke_config);
     }
 
     //Loop through the data
@@ -406,7 +406,7 @@ class Evo_Variables
                             'admin',
                             'nukeuser',
                             'user',
-                            'no_page_header',
+                            'no_nuke_page_header',
                             'cookie',
                             'db',
                             'prefix',

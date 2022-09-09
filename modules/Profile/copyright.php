@@ -28,9 +28,9 @@ require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 // required information and then copy the file "copyright.php" into your
 // module's directory. It's all, as easy as it sounds ;)
 
-$author_name = "JeFFb68CAM";
-$author_email = "JeFFb68CAM@Evo-Mods.com";
-$author_homepage = "http://www.Evo-Mods.com";
+$nuke_author_name = "JeFFb68CAM";
+$nuke_author_email = "JeFFb68CAM@Evo-Mods.com";
+$nuke_author_homepage = "http://www.Evo-Mods.com";
 $license = "GNU/GPL";
 $download_location = "http://www.nuke-evolution.com";
 $module_version = "1.0.0";
@@ -43,6 +43,6 @@ $module_description = "Profile module For Nuke-Evolution (Made from phpBB profil
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($author_name, $author_email, $author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
 
 ?>

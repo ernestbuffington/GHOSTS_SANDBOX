@@ -27,7 +27,7 @@
 if(!defined('ADMIN_FILE'))
 die ("Illegal File Access");
 
-global $prefix, $nuke_db, $admin_file, $cache, $userinfo;
+global $prefix, $nuke_db, $admin_file, $cache, $nuke_userinfo;
 
 if (!is_admin()) 
 {

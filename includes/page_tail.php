@@ -38,14 +38,14 @@ if (!defined('IN_PHPBB2'))
 // Show the overall footer.
 //
 global $popup, $admin_file, $cache;
-$admin_link = ( $userdata['user_level'] == NUKE_ADMIN ) ? '<a href="modules/Forums/admin/index.php">' . $lang['Admin_panel'] . '</a><br /><br />' : '';
+$admin_link = ( $nuke_userdata['user_level'] == NUKE_ADMIN ) ? '<a href="modules/Forums/admin/index.php">' . $lang['Admin_panel'] . '</a><br /><br />' : '';
 
 /*****[BEGIN]******************************************
  [ Mod:     Report Posts                       v1.2.3 ]
  ******************************************************/
 include_once('includes/functions_report.'.$phpEx);
 
-if ( $userdata['user_level'] >= NUKE_ADMIN )
+if ( $nuke_userdata['user_level'] >= NUKE_ADMIN )
 {
     $open_reports = reports_count();
     if ( $open_reports == 0 )
@@ -68,11 +68,11 @@ else
  [ Mod:     Report Posts                       v1.2.3 ]
  ******************************************************/
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
         'overall_footer' => ( empty($gen_simple_header) ) ? 'overall_footer.tpl' : 'simple_footer.tpl')
 );
 
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
         'TRANSLATION_INFO' => (isset($lang['TRANSLATION_INFO'])) ? $lang['TRANSLATION_INFO'] : ((isset($lang['TRANSLATION'])) ? $lang['TRANSLATION'] : ''),
 /*****[BEGIN]******************************************
  [ Mod:     Report Posts                       v1.2.3 ]
@@ -84,7 +84,7 @@ $template->assign_vars(array(
  ******************************************************/
 );
 
-$template->pparse('overall_footer');
+$template_nuke->pparse('overall_footer');
 CloseTable();
 //
 // Close our DB connection.

@@ -26,7 +26,7 @@ exit('Access Denied');
 
 include_once(NUKE_INCLUDE_DIR.'nbbcode.php');
 
-global $bgcolor1, $bgcolor2, $textcolor2, $prefix, $multilingual, $currentlang, $nuke_db, $admin_file, $userinfo;
+global $bgcolor1, $bgcolor2, $textcolor2, $prefix, $multilingual, $currentlang, $nuke_db, $admin_file, $nuke_userinfo;
 
 $query = ($multilingual) ? "AND (mlanguage='$currentlang' OR mlanguage='')" : '';
 
@@ -78,7 +78,7 @@ while (list($mid, $title, $content, $date, $expire, $view, $groups) = $nuke_db->
 			    
 				foreach ($groups as $group) 
 				{
-    			     if (isset($userinfo['groups'][$group])) 
+    			     if (isset($nuke_userinfo['groups'][$group])) 
 					 {
     			         $ingroup = true;
     			     }

@@ -26,7 +26,7 @@ if (!defined('BOARD_CONFIG')) {
     die('Access Denied');
 }
 
-$template->set_filenames(array(
+$template_nuke->set_filenames(array(
     "sqr" => "admin/board_config/board_sqr.tpl")
 );
 
@@ -47,12 +47,12 @@ $anonymous_open_sqr_no = ( !$new['anonymous_open_sqr'] ) ? "checked=\"checked\""
  ******************************************************/
  
 //General Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
     "DHTML_ID" => "c" . $dhtml_id)
 );
     
 //Language Template variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:     Super Quick Reply                  v1.3.2 ]
  ******************************************************/
@@ -69,7 +69,7 @@ $template->assign_vars(array(
 ));
 
 //Data Template Variables
-$template->assign_vars(array(
+$template_nuke->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:     Super Quick Reply                  v1.3.2 ]
  ******************************************************/
@@ -84,6 +84,6 @@ $template->assign_vars(array(
  [ Mod:     Super Quick Reply                  v1.3.2 ]
  ******************************************************/
  ));
-$template->pparse("sqr");
+$template_nuke->pparse("sqr");
 
 ?>

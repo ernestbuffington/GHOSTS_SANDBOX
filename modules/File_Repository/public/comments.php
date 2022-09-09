@@ -14,17 +14,17 @@ if (!defined('MODULE_FILE'))
 
 function _file_repository_comments()
 {
-	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $themes, $userinfo, $admin, $user;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $themes, $nuke_userinfo, $admin, $nuke_user;
 	OpenTable();
 	_index_navigation_header();
 	$did 		= _escape_string($_GET['did']);
 	$iteminfo 	= _collect_iteminfo($did);
 
-	$sql 	= "SELECT * FROM `"._FILE_REPOSITORY_COMMENTS."` WHERE `did` = '".$did."' AND `uid` = '".$userinfo['user_id']."'";
+	$sql 	= "SELECT * FROM `"._FILE_REPOSITORY_COMMENTS."` WHERE `did` = '".$did."' AND `uid` = '".$nuke_userinfo['user_id']."'";
 	$result = $nuke_db->sql_query($sql);
 	$count 	= $nuke_db->sql_numrows($result);
 
-	if (_check_users_permissions($iteminfo['groups']) == true && is_user($user))
+	if (_check_users_permissions($iteminfo['groups']) == true && is_user($nuke_user))
 	{
 		echo '<br />';
 		echo '<form action="modules.php?name='.$module_name.'&amp;action=savecomment" method="post">'."\n";
@@ -74,7 +74,7 @@ function _file_repository_comments()
 		echo '  <tr'._bgColor(2).'>'."\n";
 		echo '    <td'._tdcss(false,'center',_sh(),3).'>'._suh($lang_new[$module_name]['ERROR']).'</td>'."\n";
 		echo '  </tr>'."\n";
-		if(is_user($user))
+		if(is_user($nuke_user))
 		{
 			echo '  <tr'._bgColor(1).'>'."\n";
 			echo '    <td'._tdcss(false,'center',_sc(),3).'>'._sut(sprintf($lang_new[$module_name]['RESTRICTED'],$iteminfo['whocan'])).'</td>'."\n";
@@ -96,7 +96,7 @@ function _file_repository_comments()
 
 function _file_repository_save_my_comment()
 {
-	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $themes, $userinfo, $admin, $user, $tnsl_bUseShortLinks;
+	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $themes, $nuke_userinfo, $admin, $nuke_user, $tnsl_bUseShortLinks;
 	$comment  	= (!empty($_POST['comment'])) ? _escape_string($_POST['comment']) : '';
 	$did      	= (!empty($_POST['did'])) ? intval($_POST['did']) : '';
 	$iteminfo 	= _collect_iteminfo($did);
@@ -122,7 +122,7 @@ function _file_repository_save_my_comment()
 	}
 	else
 	{
-		$sql = "INSERT INTO `"._FILE_REPOSITORY_COMMENTS."` (`cid`, `did`, `comment`, `date`, `rating`, `uid`, `user`) VALUES (NULL, '".$did."', '".$comment."', now(), '".$rating."', '".$userinfo['user_id']."', '".$userinfo['username']."')";
+		$sql = "INSERT INTO `"._FILE_REPOSITORY_COMMENTS."` (`cid`, `did`, `comment`, `date`, `rating`, `uid`, `user`) VALUES (NULL, '".$did."', '".$comment."', now(), '".$rating."', '".$nuke_userinfo['user_id']."', '".$nuke_userinfo['username']."')";
 		$nuke_db->sql_query($sql);
 		if($tnsl_bUseShortLinks == true)
 		{

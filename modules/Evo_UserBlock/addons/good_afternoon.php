@@ -25,7 +25,7 @@ global $evouserinfo_addons, $evouserinfo_good_afternoon, $lang_evo_userblock;
 
 function evouserinfo_create_date($format, $gmepoch, $tz)
 {
-    global $board_config, $lang, $userdata, $pc_dateTime;
+    global $board_config, $lang, $nuke_userdata, $pc_dateTime;
     
 	static $translate;
     
@@ -50,16 +50,16 @@ function evouserinfo_create_date($format, $gmepoch, $tz)
     }
 
 
-    if ( $userdata['user_id'] != NUKE_ANONYMOUS )
+    if ( $nuke_userdata['user_id'] != NUKE_ANONYMOUS )
     {
-        switch ( $userdata['user_time_mode'] )
+        switch ( $nuke_userdata['user_time_mode'] )
         {
             case MANUAL_DST:
-                $dst_sec = $userdata['user_dst_time_lag'] * 60;
+                $dst_sec = $nuke_userdata['user_dst_time_lag'] * 60;
                 return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec), $translate) : @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec);
                 break;
             case SERVER_SWITCH:
-                $dst_sec = date('I', $gmepoch) * $userdata['user_dst_time_lag'] * 60;
+                $dst_sec = date('I', $gmepoch) * $nuke_userdata['user_dst_time_lag'] * 60;
                 return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec), $translate) : @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec);
                 break;
             case FULL_SERVER:
@@ -71,8 +71,8 @@ function evouserinfo_create_date($format, $gmepoch, $tz)
                     $tzo_sec = $pc_dateTime['pc_timezoneOffset'];
                 } else
                 {
-                    $user_pc_timeOffsets = explode("/", $userdata['user_pc_timeOffsets']);
-                    $tzo_sec = $user_pc_timeOffsets[0];
+                    $nuke_user_pc_timeOffsets = explode("/", $nuke_userdata['user_pc_timeOffsets']);
+                    $tzo_sec = $nuke_user_pc_timeOffsets[0];
                 }
                 return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + $tzo_sec), $translate) : @gmdate($format, $gmepoch + $tzo_sec);
                 break;
@@ -82,8 +82,8 @@ function evouserinfo_create_date($format, $gmepoch, $tz)
                     $tzo_sec = $pc_dateTime['pc_timeOffset'];
                 } else
                 {
-                    $user_pc_timeOffsets = explode("/", $userdata['user_pc_timeOffsets']);
-                    $tzo_sec = (isset($user_pc_timeOffsets[1])) ? $user_pc_timeOffsets[1] : '';
+                    $nuke_user_pc_timeOffsets = explode("/", $nuke_userdata['user_pc_timeOffsets']);
+                    $tzo_sec = (isset($nuke_user_pc_timeOffsets[1])) ? $nuke_user_pc_timeOffsets[1] : '';
                 }
                 return ( !empty($translate) ) ? strtr(@gmdate($format, $gmepoch + $tzo_sec), $translate) : @gmdate($format, $gmepoch + $tzo_sec);
                 break;
@@ -136,19 +136,19 @@ function evouserinfo_create_date($format, $gmepoch, $tz)
 
 if(is_user()) 
 {
-    global $userinfo;
-    $uname = UsernameColor($userinfo['username']);
+    global $nuke_userinfo;
+    $uname = UsernameColor($nuke_userinfo['username']);
 } 
 else 
 {
     $uname = $lang_evo_userblock['BLOCK']['ANON'];
 }
 
-global $userinfo;
+global $nuke_userinfo;
 
-if(is_user() && isset($userinfo) && is_array($userinfo)) 
+if(is_user() && isset($nuke_userinfo) && is_array($nuke_userinfo)) 
 {
-    $evouserinfo_time = evouserinfo_create_date('G', time(), $userinfo['user_timezone']);
+    $evouserinfo_time = evouserinfo_create_date('G', time(), $nuke_userinfo['user_timezone']);
 } 
 else 
 {

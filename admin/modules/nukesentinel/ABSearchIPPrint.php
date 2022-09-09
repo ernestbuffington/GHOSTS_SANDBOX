@@ -218,7 +218,7 @@ if($totalselected > 0) {
   echo '<td align="center" width="25%"><strong>'._AB_LASTVIEWED.'</strong></td>'."\n";
   echo '<td align="center" width="25%"><strong>'._AB_HITS.'</strong></td>'."\n";
   $result = $nuke_db->sql_query("SELECT `user_id`, `username`, `ip_addr`, MAX(`date`), COUNT(*), MIN(`tid`), `c2c` FROM `".$prefix."_nsnst_tracked_ips` WHERE `ip_addr` LIKE '$sip' GROUP BY 2,3");
-  while(list($userid,$username,$ipaddr,$lastview,$hits,$tid, $c2c) = $nuke_db->sql_fetchrow($result)){
+  while(list($nuke_userid,$nuke_username,$ipaddr,$lastview,$hits,$tid, $c2c) = $nuke_db->sql_fetchrow($result)){
     echo '<tr bgcolor="#ffffff">'."\n";
     echo '<td>'.$ipaddr.'</td>'."\n";
     $countrytitle = abget_countrytitle($c2c);

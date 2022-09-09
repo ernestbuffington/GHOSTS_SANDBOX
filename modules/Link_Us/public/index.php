@@ -48,7 +48,7 @@ echo '<div align="center"><img src="modules/'.$module_name.'/images/linkus-logo.
 echo '<div align="center"><a href="modules.php?name=Link_Us&op=submitbutton"><font size="2"><i class="bi bi-link-45deg"></i><u>Submit Backlink</u></a></font></div>';
 echo '<br />';
 
-if ($config['button_standard'] == 1){
+if ($nuke_config['button_standard'] == 1){
     $num = 0;
     $result = $nuke_db->sql_query("SELECT `id`, 
 	                          `site_name`, 
@@ -133,7 +133,7 @@ if ($config['button_standard'] == 1){
     }
 }
 
-if ($config['button_banner'] == 1){
+if ($nuke_config['button_banner'] == 1){
     $num = 0;
     $result = $nuke_db->sql_query("SELECT `id`, 
 	                          `site_name`, 
@@ -182,7 +182,7 @@ if ($config['button_banner'] == 1){
     }
 }
 
-if ($config['button_resource'] == 1){
+if ($nuke_config['button_resource'] == 1){
     $num = 0;
     $result = $nuke_db->sql_query("SELECT `id`, `site_name`, `site_url`, `site_image`, `site_description`, `site_hits`, `site_status`, `date_added` FROM `".$prefix."_link_us` WHERE `site_status` = '1' AND `button_type` = '3'");
     $numrows = $nuke_db->sql_numrows($result);

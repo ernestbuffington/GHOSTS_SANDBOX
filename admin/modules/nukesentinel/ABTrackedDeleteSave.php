@@ -17,6 +17,6 @@ if (!defined('NUKESENTINEL_ADMIN')) {
 
 $nuke_db->sql_query("DELETE FROM `".$prefix."_nsnst_tracked_ips` WHERE `tid`='$tid'");
 $nuke_db->sql_query("OPTIMIZE TABLE `".$prefix."_nsnst_tracked_ips`");
-header("Location: ".$admin_file.".php?op=ABTrackedPages&user_id=$user_id&ip_addr=$ip_addr&column=$column&direction=$direction&min=$min");
+header("Location: ".$admin_file.".php?op=ABTrackedPages&user_id=$nuke_user_id&ip_addr=$ip_addr&column=$column&direction=$direction&min=$min");
 
 ?>
