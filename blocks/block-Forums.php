@@ -3,7 +3,7 @@
 if(!defined('NUKE_EVO')) 
 	exit;
 
-global $nuke_db, $block_title, $nuke_user_prefix, $prefix, $cache, $blockslang, $images, $board_config, $board_config, $nuke_userinfo;
+global $nuke_db, $block_title, $nuke_user_prefix, $prefix, $nuke_cache, $blockslang, $images, $board_config, $board_config, $nuke_userinfo;
 
 define('forum_board_icon_path','themes/'.get_theme().'/forums');
 
@@ -27,7 +27,7 @@ $count_topics = 0;
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-// if (!$topic_data = $cache->load('topic_data', 'home')):
+// if (!$topic_data = $nuke_cache->load('topic_data', 'home')):
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -59,7 +59,7 @@ $count_topics = 0;
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-	// $cache->save('topic_data', 'home', $topic_data);	
+	// $nuke_cache->save('topic_data', 'home', $topic_data);	
 // endif;
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]

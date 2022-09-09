@@ -27,7 +27,7 @@
 if(!defined('ADMIN_FILE'))
 die ("Illegal File Access");
 
-global $prefix, $nuke_db, $admin_file, $cache, $nuke_userinfo;
+global $prefix, $nuke_db, $admin_file, $nuke_cache, $nuke_userinfo;
 
 if (!is_admin()) 
 {
@@ -61,7 +61,7 @@ function parse_data($data)
 
 function update_db($data_array, $col_check)
 {
-    global $cache, $prefix, $nuke_db;
+    global $nuke_cache, $prefix, $nuke_db;
     if (is_array($data_array)) {
         foreach($data_array AS $set => $items)
         {
@@ -74,8 +74,8 @@ function update_db($data_array, $col_check)
             }
         }
     }
-    $cache->delete('blocks', 'config');
-    $cache->resync();
+    $nuke_cache->delete('blocks', 'config');
+    $nuke_cache->resync();
 }
 function blocks_update($data)
 {
@@ -86,21 +86,21 @@ function blocks_update($data)
 
 function status_update($data) 
 {
-    global $prefix, $nuke_db, $cache;
+    global $prefix, $nuke_db, $nuke_cache;
     $data = explode(':', $data);
     $bid = $data[0];
     $status = $data[1];
     $status = ($status == 1) ? 0 : 1;
     $sql = "UPDATE " . $prefix . "_blocks SET `active` = '$status' WHERE `bid` = '$bid'";
     $nuke_db->sql_query($sql);
-    $cache->delete('blocks', 'config');
-    $cache->resync();
+    $nuke_cache->delete('blocks', 'config');
+    $nuke_cache->resync();
     return 1;
 }
 
 function AddBlock($data) 
 {
-    global $cache, $nuke_db, $prefix, $admin_file;
+    global $nuke_cache, $nuke_db, $prefix, $admin_file;
 
     $data['title'] = Fix_Quotes($data['title']);
     $data['headline'] = intval($data['headline']);
@@ -151,8 +151,8 @@ function AddBlock($data)
         $sql = "UPDATE ".$prefix."_blocks SET bkey='', title='" . $data['title'] . "', content='".Fix_Quotes($data['content'])."', url='" . $data['url'] . "', bposition='" . $data['bposition'] . "', weight='" . $weight . "', active='" . $data['active'] . "', refresh='" . $data['refresh'] . "', time='" . $data['btime'] . "', blanguage='" . $data['blanguage'] . "', blockfile='" . $data['blockfile'] . "', view='" . $data['view'] . "' WHERE bid=".$data['bid'];
     }
     $nuke_db->sql_query($sql);
-    $cache->delete('blocks', 'config');
-    $cache->resync();
+    $nuke_cache->delete('blocks', 'config');
+    $nuke_cache->resync();
     nuke_redirect("$admin_file.php?op=blocks");
 }
 

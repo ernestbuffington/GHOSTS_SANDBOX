@@ -15,7 +15,7 @@
 # Old web address http://www.nukefixes.com                               #
 # Old web address http://www.nukeresources.com                           #
 ##########################################################################
-
+define('PHPBB3_MODULE', 'enabled');
 /*****[CHANGES]**********************************************************
 -=[Base]=-
       Nuke Patched                             v3.1.0       06/26/2005

@@ -163,15 +163,15 @@ class Zend_Cache_Frontend_Class extends Zend_Cache_Core
      * if set to a class name, we will cache an abstract class and will use only static calls
      * if set to an object, we will cache this object methods
      *
-     * @param mixed $cachedEntity
+     * @param mixed $nuke_cachedEntity
      */
-    public function setCachedEntity($cachedEntity)
+    public function setCachedEntity($nuke_cachedEntity)
     {
-        if (!is_string($cachedEntity) && !is_object($cachedEntity)) {
+        if (!is_string($nuke_cachedEntity) && !is_object($nuke_cachedEntity)) {
             Zend_Cache::throwException('cached_entity must be an object or a class name');
         }
-        $this->_cachedEntity = $cachedEntity;
-        $this->_specificOptions['cached_entity'] = $cachedEntity;
+        $this->_cachedEntity = $nuke_cachedEntity;
+        $this->_specificOptions['cached_entity'] = $nuke_cachedEntity;
         if (is_string($this->_cachedEntity)){
             $this->_cachedEntityLabel = $this->_cachedEntity;
         } else {
@@ -200,11 +200,11 @@ class Zend_Cache_Frontend_Class extends Zend_Cache_Core
      */
     public function __call($name, $parameters)
     {
-        $cacheBool1 = $this->_specificOptions['cache_by_default'];
-        $cacheBool2 = in_array($name, $this->_specificOptions['cached_methods']);
-        $cacheBool3 = in_array($name, $this->_specificOptions['non_cached_methods']);
-        $cache = (($cacheBool1 || $cacheBool2) && (!$cacheBool3));
-        if (!$cache) {
+        $nuke_cacheBool1 = $this->_specificOptions['cache_by_default'];
+        $nuke_cacheBool2 = in_array($name, $this->_specificOptions['cached_methods']);
+        $nuke_cacheBool3 = in_array($name, $this->_specificOptions['non_cached_methods']);
+        $nuke_cache = (($nuke_cacheBool1 || $nuke_cacheBool2) && (!$nuke_cacheBool3));
+        if (!$nuke_cache) {
             // We do not have not cache
             return call_user_func_array(array($this->_cachedEntity, $name), $parameters);
         }

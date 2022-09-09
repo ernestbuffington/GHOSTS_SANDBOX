@@ -32,16 +32,16 @@
  ************************************************************************/
 if(!defined('NUKE_EVO')) exit;
 
-global $admin_file, $nuke_db, $prefix, $cache;
+global $admin_file, $nuke_db, $prefix, $nuke_cache;
 
 if(is_active('Submit_Blog')) 
 {
     $content .= "<div align=\"left\"><strong><u><span class=\"content\">"._STORIES."</span>:</u></strong></div>";
 
-    if(($numwaits = $cache->load('numwaits', 'submissions')) === false) 
+    if(($numwaits = $nuke_cache->load('numwaits', 'submissions')) === false) 
 	{
         list($numwaits) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT COUNT(*) FROM ".$prefix."_queue"), SQL_NUM);
-        $cache->save('numwaits', 'submissions', $numwaits);
+        $nuke_cache->save('numwaits', 'submissions', $numwaits);
     }
     
 	if (is_array($numwaits)) 

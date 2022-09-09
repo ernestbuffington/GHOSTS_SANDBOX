@@ -152,7 +152,7 @@ function formatTimestamp_to_date($format, $gmepoch, $tz)
 
 function image_repo_settings_variables()
 {
-	global $nuke_db, $module_name, $cache;
+	global $nuke_db, $module_name, $nuke_cache;
 	static $settings;
 	
    	if(isset($settings) && is_array($settings)) 

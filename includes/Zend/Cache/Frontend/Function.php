@@ -81,11 +81,11 @@ class Zend_Cache_Frontend_Function extends Zend_Cache_Core
      */
     public function call($name, $parameters = array(), $tags = array(), $specificLifetime = false, $priority = 8)
     {
-        $cacheBool1 = $this->_specificOptions['cache_by_default'];
-        $cacheBool2 = in_array($name, $this->_specificOptions['cached_functions']);
-        $cacheBool3 = in_array($name, $this->_specificOptions['non_cached_functions']);
-        $cache = (($cacheBool1 || $cacheBool2) && (!$cacheBool3));
-        if (!$cache) {
+        $nuke_cacheBool1 = $this->_specificOptions['cache_by_default'];
+        $nuke_cacheBool2 = in_array($name, $this->_specificOptions['cached_functions']);
+        $nuke_cacheBool3 = in_array($name, $this->_specificOptions['non_cached_functions']);
+        $nuke_cache = (($nuke_cacheBool1 || $nuke_cacheBool2) && (!$nuke_cacheBool3));
+        if (!$nuke_cache) {
             // We do not have not cache
             return call_user_func_array($name, $parameters);
         }

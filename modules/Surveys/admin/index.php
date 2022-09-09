@@ -603,8 +603,8 @@ if(is_mod_admin($module_name)) {
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-            global $cache;
-            $cache->delete('evoconfig');
+            global $nuke_cache;
+            $nuke_cache->delete('evoconfig');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

@@ -119,12 +119,12 @@ class Zend_Cache_Manager
      * Set a new cache for the Cache Manager to contain
      *
      * @param  string $name
-     * @param  Zend_Cache_Core $cache
+     * @param  Zend_Cache_Core $nuke_cache
      * @return Zend_Cache_Manager
      */
-    public function setCache($name, Zend_Cache_Core $cache)
+    public function setCache($name, Zend_Cache_Core $nuke_cache)
     {
-        $this->_caches[$name] = $cache;
+        $this->_caches[$name] = $nuke_cache;
         return $this;
     }
 

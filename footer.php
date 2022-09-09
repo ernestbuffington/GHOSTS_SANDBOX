@@ -48,11 +48,11 @@ function footmsg()
 		      $nuke_db,
 			 $network_db, 
    $queries_count, 
-   $usrclearcache, 
+   $nuke_usrclearcache, 
         $debugger, 
 		   $debug, 
-		   $cache, 
-	   $use_cache,
+		   $nuke_cache, 
+	   $use_nuke_cache,
 	       $index,
 	      $prefix,
 		    $nuke_user, 
@@ -102,10 +102,10 @@ $footmsg .= $foot2."<br/>";
 # footer messages from databae END
 
 # START user clear cache updated 09/12/2019 Ernest Allen Buffington
-if($use_cache && $usrclearcache): 
-$footmsg .= "<form method='post' name='clear_cache' action='".$_SERVER['REQUEST_URI']."'>";
-$footmsg .= "<input type='hidden' name='clear_cache' value='1'>";
-$footmsg .= ""._SITECACHED . "</span> <a href=\"javascript:clear_cache.submit()\">" . _UPDATECACHE . "</a>";
+if($use_nuke_cache && $nuke_usrclearcache): 
+$footmsg .= "<form method='post' name='nuke_clear_cache' action='".$_SERVER['REQUEST_URI']."'>";
+$footmsg .= "<input type='hidden' name='nuke_clear_cache' value='1'>";
+$footmsg .= ""._SITECACHED . "</span> <a href=\"javascript:nuke_clear_cache.submit()\">" . _UPDATECACHE . "</a>";
 $footmsg .= "</form>";
 endif;
 # END user clear cache updated 09/12/2019 Ernest Allen Buffington
@@ -172,7 +172,7 @@ $total_time .= '</span>';
 # Auto Optimize v1.0.0 START
 if(is_admin()): 
  $first_time = false;
-  if (($last_optimize = $cache->load('last_optimize', 'config')) === false): 
+  if (($last_optimize = $nuke_cache->load('last_optimize', 'config')) === false): 
    $last_optimize = time();
     $first_time = true;
   endif;			
@@ -181,9 +181,9 @@ if(is_admin()):
      //Default: -1 day
      //$interval = strtotime('-1 day');
 	 $interval = strtotime('-1 day');
-       if (($last_optimize <= $interval) || ($first_time && $cache->valid && $use_cache)):
+       if (($last_optimize <= $interval) || ($first_time && $nuke_cache->valid && $use_nuke_cache)):
          if ($nuke_db->sql_optimize()):
-           $cache->save('last_optimize', 'config', time());
+           $nuke_cache->save('last_optimize', 'config', time());
              $total_time .= "<br />Database Optimized";
          endif;
        endif;
@@ -364,8 +364,8 @@ echo "<!-- END Bottom Primary Body Tags -->\n\n";
 
 # ReSync the website cache!
 # Set up the cache class reference
-$cache = new cache($use_cache);
-$cache->resync();
+$nuke_cache = new cache($use_nuke_cache);
+$nuke_cache->resync();
 
 /*****[BEGIN]******************************************
  [ Other:   DB Connectors                      v2.0.0 ]

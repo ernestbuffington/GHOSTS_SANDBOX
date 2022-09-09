@@ -590,7 +590,7 @@ else
         $template_nuke->pparse("body");
 }
 
-$cache->delete('smilies', 'config');
+$nuke_cache->delete('smilies', 'config');
 
 //
 // Page Footer

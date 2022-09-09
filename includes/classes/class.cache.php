@@ -51,8 +51,8 @@ class cache
     var $zend;
 
     // constructor
-    function cache($use_cache) {
-        $this->type = $use_cache;
+    function cache($use_nuke_cache) {
+        $this->type = $use_nuke_cache;
         $this->valid = ($this->type == CACHE_OFF || ($this->type == FILE_CACHE && (!is_writable(NUKE_CACHE_DIR) || ini_get('safe_mode')))) ? false : (($this->type == FILE_CACHE || $this->type == SQL_CACHE || $this->type == XCACHE || $this->type == APC_CACHE || $this->type == MEMCACHED) ? true : false);
         if($this->type == FILE_CACHE) {
         	$frontendOptions = array('lifetime' => 3600, 'automatic_serialization' => true);
@@ -102,7 +102,7 @@ class cache
         return $count;
     }
 
-    // This function passes the variable $cache_changed, and then the function resync will handle it
+    // This function passes the variable $nuke_cache_changed, and then the function resync will handle it
     function save($name, $cat='config', $fileData) {
         if(!$this->valid) return false;
         if(!isset($fileData)) return false;
@@ -124,7 +124,7 @@ class cache
         return $this->zend->load(CACHE_PREFIX.$cat.'_'.$name);
     }
 
-    // This function passes the variable $cache_changed, and then the function resync will handle it
+    // This function passes the variable $nuke_cache_changed, and then the function resync will handle it
     function delete($name, $cat='config') {
 		if(!$this->valid) return false;
 		$name = str_replace(array(' ', '.', '-'), '_', $name);
@@ -159,8 +159,8 @@ class cache
     }
 }
 
-global $use_cache;
+global $use_nuke_cache;
 // Set up the cache class reference
-$cache = new cache($use_cache);
+$nuke_cache = new cache($use_nuke_cache);
 
 ?>

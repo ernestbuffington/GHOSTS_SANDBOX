@@ -265,9 +265,9 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    global $cache;
-    $cache->delete('TopicData', 'home');
-    $cache->delete('AnnounceData', 'home');
+    global $nuke_cache;
+    $nuke_cache->delete('TopicData', 'home');
+    $nuke_cache->delete('AnnounceData', 'home');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -636,9 +636,9 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    global $cache;
-    $cache->delete('TopicData', 'home');
-    $cache->delete('AnnounceData', 'home');
+    global $nuke_cache;
+    $nuke_cache->delete('TopicData', 'home');
+    $nuke_cache->delete('AnnounceData', 'home');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

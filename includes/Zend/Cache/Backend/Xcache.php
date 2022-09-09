@@ -168,7 +168,7 @@ class Zend_Cache_Backend_Xcache extends Zend_Cache_Backend implements Zend_Cache
     {
         switch ($mode) {
             case Zend_Cache::CLEANING_MODE_ALL:
-                // Necessary because xcache_clear_cache() need basic authentification
+                // Necessary because xcache_nuke_clear_cache() need basic authentification
                 $backup = array();
                 if (isset($_SERVER['PHP_AUTH_USER'])) {
                     $backup['PHP_AUTH_USER'] = $_SERVER['PHP_AUTH_USER'];
@@ -182,7 +182,7 @@ class Zend_Cache_Backend_Xcache extends Zend_Cache_Backend implements Zend_Cache
                 if ($this->_options['password']) {
                     $_SERVER['PHP_AUTH_PW'] = $this->_options['password'];
                 }
-                xcache_clear_cache(XC_TYPE_VAR, 0);
+                xcache_nuke_clear_cache(XC_TYPE_VAR, 0);
                 if (isset($backup['PHP_AUTH_USER'])) {
                     $_SERVER['PHP_AUTH_USER'] = $backup['PHP_AUTH_USER'];
                     $_SERVER['PHP_AUTH_PW'] = $backup['PHP_AUTH_PW'];

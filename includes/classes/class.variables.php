@@ -32,7 +32,6 @@ define('REGEXP_ALPHA_SPACE', '/[^\w\s]/i');
 
 require_once(NUKE_INCLUDE_DIR.'utf/utf_tools.php');
 
-
 /**
  * Selects and runs the correct slash adding function
  * This function is outside the class due to array_map in deepSlash
@@ -109,7 +108,7 @@ function deepSlash($data) {
                 if (!empty($v)) {
                     $data[$k] = slashFunction($function, $v);
                     $data[$k] = str_replace('\n', "\n", $data[$k]);
-                    $data[$k] = utf8_normalize_nfc($data[$k]);
+                    $data[$k] = nuke_utf8_normalize_nfc($data[$k]);
                     //Get the registered globals also
                     global $$k;
                     if (isset($$k) && !empty($$k)) {

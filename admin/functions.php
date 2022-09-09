@@ -218,13 +218,13 @@ function login()
 
 function deleteNotice($id) 
 {
-	global $prefix, $nuke_db, $admin_file, $cache;
+	global $prefix, $nuke_db, $admin_file, $nuke_cache;
 	$id = intval($id);
 	$nuke_db->sql_query("DELETE FROM `".$prefix."_reviews_add` WHERE `id` = '$id'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-	$cache->delete('numwaitreviews', 'submissions');
+	$nuke_cache->delete('numwaitreviews', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -370,7 +370,7 @@ function track_evo_version()
  ******************************************************/
 function GraphicAdmin($pos=1)
 {
-	global $aid, $admingraphic, $cache, $language, $admin, $prefix, $nuke_user_prefix, $nuke_db, $counter, $admin_file, $admin_pos, $radminsuper, $admlang;   
+	global $aid, $admingraphic, $nuke_cache, $language, $admin, $prefix, $nuke_user_prefix, $nuke_db, $counter, $admin_file, $admin_pos, $radminsuper, $admlang;   
 	
 	if ($pos != $admin_pos)
 	return;
@@ -729,7 +729,7 @@ function track_evo_version_bs()
 
 function administration_panel( $pos = 1 )
 {
-	global $aid, $admingraphic, $cache, $language, $admin, $prefix, $nuke_user_prefix, $nuke_db, $counter, $admin_file, $admin_pos, $radminsuper, $admlang;   
+	global $aid, $admingraphic, $nuke_cache, $language, $admin, $prefix, $nuke_user_prefix, $nuke_db, $counter, $admin_file, $admin_pos, $radminsuper, $admlang;   
 
 	$radminsuper = is_mod_admin();
 

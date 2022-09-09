@@ -25,16 +25,16 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
 {
   
   /**
-   * Create a new SimpleMessage with $headers, $encoder and $cache.
+   * Create a new SimpleMessage with $headers, $encoder and $nuke_cache.
    * @param Swift_Mime_HeaderSet $headers
    * @param Swift_Mime_ContentEncoder $encoder
-   * @param Swift_KeyCache $cache
+   * @param Swift_KeyCache $nuke_cache
    * @param string $charset
    */
   public function __construct(Swift_Mime_HeaderSet $headers,
-    Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, $charset = null)
+    Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $nuke_cache, $charset = null)
   {
-    parent::__construct($headers, $encoder, $cache, $charset);
+    parent::__construct($headers, $encoder, $nuke_cache, $charset);
     $this->getHeaders()->defineOrdering(array(
       'Return-Path',
       'Sender',

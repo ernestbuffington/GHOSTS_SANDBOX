@@ -22,25 +22,25 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 }
 
 function ne_save_config($nuke_config_name, $nuke_config_value){
-    global $prefix, $nuke_db, $cache;
+    global $prefix, $nuke_db, $nuke_cache;
     $nuke_db->sql_query("UPDATE ".$prefix."_nsnne_config SET config_value='$nuke_config_value' WHERE config_name='$nuke_config_name'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $cache->delete('news', 'config');
+    $nuke_cache->delete('news', 'config');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
 }
 
 function ne_get_configs(){
-    global $prefix, $nuke_db, $cache;
+    global $prefix, $nuke_db, $nuke_cache;
     static $nuke_config;
     if(isset($nuke_config)) return $nuke_config;
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    if(($nuke_config = $cache->load('news', 'config')) === false) {
+    if(($nuke_config = $nuke_cache->load('news', 'config')) === false) {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -52,7 +52,7 @@ function ne_get_configs(){
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $cache->save('news', 'config', $nuke_config);
+        $nuke_cache->save('news', 'config', $nuke_config);
     }
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]

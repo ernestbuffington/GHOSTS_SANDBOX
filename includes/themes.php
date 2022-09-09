@@ -314,9 +314,9 @@ function GetThemeSelect($name, $mode='user_themes', $other_user=false, $extra=''
 }
 
 function ThemeBackup($theme) {
-    global $nuke_db, $prefix, $Default_Theme, $cache;
+    global $nuke_db, $prefix, $Default_Theme, $nuke_cache;
         if(!is_default($theme) && theme_exists($Default_Theme)) { return $Default_Theme; }
-        $cache->delete('nukeconfig', 'config');
+        $nuke_cache->delete('nukeconfig', 'config');
         log_write('error', 'Your default theme is missing! ' . $Default_Theme . ' was NOT found!', 'Criticial Error');
         $themes = opendir(NUKE_THEMES_DIR);
         while(false !== ($theme_name = readdir($themes))) {
@@ -352,19 +352,19 @@ function AllowThemeChange() {
 
 function LoadThemeInfo($theme) 
 {
-    global $nuke_db, $prefix, $params, $default, $cache;
+    global $nuke_db, $prefix, $params, $default, $nuke_cache;
     static $theme_info;
     if(isset($theme_info)) 
         return $theme_info; 
 
-    if(!$theme_info = $cache->load($theme, 'themes')) 
+    if(!$theme_info = $nuke_cache->load($theme, 'themes')) 
     {
         $result = $nuke_db->sql_query("SELECT theme_info FROM " . $prefix . "_themes WHERE theme_name = '" . $theme . "'");
         $row = $nuke_db->sql_fetchrow($result);
         $nuke_db->sql_freeresult($result);
         $loaded_info = (!empty($row['theme_info'])) ? explode(':::', $row['theme_info']) : $default;
         $theme_info = array_combine($params, $loaded_info);
-        $cache->save($theme, 'themes', $theme_info);
+        $nuke_cache->save($theme, 'themes', $theme_info);
     }
     return $theme_info;
 }

@@ -107,20 +107,20 @@ function get_config()
 }
 
 // Get Attachment Config
-$cache_dir = $phpbb2_root_path . '/cache';
-$cache_file = $cache_dir . '/attach_config.php';
+$nuke_cache_dir = $phpbb2_root_path . '/cache';
+$nuke_cache_file = $nuke_cache_dir . '/attach_config.php';
 $attach_config = array();
 
-if (file_exists($cache_dir) && is_dir($cache_dir) && is_writable($cache_dir))
+if (file_exists($nuke_cache_dir) && is_dir($nuke_cache_dir) && is_writable($nuke_cache_dir))
 {
-    if (file_exists($cache_file))
+    if (file_exists($nuke_cache_file))
     {
-        include($cache_file);
+        include($nuke_cache_file);
     }
     else
     {
         $attach_config = get_config();
-        $fp = @fopen($cache_file, 'wt+');
+        $fp = @fopen($nuke_cache_file, 'wt+');
         if ($fp)
         {
             $lines = array();
@@ -142,7 +142,7 @@ if (file_exists($cache_dir) && is_dir($cache_dir) && is_writable($cache_dir))
             fwrite($fp, '<?php $attach_config = array(' . implode(',', $lines) . '); ?>');
             fclose($fp);
 
-            @chmod($cache_file, $file_mode);
+            @chmod($nuke_cache_file, $file_mode);
         }
     }
 }

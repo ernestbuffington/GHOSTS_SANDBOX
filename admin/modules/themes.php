@@ -169,7 +169,7 @@ function theme_footer(){
     echo "<div align='right'>&copy; <a href='http://nuke-evolution.com' target='_blank'>Theme Management</a></div>\n";
 }
 
-function display_main(){
+function nuke_display_main(){
     global $admin_file, $aid, $nuke_db, $prefix, $bgcolor2, $bgcolor1, $bgcolor3;
 	
     $installed_themes = get_themes('all');
@@ -536,7 +536,7 @@ function theme_install($theme_name){
 }
 
 function update_theme($post){
-    global $nuke_db, $prefix, $nuke_user_prefix, $admin_file, $cache;
+    global $nuke_db, $prefix, $nuke_user_prefix, $admin_file, $nuke_cache;
 	
     $error = false;
 	
@@ -577,7 +577,7 @@ function update_theme($post){
         }
     }
 	
-    $cache->delete($post['theme_name'], 'themes');
+    $nuke_cache->delete($post['theme_name'], 'themes');
 	
     if (!$error){
         OpenTable();
@@ -710,7 +710,7 @@ function uninstall_theme($theme){
 }
 
 function theme_makedefault($theme){
-    global $nuke_db, $prefix, $admin_file, $cache;
+    global $nuke_db, $prefix, $admin_file, $nuke_cache;
 	
     if (!theme_installed($theme)){
         $sql = "INSERT INTO " . $prefix . "_themes VALUES('$theme', '', '1', '$theme', '1', '')";
@@ -726,7 +726,7 @@ function theme_makedefault($theme){
         $nuke_db->sql_query($query);
     }
 	
-    $cache->delete('nukeconfig', 'config');
+    $nuke_cache->delete('nukeconfig', 'config');
     nuke_redirect($admin_file . '.php?op=themes');
 }
 
@@ -1108,7 +1108,7 @@ if (is_admin()){
                 $nuke_db->sql_query($sql);
             }
             theme_header();
-            display_main();
+            nuke_display_main();
             theme_footer();
         break;
         case 'theme_install_save':
@@ -1127,7 +1127,7 @@ if (is_admin()){
                 $nuke_db->sql_query($sql);
             }
             theme_header();
-            display_main();
+            nuke_display_main();
             theme_footer();
         break;
         case 'theme_uninstall':
@@ -1172,7 +1172,7 @@ if (is_admin()){
   //       break;
         default:
             theme_header();
-            display_main();
+            nuke_display_main();
             theme_footer();
     }
 	

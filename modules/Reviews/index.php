@@ -321,7 +321,7 @@ function preview_review($date, $title, $text, $reviewer, $email, $score, $cover,
 }
 
 function send_review($date, $title, $text, $reviewer, $email, $score, $cover, $url, $url_title, $hits, $id, $rlanguage) {
-    global $admin, $EditedMessage, $prefix, $nuke_db, $module_name, $cache;
+    global $admin, $EditedMessage, $prefix, $nuke_db, $module_name, $nuke_cache;
 
     session_start();
     if(isset($_SESSION['title'])) {
@@ -374,7 +374,7 @@ function send_review($date, $title, $text, $reviewer, $email, $score, $cover, $u
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $cache->delete('numwaitreviews', 'submissions');
+        $nuke_cache->delete('numwaitreviews', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

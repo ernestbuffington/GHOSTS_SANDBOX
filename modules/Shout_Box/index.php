@@ -35,7 +35,7 @@ get_lang($module_name);
 
 $pagetitle = "- "._SHOUTHISTORY;
 
-global $nuke_db, $nuke_user, $prefix, $nuke_username, $nsnst_const, $nuke_userinfo, $cache;
+global $nuke_db, $nuke_user, $prefix, $nuke_username, $nsnst_const, $nuke_userinfo, $nuke_cache;
 
 global $nuke_username;
 
@@ -47,11 +47,11 @@ include_once(NUKE_MODULES_DIR.'Shout_Box/shout.php');
 
 global $conf;
 
-if ((($conf = $cache->load('conf', 'shoutbox')) == false) || empty($conf)) {
+if ((($conf = $nuke_cache->load('conf', 'shoutbox')) == false) || empty($conf)) {
     $sql = "SELECT * FROM `".$prefix."_shoutbox_conf`";
     $result = $nuke_db->sql_query($sql);
     $conf = $nuke_db->sql_fetchrow($result);
-    $cache->save('conf', 'shoutbox', $conf);
+    $nuke_cache->save('conf', 'shoutbox', $conf);
     $nuke_db->sql_freeresult($result);
 }
 

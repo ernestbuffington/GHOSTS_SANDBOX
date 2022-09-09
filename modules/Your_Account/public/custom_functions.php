@@ -39,7 +39,7 @@ include_once(NUKE_INCLUDE_DIR.'functions.php');
  [ Mod:     Group Ranks                        v1.0.0 ]
  ******************************************************/
 function init_group($uid) {
-    global $prefix, $nuke_db, $board_config, $cache;
+    global $prefix, $nuke_db, $board_config, $nuke_cache;
     if($board_config['initial_group_id'] != "0" && $board_config['initial_group_id'] != NULL) {
         $initialusergroup = intval($board_config['initial_group_id']);
         if($initialusergroup == 0) {

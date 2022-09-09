@@ -26,7 +26,7 @@ if (!defined('ADMIN_FILE')) {
    die ("Illegal File Access");
 }
 
-global $prefix, $nuke_db, $admdata, $nuke_dbname, $cache;
+global $prefix, $nuke_db, $admdata, $nuke_dbname, $nuke_cache;
 
 function ABCoolSize($size) {
   $kb = 1024;
@@ -271,7 +271,7 @@ switch ($op) {
         require_once(NUKE_CLASSES_DIR.'class.database.php');
 
         if (!DB::query_file($_FILES['sqlfile'], $error)) { echo($error); }
-        $cache->clear();
+        $nuke_cache->clear();
         OpenTable();
         echo '<span><strong>'._DATABASE.': '.$nuke_dbname.'</strong></span><br /><br />'.sprintf(_IMPORTSUCCESS, $_FILES['sqlfile']['name']);
         CloseTable();

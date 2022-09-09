@@ -1,7 +1,7 @@
 <?php
 function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid) 
 {
-    global $currentlang, $cache, $top_content, $mid_content, $bottom_content, $ShoutMarqueeheight, $nsnst_const, $nuke_userinfo, $prefix, $nuke_db, $top_out, $board_config;
+    global $currentlang, $nuke_cache, $top_content, $mid_content, $bottom_content, $ShoutMarqueeheight, $nsnst_const, $nuke_userinfo, $prefix, $nuke_db, $top_out, $board_config;
 	
     if (!empty($currentlang)) 
     include_once(NUKE_MODULES_DIR.'Shout_Box/lang-block/lang-'.$currentlang.'.php');
@@ -14,34 +14,34 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
     $is_user = is_user();
     $nuke_username = $nuke_userinfo['username'];
 
-    if ((($conf = $cache->load('conf', 'shoutbox')) == false) || empty($conf)) 
+    if ((($conf = $nuke_cache->load('conf', 'shoutbox')) == false) || empty($conf)) 
 	{
         $sql = "SELECT * FROM `".$prefix."_shoutbox_conf`";
         $result = $nuke_db->sql_query($sql);
         $conf = $nuke_db->sql_fetchrow($result);
-        $cache->save('conf', 'shoutbox', $conf);
+        $nuke_cache->save('conf', 'shoutbox', $conf);
         $nuke_db->sql_freeresult($result);
     }
 
-    if ((($nameblock = $cache->load('nameblock', 'shoutbox')) == false) || empty($nameblock)) 
+    if ((($nameblock = $nuke_cache->load('nameblock', 'shoutbox')) == false) || empty($nameblock)) 
 	{
         $sql = "SELECT `name` FROM ".$prefix."_shoutbox_nameblock";
         $nameresult = $nuke_db->sql_query($sql);
         while ($row = $nuke_db->sql_fetchrow($nameresult)) {
             $nameblock[] = $row;
         }
-        $cache->save('nameblock', 'shoutbox', $nameblock);
+        $nuke_cache->save('nameblock', 'shoutbox', $nameblock);
         $nuke_db->sql_freeresult($nameresult);
     }
 
-    if ((($censor = $cache->load('censor', 'shoutbox')) == false) || empty($censor)) 
+    if ((($censor = $nuke_cache->load('censor', 'shoutbox')) == false) || empty($censor)) 
 	{
         $sql = "SELECT * FROM ".$prefix."_shoutbox_censor";
         $result = $nuke_db->sql_query($sql);
         while ($row = $nuke_db->sql_fetchrow($result)) {
             $censor[] = $row;
         }
-        $cache->save('censor', 'shoutbox', $censor);
+        $nuke_cache->save('censor', 'shoutbox', $censor);
         $nuke_db->sql_freeresult($result);
     }
 

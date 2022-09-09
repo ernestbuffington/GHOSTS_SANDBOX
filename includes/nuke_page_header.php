@@ -51,7 +51,7 @@ exit('Hacking attempt');
 
 define('HEADER_INC', TRUE);
 
-global $name, $sitename, $is_inline_review, $prefix, $nuke_db, $cache, $ThemeSel;
+global $name, $sitename, $is_inline_review, $prefix, $nuke_db, $nuke_cache, $ThemeSel;
 
 OpenTable();
 
@@ -181,7 +181,7 @@ if(defined('SHOW_ONLINE'))
            if(!$nuke_db->sql_query($sql))
            message_die(NUKE_GENERAL_ERROR, 'Could not update online user record (date)', '', __LINE__, __FILE__, $sql);
            # Base: Caching System v3.0.0 START
-           $cache->delete('board_config', 'config');
+           $nuke_cache->delete('board_config', 'config');
            # Base: Caching System v3.0.0 END
         endif;
 

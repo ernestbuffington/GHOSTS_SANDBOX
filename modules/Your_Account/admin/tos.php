@@ -55,7 +55,7 @@ if(is_mod_admin($module_name)) {
     if ($_POST['submit']) {
     $tos = Fix_Quotes($_POST['tos_text']);
     $nuke_db->sql_query("UPDATE " . $prefix . "_cnbya_config SET config_value = '" . $tos . "' WHERE config_name = 'tos_text'");
-    $cache->delete('ya_config');
+    $nuke_cache->delete('ya_config');
     OpenTable();
     echo "<center>Your Terms of Service have been updated.</center>\n";
     CloseTable();

@@ -196,7 +196,7 @@ class emailer
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
         {
-                global $board_config, $lang, $phpEx, $phpbb2_root_path, $nuke_db, $cache;
+                global $board_config, $lang, $phpEx, $phpbb2_root_path, $nuke_db, $nuke_cache;
 
             // Escape all quotes, else the eval will fail.
                 $this->msg = str_replace ("'", "\'", $this->msg);
@@ -292,7 +292,7 @@ class emailer
 /*****['BEGIN']******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-                                $cache->delete('board_config', 'config');
+                                $nuke_cache->delete('board_config', 'config');
 /*****['END']********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

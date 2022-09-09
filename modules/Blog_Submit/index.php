@@ -234,7 +234,7 @@ function PreviewStory($name, $address, $subject, $story, $storyext, $topic, $ala
 
 function submitStory($name, $address, $subject, $story, $storyext, $topic, $alanguage, $posttype) 
 {
-    global $nuke_user, $EditedMessage, $cookie, $anonymous, $notify, $notify_email, $notify_subject, $notify_message, $notify_from, $prefix, $nuke_db, $cache;
+    global $nuke_user, $EditedMessage, $cookie, $anonymous, $notify, $notify_email, $notify_subject, $notify_message, $notify_from, $prefix, $nuke_db, $nuke_cache;
 
     if (is_user()) 
 	{
@@ -260,7 +260,7 @@ function submitStory($name, $address, $subject, $story, $storyext, $topic, $alan
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $cache->delete('numwaits', 'submissions');
+    $nuke_cache->delete('numwaits', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -274,7 +274,7 @@ function submitStory($name, $address, $subject, $story, $storyext, $topic, $alan
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    if(($numwaits = $cache->load('numwaits', 'submissions')) === false) 
+    if(($numwaits = $nuke_cache->load('numwaits', 'submissions')) === false) 
 	{
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -285,7 +285,7 @@ function submitStory($name, $address, $subject, $story, $storyext, $topic, $alan
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $cache->save('numwaits', 'submissions', $numwaits);
+        $nuke_cache->save('numwaits', 'submissions', $numwaits);
     }
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]

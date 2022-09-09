@@ -211,7 +211,7 @@ define("_CACHE_CAT_DELETE_FAIL", "Category deletion failed");
 define("_CACHE_CLEARED_SUCC", "Cache cleared successfully");
 define("_CACHE_CLEARED_FAIL", "Cache failed to clear");
 define("_CACHE_PREF_UPDATED_SUCC", "Preferences updated succesfully");
-define("_CACHE_ENABLE_HOW", "To enable cache, set \$use_cache to \"1\" or \"2\" in config.php if it isn't already.");
+define("_CACHE_ENABLE_HOW", "To enable cache, set \$use_nuke_cache to \"1\" or \"2\" in config.php if it isn't already.");
 define("_CACHESAFEMODE", "Safe mode is enabled on your server, cache will NOT function!");
 define("_CACHENOTALLOWED", "You are not allowed to view this file!");
 define("_CACHE_MODE", "Cache Mode");

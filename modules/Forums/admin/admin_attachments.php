@@ -191,14 +191,14 @@ while ($row = $nuke_db->sql_fetchrow($result))
 }
 $nuke_db->sql_freeresult($result);
 
-$cache_dir = $phpbb2_root_path . '/cache';
-$cache_file = $cache_dir . '/attach_config.php';
+$nuke_cache_dir = $phpbb2_root_path . '/cache';
+$nuke_cache_file = $nuke_cache_dir . '/attach_config.php';
 
-if ((file_exists($cache_dir)) && (is_dir($cache_dir)))
+if ((file_exists($nuke_cache_dir)) && (is_dir($nuke_cache_dir)))
 {
-    if (file_exists($cache_file))
+    if (file_exists($nuke_cache_file))
     {
-        @unlink($cache_file);
+        @unlink($nuke_cache_file);
     }
 }
 

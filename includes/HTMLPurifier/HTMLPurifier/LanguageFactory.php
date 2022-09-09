@@ -15,7 +15,7 @@ class HTMLPurifier_LanguageFactory
      * Structure is: $factory->cache[$language_code][$key] = $value
      * @value array map
      */
-    public $cache;
+    public $nuke_cache;
 
     /**
      * Valid keys in the HTMLPurifier_Language object. Designates which
@@ -151,10 +151,10 @@ class HTMLPurifier_LanguageFactory
         if (!file_exists($filename)) {
             // skip the include: will rely solely on fallback
             $filename = $this->dir . '/Language/messages/en.php';
-            $cache = array();
+            $nuke_cache = array();
         } else {
             include $filename;
-            $cache = compact($this->keys);
+            $nuke_cache = compact($this->keys);
         }
 
         // load fallback localisation
@@ -174,21 +174,21 @@ class HTMLPurifier_LanguageFactory
 
             // merge fallback with current language
             foreach ( $this->keys as $key ) {
-                if (isset($cache[$key]) && isset($fallback_cache[$key])) {
+                if (isset($nuke_cache[$key]) && isset($fallback_cache[$key])) {
                     if (isset($this->mergeable_keys_map[$key])) {
-                        $cache[$key] = $cache[$key] + $fallback_cache[$key];
+                        $nuke_cache[$key] = $nuke_cache[$key] + $fallback_cache[$key];
                     } elseif (isset($this->mergeable_keys_list[$key])) {
-                        $cache[$key] = array_merge( $fallback_cache[$key], $cache[$key] );
+                        $nuke_cache[$key] = array_merge( $fallback_cache[$key], $nuke_cache[$key] );
                     }
                 } else {
-                    $cache[$key] = $fallback_cache[$key];
+                    $nuke_cache[$key] = $fallback_cache[$key];
                 }
             }
 
         }
 
         // save to cache for later retrieval
-        $this->cache[$code] = $cache;
+        $this->cache[$code] = $nuke_cache;
 
         return;
     }

@@ -29,10 +29,10 @@ if (!defined('ADMIN_FILE')) {
 switch($op) {
 
     case "cache_delete":
-    case "cache_view":
+    case "nuke_cache_view":
     case "cache_clear":
-    case "usrclearcache":
-    case "howto_enable_cache":
+    case "nuke_usrclearcache":
+    case "nuke_howto_enable_cache":
     case "cache":
         include(NUKE_ADMIN_MODULE_DIR.'cache.php');
     break;

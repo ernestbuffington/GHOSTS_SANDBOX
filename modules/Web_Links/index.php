@@ -344,7 +344,7 @@ function AddLink()
 }
 
 function Add($title, $url, $nuke_auth_name, $cat, $description, $email) {
-    global $prefix, $nuke_db, $nuke_user, $cookie, $cache;
+    global $prefix, $nuke_db, $nuke_user, $cookie, $nuke_cache;
     $result = $nuke_db->sql_query("SELECT `url` FROM ".$prefix."_links_links WHERE url='$url'");
     $numrows = $nuke_db->sql_numrows($result);
 /*****[BEGIN]******************************************
@@ -431,7 +431,7 @@ function Add($title, $url, $nuke_auth_name, $cat, $description, $email) {
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $cache->delete('numwaitl', 'submissions');
+        $nuke_cache->delete('numwaitl', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -2340,7 +2340,7 @@ function brokenlink($lid)
 function brokenlinkS($lid,$cid, $title, $url, $description, $modifysubmitter) 
 {
 
-    global $prefix, $nuke_db, $nuke_user, $anonymous, $cookie, $module_name, $nuke_user, $cache;
+    global $prefix, $nuke_db, $nuke_user, $anonymous, $cookie, $module_name, $nuke_user, $nuke_cache;
 
     if (is_user()): 
 	
@@ -2361,8 +2361,8 @@ function brokenlinkS($lid,$cid, $title, $url, $description, $modifysubmitter)
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $cache->delete('numbrokenl', 'submissions');
-        $cache->delete('nummodreql', 'submissions');
+        $nuke_cache->delete('numbrokenl', 'submissions');
+        $nuke_cache->delete('nummodreql', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -2471,7 +2471,7 @@ function modifylinkrequest($lid)
 
 function modifylinkrequestS($lid, $cat, $title, $url, $description, $modifysubmitter) 
 {
-    global $prefix, $nuke_db, $nuke_user, $module_name, $cookie, $cache;
+    global $prefix, $nuke_db, $nuke_user, $module_name, $cookie, $nuke_cache;
     include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
 
     if(is_user()) 
@@ -2530,8 +2530,8 @@ function modifylinkrequestS($lid, $cat, $title, $url, $description, $modifysubmi
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $cache->delete('numbrokenl', 'submissions');
-        $cache->delete('nummodreql', 'submissions');
+        $nuke_cache->delete('numbrokenl', 'submissions');
+        $nuke_cache->delete('nummodreql', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

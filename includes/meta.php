@@ -23,7 +23,7 @@
 if (!defined('NUKE_EVO')) 
 die("You can't access this file directly...");
 
-global $nuke_db, $prefix, $cache;
+global $nuke_db, $prefix, $nuke_cache;
 
 ##################################################
 # Load dynamic meta tags from database           #
@@ -32,7 +32,7 @@ global $nuke_db, $prefix, $cache;
   /*****[BEGIN]******************************************
    [ Base:    Caching System                     v3.0.0 ]
    ******************************************************/
-if(($metatags = $cache->load('metatags', 'config')) === false) 
+if(($metatags = $nuke_cache->load('metatags', 'config')) === false) 
 {
   /*****[END]********************************************
    [ Base:    Caching System                     v3.0.0 ]
@@ -56,7 +56,7 @@ if(($metatags = $cache->load('metatags', 'config')) === false)
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-  $cache->save('metatags', 'config', $metatags);
+  $nuke_cache->save('metatags', 'config', $metatags);
 }
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]

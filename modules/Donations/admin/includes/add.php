@@ -160,7 +160,7 @@ function check_donation() {
     Notes:       Writes the donation to the DB
 ================================================================================================*/
 function write_donation() {
-    global $lang_donate, $nuke_db, $nuke_user_prefix, $prefix, $cache;
+    global $lang_donate, $nuke_db, $nuke_user_prefix, $prefix, $nuke_cache;
     if ($_POST['uname'] != 'N/A') {
         $_POST['uname'] = Fix_Quotes(check_html($_POST['uname'], 'nohtml'));
         $sql = 'SELECT * FROM `'.$nuke_user_prefix.'_users` WHERE username="'.$_POST['uname'].'"';
@@ -204,8 +204,8 @@ function write_donation() {
     $sql = 'INSERT INTO `'.$prefix.'_donators` VALUES("","'.$uid.'","'.$uname.'","'.$fname.'","'.$lname.'","'.$email.'","'.$donated.'",'.time().',"'.$donshow.'","","","","'.$donto.'")';
     $nuke_db->sql_query($sql);
     //Clear the cache
-    $cache->delete('donations', 'donations');
-    $cache->delete('donations_goal', 'donations');
+    $nuke_cache->delete('donations', 'donations');
+    $nuke_cache->delete('donations_goal', 'donations');
 }
 
 /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/

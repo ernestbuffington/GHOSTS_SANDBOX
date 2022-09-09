@@ -6,7 +6,7 @@
 class HTMLPurifier_DefinitionCacheFactory
 {
 
-    protected $caches = array('Serializer' => array());
+    protected $nuke_caches = array('Serializer' => array());
     protected $implementations = array();
     protected $decorators = array();
 
@@ -57,20 +57,20 @@ class HTMLPurifier_DefinitionCacheFactory
           isset($this->implementations[$method]) &&
           class_exists($class = $this->implementations[$method], false)
         ) {
-            $cache = new $class($type);
+            $nuke_cache = new $class($type);
         } else {
             if ($method != 'Serializer') {
                 trigger_error("Unrecognized DefinitionCache $method, using Serializer instead", E_USER_WARNING);
             }
-            $cache = new HTMLPurifier_DefinitionCache_Serializer($type);
+            $nuke_cache = new HTMLPurifier_DefinitionCache_Serializer($type);
         }
         foreach ($this->decorators as $decorator) {
-            $new_cache = $decorator->decorate($cache);
+            $new_cache = $decorator->decorate($nuke_cache);
             // prevent infinite recursion in PHP 4
-            unset($cache);
-            $cache = $new_cache;
+            unset($nuke_cache);
+            $nuke_cache = $new_cache;
         }
-        $this->caches[$method][$type] = $cache;
+        $this->caches[$method][$type] = $nuke_cache;
         return $this->caches[$method][$type];
     }
 

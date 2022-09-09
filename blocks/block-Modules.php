@@ -24,7 +24,7 @@
 if(!defined('NUKE_EVO')) exit;
 
 function moduleblock_get_active() {
-    global $nuke_db, $prefix, $cache;
+    global $nuke_db, $prefix, $nuke_cache;
 
     $out = array();
     if(!($result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_modules` WHERE `active`='1' AND `inmenu`='1' AND `cat_id`<>0 ORDER BY `cat_id`, `pos` ASC"))) {
@@ -38,12 +38,12 @@ function moduleblock_get_active() {
 }
 
 function moduleblock_get_cats() {
-    global $nuke_db, $prefix, $cache;
+    global $nuke_db, $prefix, $nuke_cache;
     static $cats;
     $use = (isset($_POST['save']) || (isset($_GET['area']) && $_GET['area'] == 'block')) ? 0 : 1;
     if (isset($cats) && is_array($cats) && $use) return $cats;
 
-    if((($cats = $cache->load('module_cats', 'config')) === false) || !isset($cats) || !$use) {
+    if((($cats = $nuke_cache->load('module_cats', 'config')) === false) || !isset($cats) || !$use) {
         $cats = array();
         if(!($result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_modules_cat` ORDER BY `pos` ASC"))) {
             return '';
@@ -52,7 +52,7 @@ function moduleblock_get_cats() {
             $cats[] = $row;
         }
         $nuke_db->sql_freeresult($result);
-        $cache->save('module_cats', 'config', $cats);
+        $nuke_cache->save('module_cats', 'config', $cats);
     }
 
     return $cats;
@@ -168,7 +168,7 @@ function moduleblock_display() {
 }
 
 function moduleblock_get_inactive() {
-    global $nuke_db, $prefix, $cache;
+    global $nuke_db, $prefix, $nuke_cache;
 
     if(!($result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_modules` WHERE (`active`='0' OR `inmenu`='0' OR `cat_id`='0') AND `title` NOT LIKE '~l~%' ORDER BY `custom_title` ASC"))) {
         return '';
@@ -181,12 +181,12 @@ function moduleblock_get_inactive() {
 }
 
 function moduleblock_get_inactive_links() {
-    global $nuke_db, $prefix, $cache;
+    global $nuke_db, $prefix, $nuke_cache;
     static $links;
     $use = (isset($_POST['save']) || (isset($_GET['area']) && $_GET['area'] == 'block')) ? 0 : 1;
     if (isset($links) && is_array($links) && $use) return $links;
 
-    if ((($links = $cache->load('module_links', 'config')) === false) || !isset($links) || !$use) {
+    if ((($links = $nuke_cache->load('module_links', 'config')) === false) || !isset($links) || !$use) {
         $links = '';
         if(!($result = $nuke_db->sql_query("SELECT * FROM `".$prefix."_modules` WHERE (`active`=0 OR `cat_id`='0') AND `title` LIKE '~l~%' ORDER BY `title` ASC"))) {
             return '';
@@ -197,9 +197,9 @@ function moduleblock_get_inactive_links() {
         }
         $nuke_db->sql_freeresult($result);
         if(!empty($links) && is_array($links)) {
-            $cache->save('module_links', 'config', $links);
+            $nuke_cache->save('module_links', 'config', $links);
         } else {
-            $cache->delete('module_links', 'config');
+            $nuke_cache->delete('module_links', 'config');
         }
     }
     return $links;

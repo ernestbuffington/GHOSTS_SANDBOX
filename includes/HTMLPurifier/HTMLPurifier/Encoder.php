@@ -284,7 +284,7 @@ class HTMLPurifier_Encoder
             restore_error_handler();
             return $str;
         } elseif ($encoding === 'iso-8859-1') {
-            $str = utf8_encode($str);
+            $str = nuke_utf8_encode($str);
             restore_error_handler();
             return $str;
         }
@@ -319,7 +319,7 @@ class HTMLPurifier_Encoder
             restore_error_handler();
             return $str;
         } elseif ($encoding === 'iso-8859-1') {
-            $str = utf8_decode($str);
+            $str = nuke_utf8_decode($str);
             restore_error_handler();
             return $str;
         }

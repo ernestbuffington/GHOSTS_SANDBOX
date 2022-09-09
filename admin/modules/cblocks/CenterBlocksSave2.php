@@ -23,7 +23,7 @@
 if(!defined('ADMIN_FILE')) {
     exit('Access Denied');
 }
-global $cache, $prefix, $nuke_db;
+global $nuke_cache, $prefix, $nuke_db;
 $x1content = html_entity_decode($x1content, ENT_QUOTES);
 $x2content = html_entity_decode($x2content, ENT_QUOTES);
 $x3content = html_entity_decode($x3content, ENT_QUOTES);
@@ -62,7 +62,7 @@ $result4 = $nuke_db->sql_query("UPDATE `".$prefix."_nsncb_blocks` SET `content`=
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v1.0.0 ]
  ******************************************************/
-$cache->delete('cb_blocks', 'config');
+$nuke_cache->delete('cb_blocks', 'config');
 /*****[END]********************************************
  [ Base:    Caching System                     v1.0.0 ]
  ******************************************************/

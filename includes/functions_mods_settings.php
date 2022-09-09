@@ -40,20 +40,20 @@ function mods_settings_get_lang($key)
 //---------------------------------------------------------------
 function init_board_config_key($key, $value, $force=false)
 {
-	global $nuke_db, $board_config, $cache;
+	global $nuke_db, $board_config, $nuke_cache;
 	if (!isset($board_config[$key]))
 	{
 		$board_config[$key] = $value;
 		$sql = "INSERT INTO " . NUKE_CONFIG_TABLE . " (config_name,config_value) VALUES('$key','$value')";
 		if ( !$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not add key ' . $key . ' in config table', '', __LINE__, __FILE__, $sql);
-		$cache->delete('board_config', 'config');
+		$nuke_cache->delete('board_config', 'config');
 	}
 	else if ($force)
 	{
 		$board_config[$key] = $value;
 		$sql = "UPDATE " . NUKE_CONFIG_TABLE . " SET config_value='$value' WHERE config_name='$key'";
 		if ( !$nuke_db->sql_query($sql) ) message_die(NUKE_GENERAL_ERROR, 'Could not add key ' . $key . ' in config table', '', __LINE__, __FILE__, $sql);
-		$cache->delete('board_config', 'config');
+		$nuke_cache->delete('board_config', 'config');
 	}
 }
 

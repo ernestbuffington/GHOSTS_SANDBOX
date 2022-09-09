@@ -16,13 +16,13 @@ if(!defined('NUKE_EVO')) exit;
 global $nuke_db, $prefix, $admin_file, $blockslang;
 
 function block_Honeypot_cache($block_cachetime) {
-    global $nuke_db, $cache;
-    if ((($blockcache = $cache->load('honeypot', 'blocks')) === false) || empty($blockcache) || intval($blockcache[0]['stat_created']) < (time() - intval($block_cachetime))) {
+    global $nuke_db, $nuke_cache;
+    if ((($blockcache = $nuke_cache->load('honeypot', 'blocks')) === false) || empty($blockcache) || intval($blockcache[0]['stat_created']) < (time() - intval($block_cachetime))) {
         $result = $nuke_db->sql_ufetchrow('SELECT COUNT(id) AS `count` FROM `'._HONEYPOT_TABLE.'`');
         $blockcache[1]['count'] = $result['count'];
         $nuke_db->sql_freeresult($result);
         $blockcache[0]['stat_created'] = time();
-        $cache->save('honeypot', 'blocks', $blockcache);
+        $nuke_cache->save('honeypot', 'blocks', $blockcache);
     }
     return $blockcache;
 }

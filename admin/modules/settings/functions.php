@@ -157,7 +157,7 @@ function show_settings($sub) {
 
 function save_settings($sub) 
 {
-    global $nuke_db, $prefix, $admin_file, $cache, $admLang;
+    global $nuke_db, $prefix, $admin_file, $nuke_cache, $admLang;
 
     switch($sub) {
 
@@ -337,7 +337,7 @@ function save_settings($sub)
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-                $cache->delete('metatags', 'config');
+                $nuke_cache->delete('metatags', 'config');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -363,7 +363,7 @@ function save_settings($sub)
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-                $cache->delete('metatags', 'config');
+                $nuke_cache->delete('metatags', 'config');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -399,8 +399,8 @@ function save_settings($sub)
 	# Reference : https://stackoverflow.com/questions/267658/having-both-a-created-and-last-updated-timestamp-columns-in-mysql-4-0												  
     //$nuke_db->sql_query("UPDATE ".$prefix."_config(datePublished, dateModified) values(null, null)");
 	
-	$cache->delete('nukeconfig', 'config');
-    $cache->delete('evoconfig', 'config');
+	$nuke_cache->delete('nukeconfig', 'config');
+    $nuke_cache->delete('evoconfig', 'config');
     nuke_redirect($admin_file.'.php?op=Configure&sub='.$sub);
 }
 

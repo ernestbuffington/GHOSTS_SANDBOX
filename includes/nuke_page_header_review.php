@@ -187,8 +187,8 @@ if ( $total_online_users > $board_config['record_online_users'])
 /*****['BEGIN']******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    global $cache;
-    $cache->delete('board_config', 'config');
+    global $nuke_cache;
+    $nuke_cache->delete('board_config', 'config');
 /*****['END']********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

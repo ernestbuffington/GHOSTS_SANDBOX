@@ -29,35 +29,35 @@ function evouserinfo_parse_data($data) {
 }
 
 function evouserinfo_getactive () {
-    global $prefix, $nuke_db, $lang_evo_userblock, $cache;
+    global $prefix, $nuke_db, $lang_evo_userblock, $nuke_cache;
     static $active;
     if(isset($active) && is_array($active)) return $active;
     
-    if ((($active = $cache->load('active', 'evouserinfo')) === false) || !isset($active)) {
+    if ((($active = $nuke_cache->load('active', 'evouserinfo')) === false) || !isset($active)) {
         $sql = 'SELECT * FROM '.$prefix.'_evo_userinfo WHERE active=1 ORDER BY position ASC';
         $result = $nuke_db->sql_query($sql);
         while($row = $nuke_db->sql_fetchrow($result)) {
             $active[] = $row;
         }
         $nuke_db->sql_freeresult($result);
-        $cache->save('active', 'evouserinfo', $active);
+        $nuke_cache->save('active', 'evouserinfo', $active);
     }
     return $active;
 }
 
 function evouserinfo_getinactive () {
-    global $prefix, $nuke_db, $lang_evo_userblock, $cache;
+    global $prefix, $nuke_db, $lang_evo_userblock, $nuke_cache;
     static $inactive;
     if(isset($inactive) && is_array($inactive)) return $inactive;
     
-    if ((($inactive = $cache->load('inactive', 'evouserinfo')) === false) || !isset($inactive)) {
+    if ((($inactive = $nuke_cache->load('inactive', 'evouserinfo')) === false) || !isset($inactive)) {
         $sql = 'SELECT * FROM `'.$prefix.'_evo_userinfo` WHERE `active`=0 ORDER BY `position` ASC';
         $result = $nuke_db->sql_query($sql);
         while($row = $nuke_db->sql_fetchrow($result)) {
             $inactive[] = $row;
         }
         $nuke_db->sql_freeresult($result);
-        $cache->save('inactive', 'evouserinfo', $inactive);
+        $nuke_cache->save('inactive', 'evouserinfo', $inactive);
     }
     return $inactive;
 }

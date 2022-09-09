@@ -314,10 +314,10 @@ function title_and_meta_tags()
 function get_titanium_version_information($version_check_url, $local_cache_location, $force_refresh=false) 
 {
 	$url = $version_check_url;
-	$cache = $local_cache_location.'json.cache';
+	$nuke_cache = $local_cache_location.'json.cache';
 	$refresh = 24 * 60 * 60; # check for a new version once a day. // 24 * 60 * 60
 
-	if ($force_refresh || ((time() - filectime($cache)) > ($refresh) || 0 == filesize($cache))):
+	if ($force_refresh || ((time() - filectime($nuke_cache)) > ($refresh) || 0 == filesize($nuke_cache))):
 
 		# create a new cURL resource
 		$ch = curl_init();
@@ -338,13 +338,13 @@ function get_titanium_version_information($version_check_url, $local_cache_locat
 		$jsoncache 	= $response;
 
 		# Insert json information into a locally stored file, This will prevent slow page load time from slow hosts.
-		$handle = fopen($cache,'wb') or die('no fopen');	
+		$handle = fopen($nuke_cache,'wb') or die('no fopen');	
 		fwrite($handle,$jsoncache);
 		fclose($handle);
 
 	else:
 		# Retrieve the json cache from the locally stored file
-		$jsoncache = file_get_contents($cache);
+		$jsoncache = file_get_contents($nuke_cache);
 	endif;
 
 	$jsonobject = json_decode($jsoncache,true);

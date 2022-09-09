@@ -39,13 +39,13 @@ if(!preg_match("/\./","$lang") AND file_exists(NUKE_LANGUAGE_DIR.'cblocks/lang-'
 }
 
 function cb_blocks($rid) {
-    global $prefix, $nuke_db, $cache;
+    global $prefix, $nuke_db, $nuke_cache;
     static $cb_blocks;
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v1.0.0 ]
  ******************************************************/
     if(!isset($cb_blocks)) {
-        if(!($cb_blocks = $cache->load('cb_blocks', 'config'))) {
+        if(!($cb_blocks = $nuke_cache->load('cb_blocks', 'config'))) {
 /*****[END]********************************************
  [ Base:    Caching System                     v1.0.0 ]
  ******************************************************/
@@ -57,7 +57,7 @@ function cb_blocks($rid) {
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v1.0.0 ]
  ******************************************************/
-            $cache->save('cb_blocks', 'config', $cb_blocks);
+            $nuke_cache->save('cb_blocks', 'config', $cb_blocks);
         }
 /*****[END]********************************************
  [ Base:    Caching System                     v1.0.0 ]

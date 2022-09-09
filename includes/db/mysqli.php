@@ -192,7 +192,7 @@ class sql_db
 	}
 
     function check_query($query) {
-        global $prefix, $cache;
+        global $prefix, $nuke_cache;
         if (!stristr($query, "UPDATE") && !stristr($query, "INSERT") && !stristr($query, "DELETE")) { return; }
         $tables = array(
                       'nukeconfig' => $prefix . '_config',
@@ -205,7 +205,7 @@ class sql_db
         foreach( $tables as $file => $table )
         {
             if (stristr($query, $table)) {
-				$cache->delete($file, 'config');
+				$nuke_cache->delete($file, 'config');
             }
         }
         return;

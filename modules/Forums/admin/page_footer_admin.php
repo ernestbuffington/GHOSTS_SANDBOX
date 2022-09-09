@@ -29,7 +29,7 @@ if (!defined('IN_PHPBB2'))
     die('Hacking attempt');
 }
 
-global $do_gzip_compress, $template, $cache, $nuke_userdata, $nuke_db, $lang, $board_config;
+global $do_gzip_compress, $template, $nuke_cache, $nuke_userdata, $nuke_db, $lang, $board_config;
 //
 // Show the overall footer.
 //
@@ -47,7 +47,7 @@ $template->pparse('page_footer');
 //
 // Resync changed chache
 //
-$cache->resync();
+$nuke_cache->resync();
 
 //
 // Close our DB connection.

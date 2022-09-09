@@ -46,7 +46,7 @@ $version_info = evo_get_version_curl($postdata);
  ******************************************************/
 function version_check()
 {
-	global $nuke_db, $prefix, $cache, $json, $evoconfig, $version_info, $admlang;
+	global $nuke_db, $prefix, $nuke_cache, $json, $evoconfig, $version_info, $admlang;
 	
 	if (is_array($version_info)):
 	
@@ -67,7 +67,7 @@ function version_check()
 			$ret_ver = $version_info['current_version'];
 			$nuke_db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='".time()."' WHERE evo_field='ver_check'");
 			$nuke_db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='".$ret_ver."' WHERE evo_field='ver_previous'");
-			$cache->delete('evoconfig');
+			$nuke_cache->delete('evoconfig');
 
 		else:
 			title($admlang['versions']['version_checked'].' '.date('Y-m-d', $Version_Check).' @'.date('H:i', $Version_Check));
@@ -107,7 +107,7 @@ function evo_get_version_curl($postdata)
 }
 
 function evo_compare(){
-    global $nuke_db, $prefix, $cache;
+    global $nuke_db, $prefix, $nuke_cache;
 
     $check = evo_check_version();
     if ($check == 0){
@@ -116,7 +116,7 @@ function evo_compare(){
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $cache->delete('evoconfig');
+        $nuke_cache->delete('evoconfig');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

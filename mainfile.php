@@ -258,10 +258,16 @@ define('TITANIUM_FORUMS_DIR', TITANIUM_MODULES_DIR . 'Forums/');
 define('TITANIUM_FORUMS_ADMIN_DIR', TITANIUM_FORUMS_DIR . 'admin/');
 define('TITANIUM_FORUMS_ADMIN_HREF_DIR', $href_path . '/modules/Forums/admin/');
 
-# FORUMS Directory
+# Directory
+define('NUKE_HREF_BB3_DIR', $href_path . '/modules/phpBB3/'); 
+define('NUKE_PHBB3_DIR', TITANIUM_BASE_DIR . 'modules/phpBB3/');
+define('NUKE_PHBB3_IMAGES_DIR', $href_path . '/modules/phpBB3/images/');
+
+# FORUMS phpBB3
 define('NUKE_PHPBB3_DIR', TITANIUM_MODULES_DIR . 'phpbb3/');
-define('TITANIUM_FORUMS_ADMIN_DIR', NUKE_PHPBB3_DIR . 'adm/');
-define('TITANIUM_FORUMS_ADMIN_HREF_DIR', $href_path . '/modules/phpbb3/admn/');
+define('NUKE_FORUMS_ADMIN_DIR', NUKE_PHPBB3_DIR . 'adm/');
+define('NUKE_FORUMS_ADMIN_HREF_DIR', $href_path . '/modules/phpbb3/admn/');
+
 
 # OTHER Directories
 define('TITANIUM_RSS_DIR', TITANIUM_INCLUDE_DIR . 'rss/');
@@ -286,7 +292,10 @@ define('NUKE_ADMIN_DIR', NUKE_BASE_DIR . 'admin/');
 define('NUKE_RSS_DIR', NUKE_INCLUDE_DIR . 'rss/');
 define('NUKE_DB_DIR', NUKE_INCLUDE_DIR . 'db/');
 define('NUKE_ADMIN_MODULE_DIR', NUKE_ADMIN_DIR . 'modules/');
+
 define('NUKE_PHPBB2_DIR', (defined("IN_ADMIN") ? './../' : 'modules/Forums/'));
+define('NUKE_PHPBB3_DIR', (defined("IN_ADMIN") ? './../' : 'modules/phpBB3/'));
+
 define('NUKE_CACHE_DIR', NUKE_INCLUDE_DIR . 'cache/');
 define('NUKE_CLASSES_DIR', NUKE_INCLUDE_DIR . 'classes/');
 define('NUKE_ZEND_DIR', NUKE_INCLUDE_DIR . 'Zend/');
@@ -450,8 +459,8 @@ nuke_redirect(str_replace('.php/', '.php', $_SERVER['REQUEST_URI']));
 
 include_once(NUKE_MODULES_DIR.'Your_Account/includes/mainfileend.php');
 
-if(isset($_POST['clear_cache']))
-$cache->clear();
+if(isset($_POST['nuke_clear_cache']))
+$nuke_cache->clear();
 
 define('NUKE_FILE', true);
 $nuke_dbi = $nuke_db->db_connect_id;
@@ -528,7 +537,7 @@ $queries_count = intval($evoconfig['queries_count']);
 $adminssl = intval($evoconfig['adminssl']);
 $censor_words = $evoconfig['censor_words'];
 $censor = intval($evoconfig['censor']);
-$usrclearcache = intval($evoconfig['usrclearcache']);
+$nuke_usrclearcache = intval($evoconfig['nuke_usrclearcache']);
 $use_colors = intval($evoconfig['use_colors']);
 $lazy_tap = intval($evoconfig['lazy_tap']);
 $img_resize = intval($evoconfig['img_resize']);
@@ -755,20 +764,20 @@ function title($text)
 
 function is_active($module) 
 {
-    global $prefix, $nuke_db, $cache;
+    global $prefix, $nuke_db, $nuke_cache;
     static $active_modules;
     
 	if (is_array($active_modules)) 
     return(isset($active_modules[$module]) ? 1 : 0);
     
-	if ((($active_modules = $cache->load('active_modules', 'config')) === false) || empty($active_modules)):
+	if ((($active_modules = $nuke_cache->load('active_modules', 'config')) === false) || empty($active_modules)):
 		$active_modules = array();
         $result = $nuke_db->sql_query('SELECT `title` FROM `'.$prefix.'_modules` WHERE `active`="1"');
 		while(list($title) = $nuke_db->sql_fetchrow($result, SQL_NUM)):
             $active_modules[$title] = 1;
         endwhile;
 		$nuke_db->sql_freeresult($result);
-        $cache->save('active_modules', 'config', $active_modules);
+        $nuke_cache->save('active_modules', 'config', $active_modules);
     endif;
 	return (isset($active_modules[$module]) ? 1 : 0);
 }
@@ -847,19 +856,19 @@ function blocks_visible($side)
 }
 
 function blocks($side, $count=false) {
-    global $prefix, $multilingual, $currentlang, $nuke_db, $nuke_userinfo, $cache;
+    global $prefix, $multilingual, $currentlang, $nuke_db, $nuke_userinfo, $nuke_cache;
     static $blocks;
 
     $querylang = ($multilingual) ? 'AND (`blanguage`="'.$currentlang.'" OR `blanguage`="")' : '';
     $side = strtolower($side[0]);
-    if((($blocks = $cache->load('blocks', 'config')) === false) || !isset($blocks)) {
+    if((($blocks = $nuke_cache->load('blocks', 'config')) === false) || !isset($blocks)) {
         $sql = 'SELECT * FROM `'.$prefix.'_blocks` WHERE `active`="1" '.$querylang.' ORDER BY `weight` ASC';
         $result = $nuke_db->sql_query($sql);
         while($row = $nuke_db->sql_fetchrow($result, SQL_ASSOC)) {
             $blocks[$row['bposition']][] = $row;
         }
         $nuke_db->sql_freeresult($result);
-        $cache->save('blocks', 'config', $blocks);
+        $nuke_cache->save('blocks', 'config', $blocks);
     }
     if ($count) {
         return (isset($blocks[$side]) ? count($blocks[$side]) : 0);
@@ -883,11 +892,11 @@ function blocks($side, $count=false) {
         if ($expire != 0 AND $expire <= $now) {
             if ($action == 'd') {
                 $nuke_db->sql_query('UPDATE `'.$prefix.'_blocks` SET `active`="0", `expire`="0" WHERE `bid`="'.$bid.'"');
-                $cache->delete('blocks', 'config');
+                $nuke_cache->delete('blocks', 'config');
                 return;
             } elseif ($action == 'r') {
                 $nuke_db->sql_query('DELETE FROM `'.$prefix.'_blocks` WHERE `bid`="'.$bid.'"');
-                $cache->delete('blocks', 'config');
+                $nuke_cache->delete('blocks', 'config');
                 return;
             }
         }if (empty($blockrow[$i]['bkey'])) {
@@ -985,7 +994,7 @@ function rss_content($url)
 
 function headlines($bid, $side=0, $row='') 
 {
-    global $prefix, $nuke_db, $my_headlines, $cache;
+    global $prefix, $nuke_db, $my_headlines, $nuke_cache;
 
     if(!$my_headlines) 
 	return;
@@ -1001,7 +1010,7 @@ function headlines($bid, $side=0, $row='')
         $content = rss_content($row['url']);
         $btime = time();
         $nuke_db->sql_query("UPDATE `".$prefix."_blocks` SET `content`='".Fix_Quotes($content)."', `time`='$btime' WHERE `bid`='$bid'");
-        $cache->delete('blocks', 'config');
+        $nuke_cache->delete('blocks', 'config');
     endif;
 
     if (empty($content)) 
@@ -1740,9 +1749,9 @@ function encode_mail($email)
 # get username color
 function UsernameColor($nuke_username, $old_name=false) 
 {
-    global $nuke_db, $nuke_user_prefix, $use_colors, $cache;
+    global $nuke_db, $nuke_user_prefix, $use_colors, $nuke_cache;
 
-    static $cached_names;
+    static $nuke_cached_names;
 
     if($old_name) 
 	$nuke_username = $old_name; 
@@ -1752,42 +1761,42 @@ function UsernameColor($nuke_username, $old_name=false)
 
     $plain_username = strtolower($nuke_username);
 
-    if(isset($cached_names[$plain_username])) 
-    return $cached_names[$plain_username];
+    if(isset($nuke_cached_names[$plain_username])) 
+    return $nuke_cached_names[$plain_username];
     
-    if(!is_array($cached_names)) 
-    $cached_names = $cache->load('UserColors', 'config');
+    if(!is_array($nuke_cached_names)) 
+    $nuke_cached_names = $nuke_cache->load('UserColors', 'config');
     
-    if (!isset($cached_names[$plain_username])):
+    if (!isset($nuke_cached_names[$plain_username])):
           
 		    list($nuke_user_color, $uname) = $nuke_db->sql_ufetchrow("SELECT `user_color_gc`, `username` FROM `" . $nuke_user_prefix . "_users` WHERE `username` = '" . str_replace("'", "\'", $nuke_username) . "'", SQL_NUM);
             $uname = (!empty($uname)) ? $uname : $nuke_username;
             $nuke_username = (strlen($nuke_user_color) == 6) ? '<span style="color: #'. $nuke_user_color .'">'. $uname .'</span>' : $uname;
-            $cached_names[$plain_username] = $nuke_username;
-            $cache->save('UserColors', 'config', $cached_names);
+            $nuke_cached_names[$plain_username] = $nuke_username;
+            $nuke_cache->save('UserColors', 'config', $nuke_cached_names);
 	endif;
 
-    return $cached_names[$plain_username];
+    return $nuke_cached_names[$plain_username];
 }
 
 # get group color
 function GroupColor($group_name, $short=0) 
 {
-    global $nuke_db, $use_colors, $cache;
+    global $nuke_db, $use_colors, $nuke_cache;
 
-    static $cached_groups;
+    static $nuke_cached_groups;
 
     if(!$use_colors) 
 	return $group_name;
     
 	$plaingroupname = ( $short !=0 ) ? $group_name.'_short' : $group_name;
     
-	if (!empty($cached_groups[$plaingroupname])) 
-    return $cached_groups[$plaingroupname];
+	if (!empty($nuke_cached_groups[$plaingroupname])) 
+    return $nuke_cached_groups[$plaingroupname];
     
-    if ((($cached_groups = $cache->load('GroupColors', 'config')) === false) || empty($cached_groups)) :
+    if ((($nuke_cached_groups = $nuke_cache->load('GroupColors', 'config')) === false) || empty($nuke_cached_groups)) :
         
-		$cached_groups = array();
+		$nuke_cached_groups = array();
         
 		$sql = 'SELECT `auc`.`group_color` as `group_color`, `gr`.`group_name` as`group_name` FROM ( `'.NUKE_GROUPS_TABLE.'` `gr` LEFT JOIN  `' . NUKE_AUC_TABLE . '` `auc` ON `gr`.`group_color` =  `auc`.`group_id`) WHERE `gr`.`group_description` <> "Personal User" ORDER BY `gr`.`group_name` ASC';
         
@@ -1796,17 +1805,17 @@ function GroupColor($group_name, $short=0)
 	     while (list($group_color, $groupcolor_name) = $nuke_db->sql_fetchrow($result)): 
             $colorgroup_short = (strlen($groupcolor_name) > 13) ? substr($groupcolor_name,0,10).'...' : $groupcolor_name;
             $colorgroup_name  = $groupcolor_name;
-            $cached_groups[$groupcolor_name.'_short'] = (strlen($group_color) == 6) ? '<span style="color: #'. $group_color .'"><strong>'. $colorgroup_short .'</strong></span>' : $colorgroup_short;
-            $cached_groups[$groupcolor_name] = (strlen($group_color) == 6) ? '<span style="color: #'. $group_color .'"><strong>'. $colorgroup_name .'</strong></span>' : $colorgroup_name;
+            $nuke_cached_groups[$groupcolor_name.'_short'] = (strlen($group_color) == 6) ? '<span style="color: #'. $group_color .'"><strong>'. $colorgroup_short .'</strong></span>' : $colorgroup_short;
+            $nuke_cached_groups[$groupcolor_name] = (strlen($group_color) == 6) ? '<span style="color: #'. $group_color .'"><strong>'. $colorgroup_name .'</strong></span>' : $colorgroup_name;
          endwhile;
     
 	    $nuke_db->sql_freeresult($result);
-        $cache->save('GroupColors', 'config', $cached_groups);
+        $nuke_cache->save('GroupColors', 'config', $nuke_cached_groups);
     
 	endif;
     
-	if (!empty($cached_groups[$plaingroupname])) 
-    return $cached_groups[$plaingroupname];
+	if (!empty($nuke_cached_groups[$plaingroupname])) 
+    return $nuke_cached_groups[$plaingroupname];
     else 
     return $plaingroupname;
 }

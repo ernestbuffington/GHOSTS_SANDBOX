@@ -6,19 +6,19 @@ class HTMLPurifier_DefinitionCache_Decorator extends HTMLPurifier_DefinitionCach
     /**
      * Cache object we are decorating
      */
-    public $cache;
+    public $nuke_cache;
 
     public function __construct() {}
 
     /**
      * Lazy decorator function
-     * @param $cache Reference to cache object to decorate
+     * @param $nuke_cache Reference to cache object to decorate
      */
-    public function decorate(&$cache) {
+    public function decorate(&$nuke_cache) {
         $decorator = $this->copy();
         // reference is necessary for mocks in PHP 4
-        $decorator->cache =& $cache;
-        $decorator->type  = $cache->type;
+        $decorator->cache =& $nuke_cache;
+        $decorator->type  = $nuke_cache->type;
         return $decorator;
     }
 

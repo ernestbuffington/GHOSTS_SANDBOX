@@ -37,7 +37,7 @@ if (!defined('IN_PHPBB2'))
 //
 // Show the overall footer.
 //
-global $popup, $admin_file, $cache;
+global $popup, $admin_file, $nuke_cache;
 $admin_link = ( $nuke_userdata['user_level'] == NUKE_ADMIN ) ? '<a href="modules/Forums/admin/index.php">' . $lang['Admin_panel'] . '</a><br /><br />' : '';
 
 /*****[BEGIN]******************************************
@@ -92,7 +92,7 @@ CloseTable();
 if ($popup != 1) {
     include_once("footer.php");
 } else {
-     $cache->resync();
+     $nuke_cache->resync();
      $nuke_db->sql_close();
 }
 

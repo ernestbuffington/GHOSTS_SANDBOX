@@ -89,7 +89,7 @@ if (is_mod_admin())
 
     function log_clear($file) 
     {
-        global $nuke_db, $prefix, $admin_file, $cache, $admlang;
+        global $nuke_db, $prefix, $admin_file, $nuke_cache, $admlang;
 
         echo "<div align='center'>";
         echo "".$admlang['logs']['cleared']."<br /><br />";
@@ -109,7 +109,7 @@ if (is_mod_admin())
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-                $cache->delete('nukeconfig');
+                $nuke_cache->delete('nukeconfig');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

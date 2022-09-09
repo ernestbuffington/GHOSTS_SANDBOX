@@ -191,8 +191,8 @@ else
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-                $cache->delete('nukeconfig');
-                $cache->delete('board_config');
+                $nuke_cache->delete('nukeconfig');
+                $nuke_cache->delete('board_config');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

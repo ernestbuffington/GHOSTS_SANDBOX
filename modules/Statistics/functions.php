@@ -10,7 +10,7 @@ $nowmonth = $now[1];
 $nowyear = $now[2];
 
 function Stats_Main() {
-    global $prefix, $nuke_db, $startdate, $sitename, $ThemeSel, $nuke_user_prefix, $module_name, $cache;
+    global $prefix, $nuke_db, $startdate, $sitename, $ThemeSel, $nuke_user_prefix, $module_name, $nuke_cache;
     $result  = $nuke_db->sql_query('SELECT `type`, `var`, `count` FROM `'.$prefix.'_counter` ORDER BY `count` DESC, var');
     $browser = $os = array();
     $totalos = $totalbr = 0;
@@ -25,9 +25,9 @@ function Stats_Main() {
     }
     list($totalbr) = $nuke_db->sql_fetchrow($nuke_db->sql_query('SELECT SUM(hits) FROM `'.$prefix.'_stats_hour`'));
     $nuke_db->sql_freeresult($result);
-    if ((($m_size = $cache->load('m_size', 'config')) === false) || empty($m_size)) {
+    if ((($m_size = $nuke_cache->load('m_size', 'config')) === false) || empty($m_size)) {
         $m_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/mainbar.gif');
-        $cache->save('m_size', 'config', $m_size);
+        $nuke_cache->save('m_size', 'config', $m_size);
     }
     OpenTable();
     echo '<table class="forumline" cellspacing="1" width="100%">
@@ -174,18 +174,18 @@ function DailyStats($year, $month, $date) {
 }
 
 function showYearStats($nowyear) {
-    global $prefix, $nuke_db, $ThemeSel, $module_name, $cache;
-    if ((($m_size = $cache->load('m_size', 'config')) === false) || empty($m_size)) {
+    global $prefix, $nuke_db, $ThemeSel, $module_name, $nuke_cache;
+    if ((($m_size = $nuke_cache->load('m_size', 'config')) === false) || empty($m_size)) {
         $m_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/mainbar.gif');
-        $cache->save('m_size', 'config', $m_size);
+        $nuke_cache->save('m_size', 'config', $m_size);
     }
-    if ((($l_size = $cache->load('l_size', 'config')) === false) || empty($l_size)) {
+    if ((($l_size = $nuke_cache->load('l_size', 'config')) === false) || empty($l_size)) {
         $l_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/leftbar.gif');
-        $cache->save('l_size', 'config', $l_size);
+        $nuke_cache->save('l_size', 'config', $l_size);
     }
-    if ((($r_size = $cache->load('r_size', 'config')) === false) || empty($r_size)) {
+    if ((($r_size = $nuke_cache->load('r_size', 'config')) === false) || empty($r_size)) {
         $r_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/rightbar.gif');
-        $cache->save('r_size', 'config', $r_size);
+        $nuke_cache->save('r_size', 'config', $r_size);
     }
     list($TotalHitsYear) = $nuke_db->sql_ufetchrow("SELECT SUM(hits) AS TotalHitsYear FROM `".$prefix."_stats_hour`");
     $result = $nuke_db->sql_query("SELECT `year`, SUM(hits) FROM `".$prefix."_stats_hour` GROUP BY `year` ORDER BY year");
@@ -215,18 +215,18 @@ function showYearStats($nowyear) {
 }
 
 function showMonthStats($nowyear, $nowmonth) {
-    global $prefix, $nuke_db, $ThemeSel, $module_name, $cache;
-    if ((($m_size = $cache->load('m_size', 'config')) === false) || empty($m_size)) {
+    global $prefix, $nuke_db, $ThemeSel, $module_name, $nuke_cache;
+    if ((($m_size = $nuke_cache->load('m_size', 'config')) === false) || empty($m_size)) {
         $m_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/mainbar.gif');
-        $cache->save('m_size', 'config', $m_size);
+        $nuke_cache->save('m_size', 'config', $m_size);
     }
-    if ((($l_size = $cache->load('l_size', 'config')) === false) || empty($l_size)) {
+    if ((($l_size = $nuke_cache->load('l_size', 'config')) === false) || empty($l_size)) {
         $l_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/leftbar.gif');
-        $cache->save('l_size', 'config', $l_size);
+        $nuke_cache->save('l_size', 'config', $l_size);
     }
-    if ((($r_size = $cache->load('r_size', 'config')) === false) || empty($r_size)) {
+    if ((($r_size = $nuke_cache->load('r_size', 'config')) === false) || empty($r_size)) {
         $r_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/rightbar.gif');
-        $cache->save('r_size', 'config', $r_size);
+        $nuke_cache->save('r_size', 'config', $r_size);
     }
     list($TotalHitsMonth) = $nuke_db->sql_ufetchrow("SELECT sum(hits) AS TotalHitsMonth FROM `".$prefix."_stats_hour` WHERE `year`='$nowyear'");
     echo '<table class="forumline" cellspacing="1" width="100%">
@@ -256,18 +256,18 @@ function showMonthStats($nowyear, $nowmonth) {
 }
 
 function showDailyStats($year, $month, $nowdate) {
-    global $prefix, $nuke_db, $ThemeSel, $module_name, $cache;
-    if ((($m_size = $cache->load('m_size', 'config')) === false) || empty($m_size)) {
+    global $prefix, $nuke_db, $ThemeSel, $module_name, $nuke_cache;
+    if ((($m_size = $nuke_cache->load('m_size', 'config')) === false) || empty($m_size)) {
         $m_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/mainbar.gif');
-        $cache->save('m_size', 'config', $m_size);
+        $nuke_cache->save('m_size', 'config', $m_size);
     }
-    if ((($l_size = $cache->load('l_size', 'config')) === false) || empty($l_size)) {
+    if ((($l_size = $nuke_cache->load('l_size', 'config')) === false) || empty($l_size)) {
         $l_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/leftbar.gif');
-        $cache->save('l_size', 'config', $l_size);
+        $nuke_cache->save('l_size', 'config', $l_size);
     }
-    if ((($r_size = $cache->load('r_size', 'config')) === false) || empty($r_size)) {
+    if ((($r_size = $nuke_cache->load('r_size', 'config')) === false) || empty($r_size)) {
         $r_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/rightbar.gif');
-        $cache->save('r_size', 'config', $r_size);
+        $nuke_cache->save('r_size', 'config', $r_size);
     }
 
     $result = $nuke_db->sql_query("SELECT `date`, SUM(hits) as `hits` FROM `".$prefix."_stats_hour` WHERE `year`='$year' AND `month`='$month' GROUP BY `date` ORDER BY `date`");
@@ -316,18 +316,18 @@ function showDailyStats($year, $month, $nowdate) {
 }
 
 function showHourlyStats($year, $month, $date) {
-    global $prefix, $nuke_db, $ThemeSel, $module_name, $cache;
-    if ((($m_size = $cache->load('m_size', 'config')) === false) || empty($m_size)) {
+    global $prefix, $nuke_db, $ThemeSel, $module_name, $nuke_cache;
+    if ((($m_size = $nuke_cache->load('m_size', 'config')) === false) || empty($m_size)) {
         $m_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/mainbar.gif');
-        $cache->save('m_size', 'config', $m_size);
+        $nuke_cache->save('m_size', 'config', $m_size);
     }
-    if ((($l_size = $cache->load('l_size', 'config')) === false) || empty($l_size)) {
+    if ((($l_size = $nuke_cache->load('l_size', 'config')) === false) || empty($l_size)) {
         $l_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/leftbar.gif');
-        $cache->save('l_size', 'config', $l_size);
+        $nuke_cache->save('l_size', 'config', $l_size);
     }
-    if ((($r_size = $cache->load('r_size', 'config')) === false) || empty($r_size)) {
+    if ((($r_size = $nuke_cache->load('r_size', 'config')) === false) || empty($r_size)) {
         $r_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/rightbar.gif');
-        $cache->save('r_size', 'config', $r_size);
+        $nuke_cache->save('r_size', 'config', $r_size);
     }
     list($TotalHitsHour) = $nuke_db->sql_ufetchrow('SELECT SUM(hits) AS TotalHitsHour FROM `'.$prefix."_stats_hour` WHERE `year`='$year' AND `month`='$month' AND `date`='$date'");
     $nowdate = date('d-m-Y');

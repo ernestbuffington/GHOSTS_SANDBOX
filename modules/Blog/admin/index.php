@@ -133,7 +133,7 @@ function puthome($ihome, $acomm)
 
 function deleteStory($qid) 
 {
-    global $prefix, $nuke_db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $nuke_cache;
     $qid = intval($qid);
     $result = $nuke_db->sql_query("delete from ".$prefix."_queue where qid='$qid'");
 
@@ -143,7 +143,7 @@ function deleteStory($qid)
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $cache->delete('numwaits', 'submissions');
+    $nuke_cache->delete('numwaits', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -1537,7 +1537,7 @@ function postStory($automated,
 				  $optionText, 
 				     $assotop) 
 {
-    global $aid, $admin_file, $ultramode, $prefix, $nuke_db, $nuke_user_prefix, $Version_Num, $ne_config, $adminmail, $sitename, $nukeurl, $cache;
+    global $aid, $admin_file, $ultramode, $prefix, $nuke_db, $nuke_user_prefix, $Version_Num, $ne_config, $adminmail, $sitename, $nukeurl, $nuke_cache;
 
     // Copyright (c) 2000-2005 by NukeScripts Network
     if($Version_Num >= 6.6) 
@@ -1642,7 +1642,7 @@ function postStory($automated,
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $cache->delete('numwaits', 'submissions');
+        $nuke_cache->delete('numwaits', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -3089,13 +3089,13 @@ function submissions()
 
 function subdelete() 
 {
-    global $prefix, $nuke_db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $nuke_cache;
     $nuke_db->sql_query("delete from ".$prefix."_queue");
 
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $cache->delete('numwaits', 'submissions');
+    $nuke_cache->delete('numwaits', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -3381,8 +3381,8 @@ switch($op)
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        global $cache;
-        $cache->delete('news', 'config');
+        global $nuke_cache;
+        $nuke_cache->delete('news', 'config');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

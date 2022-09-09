@@ -651,7 +651,7 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $nuke_user_id ) || ( $mod
         }
 
                 message_die(NUKE_GENERAL_MESSAGE, $message);
-                $cache->delete('forum_moderators', 'config');
+                $nuke_cache->delete('forum_moderators', 'config');
         }
 }
 else if ( ( $mode == 'user' && ( isset($_POST['username']) || $nuke_user_id ) ) || ( $mode == 'group' && $group_id ) )

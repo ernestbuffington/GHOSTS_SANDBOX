@@ -53,7 +53,7 @@ class StatisticsDB
     var $numrows_data = array();
     var $fetchrowset_data = array();
     var $fetchrow_data = array();
-    var $use_cache = FALSE;
+    var $use_nuke_cache = FALSE;
     var $curr_n_row = 0;
     var $curr_fs_row = 0;
     var $curr_f_row = 0;
@@ -67,7 +67,7 @@ class StatisticsDB
     {
     }
 
-    function begin_cached_query($cache_enabled = FALSE, $cached_data = '')
+    function begin_cached_query($nuke_cache_enabled = FALSE, $nuke_cached_data = '')
     {
         $this->db_result = array();
         $this->numrows_data = array();
@@ -76,10 +76,10 @@ class StatisticsDB
         $this->index = -1;
         $this->use_cache = FALSE;
     
-        if ($cache_enabled)
+        if ($nuke_cache_enabled)
         {
             $this->use_cache = TRUE;
-            $data = unserialize(stripslashes($cached_data));
+            $data = unserialize(stripslashes($nuke_cached_data));
             $this->numrows_data = $data->n;
             $this->fetchrowset_data = $data->fs;
             $this->fetchrow_data = $data->f;

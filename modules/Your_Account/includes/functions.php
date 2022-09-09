@@ -148,7 +148,7 @@ function ya_fixtext($ya_fixtext) {
 
 // function improved by Peter
 function ya_save_config($nuke_config_name, $nuke_config_value, $nuke_config_param=""){
-    global $prefix, $nuke_db, $cache;
+    global $prefix, $nuke_db, $nuke_cache;
     Fix_Quotes($nuke_config_value);
     if($nuke_config_param == 'html') {
         $nuke_config_name = check_html($nuke_config_name, 'nohtml');
@@ -167,13 +167,13 @@ function ya_save_config($nuke_config_name, $nuke_config_value, $nuke_config_para
 }
 
 function ya_get_configs(){
-    global $prefix, $nuke_db, $cache;
+    global $prefix, $nuke_db, $nuke_cache;
     static $ya_config;
     if(isset($ya_config)) return $ya_config;
 /*****['BEGIN']****************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    if(($ya_config = $cache->load('ya_config', 'config')) === false) {
+    if(($ya_config = $nuke_cache->load('ya_config', 'config')) === false) {
 /*****['END']******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -185,7 +185,7 @@ function ya_get_configs(){
 /*****['BEGIN']****************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-      $cache->save('ya_config', 'config', $ya_config);
+      $nuke_cache->save('ya_config', 'config', $ya_config);
     }
 /*****['END']******************************************
  [ Base:    Caching System                     v3.0.0 ]

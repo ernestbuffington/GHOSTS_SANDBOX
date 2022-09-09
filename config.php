@@ -124,7 +124,7 @@ $file_mode = 0666;
 ---------------------------------------------------------*/
 $debug = true;
 
-/*----[ $use_cache ] -----=-------------------------------
+/*----[ $use_nuke_cache ] -----=-------------------------------
 | Use caching of database fetched data                    |
 |                                                         |
 | You can choose between these options:                   |
@@ -138,7 +138,7 @@ $debug = true;
 |                                                         |
 | Default: 1 (File Cache)                                 |
 ---------------------------------------------------------*/
-$use_cache = 1;
+$use_nuke_cache = 1;
 
 /*----[ $persistency ] -----------------------------------
 | Allow persistent database connections                   |

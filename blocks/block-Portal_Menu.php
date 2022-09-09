@@ -41,7 +41,7 @@
       $nuke_userpoints, 
              $uid;
 			 
-      global $nuke_user_prefix, $def_module, $currentlang, $cache;			 
+      global $nuke_user_prefix, $def_module, $currentlang, $nuke_cache;			 
 
 
 if(file_exists(NUKE_LANGUAGE_DIR.'Menu/lang-'.$currentlang.'.php')) 
@@ -64,12 +64,12 @@ $div=0;
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-if(!($row = $cache->load('menu_row', 'block'))) 
+if(!($row = $nuke_cache->load('menu_row', 'block'))) 
 {
   $sql="SELECT t1.invisible, t2.main_module FROM ".$prefix."_menu AS t1, ".$prefix."_main AS t2 LIMIT 1";
   $result = $nuke_db->sql_query($sql);
   $row = $nuke_db->sql_fetchrow($result);
-  $cache->save('menu_row', 'block', $row);
+  $nuke_cache->save('menu_row', 'block', $row);
 }
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -152,7 +152,7 @@ $total_actions = "";
 $flagmenu = 0;  
 
 # START Caching System
-if (!($row2A = $cache->load('menu_row2', 'block'))) 
+if (!($row2A = $nuke_cache->load('menu_row2', 'block'))) 
 {
     $sql2= "SELECT groupmenu, 
 	                  module, 
@@ -170,7 +170,7 @@ if (!($row2A = $cache->load('menu_row2', 'block')))
         $row2A[] = $row2;
     } 
 
-   $cache->save('menu_row2', 'block', $row2A);
+   $nuke_cache->save('menu_row2', 'block', $row2A);
 }
 # END Caching System
  

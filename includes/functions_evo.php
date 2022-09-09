@@ -224,12 +224,12 @@ function get_mod_admins($module_name='super', $all='')
  */
 function load_nukeconfig() 
 {
-    global $nuke_db, $cache, $debugger;
+    global $nuke_db, $nuke_cache, $debugger;
     // $nukeconfig is only called once -> mainfile.php
     // mainfile.php is only loaded once. So static makes no sense
     // static $nukeconfig;
     // if(isset($nukeconfig) && is_array($nukeconfig)) { return $nukeconfig; }
-    if ((($nukeconfig = $cache->load('nukeconfig', 'config')) === false) || empty($nukeconfig)) {
+    if ((($nukeconfig = $nuke_cache->load('nukeconfig', 'config')) === false) || empty($nukeconfig)) {
         $nukeconfig = $nuke_db->sql_ufetchrow('SELECT * FROM '._NUKE_CONFIG_TABLE, SQL_ASSOC);
         if (!$nukeconfig) {
             if ($prefix != 'nuke') {
@@ -240,13 +240,13 @@ function load_nukeconfig()
             }
         }
         $nukeconfig = str_replace('\\"', '"', $nukeconfig);
-        $cache->save('nukeconfig', 'config', $nukeconfig);
+        $nuke_cache->save('nukeconfig', 'config', $nukeconfig);
         $nuke_db->sql_freeresult($nukeconfig);
     }
     if(is_array($nukeconfig)) {
         return $nukeconfig;
     } else {
-        $cache->delete('nukeconfig', 'config');
+        $nuke_cache->delete('nukeconfig', 'config');
         $debugger->handle_error('There is an error in your  nuke_config data', 'Error');
         return array();
     }
@@ -261,12 +261,12 @@ function load_nukeconfig()
  */
 function load_board_config() 
 {
-    global $nuke_db, $debugger, $currentlang, $cache;
+    global $nuke_db, $debugger, $currentlang, $nuke_cache;
     // load_board_config is only called once -> mainfile.php
     // mainfile.php is only loaded once. So static makes no sense
     //static $board_config;
     //if(isset($board_config) && is_array($board_config)) { return $board_config; }
-    if ((($board_config = $cache->load('board_config', 'config')) === false) || empty($board_config)) {
+    if ((($board_config = $nuke_cache->load('board_config', 'config')) === false) || empty($board_config)) {
         $board_config = array();
 
         $sql = "SELECT * FROM " . NUKE_CONFIG_TABLE;
@@ -277,12 +277,12 @@ function load_board_config()
             $board_config[$row['config_name']] = $row['config_value'];
         }
         $nuke_db->sql_freeresult($result);
-        $cache->save('board_config', 'config', $board_config);
+        $nuke_cache->save('board_config', 'config', $board_config);
     }
     if(is_array($board_config)) {
         return $board_config;
     } else {
-        $cache->delete('board_config', 'config');
+        $nuke_cache->delete('board_config', 'config');
         $debugger->handle_error('There is an error in your board_config data', 'Error');
         return array();
     }
@@ -297,12 +297,12 @@ function load_board_config()
  */
 function load_evoconfig() 
 {
-    global $nuke_db, $cache, $debugger;
+    global $nuke_db, $nuke_cache, $debugger;
     // load_evoconfig is only called once -> mainfile.php
     // mainfile.php is only loaded once. So static makes no sense
     //static $evoconfig;
     //if(isset($evoconfig) && is_array($evoconfig)) { return $evoconfig; }
-    if ((($evoconfig = $cache->load('evoconfig', 'config')) === false) || empty($evoconfig)) {
+    if ((($evoconfig = $nuke_cache->load('evoconfig', 'config')) === false) || empty($evoconfig)) {
         $evoconfig = array();
         $result = $nuke_db->sql_query('SELECT `evo_field`, `evo_value` FROM '._EVOCONFIG_TABLE.' WHERE `evo_field` != "cache_data"');
         while(list($evo_field, $evo_value) = $nuke_db->sql_fetchrow($result)) {
@@ -325,13 +325,13 @@ function load_evoconfig()
         }
         $evoconfig['censor_words'] = $wordrow;
 
-        $cache->save('evoconfig', 'config', $evoconfig);
+        $nuke_cache->save('evoconfig', 'config', $evoconfig);
         $nuke_db->sql_freeresult($result);
     }
     if(is_array($evoconfig)) {
         return $evoconfig;
     } else {
-        $cache->delete('evoconfig', 'config');
+        $nuke_cache->delete('evoconfig', 'config');
         $debugger->handle_error('There is an error in your evoconfig data', 'Error');
         return array();
     }
@@ -340,12 +340,12 @@ function load_evoconfig()
 // main_module function by Quake
 function main_module() 
 {
-  global $nuke_db, $cache;
+  global $nuke_db, $nuke_cache;
   static $main_module;
   if (isset($main_module)) { return $main_module; }
-    if((($main_module = $cache->load('main_module', 'config')) === false) || empty($main_module)) {
+    if((($main_module = $nuke_cache->load('main_module', 'config')) === false) || empty($main_module)) {
         list($main_module) = $nuke_db->sql_ufetchrow('SELECT main_module FROM '._MAIN_TABLE, SQL_NUM);
-      $cache->save('main_module', 'config', $main_module);
+      $nuke_cache->save('main_module', 'config', $main_module);
   }
   return $main_module;
 }
@@ -354,7 +354,7 @@ function main_module()
 function update_modules() 
 {
     // New function to add new modules and delete old ones
-    global $nuke_db, $cache;
+    global $nuke_db, $nuke_cache;
     static $updated;
     if(isset($updated)) { return $updated; }
     //Here we will pull all currently installed modules from the database
@@ -405,7 +405,7 @@ function update_modules()
             $nuke_db->sql_uquery("DELETE FROM `"._MODULES_TABLE."` WHERE `title`= '$module'");
             $result = $nuke_db->sql_uquery("OPTIMIZE TABLE `"._MODULES_TABLE."`");
             $nuke_db->sql_freeresult($result);
-            $cache->delete('active_modules');
+            $nuke_cache->delete('active_modules');
         }
     }
 
@@ -415,7 +415,7 @@ function update_modules()
 
 function UpdateCookie() 
 {
-    global $nuke_db, $prefix, $nuke_userinfo, $cache, $cookie, $identify;
+    global $nuke_db, $prefix, $nuke_userinfo, $nuke_cache, $cookie, $identify;
 
     $ip = $identify->get_ip();
     $uid = $nuke_userinfo['user_id'];
@@ -437,7 +437,7 @@ function UpdateCookie()
     /*****[BEGIN]******************************************
     [ Base:    Caching System                     v3.0.0 ]
     ******************************************************/
-    if(($ya_config = $cache->load('ya_config', 'config')) === false) 
+    if(($ya_config = $nuke_cache->load('ya_config', 'config')) === false) 
     {
         /*****[END]********************************************
         [ Base:    Caching System                     v3.0.0 ]
@@ -452,7 +452,7 @@ function UpdateCookie()
         /*****[BEGIN]******************************************
         [ Base:    Caching System                     v3.0.0 ]
         ******************************************************/
-        $cache->save('ya_config', 'config', $ya_config);
+        $nuke_cache->save('ya_config', 'config', $ya_config);
         /*****[END]********************************************
         [ Base:    Caching System                     v3.0.0 ]
         ******************************************************/
@@ -486,10 +486,10 @@ function UpdateCookie()
 // called by several files - so it makes sense to cache it (ReOrGaNiSaTiOn)
 function GetColorGroups($in_admin = false) 
 {
-    global $nuke_db, $cache;
+    global $nuke_db, $nuke_cache;
     static $ColorGroupsCache;
 
-    if((($ColorGroupsCache = $cache->load('ColorGroups', 'config')) === false) || empty($ColorGroupsCache)) 
+    if((($ColorGroupsCache = $nuke_cache->load('ColorGroups', 'config')) === false) || empty($ColorGroupsCache)) 
 	{
         $ColorGroupsCache = '';
         $result = $nuke_db->sql_query("SELECT `group_id`, `group_name`, `group_color`, `group_weight` FROM `".NUKE_AUC_TABLE."` WHERE `group_id`>'0' ORDER BY `group_weight` ASC");
@@ -500,7 +500,7 @@ function GetColorGroups($in_admin = false)
             $ColorGroupsCache .= '&nbsp;[&nbsp;<strong><a href="'. append_sid('auc_listing.php?id='. $group_id.$back) .'"><span class="genmed" style="color:#'. $group_color .';">'. $group_name .'</span></a></strong>&nbsp;]&nbsp;';
         }
         $nuke_db->sql_freeresult($result);
-        $cache->save('ColorGroups', 'config', $ColorGroupsCache);
+        $nuke_cache->save('ColorGroups', 'config', $ColorGroupsCache);
     }
     return $ColorGroupsCache;
 }
@@ -1128,8 +1128,8 @@ function GetRank($nuke_user_id)
 // nuke_redirect function by Quake
 function nuke_redirect($url, $refresh = 0) 
 {
-    global $nuke_db, $cache;
-    if(is_object($cache)) $cache->resync();
+    global $nuke_db, $nuke_cache;
+    if(is_object($nuke_cache)) $nuke_cache->resync();
     if(is_object($nuke_db)) $nuke_db->sql_close();
     $type = preg_match('/IIS|Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ? 'Refresh: '.$refresh.'; URL=' : 'Location: ';
 	$url = str_replace('&amp;', "&", $url);
@@ -1197,7 +1197,7 @@ function ord_crypt_decode($data)
 
 function add_group_attributes($nuke_user_id, $group_id) 
 {
-    global $prefix, $nuke_db, $board_config, $cache;
+    global $prefix, $nuke_db, $board_config, $nuke_cache;
 
     if ($nuke_user_id <= 2) return true;
 
@@ -1240,7 +1240,7 @@ function add_group_attributes($nuke_user_id, $group_id)
 /*****[BEGIN]******************************************
 [ Base:    Caching System                     v3.0.0 ]
 ******************************************************/
-         $cache->delete('UserColors', 'config');
+         $nuke_cache->delete('UserColors', 'config');
 /*****[END]********************************************
 [ Base:    Caching System                     v3.0.0 ]
 ******************************************************/
@@ -1250,14 +1250,14 @@ function add_group_attributes($nuke_user_id, $group_id)
 
 function remove_group_attributes($nuke_user_id, $group_id) 
 {
-    global $prefix, $nuke_db, $board_config, $cache;
+    global $prefix, $nuke_db, $board_config, $nuke_cache;
     if (empty($nuke_user_id) && !empty($group_id) && $group_id != 0) {
         $sql = "SELECT `user_id` FROM `".$prefix."_bbuser_group` WHERE `group_id`=".$group_id;
         $result = $nuke_db->sql_query($sql);
         while ($row = $nuke_db->sql_fetchrow($result)) {
             remove_group_attributes($row['user_id'], '');
         }
-        $cache->delete('UserColors', 'config');
+        $nuke_cache->delete('UserColors', 'config');
     } else if (!empty($nuke_user_id) && $nuke_user_id >= 3) {
         $sql = "UPDATE `" . $prefix . "_users`
                 SET `user_color_gc` = '',
@@ -1288,7 +1288,7 @@ function evo_site_up($url)
 
 function evo_mail($to, $subject, $content, $header='', $params='', $batch=false) 
 {
-    global $board_config, $nukeconfig, $cache;
+    global $board_config, $nukeconfig, $nuke_cache;
 	
 	// Include the swift class
     require_once(NUKE_INCLUDE_DIR.'mail/swift_required.php');
@@ -1378,43 +1378,43 @@ function evo_mail_batch($array_recipients)
 // evo_image function by ReOrGaNiSaTiOn
 function evo_image($imgfile='', $mymodule='') 
 {
-    global $currentlang, $ThemeSel, $Default_Theme, $cache;
+    global $currentlang, $ThemeSel, $Default_Theme, $nuke_cache;
     $tmp_imgfile = explode('.', $imgfile);
-    $cache_imgfile = $tmp_imgfile[0];
-    $evoimage = $cache->load($mymodule, 'EvoImage');
-    if(!empty($evoimage[$ThemeSel][$currentlang][$cache_imgfile])) {
-        return($evoimage[$ThemeSel][$currentlang][$cache_imgfile]);
+    $nuke_cache_imgfile = $tmp_imgfile[0];
+    $evoimage = $nuke_cache->load($mymodule, 'EvoImage');
+    if(!empty($evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile])) {
+        return($evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile]);
     }
 
     if (@file_exists('themes/'. $ThemeSel . '/images/' . $mymodule . '/lang_' . $currentlang . '/' . $imgfile)) {
-        $evoimage[$ThemeSel][$currentlang][$cache_imgfile] = 'themes/'.$ThemeSel."/images/$mymodule/lang_".$currentlang."/$imgfile";
+        $evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = 'themes/'.$ThemeSel."/images/$mymodule/lang_".$currentlang."/$imgfile";
     } elseif (@file_exists('themes/'. $ThemeSel . '/images/lang_' . $currentlang . '/' . $imgfile)) {
-        $evoimage[$ThemeSel][$currentlang][$cache_imgfile] = 'themes/'.$ThemeSel."/images/lang_".$currentlang."/$imgfile";
+        $evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = 'themes/'.$ThemeSel."/images/lang_".$currentlang."/$imgfile";
     } elseif (@file_exists('themes/'. $ThemeSel . '/images/' . $mymodule . '/' . $imgfile)) {
-        $evoimage[$ThemeSel][$currentlang][$cache_imgfile] = 'themes/'.$ThemeSel."/images/$mymodule/$imgfile";
+        $evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = 'themes/'.$ThemeSel."/images/$mymodule/$imgfile";
     } elseif (@file_exists('themes/'. $ThemeSel . '/images/' . $imgfile)) {
-        $evoimage[$ThemeSel][$currentlang][$cache_imgfile] = 'themes/'.$ThemeSel."/images/$imgfile";
+        $evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = 'themes/'.$ThemeSel."/images/$imgfile";
     } elseif (@file_exists('themes/'. $Default_Theme . '/images/' . $mymodule . '/lang_' . $currentlang . '/' . $imgfile)) {
-        $evoimage[$ThemeSel][$currentlang][$cache_imgfile] = 'themes/'.$Default_Theme."/images/$mymodule/lang_".$currentlang."/$imgfile";
+        $evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = 'themes/'.$Default_Theme."/images/$mymodule/lang_".$currentlang."/$imgfile";
     } elseif (@file_exists('themes/'. $Default_Theme . '/images/lang_' . $currentlang . '/' . $imgfile)) {
-        $evoimage[$ThemeSel][$currentlang][$cache_imgfile] = 'themes/'.$Default_Theme."/images/lang_".$currentlang."/$imgfile";
+        $evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = 'themes/'.$Default_Theme."/images/lang_".$currentlang."/$imgfile";
     } elseif (@file_exists('themes/'. $Default_Theme . '/images/' . $mymodule . '/' . $imgfile)) {
-        $evoimage[$ThemeSel][$currentlang][$cache_imgfile] = 'themes/'.$Default_Theme."/images/$mymodule/$imgfile";
+        $evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = 'themes/'.$Default_Theme."/images/$mymodule/$imgfile";
     } elseif (@file_exists('themes/'. $Default_Theme . '/images/' . $imgfile)) {
-        $evoimage[$ThemeSel][$currentlang][$cache_imgfile] = 'themes/'.$Default_Theme."/images/$imgfile";
+        $evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = 'themes/'.$Default_Theme."/images/$imgfile";
     } elseif (@file_exists('modules/'.  $mymodule . '/images/lang_' . $currentlang . '/' . $imgfile)) {
-        $evoimage[$ThemeSel][$currentlang][$cache_imgfile] = 'modules/'.  $mymodule ."/images/lang_".$currentlang."/$imgfile";
+        $evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = 'modules/'.  $mymodule ."/images/lang_".$currentlang."/$imgfile";
     } elseif (@file_exists('modules/'.  $mymodule . '/images/' . $imgfile)) {
-        $evoimage[$ThemeSel][$currentlang][$cache_imgfile] =  'modules/'. $mymodule ."/images/$imgfile";
+        $evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] =  'modules/'. $mymodule ."/images/$imgfile";
     } elseif (@file_exists(NUKE_IMAGES_DIR . $mymodule . '/' . $imgfile)) {
-        $evoimage[$ThemeSel][$currentlang][$cache_imgfile] = NUKE_IMAGES_BASE_DIR . $mymodule ."/$imgfile";
+        $evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = NUKE_IMAGES_BASE_DIR . $mymodule ."/$imgfile";
     } elseif (@file_exists(NUKE_IMAGES_DIR . $imgfile)) {
-        $evoimage[$ThemeSel][$currentlang][$cache_imgfile] = NUKE_IMAGES_BASE_DIR . $imgfile;
+        $evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = NUKE_IMAGES_BASE_DIR . $imgfile;
     } else {
-        $evoimage[$ThemeSel][$currentlang][$cache_imgfile] = '';
+        $evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = '';
     }
-    $cache->save($mymodule, 'EvoImage', $evoimage);
-    return($evoimage[$ThemeSel][$currentlang][$cache_imgfile]);
+    $nuke_cache->save($mymodule, 'EvoImage', $evoimage);
+    return($evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile]);
 
 }
 

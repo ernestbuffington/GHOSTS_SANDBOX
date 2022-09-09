@@ -705,14 +705,14 @@ function LinksListBrokenLinks() {
 }
 
 function LinksDelBrokenLinks($lid) {
-    global $prefix, $nuke_db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $nuke_cache;
     $lid = intval($lid);
     $nuke_db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE lid='$lid'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $cache->delete('numbrokenl', 'submissions');
-    $cache->delete('nummodreql', 'submissions');
+    $nuke_cache->delete('numbrokenl', 'submissions');
+    $nuke_cache->delete('nummodreql', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -721,13 +721,13 @@ function LinksDelBrokenLinks($lid) {
 }
 
 function LinksIgnoreBrokenLinks($lid) {
-    global $prefix, $nuke_db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $nuke_cache;
     $nuke_db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE lid='$lid' and brokenlink='1'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $cache->delete('numbrokenl', 'submissions');
-    $cache->delete('nummodreql', 'submissions');
+    $nuke_cache->delete('numbrokenl', 'submissions');
+    $nuke_cache->delete('nummodreql', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -844,7 +844,7 @@ function LinksListModRequests() {
 }
 
 function LinksChangeModRequests($requestid) {
-    global $prefix, $nuke_db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $nuke_cache;
     $requestid = intval($requestid);
     $result = $nuke_db->sql_query("SELECT requestid, lid, cid, sid, title, url, description FROM " . $prefix . "_links_modrequest WHERE requestid='$requestid'");
     while ($row = $nuke_db->sql_fetchrow($result)) {
@@ -861,8 +861,8 @@ function LinksChangeModRequests($requestid) {
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $cache->delete('numbrokenl', 'submissions');
-    $cache->delete('nummodreql', 'submissions');
+    $nuke_cache->delete('numbrokenl', 'submissions');
+    $nuke_cache->delete('nummodreql', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -870,14 +870,14 @@ function LinksChangeModRequests($requestid) {
 }
 
 function LinksChangeIgnoreRequests($requestid) {
-    global $prefix, $nuke_db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $nuke_cache;
     $requestid = intval($requestid);
     $nuke_db->sql_query("delete FROM " . $prefix . "_links_modrequest WHERE requestid=$requestid");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $cache->delete('numbrokenl', 'submissions');
-    $cache->delete('nummodreql', 'submissions');
+    $nuke_cache->delete('numbrokenl', 'submissions');
+    $nuke_cache->delete('nummodreql', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -898,7 +898,7 @@ function LinksCleanVotes() {
 }
 
 function LinksModLinkS($lid, $xtitle, $url, $description, $name, $email, $hits, $cat) {
-    global $prefix, $nuke_db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $nuke_cache;
     $cat = explode("-", $cat);
     if (empty($cat[1])) {
         $cat[1] = 0;
@@ -918,8 +918,8 @@ function LinksModLinkS($lid, $xtitle, $url, $description, $name, $email, $hits, 
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $cache->delete('numbrokenl', 'submissions');
-    $cache->delete('nummodreql', 'submissions');
+    $nuke_cache->delete('numbrokenl', 'submissions');
+    $nuke_cache->delete('nummodreql', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -928,7 +928,7 @@ function LinksModLinkS($lid, $xtitle, $url, $description, $name, $email, $hits, 
 }
 
 function LinksDelLink($lid) {
-    global $prefix, $nuke_db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $nuke_cache;
     $lid = intval($lid);
     $nuke_db->sql_query("delete FROM " . $prefix . "_links_links WHERE lid='$lid'");
     // Has the link been submitted for modification? we deleted it so let's remove it FROM the modrequest table
@@ -940,8 +940,8 @@ function LinksDelLink($lid) {
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $cache->delete('numbrokenl', 'submissions');
-    $cache->delete('nummodreql', 'submissions');
+    $nuke_cache->delete('numbrokenl', 'submissions');
+    $nuke_cache->delete('nummodreql', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -1068,13 +1068,13 @@ function LinksDelCat($cid, $sid, $sub, $ok=0) {
 }
 
 function LinksDelNew($lid) {
-    global $prefix, $nuke_db, $admin_file, $cache;
+    global $prefix, $nuke_db, $admin_file, $nuke_cache;
     $lid = intval($lid);
     $nuke_db->sql_query("delete FROM " . $prefix . "_links_newlink WHERE lid='$lid'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $cache->delete('numwaitl', 'submissions');
+    $nuke_cache->delete('numwaitl', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -1280,7 +1280,7 @@ function LinksValidate($cid, $sid, $ttitle) {
 }
 
 function LinksAddLink($new, $lid, $xtitle, $url, $cat, $description, $name, $email, $submitter) {
-    global $prefix, $nuke_db, $sitename, $nukeurl, $admin_file, $cache;
+    global $prefix, $nuke_db, $sitename, $nukeurl, $admin_file, $nuke_cache;
     $result = $nuke_db->sql_query("SELECT url FROM " . $prefix . "_links_links WHERE url='$url'");
     $numrows = $nuke_db->sql_numrows($result);
     if ($numrows>0) {
@@ -1395,7 +1395,7 @@ function LinksAddLink($new, $lid, $xtitle, $url, $cat, $description, $name, $ema
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    $cache->delete('numwaitl', 'submissions');
+    $nuke_cache->delete('numwaitl', 'submissions');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

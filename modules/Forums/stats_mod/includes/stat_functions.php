@@ -212,7 +212,7 @@ function get_num_modules($activated = true)
 }
 
 // Determine if we have to use the db cache
-function module_use_db_cache($module_id, &$cache)
+function module_use_db_cache($module_id, &$nuke_cache)
 {
     global $nuke_db, $core;
 
@@ -240,7 +240,7 @@ function module_use_db_cache($module_id, &$cache)
         return (false);
     }
 
-    $cache = trim($row['db_cache']);
+    $nuke_cache = trim($row['db_cache']);
 
     // Determine last update time to use the cache -- determine dependencies/cache priority too
     if ((intval($row['module_cache_time']) + (intval($row['update_time']) * 60)) > time())
@@ -261,9 +261,9 @@ function module_use_db_cache($module_id, &$cache)
         return (true);
     }
 
-    $cache_priority = module_cache_priority($module_id, intval($row['priority']));
+    $nuke_cache_priority = module_cache_priority($module_id, intval($row['priority']));
     
-    if ($cache_priority == HIGHEST_PRIORITY)
+    if ($nuke_cache_priority == HIGHEST_PRIORITY)
     {
         $core->module_reloaded = true;
         set_module_cache_priority($module_id, (-1));

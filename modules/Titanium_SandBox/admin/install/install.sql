@@ -2811,7 +2811,7 @@ INSERT INTO `nuke_evolution` (`evo_field`, `evo_value`) VALUES
 ('poll_days', '30'),
 ('censor_words', 'ass asshole arse bitch bullshit c0ck clit cock crap cum cunt fag faggot fuck fucker fucking fuk fuking motherfucker pussy shit tits twat'),
 ('censor', '0'),
-('usrclearcache', '0'),
+('nuke_usrclearcache', '0'),
 ('cache_last_cleared', '1536324841'),
 ('textarea', 'bbcode'),
 ('use_colors', '1'),

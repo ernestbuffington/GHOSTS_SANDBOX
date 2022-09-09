@@ -15,7 +15,7 @@ class HTMLPurifier_PropertyList
      */
     protected $parent;
 
-    protected $cache;
+    protected $nuke_cache;
 
     public function __construct($parent = null) {
         $this->parent = $parent;

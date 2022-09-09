@@ -491,14 +491,14 @@ class SimplePie
 	 * @see SimplePie::enable_cache()
 	 * @access private
 	 */
-	var $cache = false;
+	var $nuke_cache = false;
 
 	/**
 	 * @var int Cache duration (in seconds)
 	 * @see SimplePie::set_cache_duration()
 	 * @access private
 	 */
-	var $cache_duration = 3600;
+	var $nuke_cache_duration = 3600;
 
 	/**
 	 * @var int Auto-discovery cache duration (in seconds)
@@ -512,14 +512,14 @@ class SimplePie
 	 * @see SimplePie::set_cache_location()
 	 * @access private
 	 */
-	var $cache_location = './cache';
+	var $nuke_cache_location = './cache';
 
 	/**
 	 * @var string Function that creates the cache filename
 	 * @see SimplePie::set_cache_name_function()
 	 * @access private
 	 */
-	var $cache_name_function = 'md5';
+	var $nuke_cache_name_function = 'md5';
 
 	/**
 	 * @var bool Reorder feed by date descending
@@ -548,7 +548,7 @@ class SimplePie
 	 * @see SimplePie::set_cache_class()
 	 * @access private
 	 */
-	var $cache_class = 'SimplePie_Cache';
+	var $nuke_cache_class = 'SimplePie_Cache';
 
 	/**
 	 * @var string Class used for locating feeds
@@ -736,23 +736,23 @@ class SimplePie
 	 * @access public
 	 * @since 1.0 Preview Release
 	 * @param string $feed_url This is the URL you want to parse.
-	 * @param string $cache_location This is where you want the cache to be stored.
-	 * @param int $cache_duration This is the number of seconds that you want to store the cache file for.
+	 * @param string $nuke_cache_location This is where you want the cache to be stored.
+	 * @param int $nuke_cache_duration This is the number of seconds that you want to store the cache file for.
 	 */
-	function SimplePie($feed_url = null, $cache_location = null, $cache_duration = null)
+	function SimplePie($feed_url = null, $nuke_cache_location = null, $nuke_cache_duration = null)
 	{
 		// Other objects, instances created here so we can set options on them
 		$this->sanitize = new SimplePie_Sanitize;
 
 		// Set options if they're passed to the constructor
-		if ($cache_location !== null)
+		if ($nuke_cache_location !== null)
 		{
-			$this->set_cache_location($cache_location);
+			$this->set_cache_location($nuke_cache_location);
 		}
 
-		if ($cache_duration !== null)
+		if ($nuke_cache_duration !== null)
 		{
-			$this->set_cache_duration($cache_duration);
+			$this->set_cache_duration($nuke_cache_duration);
 		}
 
 		// Only init the script if we're passed a feed URL
@@ -1554,7 +1554,7 @@ function embed_wmedia(width, height, link) {
 		{
 			$this->data = array();
 			$this->multifeed_objects = array();
-			$cache = false;
+			$nuke_cache = false;
 
 			if ($this->feed_url !== null)
 			{
@@ -1562,37 +1562,37 @@ function embed_wmedia(width, height, link) {
 				// Decide whether to enable caching
 				if ($this->cache && $parsed_feed_url['scheme'] !== '')
 				{
-					$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
+					$nuke_cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
 				}
 				// If it's enabled and we don't want an XML dump, use the cache
-				if ($cache && !$this->xml_dump)
+				if ($nuke_cache && !$this->xml_dump)
 				{
 					// Load the Cache
-					$this->data = $cache->load();
+					$this->data = $nuke_cache->load();
 					if (!empty($this->data))
 					{
 						// If the cache is for an outdated build of SimplePie
 						if (!isset($this->data['build']) || $this->data['build'] != SIMPLEPIE_BUILD)
 						{
-							$cache->unlink();
+							$nuke_cache->unlink();
 							$this->data = array();
 						}
 						// If we've hit a collision just rerun it with caching disabled
 						elseif (isset($this->data['url']) && $this->data['url'] != $this->feed_url)
 						{
-							$cache = false;
+							$nuke_cache = false;
 							$this->data = array();
 						}
 						// If we've got a non feed_url stored (if the page isn't actually a feed, or is a nuke_redirect) use that URL.
 						elseif (isset($this->data['feed_url']))
 						{
 							// If the autodiscovery cache is still valid use it.
-							if ($cache->mtime() + $this->autodiscovery_cache_duration > time())
+							if ($nuke_cache->mtime() + $this->autodiscovery_cache_duration > time())
 							{
 								// Do not need to do feed autodiscovery yet.
 								if ($this->data['feed_url'] == $this->data['url'])
 								{
-									$cache->unlink();
+									$nuke_cache->unlink();
 									$this->data = array();
 								}
 								else
@@ -1603,7 +1603,7 @@ function embed_wmedia(width, height, link) {
 							}
 						}
 						// Check if the cache has been updated
-						elseif ($cache->mtime() + $this->cache_duration < time())
+						elseif ($nuke_cache->mtime() + $this->cache_duration < time())
 						{
 							// If we have last-modified and/or etag set
 							if (isset($this->data['headers']['last-modified']) || isset($this->data['headers']['etag']))
@@ -1622,7 +1622,7 @@ function embed_wmedia(width, height, link) {
 								{
 									if ($file->status_code == 304)
 									{
-										$cache->touch();
+										$nuke_cache->touch();
 										return true;
 									}
 									else
@@ -1645,7 +1645,7 @@ function embed_wmedia(width, height, link) {
 					// If the cache is empty, delete it
 					else
 					{
-						$cache->unlink();
+						$nuke_cache->unlink();
 						$this->data = array();
 					}
 				}
@@ -1685,14 +1685,14 @@ function embed_wmedia(width, height, link) {
 						unset($file);
 						if ($file = $locate->find($this->autodiscovery))
 						{
-							if ($cache)
+							if ($nuke_cache)
 							{
 								$this->data = array('url' => $this->feed_url, 'feed_url' => $file->url, 'build' => SIMPLEPIE_BUILD);
-								if (!$cache->save($this))
+								if (!$nuke_cache->save($this))
 								{
-									trigger_error("$cache->name is not writeable", E_USER_WARNING);
+									trigger_error("$nuke_cache->name is not writeable", E_USER_WARNING);
 								}
-								$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc');
+								$nuke_cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc');
 							}
 							$this->feed_url = $file->url;
 						}
@@ -1775,13 +1775,13 @@ function embed_wmedia(width, height, link) {
 			foreach ($encodings as $encoding)
 			{
 				// Change the encoding to UTF-8 (as we always use UTF-8 internally)
-				$utf8_data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
+				$nuke_utf8_data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
 
 				// Create new parser
 				$parser = new $this->parser_class();
 				
 				// If it's parsed fine
-				if ($parser->parse($utf8_data, 'UTF-8'))
+				if ($parser->parse($nuke_utf8_data, 'UTF-8'))
 				{
 					$this->data = $parser->get_data();
 					if (isset($this->data['child']))
@@ -1793,9 +1793,9 @@ function embed_wmedia(width, height, link) {
 						$this->data['build'] = SIMPLEPIE_BUILD;
 	
 						// Cache the file if caching is enabled
-						if ($cache && !$cache->save($this))
+						if ($nuke_cache && !$nuke_cache->save($this))
 						{
-							trigger_error("$cache->name is not writeable", E_USER_WARNING);
+							trigger_error("$nuke_cache->name is not writeable", E_USER_WARNING);
 						}
 						return true;
 					}
@@ -1973,9 +1973,9 @@ function embed_wmedia(width, height, link) {
 			if ($this->cache && $this->favicon_handler)
 			{
 				$favicon_filename = call_user_func($this->cache_name_function, $favicon);
-				$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, $favicon_filename, 'spi');
+				$nuke_cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, $favicon_filename, 'spi');
 
-				if ($cache->load())
+				if ($nuke_cache->load())
 				{
 					return $this->sanitize($this->favicon_handler . $favicon_filename, SIMPLEPIE_CONSTRUCT_IRI);
 				}
@@ -1988,13 +1988,13 @@ function embed_wmedia(width, height, link) {
 						$sniffer = new $this->content_type_sniffer_class($file);
 						if (substr($sniffer->get_type(), 0, 6) === 'image/')
 						{
-							if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
+							if ($nuke_cache->save(array('headers' => $file->headers, 'body' => $file->body)))
 							{
 								return $this->sanitize($this->favicon_handler . $favicon_filename, SIMPLEPIE_CONSTRUCT_IRI);
 							}
 							else
 							{
-								trigger_error("$cache->name is not writeable", E_USER_WARNING);
+								trigger_error("$nuke_cache->name is not writeable", E_USER_WARNING);
 								return $this->sanitize($favicon, SIMPLEPIE_CONSTRUCT_IRI);
 							}
 						}
@@ -8574,21 +8574,21 @@ class SimplePie_Misc
 	 * @see SimplePie::get_favicon()
 	 * @param str $identifier_url URL that is used to identify the content.
 	 * This may or may not be the actual URL of the live content.
-	 * @param str $cache_location Location of SimplePie's cache.  Defaults
+	 * @param str $nuke_cache_location Location of SimplePie's cache.  Defaults
 	 * to './cache'.
-	 * @param str $cache_extension The file extension that the file was
+	 * @param str $nuke_cache_extension The file extension that the file was
 	 * cached with.  Defaults to 'spc'.
-	 * @param str $cache_class Name of the cache-handling class being used
+	 * @param str $nuke_cache_class Name of the cache-handling class being used
 	 * in SimplePie.  Defaults to 'SimplePie_Cache', and should be left
 	 * as-is unless you've overloaded the class.
-	 * @param str $cache_name_function Obsolete. Exists for backwards
+	 * @param str $nuke_cache_name_function Obsolete. Exists for backwards
 	 * compatibility reasons only.
 	 */
-	function display_cached_file($identifier_url, $cache_location = './cache', $cache_extension = 'spc', $cache_class = 'SimplePie_Cache', $cache_name_function = 'md5')
+	function display_cached_file($identifier_url, $nuke_cache_location = './cache', $nuke_cache_extension = 'spc', $nuke_cache_class = 'SimplePie_Cache', $nuke_cache_name_function = 'md5')
 	{
-		$cache = call_user_func(array($cache_class, 'create'), $cache_location, $identifier_url, $cache_extension);
+		$nuke_cache = call_user_func(array($nuke_cache_class, 'create'), $nuke_cache_location, $identifier_url, $nuke_cache_extension);
 
-		if ($file = $cache->load())
+		if ($file = $nuke_cache->load())
 		{
 			if (isset($file['headers']['content-type']))
 			{
@@ -8640,10 +8640,10 @@ class SimplePie_Misc
 
 	function parse_url($url)
 	{
-		static $cache = array();
-		if (isset($cache[$url]))
+		static $nuke_cache = array();
+		if (isset($nuke_cache[$url]))
 		{
-			return $cache[$url];
+			return $nuke_cache[$url];
 		}
 		elseif (preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/', $url, $match))
 		{
@@ -8651,11 +8651,11 @@ class SimplePie_Misc
 			{
 				$match[$i] = '';
 			}
-			return $cache[$url] = array('scheme' => $match[2], 'authority' => $match[4], 'path' => $match[5], 'query' => $match[7], 'fragment' => $match[9]);
+			return $nuke_cache[$url] = array('scheme' => $match[2], 'authority' => $match[4], 'path' => $match[5], 'query' => $match[7], 'fragment' => $match[9]);
 		}
 		else
 		{
-			return $cache[$url] = array('scheme' => '', 'authority' => '', 'path' => '', 'query' => '', 'fragment' => '');
+			return $nuke_cache[$url] = array('scheme' => '', 'authority' => '', 'path' => '', 'query' => '', 'fragment' => '');
 		}
 	}
 
@@ -8722,7 +8722,7 @@ class SimplePie_Misc
 	 * @param string $str String to remove bad UTF-8 bytes from
 	 * @return string UTF-8 string
 	 */
-	function utf8_bad_replace($str)
+	function nuke_utf8_bad_replace($str)
 	{
 		if (function_exists('iconv') && ($return = @iconv('UTF-8', 'UTF-8//IGNORE', $str)))
 		{
@@ -8794,7 +8794,7 @@ class SimplePie_Misc
 		}
 		elseif ($input == 'UTF-8' && $output == 'windows-1252')
 		{
-			return utf8_decode($data);
+			return nuke_utf8_decode($data);
 		}
 		return $data;
 	}
@@ -10489,36 +10489,36 @@ class SimplePie_Misc
 	 */
 	function codepoint_to_utf8($codepoint)
 	{
-		static $cache = array();
+		static $nuke_cache = array();
 		$codepoint = (int) $codepoint;
-		if (isset($cache[$codepoint]))
+		if (isset($nuke_cache[$codepoint]))
 		{
-			return $cache[$codepoint];
+			return $nuke_cache[$codepoint];
 		}
 		elseif ($codepoint < 0)
 		{
-			return $cache[$codepoint] = false;
+			return $nuke_cache[$codepoint] = false;
 		}
 		else if ($codepoint <= 0x7f)
 		{
-			return $cache[$codepoint] = chr($codepoint);
+			return $nuke_cache[$codepoint] = chr($codepoint);
 		}
 		else if ($codepoint <= 0x7ff)
 		{
-			return $cache[$codepoint] = chr(0xc0 | ($codepoint >> 6)) . chr(0x80 | ($codepoint & 0x3f));
+			return $nuke_cache[$codepoint] = chr(0xc0 | ($codepoint >> 6)) . chr(0x80 | ($codepoint & 0x3f));
 		}
 		else if ($codepoint <= 0xffff)
 		{
-			return $cache[$codepoint] = chr(0xe0 | ($codepoint >> 12)) . chr(0x80 | (($codepoint >> 6) & 0x3f)) . chr(0x80 | ($codepoint & 0x3f));
+			return $nuke_cache[$codepoint] = chr(0xe0 | ($codepoint >> 12)) . chr(0x80 | (($codepoint >> 6) & 0x3f)) . chr(0x80 | ($codepoint & 0x3f));
 		}
 		else if ($codepoint <= 0x10ffff)
 		{
-			return $cache[$codepoint] = chr(0xf0 | ($codepoint >> 18)) . chr(0x80 | (($codepoint >> 12) & 0x3f)) . chr(0x80 | (($codepoint >> 6) & 0x3f)) . chr(0x80 | ($codepoint & 0x3f));
+			return $nuke_cache[$codepoint] = chr(0xf0 | ($codepoint >> 18)) . chr(0x80 | (($codepoint >> 12) & 0x3f)) . chr(0x80 | (($codepoint >> 6) & 0x3f)) . chr(0x80 | ($codepoint & 0x3f));
 		}
 		else
 		{
 			// U+FFFD REPLACEMENT CHARACTER
-			return $cache[$codepoint] = "\xEF\xBF\xBD";
+			return $nuke_cache[$codepoint] = "\xEF\xBF\xBD";
 		}
 	}
 
@@ -11411,8 +11411,8 @@ class SimplePie_Parse_Date
 		$this->day_pcre = '(' . implode(array_keys($this->day), '|') . ')';
 		$this->month_pcre = '(' . implode(array_keys($this->month), '|') . ')';
 		
-		static $cache;
-		if (!isset($cache[get_class($this)]))
+		static $nuke_cache;
+		if (!isset($nuke_cache[get_class($this)]))
 		{
 			if (extension_loaded('Reflection'))
 			{
@@ -11433,12 +11433,12 @@ class SimplePie_Parse_Date
 			{
 				if (strtolower(substr($method, 0, 5)) === 'date_')
 				{
-					$cache[get_class($this)][] = $method;
+					$nuke_cache[get_class($this)][] = $method;
 				}
 			}
 		}
 		
-		foreach ($cache[get_class($this)] as $method)
+		foreach ($nuke_cache[get_class($this)] as $method)
 		{
 			$this->built_in[] = $method;
 		}
@@ -12462,7 +12462,7 @@ class SimplePie_Locator
 	var $local = array();
 	var $elsewhere = array();
 	var $file_class = 'SimplePie_File';
-	var $cached_entities = array();
+	var $nuke_cached_entities = array();
 	var $http_base;
 	var $base;
 	var $base_location = 0;
@@ -12954,8 +12954,8 @@ class SimplePie_Parser
 
 	function split_ns($string)
 	{
-		static $cache = array();
-		if (!isset($cache[$string]))
+		static $nuke_cache = array();
+		if (!isset($nuke_cache[$string]))
 		{
 			if ($pos = strpos($string, $this->separator))
 			{
@@ -12976,14 +12976,14 @@ class SimplePie_Parser
 				{
 					$namespace = SIMPLEPIE_NAMESPACE_MEDIARSS;
 				}
-				$cache[$string] = array($namespace, $local_name);
+				$nuke_cache[$string] = array($namespace, $local_name);
 			}
 			else
 			{
-				$cache[$string] = array('', $string);
+				$nuke_cache[$string] = array('', $string);
 			}
 		}
-		return $cache[$string];
+		return $nuke_cache[$string];
 	}
 }
 
@@ -13004,9 +13004,9 @@ class SimplePie_Sanitize
 	var $strip_comments = false;
 	var $output_encoding = 'UTF-8';
 	var $enable_cache = true;
-	var $cache_location = './cache';
-	var $cache_name_function = 'md5';
-	var $cache_class = 'SimplePie_Cache';
+	var $nuke_cache_location = './cache';
+	var $nuke_cache_name_function = 'md5';
+	var $nuke_cache_class = 'SimplePie_Cache';
 	var $file_class = 'SimplePie_File';
 	var $timeout = 10;
 	var $nuke_useragent = '';
@@ -13041,26 +13041,26 @@ class SimplePie_Sanitize
 		}
 	}
 
-	function pass_cache_data($enable_cache = true, $cache_location = './cache', $cache_name_function = 'md5', $cache_class = 'SimplePie_Cache')
+	function pass_cache_data($enable_cache = true, $nuke_cache_location = './cache', $nuke_cache_name_function = 'md5', $nuke_cache_class = 'SimplePie_Cache')
 	{
 		if (isset($enable_cache))
 		{
 			$this->enable_cache = (bool) $enable_cache;
 		}
 
-		if ($cache_location)
+		if ($nuke_cache_location)
 		{
-			$this->cache_location = (string) $cache_location;
+			$this->cache_location = (string) $nuke_cache_location;
 		}
 
-		if ($cache_name_function)
+		if ($nuke_cache_name_function)
 		{
-			$this->cache_name_function = (string) $cache_name_function;
+			$this->cache_name_function = (string) $nuke_cache_name_function;
 		}
 
-		if ($cache_class)
+		if ($nuke_cache_class)
 		{
-			$this->cache_class = (string) $cache_class;
+			$this->cache_class = (string) $nuke_cache_class;
 		}
 	}
 
@@ -13235,9 +13235,9 @@ class SimplePie_Sanitize
 						if (isset($img['attribs']['src']['data']))
 						{
 							$image_url = call_user_func($this->cache_name_function, $img['attribs']['src']['data']);
-							$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, $image_url, 'spi');
+							$nuke_cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, $image_url, 'spi');
 
-							if ($cache->load())
+							if ($nuke_cache->load())
 							{
 								$img['attribs']['src']['data'] = $this->image_handler . $image_url;
 								$data = str_replace($img['full'], SimplePie_Misc::element_implode($img), $data);
@@ -13249,14 +13249,14 @@ class SimplePie_Sanitize
 
 								if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)))
 								{
-									if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
+									if ($nuke_cache->save(array('headers' => $file->headers, 'body' => $file->body)))
 									{
 										$img['attribs']['src']['data'] = $this->image_handler . $image_url;
 										$data = str_replace($img['full'], SimplePie_Misc::element_implode($img), $data);
 									}
 									else
 									{
-										trigger_error("$cache->name is not writeable", E_USER_WARNING);
+										trigger_error("$nuke_cache->name is not writeable", E_USER_WARNING);
 									}
 								}
 							}

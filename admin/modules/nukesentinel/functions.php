@@ -48,7 +48,7 @@ function abget_countrytitle($c2c){
 }
 
 function absave_config($nuke_config_name, $nuke_config_value){
-  global $prefix, $nuke_db, $cache;
+  global $prefix, $nuke_db, $nuke_cache;
   if(!get_magic_quotes_runtime()) {
     $nuke_config_name = addslashes($nuke_config_name);
     $nuke_config_value = addslashes($nuke_config_value);
@@ -62,8 +62,8 @@ function absave_config($nuke_config_name, $nuke_config_value){
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-  $cache->delete('sentinel', 'config');
-  $cache->resync();
+  $nuke_cache->delete('sentinel', 'config');
+  $nuke_cache->resync();
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

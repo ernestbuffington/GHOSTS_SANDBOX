@@ -96,7 +96,7 @@ if ( isset($HTTP_POST_VARS['submit']))
         }
       }
     }
-    $cache->delete('board_config', 'config');
+    $nuke_cache->delete('board_config', 'config');
 
     if( isset($HTTP_POST_VARS['submit']) )
     {

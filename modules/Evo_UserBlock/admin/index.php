@@ -186,7 +186,7 @@ function evouserinfo_drawlists () {
 }
 
 function evouserinfo_write ($data){
-    global $prefix, $nuke_db, $lang_evo_userblock, $cache;
+    global $prefix, $nuke_db, $lang_evo_userblock, $nuke_cache;
     
     //Clear All Previous Breaks
     $nuke_db->sql_query('DELETE FROM `'.$prefix.'_evo_userinfo` WHERE `name`="Break"');
@@ -219,9 +219,9 @@ function evouserinfo_write ($data){
                 }
             }
         }
-        $cache->delete('inactive', 'evouserinfo');
-        $cache->delete('active', 'evouserinfo');
-        $cache->resync();
+        $nuke_cache->delete('inactive', 'evouserinfo');
+        $nuke_cache->delete('active', 'evouserinfo');
+        $nuke_cache->resync();
     }
 }
 
@@ -263,10 +263,10 @@ if (isset($_POST['order']))
   nuke_redirect($admin_file.".php?op=evo-userinfo");
 }
 if (isset($_POST['evouserinfo_ec']) && is_int(intval($_POST['evouserinfo_ec']))) {
-    global $nuke_db, $prefix, $cache, $evouserinfo_ec;
+    global $nuke_db, $prefix, $nuke_cache, $evouserinfo_ec;
     $nuke_db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='".$_POST['evouserinfo_ec']."' WHERE evo_field='evouserinfo_ec'");
-    $cache->delete('evoconfig', 'config');
-    $cache->resync();
+    $nuke_cache->delete('evoconfig', 'config');
+    $nuke_cache->resync();
     $evouserinfo_ec = intval($_POST['evouserinfo_ec']);
 }
 

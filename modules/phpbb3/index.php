@@ -13,15 +13,22 @@
 
 /**
 */
+if(defined('PHPBB3_MODULE') ):
+$module_name = basename(dirname(__FILE__));
+require(NUKE_PHPBB3_DIR . 'nukebb.php');
+define('IN_PHPBB', true);
+$phpbb_root_path = (defined('NUKE_PHPBB3_DIR')) ? NUKE_PHPBB3_DIR : './';
+include(NUKE_PHPBB3_DIR . 'extension.inc');
+include(NUKE_PHPBB3_DIR . 'common.php');
+include(NUKE_PHPBB3_DIR . 'includes/functions_display.' . $phpEx);
+else:
 
-/**
-* @ignore
-*/
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+endif;
 
 // Start session management
 $user->session_begin();
@@ -251,3 +258,4 @@ $template->set_filenames(array(
 );
 
 page_footer();
+include("includes/page_tail.php");

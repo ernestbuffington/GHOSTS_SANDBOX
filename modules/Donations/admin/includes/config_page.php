@@ -90,7 +90,7 @@ function display_config()
     Notes:       Writes values to the DB
 ================================================================================================*/
 function write_values($values) {
-    global $nuke_db, $prefix, $cache;
+    global $nuke_db, $prefix, $nuke_cache;
     //Loop through values
     foreach ($values as $key => $value) {
         //Remove crap
@@ -103,8 +103,8 @@ function write_values($values) {
         $nuke_db->sql_query($sql);
     }
     //Clear the cache
-    $cache->delete('page', 'donations');
-    $cache->resync();
+    $nuke_cache->delete('page', 'donations');
+    $nuke_cache->resync();
 }
 
 /*==============================================================================================
@@ -132,10 +132,10 @@ function set_values() {
     Notes:       Will toss a DonateError if the values are not found
 ================================================================================================*/
 function get_values() {
-    global $nuke_db, $prefix, $lang_donate, $cache;
+    global $nuke_db, $prefix, $lang_donate, $nuke_cache;
     static $page;
     if(isset($page) && is_array($page)) { return $page; }
-    if (!$page = $cache->load('page', 'donations')) {
+    if (!$page = $nuke_cache->load('page', 'donations')) {
         $sql = 'SELECT config_value, config_name from '.$prefix.'_donators_config WHERE config_name LIKE "page_%"';
         if(!$result = $nuke_db->sql_query($sql)) {
             DonateError($lang_donate['VALUES_NF']);
@@ -144,7 +144,7 @@ function get_values() {
             $page[str_replace('page_', '', $row['config_name'])] = $row['config_value'];
         }
         $nuke_db->sql_freeresult($result);
-        $cache->save('page', 'donations', $page);
+        $nuke_cache->save('page', 'donations', $page);
     }
     return $page;
 }

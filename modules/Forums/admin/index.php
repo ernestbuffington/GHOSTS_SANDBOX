@@ -1006,7 +1006,7 @@ $sql = "SELECT VERSION() AS mysql_version";
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $cache->delete('board_config');
+        $nuke_cache->delete('board_config');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

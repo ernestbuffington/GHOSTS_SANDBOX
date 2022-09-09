@@ -343,19 +343,19 @@ class HTMLPurifier_Config
         $lock = $this->lock;
         $this->lock = null;
         $factory = HTMLPurifier_DefinitionCacheFactory::instance();
-        $cache = $factory->create($type, $this);
+        $nuke_cache = $factory->create($type, $this);
         $this->lock = $lock;
         if (!$raw) {
             // see if we can quickly supply a definition
             if (!empty($this->definitions[$type])) {
                 if (!$this->definitions[$type]->setup) {
                     $this->definitions[$type]->setup($this);
-                    $cache->set($this->definitions[$type], $this);
+                    $nuke_cache->set($this->definitions[$type], $this);
                 }
                 return $this->definitions[$type];
             }
             // memory check missed, try cache
-            $this->definitions[$type] = $cache->get($this);
+            $this->definitions[$type] = $nuke_cache->get($this);
             if ($this->definitions[$type]) {
                 // definition in cache, return it
                 return $this->definitions[$type];
@@ -390,7 +390,7 @@ class HTMLPurifier_Config
         $this->definitions[$type]->setup($this);
         $this->lock = null;
         // save in cache
-        $cache->set($this->definitions[$type], $this);
+        $nuke_cache->set($this->definitions[$type], $this);
         return $this->definitions[$type];
     }
 

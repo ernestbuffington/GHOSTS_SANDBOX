@@ -40,7 +40,7 @@
 /*********************************************************/
 
 function adminMain() {
-    global $language, $admin, $aid, $prefix, $file, $nuke_db, $sitename, $nuke_user_prefix, $admin_file, $bgcolor1, $evoconfig, $admdata, $nuke_dbtype, $cache, $json, $admincookie, $radminsuper;
+    global $language, $admin, $aid, $prefix, $file, $nuke_db, $sitename, $nuke_user_prefix, $admin_file, $bgcolor1, $evoconfig, $admdata, $nuke_dbtype, $nuke_cache, $json, $admincookie, $radminsuper;
 /*****[BEGIN]******************************************
  [ Mod:     Admin Icon/Link Pos                 v1.0.0 ]
  ******************************************************/

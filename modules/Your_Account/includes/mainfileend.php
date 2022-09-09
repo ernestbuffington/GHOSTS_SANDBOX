@@ -32,7 +32,7 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
     exit('Access Denied');
 }
 
-global $nuke_userinfo, $cookie, $cache;
+global $nuke_userinfo, $cookie, $nuke_cache;
 $uinfo = $nuke_userinfo;
 $ulevel = (isset($uinfo['user_level'])) ? $uinfo['user_level'] : 0;
 $uactive = (isset($uinfo['user_active'])) ? $uinfo['user_active'] : 0;
@@ -58,7 +58,7 @@ if (is_user()) {
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    if(($ya_config = $cache->load('ya_config', 'config')) === false) {
+    if(($ya_config = $nuke_cache->load('ya_config', 'config')) === false) {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -70,7 +70,7 @@ if (is_user()) {
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-      $cache->save('ya_config', 'config', $ya_config);
+      $nuke_cache->save('ya_config', 'config', $ya_config);
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

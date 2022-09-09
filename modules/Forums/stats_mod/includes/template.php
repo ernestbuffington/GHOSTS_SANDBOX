@@ -61,7 +61,7 @@ class Stats_template {
 
     // Root dir and hash of filenames for each template handle.
     var $root = '';
-    var $cachedir = '';
+    var $nuke_cachedir = '';
     var $files = array();
     var $compiled_data = '';
 

@@ -152,12 +152,12 @@ class StatisticsCORE
         }
 
         // Now init our database cache. ;)
-        $cache = '';
+        $nuke_cache = '';
         $this->use_db_cache = true;
 
-        if (module_use_db_cache($this->current_module_id, $cache))
+        if (module_use_db_cache($this->current_module_id, $nuke_cache))
         {
-            $stat_db->begin_cached_query(true, $cache);
+            $stat_db->begin_cached_query(true, $nuke_cache);
         }
     }
 

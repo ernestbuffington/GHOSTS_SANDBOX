@@ -34,13 +34,13 @@ setlocale(LC_CTYPE, 'C');
 if (!extension_loaded('xml'))
 {
   /**
-  * Implementation of PHP's native utf8_encode for people without XML support
+  * Implementation of PHP's native nuke_utf8_encode for people without XML support
   * This function exploits some nice things that ISO-8859-1 and UTF-8 have in common
   *
   * @param string $str ISO-8859-1 encoded data
   * @return string UTF-8 encoded data
   */
-  function utf8_encode($str)
+  function nuke_utf8_encode($str)
   {
     $out = '';
     for ($i = 0, $len = strlen($str); $i < $len; $i++)
@@ -64,12 +64,12 @@ if (!extension_loaded('xml'))
   }
 
   /**
-  * Implementation of PHP's native utf8_decode for people without XML support
+  * Implementation of PHP's native nuke_utf8_decode for people without XML support
   *
   * @param string $str UTF-8 encoded data
   * @return string ISO-8859-1 encoded data
   */
-  function utf8_decode($str)
+  function nuke_utf8_decode($str)
   {
     $pos = 0;
     $len = strlen($str);
@@ -123,7 +123,7 @@ if (extension_loaded('mbstring'))
     * UTF-8 aware alternative to strrpos
     * @ignore
     */
-    function utf8_strrpos($str, $needle, $offset = null)
+    function nuke_utf8_strrpos($str, $needle, $offset = null)
     {
       // Emulate behaviour of strrpos rather than raising warning
       if (empty($str))
@@ -147,7 +147,7 @@ if (extension_loaded('mbstring'))
     * UTF-8 aware alternative to strrpos
     * @ignore
     */
-    function utf8_strrpos($str, $needle, $offset = null)
+    function nuke_utf8_strrpos($str, $needle, $offset = null)
     {
       // offset for mb_strrpos was added in 5.2.0
       if (is_null($offset))
@@ -164,7 +164,7 @@ if (extension_loaded('mbstring'))
       {
         if (!is_int($offset))
         {
-          trigger_error('utf8_strrpos expects parameter 3 to be long', E_USER_ERROR);
+          trigger_error('nuke_utf8_strrpos expects parameter 3 to be long', E_USER_ERROR);
           return false;
         }
 
@@ -184,7 +184,7 @@ if (extension_loaded('mbstring'))
   * UTF-8 aware alternative to strpos
   * @ignore
   */
-  function utf8_strpos($str, $needle, $offset = null)
+  function nuke_utf8_strpos($str, $needle, $offset = null)
   {
     if (is_null($offset))
     {
@@ -200,7 +200,7 @@ if (extension_loaded('mbstring'))
   * UTF-8 aware alternative to strtolower
   * @ignore
   */
-  function utf8_strtolower($str)
+  function nuke_utf8_strtolower($str)
   {
     return mb_strtolower($str);
   }
@@ -209,7 +209,7 @@ if (extension_loaded('mbstring'))
   * UTF-8 aware alternative to strtoupper
   * @ignore
   */
-  function utf8_strtoupper($str)
+  function nuke_utf8_strtoupper($str)
   {
     return mb_strtoupper($str);
   }
@@ -218,7 +218,7 @@ if (extension_loaded('mbstring'))
   * UTF-8 aware alternative to substr
   * @ignore
   */
-  function utf8_substr($str, $offset, $length = null)
+  function nuke_utf8_substr($str, $offset, $length = null)
   {
     if (is_null($length))
     {
@@ -234,7 +234,7 @@ if (extension_loaded('mbstring'))
   * Return the length (in characters) of a UTF-8 string
   * @ignore
   */
-  function utf8_strlen($text)
+  function nuke_utf8_strlen($text)
   {
     return mb_strlen($text, 'utf-8');
   }
@@ -251,7 +251,7 @@ else
   * @param integer $offset (optional) offset (from left)
   * @return mixed integer position or FALSE on failure
   */
-  function utf8_strrpos($str, $needle, $offset = null)
+  function nuke_utf8_strrpos($str, $needle, $offset = null)
   {
     if (is_null($offset))
     {
@@ -263,7 +263,7 @@ else
         array_pop($ar);
         $str = join($needle, $ar);
 
-        return utf8_strlen($str);
+        return nuke_utf8_strlen($str);
       }
       return false;
     }
@@ -271,13 +271,13 @@ else
     {
       if (!is_int($offset))
       {
-        trigger_error('utf8_strrpos expects parameter 3 to be long', E_USER_ERROR);
+        trigger_error('nuke_utf8_strrpos expects parameter 3 to be long', E_USER_ERROR);
         return false;
       }
 
-      $str = utf8_substr($str, $offset);
+      $str = nuke_utf8_substr($str, $offset);
 
-      if (false !== ($pos = utf8_strrpos($str, $needle)))
+      if (false !== ($pos = nuke_utf8_strrpos($str, $needle)))
       {
         return $pos + $offset;
       }
@@ -296,14 +296,14 @@ else
   * @param integer $offset offset in characters (from left)
   * @return mixed integer position or FALSE on failure
   */
-  function utf8_strpos($str, $needle, $offset = null)
+  function nuke_utf8_strpos($str, $needle, $offset = null)
   {
     if (is_null($offset))
     {
       $ar = explode($needle, $str);
       if (sizeof($ar) > 1)
       {
-        return utf8_strlen($ar[0]);
+        return nuke_utf8_strlen($ar[0]);
       }
       return false;
     }
@@ -311,13 +311,13 @@ else
     {
       if (!is_int($offset))
       {
-        trigger_error('utf8_strpos:  Offset must  be an integer', E_USER_ERROR);
+        trigger_error('nuke_utf8_strpos:  Offset must  be an integer', E_USER_ERROR);
         return false;
       }
 
-      $str = utf8_substr($str, $offset);
+      $str = nuke_utf8_substr($str, $offset);
 
-      if (false !== ($pos = utf8_strpos($str, $needle)))
+      if (false !== ($pos = nuke_utf8_strpos($str, $needle)))
       {
         return $pos + $offset;
       }
@@ -337,9 +337,9 @@ else
   * @param string
   * @return string string in lowercase
   */
-  function utf8_strtolower($string)
+  function nuke_utf8_strtolower($string)
   {
-    static $utf8_upper_to_lower = array(
+    static $nuke_utf8_upper_to_lower = array(
       "\xC3\x80" => "\xC3\xA0", "\xC3\x81" => "\xC3\xA1",
       "\xC3\x82" => "\xC3\xA2", "\xC3\x83" => "\xC3\xA3", "\xC3\x84" => "\xC3\xA4", "\xC3\x85" => "\xC3\xA5",
       "\xC3\x86" => "\xC3\xA6", "\xC3\x87" => "\xC3\xA7", "\xC3\x88" => "\xC3\xA8", "\xC3\x89" => "\xC3\xA9",
@@ -388,7 +388,7 @@ else
       "\xE1\xBA\x82" => "\xE1\xBA\x83", "\xE1\xBA\x84" => "\xE1\xBA\x85", "\xE1\xBB\xB2" => "\xE1\xBB\xB3"
     );
 
-    return strtr(strtolower($string), $utf8_upper_to_lower);
+    return strtr(strtolower($string), $nuke_utf8_upper_to_lower);
   }
 
   /**
@@ -402,9 +402,9 @@ else
   * @param string
   * @return string string in uppercase
   */
-  function utf8_strtoupper($string)
+  function nuke_utf8_strtoupper($string)
   {
-    static $utf8_lower_to_upper = array(
+    static $nuke_utf8_lower_to_upper = array(
       "\xC3\xA0" => "\xC3\x80", "\xC3\xA1" => "\xC3\x81",
       "\xC3\xA2" => "\xC3\x82", "\xC3\xA3" => "\xC3\x83", "\xC3\xA4" => "\xC3\x84", "\xC3\xA5" => "\xC3\x85",
       "\xC3\xA6" => "\xC3\x86", "\xC3\xA7" => "\xC3\x87", "\xC3\xA8" => "\xC3\x88", "\xC3\xA9" => "\xC3\x89",
@@ -453,7 +453,7 @@ else
       "\xE1\xBA\x83" => "\xE1\xBA\x82", "\xE1\xBA\x85" => "\xE1\xBA\x84", "\xE1\xBB\xB3" => "\xE1\xBB\xB2"
     );
 
-    return strtr(strtoupper($string), $utf8_lower_to_upper);
+    return strtr(strtoupper($string), $nuke_utf8_lower_to_upper);
   }
 
   /**
@@ -483,7 +483,7 @@ else
   * @param integer $length (optional) length in UTF-8 characters from offset
   * @return mixed string or FALSE if failure
   */
-  function utf8_substr($str, $offset, $length = NULL)
+  function nuke_utf8_substr($str, $offset, $length = NULL)
   {
     // generates E_NOTICE
     // for PHP4 objects, but not PHP5 objects
@@ -505,7 +505,7 @@ else
     if ($offset < 0)
     {
       // see notes
-      $strlen = utf8_strlen($str);
+      $strlen = nuke_utf8_strlen($str);
       $offset = $strlen + $offset;
       if ($offset < 0)
       {
@@ -547,7 +547,7 @@ else
       if (!isset($strlen))
       {
         // see notes
-        $strlen = utf8_strlen($str);
+        $strlen = nuke_utf8_strlen($str);
       }
 
       // another trivial case
@@ -608,10 +608,10 @@ else
   * @param  string  $text   UTF-8 string
   * @return integer       Length (in chars) of given string
   */
-  function utf8_strlen($text)
+  function nuke_utf8_strlen($text)
   {
-    // Since utf8_decode is replacing multibyte characters to ? strlen works fine
-    return strlen(utf8_decode($text));
+    // Since nuke_utf8_decode is replacing multibyte characters to ? strlen works fine
+    return strlen(nuke_utf8_decode($text));
   }
 }
 
@@ -624,14 +624,14 @@ else
 * @param int $split_len number to characters to split string by
 * @return array characters in string reverses
 */
-function utf8_str_split($str, $split_len = 1)
+function nuke_utf8_str_split($str, $split_len = 1)
 {
   if (!is_int($split_len) || $split_len < 1)
   {
     return false;
   }
 
-  $len = utf8_strlen($str);
+  $len = nuke_utf8_strlen($str);
   if ($len <= $split_len)
   {
     return array($str);
@@ -647,18 +647,18 @@ function utf8_str_split($str, $split_len = 1)
 *
 * @author Harry Fuecks
 */
-function utf8_strspn($str, $mask, $start = null, $length = null)
+function nuke_utf8_strspn($str, $mask, $start = null, $length = null)
 {
   if ($start !== null || $length !== null)
   {
-    $str = utf8_substr($str, $start, $length);
+    $str = nuke_utf8_substr($str, $start, $length);
   }
 
   preg_match('/^[' . $mask . ']+/u', $str, $matches);
 
   if (isset($matches[0]))
   {
-    return utf8_strlen($matches[0]);
+    return nuke_utf8_strlen($matches[0]);
   }
 
   return 0;
@@ -672,21 +672,21 @@ function utf8_strspn($str, $mask, $start = null, $length = null)
 * @param string
 * @return string with first character as upper case (if applicable)
 */
-function utf8_ucfirst($str)
+function nuke_utf8_ucfirst($str)
 {
-  switch (utf8_strlen($str))
+  switch (nuke_utf8_strlen($str))
   {
     case 0:
       return '';
     break;
 
     case 1:
-      return utf8_strtoupper($str);
+      return nuke_utf8_strtoupper($str);
     break;
 
     default:
       preg_match('/^(.{1})(.*)$/us', $str, $matches);
-      return utf8_strtoupper($matches[1]) . $matches[2];
+      return nuke_utf8_strtoupper($matches[1]) . $matches[2];
     break;
   }
 }
@@ -700,7 +700,7 @@ function utf8_ucfirst($str)
 * @param  string  $encoding Original encoding (lowered)
 * @return string        The string, encoded in UTF-8
 */
-function utf8_recode($string, $encoding)
+function nuke_utf8_recode($string, $encoding)
 {
   $encoding = strtolower($encoding);
 
@@ -922,9 +922,9 @@ function utf8_recode($string, $encoding)
 * @param  string  $text   UTF-8 string in NFC
 * @return string        ASCII string using NCRs for non-ASCII chars
 */
-function utf8_encode_ncr($text)
+function nuke_utf8_encode_ncr($text)
 {
-  return preg_replace_callback('#[\\xC2-\\xF4][\\x80-\\xBF]{1,3}#', 'utf8_encode_ncr_callback', $text);
+  return preg_replace_callback('#[\\xC2-\\xF4][\\x80-\\xBF]{1,3}#', 'nuke_utf8_encode_ncr_callback', $text);
 }
 
 /**
@@ -935,9 +935,9 @@ function utf8_encode_ncr($text)
 * @param  array $m      0-based numerically indexed array passed by preg_replace_callback()
 * @return string        A HTML NCR if the character is valid, or the original string otherwise
 */
-function utf8_encode_ncr_callback($m)
+function nuke_utf8_encode_ncr_callback($m)
 {
-  return '&#' . utf8_ord($m[0]) . ';';
+  return '&#' . nuke_utf8_ord($m[0]) . ';';
 }
 
 /**
@@ -946,7 +946,7 @@ function utf8_encode_ncr_callback($m)
 * @param string $chr UTF-8 char
 * @return integer UNICODE code point
 */
-function utf8_ord($chr)
+function nuke_utf8_ord($chr)
 {
   switch (strlen($chr))
   {
@@ -977,7 +977,7 @@ function utf8_ord($chr)
 * @param  int   $cp UNICODE code point
 * @return string    UTF-8 char
 */
-function utf8_chr($cp)
+function nuke_utf8_chr($cp)
 {
   if ($cp > 0xFFFF)
   {
@@ -1007,9 +1007,9 @@ function utf8_chr($cp)
 * @param  string  $text   String to convert, encoded in UTF-8 (no normal form required)
 * @return string        UTF-8 string where NCRs have been replaced with the actual chars
 */
-function utf8_decode_ncr($text)
+function nuke_utf8_decode_ncr($text)
 {
-  return preg_replace_callback('/&#([0-9]{1,6}|x[0-9A-F]{1,5});/i', 'utf8_decode_ncr_callback', $text);
+  return preg_replace_callback('/&#([0-9]{1,6}|x[0-9A-F]{1,5});/i', 'nuke_utf8_decode_ncr_callback', $text);
 }
 
 /**
@@ -1021,11 +1021,11 @@ function utf8_decode_ncr($text)
 * @param  array $m      0-based numerically indexed array passed by preg_replace_callback()
 * @return string        UTF-8 char
 */
-function utf8_decode_ncr_callback($m)
+function nuke_utf8_decode_ncr_callback($m)
 {
   $cp = (strncasecmp($m[1], 'x', 1)) ? $m[1] : hexdec(substr($m[1], 1));
 
-  return utf8_chr($cp);
+  return nuke_utf8_chr($cp);
 }
 
 /**
@@ -1035,7 +1035,7 @@ function utf8_decode_ncr_callback($m)
 * @param  string  $option determines how we will fold the cases
 * @return string      case folded text
 */
-function utf8_case_fold($text, $option = 'full')
+function nuke_utf8_case_fold($text, $option = 'full')
 {
   static $uniarray = array();
   global $phpbb_root_path;
@@ -1083,7 +1083,7 @@ function utf8_case_fold($text, $option = 'full')
 * @param  string  $option determines how we will fold the cases
 * @return string      case folded text
 */
-function utf8_case_fold_nfkc($text, $option = 'full')
+function nuke_utf8_case_fold_nfkc($text, $option = 'full')
 {
   static $fc_nfkc_closure = array(
     "\xCD\xBA"  => "\x20\xCE\xB9",
@@ -1655,7 +1655,7 @@ function utf8_case_fold_nfkc($text, $option = 'full')
   global $phpbb_root_path;
 
   // do the case fold
-  $text = utf8_case_fold($text, $option);
+  $text = nuke_utf8_case_fold($text, $option);
 
   if (!class_exists('utf_normalizer'))
   {
@@ -1680,7 +1680,7 @@ function utf8_case_fold_nfkc($text, $option = 'full')
 * @param  string  $option determines how we will fold the cases
 * @return string      case folded text
 */
-function utf8_case_fold_nfc($text, $option = 'full')
+function nuke_utf8_case_fold_nfc($text, $option = 'full')
 {
   static $uniarray = array();
   static $ypogegrammeni = array(
@@ -1755,7 +1755,7 @@ function utf8_case_fold_nfc($text, $option = 'full')
   $text = strtr($text, $ypogegrammeni);
 
   // do the case fold
-  $text = utf8_case_fold($text, $option);
+  $text = nuke_utf8_case_fold($text, $option);
 
   return $text;
 }
@@ -1767,7 +1767,7 @@ function utf8_case_fold_nfc($text, $option = 'full')
 * @param  mixed $strings  a string or an array of strings to normalize
 * @return mixed       the normalized content, preserving array keys if array given.
 */
-function utf8_normalize_nfc($strings)
+function nuke_utf8_normalize_nfc($strings)
 {
   if (empty($strings))
   {
@@ -1820,7 +1820,7 @@ function utf8_normalize_nfc($strings)
 * @param  string  $text An unclean string, mabye user input (has to be valid UTF-8!)
 * @return string      Cleaned up version of the input string
 */
-function utf8_clean_string($text)
+function nuke_utf8_clean_string($text)
 {
   global $phpbb_root_path;
 
@@ -1830,7 +1830,7 @@ function utf8_clean_string($text)
     $homographs = include(NUKE_INCLUDE_DIR . 'utf/data/confusables.php');
   }
 
-  $text = utf8_case_fold_nfkc($text);
+  $text = nuke_utf8_case_fold_nfkc($text);
   $text = strtr($text, $homographs);
   // Other control characters
   $text = preg_replace('#(?:[\x00-\x1F\x7F]+|(?:\xC2[\x80-\x9F])+)#', '', $text);
@@ -1843,7 +1843,7 @@ function utf8_clean_string($text)
 /**
 * A wrapper for htmlspecialchars($value, ENT_COMPAT, 'UTF-8')
 */
-function utf8_htmlspecialchars(&$value)
+function nuke_utf8_htmlspecialchars(&$value)
 {
   return htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
 }
@@ -1854,17 +1854,17 @@ function utf8_htmlspecialchars(&$value)
 * PHP assumes such messages are ISO-8859-1 so we'll do that too
 * and if it breaks messages we'll blame it on them ;-)
 */
-function utf8_convert_message($message)
+function nuke_utf8_convert_message($message)
 {
   // First of all check if conversion is neded at all, as there is no point
   // in converting ASCII messages from ISO-8859-1 to UTF-8
   if (!preg_match('/[\x80-\xFF]/', $message))
   {
-    return utf8_htmlspecialchars($message);
+    return nuke_utf8_htmlspecialchars($message);
   }
 
   // else we need to convert some part of the message
-  return utf8_htmlspecialchars(utf8_recode($message, 'ISO-8859-1'));
+  return nuke_utf8_htmlspecialchars(nuke_utf8_recode($message, 'ISO-8859-1'));
 }
 
 /**
@@ -1878,7 +1878,7 @@ function utf8_convert_message($message)
 * @return string      the given string wrapped at the specified column.
 *
 */
-function utf8_wordwrap($string, $width = 75, $break = "\n", $cut = false)
+function nuke_utf8_wordwrap($string, $width = 75, $break = "\n", $cut = false)
 {
   // We first need to explode on $break, not destroying existing (intended) breaks
   $lines = explode($break, $string);
@@ -1894,14 +1894,14 @@ function utf8_wordwrap($string, $width = 75, $break = "\n", $cut = false)
       $word = $words[$i];
 
       // If cut is true we need to cut the word if it is > width chars
-      if ($cut && utf8_strlen($word) > $width)
+      if ($cut && nuke_utf8_strlen($word) > $width)
       {
-        $words[$i] = utf8_substr($word, $width);
-        $word = utf8_substr($word, 0, $width);
+        $words[$i] = nuke_utf8_substr($word, $width);
+        $word = nuke_utf8_substr($word, 0, $width);
         $i--;
       }
 
-      if (utf8_strlen($new_lines[$index] . $word) > $width)
+      if (nuke_utf8_strlen($new_lines[$index] . $word) > $width)
       {
         $new_lines[$index] = substr($new_lines[$index], 0, -1);
         $index++;

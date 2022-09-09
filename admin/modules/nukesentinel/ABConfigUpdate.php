@@ -27,9 +27,9 @@ $nuke_db->sql_query("UPDATE `".$prefix."_nsnst_blockers` SET `list`='".$xblocker
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-global $cache;
-$cache->delete('', 'sentinel');
-$cache->resync();
+global $nuke_cache;
+$nuke_cache->delete('', 'sentinel');
+$nuke_cache->resync();
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

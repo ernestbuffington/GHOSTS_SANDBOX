@@ -1476,13 +1476,13 @@ function smilies_pass($message)
 
     if (!isset($orig))
     {
-        global $nuke_db, $board_config, $cache;
+        global $nuke_db, $board_config, $nuke_cache;
         $orig = $repl = array();
 
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        if(($smilies = $cache->load('smilies', 'config')) === false) {
+        if(($smilies = $nuke_cache->load('smilies', 'config')) === false) {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -1495,7 +1495,7 @@ function smilies_pass($message)
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-            $cache->save('smilies', 'config', $smilies);
+            $nuke_cache->save('smilies', 'config', $smilies);
         }
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]

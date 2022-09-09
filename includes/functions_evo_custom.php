@@ -655,18 +655,18 @@ function get_theme_option($name, $type='string')
  * @param bool    $force_refresh         Choose whether to force an update, Default: false.
  * @return array  Return a json object with all the version information.
  */
-function cache_json_data($version_check_url,$local_cache_location,$force_refresh = false,$headers = [],$cache_time = 86400) 
+function cache_json_data($version_check_url,$local_cache_location,$force_refresh = false,$headers = [],$nuke_cache_time = 86400) 
 {
 	$url = $version_check_url;
-	$cache = $local_cache_location;
+	$nuke_cache = $local_cache_location;
 
-	if(file_exists($cache)):
-		if ((time() - filemtime($cache) ) > ($cache_time) || 0 == filesize($cache)):
+	if(file_exists($nuke_cache)):
+		if ((time() - filemtime($nuke_cache) ) > ($nuke_cache_time) || 0 == filesize($nuke_cache)):
 			$force_refresh = true;
 		endif;
 	endif;
 
-	if ( $force_refresh || !file_exists( $cache ) ):
+	if ( $force_refresh || !file_exists( $nuke_cache ) ):
 
 		# create a new cURL resource
 		$ch = curl_init();
@@ -696,13 +696,13 @@ function cache_json_data($version_check_url,$local_cache_location,$force_refresh
 		endif;
 
 		# Insert json information into a locally stored file, This will prevent slow page load time from slow hosts.
-		$handle = fopen( $cache, 'wb' ) or die( 'no fopen' );   
+		$handle = fopen( $nuke_cache, 'wb' ) or die( 'no fopen' );   
 		fwrite( $handle, $jsoncache );
 		fclose( $handle );
 
 	else:
 		# Retrieve the json cache from the locally stored file
-		$jsoncache = file_get_contents( $cache );
+		$jsoncache = file_get_contents( $nuke_cache );
 	endif;
 
 	$jsonobject = json_decode( $jsoncache, true );
@@ -875,43 +875,43 @@ function get_evo_user_avatar($nuke_user_id) {
 
 // evo_image function by ReOrGaNiSaTiOn
 function get_evo_image($imgfile='', $mymodule='') {
-	global $currentlang, $ThemeSel, $Default_Theme, $cache;
+	global $currentlang, $ThemeSel, $Default_Theme, $nuke_cache;
 	$tmp_imgfile = explode('.', $imgfile);
-	$cache_imgfile = $tmp_imgfile[0];
-	$evoimage = $cache->load($mymodule, 'EvoImage');
-	if(!empty($evoimage[$ThemeSel][$currentlang][$cache_imgfile])) {
-		return($evoimage[$ThemeSel][$currentlang][$cache_imgfile]);
+	$nuke_cache_imgfile = $tmp_imgfile[0];
+	$evoimage = $nuke_cache->load($mymodule, 'EvoImage');
+	if(!empty($evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile])) {
+		return($evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile]);
 	}
 
 	if (@file_exists(NUKE_THEMES_DIR . $ThemeSel . '/images/' . $mymodule . '/lang_' . $currentlang . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$ThemeSel."/images/$mymodule/lang_".$currentlang."/$imgfile";
+		$evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = "themes/".$ThemeSel."/images/$mymodule/lang_".$currentlang."/$imgfile";
 	} elseif (@file_exists(NUKE_THEMES_DIR . $ThemeSel . '/images/lang_' . $currentlang . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$ThemeSel."/images/lang_".$currentlang."/$imgfile";
+		$evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = "themes/".$ThemeSel."/images/lang_".$currentlang."/$imgfile";
 	} elseif (@file_exists(NUKE_THEMES_DIR . $ThemeSel . '/images/' . $mymodule . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$ThemeSel."/images/$mymodule/$imgfile";
+		$evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = "themes/".$ThemeSel."/images/$mymodule/$imgfile";
 	} elseif (@file_exists(NUKE_THEMES_DIR . $ThemeSel . '/images/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$ThemeSel."/images/$imgfile";
+		$evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = "themes/".$ThemeSel."/images/$imgfile";
 	} elseif (@file_exists(NUKE_THEMES_DIR . $Default_Theme . '/images/' . $mymodule . '/lang_' . $currentlang . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$Default_Theme."/images/$mymodule/lang_".$currentlang."/$imgfile";
+		$evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = "themes/".$Default_Theme."/images/$mymodule/lang_".$currentlang."/$imgfile";
 	} elseif (@file_exists(NUKE_THEMES_DIR . $Default_Theme . '/images/lang_' . $currentlang . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$Default_Theme."/images/lang_".$currentlang."/$imgfile";
+		$evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = "themes/".$Default_Theme."/images/lang_".$currentlang."/$imgfile";
 	} elseif (@file_exists(NUKE_THEMES_DIR . $Default_Theme . '/images/' . $mymodule . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$Default_Theme."/images/$mymodule/$imgfile";
+		$evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = "themes/".$Default_Theme."/images/$mymodule/$imgfile";
 	} elseif (@file_exists(NUKE_THEMES_DIR . $Default_Theme . '/images/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$Default_Theme."/images/$imgfile";
+		$evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = "themes/".$Default_Theme."/images/$imgfile";
 	} elseif (@file_exists(NUKE_MODULES_DIR . $mymodule . '/images/lang_' . $currentlang . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "modules/".$mymodule."/images/lang_".$currentlang."/$imgfile";
+		$evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = "modules/".$mymodule."/images/lang_".$currentlang."/$imgfile";
 	} elseif (@file_exists(NUKE_MODULES_DIR . $mymodule . '/images/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] =  "modules/".$mymodule."/images/$imgfile";
+		$evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] =  "modules/".$mymodule."/images/$imgfile";
 	} elseif (@file_exists(NUKE_IMAGES_DIR . $mymodule . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "images/".$mymodule."/$imgfile";
+		$evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = "images/".$mymodule."/$imgfile";
 	} elseif (@file_exists(NUKE_IMAGES_DIR . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "images/$imgfile";
+		$evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = "images/$imgfile";
 	} else {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = '';
+		$evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile] = '';
 	}
-	$cache->save($mymodule, 'EvoImage', $evoimage);
-	return($evoimage[$ThemeSel][$currentlang][$cache_imgfile]);
+	$nuke_cache->save($mymodule, 'EvoImage', $evoimage);
+	return($evoimage[$ThemeSel][$currentlang][$nuke_cache_imgfile]);
 }
 
 /**

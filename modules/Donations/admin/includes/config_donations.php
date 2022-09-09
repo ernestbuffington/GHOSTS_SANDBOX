@@ -157,10 +157,10 @@ function display_config() {
     Notes:       Will toss a DonateError if the values are not found
 ================================================================================================*/
 function get_values() {
-    global $nuke_db, $prefix, $lang_donate, $cache;
+    global $nuke_db, $prefix, $lang_donate, $nuke_cache;
     static $don;
     if(isset($don) && is_array($don)) { return $don; }
-    if (!$don = $cache->load('general', 'donations')) {
+    if (!$don = $nuke_cache->load('general', 'donations')) {
         $sql = 'SELECT config_value, config_name from `'.$prefix.'_donators_config` WHERE config_name LIKE "gen_%"';
         if(!$result = $nuke_db->sql_query($sql)) {
             DonateError($lang_donate['VALUES_NF']);
@@ -168,7 +168,7 @@ function get_values() {
         while ($row = $nuke_db->sql_fetchrow($result)) {
             $don[str_replace('gen_', '', $row['config_name'])] = $row['config_value'];
         }
-        $cache->save('general', 'donations', $don);
+        $nuke_cache->save('general', 'donations', $don);
         $nuke_db->sql_freeresult($result);
     }
     return $don;
@@ -182,7 +182,7 @@ function get_values() {
     Notes:       Writes values to the DB
 ================================================================================================*/
 function write_values($values) {
-    global $nuke_db, $prefix, $cache;
+    global $nuke_db, $prefix, $nuke_cache;
     //Loop through values
     foreach ($values as $key => $value) {
         //Remove crap
@@ -199,8 +199,8 @@ function write_values($values) {
         $nuke_db->sql_query($sql);
     }
     //Clear the cache
-    $cache->delete('general', 'donations');
-    $cache->resync();
+    $nuke_cache->delete('general', 'donations');
+    $nuke_cache->resync();
 }
 
 /*==============================================================================================
