@@ -11,8 +11,8 @@ if (!defined('MODULE_FILE')) {
 global $_GETVAR;
 $_GETVAR->unsetVariables();
 
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
 
 define('NUKE_DONATIONS', dirname(__FILE__) . '/');
 define('NUKE_DONATIONS_INCLUDES', NUKE_DONATIONS . 'includes/');

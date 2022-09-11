@@ -30,11 +30,11 @@ if (!defined('IN_PHPBB2'))
 }
 
 // Build and install Module
-function build_module($info_array, $lang_array, $php_file, $module_id = -1)
+function build_module($info_array, $lang_array, $php_file, $nuke_module_id = -1)
 {
     global $directory_mode, $file_mode, $phpbb2_root_path, $nuke_db, $lang;
     
-    if ($module_id == -1)
+    if ($nuke_module_id == -1)
     {
         $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE short_name = '" . trim($info_array['short_name']) . "'";
 
@@ -50,7 +50,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
     }
     else
     {
-        $sql = "SELECT * FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
+        $sql = "SELECT * FROM " . MODULES_TABLE . " WHERE module_id = " . $nuke_module_id;
 
         if (!($result = $nuke_db->sql_query($sql)) )
         {
@@ -59,7 +59,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
     
         if ($nuke_db->sql_numrows($result) == 0)
         {
-            message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $module_id);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $nuke_module_id);
         }
         
         $update_module_row = $nuke_db->sql_fetchrow($result);
@@ -83,16 +83,16 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
     }
 
     // Write module.php
-    $module = $directory . '/module.php';
+    $nuke_module = $directory . '/module.php';
 
-    if (file_exists($module))
+    if (file_exists($nuke_module))
     {
-        chmod($module, $directory_mode);
+        chmod($nuke_module, $directory_mode);
     }
 
-    if (!($fp = fopen($module, 'wt')))
+    if (!($fp = fopen($nuke_module, 'wt')))
     {
-        message_die(NUKE_GENERAL_MESSAGE, 'Unable to write ' . $module);
+        message_die(NUKE_GENERAL_MESSAGE, 'Unable to write ' . $nuke_module);
     }
 
     $php_file = trim($php_file);
@@ -100,7 +100,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
     
     fclose($fp);
 
-    chmod($module, $file_mode);
+    chmod($nuke_module, $file_mode);
     chmod($directory, $directory_mode);
 
     $short_name = trim($info_array['short_name']);
@@ -146,7 +146,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
             chmod($language_file, $file_mode);
             $contents = implode('', @file($language_file));
             
-            if ($module_id != -1)
+            if ($nuke_module_id != -1)
             {
                 $contents = delete_language_block($contents, $short_name);
             }
@@ -226,7 +226,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
         $update_time = intval($info_array['update_time']);
     }
 
-    if ($module_id == -1)
+    if ($nuke_module_id == -1)
     {
         $sql = "SELECT max(module_order) as max_order FROM " . MODULES_TABLE;
 
@@ -259,7 +259,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
     else
     {
         // Fill Module Table
-        $sql = "UPDATE " . MODULES_TABLE . " SET update_time = " . $update_time . " WHERE module_id = " . $module_id;
+        $sql = "UPDATE " . MODULES_TABLE . " SET update_time = " . $update_time . " WHERE module_id = " . $nuke_module_id;
 
         if (!($result = $nuke_db->sql_query($sql)))
         {
@@ -299,7 +299,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
         message_die(NUKE_GENERAL_ERROR, 'Unable to install Module, not enough informations');
     }
 
-    if ($module_id == -1)
+    if ($nuke_module_id == -1)
     {
         $keys = 'module_id' . $keys;
         $values = $next_module_id . $values;
@@ -325,7 +325,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
             }
         }
 
-        $sql = "UPDATE " . MODULE_INFO_TABLE . " SET " . $update_query . " WHERE module_id = " . $module_id;
+        $sql = "UPDATE " . MODULE_INFO_TABLE . " SET " . $update_query . " WHERE module_id = " . $nuke_module_id;
     
         if (!($result = $nuke_db->sql_query($sql)))
         {
@@ -333,7 +333,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
         }
     }
 
-    if ($module_id == -1)
+    if ($nuke_module_id == -1)
     {
         $sql = "INSERT INTO " . CACHE_TABLE . " (module_id, module_cache_time, db_cache, priority)
         VALUES (" . $next_module_id . ", 0, '', 0)";
@@ -345,7 +345,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
     }
     else
     {
-        $sql = "UPDATE " . CACHE_TABLE . " SET module_cache_time = 0, db_cache = '', priority = 0 WHERE module_id = " . $module_id;
+        $sql = "UPDATE " . CACHE_TABLE . " SET module_cache_time = 0, db_cache = '', priority = 0 WHERE module_id = " . $nuke_module_id;
 
         if (!($result = $nuke_db->sql_query($sql)))
         {
@@ -354,9 +354,9 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
     }
 
     // Admin Panel Integration
-    if ($module_id != -1)
+    if ($nuke_module_id != -1)
     {
-        $sql = "DELETE FROM " . MODULE_ADMIN_TABLE . " WHERE module_id = " . $module_id;
+        $sql = "DELETE FROM " . MODULE_ADMIN_TABLE . " WHERE module_id = " . $nuke_module_id;
 
         if (!($result = $nuke_db->sql_query($sql)))
         {
@@ -365,7 +365,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
     }
     else
     {
-        $module_id = $next_module_id;
+        $nuke_module_id = $next_module_id;
     }
 
     if ( (isset($info_array['admin_panel'])) && (trim($info_array['admin_panel']) != '') )
@@ -385,7 +385,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
             }
 
             $sql = "INSERT INTO " . MODULE_ADMIN_TABLE . " (module_id, config_name, config_value, config_type, config_title, config_explain, config_trigger) 
-            VALUES (" . $module_id . ", '" . $nuke_config_array['option'] . "', '" . $nuke_config_array['default'] . "', '" . $nuke_config_array['type'] . "', '" . $nuke_config_array['title'] . "', '" . $nuke_config_array['explain'] . "', '" . $nuke_config_array['trigger'] . "')";
+            VALUES (" . $nuke_module_id . ", '" . $nuke_config_array['option'] . "', '" . $nuke_config_array['default'] . "', '" . $nuke_config_array['type'] . "', '" . $nuke_config_array['title'] . "', '" . $nuke_config_array['explain'] . "', '" . $nuke_config_array['trigger'] . "')";
 
             if (!($result = $nuke_db->sql_query($sql)))
             {
@@ -439,12 +439,12 @@ function read_pak_file($stream, $file_ident)
 }
 
 // Move Module one up
-function move_up($module_id)
+function move_up($nuke_module_id)
 {
     global $nuke_db;
 
     // Select current module order
-    $sql = "SELECT module_order FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
+    $sql = "SELECT module_order FROM " . MODULES_TABLE . " WHERE module_id = " . $nuke_module_id;
 
     if (!($result = $nuke_db->sql_query($sql)))
     {
@@ -480,7 +480,7 @@ function move_up($module_id)
     }
 
     // Assign the new module order to the current module
-    $sql = "UPDATE " . MODULES_TABLE . " SET module_order = " . $new_module_order . " WHERE module_id = " . $module_id;
+    $sql = "UPDATE " . MODULES_TABLE . " SET module_order = " . $new_module_order . " WHERE module_id = " . $nuke_module_id;
 
     if (!($result = $nuke_db->sql_query($sql)))
     {
@@ -491,12 +491,12 @@ function move_up($module_id)
 }
 
 // Move Module one down
-function move_down($module_id)
+function move_down($nuke_module_id)
 {
     global $nuke_db;
 
     // Select current module order
-    $sql = "SELECT module_order FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
+    $sql = "SELECT module_order FROM " . MODULES_TABLE . " WHERE module_id = " . $nuke_module_id;
 
     if (!($result = $nuke_db->sql_query($sql)))
     {
@@ -532,7 +532,7 @@ function move_down($module_id)
     }
 
     // Assign the new module order to the current module
-    $sql = "UPDATE " . MODULES_TABLE . " SET module_order = " . $new_module_order . " WHERE module_id = " . $module_id;
+    $sql = "UPDATE " . MODULES_TABLE . " SET module_order = " . $new_module_order . " WHERE module_id = " . $nuke_module_id;
 
     if (!($result = $nuke_db->sql_query($sql)))
     {
@@ -543,11 +543,11 @@ function move_down($module_id)
 }
 
 // activate module
-function activate($module_id)
+function activate($nuke_module_id)
 {
     global $nuke_db;
 
-    $sql = "UPDATE " . MODULES_TABLE . " SET active = 1 WHERE module_id = " . $module_id;
+    $sql = "UPDATE " . MODULES_TABLE . " SET active = 1 WHERE module_id = " . $nuke_module_id;
 
     if (!($result = $nuke_db->sql_query($sql)))
     {
@@ -558,11 +558,11 @@ function activate($module_id)
 }
 
 // deactivate module
-function deactivate($module_id)
+function deactivate($nuke_module_id)
 {
     global $nuke_db;
 
-    $sql = "UPDATE " . MODULES_TABLE . " SET active = 0 WHERE module_id = " . $module_id;
+    $sql = "UPDATE " . MODULES_TABLE . " SET active = 0 WHERE module_id = " . $nuke_module_id;
 
     if (!($result = $nuke_db->sql_query($sql)))
     {

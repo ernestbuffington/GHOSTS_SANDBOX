@@ -38,7 +38,7 @@
 	
     include_once(NUKE_BASE_DIR.'header.php');
 		OpenTable();
-    		echo "<center><strong>" . $lang_new[$module_name]['SUB_MISSINGDATA'] . "</strong></center><br />\n";
+    		echo "<center><strong>" . $lang_new[$nuke_module_name]['SUB_MISSINGDATA'] . "</strong></center><br />\n";
     		echo "<center>" . _GOBACK . "</center>\n";
     	CloseTable();
     include_once(NUKE_BASE_DIR.'footer.php');
@@ -53,7 +53,7 @@
       		}
     	}
 		
-	if (check_image_type($_FILES['site_image']['type']) == false){ echo $lang_new[$module_name]['ERROR']; }
+	if (check_image_type($_FILES['site_image']['type']) == false){ echo $lang_new[$nuke_module_name]['ERROR']; }
 		if (move_uploaded_file($_FILES['site_image']['tmp_name'], $nuke_config['upload_file'] . $_FILES['site_image']['name'])) {
 			$img_upload = $nuke_config['upload_file'].$_FILES['site_image']['name'];
 		}
@@ -66,30 +66,30 @@
 		if(!$result) {
     		include_once(NUKE_BASE_DIR.'header.php');
 				OpenTable();
-    				echo "<center><strong>" . $lang_new[$module_name]['SUB_ERROR'] . "</strong></center><br />\n";
+    				echo "<center><strong>" . $lang_new[$nuke_module_name]['SUB_ERROR'] . "</strong></center><br />\n";
     				echo "<center>" . _GOBACK . "</center>\n";
     			CloseTable();
     		include_once(NUKE_BASE_DIR.'footer.php');
    			exit;
   		} else {
-    		$msg = $sitename.$lang_new[$module_name]['SUB_ADDED']."\n\n";
-    		$msg .= $lang_new[$module_name]['SITE_NAME'].": ".Remove_Slashes($site_name)."\n";
-    		$msg .= $lang_new[$module_name]['SITE_URL'].": ".Remove_Slashes($site_url)."\n";
-    		$msg .= $lang_new[$module_name]['SITE_IMAGE'].": ".Remove_Slashes($imgurl)."\n";
-    		$msg .= $lang_new[$module_name]['SITE_DESCRIPTION'].": ".Remove_Slashes($site_description)."\n";
-    		$msg .= $lang_new[$module_name]['SUB_YOUR_ID'].": ".$nuke_user_id."\n";
-    		$msg .= $lang_new[$module_name]['SUB_USERNAME'].": ".Remove_Slashes($nuke_user_name)."\n";
-    		$msg .= $lang_new[$module_name]['SUB_EMAIL'].": ".Remove_Slashes($nuke_user_email)."\n";
-    		$msg .= $lang_new[$module_name]['SUB_IP'].": ".$nuke_user_ip."\n";
+    		$msg = $sitename.$lang_new[$nuke_module_name]['SUB_ADDED']."\n\n";
+    		$msg .= $lang_new[$nuke_module_name]['SITE_NAME'].": ".Remove_Slashes($site_name)."\n";
+    		$msg .= $lang_new[$nuke_module_name]['SITE_URL'].": ".Remove_Slashes($site_url)."\n";
+    		$msg .= $lang_new[$nuke_module_name]['SITE_IMAGE'].": ".Remove_Slashes($imgurl)."\n";
+    		$msg .= $lang_new[$nuke_module_name]['SITE_DESCRIPTION'].": ".Remove_Slashes($site_description)."\n";
+    		$msg .= $lang_new[$nuke_module_name]['SUB_YOUR_ID'].": ".$nuke_user_id."\n";
+    		$msg .= $lang_new[$nuke_module_name]['SUB_USERNAME'].": ".Remove_Slashes($nuke_user_name)."\n";
+    		$msg .= $lang_new[$nuke_module_name]['SUB_EMAIL'].": ".Remove_Slashes($nuke_user_email)."\n";
+    		$msg .= $lang_new[$nuke_module_name]['SUB_IP'].": ".$nuke_user_ip."\n";
     		$to = $adminmail;
-    		$subject = $sitename.$lang_new[$module_name]['SUB_ADDED'];
+    		$subject = $sitename.$lang_new[$nuke_module_name]['SUB_ADDED'];
     		$mailheaders = "From: ".$adminmail."\r\n";
     		$mailheaders .= "Reply-To: ".$adminmail."\r\n";
     		$mailheaders .= "Return-Path: ".$adminmail."\r\n";
     		evo_mail($to, $subject, $msg, $mailheaders);
 			
 			OpenTable();			
-				header("Refresh: 4; url=modules.php?name=".$module_name."");
+				header("Refresh: 4; url=modules.php?name=".$nuke_module_name."");
         		echo "<div align='center'>Site Button Submitted Successfully</div>";			
 				echo "<br /><br />";			
 				echo "<div align='center'>Please Wait...  Redirecting...</div>";

@@ -75,7 +75,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
         $file = basename(__FILE__);
-        $module['General']['Avatar_Management'] = "$file";
+        $nuke_module['General']['Avatar_Management'] = "$file";
         return;
 }
 
@@ -193,7 +193,7 @@ switch( $mode )
                         }
                         $av_uid = $nuke_db->sql_fetchrow($result);
                         $avatar_uid = $av_uid['user_id'];
-                        $edit_url = append_sid("./admin_users.php?mode=edit&u=$avatar_uid");
+                        $edit_url = append_nuke_sid("./admin_users.php?mode=edit&u=$avatar_uid");
                         // Bingo, someone is using this avatar
                         print "<tr><td class=avatar_listing bgcolor=$alter><img src=$real_avatar_dir/$file><br />$file</td>
                                <td class=avatar_listing bgcolor=$alter>$stats[7] Bytes</td>
@@ -205,7 +205,7 @@ switch( $mode )
                     else
                     {
                         // Not used, safe to display delete link for admin
-                        $delete_html = append_sid("./admin_avatar.php?mode=delete&target=$file");
+                        $delete_html = append_nuke_sid("./admin_avatar.php?mode=delete&target=$file");
                         print "<tr><td class=avatar_listing bgcolor=$alter><img src=$real_avatar_dir/$file><br />$file</td>
                                                            <td class=avatar_listing bgcolor=$alter>$stats[7] Bytes</td>
                                <td class=avatar_listing bgcolor=$alter>Not Used<br /><a href=$delete_html onClick=\"if(confirm('Are you sure you want to delete: $file ?')) return true; else return false;\">Delete</a></td>

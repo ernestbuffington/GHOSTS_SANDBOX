@@ -33,8 +33,8 @@ $nuke_author_email = "DreAdeDcoRpSE666@yahoo.com";
 $nuke_author_homepage = "https://www.headshotdomain.net";
 $license = "GNU/GPL";
 $download_location = "http://www.nuke-evolution.com";
-$module_version = "1.0.0";
-$module_description = "Light weight event calendar to replace the bloated Event Calendar that came stock with Evo CMS.";
+$nuke_module_version = "1.0.0";
+$nuke_module_description = "Light weight event calendar to replace the bloated Event Calendar that came stock with Evo CMS.";
 
 // DO NOT TOUCH THE FOLLOWING COPYRIGHT CODE. YOU'RE JUST ALLOWED TO CHANGE YOUR "OWN"
 // MODULE'S DATA (SEE ABOVE) SO THE SYSTEM CAN BE ABLE TO SHOW THE COPYRIGHT NOTICE
@@ -43,6 +43,6 @@ $module_description = "Light weight event calendar to replace the bloated Event 
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $nuke_module_version, $nuke_module_description);
 
 ?>

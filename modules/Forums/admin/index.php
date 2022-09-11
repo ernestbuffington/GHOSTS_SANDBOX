@@ -120,9 +120,9 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
         );
 
         $template_nuke->assign_vars(array(
-                "U_FORUM_INDEX" => append_sid("index.$phpEx"),
-                "U_FORUM_PREINDEX" => append_sid("index.$phpEx"),
-                "U_ADMIN_INDEX" => append_sid("index.$phpEx?pane=right"),
+                "U_FORUM_INDEX" => append_nuke_sid("index.$phpEx"),
+                "U_FORUM_PREINDEX" => append_nuke_sid("index.$phpEx"),
+                "U_ADMIN_INDEX" => append_nuke_sid("index.$phpEx?pane=right"),
 
 /*****[BEGIN]******************************************
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
@@ -158,7 +158,7 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 
         );
 
-        ksort($module);
+        ksort($nuke_module);
 
 /*****[BEGIN]******************************************
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
@@ -167,7 +167,7 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 /*****[END]********************************************
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
  ******************************************************/
- while( list($cat, $action_array) = each($module) )
+ while( list($cat, $action_array) = each($nuke_module) )
 {
     $cat = ( !empty($lang[$cat]) ) ? $lang[$cat] : preg_replace("/_/", " ", $cat);
 
@@ -209,7 +209,7 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
             "ROW_CLASS" => $row_class,
 
             "ADMIN_MODULE" => $action,
-            "U_ADMIN_MODULE" => append_sid($file))
+            "U_ADMIN_MODULE" => append_nuke_sid($file))
         );
         $row_count++;
     }
@@ -780,13 +780,13 @@ $sql = "SELECT VERSION() AS mysql_version";
                                 }
                                 else
                                 {
-                                        $location_url = append_sid("admin_forums.$phpEx?mode=editforum&amp;" . NUKE_POST_FORUM_URL . "=" . $onlinerow_reg[$i]['user_session_page']);
+                                        $location_url = append_nuke_sid("admin_forums.$phpEx?mode=editforum&amp;" . NUKE_POST_FORUM_URL . "=" . $onlinerow_reg[$i]['user_session_page']);
                                         $location = $forum_data[$onlinerow_reg[$i]['user_session_page']];
                                 }
 /*****[BEGIN]******************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-                                $BSH = select_session_url($onlinerow_reg[$i]['session_page'], $onlinerow_reg[$i]['session_url_qs'], $onlinerow_reg[$i]['session_url_ps'], $onlinerow_reg[$i]['session_url_specific'], $nuke_userdata['user_level'], $onlinerow_reg[$i]['user_id'], $forums_data, $topics_data, $nuke_users_data, $cats_data);
+                                $BSH = select_nuke_session_url($onlinerow_reg[$i]['session_page'], $onlinerow_reg[$i]['session_url_qs'], $onlinerow_reg[$i]['session_url_ps'], $onlinerow_reg[$i]['session_url_specific'], $nuke_userdata['user_level'], $onlinerow_reg[$i]['user_id'], $forums_data, $topics_data, $nuke_users_data, $cats_data);
                                 $location = $BSH;
 /*****[END]********************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
@@ -807,8 +807,8 @@ $sql = "SELECT VERSION() AS mysql_version";
                                         "IP_ADDRESS" => $reg_ip,
 
                                         "U_WHOIS_IP" => "http://dnsstuff.com/tools/whois.ch?cache=off&ip=$reg_ip",
-                                        "U_USER_PROFILE" => append_sid("admin_users.$phpEx?mode=edit&amp;" . NUKE_POST_USERS_URL . "=" . $onlinerow_reg[$i]['user_id']),
-                                        "U_FORUM_LOCATION" => append_sid($location_url))
+                                        "U_USER_PROFILE" => append_nuke_sid("admin_users.$phpEx?mode=edit&amp;" . NUKE_POST_USERS_URL . "=" . $onlinerow_reg[$i]['user_id']),
+                                        "U_FORUM_LOCATION" => append_nuke_sid($location_url))
                                 );
                         }
                 }
@@ -939,14 +939,14 @@ $sql = "SELECT VERSION() AS mysql_version";
                         }
                         else
                         {
-                                $location_url = append_sid("admin_forums.$phpEx?mode=editforum&amp;" . NUKE_POST_FORUM_URL . "=" . $onlinerow_guest[$i]['session_page']);
+                                $location_url = append_nuke_sid("admin_forums.$phpEx?mode=editforum&amp;" . NUKE_POST_FORUM_URL . "=" . $onlinerow_guest[$i]['session_page']);
                                 $location = $forum_data[$onlinerow_guest[$i]['session_page']];
                         }
 
 /*****[BEGIN]******************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-                        $BSH = select_session_url($onlinerow_guest[$i]['session_page'], $onlinerow_guest[$i]['session_url_qs'], $onlinerow_guest[$i]['session_url_ps'], $onlinerow_guest[$i]['session_url_specific'], $nuke_userdata['user_level'], $onlinerow_guest[$i]['user_id'], $forums_data, $topics_data, $nuke_users_data, $cats_data);
+                        $BSH = select_nuke_session_url($onlinerow_guest[$i]['session_page'], $onlinerow_guest[$i]['session_url_qs'], $onlinerow_guest[$i]['session_url_ps'], $onlinerow_guest[$i]['session_url_specific'], $nuke_userdata['user_level'], $onlinerow_guest[$i]['user_id'], $forums_data, $topics_data, $nuke_users_data, $cats_data);
                         $location = $BSH;
 /*****[END]********************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
@@ -967,7 +967,7 @@ $sql = "SELECT VERSION() AS mysql_version";
                                 "IP_ADDRESS" => $guest_ip,
 
                                 "U_WHOIS_IP" => "http://dnsstuff.com/tools/whois.ch?cache=off&ip=$guest_ip",
-                                "U_FORUM_LOCATION" => append_sid($location_url))
+                                "U_FORUM_LOCATION" => append_nuke_sid($location_url))
                         );
                 }
 
@@ -1100,13 +1100,13 @@ else
         );
 
         if(isset($_GET['op']) && $_GET['op'] == "Groups") {
-            $mainframe = append_sid("admin_groups.".$phpEx);
+            $mainframe = append_nuke_sid("admin_groups.".$phpEx);
         } else {
-            $mainframe = append_sid("index.$phpEx?pane=right");
+            $mainframe = append_nuke_sid("index.$phpEx?pane=right");
         }
 
         $template_nuke->assign_vars(array(
-                "S_FRAME_NAV" => append_sid("index.$phpEx?pane=left"),
+                "S_FRAME_NAV" => append_nuke_sid("index.$phpEx?pane=left"),
                 "S_FRAME_MAIN" => $mainframe)
         );
 

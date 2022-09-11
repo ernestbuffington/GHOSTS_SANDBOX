@@ -43,15 +43,15 @@ if (!defined('CNBYA')) {
  [ Mod:     Welcome PM                         v2.0.0 ]
  [ Mod:     Initial Usergroup                  v1.0.1 ]
  ******************************************************/
-include(NUKE_MODULES_DIR.$module_name.'/public/functions_welcome_pm.php');
-include(NUKE_MODULES_DIR.$module_name.'/public/custom_functions.php');
+include(NUKE_MODULES_DIR.$nuke_module_name.'/public/functions_welcome_pm.php');
+include(NUKE_MODULES_DIR.$nuke_module_name.'/public/custom_functions.php');
 include(NUKE_INCLUDE_DIR. 'constants.php');
 /*****[END]********************************************
  [ Mod:     Welcome PM                         v2.0.0 ]
  [ Mod:     Initial Usergroup                  v1.0.1 ]
  ******************************************************/
 
-if(is_mod_admin($module_name)) {
+if(is_mod_admin($nuke_module_name)) {
 
     if ($add_email != $add_email2) {
         include_once(NUKE_BASE_DIR.'header.php');
@@ -159,7 +159,7 @@ if(is_mod_admin($module_name)) {
             }
             if (isset($min)) { $xmin = "&min=$min"; }
             if (isset($xop)) { $xxop = "&op=$xop"; }
-            nuke_redirect("modules.php?name=$module_name&file=admin"."$xxop"."$xmin");
+            nuke_redirect("modules.php?name=$nuke_module_name&file=admin"."$xxop"."$xmin");
         }
     } else {
         $pagetitle = ": "._USERADMIN;

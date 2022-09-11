@@ -167,7 +167,7 @@ endif;
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
 
-$temp_url = append_sid("privmsg.$phpEx?mode=post&amp;" . NUKE_POST_USERS_URL . "=" . $profiledata['user_id']);
+$temp_url = append_nuke_sid("privmsg.$phpEx?mode=post&amp;" . NUKE_POST_USERS_URL . "=" . $profiledata['user_id']);
 
 if(is_active("Private_Messages")) 
 {
@@ -187,7 +187,7 @@ $location .= ($profiledata['user_from']) ? $profiledata['user_from'] : '';
 
 if (!empty($profiledata['user_viewemail']) || ($profiledata['username'] == $nuke_userdata['username']) || $nuke_userdata['user_level'] == NUKE_ADMIN)
 {
-    $email_uri = ( $board_config['board_email_form'] ) ? append_sid("profile.$phpEx?mode=email&amp;".NUKE_POST_USERS_URL
+    $email_uri = ( $board_config['board_email_form'] ) ? append_nuke_sid("profile.$phpEx?mode=email&amp;".NUKE_POST_USERS_URL
 	.'='.$profiledata['user_id']) : 'mailto:' .$profiledata['user_email'];
     $email_img = '<a href="' . $email_uri . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" border="0" /></a>';
     $email = '<a href="' . $email_uri . '">' . sprintf($lang['Send_email'], $profiledata['username']) . '</a>';
@@ -241,7 +241,7 @@ elseif( $profiledata['birthday_display'] == 2 )
 $facebook_img = ( $profiledata['user_facebook'] ) ? '<a href="http://www.facebook.com/profile.php?id=' . $profiledata['user_facebook'] . '" target="_userwww"><img src="' . $images['icon_facebook'] . '" alt="' . $lang['Visit_facebook'] . '" title="' . $lang['Visit_facebook'] . '" border="0" /></a>' : '&nbsp;';
 $facebook = ( $profiledata['user_facebook'] ) ? '<a href="' . $temp_url . '" target="_userwww">' . $profiledata['user_facebook'] . '</a>' : '&nbsp;';
 
-$temp_url = append_sid("search.$phpEx?search_author=" . urlencode($profiledata['username']) . "&amp;showresults=posts");
+$temp_url = append_nuke_sid("search.$phpEx?search_author=" . urlencode($profiledata['username']) . "&amp;showresults=posts");
 $search_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '" title="' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '" border="0" /></a>';
 $search = '<a href="' . $temp_url . '">' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '</a>';
 
@@ -280,7 +280,7 @@ if($nuke_userdata['user_level'] == NUKE_ADMIN)
 {
     $template_nuke->assign_vars(array(
         "L_USER_ADMIN_FOR" => $lang['User_admin_for'],
-        "U_ADMIN_PROFILE" => append_sid("modules/Forums/admin/admin_users.$phpEx?mode=edit&amp;u=" . $profiledata['user_id']))
+        "U_ADMIN_PROFILE" => append_nuke_sid("modules/Forums/admin/admin_users.$phpEx?mode=edit&amp;u=" . $profiledata['user_id']))
     );
     $template_nuke->assign_block_vars("switch_user_admin", array());
 }
@@ -295,9 +295,9 @@ include("includes/nuke_page_header.php");
 if ($profiledata['user_session_time'] >= (time()-$board_config['online_time'])):
 
     if ($profiledata['user_allow_viewonline']):
-        $online_status = '<a href="'.append_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_online'], $profiledata['username']).'"'.$online_color.'>'.$lang['Online'].'</a>';
+        $online_status = '<a href="'.append_nuke_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_online'], $profiledata['username']).'"'.$online_color.'>'.$lang['Online'].'</a>';
     elseif ( $nuke_userdata['user_level'] == NUKE_ADMIN || $nuke_userdata['user_id'] == $profiledata['user_id'] ):
-        $online_status = '<em><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_hidden'], $profiledata['username']) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em>';
+        $online_status = '<em><a href="' . append_nuke_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_hidden'], $profiledata['username']) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em>';
     else:
         $online_status = '<span title="' . sprintf($lang['is_offline'], $profiledata['username']) . '"' . $offline_color . '>' . $lang['Offline'] . '</span>';
     endif;
@@ -379,7 +379,7 @@ if ($rep_config['rep_disable'] == 0)
   $row_rep = $nuke_db->sql_fetchrow($result);
   if ($row_rep)
   {
-    $reputation .= " <br />(<a href=\""  . append_sid("reputation.$phpEx?a=stats&amp;" . NUKE_POST_USERS_URL . "=" . $profiledata['user_id']) . "\" target=\"_blank\" onClick=\"popupWin = window.open(this.href, '" . $lang['Reputation'] . "', 'location,width=700,height=400,top=0,scrollbars=yes'); popupWin.focus(); return false;\">" . $lang['Votes'] . "</a>: " . $row_rep['count_reps'] . ")";
+    $reputation .= " <br />(<a href=\""  . append_nuke_sid("reputation.$phpEx?a=stats&amp;" . NUKE_POST_USERS_URL . "=" . $profiledata['user_id']) . "\" target=\"_blank\" onClick=\"popupWin = window.open(this.href, '" . $lang['Reputation'] . "', 'location,width=700,height=400,top=0,scrollbars=yes'); popupWin.focus(); return false;\">" . $lang['Votes'] . "</a>: " . $row_rep['count_reps'] . ")";
   }
 }
 /*****[END]********************************************
@@ -503,7 +503,7 @@ $template_nuke->assign_vars(array(
  * @since 2.0.9e
  */
 	'USER_LAST_VISIT' => $nuke_user_last_visit,
-  'EDIT_THIS_USER' => sprintf($lang['Edit_Forum_User_ACP'],'<a href="'.append_sid("modules/Forums/admin/admin_users.$phpEx?mode=edit&amp;u=" . $profiledata['user_id']).'">','</a>'),
+  'EDIT_THIS_USER' => sprintf($lang['Edit_Forum_User_ACP'],'<a href="'.append_nuke_sid("modules/Forums/admin/admin_users.$phpEx?mode=edit&amp;u=" . $profiledata['user_id']).'">','</a>'),
   'BAN_THIS_USER_IP' => sprintf($lang['Ban_Forum_User_IP'],'<a href="'.$admin_file.'.php?op=ABBlockedIPAdd&amp;tip='.$profiledata['last_ip'].'">','</a>'),
   'SUSPEND_THIS_USER' => sprintf($lang['Suspend_This_User'],'<a href="modules.php?name=Your_Account&amp;file=admin&amp;op=suspendUser&amp;chng_uid='.$profiledata['user_id'].'">','</a>'),
   'DELETE_THIS_USER' => sprintf($lang['Delete_This_User'],'<a href="modules.php?name=Your_Account&amp;file=admin&amp;op=deleteUser&amp;chng_uid='.$profiledata['user_id'].'">','</a>'),
@@ -630,7 +630,7 @@ $template_nuke->assign_vars(array(
  [ Mod:     Arcade                             v3.0.2 ]
  ******************************************************/
     'L_ARCADE' => $lang['lib_arcade'],
-    'URL_STATS' => '<a href="' . append_sid("statarcade.$phpEx?uid=" . $profiledata['user_id'] ) . '">' . $lang['statuser'] . '</a>',
+    'URL_STATS' => '<a href="' . append_nuke_sid("statarcade.$phpEx?uid=" . $profiledata['user_id'] ) . '">' . $lang['statuser'] . '</a>',
 /*****[END]********************************************
  [ Mod:     Arcade                             v3.0.2 ]
  ******************************************************/
@@ -645,9 +645,9 @@ $template_nuke->assign_vars(array(
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
 
-    'U_SEARCH_USER' => append_sid("search.$phpEx?search_author=" . $u_search_author),
+    'U_SEARCH_USER' => append_nuke_sid("search.$phpEx?search_author=" . $u_search_author),
 
-    'S_PROFILE_ACTION' => append_sid("profile.$phpEx"))
+    'S_PROFILE_ACTION' => append_nuke_sid("profile.$phpEx"))
 );
 
 /*****[BEGIN]******************************************

@@ -179,7 +179,7 @@ function make_codes () {
     Notes:       Makes the donation screen
 ================================================================================================*/
 function make_donation () {
-    global $gen_configs, $lang_donate, $module_name, $nukeurl;
+    global $gen_configs, $lang_donate, $nuke_module_name, $nukeurl;
 
     OpenTable();
     if(!empty($gen_configs['page_image'])) {
@@ -194,15 +194,15 @@ function make_donation () {
     $url = (substr($url,-1) == '/') ? substr($url,0, -1) : $url;
 
     //Use this line if you want to use the sandbox
-	echo '<form action="modules.php?name='.$module_name.'&op=confirm" method="post">';
+	echo '<form action="modules.php?name='.$nuke_module_name.'&op=confirm" method="post">';
 	echo "<input type=\"hidden\" name=\"currency_code\" value=\"".$gen_configs['currency']."\">\n";
 	echo "<input type=\"hidden\" name=\"cmd\" value=\"_ext-enter\">\n";
 	echo "<input type=\"hidden\" name=\"cmd\" value=\"_xclick\">\n";
 	echo "<input type=\"hidden\" name=\"business\" value=\"".$gen_configs['pp_email']."\">\n";
-    echo "<input type=\"hidden\" name=\"notify_url\" value=\"http://".$url."/modules.php?name=".$module_name."&amp;op=thankyou\">\n";
+    echo "<input type=\"hidden\" name=\"notify_url\" value=\"http://".$url."/modules.php?name=".$nuke_module_name."&amp;op=thankyou\">\n";
 	echo "<input type=\"hidden\" name=\"no_shipping\" value=\"1\">\n";
-	echo "<input type=\"hidden\" name=\"return\" value=\"http://".$url."/modules.php?name=".$module_name."&amp;op=thankyou\">\n";
-	echo "<input type=\"hidden\" name=\"cancel_return\" value=\"http://".$url."/modules.php?name=".$module_name."&amp;op=cancel\">\n";
+	echo "<input type=\"hidden\" name=\"return\" value=\"http://".$url."/modules.php?name=".$nuke_module_name."&amp;op=thankyou\">\n";
+	echo "<input type=\"hidden\" name=\"cancel_return\" value=\"http://".$url."/modules.php?name=".$nuke_module_name."&amp;op=cancel\">\n";
 	echo "<input type=\"hidden\" name=\"rm\" value=\"2\">\n";
 	echo "<input type=\"hidden\" name=\"no_note\" value=\"1\">\n";
 	echo "<input type=\"hidden\" name=\"on0\" value=\"Info\">\n";

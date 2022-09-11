@@ -40,7 +40,7 @@ define('IN_PHPBB2', 1);
 if ( !empty($setmodules) )
 {
     $filename = basename(__FILE__);
-    $module['Groups']['Manage'] = $filename;
+    $nuke_module['Groups']['Manage'] = $filename;
     return;
 }
 
@@ -384,7 +384,7 @@ if ( isset($HTTP_POST_VARS['edit']) || isset($HTTP_POST_VARS['new']) )
  [ Mod:     Initial Usergroup                  v1.0.1 ]
  ******************************************************/
 
-                'U_SEARCH_USER' => append_sid("search.$phpEx?mode=searchuser&popup=1&menu=1"),
+                'U_SEARCH_USER' => append_nuke_sid("search.$phpEx?mode=searchuser&popup=1&menu=1"),
 
                 'S_GROUP_OPEN_TYPE' => NUKE_GROUP_OPEN,
                 'S_GROUP_CLOSED_TYPE' => NUKE_GROUP_CLOSED,
@@ -408,7 +408,7 @@ if ( isset($HTTP_POST_VARS['edit']) || isset($HTTP_POST_VARS['new']) )
 /*****[END]********************************************
  [ Mod:     Initial Usergroup                  v1.0.1 ]
  ******************************************************/
-                'S_GROUP_ACTION' => append_sid("admin_groups.$phpEx"),
+                'S_GROUP_ACTION' => append_nuke_sid("admin_groups.$phpEx"),
                 'S_HIDDEN_FIELDS' => $s_hidden_fields)
         );
 
@@ -520,7 +520,7 @@ else if ( isset($HTTP_POST_VARS['group_update']) )
                         message_die(NUKE_GENERAL_ERROR, 'Could not update auth_access', '', __LINE__, __FILE__, $sql);
                 }
 
-                $message = $lang['Deleted_group'] . '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid("admin_groups.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
+                $message = $lang['Deleted_group'] . '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_nuke_sid("admin_groups.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');
 
                 message_die(NUKE_GENERAL_MESSAGE, $message);
         }
@@ -746,7 +746,7 @@ else if ( isset($HTTP_POST_VARS['group_update']) )
  [ Mod:    Auto Group                          v1.2.2 ]
  ******************************************************/
                         
-                        $message = $lang['Updated_group'] .'<br />'.sprintf($lang['group_count_updated'],$group_count_remove,$group_count_added). '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid("admin_groups.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');;
+                        $message = $lang['Updated_group'] .'<br />'.sprintf($lang['group_count_updated'],$group_count_remove,$group_count_added). '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_nuke_sid("admin_groups.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');;
 
                         message_die(NUKE_GENERAL_MESSAGE, $message);
                 }
@@ -843,7 +843,7 @@ else if ( isset($HTTP_POST_VARS['group_update']) )
  [ Mod:     Initial Usergroup                  v1.0.1 ]
  ******************************************************/
 
-                        $message = $lang['Added_new_group'] .'<br />'.sprintf($lang['group_count_updated'],$group_count_remove,$group_count_added). '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid("admin_groups.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');;
+                        $message = $lang['Added_new_group'] .'<br />'.sprintf($lang['group_count_updated'],$group_count_remove,$group_count_added). '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_nuke_sid("admin_groups.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');;
 
                         message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -888,7 +888,7 @@ else
                 'L_LOOK_UP' => $lang['Look_up_group'],
                 'L_CREATE_NEW_GROUP' => $lang['New_group'],
 
-                'S_GROUP_ACTION' => append_sid("admin_groups.$phpEx"),
+                'S_GROUP_ACTION' => append_nuke_sid("admin_groups.$phpEx"),
                 'S_GROUP_SELECT' => $select_list)
         );
 

@@ -127,12 +127,12 @@ while( $row = $nuke_db->sql_fetchrow($result) )
 
             if ( $row['user_allow_viewonline'] )
             {
-                $nuke_user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'>' . $row['username'] . '</a>';
+                $nuke_user_online_link = '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'>' . $row['username'] . '</a>';
                 $logged_visible_online++;
             }
             else
             {
-                $nuke_user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'><i>' . $row['username'] . '</i></a>';
+                $nuke_user_online_link = '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'><i>' . $row['username'] . '</i></a>';
                 $logged_hidden_online++;
             }
 
@@ -368,29 +368,29 @@ $template_nuke->assign_vars(array(
     'L_WHOSONLINE_ADMIN' => sprintf($lang['Admin_online_color'], '<span style="color:#' . $theme['fontcolor3'] . '">', '</span>'),
     'L_WHOSONLINE_MOD' => sprintf($lang['Mod_online_color'], '<span style="color:#' . $theme['fontcolor2'] . '">', '</span>'),
 
-    'U_SEARCH_UNANSWERED' => append_sid('search.'.$phpEx.'?search_id=unanswered'),
-    'U_SEARCH_SELF' => append_sid('search.'.$phpEx.'?search_id=egosearch'),
-    'U_SEARCH_NEW' => append_sid('search.'.$phpEx.'?search_id=newposts'),
-    'U_INDEX' => append_sid('index.'.$phpEx),
-    'U_REGISTER' => append_sid('profile.'.$phpEx.'?mode=register'),
-    'U_PROFILE' => append_sid('modules.php?name=Your_Account&op=edituser'),
-    'U_PRIVATEMSGS' => append_sid('privmsg.'.$phpEx.'?folder=inbox'),
-    'U_PRIVATEMSGS_POPUP' => append_sid('privmsg.'.$phpEx.'?mode=newpm&popup=1'),
-    'U_SEARCH' => append_sid('search.'.$phpEx),
-    'U_MEMBERLIST' => append_sid('memberlist.'.$phpEx),
-    'U_MODCP' => append_sid('modcp.'.$phpEx),
-    'U_FAQ' => append_sid('faq.'.$phpEx),
-    'U_VIEWONLINE' => append_sid('viewonline.'.$phpEx),
-    'U_LOGIN_LOGOUT' => append_sid($u_login_logout),
-    'U_MEMBERSLIST' => append_sid('memberlist.'.$phpEx),
-    'U_GROUP_CP' => append_sid('groupcp.'.$phpEx),
+    'U_SEARCH_UNANSWERED' => append_nuke_sid('search.'.$phpEx.'?search_id=unanswered'),
+    'U_SEARCH_SELF' => append_nuke_sid('search.'.$phpEx.'?search_id=egosearch'),
+    'U_SEARCH_NEW' => append_nuke_sid('search.'.$phpEx.'?search_id=newposts'),
+    'U_INDEX' => append_nuke_sid('index.'.$phpEx),
+    'U_REGISTER' => append_nuke_sid('profile.'.$phpEx.'?mode=register'),
+    'U_PROFILE' => append_nuke_sid('modules.php?name=Your_Account&op=edituser'),
+    'U_PRIVATEMSGS' => append_nuke_sid('privmsg.'.$phpEx.'?folder=inbox'),
+    'U_PRIVATEMSGS_POPUP' => append_nuke_sid('privmsg.'.$phpEx.'?mode=newpm&popup=1'),
+    'U_SEARCH' => append_nuke_sid('search.'.$phpEx),
+    'U_MEMBERLIST' => append_nuke_sid('memberlist.'.$phpEx),
+    'U_MODCP' => append_nuke_sid('modcp.'.$phpEx),
+    'U_FAQ' => append_nuke_sid('faq.'.$phpEx),
+    'U_VIEWONLINE' => append_nuke_sid('viewonline.'.$phpEx),
+    'U_LOGIN_LOGOUT' => append_nuke_sid($u_login_logout),
+    'U_MEMBERSLIST' => append_nuke_sid('memberlist.'.$phpEx),
+    'U_GROUP_CP' => append_nuke_sid('groupcp.'.$phpEx),
 
     'S_CONTENT_DIRECTION' => $lang['DIRECTION'],
     'S_CONTENT_ENCODING' => $lang['ENCODING'],
     'S_CONTENT_DIR_LEFT' => $lang['LEFT'],
     'S_CONTENT_DIR_RIGHT' => $lang['RIGHT'],
     'S_TIMEZONE' => sprintf($lang['All_times'], $lang[number_format($board_config['board_timezone'])]),
-    'S_LOGIN_ACTION' => append_sid('login.'.$phpEx),
+    'S_LOGIN_ACTION' => append_nuke_sid('login.'.$phpEx),
 
     'T_HEAD_STYLESHEET' => $theme['head_stylesheet'],
 

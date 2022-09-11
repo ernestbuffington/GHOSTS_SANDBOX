@@ -35,22 +35,22 @@ if (!defined('MODULE_FILE'))
 die ('You can\'t access this file directly...');
 
 
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 global $nuke_db, $currentlang, $_GETVAR, $admin_file;
 
-$lang_path = NUKE_MODULES_DIR . $module_name . '/language/';
+$lang_path = NUKE_MODULES_DIR . $nuke_module_name . '/language/';
 
 if (@file_exists($lang_path . 'lang-' . $currentlang . '.php'))
     @include_once($lang_path . 'lang-' . $currentlang . '.php');
 elseif (@file_exists($lang_path . 'lang-' . $board_config['default_lang'] . '.php'))
     @include_once($lang_path . 'lang-' . $board_config['default_lang'] . '.php');
 else
-    DisplayError(_NO_ADMIN_MODULE_LANGUAGE_FOUND . $module_name);
+    DisplayError(_NO_ADMIN_MODULE_LANGUAGE_FOUND . $nuke_module_name);
 
-$pagetitle = "- ".$module_name."";
+$pagetitle = "- ".$nuke_module_name."";
 
 include(NUKE_BASE_DIR.'header.php');
-include(NUKE_MODULES_DIR.$module_name.'/admin/inc/functions.php');
+include(NUKE_MODULES_DIR.$nuke_module_name.'/admin/inc/functions.php');
 
 $nuke_config = $nuke_db->sql_ufetchrow('SELECT * FROM `'.$prefix.'_link_us_config` LIMIT 0,1');
 
@@ -58,15 +58,15 @@ $op = $_GETVAR->get('op', '_REQUEST', 'string');
 
 switch($op):
   	case 'visit':        
-	include_once(NUKE_MODULES_DIR.$module_name.'/public/visit.php'); 
+	include_once(NUKE_MODULES_DIR.$nuke_module_name.'/public/visit.php'); 
 	break;  
   	case 'submitbutton': 
-	include_once(NUKE_MODULES_DIR.$module_name.'/public/submit.php'); 
+	include_once(NUKE_MODULES_DIR.$nuke_module_name.'/public/submit.php'); 
 	break;
 	case 'submit_save':  
-	include_once(NUKE_MODULES_DIR.$module_name.'/public/submitsave.php'); 
+	include_once(NUKE_MODULES_DIR.$nuke_module_name.'/public/submitsave.php'); 
 	break;
-	default: include_once(NUKE_MODULES_DIR.$module_name.'/public/index.php'); 
+	default: include_once(NUKE_MODULES_DIR.$nuke_module_name.'/public/index.php'); 
 	break;
 endswitch;
 

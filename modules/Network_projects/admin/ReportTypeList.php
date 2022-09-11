@@ -26,9 +26,9 @@ $type_total = $network_db->sql_numrows($typeresult);
 OpenTable();
 echo "<table width='100%' border='1' cellspacing='0' cellpadding='2'>\n";
 echo "<tr><td colspan=3 width='100%' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_TYPEOPTIONS."</strong></nobr></td></tr>\n";
-$pjimage = pjimage("options.png", $module_name);
+$pjimage = pjimage("options.png", $nuke_module_name);
 echo "<tr><td><img src='$pjimage'></td><td colspan='2' width='100%'><nobr><a href='".$admin_file.".php?op=ReportTypeAdd'>"._NETWORK_TYPEADD."</a></nobr></td></tr>\n";
-$pjimage = pjimage("stats.png", $module_name);
+$pjimage = pjimage("stats.png", $nuke_module_name);
 echo "<tr><td><img src='$pjimage'></td><td colspan='2' width='100%'><nobr>"._NETWORK_TOTALTYPES.": <strong>$type_total</strong></nobr></td></tr>\n";
 echo "</table>\n";
 //CloseTable();
@@ -40,7 +40,7 @@ echo "<td align='center' bgcolor='$bgcolor2'><strong>"._NETWORK_WEIGHT."</strong
 echo "<td align='center' bgcolor='$bgcolor2'><strong>"._NETWORK_FUNCTIONS."</strong></td></tr>\n";
 if($type_total != 0){
   while($type_row = $network_db->sql_fetchrow($typeresult)) {
-    $pjimage = pjimage("type.png", $module_name);
+    $pjimage = pjimage("type.png", $nuke_module_name);
     echo "<tr><td><img src='$pjimage'></td><td width='100%'>".$type_row['type_name']."</td>\n";
     $weight1 = $type_row['type_weight'] - 1;
     $weight3 = $type_row['type_weight'] + 1;
@@ -48,14 +48,14 @@ if($type_total != 0){
     list($pid2) = $network_db->sql_fetchrow($network_db->sql_query("SELECT `type_id` FROM `".$network_prefix."_reports_types` WHERE `type_weight`='$weight3'"));
     echo "<td align='center'><nobr>";
     if($pid1 AND $pid1 > 0) {
-      echo "<a href='".$admin_file.".php?op=ReportTypeOrder&amp;weight=".$type_row['type_weight']."&amp;pid=".$type_row['type_id']."&amp;weightrep=$weight1&amp;pidrep=$pid1'><img src='modules/$module_name/images/weight_up.png' border='0' hspace='3' alt='"._NETWORK_UP."' title='"._NETWORK_UP."'></a>";
+      echo "<a href='".$admin_file.".php?op=ReportTypeOrder&amp;weight=".$type_row['type_weight']."&amp;pid=".$type_row['type_id']."&amp;weightrep=$weight1&amp;pidrep=$pid1'><img src='modules/$nuke_module_name/images/weight_up.png' border='0' hspace='3' alt='"._NETWORK_UP."' title='"._NETWORK_UP."'></a>";
     } else {
-      echo "<img src='modules/$module_name/images/weight_up_no.png' border='0' hspace='3' alt='' title=''>";
+      echo "<img src='modules/$nuke_module_name/images/weight_up_no.png' border='0' hspace='3' alt='' title=''>";
     }
     if($pid2) {
-      echo "<a href='".$admin_file.".php?op=ReportTypeOrder&amp;weight=".$type_row['type_weight']."&amp;pid=".$type_row['type_id']."&amp;weightrep=$weight3&amp;pidrep=$pid2'><img src='modules/$module_name/images/weight_dn.png' border='0' hspace='3' alt='"._NETWORKDOWN."' title='"._NETWORK_DOWN."'></a>";
+      echo "<a href='".$admin_file.".php?op=ReportTypeOrder&amp;weight=".$type_row['type_weight']."&amp;pid=".$type_row['type_id']."&amp;weightrep=$weight3&amp;pidrep=$pid2'><img src='modules/$nuke_module_name/images/weight_dn.png' border='0' hspace='3' alt='"._NETWORKDOWN."' title='"._NETWORK_DOWN."'></a>";
     } else {
-      echo "<img src='modules/$module_name/images/weight_dn_no.png' border='0' hspace='3' alt='' title=''>";
+      echo "<img src='modules/$nuke_module_name/images/weight_dn_no.png' border='0' hspace='3' alt='' title=''>";
     }
     echo"</nobr></td>\n";
     echo "<td align='center'><nobr>[ <a href='".$admin_file.".php?op=ReportTypeEdit&amp;type_id=".$type_row['type_id']."'>"._NETWORK_EDIT."</a>";

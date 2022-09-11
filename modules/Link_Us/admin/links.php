@@ -34,8 +34,8 @@ if (!defined('ADMIN_FILE')) {
 }
 
 global $admin_file, $currentlang;
-$module_name = basename(dirname(dirname(__FILE__)));
-include_once('modules/'.$module_name.'/language/lang-'.$currentlang.'.php');
-adminmenu($admin_file.'.php?op=link_us', $lang_new[$module_name]['link_us_link'], 'linkus.png');
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
+include_once('modules/'.$nuke_module_name.'/language/lang-'.$currentlang.'.php');
+adminmenu($admin_file.'.php?op=link_us', $lang_new[$nuke_module_name]['link_us_link'], 'linkus.png');
 
 ?>

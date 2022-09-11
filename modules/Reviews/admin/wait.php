@@ -24,9 +24,9 @@ if(!defined('NUKE_EVO')) {
 
 global $admin_file, $nuke_db, $prefix, $nuke_cache;
 
-$module_name = basename(dirname(dirname(__FILE__)));
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
 
-if(is_active($module_name)) {
+if(is_active($nuke_module_name)) {
     $content .= "<div align=\"left\"><strong><u><span class=\"content\">"._AREV."</span>:</u></strong></div>";
     if(($numwaitreviews = $nuke_cache->load('numwaitreviews', 'submissions')) === false) {
         list($numwaitreviews) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT COUNT(*) FROM ".$prefix."_reviews_add"), SQL_NUM);

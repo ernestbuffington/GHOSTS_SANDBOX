@@ -90,8 +90,8 @@ if (!defined('MODULE_FILE'))
 exit("You can't access this file directly...");
 
 if($popup != "1"):
- $module_name = basename(dirname(__FILE__));
- require("modules/".$module_name."/nukebb.php");
+ $nuke_module_name = basename(dirname(__FILE__));
+ require("modules/".$nuke_module_name."/nukebb.php");
 else:
  $phpbb2_root_path = NUKE_PHPBB2_DIR;
 endif;
@@ -146,7 +146,7 @@ if(!($forum_row = $nuke_db->sql_fetchrow($result)))
 message_die(NUKE_GENERAL_MESSAGE, 'Forum_not_exist');
 
 # Start session management
-$nuke_userdata = session_pagestart($nuke_user_ip, $forum_id);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, $forum_id);
 init_userprefs($nuke_userdata);
 # End session management
 
@@ -157,7 +157,7 @@ $is_auth = auth(NUKE_AUTH_ALL, $forum_id, $nuke_userdata, $forum_row);
 if(!$is_auth['auth_read'] || !$is_auth['auth_view']):
         if (!$nuke_userdata['session_logged_in']):
                 $nuke_redirect = NUKE_POST_FORUM_URL . "=$forum_id" . ( ( isset($start) ) ? "&start=$start" : '' );
-                nuke_redirect(append_sid("login.$phpEx?nuke_redirect=viewforum.$phpEx&$nuke_redirect", true));
+                nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=viewforum.$phpEx&$nuke_redirect", true));
         endif;
         # The user is not authed to read this forum ...
         $message = ( !$is_auth['auth_view'] ) ? $lang['Forum_not_exist'] : sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']);
@@ -169,7 +169,7 @@ endif;
 if(!$is_auth['auth_mod'] && $nuke_userdata['user_level'] != NUKE_ADMIN):
 	$nuke_redirect = str_replace("&amp;", "&", preg_replace('#.*?([a-z]+?\.' . $phpEx . '.*?)$#i', '\1', htmlspecialchars($HTTP_SERVER_VARS['REQUEST_URI'])));
 	if($HTTP_POST_VARS['cancel']):
-		nuke_redirect(append_sid("index.$phpEx"));
+		nuke_redirect(append_nuke_sid("index.$phpEx"));
 	elseif($HTTP_POST_VARS['pass_login']):
 		if($forum_row['forum_password'] != '')
 		password_check('forum', $forum_id, $HTTP_POST_VARS['password'], $nuke_redirect);
@@ -226,11 +226,11 @@ if($mark_read == 'topics'):
                 # Mod: Simple Subforums v1.0.1 END
 
                 $template_nuke->assign_vars(array(
-                        'META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id").'">')
+                        'META' => '<meta http-equiv="refresh" content="3;url='.append_nuke_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id").'">')
                 );
         endif;
 
-        $message = $lang['Topics_marked_read'].'<br /><br />'.sprintf($lang['Click_return_forum'],'<a href="'.append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id").'">','</a>');
+        $message = $lang['Topics_marked_read'].'<br /><br />'.sprintf($lang['Click_return_forum'],'<a href="'.append_nuke_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id").'">','</a>');
         message_die(NUKE_GENERAL_MESSAGE, $message);
 endif;
 # End handle marking posts
@@ -270,7 +270,7 @@ $moderators = array();
 
 while($row = $nuke_db->sql_fetchrow($result)):
     # Mod: Advanced Username Color v1.0.5 START
-    $moderators[] = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
+    $moderators[] = '<a href="'.append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
     # Mod: Advanced Username Color v1.0.5 START
 endwhile;
 
@@ -289,7 +289,7 @@ if(!($result = $nuke_db->sql_query($sql)))
 message_die(NUKE_GENERAL_ERROR,'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
 
 while($row = $nuke_db->sql_fetchrow($result)):
-  $moderators[] = '<a href="'.append_sid("groupcp.$phpEx?".NUKE_POST_GROUPS_URL."=".$row['group_id']).'">'.GroupColor($row['group_name']).'</a>';
+  $moderators[] = '<a href="'.append_nuke_sid("groupcp.$phpEx?".NUKE_POST_GROUPS_URL."=".$row['group_id']).'">'.GroupColor($row['group_name']).'</a>';
 endwhile;
 
 $l_moderators = (count($moderators) == 1) ? $lang['Moderator'] : $lang['Moderators'];
@@ -463,9 +463,9 @@ obtain_word_list($orig_word, $replacement_word);
 # Post URL generation for templating vars
 $template_nuke->assign_vars(array(
     'L_DISPLAY_TOPICS' => $lang['Display_topics'],
-    'U_POST_NEW_TOPIC' => append_sid("posting.$phpEx?mode=newtopic&amp;".NUKE_POST_FORUM_URL."=$forum_id"),
+    'U_POST_NEW_TOPIC' => append_nuke_sid("posting.$phpEx?mode=newtopic&amp;".NUKE_POST_FORUM_URL."=$forum_id"),
     'S_SELECT_TOPIC_DAYS' => $select_topic_days,
-    'S_POST_DAYS_ACTION' => append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=".$forum_id."&amp;start=$start"))
+    'S_POST_DAYS_ACTION' => append_nuke_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=".$forum_id."&amp;start=$start"))
 );
 
 # User authorisation levels output
@@ -480,11 +480,11 @@ attach_build_auth_levels($is_auth, $s_auth_can);
 # Mod: Attachment Mod v2.4.1 END
 
 if($is_auth['auth_mod'])
-$s_auth_can .= sprintf($lang['Rules_moderate'], '<a href="'.append_sid("modcp.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id").'">', '</a>');
+$s_auth_can .= sprintf($lang['Rules_moderate'], '<a href="'.append_nuke_sid("modcp.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id").'">', '</a>');
 
 # Mozilla navigation bar
 $nav_links['up'] = array(
-        'url' => append_sid('index.'.$phpEx),
+        'url' => append_nuke_sid('index.'.$phpEx),
         'title' => sprintf($lang['Forum_Index'], $board_config['sitename'])
 );
 
@@ -553,8 +553,8 @@ $template_nuke->assign_vars(array(
         'L_JOINED' => $lang['Joined'],
         'L_AUTHOR' => $lang['Author'],
         'S_AUTH_LIST' => $s_auth_can,
-        'U_VIEW_FORUM' => append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id"),
-        'U_MARK_READ' => append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id&amp;mark=topics"))
+        'U_VIEW_FORUM' => append_nuke_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id"),
+        'U_MARK_READ' => append_nuke_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id&amp;mark=topics"))
 );
 
 # Mod: Simple Subforums v1.0.1 START
@@ -564,7 +564,7 @@ if($forum_row['forum_parent']):
 		if($all_forums[$i]['forum_id'] == $parent_id):
 			$template_nuke->assign_vars(array(
 				'PARENT_FORUM'			=> 1,
-				'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
+				'U_VIEW_PARENT_FORUM'	=> append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
 				'PARENT_FORUM_NAME'		=> $all_forums[$i]['forum_name'],
 				));
 		endif;
@@ -703,7 +703,7 @@ if($total_topics):
                   if($unread_topics):
                     $folder_image = $folder_new;
                     $folder_alt = $lang['New_posts'];
-                    $newest_post_img = '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;view=newest").'"><img 
+                    $newest_post_img = '<a href="'.append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;view=newest").'"><img 
 					src="'.$images['icon_newest_reply'].'" alt="'.$lang['View_newest_post'].'" title="'.$lang['View_newest_post'].'" border="0" /></a> ';
                   else:
                     $folder_image = $folder;
@@ -714,7 +714,7 @@ if($total_topics):
             
                $folder_image = $folder_new;
                $folder_alt = ($topic_rowset[$i]['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['New_posts'];
-               $newest_post_img = '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;view=newest").'"><img 
+               $newest_post_img = '<a href="'.append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;view=newest").'"><img 
 			   src="'.$images['icon_newest_reply'].'" alt="'.$lang['View_newest_post'].'" title="'.$lang['View_newest_post'].'" border="0" /></a> ';
             endif;
         else:
@@ -736,7 +736,7 @@ if($total_topics):
        $times = 1;
 
        for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page']):
-         $goto_page .= '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=".$topic_id."&amp;start=$j").'">'.$times.'</a>';
+         $goto_page .= '<a href="'.append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=".$topic_id."&amp;start=$j").'">'.$times.'</a>';
          if($times == 1 && $total_pages > 4):
             $goto_page .= ' ... ';
             $times = $total_pages - 3;
@@ -759,8 +759,8 @@ if($total_topics):
     $topic_rowset[$i]['user2'] = UsernameColor($topic_rowset[$i]['user2']);
     # Mod: Advanced Username Color v1.0.5 END
 
-    $view_topic_url = append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id");
-    $topic_author = ($topic_rowset[$i]['user_id'] != NUKE_ANONYMOUS) ? '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL.'='.$topic_rowset[$i]['user_id']).'">' : '';
+    $view_topic_url = append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id");
+    $topic_author = ($topic_rowset[$i]['user_id'] != NUKE_ANONYMOUS) ? '<a href="'.append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL.'='.$topic_rowset[$i]['user_id']).'">' : '';
     
 	$topic_author .= ($topic_rowset[$i]['user_id'] != NUKE_ANONYMOUS) ? $topic_rowset[$i]['username'] : (($topic_rowset[$i]['post_username'] != '') 
 	? $topic_rowset[$i]['post_username'] : $lang['Guest']);
@@ -771,9 +771,9 @@ if($total_topics):
     
 	$last_post_author = ($topic_rowset[$i]['id2'] == NUKE_ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') 
 	? $topic_rowset[$i]['post_username2'].' ' : $lang['Guest'].' ' ) : '<a 
-	href="'. append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL.'='.$topic_rowset[$i]['id2']).'">'.$topic_rowset[$i]['user2'].'</a>';
+	href="'. append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL.'='.$topic_rowset[$i]['id2']).'">'.$topic_rowset[$i]['user2'].'</a>';
     
-	$last_post_url = '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL.'='.$topic_rowset[$i]['topic_last_post_id']).'#'.$topic_rowset[$i]['topic_last_post_id'].'"><i 
+	$last_post_url = '<a href="'.append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL.'='.$topic_rowset[$i]['topic_last_post_id']).'#'.$topic_rowset[$i]['topic_last_post_id'].'"><i 
 	class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$lang['View_latest_post'].'"></i></a>';
     
 	$views = $topic_rowset[$i]['topic_views'];
@@ -908,7 +908,7 @@ if($total_forums)
 	$template_nuke->assign_block_vars('catrow', array(
 		'CAT_ID'	=> $forum_id,
 		'CAT_DESC'	=> $forum_row['forum_name'],
-		'U_VIEWCAT' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL ."=$forum_id"),
+		'U_VIEWCAT' => append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL ."=$forum_id"),
 		));
 
 	
@@ -949,7 +949,7 @@ if($total_forums)
 	message_die(NUKE_GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
 
 	while($row = $nuke_db->sql_fetchrow($result)):
-	 $subforum_moderators[$row['forum_id']][] = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
+	 $subforum_moderators[$row['forum_id']][] = '<a href="'.append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
 	endwhile;
 	$nuke_db->sql_freeresult($result);	
 
@@ -967,7 +967,7 @@ if($total_forums)
 	message_die(NUKE_GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
 
 	while($row = $nuke_db->sql_fetchrow($result))
-		$subforum_moderators[$row['forum_id']][] = '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=" . $row['group_id']) . '">' . 	GroupColor($row['group_name']) . '</a>';
+		$subforum_moderators[$row['forum_id']][] = '<a href="' . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=" . $row['group_id']) . '">' . 	GroupColor($row['group_name']) . '</a>';
 	emdwhile;
 	$nuke_db->sql_freeresult($result);
 
@@ -1022,9 +1022,9 @@ if($total_forums)
 				
 				$last_post .= ($subforum_data[$j]['user_id'] == NUKE_ANONYMOUS) ? (($subforum_data[$j]['post_username'] != '') 
 				? $subforum_data[$j]['post_username'].' ' : $lang['Guest'].' ' ) : '<a 
-				href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL.'='.$subforum_data[$j]['user_id']).'">'.UsernameColor($subforum_data[$j]['username']).'</a> ';
+				href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL.'='.$subforum_data[$j]['user_id']).'">'.UsernameColor($subforum_data[$j]['username']).'</a> ';
 				
-				$last_post .= '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL.'='.$subforum_data[$j]['forum_last_post_id']).'#'.$subforum_data[$j]['forum_last_post_id'].'"><img 
+				$last_post .= '<a href="'.append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL.'='.$subforum_data[$j]['forum_last_post_id']).'#'.$subforum_data[$j]['forum_last_post_id'].'"><img 
 				src="'.$images['icon_latest_reply'].'" border="0" alt="'.$lang['View_latest_post'].'" title="'.$lang['View_latest_post'].'" /></a>';
 			
 			else:
@@ -1062,7 +1062,7 @@ if($total_forums)
 				'LAST_POST_TIME' => $last_post_time,
 				'L_MODERATOR' => $l_moderators, 
 				'L_FORUM_FOLDER_ALT' => $folder_alt,
-				'U_VIEWFORUM' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$subforum_id"))
+				'U_VIEWFORUM' => append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$subforum_id"))
 			);
 		endif;
 	endfor;

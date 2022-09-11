@@ -39,7 +39,7 @@ if (!defined('CNBYA')) {
     die('CNBYA protection');
 }
 
-if(is_mod_admin($module_name)) {
+if(is_mod_admin($nuke_module_name)) {
 
     if ($ya_config['autosuspend'] > 0){
         $st = time() - $ya_config['autosuspend'];
@@ -48,7 +48,7 @@ if(is_mod_admin($module_name)) {
             $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET user_level='0', user_active='0' WHERE user_id='$sus_uid'");
         }
     }
-    nuke_redirect("modules.php?name=$module_name&file=admin");
+    nuke_redirect("modules.php?name=$nuke_module_name&file=admin");
 
 }
 

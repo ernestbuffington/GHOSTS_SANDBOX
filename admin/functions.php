@@ -233,12 +233,12 @@ function deleteNotice($id)
 
 function adminmenu($url, $title, $image) 
 {
-	global $counter, $admingraphic, $admin, $module_folder_name;
+	global $counter, $admingraphic, $admin, $nuke_module_folder_name;
 
-	if(file_exists('modules/'.$module_folder_name.'/images/admin/'.$image)):
-		$image = 'modules/'.$module_folder_name.'/images/admin/'.$image;
-	elseif(file_exists('modules/'.$module_folder_name.'/images/'.$image)):
-		$image = 'modules/'.$module_folder_name.'/images/'.$image;
+	if(file_exists('modules/'.$nuke_module_folder_name.'/images/admin/'.$image)):
+		$image = 'modules/'.$nuke_module_folder_name.'/images/admin/'.$image;
+	elseif(file_exists('modules/'.$nuke_module_folder_name.'/images/'.$image)):
+		$image = 'modules/'.$nuke_module_folder_name.'/images/'.$image;
 	else:
 		$image = 'images/admin/'.$image;
 	endif;
@@ -566,8 +566,8 @@ function GraphicAdmin($pos=1)
 		{
 			if (file_exists(NUKE_MODULES_DIR.$row['title']."/admin/index.php") AND file_exists(NUKE_MODULES_DIR.$row['title']."/admin/links.php") AND file_exists(NUKE_MODULES_DIR.$row['title']."/admin/case.php")) 
 			{
-				global $module_folder_name;
-				$module_folder_name = $row['title'];
+				global $nuke_module_folder_name;
+				$nuke_module_folder_name = $row['title'];
 				include(NUKE_MODULES_DIR.$row['title'].'/admin/links.php');
 			}
 			$count++;
@@ -980,8 +980,8 @@ function administration_panel( $pos = 1 )
 				{
 					if (file_exists(NUKE_MODULES_DIR.$row['title']."/admin/index.php") AND file_exists(NUKE_MODULES_DIR.$row['title']."/admin/links.php") AND file_exists(NUKE_MODULES_DIR.$row['title']."/admin/case.php")) 
 					{
-						// global $module_folder_name;
-						// $module_folder_name = $row['title'];
+						// global $nuke_module_folder_name;
+						// $nuke_module_folder_name = $row['title'];
 						?>
 						<div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 pl-0 admin-buttons-container">
 							<div class="admin-buttons"><?php include(NUKE_MODULES_DIR.$row['title'].'/admin/links.php'); ?></div>

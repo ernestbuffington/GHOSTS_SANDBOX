@@ -40,7 +40,7 @@ if($nuke_config['button_method'] == 0){
       }
     }
 		
-		if (check_image_type($_FILES['site_image']['type']) == false){ echo $lang_new[$module_name]['ERROR']; }
+		if (check_image_type($_FILES['site_image']['type']) == false){ echo $lang_new[$nuke_module_name]['ERROR']; }
 		if (move_uploaded_file($_FILES['site_image']['tmp_name'], $nuke_config['upload_file'] . $_FILES['site_image']['name'])) {
 			$img_upload = $nuke_config['upload_file'].$_FILES['site_image']['name'];
 		}

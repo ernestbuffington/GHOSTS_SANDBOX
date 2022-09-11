@@ -114,7 +114,7 @@ function tz_select($default, $select_name = 'timezone')
 
     title(_USERREGLOGIN);
     OpenTable();
-    echo "<form action='modules.php?name=$module_name' method='post' name='newuser'>\n";
+    echo "<form action='modules.php?name=$nuke_module_name' method='post' name='newuser'>\n";
     echo "<table style='margin:auto' cellpadding='3' cellspacing='3' border='0'>\n";
     echo "<tr><td align='center' bgcolor='$bgcolor1' colspan='2'><div class=\"textbold\">"._REGNEWUSER."</div></td></tr>\n";
     echo "<tr><td bgcolor='$bgcolor2'><div class=\"textbold\">"._NICKNAME.":</div>"._REQUIRED."</td><td bgcolor='$bgcolor1'><input type='text' name='ya_username' size='15' id='username_input' maxlength='".$ya_config['nick_max']."'>&nbsp;<span id=\"username_check_result\"></span>&nbsp;<span class='tiny'>"._REQUIRED."</span><br /><span class='tiny'>("._YA_NICKLENGTH.")</span></td></tr>\n";

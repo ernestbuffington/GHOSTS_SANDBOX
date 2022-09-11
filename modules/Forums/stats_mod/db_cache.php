@@ -252,7 +252,7 @@ class StatisticsDB
         return ($result);
     }
 
-    function end_cached_query($module_id, $empty_cache = false)
+    function end_cached_query($nuke_module_id, $empty_cache = false)
     {
         global $nuke_db;
 
@@ -265,7 +265,7 @@ class StatisticsDB
         {
             $sql = "UPDATE " . CACHE_TABLE . "
             SET db_cache = ''
-            WHERE module_id = " . $module_id;
+            WHERE module_id = " . $nuke_module_id;
         }
         else
         {
@@ -274,7 +274,7 @@ class StatisticsDB
             $sql = "UPDATE " . CACHE_TABLE . "
             SET db_cache = '" . sql_quote(serialize($data)) . "',
             module_cache_time = " . time() . "
-            WHERE module_id = " . $module_id;
+            WHERE module_id = " . $nuke_module_id;
         }
 
         if (!$nuke_db->sql_query($sql))

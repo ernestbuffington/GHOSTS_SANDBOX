@@ -35,7 +35,7 @@ exit('CNBYA protection');
         title(_HOMECONFIG);
         if(empty($nuke_userinfo['theme'])) { $nuke_userinfo['theme'] = "$Default_Theme"; }
         OpenTable();
-        echo "<form action=\"modules.php?name=$module_name\" method=\"post\">";
+        echo "<form action=\"modules.php?name=$nuke_module_name\" method=\"post\">";
         if ($nuke_user_news == 1):
             echo "<strong>"._BLOGPOSTSINHOME."</strong> "._MAX127." ";
             echo "<input type=\"text\" name=\"storynum\" size=\"4\" maxlength=\"3\" value=\"$nuke_userinfo[storynum]\">";

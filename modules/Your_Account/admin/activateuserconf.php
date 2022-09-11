@@ -46,15 +46,15 @@ if (!defined('CNBYA')) {
  [ Mod:     Welcome PM                         v2.0.0 ]
  [ Mod:     Initial Usergroup                  v1.0.1 ]
  ******************************************************/
-include_once(NUKE_MODULES_DIR.$module_name.'/public/functions_welcome_pm.php');
-include_once(NUKE_MODULES_DIR.$module_name.'/public/custom_functions.php');
+include_once(NUKE_MODULES_DIR.$nuke_module_name.'/public/functions_welcome_pm.php');
+include_once(NUKE_MODULES_DIR.$nuke_module_name.'/public/custom_functions.php');
 include_once(NUKE_INCLUDE_DIR. 'constants.php');
 /*****[END]********************************************
  [ Mod:     Welcome PM                         v2.0.0 ]
  [ Mod:     Initial Usergroup                  v1.0.1 ]
  ******************************************************/
 
-if(is_mod_admin($module_name)) {
+if(is_mod_admin($nuke_module_name)) {
 
 list($uname, $realname, $email, $upass, $ureg) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT username, realname, user_email, user_password, user_regdate FROM ".$nuke_user_prefix."_users_temp WHERE user_id='$act_uid'"));
 
@@ -121,7 +121,7 @@ list($uname, $realname, $email, $upass, $ureg) = $nuke_db->sql_fetchrow($nuke_db
     echo "<br />\n";
     OpenTable();
     echo "<center><table align='center' border='0' cellpadding='2' cellspacing='2'>\n";
-    echo "<form action='modules.php?name=$module_name&amp;file=admin' method='post'>\n";
+    echo "<form action='modules.php?name=$nuke_module_name&amp;file=admin' method='post'>\n";
     if (isset($query)) { echo "<input type='hidden' name='query' value='$query'>\n"; }
     if (isset($min)) { echo "<input type='hidden' name='min' value='$min'>\n"; }
     if (isset($xop)) { echo "<input type='hidden' name='op' value='$xop'>\n"; }

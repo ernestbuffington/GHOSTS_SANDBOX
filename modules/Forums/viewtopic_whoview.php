@@ -47,7 +47,7 @@ $current_date = "<i class=\"bi bi-calendar3\"></i>&nbsp;&nbsp;$month/$date/$year
 $actual_time = $current_date;
 
 # Start session management
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_TOPIC_VIEW, $nukeuser);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_TOPIC_VIEW, $nukeuser);
 init_userprefs($nuke_userdata);
 # End session management
 
@@ -60,7 +60,7 @@ $topic_id = intval($_POST[NUKE_POST_TOPIC_URL]);
 
 if(!$nuke_userdata['session_logged_in']): 
 	$header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/",getenv("SERVER_SOFTWARE"))) ? "Refresh: 0; URL=" : "Location: "; 
-	header($header_location . append_sid("login.$phpEx?nuke_redirect=topic_view_users.$phpEx&".NUKE_POST_TOPIC_URL."=$topic_id", true));
+	header($header_location . append_nuke_sid("login.$phpEx?nuke_redirect=topic_view_users.$phpEx&".NUKE_POST_TOPIC_URL."=$topic_id", true));
 	exit;
 endif;
 
@@ -129,7 +129,7 @@ $template_nuke->assign_vars(
 		'L_AGE' => $lang['Sort_Age'], 
 		'S_MODE_SELECT' => $select_sort_mode,
 		'S_ORDER_SELECT' => $select_sort_order,
-		'S_MODE_ACTION' => append_sid("viewtopic_whoview.$phpEx")
+		'S_MODE_ACTION' => append_nuke_sid("viewtopic_whoview.$phpEx")
 	)
 );
 
@@ -220,7 +220,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
 		'&nbsp;'.get_evo_icon('countries '.str_replace('.png','',$row['user_from_flag'])).'&nbsp;' : '&nbsp;'.get_evo_icon('countries unknown').'&nbsp;';
 		
 		# Send user a private message.
-		$pm	= '<a href="'.append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$nuke_user_id").'">'.get_evo_icon('evo-sprite 
+		$pm	= '<a href="'.append_nuke_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$nuke_user_id").'">'.get_evo_icon('evo-sprite 
 		mail tooltip', sprintf($lang['Send_private_message'],$nuke_username)).'</a>';
 		
 		# Website URL
@@ -231,10 +231,10 @@ if($row = $nuke_db->sql_fetchrow($result)):
        if($row['user_session_time'] >= (time()-$board_config['online_time'])):
          $theme_name = get_theme();
 		 if($row['user_allow_viewonline']):
-         $online_status = '<a href="'.append_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_online'],$row['username']).'"'.$online_color.'><img alt="online" src="themes/'.$theme_name.'/forums/images/status/online_bgcolor_one.gif" /></a>';
+         $online_status = '<a href="'.append_nuke_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_online'],$row['username']).'"'.$online_color.'><img alt="online" src="themes/'.$theme_name.'/forums/images/status/online_bgcolor_one.gif" /></a>';
          
 		 elseif($nuke_userdata['user_level'] == NUKE_ADMIN || $nuke_userdata['user_id'] == $row['user_id'] ):
-         $online_status = '<em><a href="'.append_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_hidden'],$profiledata['username']).'"'.$hidden_color.'>'.$lang['Hidden'].'</a></em>';
+         $online_status = '<em><a href="'.append_nuke_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_hidden'],$profiledata['username']).'"'.$hidden_color.'>'.$lang['Hidden'].'</a></em>';
          
 		 else:
          $online_status = '<span title="'.sprintf($lang['is_offline'], $row['username']).'"'.$offline_color.'><strong>'.$lang['Offline'].'</strong></span>';
@@ -267,7 +267,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
 			'ONLINE_STATUS' => $online_status,
 			'TOPICTITLE'    => '<font size="3">'.$topic_title.'</font>',
 			'TOPICLINK'     => '<font size="3"><i class="bi bi-card-heading"></i> '.$topic_link.'</font>',
-			'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$nuke_user_id"))
+			'U_VIEWPROFILE' => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$nuke_user_id"))
 		);
 
 		$i++;

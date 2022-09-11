@@ -20,9 +20,9 @@ if(!defined('NUKE_EVO')) {
    die ("Illegal File Access");
 }
 
-$module_name = basename(dirname(dirname(__FILE__)));
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
 
-get_lang($module_name);
+get_lang($nuke_module_name);
 
 function evouserinfo_get_addon_all() 
 {

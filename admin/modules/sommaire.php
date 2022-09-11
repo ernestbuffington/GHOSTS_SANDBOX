@@ -219,12 +219,12 @@ OpenTable();
 // --> OK, la liste des fichiers est dans $file2 (utile plus bas pour faire la liste droulante des images des modules).
 
 
-// on va mettre la liste des modules dans la variable $modules
+// on va mettre la liste des modules dans la variable $nuke_modules
 $sql = "SELECT title FROM ".$prefix."_modules ORDER BY title ASC";
-$modulesaffiche= $nuke_db->sql_query($sql);
+$nuke_modulesaffiche= $nuke_db->sql_query($sql);
 $compteur=0;
-while ($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) {
-    $modules[$compteur]= $tempo['title'];
+while ($tempo = $nuke_db->sql_fetchrow($nuke_modulesaffiche)) {
+    $nuke_modules[$compteur]= $tempo['title'];
     $compteur++;
 }
 
@@ -235,7 +235,7 @@ while ($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) {
     $compteur=0;
     $row2=$nuke_db->sql_fetchrow($result2); //on rcupre la premire ligne de la table, et on affecte aux variables.
     $categorie=$row2['groupmenu'];
-    $moduleinthisgroup[$categorie][$compteur]=$row2['module'];
+    $nuke_moduleinthisgroup[$categorie][$compteur]=$row2['module'];
     $linkinthisgroup[$categorie][$compteur]=$row2['url'];
     $linktextinthisgroup[$categorie][$compteur]=$row2['url_text'];
     $imageinthisgroup[$categorie][$compteur]=$row2['image'];
@@ -245,7 +245,7 @@ while ($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) {
     $grasofthismodule[$categorie][$compteur]=$row2['bold'];
     $idofthismodule[$categorie][$compteur]=$row2['id'];
     $compteur2=$categorie; 
-//        echo "{$moduleinthisgroup[$categorie][$compteur]}<br />{$linkinthisgroup[$categorie][$compteur]}<br />{$linktextinthisgroup[$categorie][$compteur]}<br />{$imageinthisgroup[$categorie][$compteur]}<br />";
+//        echo "{$nuke_moduleinthisgroup[$categorie][$compteur]}<br />{$linkinthisgroup[$categorie][$compteur]}<br />{$linktextinthisgroup[$categorie][$compteur]}<br />{$imageinthisgroup[$categorie][$compteur]}<br />";
     
     while ($row2 = $nuke_db->sql_fetchrow($result2)) { //ensuite on fait la mme chose pour toutes les autres lignes.
         $categorie=$row2['groupmenu'];
@@ -255,7 +255,7 @@ while ($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) {
         else {
             $compteur=0;
         }
-        $moduleinthisgroup[$categorie][$compteur]=$row2['module'];
+        $nuke_moduleinthisgroup[$categorie][$compteur]=$row2['module'];
         $linkinthisgroup[$categorie][$compteur]=$row2['url'];
         $linktextinthisgroup[$categorie][$compteur]=$row2['url_text'];
         $imageinthisgroup[$categorie][$compteur]=$row2['image'];
@@ -265,7 +265,7 @@ while ($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) {
         $grasofthismodule[$categorie][$compteur]=$row2['bold'];
         $idofthismodule[$categorie][$compteur]=$row2['id'];
         $compteur2=$categorie;
-//        echo "{$moduleinthisgroup[$categorie][$compteur]}<br />{$linkinthisgroup[$categorie][$compteur]}<br />{$linktextinthisgroup[$categorie][$compteur]}<br />{$imageinthisgroup[$categorie][$compteur]}<br />";
+//        echo "{$nuke_moduleinthisgroup[$categorie][$compteur]}<br />{$linkinthisgroup[$categorie][$compteur]}<br />{$linktextinthisgroup[$categorie][$compteur]}<br />{$imageinthisgroup[$categorie][$compteur]}<br />";
     }
 // --> OK, les variables ont pris la valeur adquate de la table nuke_sommaire_categories
 
@@ -408,13 +408,13 @@ echo "<head><style type=\"text/css\">"
 // maintentant, on va afficher les modules inscrits dans la catgorie actuelle
         
 // combien y a-t-il de modules dans cette catgorie ?
-if ( is_array( $moduleinthisgroup[$groupmenu[$keysommaire]]) ) {
-    if ( $moduleinthisgroup[$groupmenu[$keysommaire]] > count($moduleinthisgroup[$groupmenu[$keysommaire]]) ) // if the requested page doesn't exist
-    $nbmodules = $nombremodules = count($moduleinthisgroup[$groupmenu[$keysommaire]]);
+if ( is_array( $nuke_moduleinthisgroup[$groupmenu[$keysommaire]]) ) {
+    if ( $nuke_moduleinthisgroup[$groupmenu[$keysommaire]] > count($nuke_moduleinthisgroup[$groupmenu[$keysommaire]]) ) // if the requested page doesn't exist
+    $nbmodules = $nombremodules = count($nuke_moduleinthisgroup[$groupmenu[$keysommaire]]);
 } else { 	
     $nbmodules = $nombremodules = 0;
 }
- //       $nbmodules = $nombremodules = count($moduleinthisgroup[$groupmenu[$keysommaire]]);
+ //       $nbmodules = $nombremodules = count($nuke_moduleinthisgroup[$groupmenu[$keysommaire]]);
         $nombremodules=$nombremodules+5; // on en ajoute 5, qui vont tre vides
         
         echo "<table align=\"center\"><td></td><td align =\"center\">"._SOMCATCONTENT."</td><td width=\"3\"></td><td align=\"center\">"._SOMLINKURL."</td><td width=\"3\"></td><td align=\"center\">"._SOMLINKTEXT."</td><td width=\"3\"></td><td align=\"center\">"._SOMIMAGE."</td><td align=\"center\">"._SOMBOLD."</td><td></td></tr>";
@@ -449,7 +449,7 @@ if ( is_array( $moduleinthisgroup[$groupmenu[$keysommaire]]) ) {
             $linkvalue=$linkinthisgroup[$groupmenu[$keysommaire]][$z];
             $linktextvalue=$linktextinthisgroup[$groupmenu[$keysommaire]][$z];
 
-//echo "{$moduleinthisgroup[$groupmenu[$keysommaire]][$z]}<br />";
+//echo "{$nuke_moduleinthisgroup[$groupmenu[$keysommaire]][$z]}<br />";
 $zz=$z+1;
 
 if ($z==$nombremodules-1) { // si on est  la dernire listbox, on affiche le message demandant d'envoyer les modifs.
@@ -463,20 +463,20 @@ else {
     // si on slectionne 'Lien externe' dans la liste des modules, cela va afficher les inputbox.
             echo "<select name=\"sommaireformingroup[$keysommaire][$z]\" onchange='disab(this,this.value,this.form.elements[\"sommaireformmodulelink[$keysommaire][$z]\"],this.form.elements[\"sommaireformmodulelinktext[$keysommaire][$z]\"],\"$linkvalue\",\"$linktextvalue\"); sommaireadminshowhide(\"$sommairezenom\",$hideok)'>";
             echo "<option value=\"Aucun\">";
-            $selected = ($moduleinthisgroup[$groupmenu[$keysommaire]][$z]=="SOMMAIRE_HR") ? "selected" : "" ;
+            $selected = ($nuke_moduleinthisgroup[$groupmenu[$keysommaire]][$z]=="SOMMAIRE_HR") ? "selected" : "" ;
             echo "<option value=\"SOMMAIRE_HR\" $selected>*"._SOMMAIREHR."*";
-            $selected = ($moduleinthisgroup[$groupmenu[$keysommaire]][$z]=="Lien externe") ? "selected" : "" ;
+            $selected = ($nuke_moduleinthisgroup[$groupmenu[$keysommaire]][$z]=="Lien externe") ? "selected" : "" ;
             echo "<option value=\"Lien externe\" $selected>*"._SOMEXTLINK."*";
             echo "<option value=\"SEP\">";
-            for ($i=0;$i<count($modules);$i++) {
-                $selected = ($modules[$i]==$moduleinthisgroup[$groupmenu[$keysommaire]][$z]) ? "selected" : "" ;
-                echo "<option value=\"$modules[$i]\" $selected>$modules[$i]";
-                //echo"{$moduleinthisgroup[$groupmenu[$keysommaire]][$z]}<br />";
+            for ($i=0;$i<count($nuke_modules);$i++) {
+                $selected = ($nuke_modules[$i]==$nuke_moduleinthisgroup[$groupmenu[$keysommaire]][$z]) ? "selected" : "" ;
+                echo "<option value=\"$nuke_modules[$i]\" $selected>$nuke_modules[$i]";
+                //echo"{$nuke_moduleinthisgroup[$groupmenu[$keysommaire]][$z]}<br />";
             }
             echo "</select></td>";
             //echo "<td></td>";
             
-            if ($moduleinthisgroup[$groupmenu[$keysommaire]][$z]=="Lien externe") { // si 'Lien externe' est indiqu dans la DB, on affiche les inputbox, sinon on les masque par dfaut
+            if ($nuke_moduleinthisgroup[$groupmenu[$keysommaire]][$z]=="Lien externe") { // si 'Lien externe' est indiqu dans la DB, on affiche les inputbox, sinon on les masque par dfaut
                 echo "<td align=\"center\">";
                 $testehttp=strpos($linkinthisgroup[$groupmenu[$keysommaire]][$z],"http://");
                 $testeftp=strpos($linkinthisgroup[$groupmenu[$keysommaire]][$z],"ftp://");
@@ -802,18 +802,18 @@ else {
 }
 
 function edit() {
-global $keysommaire, $z, $modulename, $lienname, $lienlien, $image, $new_days, $categoryclass, $lienclass, $catname, $catimage, $bgcolor1, $bgcolor3, $bgcolor2, $bgcolor4, $zetheme, $sommaireeditposted, $somcategoryclass, $somlienclass, $somnew_days, $nuke_db, $prefix, $urlofimages;
+global $keysommaire, $z, $nuke_modulename, $lienname, $lienlien, $image, $new_days, $categoryclass, $lienclass, $catname, $catimage, $bgcolor1, $bgcolor3, $bgcolor2, $bgcolor4, $zetheme, $sommaireeditposted, $somcategoryclass, $somlienclass, $somnew_days, $nuke_db, $prefix, $urlofimages;
 global $admin_file;
     if ($sommaireeditposted!="ok") {
         if ($catimage<>"noimg" && !preg_match("#.swf#i",$catimage) && $som_center<>"on") {
             $catimagesize = getimagesize("".$urlofimages."/$catimage");//l on va rcuprer la largeur de l'image de la catgorie, pour aligner les modules avec le titre de la catgorie.
             if ($image<>"middot.gif") {
-                $moduleimagesize = getimagesize("".$urlofimages."/categories/$image");
+                $nuke_moduleimagesize = getimagesize("".$urlofimages."/categories/$image");
             }
             else {
-                $moduleimagesize[0]=5;
+                $nuke_moduleimagesize[0]=5;
             }
-            $imagesize =$catimagesize[0]-$moduleimagesize[0];
+            $imagesize =$catimagesize[0]-$nuke_moduleimagesize[0];
             if ($imagesize<0) {
                 $imagesize=0;
             }
@@ -842,16 +842,16 @@ global $admin_file;
         </tr><tr height=3><td></td></tr>
         <tr bgcolor=\"$bgcolor1\">";
         $displayimage= ($image=="middot.gif") ? "<strong>&middot;</strong>" : "<img src=\"".$urlofimages."/categories/$image\">";
-        if ($modulename=="Lien externe") {
+        if ($nuke_modulename=="Lien externe") {
             echo "<td bgcolor=\"$bgcolor1\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\">".$displayimage."&nbsp;$lienname</td>";
         }
-        elseif ($modulename=="SOMMAIRE_HR") {
+        elseif ($nuke_modulename=="SOMMAIRE_HR") {
             echo "<td bgcolor=\"$bgcolor1\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\"><hr></td>";
         }
         else {
-            echo "<td bgcolor=\"$bgcolor1\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\">".$displayimage."&nbsp;$modulename</td>";
+            echo "<td bgcolor=\"$bgcolor1\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\">".$displayimage."&nbsp;$nuke_modulename</td>";
         }
-        $disabled=($modulename=="SOMMAIRE_HR") ? "disabled" : "" ;
+        $disabled=($nuke_modulename=="SOMMAIRE_HR") ? "disabled" : "" ;
         echo "<td bgcolor=\"$bgcolor1\">"._SOMCLASS." : <input type=\"text\" name=\"somlienclass\" value=\"$lienclass\" size=10></td>
         <td>"._SOMSINCE." <input type=\"text\" name=\"somnew_days\" value=\"$new_days\" $disabled size=2> "._SOMNBDAYS."
         <input type=\"hidden\" name=\"keysommaire\" value=\"$keysommaire\"><input type=\"hidden\" name=\"z\" value=\"$z\">";

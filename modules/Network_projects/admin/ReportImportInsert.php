@@ -28,6 +28,6 @@ if(implode("", $member_ids) > "") {
     }
   }
 }
-header("Location: modules.php?name=$module_name&op=Report&report_id=$report_id");
+header("Location: modules.php?name=$nuke_module_name&op=Report&report_id=$report_id");
 
 ?>

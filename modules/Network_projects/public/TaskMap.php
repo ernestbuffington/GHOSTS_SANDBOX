@@ -37,12 +37,12 @@ while(list($project_id) = $network_db->sql_fetchrow($projectresult)) {
   echo "<td align='center' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_PROGRESSBAR."</strong></nobr></td>\n";
   echo "<td align='center' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_MEMBERS."</strong></nobr></td>\n";
   echo "</tr>\n";
-  $pjimage = pjimage("project.png", $module_name);
+  $pjimage = pjimage("project.png", $nuke_module_name);
   if($project['featured'] > 0) { $project['project_name'] = "<strong>".$project['project_name']."</strong>"; }
   echo "<tr><td align='center'><img src='$pjimage'></td>\n";
-  echo "<td width='100%'><a href='modules.php?name=$module_name&amp;op=Project&amp;project_id=$project_id'>".$project['project_name']."</a></td>\n";
+  echo "<td width='100%'><a href='modules.php?name=$nuke_module_name&amp;op=Project&amp;project_id=$project_id'>".$project['project_name']."</a></td>\n";
   if($project['project_site'] > "") {
-    $pjimage = pjimage("demo.png", $module_name);
+    $pjimage = pjimage("demo.png", $nuke_module_name);
     $demo = " <a href='".$project['project_site']."' target='_blank'><img src='$pjimage' border='0' alt='".$project['project_name']." "._NETWORK_SITE."' title='".$project['project_name']." "._NETWORK_SITE."'></a>";
   } else {
     $demo = "&nbsp;";
@@ -64,9 +64,9 @@ while(list($project_id) = $network_db->sql_fetchrow($projectresult)) {
       $member_total = $network_db->sql_numrows($membersresult);
       $taskstatus = pjtaskstatus_info($status_id);
       $taskpriority = pjtaskpriority_info($priority_id);
-      $pjimage = pjimage("task.png", $module_name);
+      $pjimage = pjimage("task.png", $nuke_module_name);
       echo "<tr><td><img src='$pjimage'></td>\n";
-      echo "<td colspan='2' width='100%'><a href='modules.php?name=$module_name&amp;op=Task&amp;task_id=$task_id'>$task_name</a></td>\n";
+      echo "<td colspan='2' width='100%'><a href='modules.php?name=$nuke_module_name&amp;op=Task&amp;task_id=$task_id'>$task_name</a></td>\n";
       if(empty($taskstatus['status_name'])){ $taskstatus['status_name'] = _NETWORK_NA; }
       echo "<td align='center'><nobr>".$taskstatus['status_name']."</nobr></td>\n";
       if(empty($taskpriority['priority_name'])){ $taskpriority['priority_name'] = _NETWORK_NA; }

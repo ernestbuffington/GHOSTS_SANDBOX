@@ -26,8 +26,8 @@ if (!defined('MODULE_FILE')) {
 
 $popup = 1;
 if ($popup != "1"){
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -41,7 +41,7 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_GAME, $nukeuser);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_GAME, $nukeuser);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -137,8 +137,8 @@ if($mode == "done")
 
                 $template_nuke->assign_vars(array(
                         'GAMENAME' => $gamename,
-                        'PLAYAGAIN' => append_sid("gamespopup.$phpEx?gid=$gid", true),
-                        'RETURN' => append_sid("arcade.$phpEx", true),
+                        'PLAYAGAIN' => append_nuke_sid("gamespopup.$phpEx?gid=$gid", true),
+                        'RETURN' => append_nuke_sid("arcade.$phpEx", true),
                         ));
 
                 $sql = "SELECT s.*, u.username FROM " . NUKE_SCORES_TABLE . " s LEFT JOIN " . NUKE_USERS_TABLE . " u ON s.user_id = u.user_id WHERE game_id = $gid ORDER BY s.score_game DESC, s.score_date ASC LIMIT 0,15";
@@ -171,7 +171,7 @@ if($mode == "done")
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                'URL_STATS' => '<nobr><a class="cattitle" href="' . append_sid("statarcade.$phpEx?uid=" . $row['user_id']) . '">' . "<img src='modules/Forums/templates/" . $theme['template_name'] . "/images/loupe.gif' align='absmiddle' border='0' alt='" . $lang['statuser'] . " " . $row['username'] . "'>" . '</a></nobr>',
+                'URL_STATS' => '<nobr><a class="cattitle" href="' . append_nuke_sid("statarcade.$phpEx?uid=" . $row['user_id']) . '">' . "<img src='modules/Forums/templates/" . $theme['template_name'] . "/images/loupe.gif' align='absmiddle' border='0' alt='" . $lang['statuser'] . " " . $row['username'] . "'>" . '</a></nobr>',
                 'SCORE' => number_format($row['score_game']),
                 'DATEHIGH' => create_date($board_config['default_dateformat'] , $row['score_date'] , $board_config['board_timezone']))
                         );

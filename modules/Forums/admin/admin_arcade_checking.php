@@ -20,7 +20,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
     $file = basename(__FILE__);
-    $module['Arcade_Admin']['Settings_check'] = $file;
+    $nuke_module['Arcade_Admin']['Settings_check'] = $file;
     return;
 }
 

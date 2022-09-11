@@ -24,8 +24,8 @@ if (!defined('MODULE_FILE'))
 global $prefix, $nuke_db, $cookie, $nuke_user;
 $index = 1;
 require_once("mainfile.php");
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
 
 $nuke_userinfo = getusrinfo( $nuke_user );
 
@@ -38,7 +38,7 @@ if (!isset($nuke_userid) || $nuke_userid=="")
 //If no was pressed
 if (isset($action) && $action==_NO)
 {
-	Header("Location: modules.php?name=".$module_name."&file=marks&category=".$catid."&catname=".$catname);
+	Header("Location: modules.php?name=".$nuke_module_name."&file=marks&category=".$catid."&catname=".$catname);
 }
 
 //If yes was pressed
@@ -49,7 +49,7 @@ if (isset($action)  && $action==_YES && isset($catid) && $catid!="")
 	$updatecatquery = "update ".$prefix."_bookmarks_cat set mod_date=now() where category_id=$catid";
 	$nuke_db->sql_query ($updatecatquery,$nuke_db);
 	
-	Header("Location: modules.php?name=".$module_name."&file=marks&category=".$catid."&catname=".$catname);
+	Header("Location: modules.php?name=".$nuke_module_name."&file=marks&category=".$catid."&catname=".$catname);
 }
 
 $pagetitle = _DELETEBOOKMARK;
@@ -57,7 +57,7 @@ include("header.php");
 
 OpenTable();
 echo "<center><span class=storytitle>"._DELETEBOOKMARK."</span></center><P>\n";
-echo "<center><a href=modules.php?name=".$module_name.">". _CATEGORIES ."</a> | <a href=modules.php?name=".$module_name."&amp;file=edit_cat>"._NEWCATEGORY."</a> | <a href=modules.php?name=".$module_name."&amp;file=edit_mark>"._NEWBOOKMARK."</a></center>";
+echo "<center><a href=modules.php?name=".$nuke_module_name.">". _CATEGORIES ."</a> | <a href=modules.php?name=".$nuke_module_name."&amp;file=edit_cat>"._NEWCATEGORY."</a> | <a href=modules.php?name=".$nuke_module_name."&amp;file=edit_mark>"._NEWBOOKMARK."</a></center>";
 CloseTable();
 echo "<br>";
 OpenTable();
@@ -65,7 +65,7 @@ OpenTable();
 <center><? echo _DELETEBOOKMARKCONFIRM ?> '<?=$markname?>'?<p>
 <p>
 <form action=modules.php>
-<input type=hidden name=name value="<?=$module_name?>">
+<input type=hidden name=name value="<?=$nuke_module_name?>">
 <input type=hidden name=file value="del_mark">
 <input type=hidden name=catid value="<?=$catid?>">
 <input type=hidden name=catname value="<?=$catname?>">

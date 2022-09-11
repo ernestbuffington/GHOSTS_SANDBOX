@@ -25,7 +25,7 @@ define ('IN_PHPBB2', true);
 if ( !empty($setmodules) )
 {
   $filename = basename(__FILE__);
-  $module['General']['Rebuild_Search'] = $filename;
+  $nuke_module['General']['Rebuild_Search'] = $filename;
   return;
 }
 
@@ -146,7 +146,7 @@ if ( isset($HTTP_GET_VARS['cancel_button']) || isset($HTTP_POST_VARS['cancel_but
     message_die(NUKE_GENERAL_ERROR, 'Could not update rebuild session status', '', __LINE__, __FILE__, $sql);
   }
 
-  $message =  sprintf($lang['Rebuild_search_aborted'], $end_post_id).'<br /><br />'.sprintf($lang['Click_return_rebuild_search'], '<a href="'.append_sid("admin_rebuild_search.$phpEx").'">', '</a>');
+  $message =  sprintf($lang['Rebuild_search_aborted'], $end_post_id).'<br /><br />'.sprintf($lang['Click_return_rebuild_search'], '<a href="'.append_nuke_sid("admin_rebuild_search.$phpEx").'">', '</a>');
   message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 
@@ -271,7 +271,7 @@ if ( $mode == 'submit' )
 {
   if ( $session_posts_processing <= 0 || $post_limit <= 0 || $refresh_rate < 0 || $time_limit <=0 )
   {
-    $message =  $lang['Wrong_input'].'<br /><br />'.sprintf($lang['Click_return_rebuild_search'], '<a href="'.append_sid("admin_rebuild_search.$phpEx").'">', '</a>');
+    $message =  $lang['Wrong_input'].'<br /><br />'.sprintf($lang['Click_return_rebuild_search'], '<a href="'.append_nuke_sid("admin_rebuild_search.$phpEx").'">', '</a>');
     message_die(NUKE_GENERAL_MESSAGE, $message);
   }
 }
@@ -440,7 +440,7 @@ if ( $mode == 'submit' || $mode == 'refresh' )
     $form_parameters .= '&disable_board='.$disable_board;
     $form_parameters .= ( $fast_mode ) ? '&fast_mode=1' : '';
 
-    $form_action = append_sid('admin_rebuild_search.'.$phpEx.'?mode=refresh'.$form_parameters);
+    $form_action = append_nuke_sid('admin_rebuild_search.'.$phpEx.'?mode=refresh'.$form_parameters);
 
     $next_button = $lang['Next'];
     $progress_bar_img = $images['progress_bar'];
@@ -459,7 +459,7 @@ if ( $mode == 'submit' || $mode == 'refresh' )
   }
   else  // processing has finished
   {
-    $form_action = append_sid("admin_rebuild_search.$phpEx");
+    $form_action = append_nuke_sid("admin_rebuild_search.$phpEx");
 
     $next_button = $lang['Finished'];
     $progress_bar_img = $images['progress_bar_full'];
@@ -736,7 +736,7 @@ else  // show the input page
     'REBUILD_SEARCH_VERSION'  => REBUILD_SEARCH_VERSION,
 
     //'S_HIDDEN_FIELDS'       => $s_hidden_fields,
-    'S_REBUILD_SEARCH_ACTION' => append_sid("admin_rebuild_search.$phpEx?mode=submit" . (( $disable_board == 2 ) ? "&disabled_board_status=$disable_board" : ""))
+    'S_REBUILD_SEARCH_ACTION' => append_nuke_sid("admin_rebuild_search.$phpEx?mode=submit" . (( $disable_board == 2 ) ? "&disabled_board_status=$disable_board" : ""))
     )
   );
 }

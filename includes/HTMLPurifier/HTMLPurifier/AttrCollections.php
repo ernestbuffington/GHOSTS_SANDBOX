@@ -17,12 +17,12 @@ class HTMLPurifier_AttrCollections
      * It also collects all attribute collection extensions from
      * modules
      * @param $attr_types HTMLPurifier_AttrTypes instance
-     * @param $modules Hash array of HTMLPurifier_HTMLModule members
+     * @param $nuke_modules Hash array of HTMLPurifier_HTMLModule members
      */
-    public function __construct($attr_types, $modules) {
+    public function __construct($attr_types, $nuke_modules) {
         // load extensions from the modules
-        foreach ($modules as $module) {
-            foreach ($module->attr_collections as $coll_i => $coll) {
+        foreach ($nuke_modules as $nuke_module) {
+            foreach ($nuke_module->attr_collections as $coll_i => $coll) {
                 if (!isset($this->info[$coll_i])) {
                     $this->info[$coll_i] = array();
                 }

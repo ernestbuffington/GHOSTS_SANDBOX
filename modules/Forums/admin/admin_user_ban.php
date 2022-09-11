@@ -29,7 +29,7 @@ define('IN_PHPBB2', 1);
 if ( !empty($setmodules) )
 {
         $filename = basename(__FILE__);
-        $module['Users']['Ban_Management'] = $filename;
+        $nuke_module['Users']['Ban_Management'] = $filename;
 
         return;
 }
@@ -322,7 +322,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
                 }
         }
 
-        $message = $lang['Ban_update_sucessful'] . '<br /><br />' . sprintf($lang['Click_return_banadmin'], '<a href="' . append_sid("admin_user_ban.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
+        $message = $lang['Ban_update_sucessful'] . '<br /><br />' . sprintf($lang['Click_return_banadmin'], '<a href="' . append_nuke_sid("admin_user_ban.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -342,7 +342,7 @@ else
                 'L_SUBMIT' => $lang['Submit'],
                 'L_RESET' => $lang['Reset'],
 
-                'S_BANLIST_ACTION' => append_sid("admin_user_ban.$phpEx"))
+                'S_BANLIST_ACTION' => append_nuke_sid("admin_user_ban.$phpEx"))
         );
 
         $template_nuke->assign_vars(array(
@@ -441,11 +441,11 @@ else
                 'L_LOOK_UP' => $lang['Look_up_User'],
                 'L_FIND_USERNAME' => $lang['Find_username'],
 
-                'U_SEARCH_USER' => append_sid("search.$phpEx?mode=searchuser&popup=1&menu=1"),
+                'U_SEARCH_USER' => append_nuke_sid("search.$phpEx?mode=searchuser&popup=1&menu=1"),
                 'S_UNBAN_USERLIST_SELECT' => $select_userlist,
                 'S_UNBAN_IPLIST_SELECT' => $select_iplist,
                 'S_UNBAN_EMAILLIST_SELECT' => $select_emaillist,
-                'S_BAN_ACTION' => append_sid("admin_user_ban.$phpEx"))
+                'S_BAN_ACTION' => append_nuke_sid("admin_user_ban.$phpEx"))
         );
 }
 

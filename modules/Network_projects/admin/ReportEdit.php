@@ -88,7 +88,7 @@ if($memrows > 0){
         $member = pjmember_info($member_id);
         $position = pjmemberposition_info($position_id);
         echo "<tr>";
-        $pjimage = pjimage("member.png", $module_name);
+        $pjimage = pjimage("member.png", $nuke_module_name);
         echo "<td><img src='$pjimage'></td><td width='100%'>".$member['member_name']."</td>";
         echo "<td><input type='hidden' name='member_ids[]' VALUE='$member_id'><select name='position_ids[]'>";
         $positionlistresult = $network_db->sql_query("SELECT `position_id`, `position_name` FROM `".$network_prefix."_members_positions` ORDER BY `position_weight`");

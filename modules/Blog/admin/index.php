@@ -40,9 +40,9 @@ if (!defined('ADMIN_FILE')) die('Access Denied');
 
 global $prefix, $nuke_db, $admdata;
 
-$module_name = basename(dirname(dirname(__FILE__)));
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
 
-if(is_mod_admin($module_name)) 
+if(is_mod_admin($nuke_module_name)) 
 {
   include_once(NUKE_INCLUDE_DIR.'nsnne_func.php');
 
@@ -501,7 +501,7 @@ function autodelete($anid)
 
 function autoEdit($anid) 
 {
-    global $aid, $bgcolor1, $bgcolor2, $prefix, $nuke_db, $multilingual, $admin_file, $module_name;
+    global $aid, $bgcolor1, $bgcolor2, $prefix, $nuke_db, $multilingual, $admin_file, $nuke_module_name;
 
     $sid = intval($sid);
     $aid = substr($aid, 0,25);
@@ -510,7 +510,7 @@ function autoEdit($anid)
     
 	$aaid = substr($aaid, 0,25);
 
-    if (is_mod_admin($module_name)) 
+    if (is_mod_admin($nuke_module_name)) 
 	{
       include(NUKE_BASE_DIR.'header.php');
 
@@ -811,7 +811,7 @@ function autoEdit($anid)
 
 function autoSaveEdit($anid, $year, $day, $month, $hour, $min, $title, $hometext, $bodytext, $topic, $notes, $catid, $ihome, $alanguage, $acomm, $topic_icon, $writes) 
 {
-    global $aid, $ultramode, $prefix, $nuke_db, $admin_file, $module_name;
+    global $aid, $ultramode, $prefix, $nuke_db, $admin_file, $nuke_module_name;
 
     $sid = intval($sid);
     $aid = substr($aid, 0,25);
@@ -820,7 +820,7 @@ function autoSaveEdit($anid, $year, $day, $month, $hour, $min, $title, $hometext
     
 	$aaid = substr($aaid, 0,25);
 
-    if (is_mod_admin($module_name)) 
+    if (is_mod_admin($nuke_module_name)) 
 	{
 	  if ($day < 10) 
       $day = "0$day";
@@ -1762,7 +1762,7 @@ function postStory($automated,
 
 function editStory($sid) 
 {
-    global $nuke_user, $admin_file, $bgcolor1, $bgcolor2, $aid, $prefix, $nuke_db, $multilingual, $Version_Num, $module_name;
+    global $nuke_user, $admin_file, $bgcolor1, $bgcolor2, $aid, $prefix, $nuke_db, $multilingual, $Version_Num, $nuke_module_name;
 
     $aid = substr($aid, 0,25);
     $sid = intval($sid);
@@ -1771,7 +1771,7 @@ function editStory($sid)
     
 	$aaid = substr($aaid, 0,25);
 
-    if (is_mod_admin($module_name)) 
+    if (is_mod_admin($nuke_module_name)) 
 	{
         include(NUKE_BASE_DIR.'header.php');
     
@@ -1997,7 +1997,7 @@ function editStory($sid)
 
 function removeStory($sid, $ok=0) 
 {
-    global $ultramode, $aid, $prefix, $nuke_db, $admin_file, $module_name;
+    global $ultramode, $aid, $prefix, $nuke_db, $admin_file, $nuke_module_name;
     
 	$sid = intval($sid);
     $aid = substr($aid, 0,25);
@@ -2006,7 +2006,7 @@ function removeStory($sid, $ok=0)
     
 	$aaid = substr($aaid, 0,25);
 
-    if (is_mod_admin($module_name)) 
+    if (is_mod_admin($nuke_module_name)) 
 	{
         if($ok) 
 		{
@@ -2063,7 +2063,7 @@ function removeStory($sid, $ok=0)
 function changeStory($sid, $subject, $hometext, $bodytext, $topic, $notes, $catid, $ihome, $alanguage, $acomm, $topic_icon, $writes, $assotop) 
 {
 
-    global $aid, $ultramode, $prefix, $nuke_db, $Version_Num, $admin_file, $module_name;
+    global $aid, $ultramode, $prefix, $nuke_db, $Version_Num, $admin_file, $nuke_module_name;
     
 	// Copyright (c) 2000-2005 by NukeScripts Network
     if($version_Num >= 6.6) 
@@ -2080,7 +2080,7 @@ function changeStory($sid, $subject, $hometext, $bodytext, $topic, $notes, $cati
     
 	$aaid = substr($aaid, 0,25);
     
-	if (is_mod_admin($module_name)) 
+	if (is_mod_admin($nuke_module_name)) 
 	{
         $subject = Fix_Quotes($subject);
         $hometext = Fix_Quotes($hometext);
@@ -2113,7 +2113,7 @@ function changeStory($sid, $subject, $hometext, $bodytext, $topic, $notes, $cati
 
 function lastTwenty()
 {
-    global $prefix, $nuke_db, $language, $multilingual, $Version_Num, $admin_file, $aid, $module_name, $bgcolor1;
+    global $prefix, $nuke_db, $language, $multilingual, $Version_Num, $admin_file, $aid, $nuke_module_name, $bgcolor1;
 
     include(NUKE_BASE_DIR.'header.php');
 /*****[BEGIN]******************************************
@@ -2185,7 +2185,7 @@ function lastTwenty()
 
     echo "</table></div>";
 
-    if (is_mod_admin($module_name)) 
+    if (is_mod_admin($nuke_module_name)) 
 	{
       echo "<br /><div align=\"center\">"
           ."<form action=\"".$admin_file.".php\" method=\"post\">"
@@ -2205,7 +2205,7 @@ function lastTwenty()
 
 function programmedBlogs()
 {
-    global $prefix, $nuke_db, $language, $multilingual, $Version_Num, $admin_file, $aid, $module_name, $bgcolor1;
+    global $prefix, $nuke_db, $language, $multilingual, $Version_Num, $admin_file, $aid, $nuke_module_name, $bgcolor1;
     include(NUKE_BASE_DIR.'header.php');
 
     if (!empty($admlanguage)) 
@@ -2276,7 +2276,7 @@ function programmedBlogs()
 
 function adminStory() 
 {
-    global $prefix, $nuke_db, $language, $multilingual, $Version_Num, $admin_file, $aid, $module_name, $bgcolor1;
+    global $prefix, $nuke_db, $language, $multilingual, $Version_Num, $admin_file, $aid, $nuke_module_name, $bgcolor1;
 
     include(NUKE_BASE_DIR.'header.php');
 
@@ -3006,7 +3006,7 @@ function postAdminStory($automated,
 
 function submissions() 
 {
-    global $admin, $admin_file, $bgcolor1, $bgcolor2, $prefix, $nuke_db, $anonymous, $multilingual, $module_name;
+    global $admin, $admin_file, $bgcolor1, $bgcolor2, $prefix, $nuke_db, $anonymous, $multilingual, $nuke_module_name;
 
     $dummy = 0;
 
@@ -3075,7 +3075,7 @@ function submissions()
             echo "</table></form>\n";
         }
        
-	      if (is_mod_admin($module_name)) 
+	      if (is_mod_admin($nuke_module_name)) 
 		  {
              echo "<br /><center>"
             ."[ <a href=\"".$admin_file.".php?op=subdelete\">"._DELETE."</a> ]"
@@ -3392,6 +3392,6 @@ switch($op)
   }
 } 
 else 
-DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$module_name\"");
+DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$nuke_module_name\"");
 ?>
 

@@ -138,7 +138,7 @@ $forum_id = $forum_row['forum_id'];
 $topic_title = $forum_row['topic_title'];
 
 # Start session management
-$nuke_userdata = session_pagestart($nuke_user_ip, $forum_id);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, $forum_id);
 init_userprefs($nuke_userdata);
 # End session management
 
@@ -169,8 +169,8 @@ $template_nuke->set_filenames(array(
     'reviewbody' => 'post_review.tpl')
 );
 
-$view_prev_post_url = append_sid("show_post.$phpEx?p=$post_id&amp;view=previous");
-$view_next_post_url = append_sid("show_post.$phpEx?p=$post_id&amp;view=next");
+$view_prev_post_url = append_nuke_sid("show_post.$phpEx?p=$post_id&amp;view=previous");
+$view_next_post_url = append_nuke_sid("show_post.$phpEx?p=$post_id&amp;view=next");
 
 $template_nuke->assign_vars(array(
     'L_AUTHOR' => $lang['Author'],
@@ -294,11 +294,11 @@ if($row = $nuke_db->sql_fetchrow($result)):
 
         if($poster_id != NUKE_ANONYMOUS):
         
-            $temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$poster_id");
+            $temp_url = append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$poster_id");
             $profile_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_profile'].'" alt="'.$lang['Read_profile'].'" title="'.$lang['Read_profile'].'" border="0" /></a>';
             $profile = '<a href="'.$temp_url.'">'.$lang['Read_profile'].'</a>';
 
-            $temp_url = append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$poster_id");
+            $temp_url = append_nuke_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$poster_id");
 
             if(is_active("Private_Messages")): 
               $pm_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_pm'].'" alt="'.$lang['Send_private_message'].'" title="'.$lang['Send_private_message'].'" border="0" /></a>';
@@ -306,7 +306,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
             endif;
 
             if(!empty($row['user_viewemail']) || $is_auth['auth_mod']):
-                $email_uri = ($board_config['board_email_form']) ? append_sid("profile.$phpEx?mode=email&amp;".NUKE_POST_USERS_URL.'='.$poster_id) : 'mailto:'.$row['user_email'];
+                $email_uri = ($board_config['board_email_form']) ? append_nuke_sid("profile.$phpEx?mode=email&amp;".NUKE_POST_USERS_URL.'='.$poster_id) : 'mailto:'.$row['user_email'];
                 $email_img = '<a href="'.$email_uri.'"><img src="'.$images['icon_email'].'" alt="'.$lang['Send_email'].'" title="'.$lang['Send_email'].'" border="0" /></a>';
                 $email = '<a href="'.$email_uri.'">'.$lang['Send_email'].'</a>';
             else:
@@ -344,7 +344,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
             
 			$aim = ( $row['user_aim'] ) ? '<a href="aim:goim?screenname='.$row['user_aim'].'&amp;message=Hello+Are+you+there?">'.$lang['AIM'].'</a>' : '';
 
-            $temp_url = append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$poster_id");
+            $temp_url = append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$poster_id");
             $msn_img = ($row['user_msnm']) ? '<a href="'.$temp_url.'"><img src="'.$images['icon_msnm'].'" alt="'.$lang['MSNM'].'" title="'.$lang['MSNM'].'" border="0" /></a>' : '';
             $msn = ($row['user_msnm']) ? '<a href="'.$temp_url.'">'.$lang['MSNM'].'</a>' : '';
 
@@ -357,16 +357,16 @@ if($row = $nuke_db->sql_fetchrow($result)):
             if($row['user_session_time'] >= (time()-$board_config['online_time'])):
             
                if($row['user_allow_viewonline']):
-                   $online_status_img = '<a href="'.append_sid("viewonline.$phpEx").'"><img 
+                   $online_status_img = '<a href="'.append_nuke_sid("viewonline.$phpEx").'"><img 
 				   src="'.$images['icon_online'].'" alt="'.sprintf($lang['is_online'], $poster).'" title="'.sprintf($lang['is_online'], $poster).'" /></a>&nbsp;';
                    
-				   $online_status = '<br />'.$lang['Online_status'].': <strong><a href="'.append_sid("viewonline.$phpEx").'" 
+				   $online_status = '<br />'.$lang['Online_status'].': <strong><a href="'.append_nuke_sid("viewonline.$phpEx").'" 
 				   title="'.sprintf($lang['is_online'], $poster).'"'.$online_color.'>'.$lang['Online'].'</a></strong>';
                elseif($is_auth['auth_mod'] || $nuke_userdata['user_id'] == $poster_id):
-                   $online_status_img = '<a href="'.append_sid("viewonline.$phpEx").'"><img 
+                   $online_status_img = '<a href="'.append_nuke_sid("viewonline.$phpEx").'"><img 
 				   src="'.$images['icon_hidden'].'" alt="'.sprintf($lang['is_hidden'], $poster).'" title="'.sprintf($lang['is_hidden'], $poster).'" /></a>&nbsp;';
                    
-				   $online_status = '<br />'.$lang['Online_status'].': <strong><em><a href="'.append_sid("viewonline.$phpEx").'" 
+				   $online_status = '<br />'.$lang['Online_status'].': <strong><em><a href="'.append_nuke_sid("viewonline.$phpEx").'" 
 				   title="'.sprintf($lang['is_hidden'], $poster) .'"'. $hidden_color.'>'.$lang['Hidden'].'</a></em></strong>';
                else:
                    $online_status_img = '<img src="'.$images['icon_offline'].'" 
@@ -407,7 +407,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
 
         endif;
 
-        $temp_url = append_sid("posting.$phpEx?mode=quote&amp;".NUKE_POST_POST_URL."=".$row['post_id']);
+        $temp_url = append_nuke_sid("posting.$phpEx?mode=quote&amp;".NUKE_POST_POST_URL."=".$row['post_id']);
         $quote_img = '<a href="'.$temp_url.'" target="_parent"><img src="'.$images['icon_quote'].'" alt="'.$lang['Reply_with_quote'].'" title="'.$lang['Reply_with_quote'].'" border="0" /></a>';
         $quote = '<a href="'.$temp_url.'" target="_parent">'.$lang['Reply_with_quote'].'</a>';
 
@@ -507,7 +507,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
 		
         # Mod: Report Post v1.0.0 START
         if($nuke_userdata['session_logged_in']):
-          $report_img = '<a href="'.append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$post_id).'"><img 
+          $report_img = '<a href="'.append_nuke_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$post_id).'"><img 
 		  src="'.$images['icon_report'].'" border="0" width="16" height="18" alt="'.$lang['Report_post'].'" title="'.$lang['Report_post'].'" /></a>';
         else:
           $report_img = '';

@@ -28,7 +28,7 @@ OpenTable();
 echo "<table width='100%' border='1' cellspacing='0' cellpadding='2'>\n";
 echo "<tr><td colspan='3' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_REPORTOPTIONS."</strong></nobr></td></tr>\n";
 $reportrows = $network_db->sql_numrows($network_db->sql_query("SELECT `report_id` FROM `".$network_prefix."_reports`"));
-$pjimage = pjimage("stats.png", $module_name);
+$pjimage = pjimage("stats.png", $nuke_module_name);
 echo "<tr><td><img src='$pjimage'></td><td colspan='2' width='100%'><nobr>"._NETWORK_TOTALREPORTS.": <strong>$reportrows</strong></nobr></td></tr>\n";
 echo "</table>\n";
 //CloseTable();
@@ -52,7 +52,7 @@ if($reportrows > 0){
     $project = pjproject_info($project_id);
     $type = pjreporttype_info($type_id);
     $members = $network_db->sql_numrows($network_db->sql_query("SELECT `member_id` FROM `".$network_prefix."_reports_members` WHERE `report_id`='$report_id'"));
-    $pjimage = pjimage("report.png", $module_name);
+    $pjimage = pjimage("report.png", $nuke_module_name);
     if($report_name == "") { $report_name = "----------"; }
     echo "<tr><td><img src='$pjimage'></td><td width='100%'>$report_name</td>\n";
         echo "<td align='center'><nobr><a href='".$admin_file.".php?op=ProjectList'>".$project['project_name']."</a></nobr></td>\n";

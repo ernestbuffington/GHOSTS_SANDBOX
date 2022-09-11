@@ -24,8 +24,8 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
     $filename = basename(__FILE__);
-    $module['Users']['Permissions_arcade'] = $filename . '?mode=user';
-    $module['Groups']['Permissions_arcade'] = $filename . '?mode=group';
+    $nuke_module['Users']['Permissions_arcade'] = $filename . '?mode=user';
+    $nuke_module['Groups']['Permissions_arcade'] = $filename . '?mode=group';
 
     return;
 }
@@ -164,7 +164,7 @@ if ( isset($HTTP_POST_VARS['submit']) && ( ( $mode == 'user' && $nuke_user_id ) 
             message_die(NUKE_GENERAL_ERROR, 'Could not update arcade auth table', '', __LINE__, __FILE__, $sql);
         }
     }
-    $message = $lang['Arcade_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_arcadeauth'], '<a href="' . append_sid("admin_arcade_auth.$phpEx?mode=$mode") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
+    $message = $lang['Arcade_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_arcadeauth'], '<a href="' . append_nuke_sid("admin_arcade_auth.$phpEx?mode=$mode") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');
     message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $nuke_user_id ) ) || ( $mode == 'group' && $group_id ) )
@@ -289,7 +289,7 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $nuke_use
         {
             $ug = ( $mode == 'user' ) ? 'group&amp;' . NUKE_POST_GROUPS_URL : 'user&amp;' . NUKE_POST_USERS_URL;
 
-            $t_usergroup_list .= ( ( !empty($t_usergroup_list) ) ? ', ' : '' ) . '<a href="' . append_sid("admin_ug_auth.$phpEx?mode=$ug=" . $id[$i]) . '">' . $name[$i] . '</a>';
+            $t_usergroup_list .= ( ( !empty($t_usergroup_list) ) ? ', ' : '' ) . '<a href="' . append_nuke_sid("admin_ug_auth.$phpEx?mode=$ug=" . $id[$i]) . '">' . $name[$i] . '</a>';
         }
     }
     else
@@ -346,11 +346,11 @@ else if ( ( $mode == 'user' && ( isset($HTTP_POST_VARS['username']) || $nuke_use
         'L_RESET' => $lang['Reset'], 
         'L_CATEGORIES' => $lang['Arcade_categories'], 
 
-        'U_USER_OR_GROUP' => append_sid("admin_arcade_auth.$phpEx"),
+        'U_USER_OR_GROUP' => append_nuke_sid("admin_arcade_auth.$phpEx"),
         'U_SWITCH_MODE' => $u_switch_mode,
 
         'S_COLUMN_SPAN' => $s_column_span,
-        'S_AUTH_ACTION' => append_sid("admin_arcade_auth.$phpEx"), 
+        'S_AUTH_ACTION' => append_nuke_sid("admin_arcade_auth.$phpEx"), 
         'S_HIDDEN_FIELDS' => $s_hidden_fields)
     );
 
@@ -370,7 +370,7 @@ else
     {
         $template_nuke->assign_vars(array(
             'L_FIND_USERNAME' => $lang['Find_username'],
-            'U_SEARCH_USER' => append_sid("search.$phpEx?mode=searchuser&amp;popup=1&amp;menu=1"))
+            'U_SEARCH_USER' => append_nuke_sid("search.$phpEx?mode=searchuser&amp;popup=1&amp;menu=1"))
         );
     }
     else
@@ -410,7 +410,7 @@ else
         'L_LOOK_UP' => ( $mode == 'user' ) ? $lang['Look_up_User'] : $lang['Look_up_Group'],
 
         'S_HIDDEN_FIELDS' => $s_hidden_fields, 
-        'S_' . $l_type . '_ACTION' => append_sid("admin_arcade_auth.$phpEx"))
+        'S_' . $l_type . '_ACTION' => append_nuke_sid("admin_arcade_auth.$phpEx"))
     );
 
 }

@@ -69,8 +69,8 @@
 if (!defined('MODULE_FILE')) die ("You can't access this file directly...");
 
 if((!(isset($popup)) OR ($popup != "1")) && !isset($HTTP_GET_VARS['printertopic'])):
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 else:
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 endif;
@@ -181,13 +181,13 @@ if(isset($HTTP_GET_VARS['view']) && empty($HTTP_GET_VARS[NUKE_POST_POST_URL])):
             $post_id = $row['post_id'];
 
             if(isset($HTTP_GET_VARS['sid']))
-            nuke_redirect(append_sid("viewtopic.$phpEx?sid=$session_id&".NUKE_POST_POST_URL."=$post_id#$post_id",true));
+            nuke_redirect(append_nuke_sid("viewtopic.$phpEx?sid=$session_id&".NUKE_POST_POST_URL."=$post_id#$post_id",true));
             else
-            nuke_redirect(append_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL ."=$post_id#$post_id",true));
+            nuke_redirect(append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL ."=$post_id#$post_id",true));
          endif;
       endif;
 
-      nuke_redirect(append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id",true));
+      nuke_redirect(append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id",true));
    
    elseif($HTTP_GET_VARS['view'] == 'next' || $HTTP_GET_VARS['view'] == 'previous'):
    
@@ -309,7 +309,7 @@ $show_thanks = ($forum_thank_result['forum_thank'] == NUKE_FORUM_THANKABLE) ? NU
 # Mod: Thank You Mod v1.1.8 END
 
 # Start session management
-$nuke_userdata = session_pagestart($nuke_user_ip, $forum_id);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, $forum_id);
 init_userprefs($nuke_userdata);
 # End session management
 
@@ -329,7 +329,7 @@ if( !$is_auth['auth_view'] || !$is_auth['auth_read']):
      $nuke_redirect = ($post_id) ? NUKE_POST_POST_URL . "=$post_id" : NUKE_POST_TOPIC_URL . "=$topic_id";
      $nuke_redirect .= ($start) ? "&start=$start" : '';
      $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", $_SERVER["SERVER_SOFTWARE"]) ) ? "Refresh: 0; URL=" : "Location: ";
-     nuke_redirect(append_sid("modules.php?name=Your_Account&nuke_redirect=viewtopic&$nuke_redirect", true));
+     nuke_redirect(append_nuke_sid("modules.php?name=Your_Account&nuke_redirect=viewtopic&$nuke_redirect", true));
      exit;
   endif;
         $message = ( !$is_auth['auth_view'] ) ? $lang['Topic_post_not_exist'] : sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']);
@@ -363,7 +363,7 @@ $topic_time = $forum_topic_data['topic_time'];
 if( !$is_auth['auth_mod'] && $nuke_userdata['user_level'] != NUKE_ADMIN ):
 	$nuke_redirect = str_replace("&amp;", "&", preg_replace('#.*?([a-z]+?\.' . $phpEx . '.*?)$#i', '\1', htmlspecialchars($HTTP_SERVER_VARS['REQUEST_URI'])));
 	if( $HTTP_POST_VARS['cancel'] ):
-		nuke_redirect(append_sid("index.$phpEx"));
+		nuke_redirect(append_nuke_sid("index.$phpEx"));
 	elseif($HTTP_POST_VARS['pass_login']):
 		if($forum_topic_data['topic_password'] != ''):
 			password_check('topic', $topic_id, $HTTP_POST_VARS['password'], $nuke_redirect);
@@ -411,11 +411,11 @@ if($nuke_userdata['session_logged_in']):
             $template_nuke->assign_vars(array(
             'TOPIC_TITLE'    => $topic_title,
             'POST_ID'        => $post_id,
-            'U_VIEW_TOPIC'   => append_sid('viewtopic.'.$phpEx.'?'.NUKE_POST_TOPIC_URL.'='.$topic_id),
+            'U_VIEW_TOPIC'   => append_nuke_sid('viewtopic.'.$phpEx.'?'.NUKE_POST_TOPIC_URL.'='.$topic_id),
             'L_REPORT_POST'  => $lang['Report_post'],
             'L_COMMENTS'     => $lang['Comments'],
             'L_SUBMIT'       => $lang['Submit'],
-            'S_ACTION'       => append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$post_id))
+            'S_ACTION'       => append_nuke_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$post_id))
             );
 
             $template_nuke->pparse('body');
@@ -432,10 +432,10 @@ if($nuke_userdata['session_logged_in']):
             email_report($forum_id, $post_id, $topic_title, $comments);
 
             $template_nuke->assign_vars(array(
-                'META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id").'">')
+                'META' => '<meta http-equiv="refresh" content="3;url='.append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id").'">')
             );
 
-            $message =  $lang['Post_reported'] . '<br /><br />'.sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id").'">', '</a>');
+            $message =  $lang['Post_reported'] . '<br /><br />'.sprintf($lang['Click_return_topic'], '<a href="' . append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id").'">', '</a>');
             message_die(NUKE_GENERAL_MESSAGE, $message);
         endif;
     endif;
@@ -466,10 +466,10 @@ if($nuke_userdata['session_logged_in']):
                  message_die(NUKE_GENERAL_ERROR, "Could not delete topic watch information", '', __LINE__, __FILE__, $sql);
               endif;
                  $template_nuke->assign_vars(array(
-                 'META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start").'">'));
+                 'META' => '<meta http-equiv="refresh" content="3;url='.append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start").'">'));
 
                  $message = $lang['No_longer_watching'].'<br /><br />'.sprintf($lang['Click_return_topic'], '<a 
-				 href="' . append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start") . '">', '</a>');
+				 href="' . append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start") . '">', '</a>');
                  message_die(NUKE_GENERAL_MESSAGE, $message);
            else:
               $is_watching_topic = TRUE;
@@ -494,8 +494,8 @@ if($nuke_userdata['session_logged_in']):
 		         if(!($result = $nuke_db->sql_query($sql)))
                  message_die(NUKE_GENERAL_ERROR, "Could not insert topic watch information", '', __LINE__, __FILE__, $sql);
               endif;
-              $template_nuke->assign_vars(array('META' => '<meta http-equiv="refresh" content="3;url='.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start").'">'));
-              $message = $lang['You_are_watching'].'<br /><br />'.sprintf($lang['Click_return_topic'], '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start").'">', '</a>');
+              $template_nuke->assign_vars(array('META' => '<meta http-equiv="refresh" content="3;url='.append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start").'">'));
+              $message = $lang['You_are_watching'].'<br /><br />'.sprintf($lang['Click_return_topic'], '<a href="'.append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start").'">', '</a>');
                message_die(NUKE_GENERAL_MESSAGE, $message);
            else:
                $is_watching_topic = 0;
@@ -505,7 +505,7 @@ else:
    if(isset($HTTP_GET_VARS['unwatch'])):
        if($HTTP_GET_VARS['unwatch'] == 'topic'):
        $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", $_SERVER["SERVER_SOFTWARE"]) ) ? "Refresh: 0; URL=" : "Location: ";
-       nuke_redirect(append_sid("login.$phpEx?nuke_redirect=viewtopic.$phpEx&".NUKE_POST_TOPIC_URL."=$topic_id&unwatch=topic", true));
+       nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=viewtopic.$phpEx&".NUKE_POST_TOPIC_URL."=$topic_id&unwatch=topic", true));
        exit;
     endif;
     else:
@@ -722,22 +722,22 @@ endif;
 # templating vars
 
 # Mod: Printer Topic v1.0.8 START
-$printer_topic_url = append_sid("viewtopic.$phpEx?printertopic=1&amp;".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start&amp;postdays=$post_days&amp;postorder=$post_order&amp;vote=viewresult");
+$printer_topic_url = append_nuke_sid("viewtopic.$phpEx?printertopic=1&amp;".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start&amp;postdays=$post_days&amp;postorder=$post_order&amp;vote=viewresult");
 # Mod: Printer Topic v1.0.8 END
 
-$new_topic_url = append_sid("posting.$phpEx?mode=newtopic&amp;".NUKE_POST_FORUM_URL."=$forum_id");
-$reply_topic_url = append_sid("posting.$phpEx?mode=reply&amp;".NUKE_POST_TOPIC_URL."=$topic_id");
+$new_topic_url = append_nuke_sid("posting.$phpEx?mode=newtopic&amp;".NUKE_POST_FORUM_URL."=$forum_id");
+$reply_topic_url = append_nuke_sid("posting.$phpEx?mode=reply&amp;".NUKE_POST_TOPIC_URL."=$topic_id");
 
 # Mod: Thank You Mod v1.1.8 START
-$thank_topic_url = append_sid("posting.$phpEx?mode=thank&amp;".NUKE_POST_TOPIC_URL."=$topic_id");
+$thank_topic_url = append_nuke_sid("posting.$phpEx?mode=thank&amp;".NUKE_POST_TOPIC_URL."=$topic_id");
 # Mod: Thank You Mod v1.1.8 END
 
-$view_forum_url = append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id");
-$view_prev_topic_url = append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;view=previous");
-$view_next_topic_url = append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;view=next");
+$view_forum_url = append_nuke_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id");
+$view_prev_topic_url = append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;view=previous");
+$view_next_topic_url = append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;view=next");
 
 # Base: Who viewed a topic v1.0.3 START
-$who_has_viewed_topic = append_sid("viewtopic_whoview.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id");
+$who_has_viewed_topic = append_nuke_sid("viewtopic_whoview.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id");
 # Base: Who viewed a topic v1.0.3 END
 
 # Mozilla navigation bar
@@ -827,7 +827,7 @@ if( $parent_id )
 		{
 			$template_nuke->assign_vars(array(
 				'PARENT_FORUM'			=> 1,
-				'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL.'='.$all_forums[$i]['forum_id']),
+				'U_VIEW_PARENT_FORUM'	=> append_nuke_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL.'='.$all_forums[$i]['forum_id']),
 				'PARENT_FORUM_NAME'		=> $all_forums[$i]['forum_name'],
 				));
 		}
@@ -871,46 +871,46 @@ $merge_topic_url = $merge_topic_btn = '';
 
 if($is_auth['auth_mod']):
 
-        $s_auth_can .= sprintf($lang['Rules_moderate'], '<a href="'.append_sid("modcp.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id").'">', '</a>');
+        $s_auth_can .= sprintf($lang['Rules_moderate'], '<a href="'.append_nuke_sid("modcp.$phpEx?".NUKE_POST_FORUM_URL."=$forum_id").'">', '</a>');
 
-        $topic_mod .= '<a href="'.append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=delete").'"><img 
+        $topic_mod .= '<a href="'.append_nuke_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=delete").'"><img 
 		src="'.$images['topic_mod_delete'].'" alt="'.$lang['Delete_topic'].'" title="'. $lang['Delete_topic'].'" border="0" /></a>&nbsp;';
 		
-        $delete_topic_url = append_sid("modcp.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;mode=delete");
+        $delete_topic_url = append_nuke_sid("modcp.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;mode=delete");
         $delete_topic_btn = $lang['Delete_topic'];
 
-        $topic_mod .= '<a href="'.append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=move").'"><img 
+        $topic_mod .= '<a href="'.append_nuke_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=move").'"><img 
 		src="'.$images['topic_mod_move'].'" alt="'.$lang['Move_topic'].'" title="'.$lang['Move_topic'].'" border="0" /></a>&nbsp;';
         
-		$move_topic_url = append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=move");
+		$move_topic_url = append_nuke_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=move");
         $move_topic_btn = $lang['Move_topic'];
 
-        $topic_mod .= ($forum_topic_data['topic_status'] == NUKE_TOPIC_UNLOCKED ) ? '<a href="'.append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=lock").'"><img 
+        $topic_mod .= ($forum_topic_data['topic_status'] == NUKE_TOPIC_UNLOCKED ) ? '<a href="'.append_nuke_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=lock").'"><img 
 		src="'.$images['topic_mod_lock'].'" alt="'.$lang['Lock_topic'].'" title="'.$lang['Lock_topic'].'" border="0" /></a>&nbsp;' : '<a 
-		href="'.append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=unlock").'"><img 
+		href="'.append_nuke_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=unlock").'"><img 
 		src="'.$images['topic_mod_unlock'].'" alt="'.$lang['Unlock_topic'].'" title="'.$lang['Unlock_topic'].'" border="0" /></a>&nbsp;';
         
 		if($forum_topic_data['topic_status'] == NUKE_TOPIC_UNLOCKED):
-        	$lock_topic_url = append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=lock");
+        	$lock_topic_url = append_nuke_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=lock");
         	$lock_topic_btn = $lang['Lock_topic'];
         	$lock_topic_status = 0;
         else:
-        	$lock_topic_url = append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=unlock");
+        	$lock_topic_url = append_nuke_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=unlock");
         	$lock_topic_btn = $lang['Unlock_topic'];
         	$lock_topic_status = 1;
         endif;
 
-        $topic_mod .= '<a href="'.append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=split").'"><img 
+        $topic_mod .= '<a href="'.append_nuke_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=split").'"><img 
 		src="'.$images['topic_mod_split'].'" alt="'.$lang['Split_topic'].'" title="'. $lang['Split_topic'].'" border="0" /></a>&nbsp;';
         
-		$split_topic_url = append_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=split");
+		$split_topic_url = append_nuke_sid("modcp.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;mode=split");
         $split_topic_btn = $lang['Split_topic'];
 		
         # Mod: Simply Merge Threads v1.0.1 START
-        $topic_mod .= '<a href="' . append_sid("merge.$phpEx?" . NUKE_POST_TOPIC_URL . '=' . $topic_id) . '"><img 
+        $topic_mod .= '<a href="' . append_nuke_sid("merge.$phpEx?" . NUKE_POST_TOPIC_URL . '=' . $topic_id) . '"><img 
 		src="' . $images['topic_mod_merge'] . '" alt="' . $lang['Merge_topics'] . '" title="' . $lang['Merge_topics'] . '" border="0" /></a>&nbsp;';
         
-		$merge_topic_url = append_sid("merge.$phpEx?" . NUKE_POST_TOPIC_URL . '=' . $topic_id);
+		$merge_topic_url = append_nuke_sid("merge.$phpEx?" . NUKE_POST_TOPIC_URL . '=' . $topic_id);
         $merge_topic_btn = $lang['Merge_topics'];
         # Mod: Simply Merge Threads v1.0.1 END 
 endif;
@@ -920,22 +920,22 @@ endif;
 $s_watching_topic = $s_watching_topic_url = $s_watching_topic_text = $s_watching_topic_state = '';
 if($can_watch_topic):
   if($is_watching_topic):
-     $s_watching_topic = '<a href="' . append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;unwatch=topic&amp;start=$start").'">'.$lang['Stop_watching_topic'].'</a>';
+     $s_watching_topic = '<a href="' . append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;unwatch=topic&amp;start=$start").'">'.$lang['Stop_watching_topic'].'</a>';
      
-	 $s_watching_topic_img = (isset($images['Topic_un_watch']) ) ? '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;unwatch=topic&amp;start=$start").'"><img 
+	 $s_watching_topic_img = (isset($images['Topic_un_watch']) ) ? '<a href="'.append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;unwatch=topic&amp;start=$start").'"><img 
 	 src="'.$images['Topic_un_watch'].'" alt="'.$lang['Stop_watching_topic'].'" title="'.$lang['Stop_watching_topic'].'" border="0"></a>' : '';
 
-     $s_watching_topic_url = append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;unwatch=topic&amp;page=$start");
+     $s_watching_topic_url = append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;unwatch=topic&amp;page=$start");
      $s_watching_topic_text = $lang['Stop_watching_topic'];
      $s_watching_topic_state = 1;
         
   else:
         
-  $s_watching_topic = '<a href="'.append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;watch=topic&amp;start=$start").'">'.$lang['Start_watching_topic'].'</a>';
-  $s_watching_topic_img = ( isset($images['Topic_watch']) ) ? '<a href="' . append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;watch=topic&amp;start=$start").'"><img 
+  $s_watching_topic = '<a href="'.append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;watch=topic&amp;start=$start").'">'.$lang['Start_watching_topic'].'</a>';
+  $s_watching_topic_img = ( isset($images['Topic_watch']) ) ? '<a href="' . append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;watch=topic&amp;start=$start").'"><img 
   src="'.$images['Topic_watch'].'" alt="'.$lang['Stop_watching_topic'].'" title="'.$lang['Start_watching_topic'].'" border="0"></a>' : '';
 
-  $s_watching_topic_url = append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;watch=topic&amp;page=$start");
+  $s_watching_topic_url = append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;watch=topic&amp;page=$start");
   $s_watching_topic_text = $lang['Start_watching_topic'];
   $s_watching_topic_state = 0;
   endif;
@@ -945,8 +945,8 @@ endif;
 $s_email_topic = $s_email_url = $s_email_text = '';
 if($nuke_userdata['session_logged_in']):
   $action = ($post_id) ? NUKE_POST_POST_URL."=$post_id" : NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start";
-  $s_email_topic = '<a href="'.append_sid("emailtopic.$phpEx?$action").'">'.$lang['Email_topic'].'</a>';
-  $s_email_url = append_sid("emailtopic.$phpEx?$action");
+  $s_email_topic = '<a href="'.append_nuke_sid("emailtopic.$phpEx?$action").'">'.$lang['Email_topic'].'</a>';
+  $s_email_url = append_nuke_sid("emailtopic.$phpEx?$action");
   $s_email_text = $lang['Email_topic'];
 endif;
 # Mod: Email topic to friend v1.0.0 END
@@ -982,7 +982,7 @@ endif;
 
 # Mod: Printer Topic v1.0.8 START
 $pagination_variables = array(
-	'url' => append_sid("viewtopic&amp;".$pagination_printertopic.NUKE_POST_TOPIC_URL."=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order"), 
+	'url' => append_nuke_sid("viewtopic&amp;".$pagination_printertopic.NUKE_POST_TOPIC_URL."=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order"), 
 	'total' => $total_replies,
 	'per-page' => $pagination_ppp,
 	'next-previous' => true,
@@ -1000,7 +1000,7 @@ $template_nuke->assign_vars(array(
  		 *	@since 2.0.9e001
  		 */
 		'TOPIC_AUTHOR' => $topic_author,
-		'TOPIC_URI' => append_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL.'='.$forum_id),
+		'TOPIC_URI' => append_nuke_sid("viewforum.$phpEx?".NUKE_POST_FORUM_URL.'='.$forum_id),
       	'AUTHOR_AVATAR' => $nuke_author_avatar,
         'FORUM_ID' => $forum_id,
         'FORUM_NAME' => $forum_name,
@@ -1059,7 +1059,7 @@ $template_nuke->assign_vars(array(
         'S_TOPIC_LINK' => NUKE_POST_TOPIC_URL,
         'S_SELECT_POST_DAYS' => $select_post_days,
         'S_SELECT_POST_ORDER' => $select_post_order,
-        'S_POST_DAYS_ACTION' => append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL.'='.$topic_id."&amp;start=$start"),
+        'S_POST_DAYS_ACTION' => append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL.'='.$topic_id."&amp;start=$start"),
         'S_AUTH_LIST' => $s_auth_can,
         'S_TOPIC_ADMIN' => $topic_mod,
 
@@ -1088,7 +1088,7 @@ $template_nuke->assign_vars(array(
         'S_WATCH_TOPIC_TEXT' => $s_watching_topic_text,
         'S_WATCH_TOPIC_STATE' => $s_watching_topic_state,
 
-        'U_VIEW_TOPIC' => append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start&amp;postdays=$post_days&amp;postorder=$post_order&amp;highlight=$highlight"),
+        'U_VIEW_TOPIC' => append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;start=$start&amp;postdays=$post_days&amp;postorder=$post_order&amp;highlight=$highlight"),
         'U_VIEW_FORUM' => $view_forum_url,
         'U_VIEW_OLDER_TOPIC' => $view_prev_topic_url,
         'U_VIEW_NEWER_TOPIC' => $view_next_topic_url,
@@ -1235,7 +1235,7 @@ if(!empty($forum_topic_data['topic_vote'])):
                                 'L_VIEW_RESULTS' => (!$nuke_user_voted && $poll_view_toggle) ? $lang['View_results'] : '',
                                  # Mod: Must first vote to see Results v1.0.0 END
 
-                                'U_VIEW_RESULTS' => append_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order&amp;vote=viewresult"))
+                                'U_VIEW_RESULTS' => append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_TOPIC_URL."=$topic_id&amp;postdays=$post_days&amp;postorder=$post_order&amp;vote=viewresult"))
                         );
 
                         $s_hidden_fields = '<input type="hidden" name="topic_id" value="'.$topic_id.'" /><input type="hidden" name="mode" value="vote" />';
@@ -1250,7 +1250,7 @@ if(!empty($forum_topic_data['topic_vote'])):
                         'POLL_QUESTION' => $vote_title,
 
                         'S_HIDDEN_FIELDS' => $s_hidden_fields,
-                        'S_POLL_ACTION' => append_sid("posting.$phpEx?mode=vote&amp;".NUKE_POST_TOPIC_URL."=$topic_id"))
+                        'S_POLL_ACTION' => append_nuke_sid("posting.$phpEx?mode=vote&amp;".NUKE_POST_TOPIC_URL."=$topic_id"))
                 );
 
                 $template_nuke->assign_var_from_handle('POLL_DISPLAY', 'pollbox');
@@ -1299,7 +1299,7 @@ if ($show_thanks == NUKE_FORUM_THANKABLE):
 		$thanks_date[$i] = create_date($timeformat, $thanks_date[$i], $board_config['board_timezone']);
 
 		# Make thanker profile link
-		$thanker_profile[$i] = append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$thanker_id[$i]");   
+		$thanker_profile[$i] = append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$thanker_id[$i]");   
 		$thanks .= '<a href="'.$thanker_profile[$i].'">'.UsernameColor($thanker_name[$i]).'</a> ('.$thanks_date[$i].'), ';
 		
 		if ($nuke_userdata['user_id'] == $thanksrow[$i]['user_id'])
@@ -1465,7 +1465,7 @@ for($i = 0; $i < $total_posts; $i++):
             $mini_post_alt = $lang['Post'];
         endif;
 
-        $mini_post_url = append_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL.'='.$postrow[$i]['post_id']).'#'.$postrow[$i]['post_id'];
+        $mini_post_url = append_nuke_sid("viewtopic.$phpEx?".NUKE_POST_POST_URL.'='.$postrow[$i]['post_id']).'#'.$postrow[$i]['post_id'];
 		
         # Mod: Gender v1.2.6 START
         $gender_image = ''; 
@@ -1510,7 +1510,7 @@ for($i = 0; $i < $total_posts; $i++):
           $profile_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_profile'].'" alt="'.$lang['Read_profile'].'" title="'.$lang['Read_profile'].'" border="0" /></a>';
           $profile = '<a href="'.$temp_url.'">'.$lang['Read_profile'].'</a>';
 
-          $temp_url = append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$poster_id");
+          $temp_url = append_nuke_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$poster_id");
           
 		  if (is_active("Private_Messages")): 
            	 $pm_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_pm'].'" 
@@ -1579,15 +1579,15 @@ for($i = 0; $i < $total_posts; $i++):
               $online_color = (isset($online_color)) ? $online_color : '';
 
               if($postrow[$i]['user_allow_viewonline']):
-                  $online_status_img = '<a href="'.append_sid("viewonline.$phpEx").'"><img 
+                  $online_status_img = '<a href="'.append_nuke_sid("viewonline.$phpEx").'"><img 
 				  src="'.$images['icon_online'].'" alt="'.sprintf($lang['is_online'], $poster).'" title="'.sprintf($lang['is_online'], $poster).'" /></a>&nbsp;';
                   
-				  $online_status = '<a href="'.append_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_online'], $poster).'"'.$online_color.'>'.$lang['Online'].'</a>';
+				  $online_status = '<a href="'.append_nuke_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_online'], $poster).'"'.$online_color.'>'.$lang['Online'].'</a>';
               elseif($is_auth['auth_mod'] || $nuke_userdata['user_id'] == $poster_id):
-                $online_status_img = '<a href="'.append_sid("viewonline.$phpEx").'"><img 
+                $online_status_img = '<a href="'.append_nuke_sid("viewonline.$phpEx").'"><img 
 				src="'.$images['icon_hidden'].'" alt="'.sprintf($lang['is_hidden'], $poster).'" title="'.sprintf($lang['is_hidden'], $poster).'" /></a>&nbsp;';
                 
-				$online_status = '<em><a href="'.append_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_hidden'], $poster).'"'.$hidden_color.'>'.$lang['Hidden'].'</a></em>';
+				$online_status = '<em><a href="'.append_nuke_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_hidden'], $poster).'"'.$hidden_color.'>'.$lang['Hidden'].'</a></em>';
               else:
                  $online_status_img = '<img src="'.$images['icon_offline'].'" alt="'.sprintf($lang['is_offline'], $poster).'" title="'.sprintf($lang['is_offline'], $poster).'" />&nbsp;';
                  $online_status = '<span title="'.sprintf($lang['is_offline'], $poster).'"'.$offline_color.'>'.$lang['Offline'].'</span>';
@@ -1627,7 +1627,7 @@ for($i = 0; $i < $total_posts; $i++):
         
 		endif;
 
-        $temp_url = append_sid("posting.$phpEx?mode=quote&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
+        $temp_url = append_nuke_sid("posting.$phpEx?mode=quote&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
         $quote_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_quote'].'" alt="'.$lang['Reply_with_quote'].'" title="'.$lang['Reply_with_quote'].'" border="0" /></a>';
         $quote = '<a href="'.$temp_url.'">'.$lang['Reply_with_quote'].'</a>';
 
@@ -1641,7 +1641,7 @@ for($i = 0; $i < $total_posts; $i++):
         $search_alt = sprintf($lang['Search_user_posts'], $postrow[$i]['username']);
 
         if(($nuke_userdata['user_id'] == $poster_id && $is_auth['auth_edit']) || $is_auth['auth_mod']):
-          $temp_url = append_sid("posting.$phpEx?mode=editpost&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
+          $temp_url = append_nuke_sid("posting.$phpEx?mode=editpost&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
           $edit_url = $temp_url;
           $edit_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_edit'].'" alt="'.$lang['Edit_delete_post'].'" title="'.$lang['Edit_delete_post'].'" border="0" /></a>';
           $edit = '<a href="'.$temp_url.'">'.$lang['Edit_delete_post'].'</a>';
@@ -1654,12 +1654,12 @@ for($i = 0; $i < $total_posts; $i++):
         endif;
 
         if($is_auth['auth_mod']):
-          $temp_url = append_sid("modcp.$phpEx?mode=ip&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']."&amp;".NUKE_POST_TOPIC_URL."=".$topic_id);
+          $temp_url = append_nuke_sid("modcp.$phpEx?mode=ip&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']."&amp;".NUKE_POST_TOPIC_URL."=".$topic_id);
           $ip_url = $temp_url;
           $ip_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_ip'].'" alt="'.$lang['View_IP'].'" title="'.$lang['View_IP'].'" border="0" /></a>';
           $ip = '<a href="'.$temp_url.'">'.$lang['View_IP'].'</a>';
           $ip_alt = $lang['View_IP'];
-          $temp_url = append_sid("posting.$phpEx?mode=delete&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
+          $temp_url = append_nuke_sid("posting.$phpEx?mode=delete&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
           $delpost_url = $temp_url;
           $delpost_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_delpost'].'" alt="'.$lang['Delete_post'].'" title="'.$lang['Delete_post'].'" border="0" /></a>';
           $delpost = '<a href="'.$temp_url.'">'.$lang['Delete_post'].'</a>';
@@ -1671,7 +1671,7 @@ for($i = 0; $i < $total_posts; $i++):
           $ip_alt = '';
 
            if($nuke_userdata['user_id'] == $poster_id && $is_auth['auth_delete'] && $forum_topic_data['topic_last_post_id'] == $postrow[$i]['post_id']):
-             $temp_url = append_sid("posting.$phpEx?mode=delete&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
+             $temp_url = append_nuke_sid("posting.$phpEx?mode=delete&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']);
              $delpost_url = $temp_url;
              $delpost_img = '<a href="'.$temp_url.'"><img src="'.$images['icon_delpost'].'" alt="'.$lang['Delete_post'].'" title="'.$lang['Delete_post'].'" border="0" /></a>';
              $delpost = '<a href="'.$temp_url.'">'.$lang['Delete_post'].'</a>';
@@ -1845,7 +1845,7 @@ for($i = 0; $i < $total_posts; $i++):
               endif;
             endif;
             
-			$reputation .=  " <a href=\"".append_sid("reputation.$phpEx?a=add&amp;".NUKE_POST_USERS_URL."=".$postrow[$i]['user_id'])."&"
+			$reputation .=  " <a href=\"".append_nuke_sid("reputation.$phpEx?a=add&amp;".NUKE_POST_USERS_URL."=".$postrow[$i]['user_id'])."&"
 			.NUKE_POST_POST_URL."=".$postrow[$i]['post_id']."&c=".substr(md5($bbcode_uid),0,8)."\" target=\"_blank\" onClick=\"popupWin = 
 			window.open(this.href, '".$lang['Reputation']."', 'location,width=700,height=400,top=0,scrollbars=yes'); popupWin.focus(); 
 			return false;\"><img src=\"modules/Forums/images/reputation_add_plus.gif\" alt=\"\" border=\"0\"><img src=\"modules/Forums/images/reputation_add_minus.gif\" alt=\"\" border=\"0\"></a>";
@@ -1862,7 +1862,7 @@ for($i = 0; $i < $total_posts; $i++):
 			$row_rep = $nuke_db->sql_fetchrow($result);
             
 			if($row_rep):
-              $reputation .= "<br /><a href=\"".append_sid("reputation.$phpEx?a=stats&amp;".NUKE_POST_USERS_URL."=" 
+              $reputation .= "<br /><a href=\"".append_nuke_sid("reputation.$phpEx?a=stats&amp;".NUKE_POST_USERS_URL."=" 
 			  .$postrow[$i]['user_id'])."\" target=\"_blank\" onClick=\"popupWin = window.open(this.href, '".$lang['Reputation']."', 'location,width=700,
 			  height=400,top=0,scrollbars=yes'); popupWin.focus(); return false;\">".$lang['Votes']."</a>: ".$row_rep['count_reps'];
 			endif;
@@ -1976,8 +1976,8 @@ for($i = 0; $i < $total_posts; $i++):
 
        # Mod: Report Posts v1.0.2 START
        if($nuke_userdata['session_logged_in']):
-          $report_url = append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$postrow[$i]['post_id']);
-          $report_img = '<a href="'.append_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$postrow[$i]['post_id']).'"><img 
+          $report_url = append_nuke_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$postrow[$i]['post_id']);
+          $report_img = '<a href="'.append_nuke_sid('viewtopic.'.$phpEx.'?report=true&amp;'.NUKE_POST_POST_URL.'='.$postrow[$i]['post_id']).'"><img 
 		  src="'.$images['icon_report'].'" border="0" alt="'.$lang['Report_post'].'" title="'.$lang['Report_post'].'" /></a>';
           $report_alt = $lang['Report_post'];
        else:
@@ -2011,7 +2011,7 @@ for($i = 0; $i < $total_posts; $i++):
 				$topic_title = $row['topic_title'];
 				$msg = str_replace('*u*', $nuke_userdata['username'], $force_message);
 				$msg = str_replace('*t*', $topic_title, $msg);
-				$msg = str_replace('*l*', '<a href="'.append_sid('viewtopic.'.$phpEx.'?'.NUKE_POST_TOPIC_URL.'='.$topic.'&amp;directed=ftr').'" target="_self">'.$lang['ftr_here'].'</a>', $msg);
+				$msg = str_replace('*l*', '<a href="'.append_nuke_sid('viewtopic.'.$phpEx.'?'.NUKE_POST_TOPIC_URL.'='.$topic.'&amp;directed=ftr').'" target="_self">'.$lang['ftr_here'].'</a>', $msg);
 				# New Only
 				if($who == 1):
 					# They Have Joined Since FTR Was Installed
@@ -2105,7 +2105,7 @@ for($i = 0; $i < $total_posts; $i++):
                 'SEARCH_ALT' => $search_alt,
                 'PM_IMG' => $pm_img,
                 'PM' => $pm,
-                'PM_URL' => (is_active("Private_Messages")) ? append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$poster_id") : '',
+                'PM_URL' => (is_active("Private_Messages")) ? append_nuke_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$poster_id") : '',
                 'PM_ALT' => $pm_alt,
                 'EMAIL_IMG' => $email_img,
                 'EMAIL' => $email,
@@ -2123,7 +2123,7 @@ for($i = 0; $i < $total_posts; $i++):
                 'EDIT_IMG' => $edit_img,
                 'EDIT_ALT' => $edit_alt,
                 'EDIT' => $edit,
-                'QUOTE_URL' => append_sid("posting.$phpEx?mode=quote&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']),
+                'QUOTE_URL' => append_nuke_sid("posting.$phpEx?mode=quote&amp;".NUKE_POST_POST_URL."=".$postrow[$i]['post_id']),
                 'QUOTE_IMG' => $quote_img,
                 'QUOTE_ALT' => $lang['Reply_with_quote'],
                 'QUOTE' => $quote,

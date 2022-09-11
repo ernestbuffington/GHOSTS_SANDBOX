@@ -240,7 +240,7 @@ if( !empty($mode) )
             //Comments Mod End
 
 
-            $message = $lang['Games_updated'] . "<br /><br />" . sprintf($lang['Click_return_gameadmin'], "<a href=\"arcade_elmt.$phpEx?arcade_catid=$arcade_catid\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+            $message = $lang['Games_updated'] . "<br /><br />" . sprintf($lang['Click_return_gameadmin'], "<a href=\"arcade_elmt.$phpEx?arcade_catid=$arcade_catid\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
             message_die(NUKE_GENERAL_MESSAGE, $message);
             break;
 
@@ -277,7 +277,7 @@ if( !empty($mode) )
                 }
             }
 
-            $message = $lang['Games_updated'] . "<br /><br />" . sprintf($lang['Click_return_gameadmin'], "<a href=\"arcade_elmt.$phpEx?arcade_catid=$last_catid\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+            $message = $lang['Games_updated'] . "<br /><br />" . sprintf($lang['Click_return_gameadmin'], "<a href=\"arcade_elmt.$phpEx?arcade_catid=$last_catid\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
             message_die(NUKE_GENERAL_MESSAGE, $message);
             break;
     }                

@@ -19,13 +19,22 @@
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 
-/**
-* @ignore
-**/
+if(defined('PHPBB3_MODULE') ):
+$nuke_module_name = basename(dirname(__FILE__));
+require(NUKE_PHPBB3_DIR . 'nukebb.php');
+define('IN_PHPBB', true);
+$phpbb_root_path = (defined('NUKE_PHPBB3_DIR')) ? NUKE_PHPBB3_DIR : './';
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
+include(NUKE_PHPBB3_DIR . 'extension.inc');
+include(NUKE_PHPBB3_DIR . 'common.php');
+//include(NUKE_PHPBB3_DIR . 'includes/functions_display.' . $phpEx);
+else:
+
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
+endif;
 
 /** @var \phpbb\controller\helper $controller_helper */
 $controller_helper = $phpbb_container->get('controller.helper');
@@ -56,3 +65,6 @@ else
 
 $response = new RedirectResponse($url, 301);
 $response->send();
+//include("includes/page_tail.$phpEx");
+?>
+

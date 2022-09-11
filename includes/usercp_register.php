@@ -73,8 +73,8 @@ function show_coppa()
 		"AGREE_UNDER_13" => $lang['Agree_under_13'],
 		'DO_NOT_AGREE' => $lang['Agree_not'],
 
-		"U_AGREE_OVER13" => append_sid("profile.$phpEx?mode=register&amp;agreed=true"),
-		"U_AGREE_UNDER13" => append_sid("profile.$phpEx?mode=register&amp;agreed=true&amp;coppa=true"))
+		"U_AGREE_OVER13" => append_nuke_sid("profile.$phpEx?mode=register&amp;agreed=true"),
+		"U_AGREE_UNDER13" => append_nuke_sid("profile.$phpEx?mode=register&amp;agreed=true&amp;coppa=true"))
 	);
 
 	$template_nuke->pparse('body');
@@ -99,7 +99,7 @@ $verification = null;
 				 WHERE check_num = "%s"', $nuke_user_prefix, $nuke_db->sql_escapestring($check_num)));
 				 
 	if(!$verified || $nuke_db->sql_numrows($verified) === 0) 
-	message_die(NUKE_GENERAL_ERROR, sprintf($lang['Error_Check_Num'], append_sid('modules.php?name=Your_Account&op=new_user')));
+	message_die(NUKE_GENERAL_ERROR, sprintf($lang['Error_Check_Num'], append_nuke_sid('modules.php?name=Your_Account&op=new_user')));
 	# The user exists, lets keep moving on
 	$verification = $nuke_db->sql_fetchrow($verified);
 	$template_nuke->assign_block_vars('switch_silent_password', array());
@@ -777,7 +777,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 				$nuke_user_actkey = substr($nuke_user_actkey, 0, $key_len);
 
 				if($nuke_userdata['session_logged_in']):
-				session_end($nuke_userdata['sid'], $nuke_userdata['user_id']);
+				session_nuke_end($nuke_userdata['sid'], $nuke_userdata['user_id']);
 				endif;
 			else:
 				$nuke_user_active = 1;
@@ -841,7 +841,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 			# We remove all stored login keys since the password has been updated
 			# and change the current one (if applicable)
 			if(!empty($passwd_sql))
-			session_reset_keys($nuke_user_id, $nuke_user_ip);
+			session_nuke_reset_keys($nuke_user_id, $nuke_user_ip);
 
             # Mod: XData v1.0.3 START
 			foreach($xdata as $code_name => $value):
@@ -916,19 +916,19 @@ if(isset($HTTP_POST_VARS['submit'])):
 				$nuke_user = "";
 				//fine evcz mod=>logout
 				if (is_active("Forums")) 
-				$message = $lang['Profile_updated_inactive'].'<br /><br />'.sprintf($lang['Click_return_index'],  '<a href="'.append_sid("index.$phpEx").'">', '</a>');
+				$message = $lang['Profile_updated_inactive'].'<br /><br />'.sprintf($lang['Click_return_index'],  '<a href="'.append_nuke_sid("index.$phpEx").'">', '</a>');
 				else 
 				$message = $lang['Profile_updated_inactive'].'<br /><br />'.sprintf($lang['Click_return_index'],  '<a href="index.php">', '</a>');
 			
 			else:
 				if(is_active("Forums")): 
-					$message = $lang['Profile_updated'] . '<br /><br />'.sprintf($lang['Click_return_index'],  '<a href="'.append_sid("index.$phpEx").'">', '</a>');
+					$message = $lang['Profile_updated'] . '<br /><br />'.sprintf($lang['Click_return_index'],  '<a href="'.append_nuke_sid("index.$phpEx").'">', '</a>');
 					$message .= '<br /><br />'.sprintf($lang['Click_return_profile'],  '<a href='
-					.append_sid('profile.php?mode=viewprofile&amp;u='.$nuke_userdata['user_id']).'>', '</a>');
+					.append_nuke_sid('profile.php?mode=viewprofile&amp;u='.$nuke_userdata['user_id']).'>', '</a>');
 				else:
 					$message = $lang['Profile_updated'].'<br /><br />'.sprintf($lang['Click_return_index'],  '<a href="index.php">', '</a>');
 				endif;
-				# nuke_redirect(append_sid('profile.php?mode=viewprofile&amp;u='.$nuke_userdata['user_id']));
+				# nuke_redirect(append_nuke_sid('profile.php?mode=viewprofile&amp;u='.$nuke_userdata['user_id']));
 			endif;
 
 			
@@ -1197,7 +1197,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 				}
 				$nuke_db->sql_freeresult($result);
 			}
-			$message = $message . '<br /><br />' . sprintf($lang['Click_return_index'],  '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+			$message = $message . '<br /><br />' . sprintf($lang['Click_return_index'],  '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
 			message_die(NUKE_GENERAL_MESSAGE, $message);
 		} // if mode == register
 	}
@@ -1919,7 +1919,7 @@ else
 
 		unset($code);
 
-		$confirm_image = (GZIPSUPPORT) ? '<img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id") . '" alt="" title="" />' : '<img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=1") . '" alt="" title="" /><img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=2") . '" alt="" title="" /><img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=3") . '" alt="" title="" /><img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=4") . '" alt="" title="" /><img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=5") . '" alt="" title="" /><img src="' . append_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=6") . '" alt="" title="" />';
+		$confirm_image = (GZIPSUPPORT) ? '<img src="' . append_nuke_sid("usercp_confirm.$phpEx?id=$confirm_id") . '" alt="" title="" />' : '<img src="' . append_nuke_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=1") . '" alt="" title="" /><img src="' . append_nuke_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=2") . '" alt="" title="" /><img src="' . append_nuke_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=3") . '" alt="" title="" /><img src="' . append_nuke_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=4") . '" alt="" title="" /><img src="' . append_nuke_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=5") . '" alt="" title="" /><img src="' . append_nuke_sid("usercp_confirm.$phpEx?id=$confirm_id&amp;c=6") . '" alt="" title="" />';
 		$s_hidden_fields .= '<input type="hidden" name="confirm_id" value="' . $confirm_id . '" />';
 
 		$template_nuke->assign_block_vars('switch_confirm', array());
@@ -1952,7 +1952,7 @@ else
 /*****[BEGIN]******************************************
  [ Mod:     Signature Editor/Preview Deluxe    v1.0.0 ]
  ******************************************************/
-				'SIG_EDIT_LINK' => append_sid("profile.$phpEx?mode=signature"),
+				'SIG_EDIT_LINK' => append_nuke_sid("profile.$phpEx?mode=signature"),
 				'SIG_DESC' => $lang['sig_description'],
 				'SIG_BUTTON_DESC' => $lang['sig_edit'],
 /*****[END]********************************************
@@ -2259,7 +2259,7 @@ else
  [ Mod:    YA Merge                            v1.0.0 ]
  ******************************************************/
 				'HTML_STATUS' => $html_status,
-				'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
+				'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_nuke_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
 				'SMILIES_STATUS' => $smilies_status,
 				'L_PAGE_TITLE' => $page_title,
 
@@ -2431,7 +2431,7 @@ else
 				'S_ALLOW_AVATAR_REMOTE' => $board_config['allow_avatar_remote'],
 				'S_HIDDEN_FIELDS' => $s_hidden_fields,
 				'S_FORM_ENCTYPE' => $form_enctype,
-				'S_PROFILE_ACTION' => append_sid("profile.$phpEx"))
+				'S_PROFILE_ACTION' => append_nuke_sid("profile.$phpEx"))
 		);
 
 /*****[BEGIN]******************************************

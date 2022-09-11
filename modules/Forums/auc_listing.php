@@ -19,8 +19,8 @@ exit("You can't access this file directly...");
 
 if ($popup != "1")
 {
-  $module_name = basename(dirname(__FILE__));
-  require("modules/".$module_name."/nukebb.php");
+  $nuke_module_name = basename(dirname(__FILE__));
+  require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -33,7 +33,7 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_auc.' . $phpEx);
 
 # Start session management 
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX); 
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_INDEX); 
 init_userprefs($nuke_userdata); 
 # End session management 
 
@@ -77,14 +77,14 @@ if($exist):
      $www = ($row1['user_website']) ? '<a href="'.$row1['user_website'].'" target="_userwww"><img src="'.$images['icon_www'].'" alt="'.$lang['Visit_website'].'" title="'
 	 .$lang['Visit_website'].'" border="0" /></a>' : '';
         
-	 $mailto = ($board_config['board_email_form']) ? append_sid("profile.$phpEx?mode=email&amp;".NUKE_POST_USERS_URL.'='.$row1['user_id']) : 'mailto:'.$row1['user_email'];            
+	 $mailto = ($board_config['board_email_form']) ? append_nuke_sid("profile.$phpEx?mode=email&amp;".NUKE_POST_USERS_URL.'='.$row1['user_id']) : 'mailto:'.$row1['user_email'];            
      
 	 $mail = ($row1['user_email']) ? '<a href="'.$mailto.'"><img src="'.$images['icon_email'].'" alt="'.$lang['Send_email'].'" title="'.$lang['Send_email']
 	 .'" border="0" /></a>' : '';
         
-	 $pmto = append_sid("privmsg.$phpEx?mode=post&amp;". NUKE_POST_USERS_URL ."=$row1[user_id]");
+	 $pmto = append_nuke_sid("privmsg.$phpEx?mode=post&amp;". NUKE_POST_USERS_URL ."=$row1[user_id]");
      $pm = '<a href="'.$pmto.'"><img src="'.$images['icon_pm'] .'" alt="'.$lang['Send_private_message'].'" title="'.$lang['Send_private_message'].'" border="0" /></a>';
-     $pro = append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$row1[user_id]");
+     $pro = append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=$row1[user_id]");
      $profile = '<a href="'.$pro.'"><img src="'.$images['icon_profile'].'" alt="'.$lang['Profile'].'" title="'.$lang['Profile'].'" border="0" /></a>';        
         
      $info = $profile." ".$pm;
@@ -141,14 +141,14 @@ elseif($group):
        $www = ($row1[$a]['user_website']) ? '<a href="'.$row1[$a]['user_website'].'" target="_userwww"><img src="'.$images['icon_www'].'" alt="'.$lang['Visit_website'] 
 	   .'" title="'.$lang['Visit_website'].'" border="0" /></a>' : '';
 	   
-       $mailto = ($board_config['board_email_form']) ? append_sid("profile.$phpEx?mode=email&amp;".NUKE_POST_USERS_URL.'='.$row1[$a]['user_id']) : 'mailto:'.$row1[$a]['user_email'];            
+       $mailto = ($board_config['board_email_form']) ? append_nuke_sid("profile.$phpEx?mode=email&amp;".NUKE_POST_USERS_URL.'='.$row1[$a]['user_id']) : 'mailto:'.$row1[$a]['user_email'];            
        $mail = ($row1[$a]['user_email']) ? '<a href="'.$mailto.'"><img src="'.$images['icon_email'].'" alt="'.$lang['Send_email'].'" title="'.$lang['Send_email'] 
 	   .'" border="0" /></a>' : '';
        
-	   $pmto = append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=".$row1[$a]['user_id']);
+	   $pmto = append_nuke_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=".$row1[$a]['user_id']);
        $pm = '<a href="'.$pmto.'"><img src="'.$images['icon_pm'].'" alt="'.$lang['Send_private_message'].'" title="'.$lang['Send_private_message'].'" border="0" /></a>';
 	   
-       $pro = append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row1[$a]['user_id']);
+       $pro = append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row1[$a]['user_id']);
 	   
        $profile = '<a href="'.$pro.'"><img src="'.$images['icon_profile'].'" alt="'.$lang['Profile'].'" title="'.$lang['Profile'].'" border="0" /></a>';
 	                   

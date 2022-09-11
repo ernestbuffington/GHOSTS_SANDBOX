@@ -18,7 +18,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
     $file = basename(__FILE__);
-    $module['Arcade_Admin']['Configuration'] = $file;
+    $nuke_module['Arcade_Admin']['Configuration'] = $file;
     return;
 }
 
@@ -65,7 +65,7 @@ else
 
     if( isset($HTTP_POST_VARS['submit']) )
     {
-        $message = $lang['Arcade_config_updated'] . "<br /><br />" . sprintf($lang['Click_return_arcade_config'], "<a href=\"" . append_sid("admin_arcade.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+        $message = $lang['Arcade_config_updated'] . "<br /><br />" . sprintf($lang['Click_return_arcade_config'], "<a href=\"" . append_nuke_sid("admin_arcade.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
     }
@@ -125,7 +125,7 @@ $template_nuke->set_filenames(array(
 
 
 $template_nuke->assign_vars(array(
-    "S_CONFIG_ACTION" => append_sid("admin_arcade.$phpEx"),
+    "S_CONFIG_ACTION" => append_nuke_sid("admin_arcade.$phpEx"),
 
     "L_YES" => $lang['Yes'],
     "L_NO" => $lang['No'],

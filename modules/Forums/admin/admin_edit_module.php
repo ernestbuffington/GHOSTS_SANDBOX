@@ -40,7 +40,7 @@ if (!empty($board_config))
 if( !empty($setmodules) )
 {
     $filename = basename(__FILE__);
-    $module['Statistics']['Edit_module'] = $filename . '?mode=select_module';
+    $nuke_module['Statistics']['Edit_module'] = $filename . '?mode=select_module';
     return;
 }
 
@@ -90,7 +90,7 @@ if ($mode == 'mod_edit')
 {
     if( isset($HTTP_POST_VARS['module']) || isset($HTTP_GET_VARS['module']) )
     {
-        $module_id = ( isset($HTTP_POST_VARS['module']) ) ? intval($HTTP_POST_VARS['module']) : intval($HTTP_GET_VARS['module']);
+        $nuke_module_id = ( isset($HTTP_POST_VARS['module']) ) ? intval($HTTP_POST_VARS['module']) : intval($HTTP_GET_VARS['module']);
     }
     else
     {
@@ -101,7 +101,7 @@ if ($mode == 'mod_edit')
         'body' => 'admin/stat_edit_module.tpl')
     );
 
-    $sql = "SELECT m.*, i.* FROM " . MODULES_TABLE . " m, " . MODULE_INFO_TABLE . " i WHERE i.module_id = m.module_id AND m.module_id = " . $module_id;
+    $sql = "SELECT m.*, i.* FROM " . MODULES_TABLE . " m, " . MODULE_INFO_TABLE . " i WHERE i.module_id = m.module_id AND m.module_id = " . $nuke_module_id;
 
     if (!($result = $nuke_db->sql_query($sql)) )
     {
@@ -123,7 +123,7 @@ if ($submit && $mode == 'mod_edit')
     {
         if (intval($mod_info['update_time']) != intval($HTTP_POST_VARS['update_time']))
         {
-            $sql = "UPDATE " . MODULES_TABLE . " SET update_time = " . intval($HTTP_POST_VARS['update_time']) . " WHERE module_id = " . $module_id;
+            $sql = "UPDATE " . MODULES_TABLE . " SET update_time = " . intval($HTTP_POST_VARS['update_time']) . " WHERE module_id = " . $nuke_module_id;
 
             if ( !($result = $nuke_db->sql_query($sql)) )
             {
@@ -137,7 +137,7 @@ if ($submit && $mode == 'mod_edit')
 
     if (isset($HTTP_POST_VARS['clear_module_cache']))
     {
-        $sql = "UPDATE " . CACHE_TABLE . " SET module_cache_time = 0, db_cache = '', priority = 0 WHERE module_id = " . $module_id;
+        $sql = "UPDATE " . CACHE_TABLE . " SET module_cache_time = 0, db_cache = '', priority = 0 WHERE module_id = " . $nuke_module_id;
 
         if ( !($result = $nuke_db->sql_query($sql)) )
         {
@@ -165,7 +165,7 @@ if ($submit && $mode == 'mod_edit')
 
     if ($update_sql != '')
     {
-        $sql = "UPDATE " . MODULES_TABLE . " SET " . $update_sql . " WHERE module_id = " . $module_id;
+        $sql = "UPDATE " . MODULES_TABLE . " SET " . $update_sql . " WHERE module_id = " . $nuke_module_id;
 
         if ( !($result = $nuke_db->sql_query($sql)) )
         {
@@ -178,7 +178,7 @@ if ($submit && $mode == 'mod_edit')
     
     // Admin Panel Integration fields
     // Get Module Variables
-    $sql = "SELECT * FROM " . MODULE_ADMIN_TABLE . " WHERE module_id = " . $module_id;
+    $sql = "SELECT * FROM " . MODULE_ADMIN_TABLE . " WHERE module_id = " . $nuke_module_id;
 
     if (!$result = $nuke_db->sql_query($sql))
     {
@@ -197,7 +197,7 @@ if ($submit && $mode == 'mod_edit')
             if (trim($HTTP_POST_VARS[trim($rows[$i]['config_name'])]) != trim($rows[$i]['config_value']))
             {
                 $sql = "UPDATE " . MODULE_ADMIN_TABLE . " SET config_value = '" . trim($HTTP_POST_VARS[trim($rows[$i]['config_name'])]) . "' 
-                WHERE config_name = '" . trim($rows[$i]['config_name']) . "' AND module_id = " . $module_id;
+                WHERE config_name = '" . trim($rows[$i]['config_name']) . "' AND module_id = " . $nuke_module_id;
     
                 if ( !($result = $nuke_db->sql_query($sql)) )
                 {
@@ -225,14 +225,14 @@ if (isset($HTTP_POST_VARS['add_group']) && $mode == 'mod_edit')
 
     if( isset($HTTP_POST_VARS['module']) || isset($HTTP_GET_VARS['module']) )
     {
-        $module_id = ( isset($HTTP_POST_VARS['module']) ) ? intval($HTTP_POST_VARS['module']) : intval($HTTP_GET_VARS['module']);
+        $nuke_module_id = ( isset($HTTP_POST_VARS['module']) ) ? intval($HTTP_POST_VARS['module']) : intval($HTTP_GET_VARS['module']);
     }
     else
     {
         message_die(NUKE_GENERAL_ERROR, 'Unable to edit Module.');
     }
 
-    $sql = "INSERT INTO " . MODULE_GROUP_AUTH_TABLE . " (module_id, group_id) VALUES (" . $module_id . ", " . $group_id . ")";
+    $sql = "INSERT INTO " . MODULE_GROUP_AUTH_TABLE . " (module_id, group_id) VALUES (" . $nuke_module_id . ", " . $group_id . ")";
 
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
@@ -251,14 +251,14 @@ if (isset($HTTP_POST_VARS['delete_group']) && $mode == 'mod_edit')
 
     if( isset($HTTP_POST_VARS['module']) || isset($HTTP_GET_VARS['module']) )
     {
-        $module_id = ( isset($HTTP_POST_VARS['module']) ) ? intval($HTTP_POST_VARS['module']) : intval($HTTP_GET_VARS['module']);
+        $nuke_module_id = ( isset($HTTP_POST_VARS['module']) ) ? intval($HTTP_POST_VARS['module']) : intval($HTTP_GET_VARS['module']);
     }
     else
     {
         message_die(NUKE_GENERAL_ERROR, 'Unable to edit Module.');
     }
 
-    $sql = "DELETE FROM " . MODULE_GROUP_AUTH_TABLE . " WHERE module_id = " . $module_id . " AND group_id = " . $group_id;
+    $sql = "DELETE FROM " . MODULE_GROUP_AUTH_TABLE . " WHERE module_id = " . $nuke_module_id . " AND group_id = " . $group_id;
 
     if ( !($result = $nuke_db->sql_query($sql)) )
     {
@@ -270,7 +270,7 @@ if ($mode == 'mod_edit')
 {
     if( isset($HTTP_POST_VARS['module']) || isset($HTTP_GET_VARS['module']) )
     {
-        $module_id = ( isset($HTTP_POST_VARS['module']) ) ? intval($HTTP_POST_VARS['module']) : intval($HTTP_GET_VARS['module']);
+        $nuke_module_id = ( isset($HTTP_POST_VARS['module']) ) ? intval($HTTP_POST_VARS['module']) : intval($HTTP_GET_VARS['module']);
     }
     else
     {
@@ -283,7 +283,7 @@ if ($mode == 'mod_edit')
 
     if ($mod_info_changed)
     {
-        $sql = "SELECT m.*, i.* FROM " . MODULES_TABLE . " m, " . MODULE_INFO_TABLE . " i WHERE i.module_id = m.module_id AND m.module_id = " . $module_id;
+        $sql = "SELECT m.*, i.* FROM " . MODULES_TABLE . " m, " . MODULE_INFO_TABLE . " i WHERE i.module_id = m.module_id AND m.module_id = " . $nuke_module_id;
 
         if (!($result = $nuke_db->sql_query($sql)) )
         {
@@ -298,14 +298,14 @@ if ($mode == 'mod_edit')
         $mod_info = $nuke_db->sql_fetchrow($result);
     }
 
-    $s_hidden_fields = '<input type="hidden" name="module" value="' . $module_id . '" />';
+    $s_hidden_fields = '<input type="hidden" name="module" value="' . $nuke_module_id . '" />';
 
-    $module_langs = get_module_languages(trim($mod_info['short_name']));
-    $module_languages = '';
+    $nuke_module_langs = get_module_languages(trim($mod_info['short_name']));
+    $nuke_module_languages = '';
     
-    for ($i = 0; $i < count($module_langs); $i++)
+    for ($i = 0; $i < count($nuke_module_langs); $i++)
     {
-        $module_languages .= ( ($module_languages == '') ? $module_langs[$i] : ', ' . $module_langs[$i]);
+        $nuke_module_languages .= ( ($nuke_module_languages == '') ? $nuke_module_langs[$i] : ', ' . $nuke_module_langs[$i]);
     }
 
     $yes_no_switches = array('perm_all', 'perm_reg', 'perm_mod', 'perm_admin');
@@ -354,7 +354,7 @@ if ($mode == 'mod_edit')
         {
             if (!in_array($rows[$i]['group_id'], $group_ids))
             {
-                $sql = "DELETE FROM " . MODULE_GROUP_AUTH_TABLE . " WHERE module_id = " . $module_id . " AND group_id = " . $rows[$i]['group_id'];
+                $sql = "DELETE FROM " . MODULE_GROUP_AUTH_TABLE . " WHERE module_id = " . $nuke_module_id . " AND group_id = " . $rows[$i]['group_id'];
             
                 if ( !($result = $nuke_db->sql_query($sql)) )
                 {
@@ -480,17 +480,17 @@ if ($mode == 'mod_edit')
         'U_MODULE_URL' => trim($mod_info['url']),
         'UPDATE_URL' => trim($mod_info['update_site']),
         'U_UPDATE_URL' => trim($mod_info['update_site']),
-        'MODULE_LANGUAGES' => $module_languages,
+        'MODULE_LANGUAGES' => $nuke_module_languages,
         'MESSAGE' => $message,
         'S_HIDDEN_FIELDS' => $s_hidden_fields,
         'UPDATE_TIME' => intval($mod_info['update_time']),
-        'S_ACTION' => append_sid('admin_edit_module.'.$phpEx.'?mode='.$mode),
-        'U_PREVIEW_MODULE' =>'../../../modules.php?name=Forums&amp;file=statistics&amp;preview='.$module_id)
+        'S_ACTION' => append_nuke_sid('admin_edit_module.'.$phpEx.'?mode='.$mode),
+        'U_PREVIEW_MODULE' =>'../../../modules.php?name=Forums&amp;file=statistics&amp;preview='.$nuke_module_id)
     );
 
     // Admin Panel Integration fields
     // Get Module Variables
-    $sql = "SELECT * FROM " . MODULE_ADMIN_TABLE . " WHERE module_id = " . $module_id;
+    $sql = "SELECT * FROM " . MODULE_ADMIN_TABLE . " WHERE module_id = " . $nuke_module_id;
 
     if (!$result = $nuke_db->sql_query($sql))
     {
@@ -570,7 +570,7 @@ if ($mode == 'mod_edit')
 
     if ( (!isset($HTTP_POST_VARS['fileupload'])) && (!isset($HTTP_POST_VARS['fileselect'])) )
     {
-        $module_paks = array();
+        $nuke_module_paks = array();
     
         $dir = @opendir($phpbb2_root_path . 'modules/pakfiles');
 
@@ -580,48 +580,48 @@ if ($mode == 'mod_edit')
             {
                 if ( preg_match('/\.pak$/i', $file) )
                 {
-                    $module_paks[] = $file;
+                    $nuke_module_paks[] = $file;
                 }
             }
         }
 
         @closedir($dir);
 
-        if (count($module_paks) > 0)
+        if (count($nuke_module_paks) > 0)
         {
-            $module_select_field = '<select name="selected_pak_file">';
+            $nuke_module_select_field = '<select name="selected_pak_file">';
 
-            for ($i = 0; $i < count($module_paks); $i++)
+            for ($i = 0; $i < count($nuke_module_paks); $i++)
             {
                 $selected = ($i == 0) ? ' selected="selected"' : '';
 
-                $module_select_field .= '<option value="' . $module_paks[$i] . '"' . $selected . '>' . $module_paks[$i] . '</option>';
+                $nuke_module_select_field .= '<option value="' . $nuke_module_paks[$i] . '"' . $selected . '>' . $nuke_module_paks[$i] . '</option>';
             }
     
-            $module_select_field .= '</select>';
+            $nuke_module_select_field .= '</select>';
             
             $s_hidden_fields = '<input type="hidden" name="fileselect" value="1" />';
         }
         else
         {
-            $module_select_field = $lang['No_module_packages_found'];
+            $nuke_module_select_field = $lang['No_module_packages_found'];
             $s_hidden_fields = '';
         }
 
         $template_nuke->assign_vars(array(
             'L_SELECT_MODULE' => $lang['Select_module_pak'],
-            'S_SELECT_MODULE' => $module_select_field,
+            'S_SELECT_MODULE' => $nuke_module_select_field,
             'S_SELECT_HIDDEN_FIELDS' => $s_hidden_fields)
         );
 
-        $s_hidden_fields = '<input type="hidden" name="fileupload" value="1" /><input type="hidden" name="update_id" value="' . $module_id . '" />';
+        $s_hidden_fields = '<input type="hidden" name="fileupload" value="1" /><input type="hidden" name="update_id" value="' . $nuke_module_id . '" />';
 
         $template_nuke->assign_vars(array(
             'L_INSTALL_MODULE' => $lang['Install_module'],
             'L_INSTALL_MODULE_EXPLAIN' => $lang['Install_module_explain'],
             'L_UPLOAD_MODULE' => $lang['Upload_module_pak'],
             'L_SUBMIT' => $lang['Submit'],
-            'S_ACTION_UPDATE' => append_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode=mod_install'),
+            'S_ACTION_UPDATE' => append_nuke_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode=mod_install'),
             'S_UPLOAD_HIDDEN_FIELDS' => $s_hidden_fields)
         );
 
@@ -648,24 +648,24 @@ else if ($mode == 'select_module')
 
     $rows = $nuke_db->sql_fetchrowset($result);
     
-    $module_select_field = '<select name="module">';
+    $nuke_module_select_field = '<select name="module">';
 
     for ($i = 0; $i < count($rows); $i++)
     {
         $selected = ($i == 0) ? ' selected="selected"' : '';
 
-        $module_select_field .= '<option value="' . $rows[$i]['module_id'] . '"' . $selected . '>' . $rows[$i]['long_name'] . '</option>';
+        $nuke_module_select_field .= '<option value="' . $rows[$i]['module_id'] . '"' . $selected . '>' . $rows[$i]['long_name'] . '</option>';
     }
     
-    $module_select_field .= '</select>';
+    $nuke_module_select_field .= '</select>';
     
     $template_nuke->assign_vars(array(
         'L_SELECT_MODULE_TITLE' => $lang['Module_select_title'],
         'L_SELECT_MODULE_EXPLAIN' => $lang['Module_select_explain'],
         'L_MODULE_SELECT' => $lang['Module_select_title'],
         'L_EDIT' => $lang['Edit'],
-        'S_ACTION' => append_sid('admin_edit_module.'.$phpEx.'?mode=mod_edit'),
-        'S_MODULE_SELECT' => $module_select_field)
+        'S_ACTION' => append_nuke_sid('admin_edit_module.'.$phpEx.'?mode=mod_edit'),
+        'S_MODULE_SELECT' => $nuke_module_select_field)
     );
 
 }

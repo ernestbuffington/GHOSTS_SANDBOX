@@ -14,6 +14,6 @@ $comment_description = htmlentities($comment_description, ENT_QUOTES);
 $commenter_name = htmlentities($commenter_name, ENT_QUOTES);
 $network_db->sql_query("UPDATE `".$network_prefix."_requests_comments` SET `commenter_name`='$commenter_name', `commenter_email`='$commenter_email', `comment_description`='$comment_description' WHERE `comment_id`='$comment_id'");
 $network_db->sql_query("OPTIMIZE TABLE `".$network_prefix."_requests_comments`");
-header("Location: modules.php?name=$module_name&op=Request&request_id=$request_id");
+header("Location: modules.php?name=$nuke_module_name&op=Request&request_id=$request_id");
 
 ?>

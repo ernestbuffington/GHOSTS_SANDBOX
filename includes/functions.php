@@ -818,7 +818,7 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
                         // 'chapter' and 'forum' can create multiple items, therefore we are using a nested array.
                         //
                         $nav_links['chapter forum'][$forum_rows[$j]['forum_id']] = array (
-                            'url' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=" . $forum_rows[$j]['forum_id']),
+                            'url' => append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=" . $forum_rows[$j]['forum_id']),
                             'title' => $forum_rows[$j]['forum_name']
                         );
 /*****[BEGIN]******************************************
@@ -838,7 +838,7 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
 								// 'chapter' and 'forum' can create multiple items, therefore we are using a nested array.
 								//
 								$nav_links['chapter forum'][$forum_rows[$k]['forum_id']] = array (
-									'url' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=" . $forum_rows[$k]['forum_id']),
+									'url' => append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=" . $forum_rows[$k]['forum_id']),
 									'title' => $forum_rows[$k]['forum_name']
 								);
 								
@@ -883,7 +883,7 @@ function make_jumpbox_ref($action, $match_forum_id, &$forums_list)
         'L_SELECT_FORUM' => $lang['Select_forum'],
 
         'S_JUMPBOX_SELECT' => $boxstring,
-        'S_JUMPBOX_ACTION' => append_sid($action))
+        'S_JUMPBOX_ACTION' => append_nuke_sid($action))
     );
     $template_nuke->assign_var_from_handle('JUMPBOX', 'jumpbox');
 
@@ -1044,19 +1044,19 @@ function init_userprefs($nuke_userdata)
     // and be able to change the variables within code.
     //
         $nav_links['top'] = array (
-        'url' => append_sid("index.$phpEx"),
+        'url' => append_nuke_sid("index.$phpEx"),
         'title' => sprintf($lang['Forum_Index'], $board_config['sitename'])
     );
         $nav_links['search'] = array (
-        'url' => append_sid("search.$phpEx"),
+        'url' => append_nuke_sid("search.$phpEx"),
         'title' => $lang['Search']
     );
         $nav_links['help'] = array (
-        'url' => append_sid("faq.$phpEx"),
+        'url' => append_nuke_sid("faq.$phpEx"),
         'title' => $lang['FAQ']
     );
         $nav_links['author'] = array (
-        'url' => append_sid("memberlist.$phpEx"),
+        'url' => append_nuke_sid("memberlist.$phpEx"),
         'title' => $lang['Memberlist']
     );
 
@@ -1347,8 +1347,8 @@ function generate_pagination($base_url, $num_items, $per_page, $start_item, $add
 
         for($i = 1; $i < $init_page_max + 1; $i++)
         {
-            // $page_string .= ( $i == $on_page ) ? '<strong>' . $i . '</strong>' : '<a class="page-link" href="' . append_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
-            $page_string .= '<a class="page-link'.(( $i == $on_page ) ? ' active' : '').'" href="' . append_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
+            // $page_string .= ( $i == $on_page ) ? '<strong>' . $i . '</strong>' : '<a class="page-link" href="' . append_nuke_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
+            $page_string .= '<a class="page-link'.(( $i == $on_page ) ? ' active' : '').'" href="' . append_nuke_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
             if ( $i <  $init_page_max && !defined('BOOTSTRAP') )
             {
                 $page_string .= ", ";
@@ -1366,8 +1366,8 @@ function generate_pagination($base_url, $num_items, $per_page, $start_item, $add
 
                 for($i = $init_page_min - 1; $i < $init_page_max + 2; $i++)
                 {
-                    // $page_string .= ($i == $on_page) ? '<strong>' . $i . '</strong>' : '<a class="page-link" href="' . append_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
-                    $page_string .= '<a class="page-link'.(( $i == $on_page ) ? ' active' : '').'" href="' . append_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
+                    // $page_string .= ($i == $on_page) ? '<strong>' . $i . '</strong>' : '<a class="page-link" href="' . append_nuke_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
+                    $page_string .= '<a class="page-link'.(( $i == $on_page ) ? ' active' : '').'" href="' . append_nuke_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
                     if ( $i <  $init_page_max + 1 && !defined('BOOTSTRAP') )
                     {
                         $page_string .= ', ';
@@ -1383,8 +1383,8 @@ function generate_pagination($base_url, $num_items, $per_page, $start_item, $add
 
             for($i = $total_pages - 2; $i < $total_pages + 1; $i++)
             {
-                // $page_string .= ( $i == $on_page ) ? '<strong>' . $i . '</strong>'  : '<a class="page-link" href="' . append_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
-                $page_string .= '<a class="page-link'.(( $i == $on_page ) ? ' active' : '').'" href="' . append_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
+                // $page_string .= ( $i == $on_page ) ? '<strong>' . $i . '</strong>'  : '<a class="page-link" href="' . append_nuke_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
+                $page_string .= '<a class="page-link'.(( $i == $on_page ) ? ' active' : '').'" href="' . append_nuke_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
                 if ( $i <  $total_pages && !defined('BOOTSTRAP') )
                 {
                     $page_string .= ", ";
@@ -1396,8 +1396,8 @@ function generate_pagination($base_url, $num_items, $per_page, $start_item, $add
     {
         for($i = 1; $i < $total_pages + 1; $i++)
         {
-            // $page_string .= ( $i == $on_page ) ? '<strong>' . $i . '</strong>' : '<a class="page-link" href="' . append_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
-            $page_string .= '<a class="page-link'.(( $i == $on_page ) ? ' active' : '').'" href="' . append_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
+            // $page_string .= ( $i == $on_page ) ? '<strong>' . $i . '</strong>' : '<a class="page-link" href="' . append_nuke_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
+            $page_string .= '<a class="page-link'.(( $i == $on_page ) ? ' active' : '').'" href="' . append_nuke_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) ) . '">' . $i . '</a>';
             if ( $i <  $total_pages && !defined('BOOTSTRAP') )
             {
                 $page_string .= ', ';
@@ -1413,10 +1413,10 @@ function generate_pagination($base_url, $num_items, $per_page, $start_item, $add
             {
                 if( $on_page > 1 )
                 {
-                    $page_string = ' <a href="' . append_sid($base_url . "&amp;start=" . ( ( $on_page - 2 ) * $per_page ) ) . '">' . $lang['Previous'] . '</a>&nbsp;&nbsp;' . $page_string;
+                    $page_string = ' <a href="' . append_nuke_sid($base_url . "&amp;start=" . ( ( $on_page - 2 ) * $per_page ) ) . '">' . $lang['Previous'] . '</a>&nbsp;&nbsp;' . $page_string;
                 }
             } else {
-                $page_string = '  <a class="page-link'.(( $on_page == 1 ) ? ' disabled' : '').'" href="' . append_sid($base_url . "&amp;start=" . ( ( $on_page - 2 ) * $per_page ) ) . '">&lt;</a>' . $page_string;
+                $page_string = '  <a class="page-link'.(( $on_page == 1 ) ? ' disabled' : '').'" href="' . append_nuke_sid($base_url . "&amp;start=" . ( ( $on_page - 2 ) * $per_page ) ) . '">&lt;</a>' . $page_string;
             }
         // }
 
@@ -1426,10 +1426,10 @@ function generate_pagination($base_url, $num_items, $per_page, $start_item, $add
             {
                 if( $on_page < $total_pages )
                 {
-                    $page_string .= '&nbsp;&nbsp;<a href="' . append_sid($base_url . "&amp;start=" . ( $on_page * $per_page ) ) . '">' . $lang['Next'] . '</a>';
+                    $page_string .= '&nbsp;&nbsp;<a href="' . append_nuke_sid($base_url . "&amp;start=" . ( $on_page * $per_page ) ) . '">' . $lang['Next'] . '</a>';
                 }
             } else {
-                $page_string .= '  <a class="page-link'.(( $on_page == $total_pages ) ? ' disabled' : '').'" href="' . append_sid($base_url . "&amp;start=" . ( $on_page * $per_page ) ) . '">&gt;</a>';
+                $page_string .= '  <a class="page-link'.(( $on_page == $total_pages ) ? ' disabled' : '').'" href="' . append_nuke_sid($base_url . "&amp;start=" . ( $on_page * $per_page ) ) . '">&gt;</a>';
             }
         // }
 
@@ -1443,7 +1443,7 @@ function generate_pagination($base_url, $num_items, $per_page, $start_item, $add
         for($i = 1; $i <= $total_pages; $i++)
         {
             $selected = ( $i == $on_page ) ? ' selected="selected"' : ''; // highlight current page by default
-            $select_page .= '<option value="' . append_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) )  . '"' . $selected . '>' . $i . '</option>';
+            $select_page .= '<option value="' . append_nuke_sid($base_url . "&amp;start=" . ( ( $i - 1 ) * $per_page ) )  . '"' . $selected . '>' . $i . '</option>';
         }
         $select_page .= '</select>:';
     }
@@ -1636,7 +1636,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
     if( empty($nuke_userdata) && ( $msg_code == NUKE_GENERAL_MESSAGE || $msg_code == NUKE_GENERAL_ERROR ) )
     {
-		$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+		$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
 		init_userprefs($nuke_userdata);
     }
 
@@ -1850,7 +1850,7 @@ function bblogin($session_id) {
             $password = $cookie[2];
             if(count($rowresult) ) {
                 if( $rowresult['user_level'] != NUKE_ADMIN && $board_config['board_disable'] ) {
-                    nuke_redirect(append_sid("index.$phpEx", true));
+                    nuke_redirect(append_nuke_sid("index.$phpEx", true));
                 } else {
                     if( $password == $rowresult['user_password'] && $rowresult['user_active'] ) {
                         $autologin = 0;
@@ -1861,12 +1861,12 @@ function bblogin($session_id) {
                         } else {
                         }
                     } else {
-                        $message = $lang['Error_login'] . "<br /><br />" . sprintf($lang['Click_return_login'], "<a href=\"" . append_sid("login.$phpEx?$nuke_redirect") . "\">", "</a> ") . "<br /><br />" .  sprintf($lang['Click_return_index'], "<a href=\"" . append_sid("index.$phpEx") . "\">", "</a> ");
+                        $message = $lang['Error_login'] . "<br /><br />" . sprintf($lang['Click_return_login'], "<a href=\"" . append_nuke_sid("login.$phpEx?$nuke_redirect") . "\">", "</a> ") . "<br /><br />" .  sprintf($lang['Click_return_index'], "<a href=\"" . append_nuke_sid("index.$phpEx") . "\">", "</a> ");
                         message_die(NUKE_GENERAL_MESSAGE, $message);
                     }
                 }
             } else {
-                $message = $lang['Error_login'] . "<br /><br />" . sprintf($lang['Click_return_login'], "<a href=\"" . append_sid("login.$phpEx?$nuke_redirect") . "\">", "</a> ") . "<br /><br />" .  sprintf($lang['Click_return_index'], "<a href=\"" . append_sid("index.$phpEx") . "\">", "</a> ");
+                $message = $lang['Error_login'] . "<br /><br />" . sprintf($lang['Click_return_login'], "<a href=\"" . append_nuke_sid("login.$phpEx?$nuke_redirect") . "\">", "</a> ") . "<br /><br />" .  sprintf($lang['Click_return_index'], "<a href=\"" . append_nuke_sid("index.$phpEx") . "\">", "</a> ");
                 message_die(NUKE_GENERAL_MESSAGE, $message);
             }
         }

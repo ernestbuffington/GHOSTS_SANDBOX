@@ -38,9 +38,9 @@ $nuke_author_homepage    = "http://www.darkforgegfx.com";
 $based_on           = "--";
 $license            = "GPL";
 $download_location  = "http://www.darkforgegfx.com";
-$module_version     = "1.0.0";
-$module_description = "To show and administrate several methods of backlinks to your website.";
+$nuke_module_version     = "1.0.0";
+$nuke_module_description = "To show and administrate several methods of backlinks to your website.";
 
-show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $based_on, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $based_on, $license, $download_location, $nuke_module_version, $nuke_module_description);
 
 ?>

@@ -49,7 +49,7 @@ if (!defined('CNBYA')) {
 
         if (GDSUPPORT AND $code != $gfx_check AND ($ya_config['usegfxcheck'] == 3 OR $ya_config['usegfxcheck'] == 4 OR $ya_config['usegfxcheck'] == 6)) {
 
-            nuke_redirect("modules.php?name=$module_name");
+            nuke_redirect("modules.php?name=$nuke_module_name");
             exit;
         }
         mt_srand ((double)microtime()*1000000);

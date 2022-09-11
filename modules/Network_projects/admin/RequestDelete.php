@@ -18,6 +18,6 @@ $network_db->sql_query("DELETE FROM `".$network_prefix."_requests_comments` WHER
 $network_db->sql_query("OPTIMIZE TABLE `".$network_prefix."_requests_comments`");
 $network_db->sql_query("DELETE FROM `".$network_prefix."_requests_members` WHERE `request_id`='$request_id'");
 $network_db->sql_query("OPTIMIZE TABLE `".$network_prefix."_requests_members`");
-header("Location: modules.php?name=$module_name&op=Project&project_id=".$request['project_id']);
+header("Location: modules.php?name=$nuke_module_name&op=Project&project_id=".$request['project_id']);
 
 ?>

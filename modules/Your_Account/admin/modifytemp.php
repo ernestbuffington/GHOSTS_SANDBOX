@@ -39,7 +39,7 @@ if (!defined('CNBYA')) {
     die('CNBYA protection');
 }
 
-if(is_mod_admin($module_name)) {
+if(is_mod_admin($nuke_module_name)) {
 
   $pagetitle = ": "._USERADMIN." - "._USERUPDATE;
   include_once(NUKE_BASE_DIR.'header.php');
@@ -56,7 +56,7 @@ if(is_mod_admin($module_name)) {
     if($nuke_db->sql_numrows($result) > 0) {
     $chnginfo = $nuke_db->sql_fetchrow($result);
     OpenTable();
-    echo "<center><table border='0'><form action='modules.php?name=$module_name&amp;file=admin' method='post'>\n";
+    echo "<center><table border='0'><form action='modules.php?name=$nuke_module_name&amp;file=admin' method='post'>\n";
     echo "<tr><td bgcolor='$bgcolor2'>"._USERID.":</td><td><strong><input type='text' value='$chnginfo[user_id]' size='40' disabled=disabled style='color=#000000;background-color: #FFFFFF'></strong></td></tr>\n";
     echo "<tr><td bgcolor='$bgcolor2'>"._NICKNAME.":</td><td><input type='text' name='chng_uname' value=".$chnginfo['username']." size='40' style='color=#000000;background-color: #FFFFFF'> <strong>"._YA_CHNGRISK."</strong></td></tr>\n";
     echo "<tr><td bgcolor='$bgcolor2'>"._UREALNAME.":</td><td bgcolor='$bgcolor1'><input type='text' name='chng_realname' value='$chnginfo[realname]' size='40' maxlength='60' style='color=#000000;background-color: #FFFFFF'></td></tr>\n";
@@ -109,14 +109,14 @@ if(is_mod_admin($module_name)) {
         echo "<input type='submit' value='"._SAVECHANGES."'></td></form>\n";
         echo "<td width=\"3\"></td><td>\n";
             if ($ya_config['useactivate'] == 0) {
-                echo "<form action='modules.php?name=$module_name&amp;file=admin' method='post'><td>\n";
+                echo "<form action='modules.php?name=$nuke_module_name&amp;file=admin' method='post'><td>\n";
                 if (isset($min)) { echo "<input type='hidden' name='min' value='$min'>\n"; }
                 if (isset($xop)) { echo "<input type='hidden' name='xop' value='$xop'>\n"; }
                 echo "<input type='hidden' name='op' value='approveUserConf'>\n";
                 echo "<input type='hidden' name='apr_uid' value='".$chnginfo['user_id']."'>\n";
                 echo "<input type='submit' value='"._YA_APPROVE."'></td></form>\n";
             } else {
-                echo "<form action='modules.php?name=$module_name&amp;file=admin' method='post'><td>\n";
+                echo "<form action='modules.php?name=$nuke_module_name&amp;file=admin' method='post'><td>\n";
                 if (isset($min)) { echo "<input type='hidden' name='min' value='$min'>\n"; }
                 if (isset($xop)) { echo "<input type='hidden' name='xop' value='$xop'>\n"; }
                 echo "<input type='hidden' name='op' value='activateUser'>\n";

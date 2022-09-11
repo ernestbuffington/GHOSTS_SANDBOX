@@ -3,8 +3,8 @@ if (!defined('MODULE_FILE')) die("You can't access this file directly...");
 global $prefix, $nuke_db, $cookie, $nuke_user, $theme_name;
 $index = 1;
 require_once("mainfile.php");
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
 $pagetitle = "86it Developers Network - My "._MARKSTITLE;
 include("header.php");
 $nuke_userinfo = getusrinfo( $nuke_user );
@@ -26,7 +26,7 @@ echo '</div>';
 $headstone =  '<img class="tooltip-html copyright absmiddle" alt="" title="" width="40" src="modules/Member_Cemetery/images/icons8-cemetery-30.png" />';
 $toes =  '<img class="tooltip-html copyright" alt="" title="" width="30" src="modules/Member_Cemetery/images/icons8-death-96.png" />';
 echo "<center><span class=title><strong><h1>".$headstone." ".$catname." ".$headstone."</h1></strong></span></center><P>\n";
-echo "<center>[ <a href=modules.php?name=".$module_name.">"._CATEGORIES."</a> | <a href=modules.php?name=".$module_name."&amp;file=edit_mark&amp;catid=$category>"._NEWBOOKMARK."</a> | <a href=modules.php?name=".$module_name."&amp;file=edit_cat>"._NEWCATEGORY."</a> ]</center>";
+echo "<center>[ <a href=modules.php?name=".$nuke_module_name.">"._CATEGORIES."</a> | <a href=modules.php?name=".$nuke_module_name."&amp;file=edit_mark&amp;catid=$category>"._NEWBOOKMARK."</a> | <a href=modules.php?name=".$nuke_module_name."&amp;file=edit_cat>"._NEWCATEGORY."</a> ]</center>";
 echo "<hr />";
 $marks_query = "SELECT `id`,`name`,`url`,`description`,`mod_date`,`popup` FROM ".$prefix."_cemetery WHERE user_id=".$nuke_userid." AND category_id='".$category ."' ORDER BY `name`";
 $marks_res = $nuke_db->sql_query ($marks_query,$nuke_db);
@@ -51,9 +51,9 @@ for ($i=0;$i<@$nuke_db->sql_numrows  ($marks_res,$nuke_db);$i++):
 		</td>
 		<td>".$marks_row['description']."</td>
 		<td><div align=\"center\">".$marks_row['mod_date']."<div></td>
-		<td>&nbsp;<a class=\"title\" href=modules.php?name=".$module_name."&amp;file=edit_mark&amp;catid=$category&amp;markname=".urlencode($marks_row['name'])."&amp;markcomment=".urlencode($marks_row['description'])."&amp;markid=".$marks_row['id']."&amp;popup=".$marks_row['popup']."><img src='modules/".$module_name."/images/pencil.gif' width=12 height=12 border=0></a>
+		<td>&nbsp;<a class=\"title\" href=modules.php?name=".$nuke_module_name."&amp;file=edit_mark&amp;catid=$category&amp;markname=".urlencode($marks_row['name'])."&amp;markcomment=".urlencode($marks_row['description'])."&amp;markid=".$marks_row['id']."&amp;popup=".$marks_row['popup']."><img src='modules/".$nuke_module_name."/images/pencil.gif' width=12 height=12 border=0></a>
 		</td>
-		<td>&nbsp;&nbsp;&nbsp;<a href=modules.php?name=".$module_name."&amp;file=del_mark&amp;catid=".$category."&amp;markname=".urlencode($marks_row['name'])."&amp;markid=".$marks_row['id']."&amp;catname=".$catname."><img src=modules/".$module_name."/admin/trash.png width=12 height=12 border=0></a>
+		<td>&nbsp;&nbsp;&nbsp;<a href=modules.php?name=".$nuke_module_name."&amp;file=del_mark&amp;catid=".$category."&amp;markname=".urlencode($marks_row['name'])."&amp;markid=".$marks_row['id']."&amp;catname=".$catname."><img src=modules/".$nuke_module_name."/admin/trash.png width=12 height=12 border=0></a>
 		</td>
 		</tr>\n";
 	else:
@@ -63,10 +63,10 @@ for ($i=0;$i<@$nuke_db->sql_numrows  ($marks_res,$nuke_db);$i++):
 		</td><td>".$marks_row['description']."</td>
 		<td><div align=\"center\">".$marks_row['mod_date']."<div></td>
 		<td>&nbsp;
-		<a href=modules.php?name=".$module_name."&amp;file=edit_mark&amp;catid=$category&amp;markname=".urlencode($marks_row['name'])."&amp;markcomment=".urlencode($marks_row['description'])."&amp;markid=".$marks_row['id']."&amp;popup=".$marks_row['popup']."><img src='modules/".$module_name."/images/pencil.gif' width=12 height=12 border=0></a>
+		<a href=modules.php?name=".$nuke_module_name."&amp;file=edit_mark&amp;catid=$category&amp;markname=".urlencode($marks_row['name'])."&amp;markcomment=".urlencode($marks_row['description'])."&amp;markid=".$marks_row['id']."&amp;popup=".$marks_row['popup']."><img src='modules/".$nuke_module_name."/images/pencil.gif' width=12 height=12 border=0></a>
 		</td>
 		<td>&nbsp;&nbsp;&nbsp;
-		<a href=modules.php?name=".$module_name."&amp;file=del_mark&amp;catid=".$category."&amp;markname=".urlencode($marks_row['name'])."&amp;markid=".$marks_row['id']."&amp;catname=".$catname."><img src=modules/".$module_name."/admin/trash.png width=12 height=12 border=0></a>
+		<a href=modules.php?name=".$nuke_module_name."&amp;file=del_mark&amp;catid=".$category."&amp;markname=".urlencode($marks_row['name'])."&amp;markid=".$marks_row['id']."&amp;catname=".$catname."><img src=modules/".$nuke_module_name."/admin/trash.png width=12 height=12 border=0></a>
 		</td>
 		</tr>\n";
 	endif;
@@ -74,7 +74,7 @@ endfor;
 echo "</table>";
 @$nuke_db->sql_freeresult($marks_res);
 echo "<hr />";
-echo "<center>[ <a href=modules.php?name=".$module_name.">"._CATEGORIES."</a> | <a href=modules.php?name=".$module_name."&amp;file=edit_mark&amp;catid=$category>"._NEWBOOKMARK."</a> | <a href=modules.php?name=".$module_name."&amp;file=edit_cat>"._NEWCATEGORY."</a> ]</center>";
+echo "<center>[ <a href=modules.php?name=".$nuke_module_name.">"._CATEGORIES."</a> | <a href=modules.php?name=".$nuke_module_name."&amp;file=edit_mark&amp;catid=$category>"._NEWBOOKMARK."</a> | <a href=modules.php?name=".$nuke_module_name."&amp;file=edit_cat>"._NEWCATEGORY."</a> ]</center>";
 CloseTable();
 include("footer.php");
 ?> 

@@ -106,7 +106,7 @@ function prepare_bbcode_template($bbcode_tpl)
 
     # Mod: Extended Quote Tag v1.0.0 START
     $bbcode_tpl['quote_post_open'] = str_replace('{L_QUOTE}',$lang['Quote'],$bbcode_tpl['quote_post_open']);
-    $temp_url = append_sid('show_post.php?p=\\1');
+    $temp_url = append_nuke_sid('show_post.php?p=\\1');
     
 	$bbcode_tpl['quote_post_open'] = str_replace('{U_VIEW_POST}', '<a href="'.$temp_url.'" onClick=
 	"javascript:open_postreview( \''.$temp_url.'\' );">'.$lang['View_post'].'</a>', $bbcode_tpl['quote_post_open']);
@@ -114,7 +114,7 @@ function prepare_bbcode_template($bbcode_tpl)
     $bbcode_tpl['quote_username_post_open'] = str_replace('{L_QUOTE}',$lang['Quote'],$bbcode_tpl['quote_username_post_open']);
     $bbcode_tpl['quote_username_post_open'] = str_replace('{L_WROTE}', $lang['wrote'],$bbcode_tpl['quote_username_post_open']);
     $bbcode_tpl['quote_username_post_open'] = str_replace('{USERNAME}','\\1',$bbcode_tpl['quote_username_post_open']);
-    $temp_url = append_sid('show_post.php?p=\\2');
+    $temp_url = append_nuke_sid('show_post.php?p=\\2');
     $bbcode_tpl['quote_username_post_open'] = str_replace('{U_VIEW_POST}', '<a href="'.$temp_url.'" onClick=
 	"javascript:open_postreview( \''.$temp_url.'\' );">'.$lang['View_post'] . '</a>',$bbcode_tpl['quote_username_post_open']);
 
@@ -122,7 +122,7 @@ function prepare_bbcode_template($bbcode_tpl)
     $bbcode_tpl['quote_username_post_open'] = str_replace('{USERNAME}', UsernameColor('\\1'), $bbcode_tpl['quote_username_post_open']);
     # Mod: Advanced Username Color v1.0.5 END
 
-    $temp_url = append_sid('show_post.php?p=\\2');
+    $temp_url = append_nuke_sid('show_post.php?p=\\2');
     $bbcode_tpl['quote_username_post_open'] = str_replace('{U_VIEW_POST}', '<a href="#_somewhat" onClick=
 	"javascript:open_postreview( \''.$temp_url.'\' );">'.$lang['View_post'].'</a>', $bbcode_tpl['quote_username_post_open']);
     # Mod: Extended Quote Tag v1.0.0 END
@@ -218,7 +218,7 @@ function replacer($mode, $bb)
 
     $replacer = '<table width="40%" cellspacing="1" cellpadding="3" border="0"><tr><td class="quote">';
     $replacer .= $message . '<br />';
-    $replacer .= sprintf($lang['Get_Registered'], "<a href=\"" . append_sid('profile.' . $phpEx . '?mode=register') . "\">", "</a>");
+    $replacer .= sprintf($lang['Get_Registered'], "<a href=\"" . append_nuke_sid('profile.' . $phpEx . '?mode=register') . "\">", "</a>");
     $replacer .= "<a href=\"modules.php?name=Forums&amp;file=login\">" . $lang['Login'] . "</a>";
     $replacer .= '</td></tr></table>';
 
@@ -233,7 +233,7 @@ function replacer($mode, $bb)
           break;
         }
             $replacer = '<table width="40%" cellspacing="1" cellpadding="3" border="0"><tr><td class="quote">';
-            $replacer .= sprintf($lang['Image_Blocked'], "<a href=\"" . append_sid('profile.' . $phpEx) . "\">", "</a>");
+            $replacer .= sprintf($lang['Image_Blocked'], "<a href=\"" . append_nuke_sid('profile.' . $phpEx) . "\">", "</a>");
             $replacer .= '</td></tr></table>';
         if ($nuke_user_option) {
             return $replacer;

@@ -6,8 +6,8 @@ if (!defined('MODULE_FILE')) {
 $pagetitle = 'CSS Hex Color Chart';
 
 require_once("mainfile.php");
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
 include("header.php");
 $index = 0;
     #########################################################################

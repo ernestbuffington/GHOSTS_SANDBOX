@@ -14,7 +14,7 @@ if (!defined('MODULE_FILE')) {
 }
 
 function changemail() {
-    global $nuke_db, $nuke_user_prefix, $module_name, $sitekey, $nuke_user, $stop, $cookie, $nuke_userinfo;
+    global $nuke_db, $nuke_user_prefix, $nuke_module_name, $sitekey, $nuke_user, $stop, $cookie, $nuke_userinfo;
 
     $get_id = $_GET['id'];
     $check_num = $_GET['check_num'];

@@ -18,7 +18,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
     $file = basename(__FILE__);
-    $module['Arcade_Admin']['Manage_games'] = $file;
+    $nuke_module['Arcade_Admin']['Manage_games'] = $file;
     return;
 }
 
@@ -138,7 +138,7 @@ if ( $mode == 'delete')
         $hidden_fields .= '<input type="hidden" name="arcade_catid" value="' . $arcade_catid . '" />';
     
         $template_nuke->assign_vars(array(
-            "S_ACTION" => append_sid("admin_arcade_games.$phpEx"),
+            "S_ACTION" => append_nuke_sid("admin_arcade_games.$phpEx"),
             "S_HIDDEN_FIELDS" => $hidden_fields,
             "L_TITLE" => $lang['arcade_cat_delete'],
             "L_EXPLAIN" => $lang['arcade_delete_cat_explain'],
@@ -264,7 +264,7 @@ if ( $mode == 'edit')
     $hidden_fields .= '<input type="hidden" name="arcade_catid" value="' . $arcade_catid . '" />';
     
     $template_nuke->assign_vars(array(
-        "S_ACTION" => append_sid("admin_arcade_games.$phpEx"),
+        "S_ACTION" => append_nuke_sid("admin_arcade_games.$phpEx"),
         "S_HIDDEN_FIELDS" => $hidden_fields,
         "L_TITLE" => $lang['Admin_arcade_cat'],
         "L_EXPLAIN" => $lang['Admin_arcade_editcat_explain'],
@@ -299,7 +299,7 @@ if ( $mode == 'new' )
 
     $hidden_fields = '<input type="hidden" name="mode" value="editcreate" />';
     $template_nuke->assign_vars(array(
-        "S_ACTION" => append_sid("admin_arcade_games.$phpEx"),
+        "S_ACTION" => append_nuke_sid("admin_arcade_games.$phpEx"),
         "S_HIDDEN_FIELDS" => $hidden_fields,
         'S_AUTH' => $liste_auth,
         "L_TITLE" => $lang['Admin_arcade_cat'],
@@ -337,7 +337,7 @@ $template_nuke->set_filenames(array(
 $hidden_fields = '<input type="hidden" name="mode" value="new" />';
 
 $template_nuke->assign_vars(array(
-    "S_ACTION" => append_sid("admin_arcade_games.$phpEx"),
+    "S_ACTION" => append_nuke_sid("admin_arcade_games.$phpEx"),
     "S_HIDDEN_FIELDS" => $hidden_fields,
     "L_TITLE" => $lang['Admin_arcade_cat'],
     "L_EXPLAIN" => $lang['Admin_arcade_cat_explain'],
@@ -370,12 +370,12 @@ for ( $i = 0 ; $i < $nbcat ; $i++ )
       'L_DOWN' => ( $i < $nbcat-1 ) ? $lang['Down_arcade_cat'] : '',
       'ARCADE_CATID' => $liste_cat[$i]['arcade_catid'],
       'ARCADE_CATTITLE' => $liste_cat[$i]['arcade_cattitle'],
-      'U_EDIT' =>  append_sid("admin_arcade_games.$phpEx?mode=edit&amp;arcade_catid=" . $liste_cat[$i]['arcade_catid']),
+      'U_EDIT' =>  append_nuke_sid("admin_arcade_games.$phpEx?mode=edit&amp;arcade_catid=" . $liste_cat[$i]['arcade_catid']),
       'U_MANAGE' =>   "arcade_elmt.$phpEx?arcade_catid=" . $liste_cat[$i]['arcade_catid'],
-      'U_UP' => ( $i > 0) ? append_sid("admin_arcade_games.$phpEx?mode=move&amp;arcade_catid=" . $liste_cat[ $i ]['arcade_catid'] . "&amp;catid2="  . $liste_cat[ $i - 1 ]['arcade_catid'] . "&amp;arcade_catorder=" .  $liste_cat[ $i ]['arcade_catorder'] . "&amp;catorder2=" . $liste_cat[ $i - 1 ]['arcade_catorder']) : '',
-      'U_DOWN' => ( $i < $nbcat-1 ) ? append_sid("admin_arcade_games.$phpEx?mode=move&amp;arcade_catid=" . $liste_cat[ $i ]['arcade_catid'] . "&amp;catid2="  . $liste_cat[ $i + 1 ]['arcade_catid'] . "&amp;arcade_catorder=" .  $liste_cat[ $i ]['arcade_catorder'] . "&amp;catorder2=" . $liste_cat[ $i + 1 ]['arcade_catorder']) : '',
-      'U_DELETE' => append_sid("admin_arcade_games.$phpEx?mode=delete&amp;arcade_catid=" . $liste_cat[$i]['arcade_catid']),
-      'U_SYNCHRO' => append_sid("admin_arcade_games.$phpEx?mode=resynch&amp;arcade_catid=" . $liste_cat[$i]['arcade_catid']),
+      'U_UP' => ( $i > 0) ? append_nuke_sid("admin_arcade_games.$phpEx?mode=move&amp;arcade_catid=" . $liste_cat[ $i ]['arcade_catid'] . "&amp;catid2="  . $liste_cat[ $i - 1 ]['arcade_catid'] . "&amp;arcade_catorder=" .  $liste_cat[ $i ]['arcade_catorder'] . "&amp;catorder2=" . $liste_cat[ $i - 1 ]['arcade_catorder']) : '',
+      'U_DOWN' => ( $i < $nbcat-1 ) ? append_nuke_sid("admin_arcade_games.$phpEx?mode=move&amp;arcade_catid=" . $liste_cat[ $i ]['arcade_catid'] . "&amp;catid2="  . $liste_cat[ $i + 1 ]['arcade_catid'] . "&amp;arcade_catorder=" .  $liste_cat[ $i ]['arcade_catorder'] . "&amp;catorder2=" . $liste_cat[ $i + 1 ]['arcade_catorder']) : '',
+      'U_DELETE' => append_nuke_sid("admin_arcade_games.$phpEx?mode=delete&amp;arcade_catid=" . $liste_cat[$i]['arcade_catid']),
+      'U_SYNCHRO' => append_nuke_sid("admin_arcade_games.$phpEx?mode=resynch&amp;arcade_catid=" . $liste_cat[$i]['arcade_catid']),
       'ARCADE_CAT_NBELMT' => $liste_cat[$i]['arcade_nbelmt'],
       'ARCADE_CATORDER' => $liste_cat[$i]['arcade_catorder']
      )

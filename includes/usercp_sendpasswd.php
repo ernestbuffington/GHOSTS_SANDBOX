@@ -91,10 +91,10 @@ if ( isset($HTTP_POST_VARS['submit']) )
             $emailer->reset();
 
             $template_nuke->assign_vars(array(
-                'META' => '<meta http-equiv="refresh" content="15;url=' . append_sid("index.$phpEx") . '">')
+                'META' => '<meta http-equiv="refresh" content="15;url=' . append_nuke_sid("index.$phpEx") . '">')
             );
 
-            $message = $lang['Password_updated'] . '<br /><br />' . sprintf($lang['Click_return_index'],  '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+            $message = $lang['Password_updated'] . '<br /><br />' . sprintf($lang['Click_return_index'],  '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
 
             message_die(NUKE_GENERAL_MESSAGE, $message);
         }
@@ -135,7 +135,7 @@ $template_nuke->assign_vars(array(
     'L_RESET' => $lang['Reset'],
 
         'S_HIDDEN_FIELDS' => '',
-    'S_PROFILE_ACTION' => append_sid("profile.$phpEx?mode=sendpassword"))
+    'S_PROFILE_ACTION' => append_nuke_sid("profile.$phpEx?mode=sendpassword"))
 );
 
 $template_nuke->pparse('body');

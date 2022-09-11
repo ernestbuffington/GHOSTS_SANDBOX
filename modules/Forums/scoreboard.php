@@ -25,8 +25,8 @@ if (!defined('MODULE_FILE')) {
 }
 
 if ($popup != "1"){
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -49,7 +49,7 @@ if (isset($HTTP_GET_VARS['gid']) || isset($HTTP_POST_VARS['gid'])) {
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_SCOREBOARD, $nukeuser);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_SCOREBOARD, $nukeuser);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -116,16 +116,16 @@ $nuke_db->sql_freeresult($result);
 // Post URL generation for templating vars
 //
 $template_nuke->assign_vars(array(
-        'URL_ARCADE' => '<nobr><a class="cattitle" href="' . append_sid("arcade.$phpEx") . '">' . $lang['lib_arcade'] . '</a></nobr> ',
-        'URL_BESTSCORES' => '<nobr><a class="cattitle" href="' . append_sid("toparcade.$phpEx") . '">' . $lang['best_scores'] . '</a></nobr> ',
-        'GAMENAME' => '<nobr><a class="cattitle" href="' . append_sid("games.$phpEx?gid=" . $gid) . '">' . $gamename . '</a></nobr> ')
+        'URL_ARCADE' => '<nobr><a class="cattitle" href="' . append_nuke_sid("arcade.$phpEx") . '">' . $lang['lib_arcade'] . '</a></nobr> ',
+        'URL_BESTSCORES' => '<nobr><a class="cattitle" href="' . append_nuke_sid("toparcade.$phpEx") . '">' . $lang['best_scores'] . '</a></nobr> ',
+        'GAMENAME' => '<nobr><a class="cattitle" href="' . append_nuke_sid("games.$phpEx?gid=" . $gid) . '">' . $gamename . '</a></nobr> ')
 );
 
 //
 // Mozilla navigation bar
 //
 $nav_links['up'] = array(
-        'url' => append_sid('index.'.$phpEx),
+        'url' => append_nuke_sid('index.'.$phpEx),
         'title' => sprintf($lang['Forum_Index'], $board_config['sitename'])
 );
 
@@ -170,7 +170,7 @@ if ($total_score) {
                         'POS' =>  $score_rowset[$i]['num'],
                         'SCORE' =>  number_format($score_rowset[$i]['score_game']),
                         'PLAYER' => $score_rowset[$i]['username'],
-                        'URL_STATS' => '<nobr><a class="cattitle" href="' . append_sid("statarcade.$phpEx?uid=" . $score_rowset[$i]['user_id']) . '">' . "<img src='modules/Forums/templates/" . $theme['template_name'] . "/images/loupe.gif ' align='absmiddle' border='0' alt='" . $lang['statuser'] . " " . $score_rowset[$i]['username'] . "'>" . '</a></nobr> ',
+                        'URL_STATS' => '<nobr><a class="cattitle" href="' . append_nuke_sid("statarcade.$phpEx?uid=" . $score_rowset[$i]['user_id']) . '">' . "<img src='modules/Forums/templates/" . $theme['template_name'] . "/images/loupe.gif ' align='absmiddle' border='0' alt='" . $lang['statuser'] . " " . $score_rowset[$i]['username'] . "'>" . '</a></nobr> ',
                         'GOTO_PAGE' => $goto_page,
                         'DATE' => create_date($board_config['default_dateformat'] , $score_rowset[$i]['score_date'] , $board_config['board_timezone']))
                 );

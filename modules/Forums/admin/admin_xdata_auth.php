@@ -21,8 +21,8 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
 	$filename = basename(__FILE__);
-	$module['XData']['User_Permissions'] = $filename . '?type=user';
-    	$module['XData']['Group_Permissions'] = $filename . '?type=group';
+	$nuke_module['XData']['User_Permissions'] = $filename . '?type=user';
+    	$nuke_module['XData']['Group_Permissions'] = $filename . '?type=group';
 
 	return;
 }
@@ -118,7 +118,7 @@ if ($type == 'user')
 
 				'USERNAME' => $nuke_username,
 				'S_HIDDEN_FIELDS' => '<input type="hidden" name="'.NUKE_POST_USERS_URL.'" value="'.$nuke_user_id.'" /><input type="hidden" name="mode" value="save" /><input type="hidden" name="type" value="user" />',
-				'S_AUTH_ACTION' => append_sid('admin_xdata_auth.'.$phpEx)
+				'S_AUTH_ACTION' => append_nuke_sid('admin_xdata_auth.'.$phpEx)
 				)
 			);
 
@@ -197,8 +197,8 @@ if ($type == 'user')
 				}
 			}
 
-		    $message = sprintf($lang['XData_success_updating_permissions'],"<a href=\"" . append_sid("admin_xdata_auth.$phpEx?type=user") . "\">","</a>");
-			$message .= sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+		    $message = sprintf($lang['XData_success_updating_permissions'],"<a href=\"" . append_nuke_sid("admin_xdata_auth.$phpEx?type=user") . "\">","</a>");
+			$message .= sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 			message_die(NUKE_GENERAL_MESSAGE, $message);
 		}
 	}
@@ -218,9 +218,9 @@ if ($type == 'user')
 			'L_LOOK_UP' => $lang['Look_up_user'],
 			'L_FIND_USERNAME' => $lang['Find_username'],
 
-			'U_SEARCH_USER' => append_sid($phpbb2_root_path . "search.$phpEx?mode=searchuser"),
+			'U_SEARCH_USER' => append_nuke_sid($phpbb2_root_path . "search.$phpEx?mode=searchuser"),
 
-			'S_USER_ACTION' => append_sid($phpbb2_root_path . "admin/admin_xdata_auth.$phpEx?type=user"),
+			'S_USER_ACTION' => append_nuke_sid($phpbb2_root_path . "admin/admin_xdata_auth.$phpEx?type=user"),
 			'S_USER_SELECT' => $select_list
 			)
 		);
@@ -283,7 +283,7 @@ elseif ($type == 'group')
 
 				'USERNAME' => $group_name,
 				'S_HIDDEN_FIELDS' => '<input type="hidden" name="'.NUKE_POST_GROUPS_URL.'" value="'.$group_id.'" /><input type="hidden" name="mode" value="save" /><input type="hidden" name="type" value="group" />',
-				'S_AUTH_ACTION' => append_sid('admin_xdata_auth.'.$phpEx)
+				'S_AUTH_ACTION' => append_nuke_sid('admin_xdata_auth.'.$phpEx)
 				)
 			);
 
@@ -349,8 +349,8 @@ elseif ($type == 'group')
 				}
 			}
 
-		    $message = sprintf($lang['XData_success_updating_permissions'],"<a href=\"" . append_sid("admin_xdata_auth.$phpEx?type=user") . "\">","</a>");
-			$message .= sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+		    $message = sprintf($lang['XData_success_updating_permissions'],"<a href=\"" . append_nuke_sid("admin_xdata_auth.$phpEx?type=user") . "\">","</a>");
+			$message .= sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 			message_die(NUKE_GENERAL_MESSAGE, $message);
 		}
 	}
@@ -395,7 +395,7 @@ elseif ($type == 'group')
 			'L_LOOK_UP' => $lang['Look_up_Group'],
 
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
-			'S_AUTH_ACTION' => append_sid("admin_xdata_auth.$phpEx"))
+			'S_AUTH_ACTION' => append_nuke_sid("admin_xdata_auth.$phpEx"))
 		);
 
         $template_nuke->pparse('body');

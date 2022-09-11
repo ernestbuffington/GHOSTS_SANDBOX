@@ -31,13 +31,13 @@ $template_nuke->set_filenames(array(
     $class = ($class == 'row1') ? 'row2' : 'row1';
 
     $template_nuke->assign_block_vars('arcaderow2',array(
-           'U_TOPARCADE' => append_sid("toparcade.$phpEx"),
+           'U_TOPARCADE' => append_nuke_sid("toparcade.$phpEx"),
            'BEST_SCORES' => $lang['best_scores'])
            );
 
     $template_nuke->assign_block_vars('arcaderow3',array(
            'CLASS' => $class,
-           'U_TOPARCADE' => append_sid("toparcade.$phpEx"),
+           'U_TOPARCADE' => append_nuke_sid("toparcade.$phpEx"),
            'BEST_SCORES' => $lang['best_scores'])
            );
 /*****[BEGIN]******************************************
@@ -68,7 +68,7 @@ $template_nuke->set_filenames(array(
             'VICTOIRES' => $lang['Victoires'],
             'ARCADE_VICTOIRES' => $nbvictoires,
             'AVATAR_IMG' => $avatar_img,
-            'USERNAME' => '<a href="' . append_sid("statarcade.$phpEx?uid=" . $nuke_userdata['user_id'] ) . '" class="genmed">' . $color_name . '</a> ',
+            'USERNAME' => '<a href="' . append_nuke_sid("statarcade.$phpEx?uid=" . $nuke_userdata['user_id'] ) . '" class="genmed">' . $color_name . '</a> ',
             'POSTER_RANK' => $poster_rank,
             'RANK_IMG' => $rank_image,
             'ARCADE_ANNOUNCEMENT' => $arcade_config['arcade_announcement'],
@@ -113,7 +113,7 @@ $sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, 
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-        $nuke_user_online_link = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'>' . $row['username'] . '</a>';
+        $nuke_user_online_link = '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color .'>' . $row['username'] . '</a>';
 
         $template_nuke->assign_block_vars('player_row', array(
             'CLASSEMENT' => $place,
@@ -142,8 +142,8 @@ $sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, 
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
     $class = ($class == 'row1') ? 'row2' : 'row1' ;
-    $last_scoregame = '<a href="' . append_sid("games.$phpEx?gid=" . $rowArcade['game_id']) . '">' . $rowArcade['game_name'] . '</a>';
-    $last_scoreuser = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $rowArcade['game_highuser']) . '">' . $rowArcade['username'] . '</a>';
+    $last_scoregame = '<a href="' . append_nuke_sid("games.$phpEx?gid=" . $rowArcade['game_id']) . '">' . $rowArcade['game_name'] . '</a>';
+    $last_scoreuser = '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $rowArcade['game_highuser']) . '">' . $rowArcade['username'] . '</a>';
     $last_score = number_format($rowArcade['game_highscore']);
 
         $template_nuke->assign_block_vars('arcaderow2.bestscore2',array(
@@ -171,9 +171,9 @@ $sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, 
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-      $last_scoregame = '<a href="' . append_sid("games.$phpEx?gid=" . $rowScore['game_id']) . '">' . $rowScore['game_name'] . '</a>';
+      $last_scoregame = '<a href="' . append_nuke_sid("games.$phpEx?gid=" . $rowScore['game_id']) . '">' . $rowScore['game_name'] . '</a>';
       $last_scoredate = create_date($board_config['default_dateformat'], $rowScore['score_date'], $board_config['board_timezone']);
-      $last_scoreuser = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $rowScore['user_id']) . '">' . $rowScore['username'] . '</a>';
+      $last_scoreuser = '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $rowScore['user_id']) . '">' . $rowScore['username'] . '</a>';
       $last_score = number_format($rowScore['score_game']);
 
       $template_nuke->assign_block_vars('arcaderow3.score3',array(
@@ -280,12 +280,12 @@ $games_time = sec2hms($row['games_time']);
 
 
             $template_nuke->assign_block_vars('arcaderow2',array(
-                   'U_TOPARCADE' => append_sid("toparcade.$phpEx"),
+                   'U_TOPARCADE' => append_nuke_sid("toparcade.$phpEx"),
                    'BEST_SCORES' => $lang['best_scores'])
                );
 
             $template_nuke->assign_block_vars('arcaderow3',array(
-                   'U_TOPARCADE' => append_sid("toparcade.$phpEx"),
+                   'U_TOPARCADE' => append_nuke_sid("toparcade.$phpEx"),
                    'BEST_SCORES' => $lang['best_scores'])
                );
 

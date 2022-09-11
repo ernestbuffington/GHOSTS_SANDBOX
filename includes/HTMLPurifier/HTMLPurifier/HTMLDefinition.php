@@ -100,11 +100,11 @@ class HTMLPurifier_HTMLDefinition extends HTMLPurifier_Definition
      *             HTMLPurifier_AttrTypes for details
      */
     public function addAttribute($element_name, $attr_name, $def) {
-        $module = $this->getAnonymousModule();
-        if (!isset($module->info[$element_name])) {
-            $element = $module->addBlankElement($element_name);
+        $nuke_module = $this->getAnonymousModule();
+        if (!isset($nuke_module->info[$element_name])) {
+            $element = $nuke_module->addBlankElement($element_name);
         } else {
-            $element = $module->info[$element_name];
+            $element = $nuke_module->info[$element_name];
         }
         $element->attr[$attr_name] = $def;
     }
@@ -115,10 +115,10 @@ class HTMLPurifier_HTMLDefinition extends HTMLPurifier_Definition
      *       parameter and return value descriptions.
      */
     public function addElement($element_name, $type, $contents, $attr_collections, $attributes = array()) {
-        $module = $this->getAnonymousModule();
+        $nuke_module = $this->getAnonymousModule();
         // assume that if the user is calling this, the element
         // is safe. This may not be a good idea
-        $element = $module->addElement($element_name, $type, $contents, $attr_collections, $attributes);
+        $element = $nuke_module->addElement($element_name, $type, $contents, $attr_collections, $attributes);
         return $element;
     }
 
@@ -129,8 +129,8 @@ class HTMLPurifier_HTMLDefinition extends HTMLPurifier_Definition
      *       parameter and return value descriptions.
      */
     public function addBlankElement($element_name) {
-        $module  = $this->getAnonymousModule();
-        $element = $module->addBlankElement($element_name);
+        $nuke_module  = $this->getAnonymousModule();
+        $element = $nuke_module->addBlankElement($element_name);
         return $element;
     }
 
@@ -190,20 +190,20 @@ class HTMLPurifier_HTMLDefinition extends HTMLPurifier_Definition
         $this->manager->setup($config);
         $this->doctype = $this->manager->doctype;
 
-        foreach ($this->manager->modules as $module) {
-            foreach($module->info_tag_transform as $k => $v) {
+        foreach ($this->manager->modules as $nuke_module) {
+            foreach($nuke_module->info_tag_transform as $k => $v) {
                 if ($v === false) unset($this->info_tag_transform[$k]);
                 else $this->info_tag_transform[$k] = $v;
             }
-            foreach($module->info_attr_transform_pre as $k => $v) {
+            foreach($nuke_module->info_attr_transform_pre as $k => $v) {
                 if ($v === false) unset($this->info_attr_transform_pre[$k]);
                 else $this->info_attr_transform_pre[$k] = $v;
             }
-            foreach($module->info_attr_transform_post as $k => $v) {
+            foreach($nuke_module->info_attr_transform_post as $k => $v) {
                 if ($v === false) unset($this->info_attr_transform_post[$k]);
                 else $this->info_attr_transform_post[$k] = $v;
             }
-            foreach ($module->info_injector as $k => $v) {
+            foreach ($nuke_module->info_injector as $k => $v) {
                 if ($v === false) unset($this->info_injector[$k]);
                 else $this->info_injector[$k] = $v;
             }

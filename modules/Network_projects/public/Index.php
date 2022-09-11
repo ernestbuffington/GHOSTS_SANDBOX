@@ -72,18 +72,18 @@ while(list($project_id) = $network_db->sql_fetchrow($projectresult))
 
   if($project['featured'] > 0) 
   {
-    $pjimage = pjimage("project_featured.png", $module_name);
+    $pjimage = pjimage("project_featured.png", $nuke_module_name);
   } 
   else 
   {
-    $pjimage = pjimage("project.png", $module_name);
+    $pjimage = pjimage("project.png", $nuke_module_name);
   }
   
-  echo "<td align='center'><img src='$pjimage'></td><td width='100%'><a href='modules.php?name=$module_name&amp;op=Project&amp;project_id=$project_id'>".$project['project_name']."</a></td>\n";
+  echo "<td align='center'><img src='$pjimage'></td><td width='100%'><a href='modules.php?name=$nuke_module_name&amp;op=Project&amp;project_id=$project_id'>".$project['project_name']."</a></td>\n";
   
   if($project['project_site'] > "") 
   {
-    $pjimage = pjimage("demo.png", $module_name);
+    $pjimage = pjimage("demo.png", $nuke_module_name);
     $demo = " <a href='".$project['project_site']."' target='_blank'><img src='$pjimage' border='0' alt='".$project['project_name']." "._NETWORK_SITE."' title='".$project['project_name']." "._NETWORK_SITE."'></a>";
   } 
   else 
@@ -133,9 +133,9 @@ while(list($project_id) = $network_db->sql_fetchrow($projectresult))
 
 echo "<tr><td bgcolor='$bgcolor2' colspan='10' align='right'>\n";
 echo "<table border='0' cellpadding='0' cellspacing='0' width='100%'><tr>\n";
-echo "<td align='center' width='33%'><a href='modules.php?name=$module_name&amp;op=TaskMap'><strong>"._NETWORK_TASKMAP."</strong></a></td>\n";
-echo "<td align='center' width='33%'><a href='modules.php?name=$module_name&amp;op=ReportMap'><strong>"._NETWORK_REPORTMAP."</strong></a></td>\n";
-echo "<td align='center' width='33%'><a href='modules.php?name=$module_name&amp;op=RequestMap'><strong>"._NETWORK_REQUESTMAP."</strong></a></td>\n";
+echo "<td align='center' width='33%'><a href='modules.php?name=$nuke_module_name&amp;op=TaskMap'><strong>"._NETWORK_TASKMAP."</strong></a></td>\n";
+echo "<td align='center' width='33%'><a href='modules.php?name=$nuke_module_name&amp;op=ReportMap'><strong>"._NETWORK_REPORTMAP."</strong></a></td>\n";
+echo "<td align='center' width='33%'><a href='modules.php?name=$nuke_module_name&amp;op=RequestMap'><strong>"._NETWORK_REQUESTMAP."</strong></a></td>\n";
 echo "</tr></table>\n";
 echo "</td></tr>\n";
 echo "</table>\n";

@@ -22,7 +22,7 @@ class HTMLPurifier_HTMLModuleManager
      * Active instances of modules for the specified doctype are
      * indexed, by name, in this array.
      */
-    public $modules = array();
+    public $nuke_modules = array();
 
     /**
      * Array of recognized HTMLPurifier_Module instances, indexed by
@@ -124,7 +124,7 @@ class HTMLPurifier_HTMLModuleManager
     /**
      * Registers a module to the recognized module list, useful for
      * overloading pre-existing modules.
-     * @param $module Mixed: string module name, with or without
+     * @param $nuke_module Mixed: string module name, with or without
      *                HTMLPurifier_HTMLModule prefix, or instance of
      *                subclass of HTMLPurifier_HTMLModule.
      * @param $overload Boolean whether or not to overload previous modules.
@@ -142,46 +142,46 @@ class HTMLPurifier_HTMLModuleManager
      *       your module manually. All modules must have been included
      *       externally: registerModule will not perform inclusions for you!
      */
-    public function registerModule($module, $overload = false) {
-        if (is_string($module)) {
+    public function registerModule($nuke_module, $overload = false) {
+        if (is_string($nuke_module)) {
             // attempt to load the module
-            $original_module = $module;
+            $original_module = $nuke_module;
             $ok = false;
             foreach ($this->prefixes as $prefix) {
-                $module = $prefix . $original_module;
-                if (class_exists($module)) {
+                $nuke_module = $prefix . $original_module;
+                if (class_exists($nuke_module)) {
                     $ok = true;
                     break;
                 }
             }
             if (!$ok) {
-                $module = $original_module;
-                if (!class_exists($module)) {
+                $nuke_module = $original_module;
+                if (!class_exists($nuke_module)) {
                     trigger_error($original_module . ' module does not exist',
                         E_USER_ERROR);
                     return;
                 }
             }
-            $module = new $module();
+            $nuke_module = new $nuke_module();
         }
-        if (empty($module->name)) {
-            trigger_error('Module instance of ' . get_class($module) . ' must have name');
+        if (empty($nuke_module->name)) {
+            trigger_error('Module instance of ' . get_class($nuke_module) . ' must have name');
             return;
         }
-        if (!$overload && isset($this->registeredModules[$module->name])) {
-            trigger_error('Overloading ' . $module->name . ' without explicit overload parameter', E_USER_WARNING);
+        if (!$overload && isset($this->registeredModules[$nuke_module->name])) {
+            trigger_error('Overloading ' . $nuke_module->name . ' without explicit overload parameter', E_USER_WARNING);
         }
-        $this->registeredModules[$module->name] = $module;
+        $this->registeredModules[$nuke_module->name] = $nuke_module;
     }
 
     /**
      * Adds a module to the current doctype by first registering it,
      * and then tacking it on to the active doctype
      */
-    public function addModule($module) {
-        $this->registerModule($module);
-        if (is_object($module)) $module = $module->name;
-        $this->userModules[] = $module;
+    public function addModule($nuke_module) {
+        $this->registerModule($nuke_module);
+        if (is_object($nuke_module)) $nuke_module = $nuke_module->name;
+        $this->userModules[] = $nuke_module;
     }
 
     /**
@@ -203,66 +203,66 @@ class HTMLPurifier_HTMLModuleManager
 
         // generate
         $this->doctype = $this->doctypes->make($config);
-        $modules = $this->doctype->modules;
+        $nuke_modules = $this->doctype->modules;
 
         // take out the default modules that aren't allowed
         $lookup = $config->get('HTML.AllowedModules');
         $special_cases = $config->get('HTML.CoreModules');
 
         if (is_array($lookup)) {
-            foreach ($modules as $k => $m) {
+            foreach ($nuke_modules as $k => $m) {
                 if (isset($special_cases[$m])) continue;
-                if (!isset($lookup[$m])) unset($modules[$k]);
+                if (!isset($lookup[$m])) unset($nuke_modules[$k]);
             }
         }
 
         // add proprietary module (this gets special treatment because
         // it is completely removed from doctypes, etc.)
         if ($config->get('HTML.Proprietary')) {
-            $modules[] = 'Proprietary';
+            $nuke_modules[] = 'Proprietary';
         }
 
         // add SafeObject/Safeembed modules
         if ($config->get('HTML.SafeObject')) {
-            $modules[] = 'SafeObject';
+            $nuke_modules[] = 'SafeObject';
         }
         if ($config->get('HTML.SafeEmbed')) {
-            $modules[] = 'SafeEmbed';
+            $nuke_modules[] = 'SafeEmbed';
         }
 
         // merge in custom modules
-        $modules = array_merge($modules, $this->userModules);
+        $nuke_modules = array_merge($nuke_modules, $this->userModules);
 
-        foreach ($modules as $module) {
-            $this->processModule($module);
-            $this->modules[$module]->setup($config);
+        foreach ($nuke_modules as $nuke_module) {
+            $this->processModule($nuke_module);
+            $this->modules[$nuke_module]->setup($config);
         }
 
-        foreach ($this->doctype->tidyModules as $module) {
-            $this->processModule($module);
-            $this->modules[$module]->setup($config);
+        foreach ($this->doctype->tidyModules as $nuke_module) {
+            $this->processModule($nuke_module);
+            $this->modules[$nuke_module]->setup($config);
         }
 
         // prepare any injectors
-        foreach ($this->modules as $module) {
+        foreach ($this->modules as $nuke_module) {
             $n = array();
-            foreach ($module->info_injector as $i => $injector) {
+            foreach ($nuke_module->info_injector as $i => $injector) {
                 if (!is_object($injector)) {
                     $class = "HTMLPurifier_Injector_$injector";
                     $injector = new $class;
                 }
                 $n[$injector->name] = $injector;
             }
-            $module->info_injector = $n;
+            $nuke_module->info_injector = $n;
         }
 
         // setup lookup table based on all valid modules
-        foreach ($this->modules as $module) {
-            foreach ($module->info as $name => $def) {
+        foreach ($this->modules as $nuke_module) {
+            foreach ($nuke_module->info as $name => $def) {
                 if (!isset($this->elementLookup[$name])) {
                     $this->elementLookup[$name] = array();
                 }
-                $this->elementLookup[$name][] = $module->name;
+                $this->elementLookup[$name][] = $nuke_module->name;
             }
         }
 
@@ -285,11 +285,11 @@ class HTMLPurifier_HTMLModuleManager
      * Takes a module and adds it to the active module collection,
      * registering it if necessary.
      */
-    public function processModule($module) {
-        if (!isset($this->registeredModules[$module]) || is_object($module)) {
-            $this->registerModule($module);
+    public function processModule($nuke_module) {
+        if (!isset($this->registeredModules[$nuke_module]) || is_object($nuke_module)) {
+            $this->registerModule($nuke_module);
         }
-        $this->modules[$module] = $this->registeredModules[$module];
+        $this->modules[$nuke_module] = $this->registeredModules[$nuke_module];
     }
 
     /**
@@ -299,9 +299,9 @@ class HTMLPurifier_HTMLModuleManager
     public function getElements() {
 
         $elements = array();
-        foreach ($this->modules as $module) {
-            if (!$this->trusted && !$module->safe) continue;
-            foreach ($module->info as $name => $v) {
+        foreach ($this->modules as $nuke_module) {
+            if (!$this->trusted && !$nuke_module->safe) continue;
+            foreach ($nuke_module->info as $name => $v) {
                 if (isset($elements[$name])) continue;
                 $elements[$name] = $this->getElement($name);
             }
@@ -339,20 +339,20 @@ class HTMLPurifier_HTMLModuleManager
 
         // iterate through each module that has registered itself to this
         // element
-        foreach($this->elementLookup[$name] as $module_name) {
+        foreach($this->elementLookup[$name] as $nuke_module_name) {
 
-            $module = $this->modules[$module_name];
+            $nuke_module = $this->modules[$nuke_module_name];
 
             // refuse to create/merge from a module that is deemed unsafe--
             // pretend the module doesn't exist--when trusted mode is not on.
-            if (!$trusted && !$module->safe) {
+            if (!$trusted && !$nuke_module->safe) {
                 continue;
             }
 
             // clone is used because, ideally speaking, the original
             // definition should not be modified. Usually, this will
             // make no difference, but for consistency's sake
-            $new_def = clone $module->info[$name];
+            $new_def = clone $nuke_module->info[$name];
 
             if (!$def && $new_def->standalone) {
                 $def = $new_def;
@@ -380,7 +380,7 @@ class HTMLPurifier_HTMLModuleManager
                 }
             }
 
-            $this->contentSets->generateChildDef($def, $module);
+            $this->contentSets->generateChildDef($def, $nuke_module);
         }
 
         // This can occur if there is a blank definition, but no base to

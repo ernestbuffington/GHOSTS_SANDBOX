@@ -539,7 +539,7 @@ function display_upload_attach_box_limits($nuke_user_id, $group_id = 0)
         'L_UACP'            => $lang['UACP'],
         'L_UPLOAD_QUOTA'    => $lang['Upload_quota'],
         //'U_UACP'            => $phpbb2_root_path . 'uacp.' . $phpEx . '?u=' . $nuke_user_id . '&amp;sid=' . $nuke_userdata['session_id'],
-        'U_UACP' => append_sid('uacp.' . $phpEx . '?u=' . $nuke_user_id . '&amp;sid=' . $nuke_userdata['session_id']),
+        'U_UACP' => append_nuke_sid('uacp.' . $phpEx . '?u=' . $nuke_user_id . '&amp;sid=' . $nuke_userdata['session_id']),
         'UPLOADED'            => sprintf($lang['User_uploaded_profile'], $nuke_user_uploaded),
         'QUOTA'                => sprintf($lang['User_quota_profile'], $nuke_user_quota),
         'UPLOAD_LIMIT_IMG_WIDTH'    => $upload_limit_img_length,

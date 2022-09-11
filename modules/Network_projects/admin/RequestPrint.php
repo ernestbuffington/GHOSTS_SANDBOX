@@ -28,33 +28,33 @@ if(empty($requeststatus['status_name'])){ $requeststatus['status_name'] = _NETWO
 if(empty($requesttype['type_name'])){ $requesttype['type_name'] = _NETWORK_NA; }
 echo "<center><table width='100%' border='1' cellspacing='0' cellpadding='2'>\n";
 echo "<tr><td colspan='4' width='100%'><nobr><strong>"._NETWORK_PROJECTNAME."</strong></nobr></td></tr>\n";
-$pjimage = pjimage("project.png", $module_name);
+$pjimage = pjimage("project.png", $nuke_module_name);
 echo "<tr><td align='center'><img src='$pjimage'></td>\n";
 echo "<td colspan='3' width='100%'><nobr>".$project['project_name']." (".$request['project_id'].")</nobr></td></tr>\n";
 echo "<tr><td colspan='2' width='100%'><nobr><strong>"._NETWORK_REQUESTINFO."</strong></nobr></td>\n";
 echo "<td align='center'><strong>"._NETWORK_STATUS."</strong></td>\n";
 echo "<td align='center'><strong>"._NETWORK_TYPE."</strong></td></tr>\n";
-$pjimage = pjimage("request.png", $module_name);
+$pjimage = pjimage("request.png", $nuke_module_name);
 echo "<tr><td align='center'><img src='$pjimage'></td><td width='100%'><nobr>".$request['request_name']."</nobr></td>\n";
 echo "<td align='center'><nobr>".$requeststatus['status_name']."</nobr></td>\n";
 echo "<td align='center'><nobr>".$requesttype['type_name']."</nobr></td></tr>\n";
 if($request['request_description'] != ""){
-  $pjimage = pjimage("description.png", $module_name);
+  $pjimage = pjimage("description.png", $nuke_module_name);
   echo "<tr><td align='center' valign='top'><img src='$pjimage'></td>\n";
   echo "<td colspan='3' width='100%'>".nl2br($request['request_description'])."</td></tr>";
 }
-$pjimage = pjimage("requester.png", $module_name);
+$pjimage = pjimage("requester.png", $nuke_module_name);
 echo "<tr><td align='center'><img src='$pjimage'></td>\n";
 echo "<td colspan='3' width='100%'><nobr>"._NETWORK_REQUESTEDBY.": <strong>".$request['submitter_email']."</strong></nobr></td></tr>\n";
 if($request['date_submitted'] != '0'){
   $submit_date = date($pj_config['request_date_format'], $request['date_submitted']);
-  $pjimage = pjimage("date.png", $module_name);
+  $pjimage = pjimage("date.png", $nuke_module_name);
   echo "<tr><td align='center'><img src='$pjimage'></td>\n";
   echo "<td colspan='3' width=100%><nobr>"._NETWORK_SUBMITTED.": <strong>$submit_date</strong></nobr></td></tr>\n";
 }
 if($request['date_modified'] != '0'){
   $modify_date = date($pj_config['request_date_format'], $request['date_modified']);
-  $pjimage = pjimage("date.png", $module_name);
+  $pjimage = pjimage("date.png", $nuke_module_name);
   echo "<tr><td align='center'><img src='$pjimage'></td>\n";
   echo "<td colspan='3' width='100%'><nobr>"._NETWORK_MODIFIED.": <strong>$modify_date</strong></nobr></td></tr>\n";
 }
@@ -63,7 +63,7 @@ $member_total = $network_db->sql_numrows($memberresult);
 echo "<tr><td colspan='4' width='100%'><nobr><strong>"._NETWORK_REQUESTMEMBERS."</strong></nobr></td></tr>\n";
 if($member_total != 0){
   while(list($member_id) = $network_db->sql_fetchrow($memberresult)) {
-    $pjimage = pjimage("member.png", $module_name);
+    $pjimage = pjimage("member.png", $nuke_module_name);
     $member = pjmember_info($member_id);
     echo "<tr><td><img src='$pjimage'></td><td colspan='3' width='100%'>".$member['member_name']." (".$member['member_email'].")</td></tr>\n";
   }

@@ -39,7 +39,7 @@ if (!defined('CNBYA')) {
     die('CNBYA protection');
 }
 
-if(is_mod_admin($module_name)) {
+if(is_mod_admin($nuke_module_name)) {
 
     list($email) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT user_email FROM ".$nuke_user_prefix."_users WHERE user_id='$sus_uid'"));
     if ($ya_config['servermail'] == 0) {
@@ -71,7 +71,7 @@ if(is_mod_admin($module_name)) {
     echo "<br />\n";
     OpenTable();
     echo "<center><table align='center' border='0' cellpadding='2' cellspacing='2'>\n";
-    echo "<form action='modules.php?name=$module_name&amp;file=admin' method='post'>\n";
+    echo "<form action='modules.php?name=$nuke_module_name&amp;file=admin' method='post'>\n";
     if (isset($query)) { echo "<input type='hidden' name='query' value='$query'>\n"; }
     if (isset($min)) { echo "<input type='hidden' name='min' value='$min'>\n"; }
     if (isset($xop)) { echo "<input type='hidden' name='op' value='$xop'>\n"; }

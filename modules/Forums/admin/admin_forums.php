@@ -83,7 +83,7 @@ if( !empty($setmodules) )
 
         $file = basename(__FILE__);
 
-        $module['Forums']['Manage'] = $file;
+        $nuke_module['Forums']['Manage'] = $file;
 
         return;
 
@@ -1115,7 +1115,7 @@ if( !empty($mode) )
 
  ******************************************************/
 
-                                'S_FORUM_ACTION' => append_sid("admin_forums.$phpEx"),
+                                'S_FORUM_ACTION' => append_nuke_sid("admin_forums.$phpEx"),
 
                                 'S_HIDDEN_FIELDS' => $s_hidden_fields,
 
@@ -1527,7 +1527,7 @@ if( !empty($mode) )
 
 
 
-                        $message = $lang['Forums_updated'] . "<br /><br />" . sprintf($lang['Click_return_forumadmin'], "<a href=\"" . append_sid("admin_forums.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+                        $message = $lang['Forums_updated'] . "<br /><br />" . sprintf($lang['Click_return_forumadmin'], "<a href=\"" . append_nuke_sid("admin_forums.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
 
 
@@ -1707,7 +1707,7 @@ if( !empty($mode) )
 
 
 
-                        $message = $lang['Forums_updated'] . "<br /><br />" . sprintf($lang['Click_return_forumadmin'], "<a href=\"" . append_sid("admin_forums.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+                        $message = $lang['Forums_updated'] . "<br /><br />" . sprintf($lang['Click_return_forumadmin'], "<a href=\"" . append_nuke_sid("admin_forums.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
 
 
@@ -1789,7 +1789,7 @@ if( !empty($mode) )
 
  ******************************************************/
 
-                        $message = $lang['Forums_updated'] . "<br /><br />" . sprintf($lang['Click_return_forumadmin'], "<a href=\"" . append_sid("admin_forums.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+                        $message = $lang['Forums_updated'] . "<br /><br />" . sprintf($lang['Click_return_forumadmin'], "<a href=\"" . append_nuke_sid("admin_forums.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
 
 
@@ -1855,7 +1855,7 @@ if( !empty($mode) )
 
                                 'S_SUBMIT_VALUE' => $buttonvalue,
 
-                                'S_FORUM_ACTION' => append_sid("admin_forums.$phpEx"))
+                                'S_FORUM_ACTION' => append_nuke_sid("admin_forums.$phpEx"))
 
                         );
 
@@ -1901,7 +1901,7 @@ if( !empty($mode) )
 
  ******************************************************/
 
-                        $message = $lang['Forums_updated'] . "<br /><br />" . sprintf($lang['Click_return_forumadmin'], "<a href=\"" . append_sid("admin_forums.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+                        $message = $lang['Forums_updated'] . "<br /><br />" . sprintf($lang['Click_return_forumadmin'], "<a href=\"" . append_nuke_sid("admin_forums.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
 
 
@@ -1975,7 +1975,7 @@ if( !empty($mode) )
 
                                 "S_HIDDEN_FIELDS" => $s_hidden_fields,
 
-                                'S_FORUM_ACTION' => append_sid("admin_forums.$phpEx"),
+                                'S_FORUM_ACTION' => append_nuke_sid("admin_forums.$phpEx"),
 
                                 'S_SELECT_TO' => $select_to,
 
@@ -2311,7 +2311,7 @@ if( !empty($mode) )
 
 
 
-                        $message = $lang['Forums_updated'] . "<br /><br />" . sprintf($lang['Click_return_forumadmin'], "<a href=\"" . append_sid("admin_forums.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+                        $message = $lang['Forums_updated'] . "<br /><br />" . sprintf($lang['Click_return_forumadmin'], "<a href=\"" . append_nuke_sid("admin_forums.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
 
 
@@ -2429,7 +2429,7 @@ if( !empty($mode) )
 
                                 'S_HIDDEN_FIELDS' => $s_hidden_fields,
 
-                                'S_FORUM_ACTION' => append_sid("admin_forums.$phpEx"),
+                                'S_FORUM_ACTION' => append_nuke_sid("admin_forums.$phpEx"),
 
                                 'S_SELECT_TO' => $select_to,
 
@@ -2535,7 +2535,7 @@ if( !empty($mode) )
 
  ******************************************************/
 
-                        $message = $lang['Forums_updated'] . "<br /><br />" . sprintf($lang['Click_return_forumadmin'], "<a href=\"" . append_sid("admin_forums.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+                        $message = $lang['Forums_updated'] . "<br /><br />" . sprintf($lang['Click_return_forumadmin'], "<a href=\"" . append_nuke_sid("admin_forums.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
 
 
@@ -2795,7 +2795,7 @@ $template_nuke->set_filenames(array(
 
 $template_nuke->assign_vars(array(
 
-        'S_FORUM_ACTION' => append_sid("admin_forums.$phpEx"),
+        'S_FORUM_ACTION' => append_nuke_sid("admin_forums.$phpEx"),
 
         'L_FORUM_TITLE' => $lang['Forum_admin'],
 
@@ -2901,13 +2901,13 @@ if( $total_categories = $nuke_db->sql_numrows($q_categories) )
 
 
 
-                        'U_CAT_EDIT' => append_sid("admin_forums.$phpEx?mode=editcat&amp;" . NUKE_POST_CAT_URL . "=$cat_id"),
+                        'U_CAT_EDIT' => append_nuke_sid("admin_forums.$phpEx?mode=editcat&amp;" . NUKE_POST_CAT_URL . "=$cat_id"),
 
-                        'U_CAT_DELETE' => append_sid("admin_forums.$phpEx?mode=deletecat&amp;" . NUKE_POST_CAT_URL . "=$cat_id"),
+                        'U_CAT_DELETE' => append_nuke_sid("admin_forums.$phpEx?mode=deletecat&amp;" . NUKE_POST_CAT_URL . "=$cat_id"),
 
-                        'U_CAT_MOVE_UP' => append_sid("admin_forums.$phpEx?mode=cat_order&amp;move=-15&amp;" . NUKE_POST_CAT_URL . "=$cat_id"),
+                        'U_CAT_MOVE_UP' => append_nuke_sid("admin_forums.$phpEx?mode=cat_order&amp;move=-15&amp;" . NUKE_POST_CAT_URL . "=$cat_id"),
 
-                        'U_CAT_MOVE_DOWN' => append_sid("admin_forums.$phpEx?mode=cat_order&amp;move=15&amp;" . NUKE_POST_CAT_URL . "=$cat_id"),
+                        'U_CAT_MOVE_DOWN' => append_nuke_sid("admin_forums.$phpEx?mode=cat_order&amp;move=15&amp;" . NUKE_POST_CAT_URL . "=$cat_id"),
 
                         'U_VIEWCAT' => ("../../../modules.php?name=Forums&file=index&c=$cat_id"))
 
@@ -2985,15 +2985,15 @@ if( $total_categories = $nuke_db->sql_numrows($q_categories) )
 
  ******************************************************/ 
 
-                                        'U_FORUM_EDIT' => append_sid("admin_forums.$phpEx?mode=editforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"),
+                                        'U_FORUM_EDIT' => append_nuke_sid("admin_forums.$phpEx?mode=editforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"),
 
-                                        'U_FORUM_DELETE' => append_sid("admin_forums.$phpEx?mode=deleteforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"),
+                                        'U_FORUM_DELETE' => append_nuke_sid("admin_forums.$phpEx?mode=deleteforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"),
 
-                                        'U_FORUM_MOVE_UP' => append_sid("admin_forums.$phpEx?mode=forum_order&amp;move=-15&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"),
+                                        'U_FORUM_MOVE_UP' => append_nuke_sid("admin_forums.$phpEx?mode=forum_order&amp;move=-15&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"),
 
-                                        'U_FORUM_MOVE_DOWN' => append_sid("admin_forums.$phpEx?mode=forum_order&amp;move=15&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"),
+                                        'U_FORUM_MOVE_DOWN' => append_nuke_sid("admin_forums.$phpEx?mode=forum_order&amp;move=15&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"),
 
-                                        'U_FORUM_RESYNC' => append_sid("admin_forums.$phpEx?mode=forum_sync&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"))
+                                        'U_FORUM_RESYNC' => append_nuke_sid("admin_forums.$phpEx?mode=forum_sync&amp;" . NUKE_POST_FORUM_URL . "=$forum_id"))
 
                                 );
 
@@ -3045,15 +3045,15 @@ if( $total_categories = $nuke_db->sql_numrows($q_categories) )
 
 											'U_VIEWFORUM' => ("../../../modules.php?name=Forums&file=viewforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
 
-											'U_FORUM_EDIT' => append_sid("admin_forums.$phpEx?mode=editforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
+											'U_FORUM_EDIT' => append_nuke_sid("admin_forums.$phpEx?mode=editforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
 
-											'U_FORUM_DELETE' => append_sid("admin_forums.$phpEx?mode=deleteforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
+											'U_FORUM_DELETE' => append_nuke_sid("admin_forums.$phpEx?mode=deleteforum&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
 
-											'U_FORUM_MOVE_UP' => append_sid("admin_forums.$phpEx?mode=forum_order&amp;move=-15&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
+											'U_FORUM_MOVE_UP' => append_nuke_sid("admin_forums.$phpEx?mode=forum_order&amp;move=-15&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
 
-											'U_FORUM_MOVE_DOWN' => append_sid("admin_forums.$phpEx?mode=forum_order&amp;move=15&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
+											'U_FORUM_MOVE_DOWN' => append_nuke_sid("admin_forums.$phpEx?mode=forum_order&amp;move=15&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"),
 
-											'U_FORUM_RESYNC' => append_sid("admin_forums.$phpEx?mode=forum_sync&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"))
+											'U_FORUM_RESYNC' => append_nuke_sid("admin_forums.$phpEx?mode=forum_sync&amp;" . NUKE_POST_FORUM_URL . "=$forum_id2"))
 
 										);
 

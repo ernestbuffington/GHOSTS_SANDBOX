@@ -38,9 +38,9 @@ if (!defined('CNBYA')) {
 }
 
 if (is_user()) {
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
-include_once(NUKE_MODULES_DIR.$module_name.'/includes/functions.php');
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
+include_once(NUKE_MODULES_DIR.$nuke_module_name.'/includes/functions.php');
 
 global $prefix, $nuke_db, $nuke_user_prefix, $ya_config, $thmcount;
 
@@ -87,7 +87,7 @@ $ya_config = ya_get_configs();
 
     function nav($main_up=0) 
 	{
-        global $module_name, $admin, $ya_config, $thmcount, $tdwidth, $articlecomm;
+        global $nuke_module_name, $admin, $ya_config, $thmcount, $tdwidth, $articlecomm;
         echo "<table border=\"0\" width=\"100%\" align=\"center\"><tr>\n";
 
         $menuimg = menuimg("info.png");

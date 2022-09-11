@@ -1483,10 +1483,10 @@ function tracking_unserialize($string, $max_depth = 3)
 * @return string The corrected url.
 *
 * Examples:
-* <code> append_sid("{$phpbb_root_path}viewtopic.$phpEx?t=1");
-* append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=1');
-* append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=1', false);
-* append_sid("{$phpbb_root_path}viewtopic.$phpEx", array('t' => 1, 'f' => 2));
+* <code> append_sid("{$phpbb_root_path}viewtopic?t=1");
+* append_sid("{$phpbb_root_path}viewtopic", 't=1');
+* append_sid("{$phpbb_root_path}viewtopic", 't=1', false);
+* append_sid("{$phpbb_root_path}viewtopic", array('t' => 1, 'f' => 2));
 * </code>
 *
 */
@@ -1819,15 +1819,15 @@ function redirect($url, $return = false, $disable_cd_check = false)
 */
 function reapply_sid($url, $is_route = false)
 {
-	global $phpEx, $phpbb_root_path;
+	global $phpEx;
 
-	if ($url === "index.$phpEx")
+	if ($url === "modules.php?name=phpBB3")
 	{
-		return append_sid("index.$phpEx");
+		return append_sid("modules.php?name=phpBB3");
 	}
-	else if ($url === "{$phpbb_root_path}index.$phpEx")
+	else if ($url === "modules.php?name=phpBB3")
 	{
-		return append_sid("{$phpbb_root_path}index.$phpEx");
+		return append_sid("modules.php?name=phpBB3");
 	}
 
 	// Remove previously added sid
@@ -2249,7 +2249,7 @@ function confirm_box($check, $title = '', $hidden = '', $html_body = 'confirm_bo
 */
 function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = false, $s_display = true)
 {
-	global $user, $template, $auth, $phpEx, $phpbb_root_path, $config;
+	global $user, $template, $auth, $phpEx, $config;
 	global $request, $phpbb_container, $phpbb_dispatcher, $phpbb_log;
 
 	$err = '';
@@ -2366,7 +2366,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 		// The result parameter is always an array, holding the relevant information...
 		if ($result['status'] == LOGIN_SUCCESS)
 		{
-			$redirect = $request->variable('redirect', "{$phpbb_root_path}index.$phpEx");
+			$redirect = $request->variable('redirect', "modules.php?name=phpBB3");
 
 			/**
 			* This event allows an extension to modify the redirection when a user successfully logs in
@@ -2406,9 +2406,9 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 			case LOGIN_ERROR_PASSWORD_CONVERT:
 				$err = sprintf(
 					$user->lang[$result['error_msg']],
-					($config['email_enable']) ? '<a href="' . append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=sendpassword') . '">' : '',
+					($config['email_enable']) ? '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=sendpassword') . '">' : '',
 					($config['email_enable']) ? '</a>' : '',
-					'<a href="' . phpbb_get_board_contact_link($config, $phpbb_root_path, $phpEx) . '">',
+					'<a href="' . phpbb_get_board_contact_link($config, 'modules.php?name=phpBB3', $phpEx) . '">',
 					'</a>'
 				);
 			break;
@@ -2431,7 +2431,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 				// Assign admin contact to some error messages
 				if ($result['error_msg'] == 'LOGIN_ERROR_USERNAME' || $result['error_msg'] == 'LOGIN_ERROR_PASSWORD')
 				{
-					$err = sprintf($user->lang[$result['error_msg']], '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=contactadmin') . '">', '</a>');
+					$err = sprintf($user->lang[$result['error_msg']], '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=memberlist", 'mode=contactadmin') . '">', '</a>');
 				}
 
 			break;
@@ -2503,10 +2503,10 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 		'LOGIN_EXPLAIN'		=> $l_explain,
 
 		'U_SEND_PASSWORD' 		=> ($config['email_enable'] && $config['allow_password_reset']) ? $controller_helper->route('phpbb_ucp_forgot_password_controller') : '',
-		'U_RESEND_ACTIVATION'	=> ($config['require_activation'] == USER_ACTIVATION_SELF && $config['email_enable']) ? append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=resend_act') : '',
-		'U_TERMS_USE'			=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=terms'),
-		'U_PRIVACY'				=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=privacy'),
-		'UA_PRIVACY'			=> addslashes(append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=privacy')),
+		'U_RESEND_ACTIVATION'	=> ($config['require_activation'] == USER_ACTIVATION_SELF && $config['email_enable']) ? append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=resend_act') : '',
+		'U_TERMS_USE'			=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=terms'),
+		'U_PRIVACY'				=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=privacy'),
+		'UA_PRIVACY'			=> addslashes(append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=privacy')),
 
 		'S_DISPLAY_FULL_LOGIN'	=> ($s_display) ? true : false,
 		'S_HIDDEN_FIELDS' 		=> $s_hidden_fields,
@@ -2545,7 +2545,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 	$template->set_filenames(array(
 		'body' => 'login_body.html')
 	);
-	make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
+	make_jumpbox(append_sid("modules.php?name=phpBB3&amp;file=viewforum"));
 
 	page_footer();
 }
@@ -2640,7 +2640,7 @@ function login_forum_box($forum_data)
 		'body' => 'login_forum.html')
 	);
 
-	make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"), $forum_data['forum_id']);
+	make_jumpbox(append_sid("modules.php?name=phpBB3&amp;file=viewforum"), $forum_data['forum_id']);
 
 	page_footer();
 }
@@ -3045,7 +3045,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 				$msg_text = (!empty($user->lang[$msg_text])) ? $user->lang[$msg_text] : $msg_text;
 				$msg_title = (!isset($msg_title)) ? $user->lang['GENERAL_ERROR'] : ((!empty($user->lang[$msg_title])) ? $user->lang[$msg_title] : $msg_title);
 
-				$l_return_index = sprintf($user->lang['RETURN_INDEX'], '<a href="' . $phpbb_root_path . '">', '</a>');
+				$l_return_index = sprintf($user->lang['RETURN_INDEX'], '<a href="modules.php?name=phpBB3">', '</a>');
 				$l_notify = '';
 
 				if (!empty($config['board_contact']))
@@ -3056,7 +3056,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 			else
 			{
 				$msg_title = 'General Error';
-				$l_return_index = '<a href="' . $phpbb_root_path . '">Return to index page</a>';
+				$l_return_index = '<a href="modules.php?name=phpBB3">Return to index page</a>';
 				$l_notify = '';
 
 				if (!empty($config['board_contact']))
@@ -3805,13 +3805,13 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 	// Generate logged in/logged out status
 	if ($user->data['user_id'] != ANONYMOUS)
 	{
-		$u_login_logout = append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=logout', true, $user->session_id);
+		$u_login_logout = append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=logout', true, $user->session_id);
 		$l_login_logout = $user->lang['LOGOUT'];
 	}
 	else
 	{
 		$redirect = $request->variable('redirect', rawurlencode($user->page['page']));
-		$u_login_logout = append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=login&amp;redirect=' . $redirect);
+		$u_login_logout = append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=login&amp;redirect=' . $redirect);
 		$l_login_logout = $user->lang['LOGIN'];
 	}
 
@@ -3989,9 +3989,9 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		'CURRENT_USERNAME_FULL'			=> get_username_string('full', $user->data['user_id'], $user->data['username'], $user->data['user_colour']),
 		'UNREAD_NOTIFICATIONS_COUNT'	=> ($notifications !== false) ? $notifications['unread_count'] : '',
 		'NOTIFICATIONS_COUNT'			=> ($notifications !== false) ? $notifications['unread_count'] : '',
-		'U_VIEW_ALL_NOTIFICATIONS'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=ucp_notifications'),
-		'U_MARK_ALL_NOTIFICATIONS'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=ucp_notifications&amp;mode=notification_list&amp;mark=all&amp;token=' . $notification_mark_hash),
-		'U_NOTIFICATION_SETTINGS'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=ucp_notifications&amp;mode=notification_options'),
+		'U_VIEW_ALL_NOTIFICATIONS'		=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'i=ucp_notifications'),
+		'U_MARK_ALL_NOTIFICATIONS'		=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'i=ucp_notifications&amp;mode=notification_list&amp;mark=all&amp;token=' . $notification_mark_hash),
+		'U_NOTIFICATION_SETTINGS'		=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'i=ucp_notifications&amp;mode=notification_options'),
 		'S_NOTIFICATIONS_DISPLAY'		=> $config['load_notifications'] && $config['allow_board_notifications'],
 
 		'S_USER_NEW_PRIVMSG'			=> $user->data['user_new_privmsg'],
@@ -4009,31 +4009,31 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		'L_SITE_HOME'		=> ($config['site_home_text'] !== '') ? $config['site_home_text'] : $user->lang['HOME'],
 		'L_ONLINE_EXPLAIN'	=> $l_online_time,
 
-		'U_PRIVATEMSGS'			=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=inbox'),
-		'U_RETURN_INBOX'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=inbox'),
-		'U_MEMBERLIST'			=> append_sid("{$phpbb_root_path}memberlist.$phpEx"),
-		'U_VIEWONLINE'			=> ($auth->acl_gets('u_viewprofile', 'a_user', 'a_useradd', 'a_userdel')) ? append_sid("{$phpbb_root_path}viewonline.$phpEx") : '',
+		'U_PRIVATEMSGS'			=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'i=pm&amp;folder=inbox'),
+		'U_RETURN_INBOX'		=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'i=pm&amp;folder=inbox'),
+		'U_MEMBERLIST'			=> append_sid("modules.php?name=phpBB3&amp;file=memberlist"),
+		'U_VIEWONLINE'			=> ($auth->acl_gets('u_viewprofile', 'a_user', 'a_useradd', 'a_userdel')) ? append_sid("modules.php?name=phpBB3&amp;file=viewonline") : '',
 		'U_LOGIN_LOGOUT'		=> $u_login_logout,
-		'U_INDEX'				=> append_sid("{$phpbb_root_path}index.$phpEx"),
-		'U_SEARCH'				=> append_sid("{$phpbb_root_path}search.$phpEx"),
+		'U_INDEX'				=> append_sid("modules.php?name=phpBB3"),
+		'U_SEARCH'				=> append_sid("modules.php?name=phpBB3&amp;file=search"),
 		'U_SITE_HOME'			=> $config['site_home_url'],
-		'U_REGISTER'			=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register'),
-		'U_PROFILE'				=> append_sid("{$phpbb_root_path}ucp.$phpEx"),
+		'U_REGISTER'			=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=register'),
+		'U_PROFILE'				=> append_sid("modules.php?name=phpBB3&amp;file=ucp"),
 		'U_USER_PROFILE'		=> get_username_string('profile', $user->data['user_id'], $user->data['username'], $user->data['user_colour']),
-		'U_MODCP'				=> append_sid("{$phpbb_root_path}mcp.$phpEx", false, true, $user->session_id),
+		'U_MODCP'				=> append_sid("modules.php?name=phpBB3&amp;file=mcp", false, true, $user->session_id),
 		'U_FAQ'					=> $controller_helper->route('phpbb_help_faq_controller'),
-		'U_SEARCH_SELF'			=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=egosearch'),
-		'U_SEARCH_NEW'			=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=newposts'),
-		'U_SEARCH_UNANSWERED'	=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=unanswered'),
-		'U_SEARCH_UNREAD'		=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=unreadposts'),
-		'U_SEARCH_ACTIVE_TOPICS'=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=active_topics'),
-		'U_DELETE_COOKIES'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=delete_cookies'),
-		'U_CONTACT_US'			=> ($config['contact_admin_form_enable'] && $config['email_enable']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=contactadmin') : '',
-		'U_TEAM'				=> (!$auth->acl_get('u_viewprofile')) ? '' : append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=team'),
-		'U_TERMS_USE'			=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=terms'),
-		'U_PRIVACY'				=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=privacy'),
-		'UA_PRIVACY'			=> addslashes(append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=privacy')),
-		'U_RESTORE_PERMISSIONS'	=> ($user->data['user_perm_from'] && $auth->acl_get('a_switchperm')) ? append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=restore_perm') : '',
+		'U_SEARCH_SELF'			=> append_sid("modules.php?name=phpBB3&amp;file=search", 'search_id=egosearch'),
+		'U_SEARCH_NEW'			=> append_sid("modules.php?name=phpBB3&amp;file=search", 'search_id=newposts'),
+		'U_SEARCH_UNANSWERED'	=> append_sid("modules.php?name=phpBB3&amp;file=search", 'search_id=unanswered'),
+		'U_SEARCH_UNREAD'		=> append_sid("modules.php?name=phpBB3&amp;file=search", 'search_id=unreadposts'),
+		'U_SEARCH_ACTIVE_TOPICS'=> append_sid("modules.php?name=phpBB3&amp;file=search", 'search_id=active_topics'),
+		'U_DELETE_COOKIES'		=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=delete_cookies'),
+		'U_CONTACT_US'			=> ($config['contact_admin_form_enable'] && $config['email_enable']) ? append_sid("modules.php?name=phpBB3&amp;file=memberlist", 'mode=contactadmin') : '',
+		'U_TEAM'				=> (!$auth->acl_get('u_viewprofile')) ? '' : append_sid("modules.php?name=phpBB3&amp;file=memberlist", 'mode=team'),
+		'U_TERMS_USE'			=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=terms'),
+		'U_PRIVACY'				=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=privacy'),
+		'UA_PRIVACY'			=> addslashes(append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=privacy')),
+		'U_RESTORE_PERMISSIONS'	=> ($user->data['user_perm_from'] && $auth->acl_get('a_switchperm')) ? append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=restore_perm') : '',
 		'U_FEED'				=> $controller_helper->route('phpbb_feed_index'),
 
 		'S_USER_LOGGED_IN'		=> ($user->data['user_id'] != ANONYMOUS) ? true : false,
@@ -4058,7 +4058,7 @@ function page_header($page_title = '', $display_online_list = false, $item_id = 
 		'S_FORUM_ID'			=> $forum_id,
 		'S_TOPIC_ID'			=> $topic_id,
 
-		'S_LOGIN_ACTION'		=> ((!defined('ADMIN_START')) ? append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=login') : append_sid("{$phpbb_admin_path}index.$phpEx", false, true, $user->session_id)),
+		'S_LOGIN_ACTION'		=> ((!defined('ADMIN_START')) ? append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=login') : append_sid("{$phpbb_admin_path}index", false, true, $user->session_id)),
 		'S_LOGIN_REDIRECT'		=> $s_login_redirect,
 
 		'S_ENABLE_FEEDS'			=> ($config['feed_enable']) ? true : false,
@@ -4296,6 +4296,7 @@ function page_footer($run_cron = true, $display_template = true, $exit_handler =
 
 	if ($exit_handler)
 	{
+		include("includes/phpbb_page_tail.php");
 		exit_handler();
 	}
 }
@@ -4420,7 +4421,7 @@ function phpbb_get_board_contact_link(\phpbb\config\config $config, $phpbb_root_
 {
 	if ($config['contact_admin_form_enable'] && $config['email_enable'])
 	{
-		return append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=contactadmin');
+		return append_sid("modules.php?name=phpBB3&amp;file=memberlist", 'mode=contactadmin');
 	}
 	else
 	{

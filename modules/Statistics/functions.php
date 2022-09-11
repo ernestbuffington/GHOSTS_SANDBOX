@@ -10,7 +10,7 @@ $nowmonth = $now[1];
 $nowyear = $now[2];
 
 function Stats_Main() {
-    global $prefix, $nuke_db, $startdate, $sitename, $ThemeSel, $nuke_user_prefix, $module_name, $nuke_cache;
+    global $prefix, $nuke_db, $startdate, $sitename, $ThemeSel, $nuke_user_prefix, $nuke_module_name, $nuke_cache;
     $result  = $nuke_db->sql_query('SELECT `type`, `var`, `count` FROM `'.$prefix.'_counter` ORDER BY `count` DESC, var');
     $browser = $os = array();
     $totalos = $totalbr = 0;
@@ -36,8 +36,8 @@ function Stats_Main() {
     </tr><tr>
         <td colspan="3" class="row1">
             <div class="gen" align="center">'._WERECEIVED.' <strong>'.$totalbr.'</strong> '._PAGESVIEWS.' '.$startdate.'<br /><br />
-            <img src="modules/'.$module_name.'/images/logo.png" alt="" /><br /><br />
-                [ <a href="modules.php?name='.$module_name.'&amp;op=stats">'._VIEWDETAILED.'</a> ] [ <a href="modules.php?name=Forums&amp;file=statistics">'._VIEWFORUMSTATS.'</a> ]</div><br />
+            <img src="modules/'.$nuke_module_name.'/images/logo.png" alt="" /><br /><br />
+                [ <a href="modules.php?name='.$nuke_module_name.'&amp;op=stats">'._VIEWDETAILED.'</a> ] [ <a href="modules.php?name=Forums&amp;file=statistics">'._VIEWFORUMSTATS.'</a> ]</div><br />
         </td>
     </tr><tr>
         <td class="cat" colspan="3"><div class="cattitle" align="center">'._BROWSERS.'</div></td>
@@ -48,7 +48,7 @@ function Stats_Main() {
         foreach ($browser AS $var => $count) {
             $perc = @round(($totalbr * $count), 2);
             echo '<tr align="left">
-            <td class="row1"><div class="gen"><img src="modules/'.$module_name.'/images/'.strtolower($var).'.png" alt="" />&nbsp;'.$var.'</div></td>
+            <td class="row1"><div class="gen"><img src="modules/'.$nuke_module_name.'/images/'.strtolower($var).'.png" alt="" />&nbsp;'.$var.'</div></td>
             <td class="row2"><img src="themes/'.$ThemeSel.'/images/leftbar.gif" alt="" /><img src="themes/'.$ThemeSel.'/images/mainbar.gif" alt="" height="'.$m_size[1].'" width="'.$perc.'" /><img src="themes/'.$ThemeSel.'/images/rightbar.gif" alt="" /></td>
             <td class="row3"><div class="gen">'.$perc.' % ('.$count.')</div></td>
         </tr>';
@@ -63,7 +63,7 @@ function Stats_Main() {
         foreach ($os AS $var => $count) {
             $perc = @round(($totalos * $count), 2);
             echo '<tr align="left">
-            <td class="row1"><div class="gen"><img src="modules/'.$module_name.'/images/'.strtolower($var).'.png" alt="" />&nbsp;'.$var.':</div></td>
+            <td class="row1"><div class="gen"><img src="modules/'.$nuke_module_name.'/images/'.strtolower($var).'.png" alt="" />&nbsp;'.$var.':</div></td>
             <td class="row2"><img src="themes/'.$ThemeSel.'/images/leftbar.gif" alt="" /><img src="themes/'.$ThemeSel.'/images/mainbar.gif" alt="" height="'.$m_size[1].'" width="'.$perc.'" /><img src="themes/'.$ThemeSel.'/images/rightbar.gif" alt="" /></td>
             <td class="row3"><div class="gen">'.$perc.' % ('.$count.')</div></td>
         </tr>';
@@ -78,39 +78,39 @@ function Stats_Main() {
     echo '<tr>
         <td colspan="3" class="cat"><div class="cattitle" align="center">'._MISCSTATS.'</div></td>
     </tr><tr align="left">
-        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$module_name.'/images/users.gif" alt="" />&nbsp;'._REGUSERS.'</span></td><td class="row3"><span class="gen">'.$unum.'</span></td>
+        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$nuke_module_name.'/images/users.gif" alt="" />&nbsp;'._REGUSERS.'</span></td><td class="row3"><span class="gen">'.$unum.'</span></td>
     </tr><tr align="left">
-        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$module_name.'/images/news.gif" alt="" />&nbsp;'._STORIESPUBLISHED.'</span></td><td class="row3"><span class="gen">'.$snum.'</span></td>
+        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$nuke_module_name.'/images/news.gif" alt="" />&nbsp;'._STORIESPUBLISHED.'</span></td><td class="row3"><span class="gen">'.$snum.'</span></td>
     </tr>';
     if (is_active('Topics')) {
         list($tnum) = $nuke_db->sql_ufetchrow("SELECT COUNT(*) FROM `".$prefix."_topics`");
         echo '<tr align="left">
-        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$module_name.'/images/topics.gif" alt="" />&nbsp;'._SACTIVETOPICS.'</span></td><td class="row3"><span class="gen">'.$tnum.'</span></td>
+        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$nuke_module_name.'/images/topics.gif" alt="" />&nbsp;'._SACTIVETOPICS.'</span></td><td class="row3"><span class="gen">'.$tnum.'</span></td>
         </tr>';
     }
     echo '<tr align="left">
-        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$module_name.'/images/comments.gif" alt="" />&nbsp;'._COMMENTSPOSTED.'</span></td><td class="row3"><span class="gen">'.$cnum.'</span></td>
+        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$nuke_module_name.'/images/comments.gif" alt="" />&nbsp;'._COMMENTSPOSTED.'</span></td><td class="row3"><span class="gen">'.$cnum.'</span></td>
         </tr>';
     if (is_active('Web_Links')) {
         list($links) = $nuke_db->sql_ufetchrow('SELECT COUNT(*) FROM `'.$prefix.'_links_links`');
         list($cat) = $nuke_db->sql_ufetchrow('SELECT COUNT(*) FROM `'.$prefix.'_links_categories`');
         echo '<tr align="left">
-        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$module_name.'/images/topics.gif" alt="" />&nbsp;'._LINKSINLINKS.'</span></td><td class="row3"><span class="gen">'.$links.'</span></td>
+        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$nuke_module_name.'/images/topics.gif" alt="" />&nbsp;'._LINKSINLINKS.'</span></td><td class="row3"><span class="gen">'.$links.'</span></td>
     </tr><tr align="left">
-        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$module_name.'/images/news.gif" alt="" />&nbsp;'._LINKSCAT.'</span></td><td class="row3"><span class="gen">'.$cat.'</span></td>
+        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$nuke_module_name.'/images/news.gif" alt="" />&nbsp;'._LINKSCAT.'</span></td><td class="row3"><span class="gen">'.$cat.'</span></td>
     </tr>';
     }
     echo '<tr align="left">
-        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$module_name.'/images/waiting.gif" alt="" />&nbsp;'._NEWSWAITING.'</span></td><td class="row3"><span class="gen">'.$subnum.'</span></td>
+        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$nuke_module_name.'/images/waiting.gif" alt="" />&nbsp;'._NEWSWAITING.'</span></td><td class="row3"><span class="gen">'.$subnum.'</span></td>
     </tr>';
     echo '<tr align="left">
-        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$module_name.'/images/sections.gif" alt="" />&nbsp;'._EVOVER.'</span></td><td class="row3"><span class="gen">'.ucfirst($evover).'</span></td>
+        <td class="row1" colspan="2"><span class="gen"><img src="modules/'.$nuke_module_name.'/images/sections.gif" alt="" />&nbsp;'._EVOVER.'</span></td><td class="row3"><span class="gen">'.ucfirst($evover).'</span></td>
     </tr></table>';
     CloseTable();
 }
 
 function Stats() {
-    global $nowyear, $nowmonth, $nowdate, $sitename, $startdate, $prefix, $nuke_db, $now, $module_name;
+    global $nowyear, $nowmonth, $nowdate, $sitename, $startdate, $prefix, $nuke_db, $now, $nuke_module_name;
 
     list($total) = $nuke_db->sql_ufetchrow('SELECT SUM(hits) FROM `'.$prefix."_stats_hour`");
     OpenTable();
@@ -119,7 +119,7 @@ function Stats() {
         <td class="cat"><div class="cattitle" align="center">'.$sitename.' '._STATS.'</div></td>
     </tr><tr>
         <td class="row1" align="center"><span class="gen">'._WERECEIVED.' <strong>'.$total.'</strong> '._PAGESVIEWS.' '.$startdate.'<br /><br />
-        <img src="modules/'.$module_name.'/images/logo.png" alt="" /><br /><br />'._TODAYIS.": $now[0]/$now[1]/$now[2]<br />";
+        <img src="modules/'.$nuke_module_name.'/images/logo.png" alt="" /><br /><br />'._TODAYIS.": $now[0]/$now[1]/$now[2]<br />";
 
     list($year, $month, $hits) = $nuke_db->sql_ufetchrow("SELECT `year`, `month`, SUM(hits) as hits FROM `".$prefix."_stats_hour` GROUP BY `month`, `year` ORDER BY `hits` DESC LIMIT 0,1");
     echo _MOSTMONTH.": ".getmonth($month)." $year ($hits "._HITS.")<br />";
@@ -133,7 +133,7 @@ function Stats() {
     } else {
         $hour = "$hour:00 - $hour:59";
     }
-    echo _MOSTHOUR.": $hour "._ON." ".getmonth($month)." $date, $year ($hits "._HITS.")<br /><br />[ <a href=\"modules.php?name=".$module_name."\">"._RETURNBASICSTATS.'</a> ]</span><br />&nbsp;</td>
+    echo _MOSTHOUR.": $hour "._ON." ".getmonth($month)." $date, $year ($hits "._HITS.")<br /><br />[ <a href=\"modules.php?name=".$nuke_module_name."\">"._RETURNBASICSTATS.'</a> ]</span><br />&nbsp;</td>
     </tr></table><br />';
 
     showYearStats($nowyear);
@@ -147,34 +147,34 @@ function Stats() {
 }
 
 function YearlyStats($year) {
-    global $nowmonth, $sitename, $module_name;
+    global $nowmonth, $sitename, $nuke_module_name;
     OpenTable();
     showMonthStats($year,$nowmonth);
     echo '<br />';
-    echo "<center>[ <a href=\"modules.php?name=".$module_name."\">"._BACKTOMAIN."</a> | <a href=\"modules.php?name=$module_name&amp;op=stats\">"._BACKTODETSTATS."</a> ]</center>";
+    echo "<center>[ <a href=\"modules.php?name=".$nuke_module_name."\">"._BACKTOMAIN."</a> | <a href=\"modules.php?name=$nuke_module_name&amp;op=stats\">"._BACKTODETSTATS."</a> ]</center>";
     CloseTable();
 }
 
 function MonthlyStats($year, $month) {
-    global $sitename, $nowdate, $module_name;
+    global $sitename, $nowdate, $nuke_module_name;
     OpenTable();
     showDailyStats($year,$month,$nowdate);
     echo '<br />';
-    echo "<center>[ <a href=\"modules.php?name=".$module_name."\">"._BACKTOMAIN."</a> | <a href=\"modules.php?name=".$module_name."&amp;op=stats\">"._BACKTODETSTATS."</a> ]</center>";
+    echo "<center>[ <a href=\"modules.php?name=".$nuke_module_name."\">"._BACKTOMAIN."</a> | <a href=\"modules.php?name=".$nuke_module_name."&amp;op=stats\">"._BACKTODETSTATS."</a> ]</center>";
     CloseTable();
 }
 
 function DailyStats($year, $month, $date) {
-    global $sitename, $module_name;
+    global $sitename, $nuke_module_name;
     OpenTable();
     showHourlyStats($year,$month,$date);
     echo '<br />';
-    echo "<center>[ <a href=\"modules.php?name=".$module_name."\">"._BACKTOMAIN."</a> | <a href=\"modules.php?name=".$module_name."&amp;op=stats\">"._BACKTODETSTATS."</a> ]</center>";
+    echo "<center>[ <a href=\"modules.php?name=".$nuke_module_name."\">"._BACKTOMAIN."</a> | <a href=\"modules.php?name=".$nuke_module_name."&amp;op=stats\">"._BACKTODETSTATS."</a> ]</center>";
     CloseTable();
 }
 
 function showYearStats($nowyear) {
-    global $prefix, $nuke_db, $ThemeSel, $module_name, $nuke_cache;
+    global $prefix, $nuke_db, $ThemeSel, $nuke_module_name, $nuke_cache;
     if ((($m_size = $nuke_cache->load('m_size', 'config')) === false) || empty($m_size)) {
         $m_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/mainbar.gif');
         $nuke_cache->save('m_size', 'config', $m_size);
@@ -199,7 +199,7 @@ function showYearStats($nowyear) {
         echo '<tr>
         <td class="row1"><span class="gen">';
         if ($year != $nowyear) {
-            echo '<a href="modules.php?name='.$module_name.'&amp;op=yearly&amp;year='.$year.'">'.$year.'</a>';
+            echo '<a href="modules.php?name='.$nuke_module_name.'&amp;op=yearly&amp;year='.$year.'">'.$year.'</a>';
         } else {
             echo $year;
         }
@@ -215,7 +215,7 @@ function showYearStats($nowyear) {
 }
 
 function showMonthStats($nowyear, $nowmonth) {
-    global $prefix, $nuke_db, $ThemeSel, $module_name, $nuke_cache;
+    global $prefix, $nuke_db, $ThemeSel, $nuke_module_name, $nuke_cache;
     if ((($m_size = $nuke_cache->load('m_size', 'config')) === false) || empty($m_size)) {
         $m_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/mainbar.gif');
         $nuke_cache->save('m_size', 'config', $m_size);
@@ -240,7 +240,7 @@ function showMonthStats($nowyear, $nowmonth) {
         echo '<tr>
         <td class="row1"><span class="gen">';
         if ($month != $nowmonth) {
-            echo "<a href=\"modules.php?name=".$module_name."&amp;op=monthly&amp;year=$nowyear&amp;month=$month\">".getmonth($month)."</a>";
+            echo "<a href=\"modules.php?name=".$nuke_module_name."&amp;op=monthly&amp;year=$nowyear&amp;month=$month\">".getmonth($month)."</a>";
         } else {
             echo getmonth($month);
         }
@@ -256,7 +256,7 @@ function showMonthStats($nowyear, $nowmonth) {
 }
 
 function showDailyStats($year, $month, $nowdate) {
-    global $prefix, $nuke_db, $ThemeSel, $module_name, $nuke_cache;
+    global $prefix, $nuke_db, $ThemeSel, $nuke_module_name, $nuke_cache;
     if ((($m_size = $nuke_cache->load('m_size', 'config')) === false) || empty($m_size)) {
         $m_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/mainbar.gif');
         $nuke_cache->save('m_size', 'config', $m_size);
@@ -295,7 +295,7 @@ function showDailyStats($year, $month, $nowdate) {
         echo '<tr>
         <td class="row1"><span class="gen">';
         if ($date != $nowdate && $hits > 0 ) {
-            echo '<a href="modules.php?name='.$module_name.'&amp;op=daily&amp;year='.$year.'&amp;month='.$month.'&amp;date='.$date.'">'.$date.'</a>';
+            echo '<a href="modules.php?name='.$nuke_module_name.'&amp;op=daily&amp;year='.$year.'&amp;month='.$month.'&amp;date='.$date.'">'.$date.'</a>';
         } else {
             echo $date;
         }
@@ -316,7 +316,7 @@ function showDailyStats($year, $month, $nowdate) {
 }
 
 function showHourlyStats($year, $month, $date) {
-    global $prefix, $nuke_db, $ThemeSel, $module_name, $nuke_cache;
+    global $prefix, $nuke_db, $ThemeSel, $nuke_module_name, $nuke_cache;
     if ((($m_size = $nuke_cache->load('m_size', 'config')) === false) || empty($m_size)) {
         $m_size = @getimagesize(NUKE_THEMES_DIR.$ThemeSel.'/images/mainbar.gif');
         $nuke_cache->save('m_size', 'config', $m_size);

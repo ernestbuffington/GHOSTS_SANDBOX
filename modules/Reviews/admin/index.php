@@ -26,8 +26,8 @@ if (!defined('ADMIN_FILE')) {
 }
 
 global $prefix, $nuke_db, $admdata;
-$module_name = basename(dirname(dirname(__FILE__)));
-if(is_mod_admin($module_name)) {
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
+if(is_mod_admin($nuke_module_name)) {
 
 /*********************************************************/
 /* REVIEWS Block Functions                               */
@@ -161,7 +161,7 @@ switch ($op){
 }
 
 } else {
-    DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$module_name\"");
+    DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$nuke_module_name\"");
 }
 
 ?>

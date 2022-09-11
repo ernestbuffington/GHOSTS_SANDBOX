@@ -11,9 +11,19 @@
 *
 */
 
-/**
-* @ignore
-*/
+if(defined('PHPBB3_MODULE') ):
+$nuke_module_name = basename(dirname(__FILE__));
+require(NUKE_PHPBB3_DIR . 'nukebb.php');
+define('IN_PHPBB', true);
+$phpbb_root_path = (defined('NUKE_PHPBB3_DIR')) ? NUKE_PHPBB3_DIR : './';
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
+include(NUKE_PHPBB3_DIR . 'extension.inc');
+include(NUKE_PHPBB3_DIR . 'common.php');
+include(NUKE_PHPBB3_DIR . 'includes/functions_admin.' . $phpEx);
+include(NUKE_PHPBB3_DIR . 'includes/functions_mcp.' . $phpEx);
+require(NUKE_PHPBB3_DIR . 'includes/functions_module.' . $phpEx);
+else:
+
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
@@ -21,6 +31,7 @@ include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_mcp.' . $phpEx);
 require($phpbb_root_path . 'includes/functions_module.' . $phpEx);
+endif;
 
 // Start session management
 $user->session_begin();
@@ -43,7 +54,7 @@ if (!$user->data['is_registered'])
 {
 	if ($user->data['is_bot'])
 	{
-		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		redirect(append_sid("modules.php?name=$nuke_module_name"));
 	}
 
 	login_box('', $user->lang['LOGIN_EXPLAIN_MCP']);
@@ -330,22 +341,25 @@ extract($phpbb_dispatcher->trigger_event('core.modify_mcp_modules_display_option
 
 $template->assign_block_vars('navlinks', array(
 	'BREADCRUMB_NAME'	=> $user->lang('MCP'),
-	'U_BREADCRUMB'		=> append_sid("{$phpbb_root_path}mcp.$phpEx"),
+	'U_BREADCRUMB'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx"),
 ));
 
 // Generate urls for letting the moderation control panel being accessed in different modes
 $template->assign_vars(array(
-	'U_MCP'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=main'),
-	'U_MCP_FORUM'	=> ($forum_id) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=main&amp;mode=forum_view&amp;f=$forum_id") : '',
-	'U_MCP_TOPIC'	=> ($forum_id && $topic_id) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=main&amp;mode=topic_view&amp;t=$topic_id") : '',
-	'U_MCP_POST'	=> ($forum_id && $topic_id && $post_id) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=main&amp;mode=post_details&amp;t=$topic_id&amp;p=$post_id") : '',
+	'U_MCP'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", 'i=main'),
+	'U_MCP_FORUM'	=> ($forum_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", "i=main&amp;mode=forum_view&amp;f=$forum_id") : '',
+	'U_MCP_TOPIC'	=> ($forum_id && $topic_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", "i=main&amp;mode=topic_view&amp;t=$topic_id") : '',
+	'U_MCP_POST'	=> ($forum_id && $topic_id && $post_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", "i=main&amp;mode=post_details&amp;t=$topic_id&amp;p=$post_id") : '',
 ));
 
 // Load and execute the relevant module
 $module->load_active();
 
 // Assign data to the template engine for the list of modules
-$module->assign_tpl_vars(append_sid("{$phpbb_root_path}mcp.$phpEx"));
+$module->assign_tpl_vars(append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx"));
 
 // Generate the page, do not display/query online list
 $module->display($module->get_page_title());
+//include("includes/page_tail.$phpEx");
+?>
+

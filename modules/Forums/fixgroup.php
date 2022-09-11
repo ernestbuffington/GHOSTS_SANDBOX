@@ -22,8 +22,8 @@ if (!defined('MODULE_FILE')) {
 if (is_admin())
 {
     if ($popup != "1"){
-        $module_name = basename(dirname(__FILE__));
-        require("modules/".$module_name."/nukebb.php");
+        $nuke_module_name = basename(dirname(__FILE__));
+        require("modules/".$nuke_module_name."/nukebb.php");
     }
     else
     {
@@ -36,7 +36,7 @@ if (is_admin())
     include('includes/functions_search.'.$phpEx);
 
     // Start session management
-    $nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_SEARCH);
+    $nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_SEARCH);
     init_userprefs($nuke_userdata);
     // End session management
 

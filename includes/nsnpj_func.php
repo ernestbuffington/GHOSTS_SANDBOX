@@ -121,35 +121,35 @@ function pjadmin_menu($pjtitle="")
   CloseTable();
 }
 
-function pjimage($imgfile, $module_name) 
+function pjimage($imgfile, $nuke_module_name) 
 {
   $ThemeSel = get_theme();
-  if(file_exists("themes/$ThemeSel/images/$module_name/$imgfile")) 
-    $pjimage = "themes/$ThemeSel/images/$module_name/$imgfile";
+  if(file_exists("themes/$ThemeSel/images/$nuke_module_name/$imgfile")) 
+    $pjimage = "themes/$ThemeSel/images/$nuke_module_name/$imgfile";
   else 
-    $pjimage = "modules/$module_name/images/$imgfile";
+    $pjimage = "modules/$nuke_module_name/images/$imgfile";
 
   return($pjimage);
 }
 
 function pjprogress($percent) {
-  global $module_name;
-  $pjimage = pjimage("bar_left.png", $module_name);
+  global $nuke_module_name;
+  $pjimage = pjimage("bar_left.png", $nuke_module_name);
   $wbprogress  = "<img src='$pjimage' width='1' height='7'>";
   if($percent == 0){
-    $pjimage = pjimage("bar_center_red.png", $module_name);
+    $pjimage = pjimage("bar_center_red.png", $nuke_module_name);
     $wbprogress .= "<img src='$pjimage' width='100' height='7' alt='0"._NETWORK_PERCENT." "._NETWORK_COMPLETED."' title='0"._NETWORK_PERCENT." "._NETWORK_COMPLETED."'>";
   } else {
     if($percent > 100){ $progress = 100; } else { $progress = $percent; }
-    $pjimage = pjimage("bar_center_grn.png", $module_name);
+    $pjimage = pjimage("bar_center_grn.png", $nuke_module_name);
     $wbprogress .= "<img src='$pjimage' width='".$progress."' height=7 alt='".$progress.""._NETWORK_PERCENT." "._NETWORK_COMPLETED."' title='".$progress.""._NETWORK_PERCENT." "._NETWORK_COMPLETED."'>";
     if($progress < 100){
       $incomplete = 100 - $progress;
-      $pjimage = pjimage("bar_center_red.png", $module_name);
+      $pjimage = pjimage("bar_center_red.png", $nuke_module_name);
       $wbprogress .= "<img src='$pjimage' width='".$incomplete."' height=7 alt='".$progress.""._NETWORK_PERCENT." "._NETWORK_COMPLETED."' title='".$progress.""._NETWORK_PERCENT." "._NETWORK_COMPLETED."'>";
     }
   }
-  $pjimage = pjimage("bar_right.png", $module_name);
+  $pjimage = pjimage("bar_right.png", $nuke_module_name);
   $wbprogress .= "<img src='$pjimage' width='1' height='7'>";
   return($wbprogress);
 }

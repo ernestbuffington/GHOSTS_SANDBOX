@@ -30,8 +30,8 @@ if (!defined('MODULE_FILE')) {
    die ("You can't access this file directly...");
 }
 
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
 
 $pagetitle = "- "._SHOUTHISTORY;
 

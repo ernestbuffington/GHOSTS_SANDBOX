@@ -139,10 +139,10 @@ if(defined('SHOW_ONLINE'))
           $row['username'] = UsernameColor($row['username']);
           # Mod: Advanced Username Color v1.0.5 END
           if($row['user_allow_viewonline']):
-            $nuke_user_online_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.$row['username'].'</a>';
+            $nuke_user_online_link = '<a href="'.append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.$row['username'].'</a>';
             $logged_visible_online++;
           else:
-            $nuke_user_online_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'"><i>'.$row['username'].'</i></a>';
+            $nuke_user_online_link = '<a href="'.append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'"><i>'.$row['username'].'</i></a>';
             $logged_hidden_online++;
           endif;
           # Mod: Hidden Status Viewing v1.0.0 START
@@ -244,11 +244,11 @@ $day_users = 0;
 while($row = $nuke_db->sql_fetchrow($result)):
 	if($row['user_allow_viewonline']):
       # Mod: Advanced Username Color v1.0.5 START
-	  $nuke_user_day_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
+	  $nuke_user_day_link = '<a href="'.append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'">'.UsernameColor($row['username']).'</a>';
       # Mod: Advanced Username Color v1.0.5 END
 	else:
       # Mod: Advanced Username Color v1.0.5 START
-	  $nuke_user_day_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'"><i>'.UsernameColor($row['username']).'</i></a>';
+	  $nuke_user_day_link = '<a href="'.append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$row['user_id']).'"><i>'.UsernameColor($row['username']).'</i></a>';
       # Mod: Advanced Username Color v1.0.5 END
 	endif;
 	
@@ -322,7 +322,7 @@ $nav_link_proto = '<link rel="%s" href="%s" title="%s" />' . "\n";
 
   while(list($nav_item, $nav_array) = @each($nav_links)):
     if(!empty($nav_array['url'])):
-      $nav_links_html .= sprintf($nav_link_proto, $nav_item, append_sid($nav_array['url']), $nav_array['title']);
+      $nav_links_html .= sprintf($nav_link_proto, $nav_item, append_nuke_sid($nav_array['url']), $nav_array['title']);
     else:
      # We have a nested array, used for items like <link rel='chapter'> that can occur more than once.
      while( list(,$nested_array) = each($nav_array)):
@@ -537,47 +537,47 @@ $template->assign_vars(array(
 		# Mod: Resize Posted Images v2.4.5 END
 
         # Base: Recent Topics v1.2.4 START
-        'U_RECENT' => append_sid("recent.$phpEx"),
+        'U_RECENT' => append_nuke_sid("recent.$phpEx"),
         'L_RECENT' => $lang['Recent_topics'],
         # Base: Recent Topics v1.2.4 END
 
-        'U_SEARCH_UNANSWERED' => append_sid('search.'.$phpEx.'?search_id=unanswered'),
-        'U_SEARCH_SELF' => append_sid('search.'.$phpEx.'?search_id=egosearch'),
-        'U_SEARCH_NEW' => append_sid('search.'.$phpEx.'?search_id=newposts'),
-        'U_INDEX' => append_sid('index.'.$phpEx),
-        'U_REGISTER' => append_sid('profile.'.$phpEx.'?mode=register'),
-        'U_PROFILE' => append_sid('profile.'.$phpEx.'?mode=editprofile'),
-        'U_PRIVATEMSGS' => append_sid('privmsg.'.$phpEx.'?folder=inbox'),
-        'U_PRIVATEMSGS_POPUP' => append_sid('privmsg.'.$phpEx.'?mode=newpm&popup=1',true),
+        'U_SEARCH_UNANSWERED' => append_nuke_sid('search.'.$phpEx.'?search_id=unanswered'),
+        'U_SEARCH_SELF' => append_nuke_sid('search.'.$phpEx.'?search_id=egosearch'),
+        'U_SEARCH_NEW' => append_nuke_sid('search.'.$phpEx.'?search_id=newposts'),
+        'U_INDEX' => append_nuke_sid('index.'.$phpEx),
+        'U_REGISTER' => append_nuke_sid('profile.'.$phpEx.'?mode=register'),
+        'U_PROFILE' => append_nuke_sid('profile.'.$phpEx.'?mode=editprofile'),
+        'U_PRIVATEMSGS' => append_nuke_sid('privmsg.'.$phpEx.'?folder=inbox'),
+        'U_PRIVATEMSGS_POPUP' => append_nuke_sid('privmsg.'.$phpEx.'?mode=newpm&popup=1',true),
         
 		# Mod: Birthdays v3.0.0 START
-		'U_BIRTHDAYS_POPUP' => append_sid('profile.'.$phpEx.'?mode=birthday_popup=1',true),
+		'U_BIRTHDAYS_POPUP' => append_nuke_sid('profile.'.$phpEx.'?mode=birthday_popup=1',true),
 		# Mod: Birthdays v3.0.0 END
 		
-        'U_SEARCH' => append_sid('search.'.$phpEx),
-        'U_MEMBERLIST' => append_sid('memberlist.'.$phpEx),
-        'U_MODCP' => append_sid('modcp.'.$phpEx),
-        'U_FAQ' => append_sid('faq.'.$phpEx),
+        'U_SEARCH' => append_nuke_sid('search.'.$phpEx),
+        'U_MEMBERLIST' => append_nuke_sid('memberlist.'.$phpEx),
+        'U_MODCP' => append_nuke_sid('modcp.'.$phpEx),
+        'U_FAQ' => append_nuke_sid('faq.'.$phpEx),
         
 		# Mod: Forum Statistics v3.0.0 START
-        'U_STATISTICS' => append_sid('statistics.'.$phpEx),
+        'U_STATISTICS' => append_nuke_sid('statistics.'.$phpEx),
 		# Mod: Forum Statistics v3.0.0 END
 
-        'U_VIEWONLINE' => append_sid('viewonline.'.$phpEx),
-        'U_LOGIN_LOGOUT' => append_sid($u_login_logout),
-        'U_MEMBERSLIST' => append_sid('memberlist.'.$phpEx),
-        'U_GROUP_CP' => append_sid('groupcp.'.$phpEx),
+        'U_VIEWONLINE' => append_nuke_sid('viewonline.'.$phpEx),
+        'U_LOGIN_LOGOUT' => append_nuke_sid($u_login_logout),
+        'U_MEMBERSLIST' => append_nuke_sid('memberlist.'.$phpEx),
+        'U_GROUP_CP' => append_nuke_sid('groupcp.'.$phpEx),
         
 		# Mod: Users Reputations Systems v1.0.0 START
         'L_REPUTATION' => $lang['Reputation'],
-        'U_REPUTATION' => append_sid('reputation.'.$phpEx),
+        'U_REPUTATION' => append_nuke_sid('reputation.'.$phpEx),
 		# Mod: Users Reputations Systems v1.0.0 END
 
         # Mod: Multiple Ranks And Staff View v2.0.3 START
 		'L_RANKS' => $lang['Rank_Header'],
 		'L_STAFF' => $lang['Staff'],
-		'U_RANKS' => append_sid('ranks.' . $phpEx),
-		'U_STAFF' => append_sid('memberlist.' . $phpEx . '?mode=staff'),
+		'U_RANKS' => append_nuke_sid('ranks.' . $phpEx),
+		'U_STAFF' => append_nuke_sid('memberlist.' . $phpEx . '?mode=staff'),
         # Mod: Multiple Ranks And Staff View v2.0.3 END
 
         # Mod: Advanced Time Management v2.2.0 START
@@ -585,7 +585,7 @@ $template->assign_vars(array(
         # Mod: Advanced Time Management v2.2.0 END
 
         # Mod: Staff Site v2.0.3 START
-        'U_STAFF' => append_sid('staff.'.$phpEx),
+        'U_STAFF' => append_nuke_sid('staff.'.$phpEx),
         'L_STAFF' => $lang['Staff'],
         # Mod: Staff Site v2.0.3 END
 
@@ -725,7 +725,7 @@ header ('Pragma: no-cache');
 # Mod: Ranks summarize v1.0.4 START
     $template->assign_vars(array(
         'I_RANKS' => '<img src="' . $images['Ranks'] . '" width="12" height="13" border="0" alt="' . $lang['Ranks'] . '" hspace="3" />',
-        'U_RANKS' => append_sid("ranks.$phpEx"),
+        'U_RANKS' => append_nuke_sid("ranks.$phpEx"),
         'L_RANKS' => $lang['Ranks'],
 
         # Mod: Theme Simplifications v1.0.0 START
@@ -739,14 +739,14 @@ header ('Pragma: no-cache');
         'I_MINI_PRIVATEMSGS' => '<img src="' . $images['Mini_Private_Messages'] . '" width="12" height="13" border="0" alt="' . $lang['Private_Messages'] . '" hspace="3" />',
         'I_STAFF' => '<img src="' . $images['Staff'] . '" width="12" height="13" border="0" alt="' . $lang['Staff'] . '" hspace="3" />',
         'I_RULES' => '<img src="' . $images['Rules'] . '" width="12" height="13" border="0" alt="' . $lang['Rules'] . '" hspace="3" />',
-        'U_RULES' => append_sid("rules.$phpEx"),
+        'U_RULES' => append_nuke_sid("rules.$phpEx"),
         'L_RULES' => $lang['Rules'],
         'I_STATISTICS' => '<img src="' . $images['Statistics'] . '" width="12" height="13" border="0" alt="' . $lang['Statistics'] . '" hspace="3" />',
         'I_MINI_LOGIN_LOGOUT' => '<img src="' . $images['Mini_Login_Logout'] . '" width="12" height="13" border="0" alt="' . $lang['Login_Logout'] . '" hspace="3" />',
         
 		# Mod: Theme Simplifications (Arcade) v1.0.0 START
         'I_MINI_ARCADE' => '<img src="' . $images['Mini_Arcade'] . '" width="12" height="13" border="0" alt="' . $lang['lib_arcade'] . '" hspace="3" />',
-        'U_ARCADE' => append_sid("arcade.$phpEx"),
+        'U_ARCADE' => append_nuke_sid("arcade.$phpEx"),
         'L_ARCADE' => $lang['lib_arcade'],
 		# Mod: Theme Simplifications (Arcade) v1.0.0 END
         # Mod: Theme Simplifications v1.0.0 END

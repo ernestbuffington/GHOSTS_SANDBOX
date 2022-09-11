@@ -82,7 +82,7 @@ if ( $row = $nuke_db->sql_fetchrow($result) )
         if ( $row['user_active'] && empty($row['user_actkey']) )
         {
                 $template_nuke->assign_vars(array(
-                        'META' => '<meta http-equiv="refresh" content="10;url=' . append_sid("index.$phpEx") . '">')
+                        'META' => '<meta http-equiv="refresh" content="10;url=' . append_nuke_sid("index.$phpEx") . '">')
                 );
 
                 message_die(NUKE_GENERAL_MESSAGE, $lang['Already_activated']);
@@ -93,7 +93,7 @@ if ( $row = $nuke_db->sql_fetchrow($result) )
             {
                 if (!$nuke_userdata['session_logged_in'])
                 {
-                    nuke_redirect(append_sid('login.' . $phpEx . '?nuke_redirect=profile.' . $phpEx . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $row['user_id'] . '&act_key=' . trim($HTTP_GET_VARS['act_key'])));
+                    nuke_redirect(append_nuke_sid('login.' . $phpEx . '?nuke_redirect=profile.' . $phpEx . '&mode=activate&' . NUKE_POST_USERS_URL . '=' . $row['user_id'] . '&act_key=' . trim($HTTP_GET_VARS['act_key'])));
                 }
                 else if ($nuke_userdata['user_level'] != NUKE_ADMIN)
                 {
@@ -132,7 +132,7 @@ if ( $row = $nuke_db->sql_fetchrow($result) )
                         $emailer->reset();
 
                         $template_nuke->assign_vars(array(
-                                'META' => '<meta http-equiv="refresh" content="10;url=' . append_sid("index.$phpEx") . '">')
+                                'META' => '<meta http-equiv="refresh" content="10;url=' . append_nuke_sid("index.$phpEx") . '">')
                         );
 
                         message_die(NUKE_GENERAL_MESSAGE, $lang['Account_active_admin']);
@@ -140,7 +140,7 @@ if ( $row = $nuke_db->sql_fetchrow($result) )
                 else
                 {
                         $template_nuke->assign_vars(array(
-                                'META' => '<meta http-equiv="refresh" content="10;url=' . append_sid("index.$phpEx") . '">')
+                                'META' => '<meta http-equiv="refresh" content="10;url=' . append_nuke_sid("index.$phpEx") . '">')
                         );
 
                         $message = ( $sql_update_pass == '' ) ? $lang['Account_active'] : $lang['Password_activated'];

@@ -2188,7 +2188,7 @@ class Template {
 			// file extension with session ID (eg: "php?sid=123&" or "php?")
 			// can be used to make custom URLs without modding phpbb
 			// contains "&" or "?" at the end so you can easily append paramenters
-			$php = append_sid($phpEx);
+			$php = append_nuke_sid($phpEx);
 			if(strpos($php, '?'))
 			{
 				$php .= '&';

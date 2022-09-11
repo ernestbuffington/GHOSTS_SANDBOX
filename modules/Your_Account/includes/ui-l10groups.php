@@ -60,7 +60,7 @@ if ($nuke_db->sql_numrows($result) > 0) {
 /*****[END]********************************************
  [ Mod:    Group Colors                        v1.0.0 ]
  ******************************************************/
-        if(is_mod_admin($module_name)) { echo "&nbsp;($gid)"; }
+        if(is_mod_admin($nuke_module_name)) { echo "&nbsp;($gid)"; }
     }
     CloseTable();
 }

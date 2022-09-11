@@ -18,8 +18,8 @@ if (!defined('MODULE_FILE')) {
 }
 
 if ($popup != "1"){
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -46,7 +46,7 @@ $set_mode = 'today';      // set default mode ('today', 'yesterday', 'last24', '
 $set_days = '3';          // set default days (used for lastXdays mode)
 // ############         Edit above         ########################################
 
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_RECENT);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_RECENT);
 init_userprefs($nuke_userdata);
 
 $start = ( isset($HTTP_GET_VARS['start']) ) ? intval($HTTP_GET_VARS['start']) : 0;
@@ -150,7 +150,7 @@ switch( $mode )
 
     case 'lastXdays':
         if(!$amount_days || !ctype_digit($amount_days)) {
-            $message = 'You must enter a valid day<br /><br />'. sprintf($lang['Recent_click_return'], '<a href="'. append_sid("recent.$phpEx") .'">', '</a>') .'<br />'. sprintf($lang['Click_return_index'], '<a href="'. append_sid("index.$phpEx") .'">', '</a>');
+            $message = 'You must enter a valid day<br /><br />'. sprintf($lang['Recent_click_return'], '<a href="'. append_nuke_sid("recent.$phpEx") .'">', '</a>') .'<br />'. sprintf($lang['Click_return_index'], '<a href="'. append_nuke_sid("index.$phpEx") .'">', '</a>');
             message_die(NUKE_GENERAL_MESSAGE, $message);
             break;
         }
@@ -161,7 +161,7 @@ switch( $mode )
         break;
 
     default:
-        $message = $lang['Recent_wrong_mode'] .'<br /><br />'. sprintf($lang['Recent_click_return'], '<a href="'. append_sid("recent.$phpEx") .'">', '</a>') .'<br />'. sprintf($lang['Click_return_index'], '<a href="'. append_sid("index.$phpEx") .'">', '</a>');
+        $message = $lang['Recent_wrong_mode'] .'<br /><br />'. sprintf($lang['Recent_click_return'], '<a href="'. append_nuke_sid("recent.$phpEx") .'">', '</a>') .'<br />'. sprintf($lang['Click_return_index'], '<a href="'. append_nuke_sid("index.$phpEx") .'">', '</a>');
         message_die(NUKE_GENERAL_MESSAGE, $message);
         break;
 }
@@ -187,9 +187,9 @@ $tracking_forums = ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] .'_f']
 for( $i = 0; $i < count($line); $i++ )
 {
     $forum_id = $line[$i]['forum_id'];
-    $forum_url = append_sid("viewforum.$phpEx?". NUKE_POST_FORUM_URL ."=$forum_id");
+    $forum_url = append_nuke_sid("viewforum.$phpEx?". NUKE_POST_FORUM_URL ."=$forum_id");
     $topic_id = $line[$i]['topic_id'];
-    $topic_url = append_sid("viewtopic.$phpEx?". NUKE_POST_TOPIC_URL ."=$topic_id");
+    $topic_url = append_nuke_sid("viewtopic.$phpEx?". NUKE_POST_TOPIC_URL ."=$topic_id");
 
     $word_censor = ( count($orig_word) ) ? preg_replace($orig_word, $replacement_word, $line[$i]['topic_title']) : $line[$i]['topic_title'];
     $topic_title = ( strlen($line[$i]['topic_title']) < $topic_length ) ? $word_censor : substr(stripslashes($word_censor), 0, $topic_length) .'...';
@@ -217,7 +217,7 @@ for( $i = 0; $i < count($line); $i++ )
         $times = '1';
         for( $j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'] )
         {
-            $goto_page .= '<a href="'. append_sid("viewtopic.$phpEx?". NUKE_POST_TOPIC_URL ."=". $topic_id ."&amp;start=$j") .'">'. $times .'</a>';
+            $goto_page .= '<a href="'. append_nuke_sid("viewtopic.$phpEx?". NUKE_POST_TOPIC_URL ."=". $topic_id ."&amp;start=$j") .'">'. $times .'</a>';
             if( $times == '1' && $total_pages > '4' )
             {
                 $goto_page .= ' ... ';
@@ -305,7 +305,7 @@ for( $i = 0; $i < count($line); $i++ )
                 {
                     $folder_image = $folder_new;
                     $folder_alt = $lang['New_posts'];
-                    $newest_img = '<a href="'. append_sid("viewtopic.$phpEx?". NUKE_POST_TOPIC_URL ."=$topic_id&amp;view=newest") .'"><img src="'. $images['icon_newest_reply'] .'" alt="'. $lang['View_newest_post'] .'" title="'. $lang['View_newest_post'] .'" border="0" /></a> ';
+                    $newest_img = '<a href="'. append_nuke_sid("viewtopic.$phpEx?". NUKE_POST_TOPIC_URL ."=$topic_id&amp;view=newest") .'"><img src="'. $images['icon_newest_reply'] .'" alt="'. $lang['View_newest_post'] .'" title="'. $lang['View_newest_post'] .'" border="0" /></a> ';
                 }
                 else
                 {
@@ -318,7 +318,7 @@ for( $i = 0; $i < count($line); $i++ )
             {
                 $folder_image = $folder_new;
                 $folder_alt = ( $line[$i]['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['New_posts'];
-                $newest_img = '<a href="'. append_sid("viewtopic.$phpEx?". NUKE_POST_TOPIC_URL ."=$topic_id&amp;view=newest") .'"><img src="'. $images['icon_newest_reply'] .'" alt="'. $lang['View_newest_post'] .'" title="'. $lang['View_newest_post'] .'" border="0" /></a> ';
+                $newest_img = '<a href="'. append_nuke_sid("viewtopic.$phpEx?". NUKE_POST_TOPIC_URL ."=$topic_id&amp;view=newest") .'"><img src="'. $images['icon_newest_reply'] .'" alt="'. $lang['View_newest_post'] .'" title="'. $lang['View_newest_post'] .'" border="0" /></a> ';
             }
         }
         else 
@@ -339,7 +339,7 @@ for( $i = 0; $i < count($line); $i++ )
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-    $first_author = ( $line[$i]['first_poster_id'] != NUKE_ANONYMOUS ) ? '<a href="'. append_sid("profile.$phpEx?mode=viewprofile&amp;". NUKE_POST_USERS_URL .'='. $line[$i]['first_poster_id']) .'">' . UsernameColor($line[$i]['first_poster']) .'</a>' : ( ($line[$i]['first_poster_name'] != '' ) ? $line[$i]['first_poster_name'] : $lang['Guest'] );
+    $first_author = ( $line[$i]['first_poster_id'] != NUKE_ANONYMOUS ) ? '<a href="'. append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;". NUKE_POST_USERS_URL .'='. $line[$i]['first_poster_id']) .'">' . UsernameColor($line[$i]['first_poster']) .'</a>' : ( ($line[$i]['first_poster_name'] != '' ) ? $line[$i]['first_poster_name'] : $lang['Guest'] );
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -347,11 +347,11 @@ for( $i = 0; $i < count($line); $i++ )
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-    $last_author = ( $line[$i]['last_poster_id'] != NUKE_ANONYMOUS ) ? '<a href="'. append_sid("profile.$phpEx?mode=viewprofile&amp;". NUKE_POST_USERS_URL .'='. $line[$i]['last_poster_id']) .'">' . UsernameColor($line[$i]['last_poster']) .'</a>' : ( ($line[$i]['last_poster_name'] != '' ) ? $line[$i]['last_poster_name'] : $lang['Guest'] );
+    $last_author = ( $line[$i]['last_poster_id'] != NUKE_ANONYMOUS ) ? '<a href="'. append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;". NUKE_POST_USERS_URL .'='. $line[$i]['last_poster_id']) .'">' . UsernameColor($line[$i]['last_poster']) .'</a>' : ( ($line[$i]['last_poster_name'] != '' ) ? $line[$i]['last_poster_name'] : $lang['Guest'] );
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-    $last_url = '<a href="'. append_sid("viewtopic.$phpEx?". NUKE_POST_POST_URL .'='. $line[$i]['topic_last_post_id']) .'#'. $line[$i]['topic_last_post_id'] .'"><img src="'. $images['icon_latest_reply'] .'" alt="'. $lang['View_latest_post'] .'" title="'. $lang['View_latest_post'] .'" border="0" /></a>';
+    $last_url = '<a href="'. append_nuke_sid("viewtopic.$phpEx?". NUKE_POST_POST_URL .'='. $line[$i]['topic_last_post_id']) .'#'. $line[$i]['topic_last_post_id'] .'"><img src="'. $images['icon_latest_reply'] .'" alt="'. $lang['View_latest_post'] .'" title="'. $lang['View_latest_post'] .'" border="0" /></a>';
 
     $template_nuke->assign_block_vars('recent', array(
         'ROW_CLASS' => ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'],
@@ -405,7 +405,7 @@ $template_nuke->assign_vars(array(
     'L_SHOWING_POSTS' => $lang['Recent_showing_posts'],
     'L_NO_TOPICS' => $lang['Recent_no_topics'],
     'AMOUNT_DAYS' => $amount_days,
-    'FORM_ACTION' => append_sid("recent.$phpEx"),
+    'FORM_ACTION' => append_nuke_sid("recent.$phpEx"),
     'PAGINATION' => ( $total_topics != '0' ) ? $pagination : '',
     'PAGE_NUMBER' => ( $total_topics != '0' ) ? sprintf($lang['Page_of'], ( floor( $start / $topic_limit ) + 1 ), ceil( $total_topics / $topic_limit )) : '',
 ));

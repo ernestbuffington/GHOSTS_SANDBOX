@@ -27,7 +27,7 @@ if(implode("", $member_ids) > "") {
 list($submitter_email) = $network_db->sql_fetchrow($network_db->sql_query("SELECT `submitter_email` FROM `".$network_prefix."_requests` WHERE `request_id`='$request_id'"));
 $admin_email = $adminmail;
 $subject = _NETWORK_NEWREQUESTUPDATEDS;
-$message = _NETWORK_NEWREQUESTUPDATED.":\r\n$nukeurl/modules.php?name=$module_name&amp;op=Request&amp;request_id=$request_id";
+$message = _NETWORK_NEWREQUESTUPDATED.":\r\n$nukeurl/modules.php?name=$nuke_module_name&amp;op=Request&amp;request_id=$request_id";
 $from  = "From: $admin_email\r\n";
 $from .= "Reply-To: $admin_email\r\n";
 $from .= "Return-Path: $admin_email\r\n";

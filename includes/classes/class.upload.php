@@ -56,7 +56,7 @@ class myubrowse
         }
 
         
-		function myubrowse($admin, $network_prefix, $network_db, $module_name, $nuke_user_prefix) 
+		function myubrowse($admin, $network_prefix, $network_db, $nuke_module_name, $nuke_user_prefix) 
 		{
                 global $admin_file;
                 
@@ -64,7 +64,7 @@ class myubrowse
                 $this->prefix = $network_prefix;
                 $this->user_prefix = $network_prefix;
                 $this->db = $network_db;
-                $this->module_name = $module_name;
+                $this->module_name = $nuke_module_name;
                 $this->pagetitle = " - ".MYU_MYUPLOADS;
                 
 				$sql = "SELECT * FROM ".$this->prefix."_uploads";

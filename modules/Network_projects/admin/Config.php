@@ -32,17 +32,17 @@ while($file = readdir($handle))
 {
   if( (!preg_match("/[.]/",$file) AND file_exists("modules/$file/index.php")) ) 
   { 
-    $modulelist .= "$file "; 
+    $nuke_modulelist .= "$file "; 
   }
 }
 closedir($handle);
-$modulelist = explode(" ", $modulelist);
-sort($modulelist);
-for($i=0; $i < sizeof($modulelist); $i++) {
-  if($modulelist[$i]!="") {
-    echo "<option value=\"$modulelist[$i]\" ";
-    if($modulelist[$i] == $pj_config['location']) echo "selected";
-    echo ">$modulelist[$i]\n";
+$nuke_modulelist = explode(" ", $nuke_modulelist);
+sort($nuke_modulelist);
+for($i=0; $i < sizeof($nuke_modulelist); $i++) {
+  if($nuke_modulelist[$i]!="") {
+    echo "<option value=\"$nuke_modulelist[$i]\" ";
+    if($nuke_modulelist[$i] == $pj_config['location']) echo "selected";
+    echo ">$nuke_modulelist[$i]\n";
   }
 }
 echo "</select><br />"._NETWORK_MODLOCATIONNOTE." $modlocation<br />"._NETWORK_MODLOCATIONNOTE2."</td></tr>\n";

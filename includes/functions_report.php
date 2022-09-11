@@ -295,8 +295,8 @@ function show_reports($status = NUKE_REPORT_POST_NEW)
 
             'L_CLOSE_REPORT'    => ( $row['report_status'] == NUKE_REPORT_POST_NEW ) ? $lang['Close'] : $lang['Open'],
 
-            'U_VIEW_POST'        => append_sid('viewtopic.' . $phpEx . '?' . NUKE_POST_POST_URL . '=' . $row['post_id'] . '#' . $row['post_id']),
-            'U_CLOSE_REPORT'    => ( $row['report_status'] == NUKE_REPORT_POST_NEW ) ? append_sid('viewpost_reports.' . $phpEx . '?mode=closereport&amp;report=' . $row['report_id']) : append_sid('viewpost_reports.' . $phpEx . '?mode=openreport&amp;report=' . $row['report_id']))
+            'U_VIEW_POST'        => append_nuke_sid('viewtopic.' . $phpEx . '?' . NUKE_POST_POST_URL . '=' . $row['post_id'] . '#' . $row['post_id']),
+            'U_CLOSE_REPORT'    => ( $row['report_status'] == NUKE_REPORT_POST_NEW ) ? append_nuke_sid('viewpost_reports.' . $phpEx . '?mode=closereport&amp;report=' . $row['report_id']) : append_nuke_sid('viewpost_reports.' . $phpEx . '?mode=openreport&amp;report=' . $row['report_id']))
         );
 
         $i++;

@@ -47,18 +47,18 @@ $link_array = array();
 
 for ($i = 0; $i < count($current_modules); $i++)
 {
-    $module_id = intval($current_modules[$i]['module_id']);
-    $module_short_name = trim($current_modules[$i]['short_name']);
+    $nuke_module_id = intval($current_modules[$i]['module_id']);
+    $nuke_module_short_name = trim($current_modules[$i]['short_name']);
 
-    if ($module_short_name != $core->current_module_name)
+    if ($nuke_module_short_name != $core->current_module_name)
     {
-        eval('$current_module_name = $' . $module_short_name . '[\'module_name\'];');
+        eval('$current_module_name = $' . $nuke_module_short_name . '[\'module_name\'];');
         if (empty($current_module_name))
         {
-            $current_module_name = $module_short_name;
+            $current_module_name = $nuke_module_short_name;
         }
 
-        $link_array[] = '<a href="#' . $module_id . '">' . $current_module_name . '</a>';
+        $link_array[] = '<a href="#' . $nuke_module_id . '">' . $current_module_name . '</a>';
     }
 }
 

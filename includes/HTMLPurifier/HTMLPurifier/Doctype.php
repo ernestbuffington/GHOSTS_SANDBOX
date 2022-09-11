@@ -17,7 +17,7 @@ class HTMLPurifier_Doctype
      * List of standard modules (string identifiers or literal objects)
      * that this doctype uses
      */
-    public $modules = array();
+    public $nuke_modules = array();
 
     /**
      * List of modules to use for tidying up code
@@ -44,12 +44,12 @@ class HTMLPurifier_Doctype
      */
     public $dtdSystem;
 
-    public function __construct($name = null, $xml = true, $modules = array(),
+    public function __construct($name = null, $xml = true, $nuke_modules = array(),
         $tidyModules = array(), $aliases = array(), $dtd_public = null, $dtd_system = null
     ) {
         $this->name         = $name;
         $this->xml          = $xml;
-        $this->modules      = $modules;
+        $this->modules      = $nuke_modules;
         $this->tidyModules  = $tidyModules;
         $this->aliases      = $aliases;
         $this->dtdPublic    = $dtd_public;

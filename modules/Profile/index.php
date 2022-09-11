@@ -31,7 +31,7 @@ if (!defined('MODULE_FILE'))
 exit('You can\'t access this file directly...');
 
 if ($popup != "1"){
-    $module_name = basename(dirname(__FILE__));
+    $nuke_module_name = basename(dirname(__FILE__));
     require(NUKE_PHPBB2_DIR.'nukebb.php');
 }
 else
@@ -53,7 +53,7 @@ include('includes/functions_reputation.'.$phpEx);
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_PROFILE);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_PROFILE);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -142,7 +142,7 @@ function gen_rand_string($hash)
         {
            if(!is_user() && $mode == 'editprofile'):
               $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/",$_SERVER["SERVER_SOFTWARE"])) ? "Refresh: 0; URL=" : "Location: ";
-              nuke_redirect(append_sid("login.$phpEx?nuke_redirect=profile.$phpEx&mode=editprofile", true));
+              nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=profile.$phpEx&mode=editprofile", true));
               exit;
            endif;
          include("includes/usercp_register.php");
@@ -156,7 +156,7 @@ function gen_rand_string($hash)
             if ( !is_user() && $mode == 'signature' )
             {
                 $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", $_SERVER("SERVER_SOFTWARE")) ) ? "Refresh: 0; URL=" : "Location: ";
-                nuke_redirect(append_sid("login.$phpEx?nuke_redirect=profile.$phpEx&mode=signature", true));
+                nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=profile.$phpEx&mode=signature", true));
                 exit;
             }
 
@@ -222,7 +222,7 @@ function gen_rand_string($hash)
  ******************************************************/
         include('includes/usercp_register.'.$phpEx);
        // $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", $_SERVER["SERVER_SOFTWARE"]) ) ? "Refresh: 0; URL=" : "Location: ";
-       // nuke_redirect(append_sid("index.$phpEx", true));
+       // nuke_redirect(append_nuke_sid("index.$phpEx", true));
        // exit;
 
 ?>

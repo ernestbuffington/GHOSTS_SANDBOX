@@ -34,7 +34,7 @@ define('IN_PHPBB2', true);
 if( !empty($setmodules) )
     {
         $filename = basename(__FILE__);
-        $module['Poll Admin']['Poll Results'] = $filename;
+        $nuke_module['Poll Admin']['Poll Results'] = $filename;
         return;
     }
 

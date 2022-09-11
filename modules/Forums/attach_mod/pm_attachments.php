@@ -244,7 +244,7 @@ class attach_pm extends attach_parent
             if (!$nuke_userdata['session_logged_in'])
             {
                 $header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')) ) ? 'Refresh: 0; URL=' : 'Location: ';
-                nuke_redirect(append_sid("login.$phpEx?nuke_redirect=privmsg&amp;folder=inbox", true));
+                nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=privmsg&amp;folder=inbox", true));
                 exit;
             }
 

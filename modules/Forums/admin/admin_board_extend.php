@@ -24,7 +24,7 @@ define('IN_PHPBB2', true);
 if( !empty($setmodules) )
 {
 	$file = basename(__FILE__);
-	$module['General']['Configuration_extend'] = $file;
+	$nuke_module['General']['Configuration_extend'] = $file;
 	return;
 }
 
@@ -274,7 +274,7 @@ if ($submit)
 			}
 			if ($error)
 			{
-				$message = $error_msg . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid("./admin_board_extend.$phpEx?menu=$menu_id&mod=$mod_id&msub=$sub_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("./index.$phpEx?pane=right") . '">', '</a>');
+				$message = $error_msg . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_nuke_sid("./admin_board_extend.$phpEx?menu=$menu_id&mod=$mod_id&msub=$sub_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("./index.$phpEx?pane=right") . '">', '</a>');
 				message_die(NUKE_GENERAL_MESSAGE, $message);
 			}
 		}
@@ -309,7 +309,7 @@ if ($submit)
 	}
 
 	// send an update message
-	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid("./admin_board_extend.$phpEx?menu=$menu_id&mod=$mod_id&msub=$sub_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("./index.$phpEx?pane=right") . '">', '</a>');
+	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_nuke_sid("./admin_board_extend.$phpEx?menu=$menu_id&mod=$mod_id&msub=$sub_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("./index.$phpEx?pane=right") . '">', '</a>');
 	message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 
@@ -343,7 +343,7 @@ for ($i = 0; $i < count($menu_keys); $i++)
 	}
 	$template_nuke->assign_block_vars('menu', array(
 		'CLASS'		=> ($menu_id == $i) ? ( (count($mod_keys[$i]) > 1) ? 'row3' : 'row1' ) : 'row2',
-		'U_MENU'	=> append_sid("./admin_board_extend.$phpEx?menu=$i"),
+		'U_MENU'	=> append_nuke_sid("./admin_board_extend.$phpEx?menu=$i"),
 		'L_MENU'	=> sprintf( ( ($menu_id == $i) ? '<b>%s</b>' : '%s' ), mods_settings_get_lang($l_menu) ),
 		)
 	);
@@ -370,7 +370,7 @@ for ($i = 0; $i < count($menu_keys); $i++)
 			$template_nuke->assign_block_vars('menu.mod', array(
 				'CLASS'	=> ( ($menu_id == $i) && ($mod_id == $j) ) ? 'row1' : 'row2',
 				'ALIGN'	=> ( ($menu_id == $i) && ($mod_id == $j) && (count($sub_keys[$i][$j]) > 1) ) ? 'left' : 'center',
-				'U_MOD'	=> append_sid("./admin_board_extend.$phpEx?menu=$i&mod=$j"),
+				'U_MOD'	=> append_nuke_sid("./admin_board_extend.$phpEx?menu=$i&mod=$j"),
 				'L_MOD'	=> sprintf( ( ( ($menu_id == $i) && ($mod_id == $j) ) ? '<b>%s</b>' : '%s' ), mods_settings_get_lang($l_mod) ),
 				)
 			);
@@ -383,7 +383,7 @@ for ($i = 0; $i < count($menu_keys); $i++)
 					{
 						$template_nuke->assign_block_vars('menu.mod.sub.row', array(
 							'CLASS'	=> ( ($menu_id == $i) && ($mod_id == $j) && ($sub_id == $k) ) ? 'row1' : 'row1',
-							'U_MOD' => append_sid("./admin_board_extend.$phpEx?menu=$i&mod=$j&msub=$k"),
+							'U_MOD' => append_nuke_sid("./admin_board_extend.$phpEx?menu=$i&mod=$j&msub=$k"),
 							'L_MOD'	=> sprintf( (($sub_id == $k) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($sub_keys[$i][$j][$k]) ),
 							)
 						);
@@ -481,7 +481,7 @@ $s_hidden_fields .= '<input type="hidden" name="menu_id" value="' . $menu_id . '
 $s_hidden_fields .= '<input type="hidden" name="mod_id" value="' . $mod_id . '" />';
 $s_hidden_fields .= '<input type="hidden" name="sub_id" value="' . $sub_id . '" />';
 $template_nuke->assign_vars(array(
-	'S_ACTION'			=> append_sid("./admin_board_extend.$phpEx"),
+	'S_ACTION'			=> append_nuke_sid("./admin_board_extend.$phpEx"),
 	'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 	)
 );

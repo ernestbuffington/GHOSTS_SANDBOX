@@ -131,7 +131,7 @@ if (!defined('CNBYA')) {
 //      echo "<tr><td><strong>"._YA_PASSWORD.":</strong> $nuke_user_password<br /></td></tr>";
         echo "</table><br /><br />";
         echo "<center><strong>"._NOTE."</strong> "._YOUWILLRECEIVE."";
-        echo "<form action='modules.php?name=$module_name' method='post'>";
+        echo "<form action='modules.php?name=$nuke_module_name' method='post'>";
 
         if (is_array($nfield)):
 

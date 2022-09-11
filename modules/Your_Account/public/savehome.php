@@ -45,7 +45,7 @@ if (!defined('CNBYA')) {
     if (($nuke_user_id == $vuid) AND ($check2 == $ccpass)) {
         $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET storynum='$storynum' WHERE user_id='$nuke_user_id'");
         yacookie($nuke_userinfo[user_id],$nuke_userinfo[username],$nuke_userinfo[user_password],$nuke_userinfo[storynum],$nuke_userinfo[umode],$nuke_userinfo[uorder],$nuke_userinfo[thold],$nuke_userinfo[noscore],$nuke_userinfo[ublockon],$nuke_userinfo[theme],$nuke_userinfo[commentmax]);
-        nuke_redirect("modules.php?name=$module_name");
+        nuke_redirect("modules.php?name=$nuke_module_name");
     }
 
 ?>

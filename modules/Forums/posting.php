@@ -62,9 +62,9 @@ if (!defined('MODULE_FILE')) {
 
 if ($popup != "1"){
 
-	$module_name = basename(dirname(__FILE__));
+	$nuke_module_name = basename(dirname(__FILE__));
 
-	require("modules/".$module_name."/nukebb.php");
+	require("modules/".$nuke_module_name."/nukebb.php");
 
 	}
 
@@ -165,7 +165,7 @@ else if ( $mode == 'smilies' )
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_POSTING);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_POSTING);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -197,7 +197,7 @@ if ( isset($HTTP_POST_VARS['cancel']) )
 			$nuke_redirect = "index.$phpEx";
 			$post_append = '';
 	}
-	nuke_redirect(append_sid($nuke_redirect, true) . $post_append);
+	nuke_redirect(append_nuke_sid($nuke_redirect, true) . $post_append);
 	exit;
 }
 
@@ -712,7 +712,7 @@ if ( ($result = $nuke_db->sql_query($sql)) && ($post_info = $nuke_db->sql_fetchr
 
 						$message = ( $delete || $mode == 'delete' ) ? $lang['Delete_own_posts'] : $lang['Edit_own_posts'];
 
-						$message .= '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
+						$message .= '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
 
 
 
@@ -862,7 +862,7 @@ if ( !$is_auth[$is_auth_type] )
 
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
 
-		nuke_redirect(append_sid("login.$phpEx?nuke_redirect=posting.$phpEx&" . $nuke_redirect, true));
+		nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=posting.$phpEx&" . $nuke_redirect, true));
 
 		exit;
 
@@ -876,7 +876,7 @@ if( !$is_auth['auth_mod'] && $nuke_userdata['user_level'] != NUKE_ADMIN )
 	$nuke_redirect = str_replace("&amp;", "&", preg_replace('#.*?([a-z]+?\.' . $phpEx . '.*?)$#i', '\1', htmlspecialchars($HTTP_SERVER_VARS['REQUEST_URI'])));
 	if( $HTTP_POST_VARS['cancel'] )
 	{
-		nuke_redirect(append_sid("index.$phpEx"));
+		nuke_redirect(append_nuke_sid("index.$phpEx"));
 	}
 	else if( $HTTP_POST_VARS['pass_login'] )
 	{
@@ -1107,7 +1107,7 @@ if ( ( $delete || $poll_delete || $mode == 'delete' ) && !$confirm )
 
 
 
-				'S_CONFIRM_ACTION' => append_sid("posting.$phpEx"),
+				'S_CONFIRM_ACTION' => append_nuke_sid("posting.$phpEx"),
 
 				'S_HIDDEN_FIELDS' => $s_hidden_fields)
 
@@ -1141,7 +1141,7 @@ else if ( $mode == 'thank' )
 
 			$message = $lang['thanks_not_logged'];
 
-			$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
+			$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
 
 			message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -1191,7 +1191,7 @@ else if ( $mode == 'thank' )
 
 			$message = $lang['t_starter'];
 
-			$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
+			$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
 
 			message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -1255,13 +1255,13 @@ else if ( $mode == 'thank' )
 
 		$template_nuke->assign_vars(array(
 
-			'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">')
+			'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">')
 
 		);
 
 
 
-		$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
+		$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
 
 		
 
@@ -1419,11 +1419,11 @@ else if ( $mode == 'vote' )
 
 				$template_nuke->assign_vars(array(
 
-						'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">')
+						'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">')
 
 				);
 
-				$message .=  '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
+				$message .=  '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
 
 				message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -1433,7 +1433,7 @@ else if ( $mode == 'vote' )
 
 		{
 
-				nuke_redirect(append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id", true));
+				nuke_redirect(append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id", true));
 
 		}
 
@@ -2449,7 +2449,7 @@ if( $parent_id )
 		{
 			$template_nuke->assign_vars(array(
 				'PARENT_FORUM'			=> 1,
-				'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
+				'U_VIEW_PARENT_FORUM'	=> append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
 				'PARENT_FORUM_NAME'		=> $all_forums[$i]['forum_name'],
 				));
 		}
@@ -2474,11 +2474,11 @@ $template_nuke->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:     View Topic Name While Posting      v1.0.5 ]
  ******************************************************/
-		'U_VIEW_TOPIC' => append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id"),
+		'U_VIEW_TOPIC' => append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id"),
 /*****[END]********************************************
  [ Mod:     View Topic Name While Posting      v1.0.5 ]
  ******************************************************/
-		'U_VIEW_FORUM' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id"))
+		'U_VIEW_FORUM' => append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id"))
 );
 
 //
@@ -2506,7 +2506,7 @@ $template_nuke->assign_vars(array(
 		'SUBJECT' => $subject,
 		'MESSAGE' => $message,
 		'HTML_STATUS' => $html_status,
-		// 'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
+		// 'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_nuke_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
 		'BBCODE_STATUS' => $bbcode_status,
 		'SMILIES_STATUS' => $smilies_status,
 
@@ -2528,8 +2528,8 @@ $template_nuke->assign_vars(array(
 		'L_DELETE_POST' => $lang['Delete_post'],
 		'L_STYLES_TIP' => $lang['Styles_tip'],
 
-		'U_VIEWTOPIC' => ( $mode == 'reply' ) ? append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;postorder=desc") : '',
-		'U_REVIEW_TOPIC' => ( $mode == 'reply' ) ? append_sid("posting.$phpEx?mode=topicreview&amp;" . NUKE_POST_TOPIC_URL . "=$topic_id&popup=1") : '',
+		'U_VIEWTOPIC' => ( $mode == 'reply' ) ? append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;postorder=desc") : '',
+		'U_REVIEW_TOPIC' => ( $mode == 'reply' ) ? append_nuke_sid("posting.$phpEx?mode=topicreview&amp;" . NUKE_POST_TOPIC_URL . "=$topic_id&popup=1") : '',
 
 		'S_HTML_CHECKED' => ( !$html_on ) ? 'checked="checked"' : '',
 		'S_BBCODE_CHECKED' => ( !$bbcode_on ) ? 'checked="checked"' : '',
@@ -2557,7 +2557,7 @@ $template_nuke->assign_vars(array(
 		'L_TYPE_GLOBAL_ANNOUNCE_TOPIC' => $lang['Post_global_announcement'],
 
 		'S_TOPIC_ID' => $topic_id,
-		'S_POST_ACTION' => append_sid("posting.$phpEx"),
+		'S_POST_ACTION' => append_nuke_sid("posting.$phpEx"),
 		'S_HIDDEN_FORM_FIELDS' => $hidden_form_fields)
 );
 

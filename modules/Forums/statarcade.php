@@ -25,8 +25,8 @@ if (!defined('MODULE_FILE')) {
 }
 
 if ($popup != "1"){
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -49,7 +49,7 @@ $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOF
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_STATARCADES, $nukeuser);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_STATARCADES, $nukeuser);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -171,10 +171,10 @@ if (!$row = $nuke_db->sql_fetchrow($result)) {
 }
 
 $template_nuke->assign_vars(array(
-        'PAGINATION' => generate_pagination(append_sid("statarcade.$phpEx?uid=$uid"), $total_games, $games_par_page, $start),
+        'PAGINATION' => generate_pagination(append_nuke_sid("statarcade.$phpEx?uid=$uid"), $total_games, $games_par_page, $start),
         'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $games_par_page) + 1), ceil($total_games / $games_par_page)),
-        'URL_ARCADE' => '<nobr><a class="cattitle" href="' . append_sid("arcade.$phpEx") . '">' . $lang['lib_arcade'] . '</a></nobr> ',
-        'URL_BESTSCORES' => '<nobr><a class="cattitle" href="' . append_sid("toparcade.$phpEx") . '">' . $lang['best_scores'] . '</a></nobr> ',
+        'URL_ARCADE' => '<nobr><a class="cattitle" href="' . append_nuke_sid("arcade.$phpEx") . '">' . $lang['lib_arcade'] . '</a></nobr> ',
+        'URL_BESTSCORES' => '<nobr><a class="cattitle" href="' . append_nuke_sid("toparcade.$phpEx") . '">' . $lang['best_scores'] . '</a></nobr> ',
         'USER_AVATAR' => '<a href="modules.php?name=Forums&file=profile&mode=viewprofile&u=' . $uid . '">' . $avatar_img . '</a>',
         'L_STATS' => $lang['statuser'] . ' ' . $statuser)
 );
@@ -202,7 +202,7 @@ while(!$fini) {
                         $pos = (isset($tbpos[ $gamelist[$i]['game_id'] ])) ? $tbpos[ $gamelist[$i]['game_id'] ] : 1;
 
                         $template_nuke->assign_block_vars('blkligne.blkcolonne.blkgame', array(
-                                'GAMENAME' => '<nobr><a class="cattitle" href="' . append_sid("games.$phpEx?gid=" . $gamelist[$i]['game_id']) . '">' . $gamelist[$i]['game_name'] . '</a></nobr> ',
+                                'GAMENAME' => '<nobr><a class="cattitle" href="' . append_nuke_sid("games.$phpEx?gid=" . $gamelist[$i]['game_id']) . '">' . $gamelist[$i]['game_name'] . '</a></nobr> ',
                                 'L_NBSET' => $lang['statnbset'],
                                 'NBSET' =>  ($gamelist[$i]['score_set'] == 0) ? "n/a" : $gamelist[$i]['score_set'],
                                 'L_TPSSET' => $lang['stattottime'],

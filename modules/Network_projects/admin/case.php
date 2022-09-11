@@ -19,9 +19,9 @@ if (!defined('ADMIN_FILE')) {
    die('Access Denied');
 }
 global $prefix, $network_db;
-$module_name = basename(dirname(dirname(__FILE__)));
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
 $aid = substr($aid, 0,125);
-$query = $network_db->sql_query("SELECT `title`, `admins` FROM `".$prefix."_modules` WHERE `title`='$module_name'");
+$query = $network_db->sql_query("SELECT `title`, `admins` FROM `".$prefix."_modules` WHERE `title`='$nuke_module_name'");
 list($mod_title, $admins) = $network_db->sql_fetchrow($query);
 $network_db->sql_freeresult($query);
 $query2 = $network_db->sql_query("SELECT `name`, `radminsuper` FROM `".$prefix."_authors` WHERE `aid`='$aid'");
@@ -180,7 +180,7 @@ if($radminsuper == 1 || $nuke_auth_user == 1) {
     case "TaskStatusUpdate":
     case "TaskUpdate":
     	$title = $mod_title;
-        include(NUKE_MODULES_DIR.$module_name.'/admin/index.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/admin/index.php');
     break;
   }
 }

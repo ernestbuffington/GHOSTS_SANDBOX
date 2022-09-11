@@ -24,8 +24,8 @@ if (!defined('MODULE_FILE')) {
 
 if ($popup != "1")
 {
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -282,7 +282,7 @@ function send_file_to_browser($attachment, $upload_dir)
 //
 // Start Session Management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
 init_userprefs($nuke_userdata);
 
 if (!$download_id)

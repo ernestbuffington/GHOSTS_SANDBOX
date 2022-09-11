@@ -57,9 +57,9 @@ if (!defined('MODULE_FILE')) {
 
 
 
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 
-require("modules/".$module_name."/nukebb.php");
+require("modules/".$nuke_module_name."/nukebb.php");
 
 
 
@@ -371,7 +371,7 @@ else
 
 //
 
-$nuke_userdata = session_pagestart($nuke_user_ip, $forum_id);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, $forum_id);
 
 init_userprefs($nuke_userdata);
 
@@ -437,7 +437,7 @@ if ( isset($HTTP_POST_VARS['cancel']) )
 
         //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
 
-        nuke_redirect(append_sid($nuke_redirect, true));
+        nuke_redirect(append_nuke_sid($nuke_redirect, true));
 
         exit;
 
@@ -1022,12 +1022,12 @@ switch( $mode )
 
                         if ( !empty($topic_id) )
                         {
-                                $nuke_redirect_page = append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id");
+                                $nuke_redirect_page = append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id");
                                 $l_nuke_redirect = sprintf($lang['Click_return_forum'], '<a href="' . $nuke_redirect_page . '">', '</a>');
                         }
                         else
                         {
-                                $nuke_redirect_page = append_sid("modcp.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id");
+                                $nuke_redirect_page = append_nuke_sid("modcp.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id");
                                 $l_nuke_redirect = sprintf($lang['Click_return_modcp'], '<a href="' . $nuke_redirect_page . '">', '</a>');
                         }
 
@@ -1142,7 +1142,7 @@ switch( $mode )
 
 							'PARENT_FORUM'			=> 1,
 
-							'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
+							'U_VIEW_PARENT_FORUM'	=> append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
 
 							'PARENT_FORUM_NAME'		=> $all_forums[$i]['forum_name'],
 
@@ -1176,7 +1176,7 @@ switch( $mode )
 
 
 
-                                'S_CONFIRM_ACTION' => append_sid("modcp.$phpEx"),
+                                'S_CONFIRM_ACTION' => append_nuke_sid("modcp.$phpEx"),
 
                                 'S_HIDDEN_FIELDS' => $hidden_fields)
 
@@ -1406,7 +1406,7 @@ switch( $mode )
 
                         {
 
-                                $nuke_redirect_page = append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id");
+                                $nuke_redirect_page = append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id");
 
                                 $message .= sprintf($lang['Click_return_topic'], '<a href="' . $nuke_redirect_page . '">', '</a>');
 
@@ -1416,7 +1416,7 @@ switch( $mode )
 
                         {
 
-                                $nuke_redirect_page = append_sid("modcp.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id");
+                                $nuke_redirect_page = append_nuke_sid("modcp.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id");
 
                                 $message .= sprintf($lang['Click_return_modcp'], '<a href="' . $nuke_redirect_page . '">', '</a>');
 
@@ -1424,7 +1424,7 @@ switch( $mode )
 
 
 
-                        $message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$old_forum_id") . '">', '</a>');
+                        $message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$old_forum_id") . '">', '</a>');
 
 
 
@@ -1520,7 +1520,7 @@ switch( $mode )
 
                                 'S_FORUM_SELECT' => make_forum_select('new_forum', $forum_id),
 
-                                'S_MODCP_ACTION' => append_sid("modcp.$phpEx"),
+                                'S_MODCP_ACTION' => append_nuke_sid("modcp.$phpEx"),
 
                                 'S_HIDDEN_FIELDS' => $hidden_fields)
 
@@ -1608,7 +1608,7 @@ switch( $mode )
 
                 {
 
-                        $nuke_redirect_page = append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id");
+                        $nuke_redirect_page = append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id");
 
                         $message = sprintf($lang['Click_return_topic'], '<a href="' . $nuke_redirect_page . '">', '</a>');
 
@@ -1618,7 +1618,7 @@ switch( $mode )
 
                 {
 
-                        $nuke_redirect_page = append_sid("modcp.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id");
+                        $nuke_redirect_page = append_nuke_sid("modcp.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id");
 
                         $message = sprintf($lang['Click_return_modcp'], '<a href="' . $nuke_redirect_page . '">', '</a>');
 
@@ -1626,7 +1626,7 @@ switch( $mode )
 
 
 
-                $message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id") . '">', '</a>');
+                $message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id") . '">', '</a>');
 
 
 
@@ -1714,7 +1714,7 @@ switch( $mode )
 
                 {
 
-                        $nuke_redirect_page = append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id");
+                        $nuke_redirect_page = append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id");
 
                         $message = sprintf($lang['Click_return_topic'], '<a href="' . $nuke_redirect_page . '">', '</a>');
 
@@ -1724,7 +1724,7 @@ switch( $mode )
 
                 {
 
-                        $nuke_redirect_page = append_sid("modcp.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id");
+                        $nuke_redirect_page = append_nuke_sid("modcp.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id");
 
                         $message = sprintf($lang['Click_return_modcp'], '<a href="' . $nuke_redirect_page . '">', '</a>');
 
@@ -1732,7 +1732,7 @@ switch( $mode )
 
 
 
-                $message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id") . '">', '</a>');
+                $message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id") . '">', '</a>');
 
 
 
@@ -2010,13 +2010,13 @@ switch( $mode )
 
                                 $template_nuke->assign_vars(array(
 
-                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">')
+                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">')
 
                                 );
 
 
 
-                        $message = $lang['Topic_split'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
+                        $message = $lang['Topic_split'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
 
                                 message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -2116,11 +2116,11 @@ switch( $mode )
 
 
 
-                                        'U_VIEW_FORUM' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id"),
+                                        'U_VIEW_FORUM' => append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id"),
 
 
 
-                                        'S_SPLIT_ACTION' => append_sid("modcp.$phpEx"),
+                                        'S_SPLIT_ACTION' => append_nuke_sid("modcp.$phpEx"),
 
                                         'S_HIDDEN_FIELDS' => $s_hidden_fields,
 
@@ -2386,7 +2386,7 @@ switch( $mode )
 
 
 
-                        'U_LOOKUP_IP' => append_sid("modcp.$phpEx?mode=ip&amp;" . NUKE_POST_POST_URL . "=$post_id&amp;" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;rdns=" . $ip_this_post))
+                        'U_LOOKUP_IP' => append_nuke_sid("modcp.$phpEx?mode=ip&amp;" . NUKE_POST_POST_URL . "=$post_id&amp;" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;rdns=" . $ip_this_post))
 
                 );
 
@@ -2468,7 +2468,7 @@ switch( $mode )
 
 
 
-                                        'U_LOOKUP_IP' => append_sid("modcp.$phpEx?mode=ip&amp;" . NUKE_POST_POST_URL . "=$post_id&amp;" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;rdns=" . $row['poster_ip']))
+                                        'U_LOOKUP_IP' => append_nuke_sid("modcp.$phpEx?mode=ip&amp;" . NUKE_POST_POST_URL . "=$post_id&amp;" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;rdns=" . $row['poster_ip']))
 
                                 );
 
@@ -2548,9 +2548,9 @@ switch( $mode )
 
 
 
-                                        'U_PROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$id"),
+                                        'U_PROFILE' => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$id"),
 
-                                        'U_SEARCHPOSTS' => append_sid("search.$phpEx?search_author=" . (($id == NUKE_ANONYMOUS) ? 'Anonymous' : urlencode($nuke_username)) . "&amp;showresults=topics"))
+                                        'U_SEARCHPOSTS' => append_nuke_sid("search.$phpEx?search_author=" . (($id == NUKE_ANONYMOUS) ? 'Anonymous' : urlencode($nuke_username)) . "&amp;showresults=topics"))
 
                                 );
 
@@ -2632,7 +2632,7 @@ switch( $mode )
 
             //$nuke_redirect_page = "modules.php?name=Forums&file=viewtopic&" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;sid=" . $nuke_userdata['session_id'];
 
-            $nuke_redirect_page = append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id");
+            $nuke_redirect_page = append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id");
 
             $message = sprintf($lang['Click_return_topic'], '<a href="' . $nuke_redirect_page . '">', '</a>');
 
@@ -2642,11 +2642,11 @@ switch( $mode )
 
         {
 
-            // And here again. Dam we must use append_sid for this!!
+            // And here again. Dam we must use append_nuke_sid for this!!
 
             //$nuke_redirect_page = "modules.php?name=Forums&file=modcp&" . NUKE_POST_FORUM_URL . "=$forum_id&amp;sid=" . $nuke_userdata['session_id'];
 
-            $nuke_redirect_page = append_sid("modcp.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id");
+            $nuke_redirect_page = append_nuke_sid("modcp.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id");
 
             $message = sprintf($lang['Click_return_modcp'], '<a href="' . $nuke_redirect_page . '">', '</a>');
 
@@ -2658,7 +2658,7 @@ switch( $mode )
 
         //$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . "modules.php?name=Forums&file=viewtopic&" . NUKE_POST_FORUM_URL . "=$forum_id&amp;sid=" . $nuke_userdata['session_id'] . '">', '</a>');
 
-        $message .= '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id") . '">', '</a>');
+        $message .= '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id") . '">', '</a>');
 
 
 
@@ -2738,11 +2738,11 @@ switch( $mode )
 
 
 
-                        'U_VIEW_FORUM' => append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id"),
+                        'U_VIEW_FORUM' => append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id"),
 
                         'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" /><input type="hidden" name="' . NUKE_POST_FORUM_URL . '" value="' . $forum_id . '" />',
 
-                        'S_MODCP_ACTION' => append_sid("modcp.$phpEx"))
+                        'S_MODCP_ACTION' => append_nuke_sid("modcp.$phpEx"))
 
                 );
 
@@ -2802,7 +2802,7 @@ switch( $mode )
 
 						'PARENT_FORUM'			=> 1,
 
-						'U_VIEW_PARENT_FORUM'	=> append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
+						'U_VIEW_PARENT_FORUM'	=> append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL .'=' . $all_forums[$i]['forum_id']),
 
 						'PARENT_FORUM_NAME'		=> $all_forums[$i]['forum_name'],
 
@@ -3064,7 +3064,7 @@ switch( $mode )
 
 
 
-                        $u_view_topic = append_sid("modcp.$phpEx?mode=split&amp;" . NUKE_POST_TOPIC_URL . "=$topic_id");
+                        $u_view_topic = append_nuke_sid("modcp.$phpEx?mode=split&amp;" . NUKE_POST_TOPIC_URL . "=$topic_id");
 
                         $topic_replies = $row['topic_replies'];
 

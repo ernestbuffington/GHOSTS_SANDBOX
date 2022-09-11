@@ -28,7 +28,7 @@ OpenTable();
 echo "<table width='100%' border='1' cellspacing='0' cellpadding='2'>\n";
 echo "<tr><td colspan='3' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_REQUESTOPTIONS."</strong></nobr></td></tr>\n";
 $requestrows = $network_db->sql_numrows($network_db->sql_query("SELECT `request_id` FROM `".$network_prefix."_requests`"));
-$pjimage = pjimage("stats.png", $module_name);
+$pjimage = pjimage("stats.png", $nuke_module_name);
 echo "<tr><td><img src='$pjimage'></td><td colspan='2' width='100%'><nobr>"._NETWORK_TOTALREQUESTS.": <strong>$requestrows</strong></nobr></td></tr>\n";
 echo "</table>\n";
 //CloseTable();
@@ -52,7 +52,7 @@ if($requestrows > 0){
     $project = pjproject_info($project_id);
     $type = pjrequesttype_info($type_id);
     $members = $network_db->sql_numrows($network_db->sql_query("SELECT `member_id` FROM `".$network_prefix."_requests_members` WHERE `request_id`='$request_id'"));
-    $pjimage = pjimage("request.png", $module_name);
+    $pjimage = pjimage("request.png", $nuke_module_name);
     if(empty($request_name)) { $request_name = "----------"; }
     echo "<tr><td><img src='$pjimage'></td><td width='100%'>$request_name</td>\n";
         echo "<td align='center'><nobr><a href='".$admin_file.".php?op=ProjectList'>".$project['project_name']."</a></nobr></td>\n";

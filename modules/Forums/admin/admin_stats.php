@@ -39,7 +39,7 @@ if (!empty($board_config))
 if( !empty($setmodules) )
 {
     $filename = basename(__FILE__);
-    $module['Statistics']['Stats_configuration'] = $filename . '?mode=config';
+    $nuke_module['Statistics']['Stats_configuration'] = $filename . '?mode=config';
     return;
 }
 
@@ -223,7 +223,7 @@ if ($mode == 'config')
     
         'RETURN_LIMIT' => $stats_config['return_limit'],
         'MODULE_PAGINATION' => $stats_config['modules_per_page'],
-        'S_ACTION' => append_sid('admin_stats.'.$phpEx.'?mode='.$mode),
+        'S_ACTION' => append_nuke_sid('admin_stats.'.$phpEx.'?mode='.$mode),
         'MESSAGE' => $message)
     );
 }

@@ -27,7 +27,7 @@ define('IN_PHPBB2', true);
 if( !empty($setmodules) )
 {
 	$filename = basename(__FILE__);
-	$module['Forums']['Overall Permissions']   = $filename . '?' . NUKE_POST_FORUM_URL . "=$forum_id";
+	$nuke_module['Forums']['Overall Permissions']   = $filename . '?' . NUKE_POST_FORUM_URL . "=$forum_id";
 
 	return;
 }

@@ -3,14 +3,14 @@
 if (!defined('MODULE_FILE')) {
    die('You can\'t access this file directly...');
 }
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 
 $ThemeSel = get_theme();
 $themepath = './themes/'.$ThemeSel.'/style/ECalendar/style.css';
-$style_path = (!file_exists($themepath)) ? './modules/'.$module_name.'/css/' : './themes/'.$ThemeSel.'/style/ECalendar/';
+$style_path = (!file_exists($themepath)) ? './modules/'.$nuke_module_name.'/css/' : './themes/'.$ThemeSel.'/style/ECalendar/';
 
 addCSSToHead($style_path.'style.css','file');
-get_lang($module_name);
+get_lang($nuke_module_name);
 
 include_once(NUKE_BASE_DIR.'header.php');
 global $prefix, $nuke_db;

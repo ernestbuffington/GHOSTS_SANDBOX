@@ -47,7 +47,7 @@ if(!isset($_SESSION)) { session_start(); }
 if (!isset($_SESSION['YA1']) || !isset($_SESSION['YA2'])) {
     global $debugger;
     $debugger->handle_error('Session not valid for user: Name - '.Fix_Quotes($ya_username).' Email - '.Fix_Quotes($femail), 'Error');
-    nuke_redirect('modules.php?name='.$module_name.'&op=new_user');
+    nuke_redirect('modules.php?name='.$nuke_module_name.'&op=new_user');
 }
 unset($_SESSION['YA1']);
 unset($_SESSION['YA2']);
@@ -82,7 +82,7 @@ include(NUKE_BASE_DIR. 'header.php');
             if ($row = $nuke_db->sql_fetchrow($result)) {
                 if (isset($row['username']) || isset($row['user_email'])) {
                     if ($row['username'] ==  $ya_username || $row['user_email'] == $ya_user_email) {
-                        nuke_redirect("modules.php?name=$module_name");
+                        nuke_redirect("modules.php?name=$nuke_module_name");
                         exit;
                     }
                 }
@@ -204,7 +204,7 @@ include(NUKE_BASE_DIR. 'header.php');
                 yacookie($nuke_userinfo['user_id'],$nuke_userinfo['username'],$nuke_userinfo['user_password'],$nuke_userinfo['storynum'],$nuke_userinfo['umode'],$nuke_userinfo['uorder'],$nuke_userinfo['thold'],$nuke_userinfo['noscore'],$nuke_userinfo['ublockon'],$nuke_userinfo['theme'],$nuke_userinfo['commentmax']);
 // menelaos: i wonder if this cookie is set correctly
 // menelaos: refresh of location? The next line causes multiple accounts to be loaded into the database, this has to be fixed
-//              echo "<META HTTP-EQUIV=\"refresh\" content=\"2;URL=/modules.php?name=$module_name\">";
+//              echo "<META HTTP-EQUIV=\"refresh\" content=\"2;URL=/modules.php?name=$nuke_module_name\">";
                 echo "<center><strong>$nuke_userinfo[username]:</strong> "._ACTMSG2."</center>";
 /*****[BEGIN]******************************************
  [ Mod:     Finished Redirection               v1.0.0 ]

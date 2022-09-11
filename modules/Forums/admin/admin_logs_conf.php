@@ -29,14 +29,14 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
     $file = basename(__FILE__);
-    $module['Logs']['Logs Config'] = "$file";
+    $nuke_module['Logs']['Logs Config'] = "$file";
     return;
 }
 
 //
 // Load default header
 //
-$module_name = basename(dirname(dirname(__FILE__)));
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
 $phpbb2_root_path = './../';
 require_once($phpbb2_root_path . 'extension.inc');
 require_once('./pagestart.' . $phpEx);
@@ -56,7 +56,7 @@ if(!$result = $nuke_db->sql_query($sql))
 $row = $nuke_db->sql_fetchrow($result);
 $all_admin_authorized = $row['all_admin'];
 
-if ( $all_admin_authorized == '0' && $nuke_userdata['user_id'] <> '2' && !is_mod_admin($module_name) && $nuke_userdata['user_view_log'] <> '1' )
+if ( $all_admin_authorized == '0' && $nuke_userdata['user_id'] <> '2' && !is_mod_admin($nuke_module_name) && $nuke_userdata['user_view_log'] <> '1' )
 {
     message_die(NUKE_GENERAL_MESSAGE, $lang['Admin_not_authorized']);
 }
@@ -91,7 +91,7 @@ else
 
     if( isset($HTTP_POST_VARS['submit']) )
     {
-        $message = $lang['Log_Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_conf.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+        $message = $lang['Log_Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_nuke_sid("admin_logs_conf.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
     }
@@ -150,12 +150,12 @@ if ( $add_admin_username )
             }
             else
             {
-                message_die(NUKE_GENERAL_MESSAGE, $lang['Admins_add_success'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_conf.$phpEx") . "\">", "</a>"));
+                message_die(NUKE_GENERAL_MESSAGE, $lang['Admins_add_success'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_nuke_sid("admin_logs_conf.$phpEx") . "\">", "</a>"));
             }
     }
     else
     {
-        message_die(NUKE_GENERAL_MESSAGE, $lang['No_admins_allow'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_conf.$phpEx") . "\">", "</a>"));
+        message_die(NUKE_GENERAL_MESSAGE, $lang['No_admins_allow'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_nuke_sid("admin_logs_conf.$phpEx") . "\">", "</a>"));
     }
 }
 
@@ -219,12 +219,12 @@ if ( $delete_admin_username )
             }
             else
             {
-                message_die(NUKE_GENERAL_MESSAGE, $lang['Admins_del_success'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_config.$phpEx") . "\">", "</a>"));
+                message_die(NUKE_GENERAL_MESSAGE, $lang['Admins_del_success'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_nuke_sid("admin_logs_config.$phpEx") . "\">", "</a>"));
             }
     }
     else
     {
-        message_die(NUKE_GENERAL_MESSAGE, $lang['No_admins_disallow'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_config.$phpEx") . "\">", "</a>"));
+        message_die(NUKE_GENERAL_MESSAGE, $lang['No_admins_disallow'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_nuke_sid("admin_logs_config.$phpEx") . "\">", "</a>"));
     }
 }
 
@@ -238,13 +238,13 @@ if ( $do_prune )
 
     if ( $prune )
     {
-        message_die(NUKE_GENERAL_MESSAGE, $lang['Prune_success'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_sid("admin_logs_conf.$phpEx") . "\">", "</a>"));
+        message_die(NUKE_GENERAL_MESSAGE, $lang['Prune_success'] . "<br /><br />" . sprintf($lang['Click_return_admin_log_config'], "<a href=\"" . append_nuke_sid("admin_logs_conf.$phpEx") . "\">", "</a>"));
     }
 }
 $all_admin_yes = ( $new['all_admin'] ) ? "checked=\"checked\"" : "";
 $all_admin_no = ( !$new['all_admin'] ) ? "checked=\"checked\"" : "";
 $template_nuke->assign_vars(array(
-    "S_CONFIG_ACTION" => append_sid("admin_logs_conf.$phpEx"),
+    "S_CONFIG_ACTION" => append_nuke_sid("admin_logs_conf.$phpEx"),
 
     "L_YES" => $lang['Yes'],
     "L_NO" => $lang['No'],

@@ -32,9 +32,9 @@
  ************************************************************************/
 if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 
-get_lang($module_name);
+get_lang($nuke_module_name);
 
 $sid = intval($sid);
 
@@ -58,7 +58,7 @@ if (!empty($associated))
         $query = $nuke_db->sql_query("SELECT topicimage, topictext from ".$prefix."_topics WHERE topicid='".$asso_t[$i]."'");
 	    list($topicimage, $topictext) = $nuke_db->sql_fetchrow($query);
 	    $nuke_db->sql_freeresult($query);
-	    echo "<a href=\"modules.php?name=$module_name&new_topic=$asso_t[$i]\"><img src=\"".$tipath.$topicimage."\" border=\"0\" hspace=\"10\" alt=\"".$topictext."\" title=\"".$topictext."\"></a>";
+	    echo "<a href=\"modules.php?name=$nuke_module_name&new_topic=$asso_t[$i]\"><img src=\"".$tipath.$topicimage."\" border=\"0\" hspace=\"10\" alt=\"".$topictext."\" title=\"".$topictext."\"></a>";
       }
     }
     echo "</div>";

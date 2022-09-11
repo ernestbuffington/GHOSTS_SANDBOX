@@ -36,8 +36,8 @@ if (!defined('MODULE_FILE')) {
 
 if ($popup != "1")
     {
-        $module_name = basename(dirname(__FILE__));
-        require("modules/".$module_name."/nukebb.php");
+        $nuke_module_name = basename(dirname(__FILE__));
+        require("modules/".$nuke_module_name."/nukebb.php");
     }
     else
     {
@@ -51,7 +51,7 @@ include_once("includes/functions_report.php");
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -119,7 +119,7 @@ if ( ($mode == 'closereport' || $mode == 'openreport') && $report_id != '' )
             'TOPIC_TITLE' => $topic_title,
             'POST_ID' => $post_id,
             'REPORT_COMMENTS' => $report_comments,
-            'U_VIEW_TOPIC' => append_sid('viewtopic.'.$phpEx.'?' . NUKE_POST_POST_URL . '=' . $post_id . '#' . $post_id),
+            'U_VIEW_TOPIC' => append_nuke_sid('viewtopic.'.$phpEx.'?' . NUKE_POST_POST_URL . '=' . $post_id . '#' . $post_id),
             'L_REPORT_COMMENT' => $lang['Report_comment'],
             'L_ACTION' => $lang['Action'],
             'L_COMMENTS' => $lang['Comments'],
@@ -127,7 +127,7 @@ if ( ($mode == 'closereport' || $mode == 'openreport') && $report_id != '' )
             'L_LAST_ACTION_COMMENTS_EXPLAIN' => $lang['Last_action_comments_explain'],
             'L_SUBMIT' => $lang['Submit'],
             'L_PREVIOUS_COMMENTS' => $lang['Previous_comments'],
-            'S_ACTION' => append_sid('viewpost_reports.'.$phpEx.'?mode='.$mode.'&amp;report='.$report_id))
+            'S_ACTION' => append_nuke_sid('viewpost_reports.'.$phpEx.'?mode='.$mode.'&amp;report='.$report_id))
         );
 
         $template_nuke->pparse('report_comment');
@@ -176,7 +176,7 @@ if ( ($mode == 'closereport' || $mode == 'openreport') && $report_id != '' )
             message_die(NUKE_GENERAL_ERROR, 'Could not update status', '', __LINE__, __FILE__, $sql);
         }
 
-        $message =  $lang['Close_success'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
+        $message =  $lang['Close_success'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_nuke_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
         message_die(NUKE_GENERAL_MESSAGE, $message);
     }
 }
@@ -209,7 +209,7 @@ else if ( $mode == 'close' || $mode == 'open' )
 
     if ( empty($reports) )
     {
-        $message =  $lang['Report_not_selected'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
+        $message =  $lang['Report_not_selected'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_nuke_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
         message_die(NUKE_GENERAL_MESSAGE, $message);
     }
 
@@ -268,7 +268,7 @@ else if ( $mode == 'close' || $mode == 'open' )
         message_die(NUKE_GENERAL_ERROR, 'Could not find any reports','');
     }
 
-    $message =  $lang['Close_success'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
+    $message =  $lang['Close_success'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_nuke_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
     message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 else if ( $mode == 'optout' || $mode == 'optin' )
@@ -282,7 +282,7 @@ else if ( $mode == 'optout' || $mode == 'optin' )
         message_die(NUKE_GENERAL_ERROR, 'Could not opt status', '', __LINE__, __FILE__, $sql);
     }
 
-    $message = $lang['Opt_success'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
+    $message = $lang['Opt_success'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_nuke_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
     message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 else if ( $mode == 'delete' )
@@ -298,7 +298,7 @@ else if ( $mode == 'delete' )
 
     if ( empty($reports) )
     {
-        $message =  $lang['Report_not_selected'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
+        $message =  $lang['Report_not_selected'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_nuke_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
         message_die(NUKE_GENERAL_MESSAGE, $message);
     }
 
@@ -317,7 +317,7 @@ else if ( $mode == 'delete' )
         message_die(NUKE_GENERAL_ERROR, 'Could not delete reports', '', __LINE__, __FILE__, $sql);
     }
 
-    $message =  $lang['Delete_success'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
+    $message =  $lang['Delete_success'] . '<br /><br />' . sprintf($lang['Click_return_reports'], '<a href="' . append_nuke_sid('viewpost_reports.'.$phpEx) . '">', '</a>');
     message_die(NUKE_GENERAL_MESSAGE, $message);
 }
 $page_title = $lang['View_post_reports'];
@@ -347,13 +347,13 @@ $template_nuke->assign_vars(array(
     'L_SUBMIT'        => $lang['Submit'],
     'L_OPT_OUT'        => ( $nuke_userdata['user_report_optout'] ) ? $lang['Opt_in'] : $lang['Opt_out'],
 
-    'U_OPT_OUT'        => ( $nuke_userdata['user_report_optout'] ) ? append_sid('viewpost_reports.' . $phpEx . '?mode=optin') : append_sid('viewpost_reports.' . $phpEx . '?mode=optout'),
+    'U_OPT_OUT'        => ( $nuke_userdata['user_report_optout'] ) ? append_nuke_sid('viewpost_reports.' . $phpEx . '?mode=optin') : append_nuke_sid('viewpost_reports.' . $phpEx . '?mode=optout'),
 
     'S_OPEN'            => ( $status == NUKE_REPORT_POST_NEW ) ? ' selected="selected"' : '',
     'S_CLOSED'        => ( $status == NUKE_REPORT_POST_CLOSED ) ? ' selected="selected"' : '',
     'S_ALL'            => ( $status == 'all' ) ? ' selected="selected"' : '',
 
-    'S_ACTION'        => append_sid('viewpost_reports.'.$phpEx))
+    'S_ACTION'        => append_nuke_sid('viewpost_reports.'.$phpEx))
 );
 
 show_reports($status);

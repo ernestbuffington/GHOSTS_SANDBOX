@@ -32,8 +32,8 @@ if (!defined('ADMIN_FILE')) {
 }
 
 global $prefix, $nuke_db, $admdata;
-$module_name = basename(dirname(dirname(__FILE__)));
-if(is_mod_admin($module_name)) {
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
+if(is_mod_admin($nuke_module_name)) {
 
     switch($op) {
         case "mod_users":

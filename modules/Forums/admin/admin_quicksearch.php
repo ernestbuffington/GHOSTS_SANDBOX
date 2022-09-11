@@ -36,7 +36,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
     $file = basename(__FILE__);
-    $module['General']['Quick Search List'] = "$file";
+    $nuke_module['General']['Quick Search List'] = "$file";
     return;
 }
 
@@ -126,7 +126,7 @@ if( !empty($mode) )
             "L_YES" => $lang['Yes'],
             "L_NO" => $lang['No'],
             
-            "S_SEARCH_ACTION" => append_sid("admin_quicksearch.$phpEx"),
+            "S_SEARCH_ACTION" => append_nuke_sid("admin_quicksearch.$phpEx"),
             "S_HIDDEN_FIELDS" => $s_hidden_fields)
         );
         
@@ -168,7 +168,7 @@ if( !empty($mode) )
             message_die(NUKE_GENERAL_ERROR, "Couldn't update quick search table", "", __LINE__, __FILE__, $sql);
         }
 
-        $message .= "<br /><br />" . sprintf($lang['Click_return_addsearchadmin'], "<a href=\"" . append_sid("admin_quicksearch.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+        $message .= "<br /><br />" . sprintf($lang['Click_return_addsearchadmin'], "<a href=\"" . append_nuke_sid("admin_quicksearch.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -194,7 +194,7 @@ if( !empty($mode) )
                 message_die(NUKE_GENERAL_ERROR, "Couldn't delete quick search data", "", __LINE__, __FILE__, $sql);
             }
 
-            $message = $lang['Search_removed'] . "<br /><br />" . sprintf($lang['Click_return_addsearchadmin'], "<a href=\"" . append_sid("admin_quicksearch.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+            $message = $lang['Search_removed'] . "<br /><br />" . sprintf($lang['Click_return_addsearchadmin'], "<a href=\"" . append_nuke_sid("admin_quicksearch.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
             message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -230,7 +230,7 @@ if( !empty($mode) )
             "L_ADD_SEARCH" => $lang['Add_new_search'],
             "L_ACTION" => $lang['Action'],
             
-            "S_SEARCHS_ACTION" => append_sid("admin_quicksearch.$phpEx"))
+            "S_SEARCHS_ACTION" => append_nuke_sid("admin_quicksearch.$phpEx"))
         );
         
         for( $i = 0; $i < $search_count; $i++)
@@ -246,8 +246,8 @@ if( !empty($mode) )
                 "ROW_CLASS" => $row_class,
                 "SEARCH_NAME" => $search_name,
 
-                "U_SEARCH_EDIT" => append_sid("admin_quicksearch.$phpEx?mode=edit&amp;id=$search_id"),
-                "U_SEARCH_DELETE" => append_sid("admin_quicksearch.$phpEx?mode=delete&amp;id=$search_id"))
+                "U_SEARCH_EDIT" => append_nuke_sid("admin_quicksearch.$phpEx?mode=edit&amp;id=$search_id"),
+                "U_SEARCH_DELETE" => append_nuke_sid("admin_quicksearch.$phpEx?mode=delete&amp;id=$search_id"))
             );
         }
     }
@@ -281,7 +281,7 @@ else
         "L_ADD_SEARCH" => $lang['Add_new_search'],
         "L_ACTION" => $lang['Action'],
         
-        "S_SEARCHS_ACTION" => append_sid("admin_quicksearch.$phpEx"))
+        "S_SEARCHS_ACTION" => append_nuke_sid("admin_quicksearch.$phpEx"))
     );
     
     for($i = 0; $i < $search_count; $i++)
@@ -297,8 +297,8 @@ else
             "ROW_CLASS" => $row_class,
             "SEARCH_NAME" => $search_name,
 
-            "U_SEARCH_EDIT" => append_sid("admin_quicksearch.$phpEx?mode=edit&amp;id=$search_id"),
-            "U_SEARCH_DELETE" => append_sid("admin_quicksearch.$phpEx?mode=delete&amp;id=$search_id"))
+            "U_SEARCH_EDIT" => append_nuke_sid("admin_quicksearch.$phpEx?mode=edit&amp;id=$search_id"),
+            "U_SEARCH_DELETE" => append_nuke_sid("admin_quicksearch.$phpEx?mode=delete&amp;id=$search_id"))
         );
     }
 }

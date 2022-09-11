@@ -55,11 +55,11 @@ if ( isset($HTTP_POST_VARS['cancel']) )
     $nuke_redirect = "index.$phpEx";
 
 // nuke_redirect 2.0.4 only
-    nuke_redirect(append_sid($nuke_redirect, true));
+    nuke_redirect(append_nuke_sid($nuke_redirect, true));
 
 // nuke_redirect 2.0.x
 //    $header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')) ) ? 'Refresh: 0; URL=' : 'Location: ';
-//    nuke_redirect(append_sid($nuke_redirect, true));
+//    nuke_redirect(append_nuke_sid($nuke_redirect, true));
 //    exit;
 
 }
@@ -216,12 +216,12 @@ else if ($mode)
         'SIG_PREVIEW' => $lang['Preview'],
         'SIG_EDIT' => $lang['sig_edit'],
         'SIG_CURRENT' => $lang['sig_current'],
-        'SIG_LINK' => append_sid("profile.$phpEx?mode=signature"),
+        'SIG_LINK' => append_nuke_sid("profile.$phpEx?mode=signature"),
 
         'L_SIGNATURE' => $lang['Signature'],
         'L_SIGNATURE_EXPLAIN' => sprintf($lang['Signature_explain'], $board_config['max_sig_chars']),
         'HTML_STATUS' => $html_status,
-        'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'), 
+        'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_nuke_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'), 
         'SMILIES_STATUS' => $smilies_status,
  /*****[BEGIN]*****************************************
  [ Mod:     BBCode Box                         v1.0.0 ]

@@ -62,8 +62,8 @@ if (!defined('MODULE_FILE')) {
     die("You can't access this file directly...");
 }
 if ($popup != "1") {
-    $module_name = basename(dirname(__FILE__));
-    require ("modules/" . $module_name . "/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require ("modules/" . $nuke_module_name . "/nukebb.php");
 } else {
     $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
@@ -75,7 +75,7 @@ include ("includes/functions_search.php");
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_SEARCH);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_SEARCH);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -189,7 +189,7 @@ if ($mode == 'searchuser') {
 
                     WHERE post_time >= " . $nuke_userdata['user_lastvisit'];
                 } else {
-                    nuke_redirect(append_sid("login.$phpEx?nuke_redirect=search.$phpEx&search_id=newposts", true));
+                    nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=search.$phpEx&search_id=newposts", true));
                 }
                 $show_results = 'topics';
                 $sort_by = 0;
@@ -202,7 +202,7 @@ if ($mode == 'searchuser') {
 
                     WHERE poster_id = " . $nuke_userdata['user_id'];
                 } else {
-                    nuke_redirect(append_sid("login.$phpEx?nuke_redirect=search.$phpEx&search_id=egosearch", true));
+                    nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=search.$phpEx&search_id=egosearch", true));
                 }
                 $show_results = 'topics';
                 $sort_by = 0;
@@ -911,7 +911,7 @@ if ($mode == 'searchuser') {
                     }
                     $message = str_replace("\n", '<br />', $message);
                 }
-                $poster = ($searchset[$i]['user_id'] != NUKE_ANONYMOUS) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $searchset[$i]['user_id']) . '">' : '';
+                $poster = ($searchset[$i]['user_id'] != NUKE_ANONYMOUS) ? '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=" . $searchset[$i]['user_id']) . '">' : '';
                 /*****[BEGIN]******************************************                
                 [ Mod:    Advanced Username Color             v1.0.5 ]                
                 ******************************************************/
@@ -994,7 +994,7 @@ if ($mode == 'searchuser') {
                     $goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />' . $lang['Goto_page'] . ': ';
                     $times = 1;
                     for ($j = 0;$j < $replies + 1;$j+= $board_config['posts_per_page']) {
-                        $goto_page.= '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=" . $topic_id . "&amp;start=$j") . '">' . $times . '</a>';
+                        $goto_page.= '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=" . $topic_id . "&amp;start=$j") . '">' . $times . '</a>';
                         if ($times == 1 && $total_pages > 4) {
                             $goto_page.= ' ... ';
                             $times = $total_pages - 3;
@@ -1069,7 +1069,7 @@ if ($mode == 'searchuser') {
                                 if ($unread_topics) {
                                     $folder_image = $folder_new;
                                     $folder_alt = $lang['New_posts'];
-                                    $newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
+                                    $newest_post_img = '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
                                 } else {
                                     $folder_alt = ($searchset[$i]['topic_status'] == NUKE_TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
                                     $folder_image = $folder;
@@ -1079,7 +1079,7 @@ if ($mode == 'searchuser') {
                             } else if ($searchset[$i]['post_time'] > $nuke_userdata['user_lastvisit']) {
                                 $folder_image = $folder_new;
                                 $folder_alt = $lang['New_posts'];
-                                $newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
+                                $newest_post_img = '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
                             } else {
                                 $folder_image = $folder;
                                 $folder_alt = ($searchset[$i]['topic_status'] == NUKE_TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
@@ -1096,7 +1096,7 @@ if ($mode == 'searchuser') {
                         $newest_post_img = '';
                     }
                 }
-                $topic_author = ($searchset[$i]['user_id'] != NUKE_ANONYMOUS) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $searchset[$i]['user_id']) . '">' : '';
+                $topic_author = ($searchset[$i]['user_id'] != NUKE_ANONYMOUS) ? '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $searchset[$i]['user_id']) . '">' : '';
                 /*****[BEGIN]******************************************
                 
                 [ Mod:    Advanced Username Color             v1.0.5 ]
@@ -1116,13 +1116,13 @@ if ($mode == 'searchuser') {
                 [ Mod:    Advanced Username Color             v1.0.5 ]
                 
                 ******************************************************/
-                $last_post_author = ($searchset[$i]['id2'] == NUKE_ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $searchset[$i]['id2']) . '">' . UsernameColor($searchset[$i]['color2'], $searchset[$i]['user2']) . '</a>';
+                $last_post_author = ($searchset[$i]['id2'] == NUKE_ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $searchset[$i]['id2']) . '">' . UsernameColor($searchset[$i]['color2'], $searchset[$i]['user2']) . '</a>';
                 /*****[END]********************************************
                 
                 [ Mod:    Advanced Username Color             v1.0.5 ]
                 
                 ******************************************************/
-                $last_post_url = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . '=' . $searchset[$i]['topic_last_post_id']) . '#' . $searchset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
+                $last_post_url = '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . '=' . $searchset[$i]['topic_last_post_id']) . '#' . $searchset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
                 /*--FNA #2--*/
                 $template_nuke->assign_block_vars('searchresults', array('FORUM_NAME' => $searchset[$i]['forum_name'], 'FORUM_ID' => $forum_id, 'TOPIC_ID' => $topic_id, 'FOLDER' => $folder_image, 'NEWEST_POST_IMG' => $newest_post_img, 'TOPIC_FOLDER_IMG' => $folder_image, 'GOTO_PAGE' => $goto_page, 'REPLIES' => $replies, 'TOPIC_TITLE' => $topic_title, 'TOPIC_TYPE' => $topic_type, 'VIEWS' => $views, 'TOPIC_AUTHOR' => $topic_author, 'FIRST_POST_TIME' => $first_post_time, 'LAST_POST_TIME' => $last_post_time, 'LAST_POST_AUTHOR' => $last_post_author, 'LAST_POST_IMG' => $last_post_url, 'L_TOPIC_FOLDER_ALT' => $folder_alt, 'U_VIEW_FORUM' => $forum_url, 'U_VIEW_TOPIC' => $topic_url));
             }
@@ -1265,7 +1265,7 @@ $template_nuke->assign_vars(array('L_SEARCH_QUERY' => $lang['Search_query'], 'L_
      [ Mod:    Search Only Subject                 v0.9.1 ]
 
      ******************************************************/
-'L_SEARCH_MESSAGE_TITLE' => $lang['Search_title_msg'], 'L_CATEGORY' => $lang['Category'], 'L_RETURN_FIRST' => $lang['Return_first'], 'L_CHARACTERS' => $lang['characters_posts'], 'L_SORT_BY' => $lang['Sort_by'], 'L_SORT_ASCENDING' => $lang['Sort_Ascending'], 'L_SORT_DESCENDING' => $lang['Sort_Descending'], 'L_SEARCH_PREVIOUS' => $lang['Search_previous'], 'L_DISPLAY_RESULTS' => $lang['Display_results'], 'L_FORUM' => $lang['Forum'], 'L_TOPICS' => $lang['Topics'], 'L_POSTS' => $lang['Posts'], 'S_SEARCH_ACTION' => append_sid("search.$phpEx?mode=results"), 'S_CHARACTER_OPTIONS' => $s_characters, 'S_FORUM_OPTIONS' => $s_forums, 'S_CATEGORY_OPTIONS' => $s_categories, 'S_TIME_OPTIONS' => $s_time, 'S_SORT_OPTIONS' => $s_sort_by, 'S_HIDDEN_FIELDS' => ''));
+'L_SEARCH_MESSAGE_TITLE' => $lang['Search_title_msg'], 'L_CATEGORY' => $lang['Category'], 'L_RETURN_FIRST' => $lang['Return_first'], 'L_CHARACTERS' => $lang['characters_posts'], 'L_SORT_BY' => $lang['Sort_by'], 'L_SORT_ASCENDING' => $lang['Sort_Ascending'], 'L_SORT_DESCENDING' => $lang['Sort_Descending'], 'L_SEARCH_PREVIOUS' => $lang['Search_previous'], 'L_DISPLAY_RESULTS' => $lang['Display_results'], 'L_FORUM' => $lang['Forum'], 'L_TOPICS' => $lang['Topics'], 'L_POSTS' => $lang['Posts'], 'S_SEARCH_ACTION' => append_nuke_sid("search.$phpEx?mode=results"), 'S_CHARACTER_OPTIONS' => $s_characters, 'S_FORUM_OPTIONS' => $s_forums, 'S_CATEGORY_OPTIONS' => $s_categories, 'S_TIME_OPTIONS' => $s_time, 'S_SORT_OPTIONS' => $s_sort_by, 'S_HIDDEN_FIELDS' => ''));
 $template_nuke->pparse('body');
 include ("includes/page_tail.$phpEx");
 ?>

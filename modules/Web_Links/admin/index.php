@@ -40,9 +40,9 @@
 
 	global $prefix, $nuke_db, $admdata, $admin_file;
 	
-	$module_name = basename(dirname(dirname(__FILE__)));
+	$nuke_module_name = basename(dirname(dirname(__FILE__)));
 	
-	if(is_mod_admin($module_name)) 
+	if(is_mod_admin($nuke_module_name)) 
 	{
 		function weblinks_parent($parentid, $title) 
 		{
@@ -566,7 +566,7 @@ function LinksDelVote($lid, $rid) {
     $nuke_db->sql_query("delete FROM " . $prefix . "_links_votedata WHERE ratingdbid=$rid");
     $voteresult = $nuke_db->sql_query("SELECT rating, ratinguser, ratingcomments FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid'");
     $totalvotesDB = $nuke_db->sql_numrows($voteresult);
-    include(NUKE_MODULES_DIR.$module_name.'/voteinclude.php');
+    include(NUKE_MODULES_DIR.$nuke_module_name.'/voteinclude.php');
     $nuke_db->sql_query("UPDATE " . $prefix . "_links_links SET linkratingsummary='$finalrating', totalvotes='$totalvotesDB', totalcomments='$truecomments' WHERE lid = '$lid'");
     nuke_redirect($admin_file.".php?op=LinksModLink&lid=$lid");
 }
@@ -891,7 +891,7 @@ function LinksCleanVotes() {
     $lid = intval($row['ratinglid']);
     $voteresult = $nuke_db->sql_query("SELECT rating, ratinguser, ratingcomments FROM " . $prefix . "_links_votedata WHERE ratinglid = '$lid'");
     $totalvotesDB = $nuke_db->sql_numrows($voteresult);
-    include(NUKE_MODULES_DIR.$module_name.'/voteinclude.php');
+    include(NUKE_MODULES_DIR.$nuke_module_name.'/voteinclude.php');
         $nuke_db->sql_query("UPDATE " . $prefix . "_links_links SET linkratingsummary='$finalrating', totalvotes='$totalvotesDB', totalcomments='$truecomments' WHERE lid = '$lid'");
     }
     nuke_redirect($admin_file.".php?op=Links");
@@ -1524,7 +1524,7 @@ switch ($op) {
 }
 
 } else {
-    DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$module_name\"");
+    DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$nuke_module_name\"");
 }
 
 ?>

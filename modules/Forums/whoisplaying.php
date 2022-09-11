@@ -91,9 +91,9 @@ for($i=0 ; $i<$nbplayers ; $i++):
      # Mod: Advanced Username Color v1.0.5 END
 
      if ($players[$i]['user_allow_viewonline']) 
-         $player_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$players[$i]['user_id']).'"'.$style_color.'>'.$players[$i]['username'].'</a>';
+         $player_link = '<a href="'.append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=".$players[$i]['user_id']).'"'.$style_color.'>'.$players[$i]['username'].'</a>';
 	 else 
-         $player_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=
+         $player_link = '<a href="'.append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;".NUKE_POST_USERS_URL."=
 		 ".$players[$i]['user_id']).'"'.$style_color.'><i>'.$players[$i]['username'].'</i></a>';
          if ($players[$i]['user_allow_viewonline'] || $nuke_userdata['user_level'] == NUKE_ADMIN): 
             if (!isset($games_names[ $players[$i]['game_id'] ])): 
@@ -111,7 +111,7 @@ foreach($games_names AS $key => $val):
    $class = ($class == 'row1') ? 'row2' : 'row1';
    $template_nuke->assign_block_vars('whoisplaying_row', array(
    'CLASS' => $class,
-   'GAME' => '<a href="' . append_sid("games.$phpEx?gid=" . $key) . '">' . $val . '</a>',
+   'GAME' => '<a href="' . append_nuke_sid("games.$phpEx?gid=" . $key) . '">' . $val . '</a>',
    'PLAYER_LIST' => $games_players[$key])
    );
  endif;

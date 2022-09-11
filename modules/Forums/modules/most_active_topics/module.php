@@ -79,7 +79,7 @@ $core->topic_smiles();
 $core->define_view('set_rows', array(
     '$core->pre_defined()',
     '$core->data(\'topic_replies\')',
-    '$core->generate_link(append_sid(\'viewtopic.php?t=\' . $core->data(\'topic_id\')), $core->data(\'topic_title\'), \'target="_blank"\')'
+    '$core->generate_link(append_nuke_sid(\'viewtopic.php?t=\' . $core->data(\'topic_id\')), $core->data(\'topic_title\'), \'target="_blank"\')'
     ),
     array(
         '$core->data(\'forum_id\')', 'auth_view AND auth_read', 'forum', array(

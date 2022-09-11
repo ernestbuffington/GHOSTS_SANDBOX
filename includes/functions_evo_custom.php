@@ -295,8 +295,8 @@ function get_admin_filename()
  */
 function the_module()
 {
-	global $module_name;
-	return $module_name;
+	global $nuke_module_name;
+	return $nuke_module_name;
 }
 
 /**
@@ -936,13 +936,13 @@ function get_mod_admin_uri()
  */
 if( !function_exists('__') ):
 
-	function __( $lang, $var = 'customlang', $module_name = '' ) 
+	function __( $lang, $var = 'customlang', $nuke_module_name = '' ) 
 	{
 		global $$var;
-		if ( empty($module_name) ):
+		if ( empty($nuke_module_name) ):
 			return $$var[the_module()][$lang];
 		else:
-			return $$var[$module_name][$lang];
+			return $$var[$nuke_module_name][$lang];
 		endif;
 	}
 
@@ -954,20 +954,20 @@ endif;
  * @param string $text Text to be translated.
  * @return string
  */
-function _e( $lang, $var = 'customlang', $module_name = '' )
+function _e( $lang, $var = 'customlang', $nuke_module_name = '' )
 {
-	echo __( $lang, $var, $module_name );
+	echo __( $lang, $var, $nuke_module_name );
 }
 
-function sprintf__( $lang, $var = 'customlang', $module_name = '', $replacement='' )
+function sprintf__( $lang, $var = 'customlang', $nuke_module_name = '', $replacement='' )
 {
-	$sprintf__ = vsprintf( __( $lang, $var, $module_name ), $replacement );
+	$sprintf__ = vsprintf( __( $lang, $var, $nuke_module_name ), $replacement );
 	return $sprintf__;
 }
 
-function sprintf_e( $lang, $var = 'customlang', $module_name = '', $replacement='' )
+function sprintf_e( $lang, $var = 'customlang', $nuke_module_name = '', $replacement='' )
 {
-	$sprintf__ = vsprintf( __( $lang, $var, $module_name ), $replacement );
+	$sprintf__ = vsprintf( __( $lang, $var, $nuke_module_name ), $replacement );
 	echo $sprintf__;
 }
 
@@ -1124,7 +1124,7 @@ function get_bootstrap_pagination()
     $page      = get_query_var('page', 'get', 'int', 1);
 
     /*
-    'url' => append_sid('privmsg'.$phpEx.'?folder='.$folder), 
+    'url' => append_nuke_sid('privmsg'.$phpEx.'?folder='.$folder), 
     'total' => $pm_total,
     'per-page' => $board_config['topics_per_page']
     */

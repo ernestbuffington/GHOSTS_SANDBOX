@@ -130,17 +130,17 @@ function get_admin_field($field_name, $admin)
  *
  * @author Quake
  *
- * @param string $module_name Module name
+ * @param string $nuke_module_name Module name
  * @return bool
  */
-function is_mod_admin($module_name='super') 
+function is_mod_admin($nuke_module_name='super') 
 {
 
     global $nuke_db, $aid, $admin;
     static $nuke_auth = array();
 
     if(!is_admin()) return 0;
-    if(isset($nuke_auth[$module_name])) return $nuke_auth[$module_name];
+    if(isset($nuke_auth[$nuke_module_name])) return $nuke_auth[$nuke_module_name];
 
     if(!isset($aid)) {
         if(!is_array($admin)) {
@@ -153,8 +153,8 @@ function is_mod_admin($module_name='super')
     }
     $admdata = get_admin_field('*', $aid);
     $nuke_auth_user = 0;
-    if($module_name != 'super') {
-        list($admins) = $nuke_db->sql_ufetchrow("SELECT `admins` FROM "._MODULES_TABLE." WHERE `title`='$module_name'");
+    if($nuke_module_name != 'super') {
+        list($admins) = $nuke_db->sql_ufetchrow("SELECT `admins` FROM "._MODULES_TABLE." WHERE `title`='$nuke_module_name'");
         $adminarray = explode(",", $admins);
         for ($i=0, $maxi=count($adminarray); $i < $maxi; $i++) {
             if ($admdata['aid'] == $adminarray[$i] && !empty($admins)) {
@@ -162,8 +162,8 @@ function is_mod_admin($module_name='super')
             }
         }
     }
-    $nuke_auth[$module_name] = ($admdata['radminsuper'] == 1 || $nuke_auth_user == 1);
-    return $nuke_auth[$module_name];
+    $nuke_auth[$nuke_module_name] = ($admdata['radminsuper'] == 1 || $nuke_auth_user == 1);
+    return $nuke_auth[$nuke_module_name];
 
 }
 
@@ -172,47 +172,47 @@ function is_mod_admin($module_name='super')
  *
  * @author ReOrGaNiSaTiOn (based on is_mod_admin from Quake)
  *
- * @param string $module_name Module name
+ * @param string $nuke_module_name Module name
  * super = only Superuser
  * module_name = only Admins with privileges for this module
  * all with module_name = Superuser + Module-Admins
  * @return array of admin-names with email-address by default only Superuser
  */
-function get_mod_admins($module_name='super', $all='') 
+function get_mod_admins($nuke_module_name='super', $all='') 
 {
 
     global $nuke_db;
     static $admins = array();
 
     if ( $all =='') {
-        if(isset($admins[$module_name])) {return $admins[$module_name];}
+        if(isset($admins[$nuke_module_name])) {return $admins[$nuke_module_name];}
     }
 
-    if($module_name == 'super' || $all != '') {
+    if($nuke_module_name == 'super' || $all != '') {
         $result1 = $nuke_db->sql_query("SELECT `aid`, `email` FROM `"._AUTHOR_TABLE."` WHERE `radminsuper`='1'");
         $num = 0;
         while (list($admin, $email) = $nuke_db->sql_fetchrow($result1)) {
-            $admins[$module_name][$num]['aid'] = $admin;
-            $admins[$module_name][$num]['email'] = $email;
+            $admins[$nuke_module_name][$num]['aid'] = $admin;
+            $admins[$nuke_module_name][$num]['email'] = $email;
             $num++;
         }
         $nuke_db->sql_freeresult($result1);
     }
 
-    if($module_name != 'super') {
-        list($admin) = $nuke_db->sql_ufetchrow("SELECT `admins` FROM `"._MODULES_TABLE."` WHERE `title`='".$module_name."'");
+    if($nuke_module_name != 'super') {
+        list($admin) = $nuke_db->sql_ufetchrow("SELECT `admins` FROM `"._MODULES_TABLE."` WHERE `title`='".$nuke_module_name."'");
         $adminarray = explode(",", $admin);
         $num = ($all !='') ? $num : 0;
         for ($i=0, $maxi=count($adminarray); $i < $maxi; $i++) {
             $row = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `aid`, `email` FROM `"._AUTHOR_TABLE."` WHERE `aid`='".$adminarray[$i]."'"));
             if (!empty($row['aid'])) {
-                $admins[$module_name][$num]['aid'] = $row['aid'];
-                $admins[$module_name][$num]['email'] = $row['email'];
+                $admins[$nuke_module_name][$num]['aid'] = $row['aid'];
+                $admins[$nuke_module_name][$num]['email'] = $row['email'];
             }
             $num++;
         }
     }
-    return $admins[$module_name];
+    return $admins[$nuke_module_name];
 }
 
 /**
@@ -361,11 +361,11 @@ function update_modules()
     $result = $nuke_db->sql_query("SELECT title FROM "._MODULES_TABLE, true);
     while(list($mtitle) = $nuke_db->sql_fetchrow($result, SQL_NUM)) {
         if(substr($mtitle,0,3) != '~l~') {
-            $modules[] = $mtitle;
+            $nuke_modules[] = $mtitle;
         }
     }
     $nuke_db->sql_freeresult($result);
-    sort($modules);
+    sort($nuke_modules);
 
     //Here we will get all current modules uploaded
     $handle=opendir(NUKE_MODULES_DIR);
@@ -380,8 +380,8 @@ function update_modules()
 
     //Now we will run a check to make sure that all uploaded modules are installed
     for($i=0, $maxi=count($modlist);$i<$maxi;$i++) {
-        $module = $modlist[$i];
-        if (!in_array($module, $modules))
+        $nuke_module = $modlist[$i];
+        if (!in_array($nuke_module, $nuke_modules))
         {
             $nuke_db->sql_uquery("INSERT INTO `"._MODULES_TABLE."` (`mid`, 
 			                                                 `title`, 
@@ -393,16 +393,16 @@ function update_modules()
 															`cat_id`, 
 															`blocks`, 
 															`admins`, 
-															`groups`) VALUES (NULL, '$module', '".str_replace("_", " ", $module)."', 0, 0, 1, 0, 7, 1, '', '')");
+															`groups`) VALUES (NULL, '$nuke_module', '".str_replace("_", " ", $nuke_module)."', 0, 0, 1, 0, 7, 1, '', '')");
         }
     }
 
     //Now we will run a check to make sure all installed modules still exist
-    for($i=0, $maxi=count($modules);$i<$maxi;$i++){
-        $module = $modules[$i];
-        if (!in_array($module, $modlist))
+    for($i=0, $maxi=count($nuke_modules);$i<$maxi;$i++){
+        $nuke_module = $nuke_modules[$i];
+        if (!in_array($nuke_module, $modlist))
         {
-            $nuke_db->sql_uquery("DELETE FROM `"._MODULES_TABLE."` WHERE `title`= '$module'");
+            $nuke_db->sql_uquery("DELETE FROM `"._MODULES_TABLE."` WHERE `title`= '$nuke_module'");
             $result = $nuke_db->sql_uquery("OPTIMIZE TABLE `"._MODULES_TABLE."`");
             $nuke_db->sql_freeresult($result);
             $nuke_cache->delete('active_modules');
@@ -497,7 +497,7 @@ function GetColorGroups($in_admin = false)
     
 	    while (list($group_id, $group_name, $group_color, $group_weight) = $nuke_db->sql_fetchrow($result)) 
 		{
-            $ColorGroupsCache .= '&nbsp;[&nbsp;<strong><a href="'. append_sid('auc_listing.php?id='. $group_id.$back) .'"><span class="genmed" style="color:#'. $group_color .';">'. $group_name .'</span></a></strong>&nbsp;]&nbsp;';
+            $ColorGroupsCache .= '&nbsp;[&nbsp;<strong><a href="'. append_nuke_sid('auc_listing.php?id='. $group_id.$back) .'"><span class="genmed" style="color:#'. $group_color .';">'. $group_name .'</span></a></strong>&nbsp;]&nbsp;';
         }
         $nuke_db->sql_freeresult($result);
         $nuke_cache->save('ColorGroups', 'config', $ColorGroupsCache);

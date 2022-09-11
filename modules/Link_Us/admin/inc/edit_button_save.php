@@ -36,9 +36,9 @@ LinkusAdminMain();
 		OpenTable();
 		
 		if($result){
-			echo "<center><span color='green' size='3'>".$lang_new[$module_name]['EDIT_SUCCESSFUL']."</span></center>";
+			echo "<center><span color='green' size='3'>".$lang_new[$nuke_module_name]['EDIT_SUCCESSFUL']."</span></center>";
 		} else {
-			echo "<center><font color='red' size='3'>".$lang_new[$module_name]['EDIT_UNSUCCESSFUL']."</font></center>";
+			echo "<center><font color='red' size='3'>".$lang_new[$nuke_module_name]['EDIT_UNSUCCESSFUL']."</font></center>";
 		}
 		
 		CloseTable();

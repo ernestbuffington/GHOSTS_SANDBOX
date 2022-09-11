@@ -281,7 +281,7 @@ for ($i = 0; $i < count($row); $i++)
 
 $statistic_array = array($lang['Number_posts'], $lang['Posts_per_day'], $lang['Number_topics'], $lang['Topics_per_day'], $lang['Number_users'], $lang['Users_per_day'], $lang['Board_started'], $lang['Board_Up_Days'], $lang['Database_size'], $lang['Avatar_dir_size'], $lang['Latest_Reg_User_Date'], $lang['Latest_Reg_User'], $lang['Most_Ever_Online_Date'], $lang['Most_Ever_Online'], $lang['Gzip_compression']);
 
-$value_array = array($total_posts, $posts_per_day, $total_topics, $topics_per_day, $total_users, $nuke_users_per_day, $start_date, sprintf('%.2f', $boarddays), $nuke_dbsize, $avatar_dir_size, $newest_user_date, sprintf('<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . NUKE_POST_USERS_URL . '=' . $newest_uid) . '">' . $newest_user . '</a>'), $most_users_date, $most_users, ( $board_config['gzip_compress'] ) ? $lang['Enabled'] : $lang['Disabled']);
+$value_array = array($total_posts, $posts_per_day, $total_topics, $topics_per_day, $total_users, $nuke_users_per_day, $start_date, sprintf('%.2f', $boarddays), $nuke_dbsize, $avatar_dir_size, $newest_user_date, sprintf('<a href="' . append_nuke_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . NUKE_POST_USERS_URL . '=' . $newest_uid) . '">' . $newest_user . '</a>'), $most_users_date, $most_users, ( $board_config['gzip_compress'] ) ? $lang['Enabled'] : $lang['Disabled']);
 
 //
 // Disk Usage, if Attachment Mod is installed

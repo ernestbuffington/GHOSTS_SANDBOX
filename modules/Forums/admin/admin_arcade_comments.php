@@ -23,7 +23,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
    $file = basename(__FILE__);
-   $module['Arcade_Admin']['Manage_comments'] = $file;
+   $nuke_module['Arcade_Admin']['Manage_comments'] = $file;
    return;
 }
 
@@ -80,9 +80,9 @@ $mode = $HTTP_GET_VARS['mode'];
 
     $template_nuke->assign_vars(array(
             'GAME_ID' => $row['game_id'],
-            'GAME_NAME' => '<a href="../../../' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>', 
+            'GAME_NAME' => '<a href="../../../' . append_nuke_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>', 
             'COMMENTS' => $row['comments_value'],
-            'S_ACTION' => append_sid('admin_arcade_comments.' . $phpEx . '?mode=update'), 
+            'S_ACTION' => append_nuke_sid('admin_arcade_comments.' . $phpEx . '?mode=update'), 
             ));
 
     $template_nuke->pparse('body'); 
@@ -123,16 +123,16 @@ while ( $row = $nuke_db->sql_fetchrow($result))
             {
             
             $template_nuke->assign_block_vars('commentrow', array(
-                 'GAME_NAME' => '<a href="../../../' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>', 
+                 'GAME_NAME' => '<a href="../../../' . append_nuke_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>', 
                  'COMMENTS_VALUE' => $row['comments_value'],
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                 'USERNAME' => '<a href="../../../' . append_sid("statarcade.$phpEx?uid=" . $row['user_id'] ) . '" class="genmed">' . UsernameColor($row['username']) . '</a> ',
+                 'USERNAME' => '<a href="../../../' . append_nuke_sid("statarcade.$phpEx?uid=" . $row['user_id'] ) . '" class="genmed">' . UsernameColor($row['username']) . '</a> ',
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                 'EDIT_COMMENTS' => '<a href="' . append_sid("admin_arcade_comments.$phpEx?mode=edit&amp;gid=" . $row['game_id']) . '">Edit Comment</a>',
+                 'EDIT_COMMENTS' => '<a href="' . append_nuke_sid("admin_arcade_comments.$phpEx?mode=edit&amp;gid=" . $row['game_id']) . '">Edit Comment</a>',
             )); 
 
             }

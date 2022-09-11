@@ -68,15 +68,15 @@ class StatisticsCORE
     var $global_array = array();
     var $use_db_cache = false;
     var $do_not_use_cache = false; // force to not use caches at all if set to true
-    var $module_reloaded = false;
-    var $module_variables = array();
+    var $nuke_module_reloaded = false;
+    var $nuke_module_variables = array();
     var $used_language = '';
 
     // Informations about the currently parsed module
     var $current_module_path = '';
     var $current_module_name = '';
     var $current_module_id = 0;
-    var $module_info = array(); // Additional Module Informations gathered within other positions through the process
+    var $nuke_module_info = array(); // Additional Module Informations gathered within other positions through the process
 
     // Data
     var $calculation_data = array();
@@ -551,12 +551,12 @@ function init_core()
 
     for ($i = 0; $i < $num_rows; $i++)
     {
-        $module_id = intval($rows[$i]['module_id']);
+        $nuke_module_id = intval($rows[$i]['module_id']);
 
         switch (trim($rows[$i]['config_type']))
         {
             case 'number':
-                $core->module_variables[$module_id][trim($rows[$i]['config_name'])] = intval($rows[$i]['config_value']);
+                $core->module_variables[$nuke_module_id][trim($rows[$i]['config_name'])] = intval($rows[$i]['config_value']);
                 break;
         }
     }

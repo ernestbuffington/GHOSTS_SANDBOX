@@ -36,7 +36,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
         $filename = basename(__FILE__);
-        $module['General']['Smilies'] = $filename;
+        $nuke_module['General']['Smilies'] = $filename;
 
         return;
 }
@@ -58,7 +58,7 @@ if ((!empty($HTTP_GET_VARS['export_pack']) && $HTTP_GET_VARS['export_pack'] == '
 require('./pagestart.' . $phpEx);
 if ($cancel)
 {
-	nuke_redirect(append_sid("admin_smilies.$phpEx", true));
+	nuke_redirect(append_nuke_sid("admin_smilies.$phpEx", true));
 }
 $smilie_tmp = $board_config['smilies_path'];
 $board_config['smilies_path'] = str_replace("modules/Forums/", "", "$smilie_tmp");
@@ -195,7 +195,7 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
                         }
                 }
 
-                $message = $lang['smiley_import_success'] . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+                $message = $lang['smiley_import_success'] . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_nuke_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
                 message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -232,7 +232,7 @@ if( isset($HTTP_GET_VARS['import_pack']) || isset($HTTP_POST_VARS['import_pack']
                         "L_REPLACE_EXISTING" => $lang['replace_existing'],
                         "L_KEEP_EXISTING" => $lang['keep_existing'],
 
-                        "S_SMILEY_ACTION" => append_sid("admin_smilies.$phpEx"),
+                        "S_SMILEY_ACTION" => append_nuke_sid("admin_smilies.$phpEx"),
                         "S_SMILE_SELECT" => $smile_paks_select,
                         "S_HIDDEN_FIELDS" => $hidden_vars)
                 );
@@ -272,7 +272,7 @@ else if( isset($HTTP_POST_VARS['export_pack']) || isset($HTTP_GET_VARS['export_p
                 exit;
         }
 
-        $message = sprintf($lang['export_smiles'], "<a href=\"" . append_sid("admin_smilies.$phpEx?export_pack=send", true) . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+        $message = sprintf($lang['export_smiles'], "<a href=\"" . append_nuke_sid("admin_smilies.$phpEx?export_pack=send", true) . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_nuke_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -307,7 +307,7 @@ else if( isset($HTTP_POST_VARS['add']) || isset($HTTP_GET_VARS['add']) )
 
                 "SMILEY_IMG" => $phpbb2_root_path . $board_config['smilies_path'] . '/' . $smiley_images[0],
 
-                "S_SMILEY_ACTION" => append_sid("admin_smilies.$phpEx"),
+                "S_SMILEY_ACTION" => append_nuke_sid("admin_smilies.$phpEx"),
                 "S_HIDDEN_FIELDS" => $s_hidden_fields,
                 "S_FILENAME_OPTIONS" => $filename_list,
                 "S_SMILEY_BASEDIR" => $phpbb2_root_path . $board_config['smilies_path'])
@@ -339,7 +339,7 @@ else if ( $mode != "" )
      					message_die(NUKE_GENERAL_ERROR, "Couldn't delete smiley", "", __LINE__, __FILE__, $sql);
      				}
 
-     				$message = $lang['smiley_del_success'] . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+     				$message = $lang['smiley_del_success'] . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_nuke_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
      				message_die(NUKE_GENERAL_MESSAGE, $message);
      			}
@@ -359,7 +359,7 @@ else if ( $mode != "" )
      					'L_YES' => $lang['Yes'],
      					'L_NO' => $lang['No'],
 
-     					'S_CONFIRM_ACTION' => append_sid("admin_smilies.$phpEx"),
+     					'S_CONFIRM_ACTION' => append_nuke_sid("admin_smilies.$phpEx"),
      					'S_HIDDEN_FIELDS' => $hidden_fields)
      				);
      				$template_nuke->pparse('body');
@@ -420,7 +420,7 @@ else if ( $mode != "" )
 
                                 "SMILEY_IMG" => $phpbb2_root_path . $board_config['smilies_path'] . '/' . $smiley_edit_img,
 
-                                "S_SMILEY_ACTION" => append_sid("admin_smilies.$phpEx"),
+                                "S_SMILEY_ACTION" => append_nuke_sid("admin_smilies.$phpEx"),
                                 "S_HIDDEN_FIELDS" => $s_hidden_fields,
                                 "S_FILENAME_OPTIONS" => $filename_list,
                                 "S_SMILEY_BASEDIR" => $phpbb2_root_path . $board_config['smilies_path'])
@@ -469,7 +469,7 @@ else if ( $mode != "" )
                                 message_die(NUKE_GENERAL_ERROR, "Couldn't update smilies info", "", __LINE__, __FILE__, $sql);
                         }
 
-                        $message = $lang['smiley_edit_success'] . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+                        $message = $lang['smiley_edit_success'] . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_nuke_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
                         message_die(NUKE_GENERAL_MESSAGE, $message);
                         break;
@@ -513,7 +513,7 @@ else if ( $mode != "" )
                                 message_die(NUKE_GENERAL_ERROR, "Couldn't insert new smiley", "", __LINE__, __FILE__, $sql);
                         }
 
-                        $message = $lang['smiley_add_success'] . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+                        $message = $lang['smiley_add_success'] . "<br /><br />" . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_nuke_sid("admin_smilies.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
                         message_die(NUKE_GENERAL_MESSAGE, $message);
                         break;
@@ -554,7 +554,7 @@ else
                 "L_EXPORT_PACK" => $lang['export_smile_pack'],
 
                 "S_HIDDEN_FIELDS" => $s_hidden_fields,
-                "S_SMILEY_ACTION" => append_sid("admin_smilies.$phpEx"))
+                "S_SMILEY_ACTION" => append_nuke_sid("admin_smilies.$phpEx"))
         );
 
         //
@@ -579,8 +579,8 @@ else
                         "CODE" => $smilies[$i]['code'],
                         "EMOT" => $smilies[$i]['emoticon'],
 
-                        "U_SMILEY_EDIT" => append_sid("admin_smilies.$phpEx?mode=edit&amp;id=" . $smilies[$i]['smilies_id']),
-                        "U_SMILEY_DELETE" => append_sid("admin_smilies.$phpEx?mode=delete&amp;id=" . $smilies[$i]['smilies_id']))
+                        "U_SMILEY_EDIT" => append_nuke_sid("admin_smilies.$phpEx?mode=edit&amp;id=" . $smilies[$i]['smilies_id']),
+                        "U_SMILEY_DELETE" => append_nuke_sid("admin_smilies.$phpEx?mode=delete&amp;id=" . $smilies[$i]['smilies_id']))
                 );
         }
 

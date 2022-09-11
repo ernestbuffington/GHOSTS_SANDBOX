@@ -23,7 +23,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
   $filename = basename(__FILE__);
-  $module['ad_managment']['ad_code'] = $filename;
+  $nuke_module['ad_managment']['ad_code'] = $filename;
 
   return;
 }
@@ -57,7 +57,7 @@ if ( isset($HTTP_POST_VARS['submit']))
       message_die(NUKE_GENERAL_ERROR, "Failed to update first post ad settings", "", __LINE__, __FILE__, $sql);
     }
   }
-  $message = $lang['Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_inline_code'], "<a href=\"" . append_sid("admin_inline_ad_code.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+  $message = $lang['Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_inline_code'], "<a href=\"" . append_nuke_sid("admin_inline_ad_code.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
     message_die(NUKE_GENERAL_MESSAGE, $message);
 }
@@ -88,7 +88,7 @@ if ($HTTP_GET_VARS['action'] == "edit")
   "AD_CODE" => $adRow['ad_code'],
   "AD_NAME" => $adRow['ad_name'],
   "S_HIDDEN_FIELDS" => '<input type="hidden" name="action" value="edit" /><input type="hidden" name="ad_id" value="' . $adRow['ad_id'] . '" />',
-  "S_ACTION" => append_sid("admin_inline_ad_code.$phpEx"))
+  "S_ACTION" => append_nuke_sid("admin_inline_ad_code.$phpEx"))
   );
   $template_nuke->pparse("body");
 }
@@ -101,7 +101,7 @@ elseif ($HTTP_GET_VARS['action'] == "delete")
   {
     message_die(NUKE_GENERAL_ERROR, 'Could not query ad information', '', __LINE__, __FILE__, $sql);
   }
-  $message = $lang['Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_inline_code'], "<a href=\"" . append_sid("admin_inline_ad_code.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+  $message = $lang['Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_inline_code'], "<a href=\"" . append_nuke_sid("admin_inline_ad_code.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
     message_die(NUKE_GENERAL_MESSAGE, $message);
 }
@@ -119,7 +119,7 @@ elseif ($HTTP_GET_VARS['action'] == "add")
   "AD_CODE" => '',
   "AD_NAME" => '',
   "S_HIDDEN_FIELDS" => '',
-  "S_ACTION" => append_sid("admin_inline_ad_code.$phpEx"))
+  "S_ACTION" => append_nuke_sid("admin_inline_ad_code.$phpEx"))
   );
   $template_nuke->pparse("body");
 }
@@ -148,7 +148,7 @@ else
   "L_EDIT" => $lang['Edit'],
   "L_DELETE" => $lang['Delete'],
   "L_ADD" => $lang['ad_add'],
-  "S_ADD_ACTION" => append_sid("admin_inline_ad_code.$phpEx?action=add"))
+  "S_ADD_ACTION" => append_nuke_sid("admin_inline_ad_code.$phpEx?action=add"))
   );
 
   //$inline_ad_code = $adRow[$adindex]['ad_code'];
@@ -156,8 +156,8 @@ else
   {
     $ad_id = $adRow[$i]['ad_id'];
     $template_nuke->assign_block_vars('ad_row',array( 'AD_NAME' => $adRow[$i]['ad_name'],
-    'S_AD_EDIT' => append_sid("admin_inline_ad_code.$phpEx?action=edit&id=$ad_id"),
-    'S_AD_DELETE' => append_sid("admin_inline_ad_code.$phpEx?action=delete&id=$ad_id")
+    'S_AD_EDIT' => append_nuke_sid("admin_inline_ad_code.$phpEx?action=edit&id=$ad_id"),
+    'S_AD_DELETE' => append_nuke_sid("admin_inline_ad_code.$phpEx?action=delete&id=$ad_id")
     )
     );
   }

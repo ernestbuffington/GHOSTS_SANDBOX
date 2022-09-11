@@ -18,7 +18,7 @@ define('IN_PHPBB2', true);
 if (!empty($setmodules))
 {
     $filename = basename(__FILE__);
-    $module['Attachments']['Control_Panel'] = $filename;
+    $nuke_module['Attachments']['Control_Panel'] = $filename;
     return;
 }
 
@@ -239,7 +239,7 @@ else if ($delete && sizeof($delete_id_list) > 0)
         'L_YES'                => $lang['Yes'],
         'L_NO'                => $lang['No'],
 
-        'S_CONFIRM_ACTION'    => append_sid('admin_attach_cp.' . $phpEx),
+        'S_CONFIRM_ACTION'    => append_nuke_sid('admin_attach_cp.' . $phpEx),
         'S_HIDDEN_FIELDS'    => $hidden_fields)
     );
 
@@ -258,7 +258,7 @@ $template_nuke->assign_vars(array(
     'L_CONTROL_PANEL_EXPLAIN'    => $lang['Control_panel_explain'],
 
     'S_VIEW_SELECT'    => $select_view,
-    'S_MODE_ACTION'    => append_sid('admin_attach_cp.' . $phpEx))
+    'S_MODE_ACTION'    => append_nuke_sid('admin_attach_cp.' . $phpEx))
 );
 
 if ($submit_change && $view == 'attachments')
@@ -589,7 +589,7 @@ if ($view == 'username')
                 'USERNAME'            => $nuke_username,
                 'TOTAL_ATTACHMENTS'    => $total_attachments,
                 'TOTAL_SIZE'        => round(($total_size / MEGABYTE), 2),
-                'U_VIEW_MEMBER'        => append_sid('admin_attach_cp.' . $phpEx . '?view=attachments&amp;uid=' . $members[$i]['user_id']))
+                'U_VIEW_MEMBER'        => append_nuke_sid('admin_attach_cp.' . $phpEx . '?view=attachments&amp;uid=' . $members[$i]['user_id']))
             );
         }
     }
@@ -785,7 +785,7 @@ if ($view == 'attachments')
                         $post_title = substr($post_title, 0, 30) . '...';
                     }
 
-                    $view_topic = append_sid('viewtopic.' . $phpEx . '?' . NUKE_POST_POST_URL . '=' . $ids[$j]['post_id'] . '&menu=1#' . $ids[$j]['post_id']);
+                    $view_topic = append_nuke_sid('viewtopic.' . $phpEx . '?' . NUKE_POST_POST_URL . '=' . $ids[$j]['post_id'] . '&menu=1#' . $ids[$j]['post_id']);
 
                     $post_titles[] = '<a href="' . $view_topic . '" class="gen" target="_blank">' . $post_title . '</a>';
                 }
@@ -814,8 +814,8 @@ if ($view == 'attachments')
 
                 'S_DELETE_BOX'    => $delete_box,
                 'S_HIDDEN'        => $hidden_field,
-                'U_VIEW_ATTACHMENT'    => append_sid('download.' . $phpEx . '?id=' . $attachments[$i]['attach_id'] . '&menu=1'))
-//                'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_sid("../viewtopic." . $phpEx . "?" . NUKE_POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : '')
+                'U_VIEW_ATTACHMENT'    => append_nuke_sid('download.' . $phpEx . '?id=' . $attachments[$i]['attach_id'] . '&menu=1'))
+//                'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_nuke_sid("../viewtopic." . $phpEx . "?" . NUKE_POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : '')
             );
             
         }

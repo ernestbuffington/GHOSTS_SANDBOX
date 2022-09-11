@@ -20,8 +20,18 @@ if (!defined('IN_PHPBB'))
 	exit; // use of exit is discouraged
 }
 
+if(defined('PHPBB3_MODULE') ):
+define('IN_PHPBB', true);
+$phpbb_root_path = (defined('NUKE_PHPBB3_DIR')) ? NUKE_PHPBB3_DIR : './';
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
+include(NUKE_PHPBB3_DIR . 'extension.inc');
+require(NUKE_PHPBB3_DIR . 'includes/startup.' . $phpEx);
+require(NUKE_PHPBB3_DIR . 'phpbb/class_loader.' . $phpEx);
+else:
+
 require($phpbb_root_path . 'includes/startup.' . $phpEx);
 require($phpbb_root_path . 'phpbb/class_loader.' . $phpEx);
+endif;
 
 $phpbb_class_loader = new \phpbb\class_loader('phpbb\\', "{$phpbb_root_path}phpbb/", $phpEx);
 $phpbb_class_loader->register();
@@ -171,3 +181,5 @@ foreach ($phpbb_hook_finder->find() as $hook)
 * @since 3.1.0-a1
 */
 $phpbb_dispatcher->dispatch('core.common');
+//include("includes/page_tail.$phpEx");
+?>

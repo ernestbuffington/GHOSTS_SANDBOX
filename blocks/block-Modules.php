@@ -82,11 +82,11 @@ function moduleblock_image($name) {
 }
 
 function moduleblock_display() {
-    global $moduleblock_active, $moduleblock_cats, $content, $plus_minus_images, $module_collapse, $nuke_userinfo;
+    global $nuke_moduleblock_active, $nuke_moduleblock_cats, $content, $plus_minus_images, $nuke_module_collapse, $nuke_userinfo;
 
-    if(!is_array($moduleblock_active) || !is_array($moduleblock_cats)) return;
+    if(!is_array($nuke_moduleblock_active) || !is_array($nuke_moduleblock_cats)) return;
 
-    // $c_image = ($module_collapse) ? "&nbsp;&nbsp;<img src=\"".$plus_minus_images['minus']."\" class=\"showstate\" name=\"minus\" width=\"9\" height=\"9\" border=\"0\" onclick=\"expandcontent(this, 'moduleblock0')\" alt=\"\" style=\"cursor: pointer;\" />" : '';
+    // $c_image = ($nuke_module_collapse) ? "&nbsp;&nbsp;<img src=\"".$plus_minus_images['minus']."\" class=\"showstate\" name=\"minus\" width=\"9\" height=\"9\" border=\"0\" onclick=\"expandcontent(this, 'moduleblock0')\" alt=\"\" style=\"cursor: pointer;\" />" : '';
     //Home
     // $content .= "<img style=\"width: 16px; height: 16px\" src=\"images/home.png\" alt=\""._HOME."\">&nbsp;<span style=\"font-weight: bold;\">"._HOME."</span>".$c_image."<br />\n";
     // $content .= "<img style=\"width: 16px; height: 16px\" src=\"images/about.png\" alt=\""._HOME."\">&nbsp;<span style=\"font-weight: bold;\">"._HOME."</span>".$c_image."<br />\n";
@@ -95,48 +95,48 @@ function moduleblock_display() {
 
 
     $content .= get_evo_icon('evo-sprite home').'&nbsp;<span style="font-weight: bold;">'._HOME.'</span><br />'."\n";
-    $content .= ($module_collapse) ? "<div id=\"moduleblock0\" class=\"switchcontent\">\n" : '';
+    $content .= ($nuke_module_collapse) ? "<div id=\"moduleblock0\" class=\"switchcontent\">\n" : '';
     $content .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"index.php\">"._HOME."</a>\n";
-    $content .= ($module_collapse) ? "</div>\n" : '<br />';
+    $content .= ($nuke_module_collapse) ? "</div>\n" : '<br />';
 
-    foreach ($moduleblock_cats as $cat) 
+    foreach ($nuke_moduleblock_cats as $cat) 
     {
         if(isset($cat['cid']) && is_integer(intval($cat['cid']))) 
         {
-            if (!isset($moduleblock_active[intval($cat['cid'])])) 
+            if (!isset($nuke_moduleblock_active[intval($cat['cid'])])) 
             	continue;
 
-            $mod_array = $moduleblock_active[intval($cat['cid'])];
+            $mod_array = $nuke_moduleblock_active[intval($cat['cid'])];
             if(is_array($mod_array)) 
             {
                 $img = moduleblock_image($cat['image']);
                 $img = (!empty($img)) ? "<img style=\"width: 16px; height: 16px\" src=\"".$img."\" alt=\"\">&nbsp;" : '';
-                // $c_image = ($module_collapse) ? "&nbsp;&nbsp;<img src=\"".$plus_minus_images['minus']."\" class=\"showstate\" name=\"minus\" width=\"9\" height=\"9\" border=\"0\" onclick=\"expandcontent(this, 'moduleblock".$cat['cid']."')\" alt=\"\" style=\"cursor: pointer;\" />" : '';
+                // $c_image = ($nuke_module_collapse) ? "&nbsp;&nbsp;<img src=\"".$plus_minus_images['minus']."\" class=\"showstate\" name=\"minus\" width=\"9\" height=\"9\" border=\"0\" onclick=\"expandcontent(this, 'moduleblock".$cat['cid']."')\" alt=\"\" style=\"cursor: pointer;\" />" : '';
                 $content .= $img."<span style=\"font-weight: bold;\">".$cat['name']."</span><br />\n";
-                $content .= ($module_collapse) ? "<div id=\"moduleblock".$cat['cid']."\" class=\"switchcontent\">\n" : '';
+                $content .= ($nuke_module_collapse) ? "<div id=\"moduleblock".$cat['cid']."\" class=\"switchcontent\">\n" : '';
                 
-                foreach ($mod_array as $module) 
+                foreach ($mod_array as $nuke_module) 
                 {
 
-                    // echo '<pre style="color: #fff;">'.var_export($module, true).'</pre>';
+                    // echo '<pre style="color: #fff;">'.var_export($nuke_module, true).'</pre>';
 
-                    if ($module['view'] >= 2 && !is_mod_admin($module['title'])) 
+                    if ($nuke_module['view'] >= 2 && !is_mod_admin($nuke_module['title'])) 
                     {
-                        if ($module['view'] == 2 && is_user()) 
+                        if ($nuke_module['view'] == 2 && is_user()) 
                         {
                             continue;
                         } 
-                        elseif ($module['view'] == 3 && !is_user()) 
+                        elseif ($nuke_module['view'] == 3 && !is_user()) 
                         {
                             continue;
                         } 
-                        elseif ($module['view'] == 4) 
+                        elseif ($nuke_module['view'] == 4) 
                         {
                             continue;
                         } 
-                        elseif ($module['view'] == 6) 
+                        elseif ($nuke_module['view'] == 6) 
                         {
-                            $groups = (!empty($module['groups'])) ? $groups = explode('-', $module['groups']) : '';
+                            $groups = (!empty($nuke_module['groups'])) ? $groups = explode('-', $nuke_module['groups']) : '';
                             $ingroup = false;
                             if(is_array($groups))
                             {
@@ -152,16 +152,16 @@ function moduleblock_display() {
                             }
                         }
                     }
-                    if(substr($module['title'],0,3) == '~l~') 
+                    if(substr($nuke_module['title'],0,3) == '~l~') 
                     {
-                        $content .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".$module['custom_title']."\">".substr($module['title'],3)."</a><br />\n";
+                        $content .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".$nuke_module['custom_title']."\">".substr($nuke_module['title'],3)."</a><br />\n";
                     } 
                     else 
                     {
-                        $content .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"modules.php?name=".$module['title']."\">".$module['custom_title']."</a><br />\n";
+                        $content .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"modules.php?name=".$nuke_module['title']."\">".$nuke_module['custom_title']."</a><br />\n";
                     }
                 }
-                $content .= ($module_collapse) ? "</div>\n" : "";
+                $content .= ($nuke_module_collapse) ? "</div>\n" : "";
             }
         }
     }
@@ -206,7 +206,7 @@ function moduleblock_get_inactive_links() {
 }
 
 function moduleblock_display_inactive() {
-    global $moduleblock_invisible, $moduleblock_invisible_links, $content;
+    global $nuke_moduleblock_invisible, $nuke_moduleblock_invisible_links, $content;
 
     $content .= "<hr />\n";
 
@@ -216,13 +216,13 @@ function moduleblock_display_inactive() {
     $content .= "<option value=''>"._MORE."</option>\n";
     $content .= "<optgroup label=\""._INVISIBLEMODULES."\">\n";
     $one = 0;
-    if(is_array($moduleblock_invisible)) {
-        foreach ($moduleblock_invisible as $module) {
-            if ($module['active']) {
+    if(is_array($nuke_moduleblock_invisible)) {
+        foreach ($nuke_moduleblock_invisible as $nuke_module) {
+            if ($nuke_module['active']) {
                 $one = 1;
-                $content .= "<option value=\"modules.php?name=".$module['title']."\">".trim_words($module['custom_title'],13)."</option>\n";
+                $content .= "<option value=\"modules.php?name=".$nuke_module['title']."\">".trim_words($nuke_module['custom_title'],13)."</option>\n";
             } else {
-                $moduleblock_inactive[] = $module;
+                $nuke_moduleblock_inactive[] = $nuke_module;
             }
         }
         if(!$one) $content .= "<option value=''>"._NONE."</option>\n";
@@ -232,9 +232,9 @@ function moduleblock_display_inactive() {
     $content .= "</optgroup>\n";
 
     $content .= "<optgroup label=\""._NOACTIVEMODULES."\">\n";
-    if(is_array($moduleblock_inactive)) {
-        foreach ($moduleblock_inactive as $module) {
-            $content .= "<option value=\"modules.php?name=".$module['title']."\">".trim_words($module['custom_title'],13)."</option>\n";
+    if(is_array($nuke_moduleblock_inactive)) {
+        foreach ($nuke_moduleblock_inactive as $nuke_module) {
+            $content .= "<option value=\"modules.php?name=".$nuke_module['title']."\">".trim_words($nuke_module['custom_title'],13)."</option>\n";
         }
     } else {
         $content .= "<option value=''>"._NONE."</option>\n";
@@ -242,8 +242,8 @@ function moduleblock_display_inactive() {
     $content .= "</optgroup>\n";
 
     $content .= "<optgroup label=\""._INACTIVE_LINKS."\">\n";
-    if(is_array($moduleblock_invisible_links)) {
-        foreach ($moduleblock_invisible_links as $link) {
+    if(is_array($nuke_moduleblock_invisible_links)) {
+        foreach ($nuke_moduleblock_invisible_links as $link) {
             $content .= "<option value=\"".$link['custom_title']."\" target=\"_blank\">".substr($link['title'],3)."</option>\n";
         }
     } else {
@@ -254,19 +254,19 @@ function moduleblock_display_inactive() {
     $content .= "</div>\n";
 }
 
-global $prefix, $nuke_db, $language, $currentlang, $nukeurl, $content, $moduleblock_active, $moduleblock_cats;
+global $prefix, $nuke_db, $language, $currentlang, $nukeurl, $content, $nuke_moduleblock_active, $nuke_moduleblock_cats;
 
 $content = '';
 $main_module = main_module();
 
-$moduleblock_active = moduleblock_get_active();
-$moduleblock_cats = moduleblock_get_cats();
+$nuke_moduleblock_active = moduleblock_get_active();
+$nuke_moduleblock_cats = moduleblock_get_cats();
 moduleblock_display();
 
 if(is_admin()) {
-    global $moduleblock_invisible, $moduleblock_invisible_links;
-    $moduleblock_invisible = moduleblock_get_inactive();
-    $moduleblock_invisible_links = moduleblock_get_inactive_links();
+    global $nuke_moduleblock_invisible, $nuke_moduleblock_invisible_links;
+    $nuke_moduleblock_invisible = moduleblock_get_inactive();
+    $nuke_moduleblock_invisible_links = moduleblock_get_inactive_links();
     moduleblock_display_inactive();
 }
 

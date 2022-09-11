@@ -454,8 +454,8 @@ if ($mode == 'newtopic')
                 }
         }
 
-        $meta = '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . "=" . $post_id) . '#' . $post_id . '">';
-        $message = $lang['Stored'] . '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . "=" . $post_id) . '#' . $post_id . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id") . '">', '</a>');
+        $meta = '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . "=" . $post_id) . '#' . $post_id . '">';
+        $message = $lang['Stored'] . '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . "=" . $post_id) . '#' . $post_id . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id") . '">', '</a>');
 
         return false;
 }
@@ -726,16 +726,16 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
         if ($mode == 'delete' && $post_data['first_post'] && $post_data['last_post'])
         {
-                $meta = '<meta http-equiv="refresh" content="3;url=' . append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . '=' . $forum_id) . '">';
+                $meta = '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . '=' . $forum_id) . '">';
                 $message = $lang['Deleted'];
         }
         else
         {
-                $meta = '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . '=' . $topic_id) . '">';
-                $message = (($mode == 'poll_delete') ? $lang['Poll_delete'] : $lang['Deleted']) . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
+                $meta = '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . '=' . $topic_id) . '">';
+                $message = (($mode == 'poll_delete') ? $lang['Poll_delete'] : $lang['Deleted']) . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
         }
 
-        $message .=  '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id") . '">', '</a>');
+        $message .=  '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_nuke_sid("viewforum.$phpEx?" . NUKE_POST_FORUM_URL . "=$forum_id") . '">', '</a>');
 
         return;
 }
@@ -993,7 +993,7 @@ function generate_smilies($mode, $page_id)
 
         if ($mode == 'window')
         {
-                $nuke_userdata = session_pagestart($nuke_user_ip, $page_id);
+                $nuke_userdata = session_nuke_pagestart($nuke_user_ip, $page_id);
                 init_userprefs($nuke_userdata);
 
                 $gen_simple_header = TRUE;
@@ -1076,7 +1076,7 @@ function generate_smilies($mode, $page_id)
 
                                 $template_nuke->assign_vars(array(
                                         'L_MORE_SMILIES' => $lang['More_emoticons'],
-                                        'U_MORE_SMILIES' => append_sid("posting.$phpEx?mode=smilies&popup=1"))
+                                        'U_MORE_SMILIES' => append_nuke_sid("posting.$phpEx?mode=smilies&popup=1"))
                                 );
                         }
 

@@ -23,8 +23,8 @@ if (!defined('MODULE_FILE')) {
 }
 
 if ($popup != "1"){
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -44,7 +44,7 @@ $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOF
 // Start session management
 //
 
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_GAME, $nukeuser);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_GAME, $nukeuser);
 init_userprefs($nuke_userdata);
 
 //

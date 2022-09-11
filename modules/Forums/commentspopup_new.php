@@ -24,8 +24,8 @@ if (!defined('MODULE_FILE')) {
 
 $popup = 1;
 if ($popup != "1"){
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -40,7 +40,7 @@ include('includes/functions_post.' . $phpEx);
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_POSTING, $nukeuser);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_POSTING, $nukeuser);
 init_userprefs($nuke_userdata);
 $gen_simple_header = TRUE;
 //
@@ -52,7 +52,7 @@ $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SO
 
 if ( !$nuke_userdata['session_logged_in'] )
 {
-	header($header_location . append_sid("login.$phpEx?nuke_redirect=comments.$phpEx", true));
+	header($header_location . append_nuke_sid("login.$phpEx?nuke_redirect=comments.$phpEx", true));
 	exit;
 }
 //
@@ -115,7 +115,7 @@ if($mode == "update")
 
 		if($row['game_highuser'] != $nuke_user_id)
 		{
-		header($header_location . append_sid("modules.php?name=Forums&file=games&gid=$game_id", true));
+		header($header_location . append_nuke_sid("modules.php?name=Forums&file=games&gid=$game_id", true));
 		exit;
 		}
 
@@ -131,7 +131,7 @@ if($mode == "update")
 		//If they are not within a minute of each other user is refreshed back to game.
 		if( (time() - $row['game_highdate']) > 60)
 		{
-		header($header_location . append_sid("modules.php?name=Forums&file=games&gid=$game_id", true));
+		header($header_location . append_nuke_sid("modules.php?name=Forums&file=games&gid=$game_id", true));
 		exit;
 		}
 
@@ -148,17 +148,17 @@ if($mode == "update")
 
 	$row = $nuke_db->sql_fetchrow($result);
 
-	$game_name = '<a href="' . append_sid("gamespopup.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>';
-	$return_arcade = '<a href="' . append_sid("gamespopup.$phpEx?gid=" . $row['game_id']) . '">here</a>';
+	$game_name = '<a href="' . append_nuke_sid("gamespopup.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>';
+	$return_arcade = '<a href="' . append_nuke_sid("gamespopup.$phpEx?gid=" . $row['game_id']) . '">here</a>';
         $template_nuke->assign_vars(array(
 			'L_ARCADE_COMMENTS' => $lang['arcade_comments'],
 			'L_CONGRATS' => $lang['congrats'],
 			'L_COMMENTS_CHAMPION' => sprintf($lang['comments_champion'], $game_name),
-                        'NAV_DESC' => '<a class="nav" href="' . append_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> ' ,
+                        'NAV_DESC' => '<a class="nav" href="' . append_nuke_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> ' ,
                         'GAME_ID' => $row['game_id'],
 			'L_NO_COMMENT' => sprintf($lang['no_comment'], $return_arcade),
 			'COMMENTS' => $row['comments_value'],
-			'S_ACTION' => append_sid("commentspopup_new?mode=update"),
+			'S_ACTION' => append_nuke_sid("commentspopup_new?mode=update"),
 			));
 
 	//Gets Avatar based on user settings and other user stats
@@ -193,7 +193,7 @@ if($mode == "update")
 		$template_nuke->assign_vars(array(
 		        'L_QUICK_STATS' => $lang['quick_stats'],
 			'USER_AVATAR' => '<a href="modules.php?name=Forums&file=profile&mode=viewprofile&u=' . $nuke_userdata['user_id'] . '">' . $avatar_img . '</a>',
-			'USERNAME' => '<a href="' . append_sid("statarcade.$phpEx?uid=" . $nuke_userdata['user_id'] ) . '" class="genmed">' . $row['username'] . '</a> ',
+			'USERNAME' => '<a href="' . append_nuke_sid("statarcade.$phpEx?uid=" . $nuke_userdata['user_id'] ) . '" class="genmed">' . $row['username'] . '</a> ',
 			));
 //
 // Generate the page end

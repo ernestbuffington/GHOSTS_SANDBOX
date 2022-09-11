@@ -36,12 +36,12 @@ while(list($project_id) = $network_db->sql_fetchrow($projectresult)) {
     echo "<td align='center' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_PRIORITY."</strong></nobr></td>\n";
     echo "<td align='center' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_REPORTS."</strong></nobr></td>\n";
     echo "<td align='center' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_LASTSUBMISSION."</strong></nobr></td>\n</tr>\n";
-    $pjimage = pjimage("project.png", $module_name);
+    $pjimage = pjimage("project.png", $nuke_module_name);
     if($project['featured'] > 0) { $project['project_name'] = "<strong>".$project['project_name']."</strong>"; }
     echo "<tr>\n<td align='center'><img src='$pjimage'></td>\n";
-    echo "<td width='100%'><a href='modules.php?name=$module_name&amp;op=Project&amp;project_id=$project_id'>".$project['project_name']."</a></td>\n";
+    echo "<td width='100%'><a href='modules.php?name=$nuke_module_name&amp;op=Project&amp;project_id=$project_id'>".$project['project_name']."</a></td>\n";
     if($project['project_site'] > "") {
-      $pjimage = pjimage("demo.png", $module_name);
+      $pjimage = pjimage("demo.png", $nuke_module_name);
       $demo = " <a href='".$project['project_site']."' target='_blank'><img src='$pjimage' border='0' alt='".$project['project_name']." "._NETWORK_SITE."' title='".$project['project_name']." "._NETWORK_SITE."'></a>";
     } else {
       $demo = "&nbsp;";
@@ -71,9 +71,9 @@ while(list($project_id) = $network_db->sql_fetchrow($projectresult)) {
         $reportstatus = pjreportstatus_info($status_id);
         $reporttype = pjreporttype_info($type_id);
         if(empty($report_name)) { $report_name = "----------"; }
-        $pjimage = pjimage("report.png", $module_name);
+        $pjimage = pjimage("report.png", $nuke_module_name);
         echo "<tr>\n<td><img src='$pjimage'></td>\n";
-        echo "<td width='100%' colspan='2'><a href='modules.php?name=$module_name&amp;op=Report&amp;report_id=$report_id'>$report_name</a></td>\n";
+        echo "<td width='100%' colspan='2'><a href='modules.php?name=$nuke_module_name&amp;op=Report&amp;report_id=$report_id'>$report_name</a></td>\n";
         if(empty($reportstatus['status_name'])){ $reportstatus['status_name'] = _NETWORK_NA; }
         echo "<td align='center'><nobr>".$reportstatus['status_name']."</nobr></td>\n";
         if(empty($reportpriority['priority_name'])){ $reportpriority['priority_name'] = _NETWORK_NA; }

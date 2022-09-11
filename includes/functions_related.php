@@ -247,7 +247,7 @@ function get_related_topics($topic_id)
 						$folder_image = $folder_new;
 						$folder_alt = $lang['New_posts'];
 
-						$newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
+						$newest_post_img = '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
 					}
 					else
 					{
@@ -262,7 +262,7 @@ function get_related_topics($topic_id)
 					$folder_image = $folder_new;
 					$folder_alt = ( $row['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['New_posts'];
 
-					$newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
+					$newest_post_img = '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
 				}
 			}
 			else 
@@ -281,14 +281,14 @@ function get_related_topics($topic_id)
 			$newest_post_img = '';
 		}
 
-		$topic_author = ( $row['user_id'] != NUKE_ANONYMOUS ) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $row['user_id']) . '">' : '';
+		$topic_author = ( $row['user_id'] != NUKE_ANONYMOUS ) ? '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $row['user_id']) . '">' : '';
 		$topic_author .= ( $row['user_id'] != NUKE_ANONYMOUS ) ? $row['username'] : ( ( $row['post_username'] != '' ) ? $row['post_username'] : $lang['Guest'] );
 		$topic_author .= ( $row['user_id'] != NUKE_ANONYMOUS ) ? '</a>' : '';
 
 		$first_post_time = create_date($board_config['default_dateformat'], $row['topic_time'], $board_config['board_timezone']);
 		$last_post_time = create_date($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']);
-		$last_post_author = ( $row['id2'] == NUKE_ANONYMOUS ) ? ( ($row['post_username2'] != '' ) ? $row['post_username2'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $row['id2']) . '">' . $row['user2'] . '</a>';
-		$last_post_url = '<a href="' . append_sid("viewtopic.$phpEx?"  . NUKE_POST_POST_URL . '=' . $row['topic_last_post_id']) . '#' . $row['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
+		$last_post_author = ( $row['id2'] == NUKE_ANONYMOUS ) ? ( ($row['post_username2'] != '' ) ? $row['post_username2'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $row['id2']) . '">' . $row['user2'] . '</a>';
+		$last_post_url = '<a href="' . append_nuke_sid("viewtopic.$phpEx?"  . NUKE_POST_POST_URL . '=' . $row['topic_last_post_id']) . '#' . $row['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
 
 		$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
@@ -299,7 +299,7 @@ function get_related_topics($topic_id)
 
 			'L_TOPIC_FOLDER_ALT' => $folder_alt,
 
-			'U_VIEW_TOPIC' => append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . '=' . $row['topic_id']),
+			'U_VIEW_TOPIC' => append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . '=' . $row['topic_id']),
 
 			'TOPIC_FOLDER_IMG' => $folder_image,
 			'TOPIC_AUTHOR' => $topic_author,

@@ -61,8 +61,8 @@ while ( $row = $nuke_db->sql_fetchrow($result))
  ******************************************************/
                         
             $template_nuke->assign_block_vars('record_row', array(
-                        'GAME_NAME' => '<a href="' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>', 
-                        'USERNAME' => '<a href="' . append_sid("statarcade.$phpEx?uid=" . $row['user_id'] ) . '" class="genmed">' . $row['username'] . '</a> ',
+                        'GAME_NAME' => '<a href="' . append_nuke_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>', 
+                        'USERNAME' => '<a href="' . append_nuke_sid("statarcade.$phpEx?uid=" . $row['user_id'] ) . '" class="genmed">' . $row['username'] . '</a> ',
                         'HIGHSCORE' =>  number_format($row['game_highscore']),
                         'HIGHSCORE_DATE' => create_date( $board_config['default_dateformat'] , $row['game_highdate'] , $board_config['board_timezone'] ),
                         'COUNT' =>  $count,

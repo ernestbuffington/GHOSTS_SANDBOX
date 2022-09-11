@@ -33,8 +33,8 @@ if (!isset($nuke_userid) || $nuke_userid=="")
 
 $index = 1;
 require_once("mainfile.php");
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
 
 if ($form_done=="yes")
 {
@@ -49,21 +49,21 @@ if ($form_done=="yes")
 
 	$nuke_db->sql_query ($query,$nuke_db);
 
-	header("Location: modules.php?name=$module_name");
+	header("Location: modules.php?name=$nuke_module_name");
 }
 
 $pagetitle = "My Personal Bookmarks - " . _ADDOREDITCATEGORY;
 include("header.php");
 OpenTable();
 echo "<span class=boxtitle><center><strong>" . _ADDOREDITCATEGORY . "</strong></center></span><p>";
-echo "<center>[ <a href=modules.php?name=".$module_name.">". _CATEGORIES ."</a> | <a href=modules.php?name=".$module_name."&amp;file=edit_mark>"._NEWBOOKMARK."</a> ]</center>";
+echo "<center>[ <a href=modules.php?name=".$nuke_module_name.">". _CATEGORIES ."</a> | <a href=modules.php?name=".$nuke_module_name."&amp;file=edit_mark>"._NEWBOOKMARK."</a> ]</center>";
 CloseTable();
 echo "<br>";
 OpenTable();
 ?>
 
 <form method=post action=modules.php>
-<input type=hidden name=name value='<?=$module_name?>'>
+<input type=hidden name=name value='<?=$nuke_module_name?>'>
 <input type=hidden name=file value='edit_cat'>
 <input type=hidden name=form_done value='yes'>
 <input type=hidden name=catid value='<?=$catid?>'>

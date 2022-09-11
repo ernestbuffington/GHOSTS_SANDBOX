@@ -36,8 +36,8 @@ if (!defined('MODULE_FILE')) {
    die ("You can't access this file directly...");
 }
 
-$module_name = basename(dirname(__FILE__));
-require("modules/".$module_name."/nukebb.php");
+$nuke_module_name = basename(dirname(__FILE__));
+require("modules/".$nuke_module_name."/nukebb.php");
 
 define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
@@ -46,7 +46,7 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_FAQ);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_FAQ);
 init_userprefs($nuke_userdata);
 //
 // End session management

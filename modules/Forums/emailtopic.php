@@ -25,8 +25,8 @@ if (!defined('MODULE_FILE')) {
 
 if ($popup != "1")
 {
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -49,7 +49,7 @@ $start = (isset($HTTP_GET_VARS['start'])) ? intval($HTTP_GET_VARS['start']) : ((
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_PROFILE);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_PROFILE);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -59,7 +59,7 @@ init_userprefs($nuke_userdata);
 if(!$nuke_userdata['session_logged_in'])
 {
   $nuke_redirect = ($post_id) ? NUKE_POST_POST_URL . "=$post_id" : NUKE_POST_TOPIC_URL . "=$topic_id&start=$start";
-  nuke_redirect(append_sid("login.$phpEx?nuke_redirect=emailtopic.$phpEx&$nuke_redirect", true));
+  nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=emailtopic.$phpEx&$nuke_redirect", true));
 }
 
 
@@ -175,9 +175,9 @@ if(isset($_POST['submit']))
 
   // All done - add the post anchor if a post ID was specified, and nuke_redirect to the original topic
   $nuke_redirect = ($post_id) ? NUKE_POST_POST_URL . "=$post_id" : NUKE_POST_TOPIC_URL . "=$topic_id&amp;start=$start";
-  $template_nuke->assign_var('META', '<meta http-equiv="refresh" content="3; url=' . append_sid("viewtopic.$phpEx?$nuke_redirect") . (($post_id) ? "#$post_id" : '') . '" />');
+  $template_nuke->assign_var('META', '<meta http-equiv="refresh" content="3; url=' . append_nuke_sid("viewtopic.$phpEx?$nuke_redirect") . (($post_id) ? "#$post_id" : '') . '" />');
 
-  $msg = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?$nuke_redirect") . (($post_id) ? "#$post_id" : '') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+  $msg = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_nuke_sid("viewtopic.$phpEx?$nuke_redirect") . (($post_id) ? "#$post_id" : '') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
   message_die(NUKE_GENERAL_MESSAGE, $msg);
 }
 
@@ -210,7 +210,7 @@ $template_nuke->assign_vars(array(
 
   'TOPIC_TITLE'   => $topic_title,
 
-  'S_EMAIL_ACTION'  => append_sid("emailtopic.$phpEx"),
+  'S_EMAIL_ACTION'  => append_nuke_sid("emailtopic.$phpEx"),
   'S_HIDDEN_FIELDS' => $s_hidden_fields
 ));
 

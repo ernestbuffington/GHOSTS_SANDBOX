@@ -432,9 +432,9 @@ class user extends \phpbb\session
 		// ucp profile reg_details page ... of course do not redirect if we're already in the ucp
 		if (!defined('IN_ADMIN') && !defined('ADMIN_START') && $config['chg_passforce'] && !empty($this->data['is_registered']) && $auth->acl_get('u_chgpasswd') && $this->data['user_passchg'] < time() - ($config['chg_passforce'] * 86400))
 		{
-			if (strpos($this->page['query_string'], 'mode=reg_details') === false && $this->page['page_name'] != "ucp.$phpEx")
+			if (strpos($this->page['query_string'], 'mode=reg_details') === false && $this->page['page_name'] != "modules.php?name=phpBB3&amp;file=ucp")
 			{
-				redirect(append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=profile&amp;mode=reg_details'));
+				redirect(append_sid("modules.php?name=phpBB3&amp;file=ucp", 'i=profile&amp;mode=reg_details'));
 			}
 		}
 

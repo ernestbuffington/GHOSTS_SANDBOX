@@ -13,8 +13,8 @@ define('IN_PHPBB2', 1);
 	
 if( !empty($setmodules) )
 {
-	$module['FTR Admin']['FTR: Config']	= append_sid("admin_ftr.$phpEx?mode=config");
-	$module['FTR Admin']['FTR: Users']	= append_sid("admin_ftr.$phpEx?mode=users");
+	$nuke_module['FTR Admin']['FTR: Config']	= append_nuke_sid("admin_ftr.$phpEx?mode=config");
+	$nuke_module['FTR Admin']['FTR: Users']	= append_nuke_sid("admin_ftr.$phpEx?mode=users");
 	return;
 }
 
@@ -125,7 +125,7 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 		// Process forum listing
 		if (!$forum_selected)
 		{	
-			echo '<form name="post_select" method="post" action="'. append_sid("admin_ftr.$phpEx?mode=change_post") .'">';
+			echo '<form name="post_select" method="post" action="'. append_nuke_sid("admin_ftr.$phpEx?mode=change_post") .'">';
 			echo '<table align="center" width="100%" class="forumline">';
 			echo '	<tr>';
 			echo '		<td class="row2" align="left" width="40%">';
@@ -163,7 +163,7 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 				}
 			}
 			
-			echo '<form name="post_select" method="post" action="'. append_sid("admin_ftr.$phpEx?mode=change_post") .'">';
+			echo '<form name="post_select" method="post" action="'. append_nuke_sid("admin_ftr.$phpEx?mode=change_post") .'">';
 			echo '<table align="center" width="100%" class="forumline">';
 			echo '	<tr>';
 			echo '		<td class="row2" align="left" width="40%">';
@@ -221,7 +221,7 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 		echo '	<tr>';
 		echo '		<td align="left" width="100%" class="row2">';
 		echo '			<span class="genmed">';
-		echo '				<a href="'. append_sid("admin_ftr.$phpEx?mode=reset") .'">'. $lang['admin_ftr_config_reset'] .'</a>';
+		echo '				<a href="'. append_nuke_sid("admin_ftr.$phpEx?mode=reset") .'">'. $lang['admin_ftr_config_reset'] .'</a>';
 		echo '			</span>';
 		echo '		</td>';
 		echo '	</tr>';
@@ -269,7 +269,7 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 		echo '		</td>';
 		echo '		<td class="row2" align="center" width="20%" rowspan="2">';
 		echo '			<span class="genmed">';
-		echo '				<a href="'. append_sid("admin_ftr.$phpEx?mode=change_post") .'">'. $lang['admin_ftr_config_change'] .'</a>';
+		echo '				<a href="'. append_nuke_sid("admin_ftr.$phpEx?mode=change_post") .'">'. $lang['admin_ftr_config_change'] .'</a>';
 		echo '			</span>';
 		echo '		</td>';				
 		echo '	</tr>';
@@ -298,7 +298,7 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 			echo '<tr>';
 			echo '	<td align="left" width="100%" class="row2">';
 			echo '		<span class="genmed">';
-			echo '			<a href="'. append_sid("admin_ftr.$phpEx?mode=change_active") .'">'. $lang['admin_ftr_config_status_n2'] .'</a>';
+			echo '			<a href="'. append_nuke_sid("admin_ftr.$phpEx?mode=change_active") .'">'. $lang['admin_ftr_config_status_n2'] .'</a>';
 			echo '		</span>';
 			echo '	</td>';
 			echo '</tr>';
@@ -308,7 +308,7 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 			echo '<tr>';
 			echo '	<td align="left" width="100%" class="row2">';
 			echo '		<span class="genmed">';
-			echo '			<a href="'. append_sid("admin_ftr.$phpEx?mode=change_active") .'">'. $lang['admin_ftr_config_status_y2'] .'</a>';
+			echo '			<a href="'. append_nuke_sid("admin_ftr.$phpEx?mode=change_active") .'">'. $lang['admin_ftr_config_status_y2'] .'</a>';
 			echo '		</span>';
 			echo '	</td>';
 			echo '</tr>';		
@@ -331,7 +331,7 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 			echo '<tr>';
 			echo '	<td align="left" width="100%" class="row2">';
 			echo '		<span class="genmed">';
-			echo '			<a href="'. append_sid("admin_ftr.$phpEx?mode=change_who") .'">'. $lang['admin_ftr_config_status2_n2'] .'</a>';
+			echo '			<a href="'. append_nuke_sid("admin_ftr.$phpEx?mode=change_who") .'">'. $lang['admin_ftr_config_status2_n2'] .'</a>';
 			echo '		</span>';
 			echo '	</td>';
 			echo '</tr>';
@@ -341,7 +341,7 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 			echo '<tr>';
 			echo '	<td align="left" width="100%" class="row2">';
 			echo '		<span class="genmed">';
-			echo '			<a href="'. append_sid("admin_ftr.$phpEx?mode=change_who") .'">'. $lang['admin_ftr_config_status2_y2'] .'</a>';
+			echo '			<a href="'. append_nuke_sid("admin_ftr.$phpEx?mode=change_who") .'">'. $lang['admin_ftr_config_status2_y2'] .'</a>';
 			echo '		</span>';
 			echo '	</td>';
 			echo '</tr>';		
@@ -353,7 +353,7 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 		echo '<br clear="all">';
 		
 		// Display message
-		echo '<form name="post_select" method="post" action="'. append_sid("admin_ftr.$phpEx?mode=change_msg") .'">';
+		echo '<form name="post_select" method="post" action="'. append_nuke_sid("admin_ftr.$phpEx?mode=change_msg") .'">';
 		echo '<table align="center" width="100%" class="forumline">';
 		echo '	<tr>';
 		echo '		<th class="thTop" align="center" width="100%" colspan="2">';
@@ -424,8 +424,8 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 		echo '	</tr>';
 		echo '	<tr>';
 		echo '		<td class="row1" align="center" width="25%">'. $lang['admin_ftr_users_order'] .'</td>';
-		echo '		<td class="row1" align="center" width="25%">'. sprintf($lang['admin_ftr_users_asc_desc'], '<a href="'. append_sid("admin_ftr.$phpEx?mode=users&order=username&dir=asc") .'">', '</a>', '<a href="'. append_sid("admin_ftr.$phpEx?mode=users&order=username&dir=desc") .'">', '</a>') .'</td>';
-		echo '		<td class="row1" align="center" width="50%">'. sprintf($lang['admin_ftr_users_asc_desc'], '<a href="'. append_sid("admin_ftr.$phpEx?mode=users&order=time&dir=asc") .'">', '</a>', '<a href="'. append_sid("admin_ftr.$phpEx?mode=users&order=time&dir=desc") .'">', '</a>') .'</td>';				
+		echo '		<td class="row1" align="center" width="25%">'. sprintf($lang['admin_ftr_users_asc_desc'], '<a href="'. append_nuke_sid("admin_ftr.$phpEx?mode=users&order=username&dir=asc") .'">', '</a>', '<a href="'. append_nuke_sid("admin_ftr.$phpEx?mode=users&order=username&dir=desc") .'">', '</a>') .'</td>';
+		echo '		<td class="row1" align="center" width="50%">'. sprintf($lang['admin_ftr_users_asc_desc'], '<a href="'. append_nuke_sid("admin_ftr.$phpEx?mode=users&order=time&dir=asc") .'">', '</a>', '<a href="'. append_nuke_sid("admin_ftr.$phpEx?mode=users&order=time&dir=desc") .'">', '</a>') .'</td>';				
 		echo '	</tr>';		
 			
 		// var_dump(count($rows));
@@ -443,7 +443,7 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 		{
 			echo '	<tr>';
 			echo '		<td class="row1" align="center" width="25%">'. ($x + 1) .'</td>';
-			echo '		<td class="row1" align="left" width="25%"><a href="'. append_sid("admin_ftr.$phpEx?mode=users&remove=". $rows[$x]['user_id']) .'">'. UsernameColor($rows[$x]['username']) .'</a></td>';
+			echo '		<td class="row1" align="left" width="25%"><a href="'. append_nuke_sid("admin_ftr.$phpEx?mode=users&remove=". $rows[$x]['user_id']) .'">'. UsernameColor($rows[$x]['username']) .'</a></td>';
 			echo '		<td class="row1" align="left" width="50%">'. create_date($board_config['default_dateformat'], $rows[$x]['user_ftr_time'], $board_config['board_timezone']) .'</td>';
 			echo '	</tr>';
 		}
@@ -465,7 +465,7 @@ include($phpbb2_root_path .'language/lang_'. $board_config['default_lang'] .'/la
 			$rows_counted = 0;
 		}
 		
-		$pagination 	= generate_pagination(append_sid("admin_ftr.$phpEx?mode=users&order=$order&dir=$dir"), $rows_counted, 100, $start). '&nbsp;';
+		$pagination 	= generate_pagination(append_nuke_sid("admin_ftr.$phpEx?mode=users&order=$order&dir=$dir"), $rows_counted, 100, $start). '&nbsp;';
 		$page_number 	= sprintf($lang['Page_of'], ( floor( $start / 100 ) + 1 ), ceil( $rows_counted / 100 ) );				
 
 		echo '	<tr>';

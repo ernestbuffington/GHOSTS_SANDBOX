@@ -34,7 +34,7 @@ if(!defined('NUKE_EVO')) {
    die('You can\'t access this file directly...');
 }
 
-function phpBB_whoisonline($force=FALSE)
+function nuke_phpBB_whoisonline($force=FALSE) # I see no call? TheGhost
 {
     global $nuke_db, $board_config, $debugger;
     //We need only one sessions_table. So we use what we have -> nuke_sessions
@@ -104,7 +104,7 @@ function phpBB_whoisonline($force=FALSE)
 /*****[BEGIN]******************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-function select_session_url($session_page, $url_qs, $url_ps, $specific, $level, $id, $forum_data, $topic_data, $nuke_user_data, $cat_data)
+function select_nuke_session_url($session_page, $url_qs, $url_ps, $specific, $level, $id, $forum_data, $topic_data, $nuke_user_data, $cat_data)
 {
     global $lang, $phpEx, $nuke_userdata, $phpbb2_root_path;
     include_once(NUKE_INCLUDE_DIR.'constants.'. $phpEx);
@@ -576,7 +576,7 @@ function nuke_session_begin($nuke_user_id, $nuke_user_ip, $page_id, $auto_create
 // sessions at each page refresh
 //
 // modded by Quake for NOT using $nukeuser
-function session_pagestart($nuke_user_ip, $thispage_id, $trash=0)
+function session_nuke_pagestart($nuke_user_ip, $thispage_id, $trash=0)
 {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
@@ -748,7 +748,7 @@ if ( isset($HTTP_GET_VARS['pc_tzo']) )
                     }
 
                     //
-                    session_clean($nuke_userdata['session_id']);
+                    session_nuke_clean($nuke_userdata['session_id']);
 
                     setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000, $cookiepath, $cookiedomain, $cookiesecure);
                     setcookie($cookiename . '_sid', $session_id, 0, $cookiepath, $cookiedomain, $cookiesecure);
@@ -790,7 +790,7 @@ if ( isset($HTTP_GET_VARS['pc_tzo']) )
 * It will delete the entry in the sessions table for this session,
 * remove the corresponding auto-login key and reset the cookies
 */
-function session_end($session_id, $nuke_user_id)
+function session_nuke_end($session_id, $nuke_user_id)
 {
     global $nuke_db, $lang, $board_config, $nuke_userdata;
     global $HTTP_COOKIE_VARS, $HTTP_GET_VARS, $SID;
@@ -858,7 +858,7 @@ function session_end($session_id, $nuke_user_id)
 /**
 * Removes expired sessions and auto-login keys from the database
 */
-function session_clean($session_id)
+function session_nuke_clean($session_id)
 {
     global $board_config, $nuke_db;
 
@@ -893,7 +893,7 @@ function session_clean($session_id)
 * Reset all login keys for the specified user
 * Called on password changes
 */
-function session_reset_keys($nuke_user_id, $nuke_user_ip)
+function session_nuke_reset_keys($nuke_user_id, $nuke_user_ip)
 {
 	global $nuke_db, $nuke_userdata, $board_config;
 
@@ -954,7 +954,7 @@ function session_reset_keys($nuke_user_id, $nuke_user_ip)
 // around every single URL and form action. If you replace the session
 // code you must include this routine, even if it's empty.
 //
-function append_sid($url, $non_html_amp = false)
+function append_nuke_sid($url, $non_html_amp = false)
 {
     global $SID, $admin, $nuke_userdata;
     if (preg_match("/admin=1/", $url) || preg_match("/admin\_/", $url) || preg_match("/pane=/", $url)){
@@ -1029,7 +1029,7 @@ function append_sid($url, $non_html_amp = false)
     return($url);
 }
 
-function admin_sid($url, $non_html_amp = false)
+function nuke_admin_sid($url, $non_html_amp = false)
 {
     global $SID;
     if($url != "index") {

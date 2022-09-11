@@ -1,23 +1,43 @@
 <?php
-/**
+/** PORT DATE 09/06/2022 to 09/09/2022
 *
-* This file is part of the phpBB Forum Software package.
+* This file is a part of PHP-AN602 v3.3.x
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* Ernest Allen Buffington of The 86it Developers Network
+* is the author of PHP-ANG602 and this port of phpBB v3.3.x
+* 
+* You may contact TheGhost AKA Ernest Allen Buffington
+* email: <webmaster@an602.86it.us>
+* cell: 813-846-2865 
+*
+* @copyright (c) Brandon Maintenance Management <https://www.facebook.com/brandon.maintenance>
 * @license GNU General Public License, version 2 (GPL-2.0)
+*
+* This file is part of a Fork of phpBB v3.3.8 Forum Software package.
+*
+* Original @copyright (c) phpBB Limited <https://www.phpbb.com>
+* Original @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
 * the docs/CREDITS.txt file.
 *
 */
 
-/**
-* @ignore
-*/
+if(defined('PHPBB3_MODULE') ):                                             #### ADD Ernest Allen Buffington 09/09/2022
+$nuke_module_name = basename(dirname(__FILE__));                                #### ADD Ernest Allen Buffington 09/09/2022
+require(NUKE_PHPBB3_DIR . 'nukebb' . $phpEx);                              #### ADD Ernest Allen Buffington 09/09/2022
+define('IN_PHPBB', true);                                                  #### ADD Ernest Allen Buffington 09/09/2022 [ WHAT A MAN CAN BE, A MAN MUST BE ]
+$phpbb_root_path = (defined('NUKE_PHPBB3_DIR')) ? NUKE_PHPBB3_DIR : './';  #### ADD Ernest Allen Buffington 09/09/2022
+$phpEx = substr(strrchr(__FILE__, '.'), 1);                                #### ADD Ernest Allen Buffington 09/09/2022
+include(NUKE_PHPBB3_DIR . 'extension.inc');                                #### ADD Ernest Allen Buffington 09/09/2022
+include(NUKE_PHPBB3_DIR . 'common.php' . $phpEx);                          #### ADD Ernest Allen Buffington 09/09/2022
+else:                                                                      #### ADD Ernest Allen Buffington 09/09/2022
+
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
+endif;                                                                      #### ADD Ernest Allen Buffington 09/09/2022
 
 // Start session management
 $user->session_begin();
@@ -131,7 +151,7 @@ $pagination = $phpbb_container->get('pagination');
 
 $template->assign_block_vars('navlinks', array(
 	'BREADCRUMB_NAME'	=> $user->lang('SEARCH'),
-	'U_BREADCRUMB'		=> append_sid("{$phpbb_root_path}search.$phpEx"),
+	'U_BREADCRUMB'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=search.$phpEx"),
 ));
 
 /**
@@ -461,7 +481,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sort_dir, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);
 				$s_sort_key = $s_sort_dir = $u_sort_param = $s_limit_days = '';
 
-				$template->assign_var('U_MARK_ALL_READ', ($user->data['is_registered'] || $config['load_anon_lastread']) ? append_sid("{$phpbb_root_path}index.$phpEx", 'hash=' . generate_link_hash('global') . '&amp;mark=forums&amp;mark_time=' . time()) : '');
+				$template->assign_var('U_MARK_ALL_READ', ($user->data['is_registered'] || $config['load_anon_lastread']) ? append_sid("modules.php?name=$nuke_module_name", 'hash=' . generate_link_hash('global') . '&amp;mark=forums&amp;mark_time=' . time()) : '');
 			break;
 
 			case 'newposts':
@@ -519,7 +539,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 
 		$template->assign_block_vars('navlinks', array(
 			'BREADCRUMB_NAME'	=> $l_search_title,
-			'U_BREADCRUMB'		=> append_sid("{$phpbb_root_path}search.$phpEx", "search_id=$search_id"),
+			'U_BREADCRUMB'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=search.$phpEx", "search_id=$search_id"),
 		));
 	}
 
@@ -682,7 +702,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 	$u_show_results = '&amp;sr=' . $show_results;
 	$u_search_forum = implode('&amp;fid%5B%5D=', $search_forum);
 
-	$u_search = append_sid("{$phpbb_root_path}search.$phpEx", $u_sort_param . $u_show_results);
+	$u_search = append_sid("modules.php?name=$nuke_module_name&amp;file=search.$phpEx", $u_sort_param . $u_show_results);
 	$u_search .= ($search_id) ? '&amp;search_id=' . $search_id : '';
 	$u_search .= ($u_hilit) ? '&amp;keywords=' . urlencode(html_entity_decode($keywords, ENT_COMPAT)) : '';
 	$u_search .= ($search_terms != 'all') ? '&amp;terms=' . $search_terms : '';
@@ -1077,7 +1097,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 			$replies = $phpbb_content_visibility->get_count('topic_posts', $row, $forum_id) - 1;
 
 			$view_topic_url_params = "t=$result_topic_id" . (($u_hilit) ? "&amp;hilit=$u_hilit" : '');
-			$view_topic_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", $view_topic_url_params);
+			$view_topic_url = append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", $view_topic_url_params);
 
 			$folder_img = $folder_alt = $u_mcp_queue = '';
 			$topic_type = $posts_unapproved = 0;
@@ -1097,8 +1117,8 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				$topic_unapproved = (($row['topic_visibility'] == ITEM_UNAPPROVED || $row['topic_visibility'] == ITEM_REAPPROVE) && $auth->acl_get('m_approve', $forum_id)) ? true : false;
 				$posts_unapproved = ($row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $auth->acl_get('m_approve', $forum_id)) ? true : false;
 				$topic_deleted = $row['topic_visibility'] == ITEM_DELETED;
-				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . "&amp;t=$result_topic_id", true, $user->session_id) : '';
-				$u_mcp_queue = (!$u_mcp_queue && $topic_deleted) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=queue&amp;mode=deleted_topics&amp;t=$result_topic_id", true, $user->session_id) : $u_mcp_queue;
+				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", 'i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . "&amp;t=$result_topic_id", true, $user->session_id) : '';
+				$u_mcp_queue = (!$u_mcp_queue && $topic_deleted) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", "i=queue&amp;mode=deleted_topics&amp;t=$result_topic_id", true, $user->session_id) : $u_mcp_queue;
 
 				$row['topic_title'] = preg_replace('#(?!<.*)(?<!\w)(' . $hilit . ')(?!\w|[^<>]*(?:</s(?:cript|tyle))?>)#isu', '<span class="posthilit">$1</span>', $row['topic_title']);
 
@@ -1139,11 +1159,11 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 					'S_TOPIC_DELETED'		=> $topic_deleted,
 					'S_HAS_POLL'			=> ($row['poll_start']) ? true : false,
 
-					'U_LAST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
+					'U_LAST_POST'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", 'p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
 					'U_LAST_POST_AUTHOR'	=> get_username_string('profile', $row['topic_last_poster_id'], $row['topic_last_poster_name'], $row['topic_last_poster_colour']),
 					'U_TOPIC_AUTHOR'		=> get_username_string('profile', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']),
-					'U_NEWEST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", $view_topic_url_params . '&amp;view=unread') . '#unread',
-					'U_MCP_REPORT'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=reports&amp;mode=reports&amp;t=' . $result_topic_id, true, $user->session_id),
+					'U_NEWEST_POST'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", $view_topic_url_params . '&amp;view=unread') . '#unread',
+					'U_MCP_REPORT'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", 'i=reports&amp;mode=reports&amp;t=' . $result_topic_id, true, $user->session_id),
 					'U_MCP_QUEUE'			=> $u_mcp_queue,
 				);
 			}
@@ -1213,8 +1233,8 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 				'TOPIC_VIEWS'		=> $row['topic_views'],
 
 				'U_VIEW_TOPIC'		=> $view_topic_url,
-				'U_VIEW_FORUM'		=> append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_id),
-				'U_VIEW_POST'		=> (!empty($row['post_id'])) ? append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'p=' . $row['post_id'] . (($u_hilit) ? '&amp;hilit=' . $u_hilit : '')) . '#p' . $row['post_id'] : '',
+				'U_VIEW_FORUM'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $forum_id),
+				'U_VIEW_POST'		=> (!empty($row['post_id'])) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", 'p=' . $row['post_id'] . (($u_hilit) ? '&amp;hilit=' . $u_hilit : '')) . '#p' . $row['post_id'] : '',
 			));
 
 			/**
@@ -1360,7 +1380,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 	$template->set_filenames(array(
 		'body' => 'search_results.html')
 	);
-	make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
+	make_jumpbox(append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx"));
 
 	page_footer();
 }
@@ -1516,7 +1536,7 @@ if (!empty($_EXTRA_URL))
 
 $template->assign_vars(array(
 	'DEFAULT_RETURN_CHARS'	=> (int) $config['default_search_return_chars'],
-	'S_SEARCH_ACTION'		=> append_sid("{$phpbb_root_path}search.$phpEx", false, true, 0), // We force no ?sid= appending by using 0
+	'S_SEARCH_ACTION'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=search.$phpEx", false, true, 0), // We force no ?sid= appending by using 0
 	'S_HIDDEN_FIELDS'		=> build_hidden_fields($s_hidden_fields),
 	'S_CHARACTER_OPTIONS'	=> $s_characters,
 	'S_FORUM_OPTIONS'		=> $s_forums,
@@ -1564,11 +1584,15 @@ if ($auth->acl_get('a_search'))
 			'KEYWORDS'	=> $keywords,
 			'TIME'		=> $user->format_date($row['search_time']),
 
-			'U_KEYWORDS'	=> append_sid("{$phpbb_root_path}search.$phpEx", 'keywords=' . urlencode(html_entity_decode($keywords, ENT_COMPAT)))
+			'U_KEYWORDS'	=> append_sid("modules.php?name=$nuke_module_name&amp;file=search.$phpEx", 'keywords=' . urlencode(html_entity_decode($keywords, ENT_COMPAT)))
 		));
 	}
 	$db->sql_freeresult($result);
 }
+
+                                  # Why would nobody ever help or support people with PHP-Nuke? Nobody at phpBB gives s phuck!
+$request->enable_super_globals(); #### ADD Ernest Allen Buffington 09/09/2022 - Turn Super Globals On
+OpenTable();                      #### ADD Ernest Allen Buffington 09/09/2022 - Needed for Themes - Hail to the tables - phuck the numb nuts!
 
 // Output the basic page
 page_header($user->lang['SEARCH']);
@@ -1576,6 +1600,9 @@ page_header($user->lang['SEARCH']);
 $template->set_filenames(array(
 	'body' => 'search_body.html')
 );
-make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
+make_jumpbox(append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx"));
 
 page_footer();
+### Always leave a blank line at the end of your PHP file before you save!
+### Phuck the nerds that decided to stop closing tags, that is the kinda shit lazy people do!
+?>

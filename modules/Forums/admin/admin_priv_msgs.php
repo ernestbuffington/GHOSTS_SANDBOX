@@ -42,7 +42,7 @@ $aprvmUtil->find_lang_file('lang_admin_priv_msgs');
 if (!empty($setmodules))
 {
     $filename = basename(__FILE__);
-    $module['Users']['Private_Messages'] = $filename;
+    $nuke_module['Users']['Private_Messages'] = $filename;
     return;
 }
 
@@ -337,8 +337,8 @@ switch($pmaction)
         $i = 0;
         while($row = $nuke_db->sql_fetchrow($result))
         {
-            $view_url = (!$board_config['aprvmView']) ? append_sid($aprvmUtil->urlStart.'&pmaction=view_message&view_id='.$row['privmsgs_id']) : '#';
-            $onclick_url = ($board_config['aprvmView']) ? "JavaScript:window.open('" . append_sid($aprvmUtil->urlStart.'&pmaction=view_message&view_id=' . $row['privmsgs_id']) . "', '_privmsg', 'HEIGHT=450,resizable=yes,WIDTH=550')" : '';
+            $view_url = (!$board_config['aprvmView']) ? append_nuke_sid($aprvmUtil->urlStart.'&pmaction=view_message&view_id='.$row['privmsgs_id']) : '#';
+            $onclick_url = ($board_config['aprvmView']) ? "JavaScript:window.open('" . append_nuke_sid($aprvmUtil->urlStart.'&pmaction=view_message&view_id=' . $row['privmsgs_id']) . "', '_privmsg', 'HEIGHT=450,resizable=yes,WIDTH=550')" : '';
             $template_nuke->assign_block_vars('msgrow', array(
             'ROW_CLASS' => (!(++$i% 2)) ? $theme['td_class1'] : $theme['td_class2'],
             'ATTACHMENT_INFO' => (defined('ATTACH_VERSION')) ? 'Not Here Yet' : '',
@@ -411,18 +411,18 @@ switch($pmaction)
         'L_ARCHIVE_FEATURE' =>$lang['Archive_Feature'],
         'L_OPTIONS' => $lang['Options'],
         
-        'URL_ORPHAN' => append_sid($aprvmUtil->urlStart . '&pmaction=remove_old'),
-        'URL_SENT' => append_sid($aprvmUtil->urlStart . '&pmaction=remove_sent'),
-        'URL_ALL' => append_sid($aprvmUtil->urlStart . '&pmaction=remove_all'),
-        'URL_INLINE_MESSAGE_TYPE' => ($board_config['aprvmView'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmView&config_value=0') . "\">{$lang['Inline']}</a>" : $lang['Inline'],
-        'URL_POPUP_MESSAGE_TYPE' => ($board_config['aprvmView'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmView&config_value=1') . "\">{$lang['Pop_up']}</a>" : $lang['Pop_up'],
-        'URL_ROWS_PLUS_5' => '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmRows&config_value='.strval($board_config['aprvmRows']+5)) . "\">{$lang['Rows_Plus_5']}</a>",
-        'URL_ROWS_MINUS_5' => ($board_config['aprvmRows'] > 5) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmRows&config_value='.strval($board_config['aprvmRows']-5)) . "\">{$lang['Rows_Minus_5']}</a>" : $lang['Rows_Minus_5'],
-        'URL_SHOW_IP_ON' => ($board_config['aprvmIP'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmIP&config_value=1') . "\">{$lang['Enable']}</a>" : $lang['Enable'],
-        'URL_SHOW_IP_OFF' => ($board_config['aprvmIP'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmIP&config_value=0') . "\">{$lang['Disable']}</a>" : $lang['Disable'],
-        'URL_ARCHIVE_ENABLE_LINK' => ($board_config['aprvmArchive'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmArchive&config_value=1') . "\">{$lang['Enable']}</a>" : $lang['Enable'],
-        'URL_ARCHIVE_DISABLE_LINK' => ($board_config['aprvmArchive'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmArchive&config_value=0') . "\">{$lang['Disable']}</a>" : $lang['Disable'],
-        'URL_SWITCH_MODE' => ($board_config['aprvmArchive'] == 1) ? ($mode == 'archive') ? '<strong><a class="gen" href="' . append_sid($aprvmUtil->urlBase . '&mode=normal') . "\">{$lang['Switch_Normal']}</a></strong>" :'<strong><a class="gen" href="' . append_sid($aprvmUtil->urlBase . '&mode=archive') . "\">{$lang['Switch_Archive']}</a></strong>" : '',
+        'URL_ORPHAN' => append_nuke_sid($aprvmUtil->urlStart . '&pmaction=remove_old'),
+        'URL_SENT' => append_nuke_sid($aprvmUtil->urlStart . '&pmaction=remove_sent'),
+        'URL_ALL' => append_nuke_sid($aprvmUtil->urlStart . '&pmaction=remove_all'),
+        'URL_INLINE_MESSAGE_TYPE' => ($board_config['aprvmView'] == 1) ? '<a href="' . append_nuke_sid($aprvmUtil->urlStart . '&config_name=aprvmView&config_value=0') . "\">{$lang['Inline']}</a>" : $lang['Inline'],
+        'URL_POPUP_MESSAGE_TYPE' => ($board_config['aprvmView'] == 0) ? '<a href="' . append_nuke_sid($aprvmUtil->urlStart . '&config_name=aprvmView&config_value=1') . "\">{$lang['Pop_up']}</a>" : $lang['Pop_up'],
+        'URL_ROWS_PLUS_5' => '<a href="' . append_nuke_sid($aprvmUtil->urlStart . '&config_name=aprvmRows&config_value='.strval($board_config['aprvmRows']+5)) . "\">{$lang['Rows_Plus_5']}</a>",
+        'URL_ROWS_MINUS_5' => ($board_config['aprvmRows'] > 5) ? '<a href="' . append_nuke_sid($aprvmUtil->urlStart . '&config_name=aprvmRows&config_value='.strval($board_config['aprvmRows']-5)) . "\">{$lang['Rows_Minus_5']}</a>" : $lang['Rows_Minus_5'],
+        'URL_SHOW_IP_ON' => ($board_config['aprvmIP'] == 0) ? '<a href="' . append_nuke_sid($aprvmUtil->urlStart . '&config_name=aprvmIP&config_value=1') . "\">{$lang['Enable']}</a>" : $lang['Enable'],
+        'URL_SHOW_IP_OFF' => ($board_config['aprvmIP'] == 1) ? '<a href="' . append_nuke_sid($aprvmUtil->urlStart . '&config_name=aprvmIP&config_value=0') . "\">{$lang['Disable']}</a>" : $lang['Disable'],
+        'URL_ARCHIVE_ENABLE_LINK' => ($board_config['aprvmArchive'] == 0) ? '<a href="' . append_nuke_sid($aprvmUtil->urlStart . '&config_name=aprvmArchive&config_value=1') . "\">{$lang['Enable']}</a>" : $lang['Enable'],
+        'URL_ARCHIVE_DISABLE_LINK' => ($board_config['aprvmArchive'] == 1) ? '<a href="' . append_nuke_sid($aprvmUtil->urlStart . '&config_name=aprvmArchive&config_value=0') . "\">{$lang['Disable']}</a>" : $lang['Disable'],
+        'URL_SWITCH_MODE' => ($board_config['aprvmArchive'] == 1) ? ($mode == 'archive') ? '<strong><a class="gen" href="' . append_nuke_sid($aprvmUtil->urlBase . '&mode=normal') . "\">{$lang['Switch_Normal']}</a></strong>" :'<strong><a class="gen" href="' . append_nuke_sid($aprvmUtil->urlBase . '&mode=archive') . "\">{$lang['Switch_Archive']}</a></strong>" : '',
         
         'S_MODE' => $mode,
         'S_PMTYPE' => $pmtype,
@@ -432,7 +432,7 @@ switch($pmaction)
         'S_MODE_SELECT' => $aprvmUtil->make_drop_box('sort'),
         'S_ORDER_SELECT' => $aprvmUtil->make_drop_box('order'),
         'S_FILENAME' => basename(__FILE__),
-        'S_MODE_ACTION' => append_sid(basename(__FILE__)))
+        'S_MODE_ACTION' => append_nuke_sid(basename(__FILE__)))
         );
         
         

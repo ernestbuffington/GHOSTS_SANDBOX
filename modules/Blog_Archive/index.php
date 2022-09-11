@@ -28,12 +28,12 @@ if (!defined('MODULE_FILE')) {
    die('You can\'t access this file directly...');
 }
 
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
 
 function select_month() 
 {
-    global $prefix, $nuke_user_prefix, $nuke_db, $module_name;
+    global $prefix, $nuke_user_prefix, $nuke_db, $nuke_module_name;
 
     include_once(NUKE_BASE_DIR.'header.php');
     title($sitename.' '._STORIESARCHIVE);
@@ -105,7 +105,7 @@ function select_month()
 		{
             $year = $getdate[1];
         
-		    echo "<img align=\"absmiddle\" width=\"20\" src=\"".img('calender-icon.png','Blog_Archive')."\"> <a href=\"modules.php?name=$module_name&amp;sa=show_month&amp;year=$year&amp;month=$getdate[2]&amp;month_l=$month\">$month, $year</a><br />";
+		    echo "<img align=\"absmiddle\" width=\"20\" src=\"".img('calender-icon.png','Blog_Archive')."\"> <a href=\"modules.php?name=$nuke_module_name&amp;sa=show_month&amp;year=$year&amp;month=$getdate[2]&amp;month_l=$month\">$month, $year</a><br />";
         
 		    $thismonth = $month;
         }
@@ -118,7 +118,7 @@ function select_month()
     ."<input type=\"text\" name=\"query\" size=\"30\"> "
     ."<input type=\"submit\" value=\""._SEARCH."\">"
     ."</form><br /><br />"
-    ."[ <a href=\"modules.php?name=$module_name&amp;sa=show_all\">"._SHOWALLSTORIES."</a> ]</div><br />";
+    ."[ <a href=\"modules.php?name=$nuke_module_name&amp;sa=show_all\">"._SHOWALLSTORIES."</a> ]</div><br />";
     
 	CloseTable();
     
@@ -127,7 +127,7 @@ function select_month()
 
 function show_month($year, $month, $month_l) 
 {
-    global $nuke_userinfo, $prefix, $nuke_user_prefix, $nuke_db, $bgcolor1, $bgcolor2, $nuke_user, $cookie, $sitename, $multilingual, $language, $module_name, $articlecomm;
+    global $nuke_userinfo, $prefix, $nuke_user_prefix, $nuke_db, $bgcolor1, $bgcolor2, $nuke_user, $cookie, $sitename, $multilingual, $language, $nuke_module_name, $articlecomm;
     
 	$year = intval($year);
     $month = htmlentities($month);
@@ -324,7 +324,7 @@ function show_month($year, $month, $month_l)
 	    if ($month != $thismonth) 
 		{
             $year = $getdate[1];
-            echo "<img align=\"absmiddle\" width=\"20\" src=\"".img('calender-icon.png','Blog_Archive')."\"> <a href=\"modules.php?name=$module_name&amp;sa=show_month&amp;year=$year&amp;month=$getdate[2]&amp;month_l=$month\">$month, $year</a><br />";
+            echo "<img align=\"absmiddle\" width=\"20\" src=\"".img('calender-icon.png','Blog_Archive')."\"> <a href=\"modules.php?name=$nuke_module_name&amp;sa=show_month&amp;year=$year&amp;month=$getdate[2]&amp;month_l=$month\">$month, $year</a><br />";
             $thismonth = $month;
         }
     }
@@ -335,7 +335,7 @@ function show_month($year, $month, $month_l)
     ."<input type=\"text\" name=\"query\" size=\"30\"> "
     ."<input type=\"submit\" value=\""._SEARCH."\">"
     ."</form><br />"
-    ."[ <a href=\"modules.php?name=$module_name\">"._ARCHIVESINDEX."</a> | <a href=\"modules.php?name=$module_name&amp;sa=show_all\">"._SHOWALLSTORIES."</a> ]</div><br />";
+    ."[ <a href=\"modules.php?name=$nuke_module_name\">"._ARCHIVESINDEX."</a> | <a href=\"modules.php?name=$nuke_module_name&amp;sa=show_all\">"._SHOWALLSTORIES."</a> ]</div><br />";
     
 	CloseTable();
     
@@ -344,7 +344,7 @@ function show_month($year, $month, $month_l)
 
 function show_all($min) 
 {
-    global $prefix, $nuke_user_prefix, $nuke_db, $bgcolor1, $bgcolor2, $nuke_user, $cookie, $sitename, $multilingual, $language, $module_name, $nuke_userinfo;
+    global $prefix, $nuke_user_prefix, $nuke_db, $bgcolor1, $bgcolor2, $nuke_user, $cookie, $sitename, $multilingual, $language, $nuke_module_name, $nuke_userinfo;
 
     if (!isset($min) || (!is_numeric($min) || ((int)$min) != $min)) 
 	{
@@ -471,7 +471,7 @@ function show_all($min)
 	{
         $min = $min+250;
         $a++;
-        echo "<div align=\"center\">[ <a href=\"modules.php?name=$module_name&amp;sa=show_all&amp;min=$min\">"._NEXTPAGE."</a> ]</div><br />";
+        echo "<div align=\"center\">[ <a href=\"modules.php?name=$nuke_module_name&amp;sa=show_all&amp;min=$min\">"._NEXTPAGE."</a> ]</div><br />";
     }
     
 	if (($numrows > 250) && ($min >= 250) && ($a != 1)) 
@@ -479,13 +479,13 @@ function show_all($min)
         $pmin = $min-250;
         $min = $min+250;
         $a++;
-        echo "<div align=\"center\">[ <a href=\"modules.php?name=$module_name&amp;sa=show_all&amp;min=$pmin\">"._PREVIOUSPAGE."</a> | <a href=\"modules.php?name=$module_name&amp;sa=show_all&amp;min=$min\">"._NEXTPAGE."</a> ]</div><br />";
+        echo "<div align=\"center\">[ <a href=\"modules.php?name=$nuke_module_name&amp;sa=show_all&amp;min=$pmin\">"._PREVIOUSPAGE."</a> | <a href=\"modules.php?name=$nuke_module_name&amp;sa=show_all&amp;min=$min\">"._NEXTPAGE."</a> ]</div><br />";
     }
     
 	if (($numrows <= 250) && ($a != 1) && ($min != 0)) 
 	{
         $pmin = $min-250;
-        echo "<div align=\"center\">[ <a href=\"modules.php?name=$module_name&amp;sa=show_all&amp;min=$pmin\">"._PREVIOUSPAGE."</a> ]</div><br />";
+        echo "<div align=\"center\">[ <a href=\"modules.php?name=$nuke_module_name&amp;sa=show_all&amp;min=$pmin\">"._PREVIOUSPAGE."</a> ]</div><br />";
     }
     
 	echo "<hr size=\"1\" noshade>"
@@ -553,7 +553,7 @@ function show_all($min)
 		if ($month != $thismonth) 
 		{
             $year = $getdate[1];
-            echo "<img align=\"absmiddle\" width=\"20\" src=\"".img('calender-icon.png','Blog_Archive')."\"> <a href=\"modules.php?name=$module_name&amp;sa=show_month&amp;year=$year&amp;month=$getdate[2]&amp;month_l=$month\">$month, $year</a><br />";
+            echo "<img align=\"absmiddle\" width=\"20\" src=\"".img('calender-icon.png','Blog_Archive')."\"> <a href=\"modules.php?name=$nuke_module_name&amp;sa=show_month&amp;year=$year&amp;month=$getdate[2]&amp;month_l=$month\">$month, $year</a><br />";
             $thismonth = $month;
         }
     }
@@ -564,7 +564,7 @@ function show_all($min)
     ."<input type=\"text\" name=\"query\" size=\"30\"> "
     ."<input type=\"submit\" value=\""._SEARCH."\">"
     ."</form><br />"
-    ."[ <a href=\"modules.php?name=$module_name\">"._ARCHIVESINDEX."</a> ]</div><br />";
+    ."[ <a href=\"modules.php?name=$nuke_module_name\">"._ARCHIVESINDEX."</a> ]</div><br />";
     CloseTable();
     include_once(NUKE_BASE_DIR.'footer.php');
 }

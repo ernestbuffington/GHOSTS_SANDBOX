@@ -29,7 +29,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
         $filename = basename(__FILE__);
-        $module['General']['Mass_Email'] = $filename;
+        $nuke_module['General']['Mass_Email'] = $filename;
 
         return;
 }
@@ -147,7 +147,7 @@ if ( isset($HTTP_POST_VARS['submit']) )
                 $emailer->send();
                 $emailer->reset();
 
-                message_die(NUKE_GENERAL_MESSAGE, $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_admin_index'],  '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>'));
+                message_die(NUKE_GENERAL_MESSAGE, $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_admin_index'],  '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>'));
         }
 }
 
@@ -207,7 +207,7 @@ $template_nuke->assign_vars(array(
         'L_EMAIL' => $lang['Email'],
         'L_NOTICE' => $notice,
 
-        'S_USER_ACTION' => append_sid('admin_mass_email.'.$phpEx),
+        'S_USER_ACTION' => append_nuke_sid('admin_mass_email.'.$phpEx),
         'S_GROUP_SELECT' => $select_list)
 );
 

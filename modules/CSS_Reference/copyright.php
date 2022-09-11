@@ -32,8 +32,8 @@ $nuke_author_email = "ernest.buffingtonton@gmail.com";
 $nuke_author_homepage = "http://cvs.86it.us";
 $license = "Lifetime";
 $download_location = "";
-$module_version = "1.2";
-$module_description = "CSS Reference";
+$nuke_module_version = "1.2";
+$nuke_module_description = "CSS Reference";
 
 // DO NOT TOUCH THE FOLLOWING COPYRIGHT CODE. YOU'RE JUST ALLOWED TO CHANGE YOUR "OWN"
 // MODULE'S DATA (SEE ABOVE) SO THE SYSTEM CAN BE ABLE TO SHOW THE COPYRIGHT NOTICE
@@ -42,6 +42,6 @@ $module_description = "CSS Reference";
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $nuke_module_version, $nuke_module_description);
 
 ?>

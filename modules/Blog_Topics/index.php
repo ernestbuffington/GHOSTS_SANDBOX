@@ -32,9 +32,9 @@ if (!defined('MODULE_FILE')) {
 
 require_once(NUKE_BASE_DIR.'mainfile.php');
 
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 
-get_lang($module_name);
+get_lang($nuke_module_name);
 
 $pagetitle = "- "._ACTIVETOPICS."";
 

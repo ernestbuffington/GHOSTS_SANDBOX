@@ -18,20 +18,20 @@ class HTMLPurifier_DoctypeRegistry
      * @note Accepts a fully-formed doctype object, or the
      *       parameters for constructing a doctype object
      * @param $doctype Name of doctype or literal doctype object
-     * @param $modules Modules doctype will load
-     * @param $modules_for_modes Modules doctype will load for certain modes
+     * @param $nuke_modules Modules doctype will load
+     * @param $nuke_modules_for_modes Modules doctype will load for certain modes
      * @param $aliases Alias names for doctype
      * @return Editable registered doctype
      */
-    public function register($doctype, $xml = true, $modules = array(),
+    public function register($doctype, $xml = true, $nuke_modules = array(),
         $tidy_modules = array(), $aliases = array(), $dtd_public = null, $dtd_system = null
     ) {
-        if (!is_array($modules)) $modules = array($modules);
+        if (!is_array($nuke_modules)) $nuke_modules = array($nuke_modules);
         if (!is_array($tidy_modules)) $tidy_modules = array($tidy_modules);
         if (!is_array($aliases)) $aliases = array($aliases);
         if (!is_object($doctype)) {
             $doctype = new HTMLPurifier_Doctype(
-                $doctype, $xml, $modules, $tidy_modules, $aliases, $dtd_public, $dtd_system
+                $doctype, $xml, $nuke_modules, $tidy_modules, $aliases, $dtd_public, $dtd_system
             );
         }
         $this->doctypes[$doctype->name] = $doctype;

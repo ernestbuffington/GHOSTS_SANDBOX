@@ -97,7 +97,7 @@ if (!defined('CNBYA')) {
                         'subject'       => sprintf($language_define_for_user_pass_subject, ((!empty($nuke_username)) ? $nuke_user_name : $nuke_user_email)),
                         'reply_to'      => $adminmail,
                         'from'          => $adminmail,
-                        'module_url'    => $nukeurl.'/modules.php?name='.$module_name,
+                        'module_url'    => $nukeurl.'/modules.php?name='.$nuke_module_name,
                         'signature'     => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : ''
                     );
 
@@ -149,7 +149,7 @@ if (!defined('CNBYA')) {
                         'subject'       => sprintf($language_define_for_pass_lost_subject, ((!empty($nuke_username)) ? $nuke_user_name : $nuke_user_email)),
                         'reply_to'      => $adminmail,
                         'from'          => $adminmail,
-                        'password_url'  => $nukeurl."/modules.php?name=$module_name&op=pass_lost",
+                        'password_url'  => $nukeurl."/modules.php?name=$nuke_module_name&op=pass_lost",
                         'signature'     => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : ''
                     );
 

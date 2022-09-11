@@ -51,26 +51,26 @@ if($totalselected > 0) {
   echo '<tr>'."\n";
   // START Modules
   $handle=opendir('modules');
-  $moduleslist = '';
+  $nuke_moduleslist = '';
   while($file = readdir($handle)) {
-    if( (!preg_match("/^[\.]/",$file)) && !preg_match("/(html)$/", $file) ) { $moduleslist .= "$file "; }
+    if( (!preg_match("/^[\.]/",$file)) && !preg_match("/(html)$/", $file) ) { $nuke_moduleslist .= "$file "; }
   }
   closedir($handle);
-  $moduleslist .= "All_Modules &nbsp;Index &nbsp;Admin &nbsp;Backend";
-  $moduleslist = explode(" ", $moduleslist);
-  sort($moduleslist);
+  $nuke_moduleslist .= "All_Modules &nbsp;Index &nbsp;Admin &nbsp;Backend";
+  $nuke_moduleslist = explode(" ", $nuke_moduleslist);
+  sort($nuke_moduleslist);
   echo '<td width="60%" nowrap="nowrap">'."\n";
   echo '<form action="'.$admin_file.'.php?op=ABTrackedList" method="post" style="padding: 0px; margin: 0px;">'."\n";
   echo '<input type="hidden" name="column" value="'.$column.'" />'."\n";
   echo '<input type="hidden" name="direction" value="'.$direction.'" />'."\n";
   echo '<strong>'._AB_MODULE.':</strong> <select name="showmodule">'."\n";
-  for($i=0; $i < sizeof($moduleslist); $i++) {
-    if($moduleslist[$i]!="") {
-      $moduleslist[$i] = str_replace("&nbsp;", " ", $moduleslist[$i]);
-      echo '<option value="'.$moduleslist[$i].'" ';
+  for($i=0; $i < sizeof($nuke_moduleslist); $i++) {
+    if($nuke_moduleslist[$i]!="") {
+      $nuke_moduleslist[$i] = str_replace("&nbsp;", " ", $nuke_moduleslist[$i]);
+      echo '<option value="'.$nuke_moduleslist[$i].'" ';
       if (!isset($showmodule)) $showmodule = '';
-      if($showmodule==$moduleslist[$i] OR ((!$showmodule OR $showmodule=="") AND $moduleslist[$i]=="All_Modules")) { echo ' selected="selected"'; }
-      echo '>'.str_replace("_", " ", $moduleslist[$i]).'</option>'."\n";
+      if($showmodule==$nuke_moduleslist[$i] OR ((!$showmodule OR $showmodule=="") AND $nuke_moduleslist[$i]=="All_Modules")) { echo ' selected="selected"'; }
+      echo '>'.str_replace("_", " ", $nuke_moduleslist[$i]).'</option>'."\n";
     }
   }
   echo '</select> <input type="submit" value="'._AB_GO.'" /></form></td>'."\n";

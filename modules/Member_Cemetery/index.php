@@ -3,8 +3,8 @@ if (!defined('MODULE_FILE'))die ("You can't access this file directly...");
 global $prefix, $nuke_db, $cookie, $nuke_user, $theme_name;
 $index = 1;
 require_once("mainfile.php");
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
 $pagetitle = "My ". _MARKSTITLE;
 include("header.php");
 $nuke_userinfo = getusrinfo( $nuke_user );
@@ -18,7 +18,7 @@ echo '</div>';
 $headstone =  '<img class="tooltip-html copyright absmiddle" alt="" title="" width="40" src="modules/Member_Cemetery/images/icons8-cemetery-30.png" />';
 $toes =  '<img class="tooltip-html copyright" alt="" title="" width="30" src="modules/Member_Cemetery/images/icons8-death-96.png" />';
 echo "<div align=\"center\"><span class=title><strong><h1>".$headstone." "._CEMETERY." ".$headstone."</h1></strong></span></div>\n";
-echo "<center>[ <a href=modules.php?name=".$module_name."&amp;file=edit_cat>"._NEWCATEGORY."</a> | <a href=modules.php?name=".$module_name."&amp;file=edit_mark>"._NEWBOOKMARK."</a> ]</center>";
+echo "<center>[ <a href=modules.php?name=".$nuke_module_name."&amp;file=edit_cat>"._NEWCATEGORY."</a> | <a href=modules.php?name=".$nuke_module_name."&amp;file=edit_mark>"._NEWBOOKMARK."</a> ]</center>";
 echo "";
 echo "<hr />";
 $cat_query = "select category_id,name,description,mod_date from " . $prefix."_cemetery_cat  where user_id=" . $nuke_userid . " order by name";
@@ -34,12 +34,12 @@ echo "<table align=center width=98%>
 for ($i=0; $i<$nuke_db->sql_numrows  ($categories_res,$nuke_db);$i++):
 	$cat = $nuke_db->sql_fetchrow($categories_res,$nuke_db);
 	echo "<tr class=boxlist><td><img src=\"themes/".$theme_name."/images/invisible_pixel.gif\" alt=\"\" width=\"15\" height=\"1\" />
-	<a href=modules.php?name=".$module_name."&amp;file=marks&amp;category=".$cat['category_id']."&amp;catname=".urlencode($cat['name']).">" . $cat['name'] . "</a></td>
+	<a href=modules.php?name=".$nuke_module_name."&amp;file=marks&amp;category=".$cat['category_id']."&amp;catname=".urlencode($cat['name']).">" . $cat['name'] . "</a></td>
 	<td>" . $cat['description'] . "</td>
 	<td><div align=\"center\">" . $cat['mod_date'] . "</div></td>
-	<td>&nbsp;<a href=modules.php?name=".$module_name."&amp;file=edit_cat&amp;catid=".$cat['category_id']."&amp;catname=".urlencode($cat['name'])."&amp;catcomment=".urlencode($cat['description'])."><img src=modules/".$module_name."/images/pencil.gif width=12 height=12 border=0></a>
+	<td>&nbsp;<a href=modules.php?name=".$nuke_module_name."&amp;file=edit_cat&amp;catid=".$cat['category_id']."&amp;catname=".urlencode($cat['name'])."&amp;catcomment=".urlencode($cat['description'])."><img src=modules/".$nuke_module_name."/images/pencil.gif width=12 height=12 border=0></a>
 	</td>
-	<td>&nbsp;&nbsp;&nbsp;<a href=modules.php?name=".$module_name."&amp;file=del_cat&amp;catid=".$cat['category_id']."&amp;catname=".urlencode($cat['name'])."><img src=modules/".$module_name."/admin/trash.png width=12 height=12 border=0></a>
+	<td>&nbsp;&nbsp;&nbsp;<a href=modules.php?name=".$nuke_module_name."&amp;file=del_cat&amp;catid=".$cat['category_id']."&amp;catname=".urlencode($cat['name'])."><img src=modules/".$nuke_module_name."/admin/trash.png width=12 height=12 border=0></a>
 	</td>
 	</tr>\n";
 endfor;

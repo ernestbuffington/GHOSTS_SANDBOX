@@ -192,7 +192,7 @@ if (  $is_auth['auth_mod'] )
     $template_nuke->assign_vars(array(
 
         'HTML_STATUS' => $html_status,
-        'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
+        'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_nuke_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
         'SMILIES_STATUS' => $smilies_status,
         'BB_BOX' => Make_TextArea_Ret('message', '', 'post', '99.4%', '200px', true),
         'L_OPTIONS' => $lang['Options'],
@@ -271,7 +271,7 @@ $template_nuke->assign_vars(array(
     'L_MESSAGE_BODY' => $lang['Message_body'],
     'L_PREVIEW' => $lang['Preview'],
     'L_SUBMIT' => $lang['Submit'],
-    'S_POST_ACTION' => append_sid("posting.$phpEx"),
+    'S_POST_ACTION' => append_nuke_sid("posting.$phpEx"),
     'S_HIDDEN_FORM_FIELDS' => $hidden_form_fields)
 );
 

@@ -43,7 +43,7 @@ include_once('includes/bbcode.'.$phpEx);
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
 init_userprefs($nuke_userdata);
 //
 // End session management

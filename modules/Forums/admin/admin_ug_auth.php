@@ -39,8 +39,8 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
         $filename = basename(__FILE__);
-        $module['Users']['Permissions'] = $filename . "?mode=user";
-        $module['Groups']['Permissions'] = $filename . "?mode=group";
+        $nuke_module['Users']['Permissions'] = $filename . "?mode=user";
+        $nuke_module['Groups']['Permissions'] = $filename . "?mode=group";
 
         return;
 }
@@ -243,7 +243,7 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $nuke_user_id ) || ( $mod
                         }
                 }
 
-                $message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userauth'], '<a href="' . append_sid("admin_ug_auth.$phpEx?mode=$mode") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
+                $message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userauth'], '<a href="' . append_nuke_sid("admin_ug_auth.$phpEx?mode=$mode") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');
                 message_die(NUKE_GENERAL_MESSAGE, $message);
         }
         else
@@ -282,7 +282,7 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $nuke_user_id ) || ( $mod
                                 }
                         }
 
-                        $message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userauth'], '<a href="' . append_sid("admin_ug_auth.$phpEx?mode=$mode") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
+                        $message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userauth'], '<a href="' . append_nuke_sid("admin_ug_auth.$phpEx?mode=$mode") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');
                 }
                 else
                 {
@@ -497,7 +497,7 @@ if ( isset($_POST['submit']) && ( ( $mode == 'user' && $nuke_user_id ) || ( $mod
                         }
 
                         $l_auth_return = ( $mode == 'user' ) ? $lang['Click_return_userauth'] : $lang['Click_return_groupauth'];
-                        $message = $lang['Auth_updated'] . '<br /><br />' . sprintf($l_auth_return, '<a href="' . append_sid("admin_ug_auth.$phpEx?mode=$mode") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
+                        $message = $lang['Auth_updated'] . '<br /><br />' . sprintf($l_auth_return, '<a href="' . append_nuke_sid("admin_ug_auth.$phpEx?mode=$mode") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');
                 }
 
                 //
@@ -921,7 +921,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $nuke_user_id ) ) 
                         'ROW_CLASS' => $row_class,
                         'FORUM_NAME' => $forum_access[$i]['forum_name'],
 
-                        'U_FORUM_AUTH' => append_sid("admin_forumauth.$phpEx?f=" . $forum_access[$i]['forum_id']),
+                        'U_FORUM_AUTH' => append_nuke_sid("admin_forumauth.$phpEx?f=" . $forum_access[$i]['forum_id']),
 
                         'S_MOD_SELECT' => $optionlist_mod)
                 );
@@ -979,14 +979,14 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $nuke_user_id ) ) 
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-              $t_usergroup_list .= ( ( $t_usergroup_list != '' ) ? ', ' : '' ) . '<a href="' . append_sid("admin_ug_auth.$phpEx?mode=$ug=" . $id[$i]) . '">' . UsernameColor($name[$i]) . '</a>';
+              $t_usergroup_list .= ( ( $t_usergroup_list != '' ) ? ', ' : '' ) . '<a href="' . append_nuke_sid("admin_ug_auth.$phpEx?mode=$ug=" . $id[$i]) . '">' . UsernameColor($name[$i]) . '</a>';
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
                }
                else
                {
-              $t_pending_list .= ( ( $t_pending_list != '' ) ? ', ' : '' ) . '<a href="' . append_sid("admin_ug_auth.$phpEx?mode=$ug=" . $id[$i]) . '">' . $name[$i] . '</a>';
+              $t_pending_list .= ( ( $t_pending_list != '' ) ? ', ' : '' ) . '<a href="' . append_nuke_sid("admin_ug_auth.$phpEx?mode=$ug=" . $id[$i]) . '">' . $name[$i] . '</a>';
                }
         }
         }
@@ -1024,7 +1024,7 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $nuke_user_id ) ) 
 
         $adv_switch = ( empty($adv) ) ? 1 : 0;
         $u_ug_switch = ( $mode == 'user' ) ? NUKE_POST_USERS_URL . "=" . $nuke_user_id : NUKE_POST_GROUPS_URL . "=" . $group_id;
-        $switch_mode = append_sid("admin_ug_auth.$phpEx?mode=$mode&amp;" . $u_ug_switch . "&amp;adv=$adv_switch");
+        $switch_mode = append_nuke_sid("admin_ug_auth.$phpEx?mode=$mode&amp;" . $u_ug_switch . "&amp;adv=$adv_switch");
         $switch_mode_text = ( empty($adv) ) ? $lang['Advanced_mode'] : $lang['Simple_mode'];
         $u_switch_mode = '<a href="' . $switch_mode . '">' . $switch_mode_text . '</a>';
 
@@ -1068,11 +1068,11 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $nuke_user_id ) ) 
                 'L_RESET' => $lang['Reset'],
                 'L_FORUM' => $lang['Forum'],
 
-                'U_USER_OR_GROUP' => append_sid("admin_ug_auth.$phpEx"),
+                'U_USER_OR_GROUP' => append_nuke_sid("admin_ug_auth.$phpEx"),
                 'U_SWITCH_MODE' => $u_switch_mode,
 
                 'S_COLUMN_SPAN' => $s_column_span,
-                'S_AUTH_ACTION' => append_sid("admin_ug_auth.$phpEx"),
+                'S_AUTH_ACTION' => append_nuke_sid("admin_ug_auth.$phpEx"),
                 'S_HIDDEN_FIELDS' => $s_hidden_fields)
         );
 }
@@ -1092,7 +1092,7 @@ else
                 $template_nuke->assign_vars(array(
                         'L_FIND_USERNAME' => $lang['Find_username'],
 
-                        'U_SEARCH_USER' => append_sid("search.$phpEx?mode=searchuser&popup=1&menu=1"))
+                        'U_SEARCH_USER' => append_nuke_sid("search.$phpEx?mode=searchuser&popup=1&menu=1"))
                 );
         }
         else
@@ -1132,7 +1132,7 @@ else
                 'L_LOOK_UP' => ( $mode == 'user' ) ? $lang['Look_up_User'] : $lang['Look_up_Group'],
 
                 'S_HIDDEN_FIELDS' => $s_hidden_fields,
-                'S_' . $l_type . '_ACTION' => append_sid("admin_ug_auth.$phpEx"))
+                'S_' . $l_type . '_ACTION' => append_nuke_sid("admin_ug_auth.$phpEx"))
         );
 
 }

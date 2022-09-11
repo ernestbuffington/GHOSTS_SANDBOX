@@ -30,9 +30,9 @@ $nuke_author_homepage    = "http://dev.phpnuke.org.br";
 $nuke_author_name        = "<a href=\"$nuke_author_homepage\">Comunidade PHP Nuke Brasil</a>";
 $license        = "Modifications - Copyright &copy; 2000-2004 Comunidade PHP Nuke Brasil";
 $download_location    = "";
-$module_version        = "4.4.2";
-$module_description    = "";
+$nuke_module_version        = "4.4.2";
+$nuke_module_description    = "";
 
-show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $nuke_module_version, $nuke_module_description);
 
 ?>

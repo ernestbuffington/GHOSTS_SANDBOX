@@ -72,7 +72,7 @@ if ( !empty($board_config['privmsg_disable']) )
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_PRIVMSGS);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_PRIVMSGS);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -380,9 +380,9 @@ $error = FALSE;
             $i++;
         }
         $template_nuke->assign_vars(array(
-            'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("privmsg.$phpEx?folder=inbox") . '">')
+            'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("privmsg.$phpEx?folder=inbox") . '">')
         );
-        $msg = $lang['PM_delivered'] . '<br /><br />'.sprintf($lang['Mass_pm_count'],$i,$n).'<br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid("privmsg.$phpEx?folder=inbox") . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+        $msg = $lang['PM_delivered'] . '<br /><br />'.sprintf($lang['Mass_pm_count'],$i,$n).'<br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_nuke_sid("privmsg.$phpEx?folder=inbox") . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
         message_die(NUKE_GENERAL_MESSAGE, $msg);
     }
     else if ( $preview || $error )
@@ -614,7 +614,7 @@ $error = FALSE;
         'BB_BOX' => Make_TextArea_Ret('message', $message, 'post', '99.8%', '200px', true),
         'HTML_STATUS' => $html_status,
         'SMILIES_STATUS' => $smilies_status,
-        'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
+        'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_nuke_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
         'FORUM_NAME' => $lang['Private_message'],
 
         'L_SUBJECT' => $lang['Subject'],
@@ -677,10 +677,10 @@ $error = FALSE;
         'S_SIGNATURE_CHECKED' => ( $attach_sig ) ? ' checked="checked"' : '',
         'S_NAMES_SELECT' => $nuke_user_names_select,
         'S_HIDDEN_FORM_FIELDS' => $s_hidden_fields,
-        'S_POST_ACTION' => append_sid("groupmsg.$phpEx"),
+        'S_POST_ACTION' => append_nuke_sid("groupmsg.$phpEx"),
 
-        'U_SEARCH_USER' => append_sid("search.$phpEx?mode=searchuser"),
-        'U_VIEW_FORUM' => append_sid("privmsg.$phpEx"))
+        'U_SEARCH_USER' => append_nuke_sid("search.$phpEx?mode=searchuser"),
+        'U_VIEW_FORUM' => append_nuke_sid("privmsg.$phpEx"))
     );
 
     $template_nuke->pparse('body');
@@ -714,7 +714,7 @@ $template_nuke->assign_vars(array(
     'L_DISPLAY_MESSAGES' => $lang['Display_messages'],
     'L_FROM_OR_TO' => $lang['To_group'],
 
-    'S_PRIVMSGS_ACTION' => append_sid("groupmsg.$phpEx?folder=$folder"),
+    'S_PRIVMSGS_ACTION' => append_nuke_sid("groupmsg.$phpEx?folder=$folder"),
 )
 );
 $template_nuke->pparse('body');

@@ -34,8 +34,8 @@ if (!defined('MODULE_FILE')) {
    die ("You can't access this file directly...");
 }
 
-$module_name = basename(dirname(__FILE__));
-require("modules/".$module_name."/nukebb.php");
+$nuke_module_name = basename(dirname(__FILE__));
+require("modules/".$nuke_module_name."/nukebb.php");
 
 //
 // Allow people to reach login page if
@@ -50,7 +50,7 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 //
 // Set page ID for session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_LOGIN);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_LOGIN);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -85,7 +85,7 @@ if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($
         {
             if( $row['user_level'] != NUKE_ADMIN && $board_config['board_disable'] )
             {
-                                nuke_redirect(append_sid("index.$phpEx", true));
+                                nuke_redirect(append_nuke_sid("index.$phpEx", true));
                                 exit;
             }
             else
@@ -121,7 +121,7 @@ if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($
                     if( $session_id )
                     {
                         $url = ( !empty($HTTP_POST_VARS['nuke_redirect']) ) ? str_replace('&amp;', '&', htmlspecialchars($HTTP_POST_VARS['nuke_redirect'])) : "index.$phpEx";
-                        nuke_redirect(append_sid($url, true));
+                        nuke_redirect(append_nuke_sid($url, true));
                     }
                     else
                     {
@@ -148,10 +148,10 @@ if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($
                     }
 
                     $template_nuke->assign_vars(array(
-                        'META' => '<meta http-equiv=\"refresh\" content=\"3;url=' . append_sid("login.$phpEx?nuke_redirect=$nuke_redirect") . '\">')
+                        'META' => '<meta http-equiv=\"refresh\" content=\"3;url=' . append_nuke_sid("login.$phpEx?nuke_redirect=$nuke_redirect") . '\">')
                     );
 
-                    $message = $lang['Error_login'] . '<br /><br />' . sprintf($lang['Click_return_login'], '<a href=\"' . append_sid("login.$phpEx?nuke_redirect=$nuke_redirect") . '\">', '</a>') . '<br /><br />' .  sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                    $message = $lang['Error_login'] . '<br /><br />' . sprintf($lang['Click_return_login'], '<a href=\"' . append_nuke_sid("login.$phpEx?nuke_redirect=$nuke_redirect") . '\">', '</a>') . '<br /><br />' .  sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
 
                     message_die(NUKE_GENERAL_MESSAGE, $message);
                 }
@@ -172,7 +172,7 @@ if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($
 					'META' => "<meta http-equiv=\"refresh\" content=\"3;url=login.$phpEx?nuke_redirect=$nuke_redirect\">")
 				);
 
-				$message = $lang['Error_login'] . '<br /><br />' . sprintf($lang['Click_return_login'], "<a href=\"login.$phpEx?nuke_redirect=$nuke_redirect\">", '</a>') . '<br /><br />' .  sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+				$message = $lang['Error_login'] . '<br /><br />' . sprintf($lang['Click_return_login'], "<a href=\"login.$phpEx?nuke_redirect=$nuke_redirect\">", '</a>') . '<br /><br />' .  sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
 
 				message_die(NUKE_GENERAL_MESSAGE, $message);
         }
@@ -186,24 +186,24 @@ if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($
         }
         if( $nuke_userdata['session_logged_in'] )
         {
-            session_end($nuke_userdata['session_id'], $nuke_userdata['user_id']);
+            session_nuke_end($nuke_userdata['session_id'], $nuke_userdata['user_id']);
         }
 
         if (!empty($HTTP_POST_VARS['nuke_redirect']) || !empty($HTTP_GET_VARS['nuke_redirect']))
         {
             $url = (!empty($HTTP_POST_VARS['nuke_redirect'])) ? htmlspecialchars($HTTP_POST_VARS['nuke_redirect']) : htmlspecialchars($HTTP_GET_VARS['nuke_redirect']);
             $url = str_replace('&amp;', '&', $url);
-            nuke_redirect(append_sid($url, true));
+            nuke_redirect(append_nuke_sid($url, true));
         }
         else
         {
-            nuke_redirect(append_sid("index.$phpEx", true));
+            nuke_redirect(append_nuke_sid("index.$phpEx", true));
         }
     }
     else
     {
         $url = ( !empty($HTTP_POST_VARS['nuke_redirect']) ) ? str_replace('&amp;', '&', htmlspecialchars($HTTP_POST_VARS['nuke_redirect'])) : "index.$phpEx";
-        nuke_redirect(append_sid($url, true));
+        nuke_redirect(append_nuke_sid($url, true));
     }
 }
 else
@@ -268,7 +268,7 @@ else
             'L_ENTER_PASSWORD' => (isset($HTTP_GET_VARS['admin'])) ? $lang['Admin_reauthenticate'] : $lang['Enter_password'],
             'L_SEND_PASSWORD' => $lang['Forgotten_password'],
 
-            'U_SEND_PASSWORD' => append_sid("profile.$phpEx?mode=sendpassword"),
+            'U_SEND_PASSWORD' => append_nuke_sid("profile.$phpEx?mode=sendpassword"),
 
             'S_HIDDEN_FIELDS' => $s_hidden_fields)
         );
@@ -279,7 +279,7 @@ else
     }
     else
     {
-                nuke_redirect(append_sid("index.$phpEx", true));
+                nuke_redirect(append_nuke_sid("index.$phpEx", true));
                 exit;
     }
 

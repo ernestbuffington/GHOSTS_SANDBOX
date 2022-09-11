@@ -52,7 +52,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
     $file = basename(__FILE__);
-        $module['General']['Configuration'] = "$file";
+        $nuke_module['General']['Configuration'] = "$file";
     return;
 }
 
@@ -102,7 +102,7 @@ else
                   $server_url .= substr($_SERVER["PHP_SELF"],0,$pos);
                 }
                 if($HTTP_POST_VARS["server_name"] != $server_url) {
-                    echo "<form action='".append_sid("admin_board.$phpEx")."' method='post'>";
+                    echo "<form action='".append_nuke_sid("admin_board.$phpEx")."' method='post'>";
                     foreach ($HTTP_POST_VARS as $key => $value) {
                         echo "<input type='hidden' name='".$key."' value='".$value."'>";
                     }
@@ -201,7 +201,7 @@ else
 
     if( isset($HTTP_POST_VARS['submit']) )
     {
-        $message = $lang['Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_config'], "<a href=\"" . append_sid("admin_board.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+        $message = $lang['Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_config'], "<a href=\"" . append_nuke_sid("admin_board.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
     }

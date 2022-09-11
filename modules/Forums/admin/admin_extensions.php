@@ -18,9 +18,9 @@ define('IN_PHPBB2', true);
 if( !empty($setmodules) )
 {
     $filename = basename(__FILE__);
-    $module['Extensions']['Extension_control'] = $filename . '?mode=extensions';
-    $module['Extensions']['Extension_group_manage'] = $filename . '?mode=groups';
-    $module['Extensions']['Forbidden_extensions'] = $filename . '?mode=forbidden';
+    $nuke_module['Extensions']['Extension_control'] = $filename . '?mode=extensions';
+    $nuke_module['Extensions']['Extension_group_manage'] = $filename . '?mode=groups';
+    $nuke_module['Extensions']['Forbidden_extensions'] = $filename . '?mode=forbidden';
     return;
 }
 
@@ -254,7 +254,7 @@ if ($submit && $mode == 'extensions')
 
     if (!$error)
     {
-        $message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid("admin_extensions.$phpEx?mode=extensions") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
+        $message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_nuke_sid("admin_extensions.$phpEx?mode=extensions") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
     }
@@ -279,8 +279,8 @@ if ($mode == 'extensions')
         'L_CANCEL'                    => $lang['Cancel'],
         'L_SUBMIT'                    => $lang['Submit'],
 
-        'S_CANCEL_ACTION'            => append_sid("admin_extensions.$phpEx?mode=extensions"),
-        'S_ATTACH_ACTION'            => append_sid("admin_extensions.$phpEx?mode=extensions"))
+        'S_CANCEL_ACTION'            => append_nuke_sid("admin_extensions.$phpEx?mode=extensions"),
+        'S_ATTACH_ACTION'            => append_nuke_sid("admin_extensions.$phpEx?mode=extensions"))
     );
 
     if ($submit)
@@ -482,7 +482,7 @@ if ($submit && $mode == 'groups')
 
     if (!$error)
     {
-        $message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid("admin_extensions.$phpEx?mode=groups") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
+        $message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_nuke_sid("admin_extensions.$phpEx?mode=groups") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
     }
@@ -535,8 +535,8 @@ if ($mode == 'groups')
         'S_FILESIZE'                    => size_select('add_size_select', $size),
         'S_ADD_DOWNLOAD_MODE'            => download_select('add_download_mode'),
         'S_SELECT_CAT'                    => category_select('add_category'),
-        'S_CANCEL_ACTION'                => append_sid("admin_extensions.$phpEx?mode=groups"),
-        'S_ATTACH_ACTION'                => append_sid("admin_extensions.$phpEx?mode=groups"))
+        'S_CANCEL_ACTION'                => append_nuke_sid("admin_extensions.$phpEx?mode=groups"),
+        'S_ATTACH_ACTION'                => append_nuke_sid("admin_extensions.$phpEx?mode=groups"))
     );
 
     $sql = 'SELECT *
@@ -584,8 +584,8 @@ if ($mode == 'groups')
 
             'MAX_FILESIZE'        => $extension_group[$i]['max_filesize'],
             'CAT_BOX'            => ($viewgroup == $extension_group[$i]['group_id']) ? $lang['Decollapse'] : $lang['Collapse'],
-            'U_VIEWGROUP'        => ($viewgroup == $extension_group[$i]['group_id']) ? append_sid("admin_extensions.$phpEx?mode=groups") : append_sid("admin_extensions.$phpEx?mode=groups&amp;" . NUKE_POST_GROUPS_URL . "=" . $extension_group[$i]['group_id']),
-            'U_FORUM_PERMISSIONS'    => append_sid("admin_extensions.$phpEx?mode=$mode&amp;e_mode=perm&amp;e_group=" . $extension_group[$i]['group_id']))
+            'U_VIEWGROUP'        => ($viewgroup == $extension_group[$i]['group_id']) ? append_nuke_sid("admin_extensions.$phpEx?mode=groups") : append_nuke_sid("admin_extensions.$phpEx?mode=groups&amp;" . NUKE_POST_GROUPS_URL . "=" . $extension_group[$i]['group_id']),
+            'U_FORUM_PERMISSIONS'    => append_nuke_sid("admin_extensions.$phpEx?mode=$mode&amp;e_mode=perm&amp;e_group=" . $extension_group[$i]['group_id']))
         );
 
         if ($viewgroup && $viewgroup == $extension_group[$i]['group_id'])
@@ -715,7 +715,7 @@ if ($submit && $mode == 'forbidden')
 
     if (!$error)
     {
-        $message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid("admin_extensions.$phpEx?mode=forbidden") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
+        $message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_nuke_sid("admin_extensions.$phpEx?mode=forbidden") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
     }
@@ -729,7 +729,7 @@ if ($mode == 'forbidden')
     );
 
     $template_nuke->assign_vars(array(
-        'S_ATTACH_ACTION'        => append_sid('admin_extensions.' . $phpEx . '?mode=forbidden'),
+        'S_ATTACH_ACTION'        => append_nuke_sid('admin_extensions.' . $phpEx . '?mode=forbidden'),
 
         'L_EXTENSIONS_TITLE'    => $lang['Manage_forbidden_extensions'],
         'L_EXTENSIONS_EXPLAIN'    => $lang['Manage_forbidden_extensions_explain'],
@@ -954,7 +954,7 @@ if ($e_mode == 'perm' && $group)
         'L_ADD_FORUMS'                    => $lang['Add_forums'],
         'L_ADD_SELECTED'                => $lang['Add_selected'],
         'L_RESET'                        => $lang['Reset'],
-        'A_PERM_ACTION'                    => append_sid("admin_extensions.$phpEx?mode=groups&amp;e_mode=perm&amp;e_group=$group"))
+        'A_PERM_ACTION'                    => append_nuke_sid("admin_extensions.$phpEx?mode=groups&amp;e_mode=perm&amp;e_group=$group"))
     );
 
     $forum_option_values = array(GPERM_ALL => $lang['Perm_all_forums']);

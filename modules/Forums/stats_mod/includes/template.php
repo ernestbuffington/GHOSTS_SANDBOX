@@ -80,12 +80,12 @@ class Stats_template {
         global $directory_mode, $phpbb2_root_path;
         $this->root = $phpbb2_root_path . 'templates/' . $stats_template . '/stats_mod';
         $this->cachedir = $phpbb2_root_path . 'modules/cache/templates/' . $stats_template . '/';
-        $module_cache_dir = $phpbb2_root_path . 'modules/cache';
+        $nuke_module_cache_dir = $phpbb2_root_path . 'modules/cache';
         
-        if (!file_exists($module_cache_dir))
+        if (!file_exists($nuke_module_cache_dir))
         {
             @umask(0);
-            mkdir($module_cache_dir, $directory_mode);
+            mkdir($nuke_module_cache_dir, $directory_mode);
         }
 
         $template_nuke_cache_dir = $phpbb2_root_path . 'modules/cache/templates';

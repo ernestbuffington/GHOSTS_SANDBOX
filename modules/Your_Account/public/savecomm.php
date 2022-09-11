@@ -46,7 +46,7 @@ if (!defined('CNBYA')) {
         if(isset($noscore)) $noscore=1; else $noscore=0;
         $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET umode='$umode', uorder='$uorder', thold='$thold', noscore='$noscore', commentmax='$commentmax' WHERE user_id='$nuke_user_id'");
         yacookie($nuke_userinfo[user_id],$nuke_userinfo[username],$nuke_userinfo[user_password],$nuke_userinfo[storynum],$nuke_userinfo[umode],$nuke_userinfo[uorder],$nuke_userinfo[thold],$nuke_userinfo[noscore],$nuke_userinfo[ublockon],$nuke_userinfo[theme],$nuke_userinfo[commentmax]);
-        nuke_redirect("modules.php?name=$module_name");
+        nuke_redirect("modules.php?name=$nuke_module_name");
     }
 
 ?>

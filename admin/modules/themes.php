@@ -69,7 +69,7 @@ function ThemeError($error_message){
 }
 
 function InstallTheme(){
-	global $admin_file, $nuke_db, $prefix, $module_name, $nuke_userinfo, $HTTP_POST_FILES, $HTTP_POST_VARS;
+	global $admin_file, $nuke_db, $prefix, $nuke_module_name, $nuke_userinfo, $HTTP_POST_FILES, $HTTP_POST_VARS;
 	
 	$filename   = $HTTP_POST_FILES['file']['name'];
 	$path_parts = pathinfo($filename);
@@ -125,7 +125,7 @@ function InstallTheme(){
 
 function downloadTheme($theme)
 {
-	global $admin_file, $aid, $nuke_db, $prefix, $module_name, $nuke_userinfo, $admin, $directory_mode;
+	global $admin_file, $aid, $nuke_db, $prefix, $nuke_module_name, $nuke_userinfo, $admin, $directory_mode;
 	
 	function RandomNumber($length=10){
 		$random = "";

@@ -21,10 +21,10 @@ if (!defined('MODULE_FILE')) {
 }
 
 $instory = '';
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
 
-global $admin, $prefix, $nuke_db, $module_name, $articlecomm, $multilingual, $admin_file;
+global $admin, $prefix, $nuke_db, $nuke_module_name, $articlecomm, $multilingual, $admin_file;
 if ($multilingual == 1) {
     $queryalang = "AND (s.alanguage='$currentlang' OR s.alanguage='')"; /* stories */
     $queryrlang = "AND rlanguage='$currentlang' "; /* reviews */
@@ -119,7 +119,7 @@ switch($op) {
         } else {
             echo "<img src=\"$topicimage\" align=\"right\" border=\"0\" alt=\"$topictext\">";
         }
-        echo "<form action=\"modules.php?name=$module_name\" method=\"POST\">"
+        echo "<form action=\"modules.php?name=$nuke_module_name\" method=\"POST\">"
         ."<input size=\"25\" type=\"text\" name=\"query\" value=\"".stripslashes($query)."\">&nbsp;&nbsp;"
         ."<input type=\"submit\" value=\""._SEARCH."\"><br /><br />";
         if (isset($sid)) {
@@ -274,7 +274,7 @@ switch($op) {
                             printf("<tr><td><img src=\"images/folders.gif\" border=\"0\" alt=\"\">&nbsp;<span class=\"option\"><a href=\"%s\"><strong>%s</strong></a></span><br /><span class=\"content\">"._CONTRIBUTEDBY." $informant<br />"._POSTEDBY." <a href=\"%s\">%s</a>",$furl,$title,$url,$aid,$informant);
                             echo " "._ON." $datetime<br />"
                             .$match
-                            ._TOPIC.": <a href=\"modules.php?name=$module_name&amp;query=&amp;topic=$topic\">$topictext</a> ";
+                            ._TOPIC.": <a href=\"modules.php?name=$nuke_module_name&amp;query=&amp;topic=$topic\">$topictext</a> ";
                             if ($comments == 0) {
                                 echo '('._NOCOMMENTS.')';
                             } elseif ($comments == 1) {
@@ -282,7 +282,7 @@ switch($op) {
                             } elseif ($comments >1) {
                                 echo "($comments "._UCOMMENTS.")";
                             }
-                            if (is_mod_admin($module_name)) {
+                            if (is_mod_admin($nuke_module_name)) {
                                 echo " [ <a href=\"".$admin_file.".php?op=EditStory&amp;sid=$sid\">"._EDIT."</a> | <a href=\"".$admin_file.".php?op=RemoveStory&amp;sid=$sid\">"._DELETE."</a> ]";
                             }
                             echo "</span><br /><br /><br /></td></tr>\n";
@@ -297,13 +297,13 @@ switch($op) {
 
                     $prev = $min-$offset;
                     if ($prev>=0) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type&amp;category=$category\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$nuke_module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type&amp;category=$category\">";
                         print "<strong>$min "._PREVMATCHES."</strong></a></div>";
                     }
 
                     $next = $min+$offset;
                     if ($x>=9) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type&amp;category=$category\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$nuke_module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type&amp;category=$category\">";
                         print "<strong>"._NEXTMATCHES."</strong></a></div>";
                     }
                 }
@@ -337,13 +337,13 @@ switch($op) {
                             ._ATTACHART.": $title<br />";
                             if ($reply == 1) {
                                 echo "($reply "._SREPLY.")";
-                                if (is_mod_admin($module_name)) {
+                                if (is_mod_admin($nuke_module_name)) {
                                     echo " [ <a href=\"".$admin_file.".php?op=RemoveComment&amp;tid=$tid&amp;sid=$sid\">"._DELETE."</a> ]";
                                 }
                                 echo "<br /><br /><br /></td></tr>\n";
                             } else {
                                 echo "($reply "._SREPLIES.")";
-                                if (is_mod_admin($module_name)) {
+                                if (is_mod_admin($nuke_module_name)) {
                                     echo " [ <a href=\"".$admin_file.".php?op=RemoveComment&amp;tid=$tid&amp;sid=$sid\">"._DELETE."</a> ]";
                                 }
                                 echo "<br /><br /><br /></td></tr>\n";
@@ -359,13 +359,13 @@ switch($op) {
 
                     $prev = $min-$offset;
                     if ($prev>=0) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$topic&amp;min=$prev&amp;query=$query&amp;type=$type\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$nuke_module_name&amp;author=$nuke_author&amp;topic=$topic&amp;min=$prev&amp;query=$query&amp;type=$type\">";
                         print "<strong>$min "._PREVMATCHES."</strong></a></div>";
                     }
 
                     $next = $min+$offset;
                     if ($x>=9) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$topic&amp;min=$max&amp;query=$query&amp;type=$type\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$nuke_module_name&amp;author=$nuke_author&amp;topic=$topic&amp;min=$max&amp;query=$query&amp;type=$type\">";
                         print "<strong>"._NEXTMATCHES."</strong></a></div>";
                     }
                 }
@@ -393,7 +393,7 @@ switch($op) {
                             } else {
                                 echo "($pages "._PAGES.")";
                             }
-                            if (is_mod_admin($module_name)) {
+                            if (is_mod_admin($nuke_module_name)) {
                                 echo " [ <a href=\"modules.php?name=Reviews&amp;op=mod_review&amp;id=$id\">"._EDIT."</a> | <a href=\"modules.php?name=Reviews.php&amp;op=del_review&amp;id_del=$id\">"._DELETE."</a> ]";
                             }
                             print "<br /><br /><br /></span></td></tr>\n";
@@ -408,13 +408,13 @@ switch($op) {
 
                     $prev = $min-$offset;
                     if ($prev >= 0) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$nuke_module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type\">";
                         print "<strong>$min "._PREVMATCHES."</strong></a></div>";
                     }
 
                     $next=$min+$offset;
                     if ($x >= 9) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$nuke_module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type\">";
                         print "<strong>"._NEXTMATCHES."</strong></a></div>";
                     }
                 }
@@ -435,7 +435,7 @@ switch($op) {
                                 $name = ""._NONAME."";
                             }
                             echo "<tr><td><img src=\"images/folders.gif\" border=\"0\" alt=\"\">&nbsp;<span class=\"option\"><a href=\"$furl\"><strong>$uname</strong></a></span><span class=\"content\"> ($name)";
-                            if (is_mod_admin($module_name)) {
+                            if (is_mod_admin($nuke_module_name)) {
                                 echo " [ <a href=\"".$admin_file.".php?chng_uid=$uid&amp;op=modifyUser\">"._EDIT."</a> | <a href=\"".$admin_file.".php?op=delUser&amp;chng_uid=$uid\">"._DELETE."</a> ]";
                             }
                             echo "</span></td></tr>\n";
@@ -450,13 +450,13 @@ switch($op) {
 
                     $prev = $min-$offset;
                     if ($prev >= 0) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$nuke_module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type\">";
                         print "<strong>$min "._PREVMATCHES."</strong></a></div>";
                     }
 
                     $next = $min+$offset;
                     if ($x >= 9) {
-                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type\">";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$nuke_module_name&amp;author=$nuke_author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type\">";
                         print "<strong>"._NEXTMATCHES."</strong></a></div>";
                     }
                 }

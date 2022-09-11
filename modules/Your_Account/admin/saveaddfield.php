@@ -39,7 +39,7 @@ if (!defined('CNBYA')) {
     die('CNBYA protection');
 }
 
-if(is_mod_admin($module_name)) {
+if(is_mod_admin($nuke_module_name)) {
 
 if (count($field_name) > 0) {
   foreach ($field_name as $key => $var) { 
@@ -61,7 +61,7 @@ if (!empty($mfield_name)) {
     //$num = $nuke_db -> sql_numrows($result);
     $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_cnbya_field (name, value, size, need, pos, public) VALUES ('$mfield_name','$mfield_value','$mfield_size','$mfield_need','$mfield_pos','$mfield_public')");
 }
-    nuke_redirect("modules.php?name=$module_name&file=admin&op=addField");
+    nuke_redirect("modules.php?name=$nuke_module_name&file=admin&op=addField");
 }
 
 ?>

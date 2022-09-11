@@ -29,14 +29,14 @@ class HTMLPurifier_ContentSets
     /**
      * Merges in module's content sets, expands identifiers in the content
      * sets and populates the keys, values and lookup member variables.
-     * @param $modules List of HTMLPurifier_HTMLModule
+     * @param $nuke_modules List of HTMLPurifier_HTMLModule
      */
-    public function __construct($modules) {
-        if (!is_array($modules)) $modules = array($modules);
+    public function __construct($nuke_modules) {
+        if (!is_array($nuke_modules)) $nuke_modules = array($nuke_modules);
         // populate content_sets based on module hints
         // sorry, no way of overloading
-        foreach ($modules as $module_i => $module) {
-            foreach ($module->content_sets as $key => $value) {
+        foreach ($nuke_modules as $nuke_module_i => $nuke_module) {
+            foreach ($nuke_module->content_sets as $key => $value) {
                 $temp = $this->convertToLookup($value);
                 if (isset($this->lookup[$key])) {
                     // add it into the existing content set
@@ -71,9 +71,9 @@ class HTMLPurifier_ContentSets
     /**
      * Accepts a definition; generates and assigns a ChildDef for it
      * @param $def HTMLPurifier_ElementDef reference
-     * @param $module Module that defined the ElementDef
+     * @param $nuke_module Module that defined the ElementDef
      */
-    public function generateChildDef(&$def, $module) {
+    public function generateChildDef(&$def, $nuke_module) {
         if (!empty($def->child)) return; // already done!
         $content_model = $def->content_model;
         if (is_string($content_model)) {
@@ -86,7 +86,7 @@ class HTMLPurifier_ContentSets
             //$def->content_model = str_replace(
             //    $this->keys, $this->values, $content_model);
         }
-        $def->child = $this->getChildDef($def, $module);
+        $def->child = $this->getChildDef($def, $nuke_module);
     }
 
     public function generateChildDefCallback($matches) {
@@ -101,7 +101,7 @@ class HTMLPurifier_ContentSets
      * @param $def HTMLPurifier_ElementDef to have ChildDef extracted
      * @return HTMLPurifier_ChildDef corresponding to ElementDef
      */
-    public function getChildDef($def, $module) {
+    public function getChildDef($def, $nuke_module) {
         $value = $def->content_model;
         if (is_object($value)) {
             trigger_error(
@@ -123,8 +123,8 @@ class HTMLPurifier_ContentSets
         }
         // defer to its module
         $return = false;
-        if ($module->defines_child_def) { // save a func call
-            $return = $module->getChildDef($def);
+        if ($nuke_module->defines_child_def) { // save a func call
+            $return = $nuke_module->getChildDef($def);
         }
         if ($return !== false) return $return;
         // error-out

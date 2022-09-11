@@ -37,7 +37,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
     $filename = basename(__FILE__);
-    $module['Users']['Userlist'] = $filename;
+    $nuke_module['Users']['Userlist'] = $filename;
 
     return;
 }
@@ -240,7 +240,7 @@ switch( $mode )
                 'L_YES' => $lang['Yes'],
                 'L_NO' => $lang['No'],
 
-                'S_CONFIRM_ACTION' => append_sid('admin_userlist.'.$phpEx.'?mode=delete'),
+                'S_CONFIRM_ACTION' => append_nuke_sid('admin_userlist.'.$phpEx.'?mode=delete'),
                 'S_HIDDEN_FIELDS' => $hidden_fields)
             );
         }
@@ -395,7 +395,7 @@ switch( $mode )
                 $i++;
             }
 
-            $message = $lang['User_deleted_successfully'] . "<br /><br />" . sprintf($lang['Click_return_userlist'], "<a href=\"" . append_sid("admin_userlist.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+            $message = $lang['User_deleted_successfully'] . "<br /><br />" . sprintf($lang['Click_return_userlist'], "<a href=\"" . append_nuke_sid("admin_userlist.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
             message_die(NUKE_GENERAL_MESSAGE, $message);
         }
@@ -442,7 +442,7 @@ switch( $mode )
                 'L_YES' => $lang['Yes'],
                 'L_NO' => $lang['No'],
 
-                'S_CONFIRM_ACTION' => append_sid('admin_userlist.'.$phpEx.'?mode=ban'),
+                'S_CONFIRM_ACTION' => append_nuke_sid('admin_userlist.'.$phpEx.'?mode=ban'),
                 'S_HIDDEN_FIELDS' => $hidden_fields)
             );
         }
@@ -465,7 +465,7 @@ switch( $mode )
                 $i++;
             }
 
-            $message = $lang['User_banned_successfully'] . "<br /><br />" . sprintf($lang['Click_return_userlist'], "<a href=\"" . append_sid("admin_userlist.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+            $message = $lang['User_banned_successfully'] . "<br /><br />" . sprintf($lang['Click_return_userlist'], "<a href=\"" . append_nuke_sid("admin_userlist.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
             message_die(NUKE_GENERAL_MESSAGE, $message);
         }
@@ -507,7 +507,7 @@ switch( $mode )
             $i++;
         }
 
-        $message = $lang['User_status_updated'] . "<br /><br />" . sprintf($lang['Click_return_userlist'], "<a href=\"" . append_sid("admin_userlist.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+        $message = $lang['User_status_updated'] . "<br /><br />" . sprintf($lang['Click_return_userlist'], "<a href=\"" . append_nuke_sid("admin_userlist.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
         break;
@@ -542,7 +542,7 @@ switch( $mode )
                 'L_GROUP' => $lang['Group'],
 
                 'S_GROUP_VARIABLE' => NUKE_POST_GROUPS_URL,
-                'S_ACTION' => append_sid($phpbb2_root_path . 'admin/admin_userlist.'.$phpEx.'?mode=group'),
+                'S_ACTION' => append_nuke_sid($phpbb2_root_path . 'admin/admin_userlist.'.$phpEx.'?mode=group'),
                 'L_GO' => $lang['Go'],
                 'L_CANCEL' => $lang['Cancel'],
                 'L_SELECT' => $lang['Select_one'],
@@ -709,7 +709,7 @@ switch( $mode )
                 $i++;
             }
 
-            $message = $lang['User_add_group_successfully'] . "<br /><br />" . sprintf($lang['Click_return_userlist'], "<a href=\"" . append_sid("admin_userlist.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+            $message = $lang['User_add_group_successfully'] . "<br /><br />" . sprintf($lang['Click_return_userlist'], "<a href=\"" . append_nuke_sid("admin_userlist.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
             message_die(NUKE_GENERAL_MESSAGE, $message);
         }
@@ -747,11 +747,11 @@ switch( $mode )
                 {
                     $temp = 'num';
                 }
-                $alphanum_search_url = append_sid($phpbb2_root_path . "admin/admin_userlist.$phpEx?sort=$sort&amp;order=$sort_order&amp;show=$show&amp;alphanum=$temp");
+                $alphanum_search_url = append_nuke_sid($phpbb2_root_path . "admin/admin_userlist.$phpEx?sort=$sort&amp;order=$sort_order&amp;show=$show&amp;alphanum=$temp");
             }
             else
             {
-                $alphanum_search_url = append_sid($phpbb2_root_path . "admin/admin_userlist.$phpEx?sort=$sort&amp;order=$sort_order&amp;show=$show");
+                $alphanum_search_url = append_nuke_sid($phpbb2_root_path . "admin/admin_userlist.$phpEx?sort=$sort&amp;order=$sort_order&amp;show=$show");
             }
 
             if ( ( $alphanum == $temp ) || ( $alpha_range[$i] == $lang['All'] && empty($alphanum) ) )
@@ -794,7 +794,7 @@ switch( $mode )
             'L_WEBSITE' => $lang['Website'],
 
             'S_USER_VARIABLE' => NUKE_POST_USERS_URL,
-            'S_ACTION' => append_sid($phpbb2_root_path . 'admin/admin_userlist.'.$phpEx),
+            'S_ACTION' => append_nuke_sid($phpbb2_root_path . 'admin/admin_userlist.'.$phpEx),
             'L_GO' => $lang['Go'],
             'L_SELECT' => $lang['Select_one'],
             'L_DELETE' => $lang['Delete'],
@@ -984,8 +984,8 @@ switch( $mode )
 
                 'EMAIL' => $row['user_email'],
                 'U_PM' => ("../../../modules.php?name=Private_Messages&amp;file=index&amp;mode=post&amp;u=$row[user_id]"),
-                'U_MANAGE' => append_sid($phpbb2_root_path . 'admin/admin_users.'.$phpEx.'?mode=edit&amp;' . NUKE_POST_USERS_URL . '=' . $row['user_id']),
-                'U_PERMISSIONS' => append_sid($phpbb2_root_path . 'admin/admin_ug_auth.'.$phpEx.'?mode=user&amp;' . NUKE_POST_USERS_URL . '=' . $row['user_id']))
+                'U_MANAGE' => append_nuke_sid($phpbb2_root_path . 'admin/admin_users.'.$phpEx.'?mode=edit&amp;' . NUKE_POST_USERS_URL . '=' . $row['user_id']),
+                'U_PERMISSIONS' => append_nuke_sid($phpbb2_root_path . 'admin/admin_ug_auth.'.$phpEx.'?mode=user&amp;' . NUKE_POST_USERS_URL . '=' . $row['user_id']))
             );
 
             //

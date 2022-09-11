@@ -17,8 +17,8 @@ if (!defined('MODULE_FILE')) {
 }
 
 if ($popup != "1"){
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -29,7 +29,7 @@ define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_STAFF, $session_length);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_STAFF, $session_length);
 init_userprefs($nuke_userdata);
 
 $page_title = $lang['Staff'];
@@ -64,7 +64,7 @@ if ( !$result = $nuke_db->sql_query($sql) )
 while( $row = $nuke_db->sql_fetchrow($result) )
 {
         $forum_id = $row['forum_id'];
-        $staff2[$row['user_id']][$row['forum_id']] = '<a href='.append_sid("viewforum.$phpEx?f=$forum_id").' class=genmed>'.$row['forum_name'].'</a><br />';
+        $staff2[$row['user_id']][$row['forum_id']] = '<a href='.append_nuke_sid("viewforum.$phpEx?f=$forum_id").' class=genmed>'.$row['forum_name'].'</a><br />';
 }
 
 //main
@@ -149,12 +149,12 @@ while($staff = $nuke_db->sql_fetchrow($results))
                 message_die(NUKE_GENERAL_ERROR, 'Error getting user last post time', '', __LINE__, __FILE__, $post_time_sql);
         }
         $row = $nuke_db->sql_fetchrow($result);
-        $last_post = ( isset($row['post_time']) ) ? '<a href="'.append_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . "=$row[post_id]#$row[post_id]").'" class=gensmall>'.create_date($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']).'</a>' : $lang['None'];
+        $last_post = ( isset($row['post_time']) ) ? '<a href="'.append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . "=$row[post_id]#$row[post_id]").'" class=gensmall>'.create_date($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']).'</a>' : $lang['None'];
 
         $mailto = ( $board_config['board_email_form'] ) ? "modules.php?name=Profile&mode=email&amp;" . NUKE_POST_USERS_URL .'=' . $staff['user_id'] : 'mailto:' . $staff['user_email'];
         $mail = ( $staff['user_email'] ) ? '<a href="' . $mailto . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" border="0" /></a>' : '';
 
-        $pmto = append_sid("privmsg.$phpEx?mode=post&amp;" . NUKE_POST_USERS_URL . "=$staff[user_id]");
+        $pmto = append_nuke_sid("privmsg.$phpEx?mode=post&amp;" . NUKE_POST_USERS_URL . "=$staff[user_id]");
         $pm = '<a href="' . $pmto . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" border="0" /></a>';
 
         $msn = ( $staff['user_msnm'] ) ? '<a href="mailto: '.$staff['user_msnm'].'"><img src="' . $images['icon_msnm'] . '" alt="' . $lang['MSNM'] . '" title="' . $lang['MSNM'] . '" border="0" /></a>' : '';

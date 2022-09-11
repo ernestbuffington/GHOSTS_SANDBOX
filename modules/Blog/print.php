@@ -30,16 +30,16 @@
  ************************************************************************/
 if (!defined('MODULE_FILE')) { die('You can\'t access this file directly...'); }
 
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 
-get_lang($module_name);
+get_lang($nuke_module_name);
 
 if(!isset($sid)) 
 exit();
 
 function PrintPage($sid) 
 {
-    global $site_logo, $nukeurl, $sitename, $datetime, $prefix, $nuke_db, $module_name;
+    global $site_logo, $nukeurl, $sitename, $datetime, $prefix, $nuke_db, $nuke_module_name;
     
 	// Ernest Buffington 0/31/2022 12:45am Wednesday
 	// I took the image out as this is a print page and wastes ink!!!
@@ -102,7 +102,7 @@ function PrintPage($sid)
         "._COMESFROM." $sitename<br />
         <a href=\"https://$nukeurl\">https://$nukeurl</a><br /><br />
         "._THEURL."<br />
-        <a href=\"https://$nukeurl/modules.php?name=$module_name&amp;file=article&amp;sid=$sid\">https://$nukeurl/modules.php?name=$module_name&amp;file=article&amp;sid=$sid</a>
+        <a href=\"https://$nukeurl/modules.php?name=$nuke_module_name&amp;file=article&amp;sid=$sid\">https://$nukeurl/modules.php?name=$nuke_module_name&amp;file=article&amp;sid=$sid</a>
         </span></center>
         </td></tr></table>
         </body>

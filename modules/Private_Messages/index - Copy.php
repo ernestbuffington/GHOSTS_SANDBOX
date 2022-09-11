@@ -77,7 +77,7 @@ if (empty($row_title['custom_title'])) {
     $mod_name = $row_title['custom_title'];
 }
 if (!(isset($popup)) || ($popup != "1")) {
-    $module_name = basename(dirname(__FILE__));
+    $nuke_module_name = basename(dirname(__FILE__));
     require(NUKE_PHPBB2_DIR.'nukebb.php');
     // title($sitename.': '.$mod_name);
     // if (is_user()) {
@@ -148,7 +148,7 @@ else
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_PRIVMSGS);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_PRIVMSGS);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -168,7 +168,7 @@ if(!empty($welcome_pm) && !empty($submit)) {
         $sql_w_pm = "INSERT INTO ".$prefix."_welcome_pm VALUES('".$HTTP_POST_VARS['subject']."', '".$HTTP_POST_VARS['message']."')";
     }
     $nuke_db->sql_query($sql_w_pm );
-    $msg = $lang['Welcome_PM_Set'] . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid("privmsg.$phpEx?folder=inbox") . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+    $msg = $lang['Welcome_PM_Set'] . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_nuke_sid("privmsg.$phpEx?folder=inbox") . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
 
     message_die(NUKE_GENERAL_MESSAGE, $msg);
 }
@@ -199,7 +199,7 @@ if ( $cancel )
 {
     // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
-    nuke_redirect(append_sid("privmsg.$phpEx?folder=$folder", true));
+    nuke_redirect(append_nuke_sid("privmsg.$phpEx?folder=$folder", true));
     exit;
 }
 
@@ -233,17 +233,17 @@ $error = FALSE;
 //
 // Define the box image links
 //
-$inbox_img = ( $folder != 'inbox' || !empty($mode) ) ? '<a href="' . append_sid("privmsg.$phpEx?folder=inbox") . '"><img src="' . $images['pm_inbox'] . '" border="0" alt="' . $lang['Inbox'] . '" /></a>' : '<img src="' . $images['pm_inbox'] . '" border="0" alt="' . $lang['Inbox'] . '" />';
-$inbox_url = ( $folder != 'inbox' || !empty($mode) ) ? '<a href="' . append_sid("privmsg.$phpEx?folder=inbox") . '">' . $lang['Inbox'] . '</a>' : $lang['Inbox'];
+$inbox_img = ( $folder != 'inbox' || !empty($mode) ) ? '<a href="' . append_nuke_sid("privmsg.$phpEx?folder=inbox") . '"><img src="' . $images['pm_inbox'] . '" border="0" alt="' . $lang['Inbox'] . '" /></a>' : '<img src="' . $images['pm_inbox'] . '" border="0" alt="' . $lang['Inbox'] . '" />';
+$inbox_url = ( $folder != 'inbox' || !empty($mode) ) ? '<a href="' . append_nuke_sid("privmsg.$phpEx?folder=inbox") . '">' . $lang['Inbox'] . '</a>' : $lang['Inbox'];
 
-$outbox_img = ( $folder != 'outbox' || !empty($mode) ) ? '<a href="' . append_sid("privmsg.$phpEx?folder=outbox") . '"><img src="' . $images['pm_outbox'] . '" border="0" alt="' . $lang['Outbox'] . '" /></a>' : '<img src="' . $images['pm_outbox'] . '" border="0" alt="' . $lang['Outbox'] . '" />';
-$outbox_url = ( $folder != 'outbox' || !empty($mode) ) ? '<a href="' . append_sid("privmsg.$phpEx?folder=outbox") . '">' . $lang['Outbox'] . '</a>' : $lang['Outbox'];
+$outbox_img = ( $folder != 'outbox' || !empty($mode) ) ? '<a href="' . append_nuke_sid("privmsg.$phpEx?folder=outbox") . '"><img src="' . $images['pm_outbox'] . '" border="0" alt="' . $lang['Outbox'] . '" /></a>' : '<img src="' . $images['pm_outbox'] . '" border="0" alt="' . $lang['Outbox'] . '" />';
+$outbox_url = ( $folder != 'outbox' || !empty($mode) ) ? '<a href="' . append_nuke_sid("privmsg.$phpEx?folder=outbox") . '">' . $lang['Outbox'] . '</a>' : $lang['Outbox'];
 
-$sentbox_img = ( $folder != 'sentbox' || !empty($mode) ) ? '<a href="' . append_sid("privmsg.$phpEx?folder=sentbox") . '"><img src="' . $images['pm_sentbox'] . '" border="0" alt="' . $lang['Sentbox'] . '" /></a>' : '<img src="' . $images['pm_sentbox'] . '" border="0" alt="' . $lang['Sentbox'] . '" />';
-$sentbox_url = ( $folder != 'sentbox' || !empty($mode) ) ? '<a href="' . append_sid("privmsg.$phpEx?folder=sentbox") . '">' . $lang['Sentbox'] . '</a>' : $lang['Sentbox'];
+$sentbox_img = ( $folder != 'sentbox' || !empty($mode) ) ? '<a href="' . append_nuke_sid("privmsg.$phpEx?folder=sentbox") . '"><img src="' . $images['pm_sentbox'] . '" border="0" alt="' . $lang['Sentbox'] . '" /></a>' : '<img src="' . $images['pm_sentbox'] . '" border="0" alt="' . $lang['Sentbox'] . '" />';
+$sentbox_url = ( $folder != 'sentbox' || !empty($mode) ) ? '<a href="' . append_nuke_sid("privmsg.$phpEx?folder=sentbox") . '">' . $lang['Sentbox'] . '</a>' : $lang['Sentbox'];
 
-$savebox_img = ( $folder != 'savebox' || !empty($mode) ) ? '<a href="' . append_sid("privmsg.$phpEx?folder=savebox") . '"><img src="' . $images['pm_savebox'] . '" border="0" alt="' . $lang['Savebox'] . '" /></a>' : '<img src="' . $images['pm_savebox'] . '" border="0" alt="' . $lang['Savebox'] . '" />';
-$savebox_url = ( $folder != 'savebox' || !empty($mode) ) ? '<a href="' . append_sid("privmsg.$phpEx?folder=savebox") . '">' . $lang['Savebox'] . '</a>' : $lang['Savebox'];
+$savebox_img = ( $folder != 'savebox' || !empty($mode) ) ? '<a href="' . append_nuke_sid("privmsg.$phpEx?folder=savebox") . '"><img src="' . $images['pm_savebox'] . '" border="0" alt="' . $lang['Savebox'] . '" /></a>' : '<img src="' . $images['pm_savebox'] . '" border="0" alt="' . $lang['Savebox'] . '" />';
+$savebox_url = ( $folder != 'savebox' || !empty($mode) ) ? '<a href="' . append_nuke_sid("privmsg.$phpEx?folder=savebox") . '">' . $lang['Savebox'] . '</a>' : $lang['Savebox'];
 
 /*****[BEGIN]******************************************
  [ Mod:     Enhanced BBGroups                  v1.0.0 ]
@@ -326,7 +326,7 @@ if ( $mode == 'newpm' )
 					$l_message_text_unread = $lang['No_unread_pm'];
                 }
 
-                $l_message_text_unread .= '<br /><br />' . sprintf($lang['Click_view_privmsg'], '<a href="' . append_sid("privmsg.".$phpEx."?folder=inbox") . '" onclick="jump_to_inbox();return false;" target="_new">', '</a>');
+                $l_message_text_unread .= '<br /><br />' . sprintf($lang['Click_view_privmsg'], '<a href="' . append_nuke_sid("privmsg.".$phpEx."?folder=inbox") . '" onclick="jump_to_inbox();return false;" target="_new">', '</a>');
         }
         else
         {
@@ -361,7 +361,7 @@ else if ( $mode == 'read' )
                 // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
                 nuke_redirect("modules.php?name=Your_Account&nuke_redirect=privmsg&folder=$folder&mode=$mode&" . NUKE_POST_POST_URL . "=$privmsgs_id");
-                //nuke_redirect(append_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=$folder&mode=$mode&" . NUKE_POST_POST_URL . "=$privmsgs_id", true));
+                //nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=$folder&mode=$mode&" . NUKE_POST_POST_URL . "=$privmsgs_id", true));
                 exit;
         }
 
@@ -432,7 +432,7 @@ else if ( $mode == 'read' )
         {
                 // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
-                nuke_redirect(append_sid("privmsg.$phpEx?folder=$folder", true));
+                nuke_redirect(append_nuke_sid("privmsg.$phpEx?folder=$folder", true));
                 exit;
         }
 
@@ -548,10 +548,10 @@ else if ( $mode == 'read' )
         // Pick a folder, any folder, so long as it's one below ...
         //
         $post_urls = array(
-                'post' => append_sid("privmsg.$phpEx?mode=post"),
-                'reply' => append_sid("privmsg.$phpEx?mode=reply&amp;" . NUKE_POST_POST_URL . "=$privmsg_id"),
-                'quote' => append_sid("privmsg.$phpEx?mode=quote&amp;" . NUKE_POST_POST_URL . "=$privmsg_id"),
-                'edit' => append_sid("privmsg.$phpEx?mode=edit&amp;" . NUKE_POST_POST_URL . "=$privmsg_id")
+                'post' => append_nuke_sid("privmsg.$phpEx?mode=post"),
+                'reply' => append_nuke_sid("privmsg.$phpEx?mode=reply&amp;" . NUKE_POST_POST_URL . "=$privmsg_id"),
+                'quote' => append_nuke_sid("privmsg.$phpEx?mode=quote&amp;" . NUKE_POST_POST_URL . "=$privmsg_id"),
+                'edit' => append_nuke_sid("privmsg.$phpEx?mode=edit&amp;" . NUKE_POST_POST_URL . "=$privmsg_id")
         );
         $post_icons = array(
                 'post_img' => '<a href="' . $post_urls['post'] . '"><img src="' . $images['pm_postmsg'] . '" alt="' . $lang['Post_new_pm'] . '" border="0"></a>',
@@ -678,7 +678,7 @@ else if ( $mode == 'read' )
                 'L_SAVE_MSG' => $lang['Save_message'],
                 'L_DELETE_MSG' => $lang['Delete_message'],
 
-                'S_PRIVMSGS_ACTION' => append_sid("privmsg.$phpEx?folder=$folder"),
+                'S_PRIVMSGS_ACTION' => append_nuke_sid("privmsg.$phpEx?folder=$folder"),
                 'S_HIDDEN_FIELDS' => $s_hidden_fields)
         );
 
@@ -699,7 +699,7 @@ else if ( $mode == 'read' )
         $profile_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" border="0" /></a>';
         $profile = '<a href="' . $temp_url . '">' . $lang['Read_profile'] . '</a>';
 
-        $temp_url = append_sid("privmsg.$phpEx?mode=post&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id_from");
+        $temp_url = append_nuke_sid("privmsg.$phpEx?mode=post&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id_from");
         $pm_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" border="0" /></a>';
         $pm = '<a href="' . $temp_url . '">' . $lang['Send_private_message'] . '</a>';
 
@@ -742,13 +742,13 @@ else if ( $mode == 'read' )
         {
             if ($privmsg['user_allow_viewonline_1'])
             {
-                $online_status_img = '<a href="' . append_sid("viewonline.$phpEx") . '"><img src="' . $images['icon_online'] . '" alt="' . sprintf($lang['is_online'], $nuke_username_from) . '" title="' . sprintf($lang['is_online'], $nuke_username_from) . '" /></a>&nbsp;';
-                $online_status = '&nbsp;(<strong><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_online'], $nuke_username_from) . '"' . $online_color . '>' . $lang['Online'] . '</a></strong>)';
+                $online_status_img = '<a href="' . append_nuke_sid("viewonline.$phpEx") . '"><img src="' . $images['icon_online'] . '" alt="' . sprintf($lang['is_online'], $nuke_username_from) . '" title="' . sprintf($lang['is_online'], $nuke_username_from) . '" /></a>&nbsp;';
+                $online_status = '&nbsp;(<strong><a href="' . append_nuke_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_online'], $nuke_username_from) . '"' . $online_color . '>' . $lang['Online'] . '</a></strong>)';
             }
             else if ($nuke_userdata['user_level'] == NUKE_ADMIN || $nuke_userdata['user_id'] == $nuke_user_id_from)
             {
-                $online_status_img = '<a href="' . append_sid("viewonline.$phpEx") . '"><img src="' . $images['icon_hidden'] . '" alt="' . sprintf($lang['is_hidden'], $nuke_username_from) . '" title="' . sprintf($lang['is_hidden'], $nuke_username_from) . '" /></a>&nbsp;';
-                $online_status = '&nbsp;(<strong><em><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_hidden'], $nuke_username_from) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em></strong>)';
+                $online_status_img = '<a href="' . append_nuke_sid("viewonline.$phpEx") . '"><img src="' . $images['icon_hidden'] . '" alt="' . sprintf($lang['is_hidden'], $nuke_username_from) . '" title="' . sprintf($lang['is_hidden'], $nuke_username_from) . '" /></a>&nbsp;';
+                $online_status = '&nbsp;(<strong><em><a href="' . append_nuke_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_hidden'], $nuke_username_from) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em></strong>)';
             }
             else
             {
@@ -766,11 +766,11 @@ else if ( $mode == 'read' )
         {
             if ($privmsg['user_allow_viewonline_2'])
             {
-                $online_status_2 = '&nbsp;(<strong><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_online'], $nuke_username_to) . '"' . $online_color . '>' . $lang['Online'] . '</a></strong>)';
+                $online_status_2 = '&nbsp;(<strong><a href="' . append_nuke_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_online'], $nuke_username_to) . '"' . $online_color . '>' . $lang['Online'] . '</a></strong>)';
             }
             else if ($nuke_userdata['user_level'] == NUKE_ADMIN || $nuke_userdata['user_id'] == $nuke_user_id_to)
             {
-                $online_status_2 = '&nbsp;(<strong><em><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_hidden'], $nuke_username_to) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em></strong>)';
+                $online_status_2 = '&nbsp;(<strong><em><a href="' . append_nuke_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_hidden'], $nuke_username_to) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em></strong>)';
             }
             else
             {
@@ -951,7 +951,7 @@ else if ( ( $delete && $mark_list ) || $delete_all )
                 // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
                 nuke_redirect("modules.php?name=Your_Account&nuke_redirect=privmsg&folder=inbox");
-                //nuke_redirect(append_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=inbox", true));
+                //nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=inbox", true));
                 exit;
         }
 
@@ -987,7 +987,7 @@ else if ( ( $delete && $mark_list ) || $delete_all )
                         'L_YES' => $lang['Yes'],
                         'L_NO' => $lang['No'],
 
-                        'S_CONFIRM_ACTION' => append_sid("privmsg.$phpEx?folder=$folder"),
+                        'S_CONFIRM_ACTION' => append_nuke_sid("privmsg.$phpEx?folder=$folder"),
                         'S_HIDDEN_FIELDS' => $s_hidden_fields)
                 );
 
@@ -1206,7 +1206,7 @@ else if ( $save && $mark_list && $folder != 'savebox' && $folder != 'outbox' )
                 // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
                 nuke_redirect("modules.php?name=Your_Account&nuke_redirect=privmsg&folder=inbox");
-                //nuke_redirect(append_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=inbox", true));
+                //nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=inbox", true));
                 exit;
         }
 
@@ -1387,7 +1387,7 @@ else if ( $save && $mark_list && $folder != 'savebox' && $folder != 'outbox' )
                 }
                 // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
-                nuke_redirect(append_sid("privmsg.$phpEx?folder=savebox", true));
+                nuke_redirect(append_nuke_sid("privmsg.$phpEx?folder=savebox", true));
                 exit;
         }
 }
@@ -1399,7 +1399,7 @@ else if ( $submit || $refresh || !empty($mode) )
                 // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
                 nuke_redirect("modules.php?name=Your_Account&nuke_redirect=privmsg&folder=$folder&mode=$mode" . $nuke_user_id);
-                //nuke_redirect(append_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=$folder&mode=$mode" . $nuke_user_id, true));
+                //nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=$folder&mode=$mode" . $nuke_user_id, true));
                 exit;
         }
 
@@ -1780,10 +1780,10 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
                 }
 
                 $template_nuke->assign_vars(array(
-                        'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("privmsg.$phpEx?folder=inbox") . '">')
+                        'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("privmsg.$phpEx?folder=inbox") . '">')
                 );
 
-                $msg = $lang['Message_sent'] . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid("privmsg.$phpEx?folder=inbox") . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                $msg = $lang['Message_sent'] . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_nuke_sid("privmsg.$phpEx?folder=inbox") . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
 
                 message_die(NUKE_GENERAL_MESSAGE, $msg);
         }
@@ -1890,7 +1890,7 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
                         {
                                 // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
-                                nuke_redirect(append_sid("privmsg.$phpEx?folder=$folder", true));
+                                nuke_redirect(append_nuke_sid("privmsg.$phpEx?folder=$folder", true));
                                 exit;
                         }
 
@@ -1931,7 +1931,7 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
                         {
                                 // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
-                                nuke_redirect(append_sid("privmsg.$phpEx?folder=$folder", true));
+                                nuke_redirect(append_nuke_sid("privmsg.$phpEx?folder=$folder", true));
                                 exit;
                         }
              			$orig_word = $replacement_word = array();
@@ -2231,7 +2231,7 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
                 'HTML_STATUS' => $html_status,
                 'SMILIES_STATUS' => $smilies_status,
                 'BB_BOX' => Make_TextArea_Ret('message', $privmsg_message, 'post', '99.8%', '300px', true),
-                'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
+                'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_nuke_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
                 'FORUM_NAME' => $lang['Private_Message'],
 
                 'BOX_NAME' => $l_box_name,
@@ -2331,10 +2331,10 @@ if ( $inbox_info['inbox_items'] >= $max_inbox )
                 'S_SMILIES_CHECKED' => ( !$smilies_on ) ? ' checked="checked"' : '',
                 'S_SIGNATURE_CHECKED' => ( $attach_sig ) ? ' checked="checked"' : '',
                 'S_HIDDEN_FORM_FIELDS' => $s_hidden_fields,
-                'S_POST_ACTION' => append_sid("privmsg.$phpEx"),
+                'S_POST_ACTION' => append_nuke_sid("privmsg.$phpEx"),
 
                 'U_SEARCH_USER' => "modules.php?name=Forums&amp;file=search&amp;mode=searchuser&amp;popup=1",
-                'U_VIEW_FORUM' => append_sid("privmsg.$phpEx"))
+                'U_VIEW_FORUM' => append_nuke_sid("privmsg.$phpEx"))
         );
 
         $template_nuke->pparse('body');
@@ -2350,7 +2350,7 @@ if ( !$nuke_userdata['session_logged_in'] )
         // not needed anymore due to function nuke_redirect()
 //$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', $_SERVER['SERVER_SOFTWARE']) ) ? 'Refresh: 0; URL=' : 'Location: ';
         nuke_redirect("modules.php?name=Your_Account&nuke_redirect=privmsg&folder=inbox");
-        //nuke_redirect(append_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=inbox", true));
+        //nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=privmsg.$phpEx&folder=inbox", true));
         exit;
 }
 
@@ -2407,7 +2407,7 @@ obtain_word_list($orig_word, $replacement_word);
 //
 // New message
 //
-$post_new_mesg_url = '<a href="' . append_sid("privmsg.$phpEx?mode=post") . '"><img src="' . $images['post_new'] . '" alt="' . $lang['Send_a_new_message'] . '" border="0" /></a>';
+$post_new_mesg_url = '<a href="' . append_nuke_sid("privmsg.$phpEx?mode=post") . '"><img src="' . $images['post_new'] . '" alt="' . $lang['Send_a_new_message'] . '" border="0" /></a>';
 
 //
 // General SQL to obtain messages
@@ -2590,7 +2590,7 @@ switch ( $folder )
                 $l_box_name = $lang['Sentbox'];
                 break;
 }
-$post_pm = append_sid("privmsg.$phpEx?mode=post");
+$post_pm = append_nuke_sid("privmsg.$phpEx?mode=post");
 $post_pm_img = '<a href="' . $post_pm . '"><img src="' . $images['pm_postmsg'] . '" alt="' . $lang['Post_new_pm'] . '" border="0"></a>';
 /*****[BEGIN]******************************************
  [ Mod:     Custom mass PM                     v1.4.7 ]
@@ -2598,7 +2598,7 @@ $post_pm_img = '<a href="' . $post_pm . '"><img src="' . $images['pm_postmsg'] .
 include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_mass_pm.' . $phpEx);
 if ( $nuke_userdata['user_level'] == NUKE_ADMIN )
 {
-    $mass_pm_img = '<a href="' . append_sid("groupmsg.$phpEx") . '"><img src="' . $images['mass_pm'] . '" border="0" alt="' . $lang['Mass_pm'] . '" /></a>';
+    $mass_pm_img = '<a href="' . append_nuke_sid("groupmsg.$phpEx") . '"><img src="' . $images['mass_pm'] . '" border="0" alt="' . $lang['Mass_pm'] . '" /></a>';
 } else
 {
     $sql_g = "SELECT DISTINCT g.group_id
@@ -2615,7 +2615,7 @@ if ( $nuke_userdata['user_level'] == NUKE_ADMIN )
     }
     if( $nuke_db->sql_numrows($g_result))
     {
-        $mass_pm_img = '<a href="' . append_sid("groupmsg.$phpEx") . '"><img src="' . $images['mass_pm'] . '" border="0" alt="' . $lang['Mass_pm'] . '" /></a>';
+        $mass_pm_img = '<a href="' . append_nuke_sid("groupmsg.$phpEx") . '"><img src="' . $images['mass_pm'] . '" border="0" alt="' . $lang['Mass_pm'] . '" /></a>';
     }
 }
 /*****[END]********************************************
@@ -2735,12 +2735,12 @@ $template_nuke->assign_vars(array(
         'L_DELETE_ALL' => $lang['Delete_all'],
         'L_SAVE_MARKED' => $lang['Save_marked'],
 
-        'S_PRIVMSGS_ACTION' => append_sid("privmsg.$phpEx?folder=$folder"),
+        'S_PRIVMSGS_ACTION' => append_nuke_sid("privmsg.$phpEx?folder=$folder"),
         'S_HIDDEN_FIELDS' => '',
         'S_POST_NEW_MSG' => $post_new_mesg_url,
         'S_SELECT_MSG_DAYS' => $select_msg_days,
 
-        'U_POST_NEW_TOPIC' => append_sid("privmsg.$phpEx?mode=post"))
+        'U_POST_NEW_TOPIC' => append_nuke_sid("privmsg.$phpEx?mode=post"))
 );
 
 //
@@ -2789,7 +2789,7 @@ if ( $row = $nuke_db->sql_fetchrow($result) )
                         $msg_subject = preg_replace($orig_word, $replacement_word, $msg_subject);
                 }
 
-                $u_subject = append_sid("privmsg.$phpEx?folder=$folder&amp;mode=read&amp;" . NUKE_POST_POST_URL . "=$privmsg_id");
+                $u_subject = append_nuke_sid("privmsg.$phpEx?folder=$folder&amp;mode=read&amp;" . NUKE_POST_POST_URL . "=$privmsg_id");
 
                 $msg_date = create_date($board_config['default_dateformat'], $row['privmsgs_date'], $board_config['board_timezone']);
 

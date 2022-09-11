@@ -34,9 +34,9 @@ define('NUKE_EVO_USERBLOCK_ADMIN_INCLUDES', NUKE_EVO_USERBLOCK_ADMIN . 'includes
 define('NUKE_EVO_USERBLOCK_ADMIN_ADDONS', NUKE_EVO_USERBLOCK_ADMIN . 'addons/');
 
 global $prefix, $nuke_db, $admin_file, $admdata, $lang_evo_userblock;
-$module_name = basename(dirname(dirname(__FILE__)));
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
 
-if (!is_mod_admin($module_name)) {
+if (!is_mod_admin($nuke_module_name)) {
     echo "Access Denied";
     die();
 }
@@ -52,7 +52,7 @@ $Sajax->sajax_export("sajax_update");
 $Sajax->sajax_handle_client_request();
 
 function evouserinfo_drawlists () {
-    global $lang_evo_userblock, $admin_file, $Default_Theme, $module_name, $board_config, $nuke_userinfo, $evouserinfo_ec, $admlang;
+    global $lang_evo_userblock, $admin_file, $Default_Theme, $nuke_module_name, $board_config, $nuke_userinfo, $evouserinfo_ec, $admlang;
 
     $active = evouserinfo_getactive();
     $inactive = evouserinfo_getinactive();

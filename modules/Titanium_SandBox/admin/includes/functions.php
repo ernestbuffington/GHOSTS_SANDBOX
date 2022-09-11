@@ -41,12 +41,12 @@ function serverinfo()
 
 function case_menu($url, $title, $image) 
 {
-	global $counter, $admingraphic, $admin, $module_folder_name;
+	global $counter, $admingraphic, $admin, $nuke_module_folder_name;
     
-	if ( file_exists('modules/'.$module_folder_name.'/images/admin/'.$image) ):
-		$image = 'modules/'.$module_folder_name.'/images/admin/'.$image;
-	elseif ( file_exists('modules/'.$module_folder_name.'/images/'.$image) ):
-		$image = 'modules/'.$module_folder_name.'/images/'.$image;
+	if ( file_exists('modules/'.$nuke_module_folder_name.'/images/admin/'.$image) ):
+		$image = 'modules/'.$nuke_module_folder_name.'/images/admin/'.$image;
+	elseif ( file_exists('modules/'.$nuke_module_folder_name.'/images/'.$image) ):
+		$image = 'modules/'.$nuke_module_folder_name.'/images/'.$image;
 	else:
 		$image = 'images/admin/'.$image;
 	endif;

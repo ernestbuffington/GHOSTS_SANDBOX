@@ -44,8 +44,8 @@ if (!defined('MODULE_FILE'))
     die ("You can't access this file directly...");
 }
 
-$module_name = basename(dirname(__FILE__));
-require("modules/".$module_name."/nukebb.php");
+$nuke_module_name = basename(dirname(__FILE__));
+require("modules/".$nuke_module_name."/nukebb.php");
 define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
@@ -53,7 +53,7 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_VIEWONLINE);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_VIEWONLINE);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -359,7 +359,7 @@ while ( $row = $nuke_db->sql_fetchrow($result) )
 /*****[BEGIN]******************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-        // $BSH = select_session_url($row['session_page'], $row['session_url_qs'], $row['session_url_ps'], $row['session_url_specific'], $nuke_userdata['user_level'], $row['user_id'], $forums_data, $topics_data, $nuke_users_data, $cats_data);
+        // $BSH = select_nuke_session_url($row['session_page'], $row['session_url_qs'], $row['session_url_ps'], $row['session_url_specific'], $nuke_userdata['user_level'], $row['user_id'], $forums_data, $topics_data, $nuke_users_data, $cats_data);
         // $location = $BSH;
 /*****[END]********************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
@@ -374,8 +374,8 @@ while ( $row = $nuke_db->sql_fetchrow($result) )
             'USERNAME' => $nuke_username,
             'LASTUPDATE' => create_date($board_config['default_dateformat'], $row['session_time'], $board_config['board_timezone']),
             'FORUM_LOCATION' => $location,
-            'U_USER_PROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $nuke_user_id),
-            'U_FORUM_LOCATION' => append_sid($location_url))
+            'U_USER_PROFILE' => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $nuke_user_id),
+            'U_FORUM_LOCATION' => append_nuke_sid($location_url))
         );
         $$which_counter++;
     }

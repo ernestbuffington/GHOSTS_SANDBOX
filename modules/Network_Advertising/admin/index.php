@@ -26,11 +26,11 @@ if (!defined('ADMIN_FILE')) {
 }
 
 global $network_prefix, $network_db, $admin_file;
-$module_name = basename(dirname(dirname(__FILE__)));
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
 
-if(is_mod_admin($module_name)) {
+if(is_mod_admin($nuke_module_name)) {
 
-    get_lang($module_name);
+    get_lang($nuke_module_name);
 
     /*********************************************************/
     /* Banners Administration Functions                      */
@@ -42,7 +42,7 @@ if(is_mod_admin($module_name)) {
     } else {
         $cli = "<a href=\"".$admin_file.".php?op=add_network_banner\">"._ADDNEWBANNER."</a>";
     }
-    if (!is_active($module_name)) {
+    if (!is_active($nuke_module_name)) {
         $act = "<br /><center>"._ADSMODULEINACTIVE."</center>";
     } else {
         $act = "";
@@ -1318,7 +1318,7 @@ if(is_mod_admin($module_name)) {
     }
 
 } else {
-    DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$module_name\"");
+    DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$nuke_module_name\"");
 }
 
 ?>

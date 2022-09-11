@@ -33,12 +33,12 @@ if (!defined('MODULE_FILE')) {
    die('You can\'t access this file directly...');
 }
 
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
 
 function defaultDisplay() 
 {
-    global $prefix, $cookie, $anonymous, $currentlang, $multilingual, $nuke_db, $module_name;
+    global $prefix, $cookie, $anonymous, $currentlang, $multilingual, $nuke_db, $nuke_module_name;
 
     include_once(NUKE_BASE_DIR.'header.php');
     title($sitename. '._SUBMITNEWS.');
@@ -52,7 +52,7 @@ function defaultDisplay()
 /*****[BEGIN]******************************************
  [ Mod:     News BBCodes                       v1.0.0 ]
  ******************************************************/
-    echo "<p><form name=\"postnews\" action=\"modules.php?name=$module_name\" method=\"post\">\n";
+    echo "<p><form name=\"postnews\" action=\"modules.php?name=$nuke_module_name\" method=\"post\">\n";
 /*****[END]********************************************
  [ Mod:     News BBCodes                       v1.0.0 ]
  ******************************************************/
@@ -117,7 +117,7 @@ function defaultDisplay()
 
 function PreviewStory($name, $address, $subject, $story, $storyext, $topic, $alanguage, $posttype) 
 {
-    global $nuke_user, $cookie, $bgcolor1, $bgcolor2, $anonymous, $prefix, $multilingual, $AllowableHTML, $nuke_db, $module_name, $tipath, $nuke_userinfo;
+    global $nuke_user, $cookie, $bgcolor1, $bgcolor2, $anonymous, $prefix, $multilingual, $AllowableHTML, $nuke_db, $nuke_module_name, $tipath, $nuke_userinfo;
 
     include_once(NUKE_BASE_DIR.'header.php');
 
@@ -135,7 +135,7 @@ function PreviewStory($name, $address, $subject, $story, $storyext, $topic, $ala
         DisplayError(_ERROR_SUBJECT);
     }
     $story2 = $story.'<br /><br />'.$storyext;
-    Validate($topic, 'int', $module_name, 0, 0, 0, 0, 'topic');
+    Validate($topic, 'int', $nuke_module_name, 0, 0, 0, 0, 'topic');
 /*****[BEGIN]******************************************
  [ Mod:     News BBCodes                    v1.0.0 ]
  ******************************************************/
@@ -171,7 +171,7 @@ function PreviewStory($name, $address, $subject, $story, $storyext, $topic, $ala
 /*****[BEGIN]******************************************
  [ Mod:     News BBCodes                       v1.0.0 ]
  ******************************************************/
-    echo "<p><form name=\"postnews\" action=\"modules.php?name=$module_name\" method=\"post\">\n";
+    echo "<p><form name=\"postnews\" action=\"modules.php?name=$nuke_module_name\" method=\"post\">\n";
     echo '<strong>'._YOURNAME.':</strong> ';
 /*****[END]********************************************
  [ Mod:     News BBCodes                       v1.0.0 ]

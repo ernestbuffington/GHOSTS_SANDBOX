@@ -19,11 +19,11 @@ define('IN_PHPBB2', true);
 if( !empty($setmodules) )
 {
     $filename = basename(__FILE__);
-    $module['Attachments']['Manage'] = $filename . '?mode=manage';
-    $module['Attachments']['Shadow_attachments'] = $filename . '?mode=shadow';
-    $module['Extensions']['Special_categories'] = $filename . '?mode=cats';
-    $module['Attachments']['Sync_attachments'] = $filename . '?mode=sync';
-    $module['Attachments']['Quota_limits'] = $filename . '?mode=quota';
+    $nuke_module['Attachments']['Manage'] = $filename . '?mode=manage';
+    $nuke_module['Attachments']['Shadow_attachments'] = $filename . '?mode=shadow';
+    $nuke_module['Extensions']['Special_categories'] = $filename . '?mode=cats';
+    $nuke_module['Attachments']['Sync_attachments'] = $filename . '?mode=sync';
+    $nuke_module['Attachments']['Quota_limits'] = $filename . '?mode=quota';
     return;
 }
 
@@ -395,7 +395,7 @@ if ($check_upload)
 
     if (!$error)
     {
-        message_die(NUKE_GENERAL_MESSAGE, $lang['Test_settings_successful'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid("admin_attachments.$phpEx?mode=manage") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>'));
+        message_die(NUKE_GENERAL_MESSAGE, $lang['Test_settings_successful'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_nuke_sid("admin_attachments.$phpEx?mode=manage") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>'));
     }
 }
 
@@ -404,7 +404,7 @@ if ($submit && $mode == 'manage')
 {
     if (!$error)
     {
-        message_die(NUKE_GENERAL_MESSAGE, $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid("admin_attachments.$phpEx?mode=manage") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>'));
+        message_die(NUKE_GENERAL_MESSAGE, $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_nuke_sid("admin_attachments.$phpEx?mode=manage") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>'));
     }
 }
 
@@ -488,7 +488,7 @@ if ($mode == 'manage')
         'L_SHOW_APCP_EXPLAIN'            => $lang['Show_apcp_explain'],
         'L_TEST_SETTINGS'                => $lang['Test_settings'],
 
-        'S_ATTACH_ACTION'        => append_sid('admin_attachments.' . $phpEx . '?mode=manage'),
+        'S_ATTACH_ACTION'        => append_nuke_sid('admin_attachments.' . $phpEx . '?mode=manage'),
         'S_FILESIZE'            => $select_size_mode,
         'S_FILESIZE_QUOTA'        => $select_quota_size_mode,
         'S_FILESIZE_PM'            => $select_pm_size_mode,
@@ -565,7 +565,7 @@ if ($submit && $mode == 'shadow')
         }
     }
 
-    $message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid("admin_attachments.$phpEx?mode=shadow") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
+    $message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_nuke_sid("admin_attachments.$phpEx?mode=shadow") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');
 
     message_die(NUKE_GENERAL_MESSAGE, $message);
 }
@@ -595,7 +595,7 @@ if ($mode == 'shadow')
         'L_UNMARK_ALL'        => $lang['Unmark_all'],
 
         'S_HIDDEN'            => $hidden,
-        'S_ATTACH_ACTION'    => append_sid('admin_attachments.' . $phpEx . '?mode=shadow'))
+        'S_ATTACH_ACTION'    => append_nuke_sid('admin_attachments.' . $phpEx . '?mode=shadow'))
     );
 
     $table_attachments = array();
@@ -747,7 +747,7 @@ if ($submit && $mode == 'cats')
 {
     if (!$error)
     {
-        message_die(NUKE_GENERAL_MESSAGE, $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid("admin_attachments.$phpEx?mode=cats") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>'));
+        message_die(NUKE_GENERAL_MESSAGE, $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_nuke_sid("admin_attachments.$phpEx?mode=cats") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>'));
     }
 }
 
@@ -861,7 +861,7 @@ if ($mode == 'cats')
         'USE_GD2_NO'    => $use_gd2_no,
 
         'S_ASSIGNED_GROUP_IMAGES'    => implode(', ', $s_assigned_group_images),
-        'S_ATTACH_ACTION'            => append_sid('admin_attachments.' . $phpEx . '?mode=cats'))
+        'S_ATTACH_ACTION'            => append_nuke_sid('admin_attachments.' . $phpEx . '?mode=cats'))
     );
 }
 
@@ -1020,7 +1020,7 @@ if ($check_image_cat)
 
     if (!$error)
     {
-        message_die(NUKE_GENERAL_MESSAGE, $lang['Test_settings_successful'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid("admin_attachments.$phpEx?mode=cats") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>'));
+        message_die(NUKE_GENERAL_MESSAGE, $lang['Test_settings_successful'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_nuke_sid("admin_attachments.$phpEx?mode=cats") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>'));
     }
 }
 
@@ -1271,7 +1271,7 @@ if ($submit && $mode == 'quota')
 
     if (!$error)
     {
-        $message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid("admin_attachments.$phpEx?mode=quota") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
+        $message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_nuke_sid("admin_attachments.$phpEx?mode=quota") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
     }
@@ -1312,7 +1312,7 @@ if ($mode == 'quota')
         'S_FILESIZE'            => size_select('add_size_select', $size),
         'L_REMOVE_SELECTED'        => $lang['Remove_selected'],
 
-        'S_ATTACH_ACTION'        => append_sid('admin_attachments.' . $phpEx . '?mode=quota'))
+        'S_ATTACH_ACTION'        => append_nuke_sid('admin_attachments.' . $phpEx . '?mode=quota'))
     );
 
     $sql = "SELECT * FROM " . QUOTA_LIMITS_TABLE . " ORDER BY quota_limit DESC";
@@ -1342,7 +1342,7 @@ if ($mode == 'quota')
             'QUOTA_NAME'        => $rows[$i]['quota_desc'],
             'QUOTA_ID'            => $rows[$i]['quota_limit_id'],
             'S_FILESIZE'        => size_select('size_select_list[]', $size_format),
-            'U_VIEW'            => append_sid("admin_attachments.$phpEx?mode=$mode&amp;e_mode=view_quota&amp;quota_id=" . $rows[$i]['quota_limit_id']),
+            'U_VIEW'            => append_nuke_sid("admin_attachments.$phpEx?mode=$mode&amp;e_mode=view_quota&amp;quota_id=" . $rows[$i]['quota_limit_id']),
             'MAX_FILESIZE'        => $rows[$i]['quota_limit'])
         );
     }

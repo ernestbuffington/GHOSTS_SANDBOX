@@ -51,7 +51,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
         $filename = basename(__FILE__);
-        $module['Users']['Manage'] = $filename;
+        $nuke_module['Users']['Manage'] = $filename;
 
         return;
 }
@@ -332,7 +332,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                                 }
                         }
 
-                        $message = $lang['User_deleted'] . '<br /><br />' . sprintf($lang['Click_return_useradmin'], '<a href="' . append_sid("admin_users.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
+                        $message = $lang['User_deleted'] . '<br /><br />' . sprintf($lang['Click_return_useradmin'], '<a href="' . append_nuke_sid("admin_users.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');
 
                         message_die(NUKE_GENERAL_MESSAGE, $message);
                 }
@@ -1095,7 +1095,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                  				// and change the current one (if applicable)
                  				if ( !empty($passwd_sql) )
                  				{
-                 					session_reset_keys($nuke_user_id, $nuke_user_ip);
+                 					session_nuke_reset_keys($nuke_user_id, $nuke_user_ip);
                  				}
                                 $message .= $lang['Admin_user_updated'];
                         }
@@ -1104,7 +1104,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                             message_die(NUKE_GENERAL_ERROR, 'Admin_user_fail', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $message .= '<br /><br />' . sprintf($lang['Click_return_useradmin'], '<a href="' . append_sid("admin_users.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
+                        $message .= '<br /><br />' . sprintf($lang['Click_return_useradmin'], '<a href="' . append_nuke_sid("admin_users.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_nuke_sid("index.$phpEx?pane=right") . '">', '</a>');
 
                         message_die(NUKE_GENERAL_MESSAGE, $message);
                 }
@@ -1604,7 +1604,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 
                                 "S_OPTIONS_CATEGORIES" => $s_categories,
                                 "S_COLSPAN" => $s_colspan,
-                                "S_PROFILE_ACTION" => append_sid("admin_users.$phpEx?mode=$mode"),
+                                "S_PROFILE_ACTION" => append_nuke_sid("admin_users.$phpEx?mode=$mode"),
                                 "S_HIDDEN_FIELDS" => $s_hidden_fields)
                         );
                 }
@@ -2281,7 +2281,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                         'S_FORM_ENCTYPE' => $form_enctype,
 
                         'HTML_STATUS' => $html_status,
-                        'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="../' . append_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
+                        'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="../' . append_nuke_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
                         'SMILIES_STATUS' => $smilies_status,
 
                         'L_DELETE_USER' => $lang['User_delete'],
@@ -2299,7 +2299,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  ******************************************************/
 
                         'S_HIDDEN_FIELDS' => $s_hidden_fields,
-                        'S_PROFILE_ACTION' => append_sid("admin_users.$phpEx"))
+                        'S_PROFILE_ACTION' => append_nuke_sid("admin_users.$phpEx"))
                 );
 				
 /*****[BEGIN]******************************************
@@ -2367,9 +2367,9 @@ else
                 'L_LOOK_UP' => $lang['Look_up_user'],
                 'L_FIND_USERNAME' => $lang['Find_username'],
 
-                'U_SEARCH_USER' => append_sid("search.$phpEx?mode=searchuser&popup=1&menu=1"),
+                'U_SEARCH_USER' => append_nuke_sid("search.$phpEx?mode=searchuser&popup=1&menu=1"),
 
-                'S_USER_ACTION' => append_sid("admin_users.$phpEx"),
+                'S_USER_ACTION' => append_nuke_sid("admin_users.$phpEx"),
                 'S_USER_SELECT' => $select_list)
         );
         $template_nuke->pparse('body');

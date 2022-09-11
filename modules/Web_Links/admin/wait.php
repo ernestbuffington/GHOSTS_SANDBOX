@@ -24,9 +24,9 @@ if(!defined('NUKE_EVO')) {
 
 global $admin_file, $nuke_db, $prefix, $nuke_cache;
 
-$module_name = basename(dirname(dirname(__FILE__)));
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
 
-if(is_active($module_name)) {
+if(is_active($nuke_module_name)) {
     $content .= "<div align=\"left\"><strong><u><span class=\"content\">"._AWL."</span>:</u></strong></div>";
     if(($numbrokenl = $nuke_cache->load('numbrokenl', 'submissions')) === false) {
         $result = $nuke_db->sql_query("SELECT COUNT(*) FROM ".$prefix."_links_modrequest WHERE brokenlink='1'");

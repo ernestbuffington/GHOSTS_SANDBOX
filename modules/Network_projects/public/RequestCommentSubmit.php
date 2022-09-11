@@ -26,7 +26,7 @@ if($project['allowrequests'] > 0) {
   echo '</div><br/>';
 
   echo "<table align='center' border='0' cellpadding='2' cellspacing='2'>\n";
-  echo "<form action='modules.php?name=$module_name' method='post'>\n";
+  echo "<form action='modules.php?name=$nuke_module_name' method='post'>\n";
   echo "<input type='hidden' name='op' value='RequestCommentInsert'>\n";
   echo "<input type='hidden' name='request_id' value='$request_id'>\n";
   echo "<tr><td align='center' colspan='2' class='title'>"._NETWORK_INPUTNOTE."</td></tr>\n";
@@ -42,7 +42,7 @@ if($project['allowrequests'] > 0) {
   CloseTable();
   include_once(NUKE_BASE_DIR.'footer.php');
 } else {
-  header("Location: modules.php?name=$module_name");
+  header("Location: modules.php?name=$nuke_module_name");
 }
 
 ?>

@@ -63,7 +63,7 @@ if(!defined('CNBYA'))die('CNBYA protection');
 		OpenTable();
         
 		echo "<table class='forumline' cellpadding='3' cellspacing='3' border='0' width='100%'>";
-        echo "<form name='Register' action='modules.php?name=$module_name' method='post'>";
+        echo "<form name='Register' action='modules.php?name=$nuke_module_name' method='post'>";
         echo "<tr><td bgcolor='$bgcolor2'><strong>"._USRNICKNAME."</strong>:</td><td bgcolor='$bgcolor3'><strong>$nuke_userinfo[username]</strong></td></tr>";
         echo "<tr><td bgcolor='$bgcolor2'><strong>"._UREALNAME."</strong>:<br />"._REQUIRED."</td><td bgcolor='$bgcolor3'>";
         echo "<input type='text' name='realname' value=\"$nuke_userinfo[name]\" size='50' maxlength='60'></td></tr>";

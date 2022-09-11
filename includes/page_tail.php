@@ -58,7 +58,7 @@ if ( $nuke_userdata['user_level'] >= NUKE_ADMIN )
         $open_reports = '<span style="color:#' . $theme['fontcolor2'] . '">' . $open_reports . '</span>';
     }
 
-    $report_link = '&nbsp; <a href="' . append_sid('viewpost_reports.'.$phpEx) . '">' . $open_reports . '</a> &nbsp;';
+    $report_link = '&nbsp; <a href="' . append_nuke_sid('viewpost_reports.'.$phpEx) . '">' . $open_reports . '</a> &nbsp;';
 }
 else
 {

@@ -13,7 +13,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
 	$file = basename(__FILE__);
-	$module['XData']['Manage_Fields'] = $file;
+	$nuke_module['XData']['Manage_Fields'] = $file;
 	return;
 }
 
@@ -380,7 +380,7 @@ switch ($mode)
 				message_die(NUKE_GENERAL_ERROR, $lang['XData_error_updating_fields'], '', __LINE__, __FILE__, $sql);
 			}
 
-           	 $message = $lang['Edit_success'] . "<br /><br />" . sprintf($lang['Click_return_fields'], "<a href=\"" . append_sid("admin_xdata_fields.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+           	 $message = $lang['Edit_success'] . "<br /><br />" . sprintf($lang['Click_return_fields'], "<a href=\"" . append_nuke_sid("admin_xdata_fields.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 			message_die(NUKE_GENERAL_MESSAGE, $message);
 		}
 
@@ -545,7 +545,7 @@ switch ($mode)
 				message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_inserting_data'], '', __LINE__, __FILE__, $sql);
 			}
 
-           		 $message = $lang['Add_success'] . "<br /><br />" . sprintf($lang['Click_return_fields'], "<a href=\"" . append_sid("admin_xdata_fields.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+           		 $message = $lang['Add_success'] . "<br /><br />" . sprintf($lang['Click_return_fields'], "<a href=\"" . append_nuke_sid("admin_xdata_fields.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 			message_die(NUKE_GENERAL_MESSAGE, $message);
 		}
 
@@ -578,7 +578,7 @@ switch ($mode)
 
 			$template_nuke->assign_vars( array(
 				'S_HIDDEN_VARS' => '<input type="hidden" name="name" value="' . $code_name . '" /><input type="hidden" name="mode" value="delete" />',
-				'U_FORM_ACTION' => append_sid("admin_xdata_fields.$phpEx?name=$name")
+				'U_FORM_ACTION' => append_nuke_sid("admin_xdata_fields.$phpEx?name=$name")
 				)
 			);
 
@@ -636,7 +636,7 @@ switch ($mode)
 				message_die(NUKE_GENERAL_ERROR, $lang['XData_failure_removing_data'], "", __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Delete_success'] . "<br /><br />" . sprintf($lang['Click_return_fields'], "<a href=\"" . append_sid("admin_xdata_fields.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+			$message = $lang['Delete_success'] . "<br /><br />" . sprintf($lang['Click_return_fields'], "<a href=\"" . append_nuke_sid("admin_xdata_fields.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 			message_die(NUKE_GENERAL_MESSAGE, $message);
 
 		}
@@ -665,10 +665,10 @@ if ($mode == 'view')
         	$template_nuke->assign_block_vars('xd_field', array(
 				'FIELD_NAME' => $meta['field_name'],
 				'FIELD_TYPE' => $meta['field_type'],
-				'U_MOVE_UP' => append_sid('admin_xdata_fields.'.$phpEx.'?mode=up&name='.$code_name),
-				'U_MOVE_DOWN' => append_sid('admin_xdata_fields.'.$phpEx.'?mode=down&name='.$code_name),
-				'U_EDIT' => append_sid('admin_xdata_fields.'.$phpEx.'?mode=edit&name='.$code_name),
-				'U_DELETE' => append_sid('admin_xdata_fields.'.$phpEx.'?mode=delete&name='.$code_name),
+				'U_MOVE_UP' => append_nuke_sid('admin_xdata_fields.'.$phpEx.'?mode=up&name='.$code_name),
+				'U_MOVE_DOWN' => append_nuke_sid('admin_xdata_fields.'.$phpEx.'?mode=down&name='.$code_name),
+				'U_EDIT' => append_nuke_sid('admin_xdata_fields.'.$phpEx.'?mode=edit&name='.$code_name),
+				'U_DELETE' => append_nuke_sid('admin_xdata_fields.'.$phpEx.'?mode=delete&name='.$code_name),
         		)
         	);
 
@@ -693,7 +693,7 @@ if ($mode == 'view')
 		'L_NO_FIELDS' => $lang['No_fields'],
 		'L_ADD_FIELD' => $lang['Add_field'],
 
-		'U_ADD_FIELD' => append_sid("admin_xdata_fields.$phpEx?mode=add")
+		'U_ADD_FIELD' => append_nuke_sid("admin_xdata_fields.$phpEx?mode=add")
 		)
 	);
 

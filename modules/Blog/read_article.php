@@ -34,14 +34,14 @@ global $cookie, $nuke_userinfo;
 
 @include_once(NUKE_INCLUDE_DIR.'counter.php');
 
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 
-get_lang($module_name);
+get_lang($nuke_module_name);
 
 $sid = (int) $sid;
 
 if (stristr($REQUEST_URI,"mainfile")) 
-nuke_redirect("modules.php?name=$module_name&file=read_article&sid=$sid");
+nuke_redirect("modules.php?name=$nuke_module_name&file=read_article&sid=$sid");
 else
 if (!isset($sid) && !isset($tid)) 
 nuke_redirect("index.php");
@@ -54,7 +54,7 @@ if ($save AND is_user())
 }
 
 if ($op == "Reply") 
-nuke_redirect("modules.php?name=$module_name&file=comments&op=Reply&pid=0&sid=$sid&mode=$mode&order=$order&thold=$thold");
+nuke_redirect("modules.php?name=$nuke_module_name&file=comments&op=Reply&pid=0&sid=$sid&mode=$mode&order=$order&thold=$thold");
 
 $sql = "select catid, aid, datePublished, dateModified, title, counter, hometext, bodytext, topic, informant, notes, acomm, haspoll, pollID, score, ratings FROM ".$prefix."_stories where sid='$sid'";
 $result = $nuke_db->sql_query($sql);
@@ -104,7 +104,7 @@ $score = $row["score"];
 $ratings = $row["ratings"];
 
 if (empty($aid['name'])) 
-nuke_redirect("modules.php?name=$module_name"); 
+nuke_redirect("modules.php?name=$nuke_module_name"); 
 
 $nuke_db->sql_query("UPDATE ".$prefix."_stories SET counter=counter+1 where sid=$sid");
 
@@ -157,7 +157,7 @@ if($catid != 0)
     $result = $nuke_db->sql_query($sql);
     $row = $nuke_db->sql_fetchrow($result);
     $title1 = $row["title"];
-    $title = "<a href=\"modules.php?name=$module_name&amp;file=categories&amp;op=newindex&amp;catid=$catid\"><font class=\"storycat\">$title1</font></a>: $title";
+    $title = "<a href=\"modules.php?name=$nuke_module_name&amp;file=categories&amp;op=newindex&amp;catid=$catid\"><font class=\"storycat\">$title1</font></a>: $title";
 }
 
 echo "<table width=\"100%\" border=\"0\"><tr><td valign=\"top\" width=\"100%\">\n";

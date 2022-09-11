@@ -91,7 +91,7 @@ if ($is_user==1 && $detectPM==1) {
 // voilà, si $newpms[0]>0 --> il y a des PMs non lus //
 
 
-//////// on va mettre la liste des modules dans la variable $modules /////////////////////
+//////// on va mettre la liste des modules dans la variable $nuke_modules /////////////////////
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -105,8 +105,8 @@ if ($gestiongroupe==1) {
 else {
     $sql = "SELECT title, custom_title, view, active FROM ".$prefix."_modules WHERE active='1' AND inmenu='1' AND `title` NOT LIKE '~l~%' ORDER BY custom_title ASC";
 }
-    $modulesaffiche= $nuke_db->sql_query($sql);
-    while($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) {
+    $nuke_modulesaffiche= $nuke_db->sql_query($sql);
+    while($tempo = $nuke_db->sql_fetchrow($nuke_modulesaffiche)) {
         $tempoA[] = $tempo;
     }
 /*****[BEGIN]******************************************
@@ -120,7 +120,7 @@ $nuke_cache->save('sommaire_tempo', 'block', $tempoA);
     $compteur=0;
     if (is_array($tempoA)) {
         foreach($tempoA as $tempo) {
-            $module[$compteur]= $tempo['title'];
+            $nuke_module[$compteur]= $tempo['title'];
             $customtitle[$compteur] = $tempo['custom_title'];
             $view[$compteur] = $tempo['view'];
             $active[$row['title']] = $tempo['active'];
@@ -168,7 +168,7 @@ $nuke_cache->save('sommaire_row2', 'block', $row2A);
     $compteur=0;
     $totalcompteur=0;
     $categorie=$row2A[0]['groupmenu'];
-    $moduleinthisgroup[$categorie][$compteur]=$row2A[0]['module'];
+    $nuke_moduleinthisgroup[$categorie][$compteur]=$row2A[0]['module'];
     $linkinthisgroup[$categorie][$compteur]=$row2A[0]['url'];
     $linktextinthisgroup[$categorie][$compteur]=$row2A[0]['url_text'];
     $imageinthisgroup[$categorie][$compteur]=$row2A[0]['image'];
@@ -181,7 +181,7 @@ $nuke_cache->save('sommaire_row2', 'block', $row2A);
     $total_actions="sommaire_showhide('sommaire-".$row2A[0]['groupmenu']."','nok','sommaireupdown-".$row2A[0]['groupmenu']."');";
     $totalcompteur=1;
     unset($row2A[0]);
-    //    echo "{$moduleinthisgroup[$categorie][$compteur]}<br />{$linkinthisgroup[$categorie][$compteur]}<br />{$linktextinthisgroup[$categorie][$compteur]}<br />{$imageinthisgroup[$categorie][$compteur]}<br />";
+    //    echo "{$nuke_moduleinthisgroup[$categorie][$compteur]}<br />{$linkinthisgroup[$categorie][$compteur]}<br />{$linktextinthisgroup[$categorie][$compteur]}<br />{$imageinthisgroup[$categorie][$compteur]}<br />";
     if (is_array($row2A)) {
     foreach($row2A as $row2) { //ensuite on fait la même chose pour toutes les autres lignes.
         $categorie=$row2['groupmenu'];
@@ -195,7 +195,7 @@ $nuke_cache->save('sommaire_row2', 'block', $row2A);
             $total_actions=$total_actions."sommaire_showhide('sommaire-".$row2['groupmenu']."','nok','sommaireupdown-".$row2['groupmenu']."');";
             $compteur=0;
         }
-        $moduleinthisgroup[$categorie][$compteur]=$row2['module'];
+        $nuke_moduleinthisgroup[$categorie][$compteur]=$row2['module'];
         $linkinthisgroup[$categorie][$compteur]=$row2['url'];
         $linktextinthisgroup[$categorie][$compteur]=$row2['url_text'];
         $imageinthisgroup[$categorie][$compteur]=$row2['image'];
@@ -204,7 +204,7 @@ $nuke_cache->save('sommaire_row2', 'block', $row2A);
         $classinthisgroup[$categorie][$compteur]=$row2['class'];
         $grasinthisgroup[$categorie][$compteur]=$row2['bold'];
         $compteur2=$categorie;
-    //    echo "{$moduleinthisgroup[$categorie][$compteur]}<br />{$linkinthisgroup[$categorie][$compteur]}<br />{$linktextinthisgroup[$categorie][$compteur]}<br />{$imageinthisgroup[$categorie][$compteur]}<br />";
+    //    echo "{$nuke_moduleinthisgroup[$categorie][$compteur]}<br />{$linkinthisgroup[$categorie][$compteur]}<br />{$linktextinthisgroup[$categorie][$compteur]}<br />{$imageinthisgroup[$categorie][$compteur]}<br />";
     }
     }
 // --> OK, les variables ont pris la valeur adéquate de la table nuke_sommaire_categories
@@ -295,7 +295,7 @@ $nuke_cache->save('sommaire_row3', 'block', $row3);
 
         if ($som_groupmenu <> 99) {
 
-            if ($dynamic==1 && $detectMozilla!=1 && $moduleinthisgroup[$som_groupmenu]['0'] && $som_listbox!="on") { // si on a des liens/modules dans cette catégorie (catégorie non vide), et que ce n'est pas une listbox
+            if ($dynamic==1 && $detectMozilla!=1 && $nuke_moduleinthisgroup[$som_groupmenu]['0'] && $som_listbox!="on") { // si on a des liens/modules dans cette catégorie (catégorie non vide), et que ce n'est pas une listbox
                 $reenrouletout=preg_replace("/sommaire_showhide\(\'sommaire-$som_groupmenu\',\'nok\',\'sommaireupdown-$som_groupmenu\'\);/","",$total_actions);
                 $action_somgroupmenu="onclick=\"$reenrouletout sommaire_showhide('sommaire-$som_groupmenu','ok','sommaireupdown-$som_groupmenu')\" style=\"cursor:pointer\""; // menu dynamique
             }
@@ -398,7 +398,7 @@ $nuke_cache->save('sommaire_row3', 'block', $row3);
                 $content.="</a>";
             }
 
-            if ($dynamic==1 && $detectMozilla!=1 && $moduleinthisgroup[$som_groupmenu]['0']) {
+            if ($dynamic==1 && $detectMozilla!=1 && $nuke_moduleinthisgroup[$som_groupmenu]['0']) {
                 $zeimage = ($som_listbox=="on") ? "null.gif" :"down.gif" ;
                 $content.="<img align=\"bottom\" id=\"sommaireupdown-$som_groupmenu\" name=\"sommaireupdown-$som_groupmenu\" src=\"$path_icon/admin/$zeimage\" border=0>";
             }
@@ -410,11 +410,11 @@ $nuke_cache->save('sommaire_row3', 'block', $row3);
         }
         $keyinthisgroup=0;
 
-        if ($som_groupmenu!=99 && !$moduleinthisgroup[$som_groupmenu]['0']) { // 15 mars 2005 : si la catégorie ne contient pas de module/lien, on doit afficher quand même le décalage de 4px !
+        if ($som_groupmenu!=99 && !$nuke_moduleinthisgroup[$som_groupmenu]['0']) { // 15 mars 2005 : si la catégorie ne contient pas de module/lien, on doit afficher quand même le décalage de 4px !
             //$content.="<tr><td bgcolor=\"$som_bgcolor\"><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td></td></tr></table></td></tr>";
             $content.="<tr height=\"4\" bgcolor=\"$som_bgcolor\"><td></td></tr>";
         }
-        elseif ($som_groupmenu<>99 && $moduleinthisgroup[$som_groupmenu]['0']) {
+        elseif ($som_groupmenu<>99 && $nuke_moduleinthisgroup[$som_groupmenu]['0']) {
         if ($som_listbox=="on") {// on désactive le réenroulage automatique si le menu est dynamique.
             $content.="<tr><td bgcolor=\"$som_bgcolor\"><span name=\"sommaire-$som_groupmenu\" id=\"sommaire-$som_groupmenu\"></span>";
             $aenlever="sommaire_showhide\('sommaire-".$som_groupmenu."','nok','sommaireupdown-".$som_groupmenu."'\);";
@@ -438,7 +438,7 @@ $nuke_cache->save('sommaire_row3', 'block', $row3);
             $catimagesize[0]=1; //2.1.2beta5 : corrige un problème d'affichage avec les middot pour un menu sans image
         }
 
-        while ($moduleinthisgroup[$som_groupmenu][$keyinthisgroup]) { //on va checker si chaque module indiqué dans la catégorie en cours est installé et activé/visible //
+        while ($nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup]) { //on va checker si chaque module indiqué dans la catégorie en cours est installé et activé/visible //
             if ($linkinthisgroup[$som_groupmenu][$keyinthisgroup] == 'modules.php?name=wsatourney_main') {
             define('D', true);
             }
@@ -451,7 +451,7 @@ $nuke_cache->save('sommaire_row3', 'block', $row3);
             }
 
             if ($som_listbox=="on") { // gestion des listbox
-                if ($moduleinthisgroup[$som_groupmenu][$keyinthisgroup]=="Lien externe") {
+                if ($nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup]=="Lien externe") {
                      // gestion multilingue : si le lien commence par 'LANG:_' alors c'est multilingue, donc on va afficher ce qui a été inscrit dans le fichier de langue.
                     if (strpos($linkinthisgroup[$som_groupmenu][$keyinthisgroup],"LANG:_")===0) {
                         $zelink_lang = str_replace("LANG:","",$linkinthisgroup[$som_groupmenu][$keyinthisgroup]);
@@ -481,24 +481,24 @@ $nuke_cache->save('sommaire_row3', 'block', $row3);
                     }//fin gestion multilingue
                     $content.= "<option value=\"".$linkinthisgroup[$som_groupmenu][$keyinthisgroup]."".$zelink."\">".$linktextinthisgroup[$som_groupmenu][$keyinthisgroup]."";
                 }
-                elseif($moduleinthisgroup[$som_groupmenu][$keyinthisgroup]!="SOMMAIRE_HR") {
-                    for ($z=0;$z<count($module);$z++) { //pour chaque module activé et visible on va regarder où on l'affiche
-                        if ($module[$z]!=$main_module && (($is_admin===1 AND $view[$z] == 2) OR $view[$z] != 2) && $moduleinthisgroup[$som_groupmenu][$keyinthisgroup]==$module[$z]) {
+                elseif($nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup]!="SOMMAIRE_HR") {
+                    for ($z=0;$z<count($nuke_module);$z++) { //pour chaque module activé et visible on va regarder où on l'affiche
+                        if ($nuke_module[$z]!=$main_module && (($is_admin===1 AND $view[$z] == 2) OR $view[$z] != 2) && $nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup]==$nuke_module[$z]) {
                             $isin = ($mod_group[$z]==0 || ($nuke_userpoints>0 && $nuke_userpoints>=$pointsneeded[$mod_group[$z]])) ? 1 : 0 ;
                             if ($view[$z]==1 && $is_user==0 && ($invisible[0]==3 || $invisible[0]==5)) { //on n'affiche pas si c'est un visiteur et que l'on a coché 'modules invisbles' dans l'admin du sommaire
                             }
                             elseif ($view[$z]==1 && $is_user==1 && $invisible[0]==5 && $isin==0) {//on n'affiche pas si c'est un membre, qui n'est pas dans le bon groupe et que l'on a coché 'modules invisibles' dans l'admin du sommaire
                             }
                             else {// sinon OK, on affiche le module dans le drop-down.
-                            $customtitle2 = (!empty($customtitle[$z])) ? $customtitle[$z] : str_replace("_", " ", $module[$z]);
-                            $content.="<option value=\"modules.php?name=".$module[$z]."\">".$customtitle2."";
+                            $customtitle2 = (!empty($customtitle[$z])) ? $customtitle[$z] : str_replace("_", " ", $nuke_module[$z]);
+                            $content.="<option value=\"modules.php?name=".$nuke_module[$z]."\">".$customtitle2."";
                             }
                         }
                     }
                 }
             }
 			//
-            elseif($moduleinthisgroup[$som_groupmenu][$keyinthisgroup]=="Lien externe" && !preg_match("@modules.php?name=@i", $linkinthisgroup[$som_groupmenu][$keyinthisgroup]) && !preg_match("@((http(s)?)|(ftp(s)?))://".$_SERVER['SERVER_NAME']."/modules.php\?name=@i",$linkinthisgroup[$som_groupmenu][$keyinthisgroup])) { // gestion des liens externes - v2.1.2beta5 : ajout d'un check supplémentaire pour gérer les liens externes (target blank mais sur le serveur)
+            elseif($nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup]=="Lien externe" && !preg_match("@modules.php?name=@i", $linkinthisgroup[$som_groupmenu][$keyinthisgroup]) && !preg_match("@((http(s)?)|(ftp(s)?))://".$_SERVER['SERVER_NAME']."/modules.php\?name=@i",$linkinthisgroup[$som_groupmenu][$keyinthisgroup])) { // gestion des liens externes - v2.1.2beta5 : ajout d'un check supplémentaire pour gérer les liens externes (target blank mais sur le serveur)
                      // gestion multilingue : si le lien commence par 'LANG:_' alors c'est multilingue, donc on va afficher ce qui a été inscrit dans le fichier de langue.
                 if (strpos($linkinthisgroup[$som_groupmenu][$keyinthisgroup],"LANG:_")===0) {
                     $zelink_lang = str_replace("LANG:","",$linkinthisgroup[$som_groupmenu][$keyinthisgroup]);
@@ -570,14 +570,14 @@ $nuke_cache->save('sommaire_row3', 'block', $row3);
                     $content.="</td></tr>\n";
                 }
             }
-            elseif ($moduleinthisgroup[$som_groupmenu][$keyinthisgroup]=="SOMMAIRE_HR") {
+            elseif ($nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup]=="SOMMAIRE_HR") {
                 $content.="<tr><td colspan=2>";
                 $content.="<hr>";
                 $content.="</td></tr>\n";
             }
             else {// un module normal, ou bien un lien interne (lien externe vers une page spécifique d'un module du site)
-                for ($z=0;$z<count($module);$z++) { //pour chaque module activé et visible on va regarder où on l'affiche
-                    if ($moduleinthisgroup[$som_groupmenu][$keyinthisgroup]=="Lien externe") { //si c'est un lien externe, il commence par 'modules.php?name=' ==>c'est un lien vers un module du site
+                for ($z=0;$z<count($nuke_module);$z++) { //pour chaque module activé et visible on va regarder où on l'affiche
+                    if ($nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup]=="Lien externe") { //si c'est un lien externe, il commence par 'modules.php?name=' ==>c'est un lien vers un module du site
                         $temponomdumodule=preg_split("/&/", $linkinthisgroup[$som_groupmenu][$keyinthisgroup]);
                         if (preg_match("@((http(s)?)|(ftp(s)?))://".$_SERVER['SERVER_NAME']."/modules.php\?name=@i",$linkinthisgroup[$som_groupmenu][$keyinthisgroup])) { // v2.1.2beta5 : les liens externes target blank qui pointent vers le serveur sont traités comme des modules.
                             $nomdumodule = substr(strstr($temponomdumodule[0],'modules.php'),17);
@@ -612,13 +612,13 @@ $nuke_cache->save('sommaire_row3', 'block', $row3);
                     else {
                         $temponomdumodule=array(); //beta8 : on vide cette variable car il n'y a aucun paramètre dans l'url.
                         $targetblank="";
-                        $nomdumodule =$moduleinthisgroup[$som_groupmenu][$keyinthisgroup];
-                        $customtitle2 = (!empty($customtitle[$z])) ? $customtitle[$z] : str_replace("_", " ", $module[$z]);
+                        $nomdumodule =$nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup];
+                        $customtitle2 = (!empty($customtitle[$z])) ? $customtitle[$z] : str_replace("_", " ", $nuke_module[$z]);
                         $urldumodule = "modules.php?name=$nomdumodule";
                     }
-                    if (!($module[$z]==$main_module && $moduleinthisgroup[$som_groupmenu][$keyinthisgroup]!="Lien externe")) { //on n'affiche pas le module en homepage, sauf s'il est appelé par un lien externe
+                    if (!($nuke_module[$z]==$main_module && $nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup]!="Lien externe")) { //on n'affiche pas le module en homepage, sauf s'il est appelé par un lien externe
                         if (($is_admin===1 AND $view[$z] == 2) OR $view[$z] != 2) { //si on n'est pas admin et que le module est réservé aux admins, il n'apparaît pas
-                            if ($nomdumodule==$module[$z]) {
+                            if ($nomdumodule==$nuke_module[$z]) {
                                 if ($dynamic==1 && $detectMozilla!=1) {
                                     //détection améliorée de la catégorie à ouvrir
                                     $temprequesturi=preg_split('/&/',$_SERVER['REQUEST_URI']);
@@ -663,7 +663,7 @@ $nuke_cache->save('sommaire_row3', 'block', $row3);
                                 }
                                 else {
 
-                                    if (($newpms[0]) AND ($module[$z] =="Private_Messages")) {
+                                    if (($newpms[0]) AND ($nuke_module[$z] =="Private_Messages")) {
                                         $disp_pmicon="<img src=\"images/blocks/email-y.gif\" height=\"10\" width=\"14\" alt=\""._SOMNEWPM."\" title=\""._SOMNEWPM."\">";
                                     }
                                     else {
@@ -796,17 +796,17 @@ $nuke_cache->save('sommaire_row3', 'block', $row3);
 
     if ($som_groupmenu == 99 && $is_admin==1) { // si on est à la catégorie 99, on affiche tous les modules installés/activés/visibles qui n'ont pas été affichés dans les catégories.
         $content.="<tr><td>";
-        for ($z=0;$z<count($module);$z++) {
-            $customtitle2 = str_replace ("_"," ", $module[$z]);
+        for ($z=0;$z<count($nuke_module);$z++) {
+            $customtitle2 = str_replace ("_"," ", $nuke_module[$z]);
             if (!empty($customtitle[$z])) {
                 $customtitle2 = $customtitle[$z];
             }
-            if ($module[$z] != $main_module) {
+            if ($nuke_module[$z] != $main_module) {
                  if (($is_admin===1 AND $view[$z] == 2) OR $view[$z] != 2) {
 
                     $incategories=0;
                     for ($i=0;$i<count($totalcategorymodules);$i++) {
-                        if ($module[$z]==$totalcategorymodules[$i]) {
+                        if ($nuke_module[$z]==$totalcategorymodules[$i]) {
                             $incategories=1;
                         }
                     }
@@ -818,7 +818,7 @@ $nuke_cache->save('sommaire_row3', 'block', $row3);
                         ."<select width=\"100%\" name=\"somlistboxvisibles\" onchange=\"sommaire_envoielistbox(this.options[this.selectedIndex].value)\">"
                         ."<option value=\"select\">"._SOMSELECTALINK."";
                         }
-                            $content .= "<option value=\"modules.php?name=$module[$z]\">$customtitle2</option>\n";
+                            $content .= "<option value=\"modules.php?name=$nuke_module[$z]\">$customtitle2</option>\n";
                     }
                 }
             }
@@ -840,7 +840,7 @@ $nuke_cache->save('sommaire_row3', 'block', $row3);
 
 if ($is_admin===1) {
 
-    $key=count($module); // $key va permettre de se positionner dans $module[] pour rajouter des modules à la fin
+    $key=count($nuke_module); // $key va permettre de se positionner dans $nuke_module[] pour rajouter des modules à la fin
 
     $content .= "<br /><center><strong>"._INVISIBLEMODULES."</strong><br />";
     $content .= "<span class=\"tiny\">"._ACTIVEBUTNOTSEE."</span></center>";
@@ -851,7 +851,7 @@ if ($is_admin===1) {
         $sql = "SELECT title, custom_title FROM ".$prefix."_modules WHERE active='1' AND inmenu='0' AND `title` NOT LIKE '~l~%' ORDER BY title ASC";
         $result = $nuke_db->sql_query($sql);
         while ($row = $nuke_db->sql_fetchrow($result)) {
-            $module[$key]=$row['title'];
+            $nuke_module[$key]=$row['title'];
             $key++;
             $mn_title = $row['title'];
             $custom_title = $row['custom_title'];
@@ -900,7 +900,7 @@ $nuke_cache->save('sommaire_row4', 'block', $row4);
  ******************************************************/
         if (is_array($row4)) {
         foreach($row4 as $row) {
-            $module[$key]=$row['title'];
+            $nuke_module[$key]=$row['title'];
             $key++;
             $mn_title = $row['title'];
             $custom_title = $row['custom_title'];

@@ -38,8 +38,8 @@ $nuke_author_email = "webmaster@www.86it.us";
 $nuke_author_homepage = "http://www.86it.us";
 $license = "GNU/GPL";
 $download_location = "";
-$module_version = "v3.0.0";
-$module_description = "Blog Topics";
+$nuke_module_version = "v3.0.0";
+$nuke_module_description = "Blog Topics";
 
 // DO NOT TOUCH THE FOLLOWING COPYRIGHT CODE. YOU'RE JUST ALLOWED TO CHANGE YOUR "OWN"
 // MODULE'S DATA (SEE ABOVE) SO THE SYSTEM CAN BE ABLE TO SHOW THE COPYRIGHT NOTICE
@@ -48,5 +48,5 @@ $module_description = "Blog Topics";
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $nuke_module_version, $nuke_module_description);
 ?>

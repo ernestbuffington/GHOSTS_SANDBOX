@@ -41,8 +41,8 @@ if (!empty($board_config))
 if( !empty($setmodules) )
 {
     $filename = basename(__FILE__);
-    $module['Statistics']['Install_module'] = $filename . '?mode=mod_install';
-    $module['Statistics']['Manage_modules'] = $filename . '?mode=mod_manage';
+    $nuke_module['Statistics']['Install_module'] = $filename . '?mode=mod_install';
+    $nuke_module['Statistics']['Manage_modules'] = $filename . '?mode=mod_manage';
     return;
 }
 $submit = (isset($HTTP_POST_VARS['submit'])) ? TRUE : FALSE;
@@ -89,7 +89,7 @@ include($phpbb2_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
 
 if ($cancel)
 {
-    $url = 'admin/' . append_sid("admin_statistics.$phpEx?mode=mod_manage", true);
+    $url = 'admin/' . append_nuke_sid("admin_statistics.$phpEx?mode=mod_manage", true);
     
     $server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
     $server_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['server_name']));
@@ -326,7 +326,7 @@ if (($mode == 'mod_install') && (!$submit))
     // erst mal package auswhlen... oder hochladen
     if ( (!isset($HTTP_POST_VARS['fileupload'])) && (!isset($HTTP_POST_VARS['fileselect'])) )
     {
-        $module_paks = array();
+        $nuke_module_paks = array();
     
         $dir = @opendir($phpbb2_root_path . 'modules/pakfiles');
 
@@ -336,33 +336,33 @@ if (($mode == 'mod_install') && (!$submit))
             {
                 if ( preg_match('/\.pak$/i', $file) )
                 {
-                    $module_paks[] = $file;
+                    $nuke_module_paks[] = $file;
                 }
             }
         }
 
         @closedir($dir);
 
-        if (count($module_paks) > 0)
+        if (count($nuke_module_paks) > 0)
         {
             $template_nuke->assign_block_vars('switch_select_module', array());
 
-            $module_select_field = '<select name="selected_pak_file">';
+            $nuke_module_select_field = '<select name="selected_pak_file">';
 
-            for ($i = 0; $i < count($module_paks); $i++)
+            for ($i = 0; $i < count($nuke_module_paks); $i++)
             {
                 $selected = ($i == 0) ? ' selected="selected"' : '';
 
-                $module_select_field .= '<option value="' . $module_paks[$i] . '"' . $selected . '>' . $module_paks[$i] . '</option>';
+                $nuke_module_select_field .= '<option value="' . $nuke_module_paks[$i] . '"' . $selected . '>' . $nuke_module_paks[$i] . '</option>';
             }
     
-            $module_select_field .= '</select>';
+            $nuke_module_select_field .= '</select>';
             
             $s_hidden_fields = '<input type="hidden" name="fileselect" value="1">';
 
             $template_nuke->assign_vars(array(
                 'L_SELECT_MODULE' => $lang['Select_module_pak'],
-                'S_SELECT_MODULE' => $module_select_field,
+                'S_SELECT_MODULE' => $nuke_module_select_field,
                 'S_SELECT_HIDDEN_FIELDS' => $s_hidden_fields)
             );
         
@@ -377,7 +377,7 @@ if (($mode == 'mod_install') && (!$submit))
             'L_INSTALL_MODULE_EXPLAIN' => $lang['Install_module_explain'],
             'L_UPLOAD_MODULE' => $lang['Upload_module_pak'],
             'L_SUBMIT' => $lang['Submit'],
-            'S_ACTION' => append_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode),
+            'S_ACTION' => append_nuke_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode),
             'S_UPLOAD_HIDDEN_FIELDS' => $s_hidden_fields)
         );
 
@@ -390,23 +390,23 @@ if ($mode == 'mod_manage')
 {
     if (isset($HTTP_GET_VARS['move_up']))
     {
-        $module_id = intval($HTTP_GET_VARS['move_up']);
-        move_up($module_id);
+        $nuke_module_id = intval($HTTP_GET_VARS['move_up']);
+        move_up($nuke_module_id);
     }
     else if (isset($HTTP_GET_VARS['move_down']))
     {
-        $module_id = intval($HTTP_GET_VARS['move_down']);
-        move_down($module_id);
+        $nuke_module_id = intval($HTTP_GET_VARS['move_down']);
+        move_down($nuke_module_id);
     }
     else if (isset($HTTP_GET_VARS['activate']))
     {
-        $module_id = intval($HTTP_GET_VARS['activate']);
-        activate($module_id);
+        $nuke_module_id = intval($HTTP_GET_VARS['activate']);
+        activate($nuke_module_id);
     }
     else if (isset($HTTP_GET_VARS['deactivate']))
     {
-        $module_id = intval($HTTP_GET_VARS['deactivate']);
-        deactivate($module_id);
+        $nuke_module_id = intval($HTTP_GET_VARS['deactivate']);
+        deactivate($nuke_module_id);
     }
     
     $template_nuke->set_filenames(array(
@@ -436,20 +436,20 @@ if ($mode == 'mod_manage')
 
     while ($row = $nuke_db->sql_fetchrow($result))
     {
-        $module_id = intval($row['module_id']);
-        $module_active = (intval($row['active'])) ? TRUE : FALSE;
+        $nuke_module_id = intval($row['module_id']);
+        $nuke_module_active = (intval($row['active'])) ? TRUE : FALSE;
 
         $template_nuke->assign_block_vars('modulerow', array(
             'MODULE_NAME' => trim($row['long_name']),
             'MODULE_DESC' => trim(nl2br($row['extra_info'])),
 
-            'U_VIEW_MODULE' => '../../../modules.php?name=Forums&amp;file=statistics&amp;preview='.$module_id,
-            'U_MODULE_EDIT' => append_sid($phpbb2_root_path . 'admin/admin_edit_module.'.$phpEx.'?mode=mod_edit&amp;module='.$module_id),
-            'U_MODULE_DELETE' => append_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode=mod_delete&amp;module='.$module_id),
-            'U_MODULE_MOVE_UP' => append_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;move_up='.$module_id),
-            'U_MODULE_MOVE_DOWN' => append_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;move_down='.$module_id),
-            'U_MODULE_ACTIVATE' => ($module_active) ? append_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;deactivate='.$module_id) : append_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;activate='.$module_id),
-            'ACTIVATE' => ($module_active) ? $lang['Deactivate'] : $lang['Activate'])
+            'U_VIEW_MODULE' => '../../../modules.php?name=Forums&amp;file=statistics&amp;preview='.$nuke_module_id,
+            'U_MODULE_EDIT' => append_nuke_sid($phpbb2_root_path . 'admin/admin_edit_module.'.$phpEx.'?mode=mod_edit&amp;module='.$nuke_module_id),
+            'U_MODULE_DELETE' => append_nuke_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode=mod_delete&amp;module='.$nuke_module_id),
+            'U_MODULE_MOVE_UP' => append_nuke_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;move_up='.$nuke_module_id),
+            'U_MODULE_MOVE_DOWN' => append_nuke_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;move_down='.$nuke_module_id),
+            'U_MODULE_ACTIVATE' => ($nuke_module_active) ? append_nuke_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;deactivate='.$nuke_module_id) : append_nuke_sid($phpbb2_root_path . 'admin/admin_statistics.'.$phpEx.'?mode='.$mode.'&amp;activate='.$nuke_module_id),
+            'ACTIVATE' => ($nuke_module_active) ? $lang['Deactivate'] : $lang['Activate'])
         );
     }
 }
@@ -464,14 +464,14 @@ if ($mode == 'mod_delete')
     {
         if (isset($HTTP_GET_VARS['module']))
         {
-            $module_id = intval($HTTP_GET_VARS['module']);
+            $nuke_module_id = intval($HTTP_GET_VARS['module']);
         }
         else
         {
             message_die(NUKE_GENERAL_ERROR, 'Unable to delete Module.');
         }
 
-        $hidden_fields = '<input type="hidden" name="mode" value="'.$mode.'" /><input type="hidden" name="module_id" value="'.$module_id.'" />';
+        $hidden_fields = '<input type="hidden" name="mode" value="'.$mode.'" /><input type="hidden" name="module_id" value="'.$nuke_module_id.'" />';
             
         $template_nuke->set_filenames(array(
             'body' => 'confirm_body.tpl')
@@ -484,7 +484,7 @@ if ($mode == 'mod_delete')
             'L_YES' => $lang['Yes'],
             'L_NO' => $lang['No'],
 
-            'S_CONFIRM_ACTION' => append_sid($phpbb2_root_path . "admin/admin_statistics.$phpEx"),
+            'S_CONFIRM_ACTION' => append_nuke_sid($phpbb2_root_path . "admin/admin_statistics.$phpEx"),
             'S_HIDDEN_FIELDS' => $hidden_fields)
         );
     }
@@ -492,7 +492,7 @@ if ($mode == 'mod_delete')
     {
         if (isset($HTTP_POST_VARS['module_id']))
         {
-            $module_id = intval($HTTP_POST_VARS['module_id']);
+            $nuke_module_id = intval($HTTP_POST_VARS['module_id']);
         }
         else
         {
@@ -500,7 +500,7 @@ if ($mode == 'mod_delete')
         }
     
         // Firstly, we need the Module Informations ;)
-        $sql = "SELECT * FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
+        $sql = "SELECT * FROM " . MODULES_TABLE . " WHERE module_id = " . $nuke_module_id;
         
         if (!($result = $nuke_db->sql_query($sql)) )
         {
@@ -560,21 +560,21 @@ if ($mode == 'mod_delete')
         }
 
         // Now begin the Transaction
-        $sql = "DELETE FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
+        $sql = "DELETE FROM " . MODULES_TABLE . " WHERE module_id = " . $nuke_module_id;
 
         if (!($result = $nuke_db->sql_query($sql)) )
         {
             message_die(NUKE_GENERAL_ERROR, 'Unable to delete Module', '', __LINE__, __FILE__, $sql);
         }
 
-        $sql = "DELETE FROM " . MODULE_INFO_TABLE . " WHERE module_id = " . $module_id;
+        $sql = "DELETE FROM " . MODULE_INFO_TABLE . " WHERE module_id = " . $nuke_module_id;
 
         if (!($result = $nuke_db->sql_query($sql)) )
         {
             message_die(NUKE_GENERAL_ERROR, 'Unable to delete Module', '', __LINE__, __FILE__, $sql);
         }
         
-        $sql = "DELETE FROM " . CACHE_TABLE . " WHERE module_id = " . $module_id;
+        $sql = "DELETE FROM " . CACHE_TABLE . " WHERE module_id = " . $nuke_module_id;
 
         if (!($result = $nuke_db->sql_query($sql)) )
         {
@@ -672,12 +672,12 @@ if ($mode == 'mod_delete')
     
         // Delete the Module Files
         $directory = $phpbb2_root_path . 'modules/' . $short_name;
-        $module_file = $phpbb2_root_path . 'modules/' . $short_name . '/module.php';
+        $nuke_module_file = $phpbb2_root_path . 'modules/' . $short_name . '/module.php';
 
-        if (file_exists($module_file))
+        if (file_exists($nuke_module_file))
         {
-            chmod($module_file, $file_mode);
-            unlink($module_file);
+            chmod($nuke_module_file, $file_mode);
+            unlink($nuke_module_file);
         }
 
         if (file_exists($directory))

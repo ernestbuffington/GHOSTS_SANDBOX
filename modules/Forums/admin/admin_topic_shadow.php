@@ -38,7 +38,7 @@ if( !empty($setmodules) )
 {
     include_once($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_topic_shadow.' . $phpEx);
     $filename = basename(__FILE__);
-    $module['Forums']['Topic_Shadow'] = $filename;
+    $nuke_module['Forums']['Topic_Shadow'] = $filename;
     
     return;
 }
@@ -297,7 +297,7 @@ $template_nuke->assign_vars(array(
 'S_ORDER' => $order,
 'S_MODE_SELECT' => topic_shadow_make_drop_box('mode'),
 'S_ORDER_SELECT' => topic_shadow_make_drop_box('order'),
-'S_MODE_ACTION' => append_sid($HTTP_SERVER_VARS['PHP_SELF']))
+'S_MODE_ACTION' => append_nuke_sid($HTTP_SERVER_VARS['PHP_SELF']))
 );
 
 /* See if we actually have any shadow topics */

@@ -28,8 +28,8 @@ $nuke_author_email = "ernest.buffington@gmail.com";
 $nuke_author_homepage = "https://www.86it.us";
 $license = "GNU/GPL";
 $download_location = "https://www.86it.us/modules.php?name=File_Repository";
-$module_version = "1.0";
-$module_description = "cPanel Admin Links.";
+$nuke_module_version = "1.0";
+$nuke_module_description = "cPanel Admin Links.";
 
 // DO NOT TOUCH THE FOLLOWING COPYRIGHT CODE. YOU'RE JUST ALLOWED TO CHANGE YOUR "OWN"
 // MODULE'S DATA (SEE ABOVE) SO THE SYSTEM CAN BE ABLE TO SHOW THE COPYRIGHT NOTICE
@@ -38,6 +38,6 @@ $module_description = "cPanel Admin Links.";
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $nuke_module_version, $nuke_module_description);
 
 ?>

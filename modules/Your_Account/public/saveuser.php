@@ -107,7 +107,7 @@ if (!defined('CNBYA')) {
                 $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET name='$realname', femail='$femail', user_website='$nuke_user_website', user_password='$nuke_user_password', bio='$bio', user_icq='$nuke_user_icq', user_occ='$nuke_user_occ', user_from='$nuke_user_from', user_interests='$nuke_user_interests', user_sig='$nuke_user_sig', user_aim='$nuke_user_aim', user_yim='$nuke_user_yim', user_msnm='$nuke_user_msnm', newsletter='$newsletter', user_viewemail='$nuke_user_viewemail', user_allow_viewonline='$nuke_user_allow_viewonline', user_notify='$nuke_user_notify', user_notify_pm='$nuke_user_notify_pm', user_popup_pm='$nuke_user_popup_pm', user_attachsig='$nuke_user_attachsig', user_allowbbcode='$nuke_user_allowbbcode', user_allowhtml='$nuke_user_allowhtml', user_allowsmile='$nuke_user_allowsmile', user_timezone='$nuke_user_timezone', user_dateformat='$nuke_user_dateformat' WHERE user_id='$nuke_user_id'");
                 $datekey = date("F Y");
                 $check_num = substr(md5(hexdec($datekey) * hexdec($cookie[2]) * hexdec($sitekey) * hexdec($nuke_user_email) * hexdec($tuemail)), 2, 10);
-                $finishlink = "$nukeurl/modules.php?name=$module_name&op=changemail&id=$nuke_user_id&mail=$nuke_user_email&check_num=$check_num";
+                $finishlink = "$nukeurl/modules.php?name=$nuke_module_name&op=changemail&id=$nuke_user_id&mail=$nuke_user_email&check_num=$check_num";
                 $message .= _CHANGEMAIL1." $tuemail "._CHANGEMAIL2." $nuke_user_email"._CHANGEMAIL3." $sitename.<br /><br />";
                 $message .= _CHANGEMAILFIN."<br /><br />$finishlink<br /><br />";
                 $subject = _CHANGEMAILSUB;
@@ -147,7 +147,7 @@ if (!defined('CNBYA')) {
                 $datekey = date("F Y");
                 $check_num = substr(md5(hexdec($datekey) * hexdec($cookie[2]) * hexdec($sitekey) * hexdec($nuke_user_email) * hexdec($tuemail)), 2, 10);
 
-                $finishlink = "$nukeurl/modules.php?name=$module_name&op=changemail&id=$nuke_user_id&mail=$nuke_user_email&check_num=$check_num";
+                $finishlink = "$nukeurl/modules.php?name=$nuke_module_name&op=changemail&id=$nuke_user_id&mail=$nuke_user_email&check_num=$check_num";
                 $message .= _CHANGEMAIL1." $tuemail "._CHANGEMAIL2." $nuke_user_email"._CHANGEMAIL3." $sitename.<br /><br />";
                 $message .= _CHANGEMAILFIN."<br /><br />$finishlink<br /><br />";
                 $subject = _CHANGEMAILSUB;
@@ -168,7 +168,7 @@ if (!defined('CNBYA')) {
 
             $nuke_db->sql_query("UNLOCK TABLES");
         }
-        nuke_redirect("modules.php?name=$module_name");
+        nuke_redirect("modules.php?name=$nuke_module_name");
     } else {
         include_once(NUKE_BASE_DIR.'header.php');
         OpenTable();

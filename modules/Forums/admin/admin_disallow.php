@@ -29,7 +29,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
         $filename = basename(__FILE__);
-        $module['Users']['Disallow'] = $filename;
+        $nuke_module['Users']['Disallow'] = $filename;
 
         return;
 }
@@ -67,7 +67,7 @@ if( isset($HTTP_POST_VARS['add_name']) )
                 $message = $lang['Disallow_successful'];
         }
 
-        $message .= "<br /><br />" . sprintf($lang['Click_return_disallowadmin'], "<a href=\"" . append_sid("admin_disallow.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+        $message .= "<br /><br />" . sprintf($lang['Click_return_disallowadmin'], "<a href=\"" . append_nuke_sid("admin_disallow.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
 }
@@ -83,7 +83,7 @@ else if( isset($HTTP_POST_VARS['delete_name']) )
                 message_die(NUKE_GENERAL_ERROR, "Couldn't removed disallowed user.", "",__LINE__, __FILE__, $sql);
         }
 
-        $message .= $lang['Disallowed_deleted'] . "<br /><br />" . sprintf($lang['Click_return_disallowadmin'], "<a href=\"" . append_sid("admin_disallow.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+        $message .= $lang['Disallowed_deleted'] . "<br /><br />" . sprintf($lang['Click_return_disallowadmin'], "<a href=\"" . append_nuke_sid("admin_disallow.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -129,7 +129,7 @@ $template_nuke->set_filenames(array(
 
 $template_nuke->assign_vars(array(
         "S_DISALLOW_SELECT" => $disallow_select,
-        "S_FORM_ACTION" => append_sid("admin_disallow.$phpEx"),
+        "S_FORM_ACTION" => append_nuke_sid("admin_disallow.$phpEx"),
 
         "L_INFO" => $output_info,
         "L_DISALLOW_TITLE" => $lang['Disallow_control'],

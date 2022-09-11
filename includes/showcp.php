@@ -26,20 +26,20 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
     exit('Access Denied');
 }
 
-function show_copyright($nuke_author_name = "", $nuke_author_user_email = "", $nuke_author_homepage = "", $license = "", $download_location = "", $module_version = "", $module_description = "") {
+function show_copyright($nuke_author_name = "", $nuke_author_user_email = "", $nuke_author_homepage = "", $license = "", $download_location = "", $nuke_module_version = "", $nuke_module_description = "") {
     if (empty($nuke_author_name)) { $nuke_author_name = "N/A"; }
     if (empty($nuke_author_user_email)) { $nuke_author_user_email = "N/A"; }
     if (!empty($nuke_author_homepage)) { $homepage = "<a href='$nuke_author_homepage' target='_blank'>Author's Homepage</a>"; } else { $homepage = "No Website Available"; }
     if (empty($license)) { $license = "N/A"; }
     if (!empty($download_location)) { $download = "<a href='$download_location' target='_blank'>Module's Download</a>"; } else { $download = "No Download Available"; }
-    if (empty($module_version)) { $module_version = "N/A"; }
-    if (empty($module_description)) { $module_description = "N/A"; }
-    $module_name = basename(dirname($_SERVER['PHP_SELF']));
-    $module_name = str_replace("_", " ", $module_name);
+    if (empty($nuke_module_version)) { $nuke_module_version = "N/A"; }
+    if (empty($nuke_module_description)) { $nuke_module_description = "N/A"; }
+    $nuke_module_name = basename(dirname($_SERVER['PHP_SELF']));
+    $nuke_module_name = str_replace("_", " ", $nuke_module_name);
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
         ."<html>\n"
         ."<head>\n"
-        ."<title>$module_name: Copyright Information</title>\n"
+        ."<title>$nuke_module_name: Copyright Information</title>\n"
         ."<meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1' />\n"
         ."<style type='text/css'>\n"
         ."<!--";
@@ -61,10 +61,10 @@ a {
         ."</head>\n"
         ."<body>\n"
         ."<center><strong>Module Copyright &copy; Information</strong><br />"
-        ."$module_name module for <a href='http://www.nuke-evolution.com' target='_blank'>Nuke-Evolution</a><br /><br /></center>\n"
-        ."<img src='../../images/arrow.gif' border='0' alt='' />&nbsp;<strong>Module's Name:</strong> $module_name<br />\n"
-        ."<img src='../../images/arrow.gif' border='0' alt='' />&nbsp;<strong>Module's Version:</strong> $module_version<br />\n"
-        ."<img src='../../images/arrow.gif' border='0' alt='' />&nbsp;<strong>Module's Description:</strong> $module_description<br />\n"
+        ."$nuke_module_name module for <a href='http://www.nuke-evolution.com' target='_blank'>Nuke-Evolution</a><br /><br /></center>\n"
+        ."<img src='../../images/arrow.gif' border='0' alt='' />&nbsp;<strong>Module's Name:</strong> $nuke_module_name<br />\n"
+        ."<img src='../../images/arrow.gif' border='0' alt='' />&nbsp;<strong>Module's Version:</strong> $nuke_module_version<br />\n"
+        ."<img src='../../images/arrow.gif' border='0' alt='' />&nbsp;<strong>Module's Description:</strong> $nuke_module_description<br />\n"
         ."<img src='../../images/arrow.gif' border='0' alt='' />&nbsp;<strong>License:</strong> $license<br />\n"
         ."<img src='../../images/arrow.gif' border='0' alt='' />&nbsp;<strong>Author's Name:</strong> $nuke_author_name<br />\n"
         ."<img src='../../images/arrow.gif' border='0' alt='' />&nbsp;<strong>Author's Email:</strong> $nuke_author_user_email<br /><br />\n"

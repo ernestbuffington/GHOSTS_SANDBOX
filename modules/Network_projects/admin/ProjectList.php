@@ -26,9 +26,9 @@ $project_total = $network_db->sql_numrows($projectresult);
 OpenTable();
 echo "<table width='100%' border='1' cellspacing='0' cellpadding='2'>\n";
 echo "<tr><td colspan='3' width='100%' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_PROJECTOPTIONS."</strong></nobr></td></tr>\n";
-$pjimage = pjimage("options.png", $module_name);
+$pjimage = pjimage("options.png", $nuke_module_name);
 echo "<tr><td><img src='$pjimage'></td><td colspan='2' width='100%'><nobr><a href='".$admin_file.".php?op=ProjectAdd'>"._NETWORK_PROJECTADD."</a></nobr></td></tr>\n";
-$pjimage = pjimage("stats.png", $module_name);
+$pjimage = pjimage("stats.png", $nuke_module_name);
 echo "<tr><td><img src='$pjimage'></td><td colspan='3' width='100%'><nobr>"._NETWORK_TOTALPROJECTS.": <strong>$project_total</strong></nobr></td></tr>\n";
 echo "</table>\n";
 //CloseTable();
@@ -54,9 +54,9 @@ if($project_total != 0){
     $projectstatus = pjprojectstatus_info($status_id);
     $projectpriority = pjprojectpriority_info($priority_id);
     if($featured > 0) {
-      $pjimage = pjimage("project_featured.png", $module_name);
+      $pjimage = pjimage("project_featured.png", $nuke_module_name);
     } else {
-      $pjimage = pjimage("project.png", $module_name);
+      $pjimage = pjimage("project.png", $nuke_module_name);
     }
     echo "<tr><td><img src='$pjimage'></td><td width='100%'>$project_name</td>\n";
     $weight1 = $weight - 1;
@@ -69,14 +69,14 @@ if($project_total != 0){
     $con2 = "$pid2";
     echo "<td align='center'><nobr>";
     if($con1) {
-      echo"<a href='".$admin_file.".php?op=ProjectOrder&amp;weight=$weight&amp;pid=$project_id&amp;weightrep=$weight1&amp;pidrep=$con1'><img src='modules/$module_name/images/weight_up.png' border='0' hspace='3' alt='"._NETWORKUP."' title='"._NETWORK_UP."'></a>";
+      echo"<a href='".$admin_file.".php?op=ProjectOrder&amp;weight=$weight&amp;pid=$project_id&amp;weightrep=$weight1&amp;pidrep=$con1'><img src='modules/$nuke_module_name/images/weight_up.png' border='0' hspace='3' alt='"._NETWORKUP."' title='"._NETWORK_UP."'></a>";
     } else {
-      echo "<img src='modules/$module_name/images/weight_up_no.png' border='0' hspace='3' alt='' title=''>";
+      echo "<img src='modules/$nuke_module_name/images/weight_up_no.png' border='0' hspace='3' alt='' title=''>";
     }
     if($con2) {
-      echo "<a href='".$admin_file.".php?op=ProjectOrder&amp;weight=$weight&amp;pid=$project_id&amp;weightrep=$weight3&amp;pidrep=$con2'><img src='modules/$module_name/images/weight_dn.png' border='0' hspace='3' alt='"._NETWORKDOWN."' title='"._NETWORK_DOWN."'></a>";
+      echo "<a href='".$admin_file.".php?op=ProjectOrder&amp;weight=$weight&amp;pid=$project_id&amp;weightrep=$weight3&amp;pidrep=$con2'><img src='modules/$nuke_module_name/images/weight_dn.png' border='0' hspace='3' alt='"._NETWORKDOWN."' title='"._NETWORK_DOWN."'></a>";
     } else {
-      echo "<img src='modules/$module_name/images/weight_dn_no.png' border='0' hspace='3' alt='' title=''>";
+      echo "<img src='modules/$nuke_module_name/images/weight_dn_no.png' border='0' hspace='3' alt='' title=''>";
     }
     echo"</nobr></td>\n";
     if(empty($projectstatus['status_name'])) { $projectstatus['status_name'] = _NETWORK_NA; }

@@ -35,12 +35,12 @@ if (!defined('ADMIN_FILE')) {
    die ("Access Denied");
 }
 
-$module_name = basename(dirname(dirname(__FILE__)));
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
 
 switch($op) {
 
     case "forums":
-        include("modules/$module_name/admin/forums.php");
+        include("modules/$nuke_module_name/admin/forums.php");
     break;
  
 }

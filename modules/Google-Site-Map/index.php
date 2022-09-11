@@ -8,9 +8,9 @@
 if (!defined('MODULE_FILE')) 
 die ("You can't access this file directly...");
 
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 
-global $domain, $prefix, $nuke_db, $sitename, $currentlang, $admin, $multilingual, $module_name, $admin_file, $nuke_user_prefix;
+global $domain, $prefix, $nuke_db, $sitename, $currentlang, $admin, $multilingual, $nuke_module_name, $admin_file, $nuke_user_prefix;
 
 @require_once(NUKE_CLASSES_DIR.'class.sitemap.php');
 use SitemapPHP\Sitemap;
@@ -49,10 +49,10 @@ else:
 endif;
 //---------------------- Do some XML Shit  XML END -----------------
 
-if (file_exists(NUKE_MODULES_DIR.$module_name.'/language/lang-'.$currentlang.'.php')):
-	include_once(NUKE_MODULES_DIR.$module_name.'/language/lang-'.$currentlang.'.php');
+if (file_exists(NUKE_MODULES_DIR.$nuke_module_name.'/language/lang-'.$currentlang.'.php')):
+	include_once(NUKE_MODULES_DIR.$nuke_module_name.'/language/lang-'.$currentlang.'.php');
 else:
-	include_once(NUKE_MODULES_DIR.$module_name.'/language/lang-english.php');
+	include_once(NUKE_MODULES_DIR.$nuke_module_name.'/language/lang-english.php');
 endif;
 
 function downloads_subs($cid, $spaces, $xml) 

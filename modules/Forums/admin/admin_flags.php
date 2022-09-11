@@ -22,7 +22,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
 	$file = basename(__FILE__);
-	$module['Users']['Flags'] = "$file";
+	$nuke_module['Users']['Flags'] = "$file";
 	return;
 }
 
@@ -117,7 +117,7 @@ if( $mode != "" )
 			"L_SUBMIT" => $lang['Submit'],
 			"L_RESET" => $lang['Reset'],
 			
-			"S_FLAG_ACTION" => append_sid("admin_flags.$phpEx"),
+			"S_FLAG_ACTION" => append_nuke_sid("admin_flags.$phpEx"),
 			"S_HIDDEN_FIELDS" => $s_hidden_fields)
 		);
 		
@@ -169,7 +169,7 @@ if( $mode != "" )
 			message_die(NUKE_GENERAL_ERROR, "Couldn't update/insert into flags table", "", __LINE__, __FILE__, $sql);
 		}
 
-		$message .= "<br /><br />" . sprintf($lang['Click_return_flagadmin'], "<a href=\"" . append_sid("admin_flags.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+		$message .= "<br /><br />" . sprintf($lang['Click_return_flagadmin'], "<a href=\"" . append_nuke_sid("admin_flags.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
 		message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -200,7 +200,7 @@ if( $mode != "" )
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
 
-			'S_CONFIRM_ACTION' => append_sid("admin_flags.$phpEx"),
+			'S_CONFIRM_ACTION' => append_nuke_sid("admin_flags.$phpEx"),
 			'S_HIDDEN_FIELDS' => $hidden_fields)
 		);
 
@@ -253,7 +253,7 @@ if( $mode != "" )
 				message_die(NUKE_GENERAL_ERROR, $lang['No_update_flags'], "", __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Flag_removed'] . "<br /><br />" . sprintf($lang['Click_return_flagadmin'], "<a href=\"" . append_sid("admin_flags.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+			$message = $lang['Flag_removed'] . "<br /><br />" . sprintf($lang['Click_return_flagadmin'], "<a href=\"" . append_nuke_sid("admin_flags.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
 			message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -293,7 +293,7 @@ if( $mode != "" )
 			"L_ADD_FLAG" => $lang['Add_new_flag'],
 			"L_ACTION" => $lang['Action'],
 			
-			"S_FLAGS_ACTION" => append_sid("admin_flags.$phpEx"))
+			"S_FLAGS_ACTION" => append_nuke_sid("admin_flags.$phpEx"))
 		);
 		
 		for( $i = 0; $i < $flag_count; $i++)
@@ -312,8 +312,8 @@ if( $mode != "" )
 				// "IMAGE_DISPLAY" => ( $flag_rows[$i]['flag_image'] != "" ) ? '<img src="../../../images/flags/' . $flag_rows[$i]['flag_image'] . '" />' : "",
 				"IMAGE_DISPLAY" => str_replace(array('.png',' '),array('','_'),$flag_rows[$i]['flag_image']),
 
-				"U_FLAG_EDIT" => append_sid("admin_flags.$phpEx?mode=edit&amp;id=$flag_id"),
-				"U_FLAG_DELETE" => append_sid("admin_flags.$phpEx?mode=delete&amp;id=$flag_id"))
+				"U_FLAG_EDIT" => append_nuke_sid("admin_flags.$phpEx?mode=edit&amp;id=$flag_id"),
+				"U_FLAG_DELETE" => append_nuke_sid("admin_flags.$phpEx?mode=delete&amp;id=$flag_id"))
 			);
 		}
 	}
@@ -347,7 +347,7 @@ else
 		"L_ADD_FLAG" => $lang['Add_new_flag'],
 		"L_ACTION" => $lang['Action'],
 		
-		"S_FLAGS_ACTION" => append_sid("admin_flags.$phpEx"))
+		"S_FLAGS_ACTION" => append_nuke_sid("admin_flags.$phpEx"))
 	);
 	
 	for($i = 0; $i < $flag_count; $i++)
@@ -364,8 +364,8 @@ else
 			// "IMAGE_DISPLAY" => ( $flag_rows[$i]['flag_image'] != "" ) ? '<img src="../../../images/flags/' . $flag_rows[$i]['flag_image'] . '" />' : "",
 			"IMAGE_DISPLAY" => str_replace(array('.png',' '),array('','_'),$flag_rows[$i]['flag_image']),
 
-			"U_FLAG_EDIT" => append_sid("admin_flags.$phpEx?mode=edit&amp;id=$flag_id"),
-			"U_FLAG_DELETE" => append_sid("admin_flags.$phpEx?mode=delete&amp;id=$flag_id"))
+			"U_FLAG_EDIT" => append_nuke_sid("admin_flags.$phpEx?mode=edit&amp;id=$flag_id"),
+			"U_FLAG_DELETE" => append_nuke_sid("admin_flags.$phpEx?mode=delete&amp;id=$flag_id"))
 		);
 	}
 }

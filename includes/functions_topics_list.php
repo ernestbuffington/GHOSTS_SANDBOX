@@ -368,7 +368,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
                         {
                             $folder_image = $folder_new;
                             $folder_alt = $lang['New_posts'];
-                            $newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
+                            $newest_post_img = '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
                         }
                         else
                         {
@@ -381,7 +381,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
                     {
                         $folder_image = $folder_new;
                         $folder_alt = ( $topic_rowset[$i]['topic_status'] == NUKE_TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['New_posts'];
-                        $newest_post_img = '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
+                        $newest_post_img = '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" border="0" /></a> ';
                     }
                 }
                 else 
@@ -408,7 +408,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
             $times = 1;
             for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
             {
-                $goto_page .= '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=" . $topic_id . "&amp;start=$j") . '">' . $times . '</a>';
+                $goto_page .= '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=" . $topic_id . "&amp;start=$j") . '">' . $times . '</a>';
                 if( $times == 1 && $total_pages > 4 )
                 {
                     $goto_page .= ' ... ';
@@ -432,11 +432,11 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
         switch ($topic_item_type)
         {
             case NUKE_POST_USERS_URL:
-                $view_topic_url        = append_sid("profile.$phpEx?" . NUKE_POST_USERS_URL . "=$topic_id");
+                $view_topic_url        = append_nuke_sid("profile.$phpEx?" . NUKE_POST_USERS_URL . "=$topic_id");
                 break;
             default:
-                $view_topic_url        = append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id");
-                $topic_author        = ( $topic_rowset[$i]['user_id'] != NUKE_ANONYMOUS ) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $topic_rowset[$i]['user_id']) . '">' : '';
+                $view_topic_url        = append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$topic_id");
+                $topic_author        = ( $topic_rowset[$i]['user_id'] != NUKE_ANONYMOUS ) ? '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $topic_rowset[$i]['user_id']) . '">' : '';
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -450,11 +450,11 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $last_post_author    = ( $topic_rowset[$i]['id2'] == NUKE_ANONYMOUS ) ? ( ($topic_rowset[$i]['post_username2'] != '' ) ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $topic_rowset[$i]['id2']) . '">' . UsernameColor($topic_rowset[$i]['user2']) . '</a>';
+                $last_post_author    = ( $topic_rowset[$i]['id2'] == NUKE_ANONYMOUS ) ? ( ($topic_rowset[$i]['post_username2'] != '' ) ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $topic_rowset[$i]['id2']) . '">' . UsernameColor($topic_rowset[$i]['user2']) . '</a>';
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $last_post_url        = '<a href="' . append_sid("viewtopic.$phpEx?"  . NUKE_POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#' . $topic_rowset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
+                $last_post_url        = '<a href="' . append_nuke_sid("viewtopic.$phpEx?"  . NUKE_POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#' . $topic_rowset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
                 $views                = $topic_rowset[$i]['topic_views'];
                 break;
         }
@@ -474,7 +474,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type=fa
             {
                 if ($is_auth[ $topic_rowset[$i]['forum_id'] ]['auth_view'])
                 {
-                    $nav_tree = '<a href="' . append_sid("viewforum.$phpEx?f=" . $topic_rowset[$i]['forum_id']) . '" class="gensmall">' . $topic_rowset[$i]['forum_name'] . '</a>';
+                    $nav_tree = '<a href="' . append_nuke_sid("viewforum.$phpEx?f=" . $topic_rowset[$i]['forum_id']) . '" class="gensmall">' . $topic_rowset[$i]['forum_name'] . '</a>';
                 }
             }
         }

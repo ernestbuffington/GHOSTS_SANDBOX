@@ -972,8 +972,8 @@ class attach_parent
             'L_POSTED_ATTACHMENTS'          => $lang['Posted_attachments'],
             'L_FILE_NAME'                   => $lang['File_name'],
             'L_FILE_COMMENT'                => $lang['File_comment'],
-            // 'RULES'                         => '<a href="' . append_sid($phpbb2_root_path . "attach_rules.$phpEx?f=$u_rules_id") . '" target="_blank">' . $lang['Allowed_extensions_and_sizes'] . '</a>',
-            'RULES'                         => '<a href="' . append_sid("attach_rules.$phpEx?f=$u_rules_id") . '" target="_blank">' . $lang['Allowed_extensions_and_sizes'] . '</a>',
+            // 'RULES'                         => '<a href="' . append_nuke_sid($phpbb2_root_path . "attach_rules.$phpEx?f=$u_rules_id") . '" target="_blank">' . $lang['Allowed_extensions_and_sizes'] . '</a>',
+            'RULES'                         => '<a href="' . append_nuke_sid("attach_rules.$phpEx?f=$u_rules_id") . '" target="_blank">' . $lang['Allowed_extensions_and_sizes'] . '</a>',
 
             'S_HIDDEN' => $s_hidden)
         );
@@ -1049,7 +1049,7 @@ class attach_parent
                 }
                 else
                 {
-                    $download_link = append_sid('download.' . $phpEx . '?id=' . $this->attachment_id_list[$i]);
+                    $download_link = append_nuke_sid('download.' . $phpEx . '?id=' . $this->attachment_id_list[$i]);
                 }
 
                 $template_nuke->assign_block_vars('attach_row', array(

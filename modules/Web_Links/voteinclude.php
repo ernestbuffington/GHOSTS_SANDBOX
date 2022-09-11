@@ -33,8 +33,8 @@ if (!defined('MODULE_FILE')) {
    die('You can\'t access this file directly...');
 }
 
-$module_name = basename(dirname(__FILE__));
-require(NUKE_MODULES_DIR.$module_name.'/l_config.php');
+$nuke_module_name = basename(dirname(__FILE__));
+require(NUKE_MODULES_DIR.$nuke_module_name.'/l_config.php');
 $outsidevotes = 0;
 $anonvotes = 0;
 $outsidevoteval = 0;

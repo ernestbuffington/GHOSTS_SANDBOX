@@ -107,9 +107,9 @@ if(($is_user == 1) && ($detectPM == 1))
    else
      $sql = "SELECT * FROM ".$prefix."_modules WHERE active='1' AND inmenu='1' AND `title` NOT LIKE '~l~%' ORDER BY custom_title ASC";   
    
-   $modulesaffiche = $nuke_db->sql_query($sql);
+   $nuke_modulesaffiche = $nuke_db->sql_query($sql);
 
-   while($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) 
+   while($tempo = $nuke_db->sql_fetchrow($nuke_modulesaffiche)) 
    {
         $tempoA[] = $tempo;
     }
@@ -122,7 +122,7 @@ if (is_array($tempoA))
 {
    foreach($tempoA as $tempo) 
    {
-      $module[$compteur] = $tempo['title'];
+      $nuke_module[$compteur] = $tempo['title'];
       $customtitle[$compteur] = $tempo['custom_title'];
       $view[$compteur] = $tempo['view'];
       $active[$row['title']] = $tempo['active'];
@@ -177,7 +177,7 @@ if (!($row2A = $nuke_cache->load('menu_row2', 'block')))
                                    $compteur = 0;
                               $totalcompteur = 0;
                                   $categorie = $row2A[0]['groupmenu'];
-   $moduleinthisgroup[$categorie][$compteur] = $row2A[0]['module'];
+   $nuke_moduleinthisgroup[$categorie][$compteur] = $row2A[0]['module'];
      $linkinthisgroup[$categorie][$compteur] = $row2A[0]['url'];
  $linktextinthisgroup[$categorie][$compteur] = $row2A[0]['url_text'];
  
@@ -210,7 +210,7 @@ unset($row2A[0]);
             $compteur = 0;
         }
         
-		  $moduleinthisgroup[$categorie][$compteur] = $row2['module'];
+		  $nuke_moduleinthisgroup[$categorie][$compteur] = $row2['module'];
             $linkinthisgroup[$categorie][$compteur] = $row2['url'];
         $linktextinthisgroup[$categorie][$compteur] = $row2['url_text'];
 		
@@ -244,12 +244,12 @@ $managment_group = 0;
 # this is the start of the Portal menu
 $sql = "SELECT * FROM ".$prefix."_modules WHERE active='1' AND inmenu='1' ORDER BY custom_title ASC";
 	
-$modulesaffiche = $nuke_db->sql_query($sql);
+$nuke_modulesaffiche = $nuke_db->sql_query($sql);
   $menu_counter = 0;
 	
-	while ($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) 
+	while ($tempo = $nuke_db->sql_fetchrow($nuke_modulesaffiche)) 
 	{
-		   $module[$menu_counter] = $tempo['title'];
+		   $nuke_module[$menu_counter] = $tempo['title'];
 	  $customtitle[$menu_counter] = (stripslashes($tempo['custom_title'])); //strip the fucking slashes
 		     $view[$menu_counter] = $tempo['view'];
 		   $active[$row['title']] = $tempo['active'];
@@ -326,7 +326,7 @@ $modulesaffiche = $nuke_db->sql_query($sql);
 			$poster_module = 0;
 			$restricted_reason = "";
 		
-			foreach ($module as $key => $this_module) 
+			foreach ($nuke_module as $key => $this_module) 
 			{
 				if($row2['module'] == "External Link") 
 				{
@@ -496,7 +496,7 @@ $modulesaffiche = $nuke_db->sql_query($sql);
 				$hidden = 0;
 			}
 
-			       $moduleinthisgroup[$categorie][$menu_counter] = $row2['module'];
+			       $nuke_moduleinthisgroup[$categorie][$menu_counter] = $row2['module'];
 			         $linkinthisgroup[$categorie][$menu_counter] = $row2['url'];
 			     $linktextinthisgroup[$categorie][$menu_counter] = $row2['url_text'];
 				 
@@ -722,8 +722,8 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 		if($som_groupmenu <> 99) 
 		{
 			
-		  //if($som_dynamic=='on' && $detectMozilla!=1 && isset($moduleinthisgroup[$som_groupmenu]['0']) && $som_listbox!="on") 
-		  if($som_dynamic == 'on' && isset($moduleinthisgroup[$som_groupmenu]['0']) && $som_listbox != "on") 
+		  //if($som_dynamic=='on' && $detectMozilla!=1 && isset($nuke_moduleinthisgroup[$som_groupmenu]['0']) && $som_listbox!="on") 
+		  if($som_dynamic == 'on' && isset($nuke_moduleinthisgroup[$som_groupmenu]['0']) && $som_listbox != "on") 
 		  { 
 				      $reenrouletout = str_replace("menu_showhide\(\'menu-$som_groupmenu\',\'nok\',\'menuupdown-$som_groupmenu\'\);","",$total_actions);
 				$action_somgroupmenu = "onclick=\"keymenu=".$key.";".$reenrouletout." menu_showhide('menu-$som_groupmenu','ok','menuupdown-$som_groupmenu')\" style=\"cursor:pointer\"";            // menu dynamic
@@ -857,7 +857,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				$content .= "</a>";
 			}
 			
-			if($som_dynamic == 'on' && isset($moduleinthisgroup[$som_groupmenu]['0'])) 
+			if($som_dynamic == 'on' && isset($nuke_moduleinthisgroup[$som_groupmenu]['0'])) 
 			{
 				$zeimage = ($som_listbox == "on") ? "null.gif" : "down.gif" ;
 				$content .= "<img align=\"bottom\" id=\"menuupdown-$som_groupmenu\" src=\"$path_icon/admin/$zeimage\" border=0 alt=\"Show/Hide content\">";
@@ -886,7 +886,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 		
 		$keyinthisgroup = 0;
 		
-		if($som_groupmenu != 99 && !isset($moduleinthisgroup[$som_groupmenu]['0'])) 
+		if($som_groupmenu != 99 && !isset($nuke_moduleinthisgroup[$som_groupmenu]['0'])) 
 		{ 
 			if($horizontal == 1) 
 			{
@@ -897,7 +897,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				$content .= "<tr bgcolor=\"$som_bgcolor\"><td height=\"4\"></td></tr>";
 			}
 		}
-		elseif($som_groupmenu != 99 && isset($moduleinthisgroup[$som_groupmenu]['0'])) 
+		elseif($som_groupmenu != 99 && isset($nuke_moduleinthisgroup[$som_groupmenu]['0'])) 
 		{
 		     if($som_listbox == "on") 
 		     {
@@ -943,7 +943,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 			$catimagesize[0] = 1; 
 		}
 		
-		while ($moduleinthisgroup[$som_groupmenu][$keyinthisgroup]) 
+		while ($nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup]) 
 		{ 
 			if(strpos($daysinthisgroup[$som_groupmenu][$keyinthisgroup],'8')!== false || $now<$date_debutinthisgroup[$som_groupmenu][$keyinthisgroup] 
 			                                                                          || ($date_fininthisgroup[$som_groupmenu][$keyinthisgroup] > 0 
@@ -965,7 +965,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 			
 			if($som_listbox == "on") 
 			{ 
-				if($moduleinthisgroup[$som_groupmenu][$keyinthisgroup] == "External Link") 
+				if($nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup] == "External Link") 
 				{
 					if(strpos($linkinthisgroup[$som_groupmenu][$keyinthisgroup],"LANG:_") === 0) 
 					{
@@ -1012,7 +1012,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 					$content .= "<option value=\"".$linkinthisgroup[$som_groupmenu][$keyinthisgroup]."".$zelink."\">".$linktextinthisgroup[$som_groupmenu][$keyinthisgroup]."";
 				}
 				else
-				if($moduleinthisgroup[$som_groupmenu][$keyinthisgroup] != "Horizonatal Rule" && $moduleinthisgroup[$som_groupmenu][$keyinthisgroup] != "MENUTEXTONLY" ) 
+				if($nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup] != "Horizonatal Rule" && $nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup] != "MENUTEXTONLY" ) 
 				{
 					if($poster_moduleinthisgroup[$som_groupmenu][$keyinthisgroup]!= 2 || $is_admin == 1) 
 					{
@@ -1021,8 +1021,8 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				}
 			}
 			else
-			if($moduleinthisgroup[$som_groupmenu][$keyinthisgroup] == "MENUTEXTONLY" 
-			|| ($moduleinthisgroup[$som_groupmenu][$keyinthisgroup] == "External Link" 
+			if($nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup] == "MENUTEXTONLY" 
+			|| ($nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup] == "External Link" 
 			&& !preg_match("^modules.php\?name=^", $linkinthisgroup[$som_groupmenu][$keyinthisgroup]) 
 			&& !preg_match("^((http(s)?)|(ftp(s)?))://".$_SERVER['SERVER_NAME']."/modules.php\?name=^",$linkinthisgroup[$som_groupmenu][$keyinthisgroup]))) 
 			{ 
@@ -1110,7 +1110,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				}
 				
 				//sublevels - showhide
-				if($keyinthisgroup<count($moduleinthisgroup[$som_groupmenu])-1 && $sublevelinthisgroup[$som_groupmenu][$keyinthisgroup]<$sublevelinthisgroup[$som_groupmenu][$keyinthisgroup+1]) 
+				if($keyinthisgroup<count($nuke_moduleinthisgroup[$som_groupmenu])-1 && $sublevelinthisgroup[$som_groupmenu][$keyinthisgroup]<$sublevelinthisgroup[$som_groupmenu][$keyinthisgroup+1]) 
 				{
 					$ligne=($som_dynamic == 'on') ? "<tr style=\"cursor: pointer;\" 
 					onclick=\"menu_showhide('menusublevel-$som_groupmenu-".($keyinthisgroup+1)."','ok','menuupdown-sublevel-$som_groupmenu-".($keyinthisgroup+1)."');\">" : "<tr>"; 
@@ -1186,7 +1186,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 			
 				
 				# sublevels
-				if($keyinthisgroup == count($moduleinthisgroup[$som_groupmenu]) -1) 
+				if($keyinthisgroup == count($nuke_moduleinthisgroup[$som_groupmenu]) -1) 
 				{
 					for($sub = 0; $sub < $current_sublevel; $sub++) 
 					{
@@ -1204,7 +1204,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				}
 			
 			}
-			elseif($moduleinthisgroup[$som_groupmenu][$keyinthisgroup] == "Horizonatal Rule") 
+			elseif($nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup] == "Horizonatal Rule") 
 			{
 				$content .= "<tr><td colspan=\"2\">";
 				$content .= "<hr>";
@@ -1212,7 +1212,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 			}
 			else 
 			{
-				if($moduleinthisgroup[$som_groupmenu][$keyinthisgroup] == "External Link") 
+				if($nuke_moduleinthisgroup[$som_groupmenu][$keyinthisgroup] == "External Link") 
 				{ 
 					#1# Old Code
 					#1# $temponomdumodule=split("&", $linkinthisgroup[$som_groupmenu][$keyinthisgroup]);
@@ -1462,7 +1462,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				}
 				
 				# sublevels - showhide
-				if($keyinthisgroup<count($moduleinthisgroup[$som_groupmenu])-1 && $sublevelinthisgroup[$som_groupmenu][$keyinthisgroup]<$sublevelinthisgroup[$som_groupmenu][$keyinthisgroup+1]) 
+				if($keyinthisgroup<count($nuke_moduleinthisgroup[$som_groupmenu])-1 && $sublevelinthisgroup[$som_groupmenu][$keyinthisgroup]<$sublevelinthisgroup[$som_groupmenu][$keyinthisgroup+1]) 
 				{
 					$ligne=($som_dynamic=='on') ? "<tr style=\"cursor: pointer;\" 
 					onclick=\"menu_showhide('menusublevel-$som_groupmenu-".($keyinthisgroup+1)."','ok','menuupdown-sublevel-$som_groupmenu-".($keyinthisgroup+1)."');\">" : "<tr>"; 
@@ -1494,7 +1494,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 					
 					$content.=$sublevel_updownimg."</td>";
 					
-					if(($div==1) && ($keyinthisgroup<count($moduleinthisgroup[$som_groupmenu])-1 
+					if(($div==1) && ($keyinthisgroup<count($nuke_moduleinthisgroup[$som_groupmenu])-1 
 					&& $sublevelinthisgroup[$som_groupmenu][$keyinthisgroup]<$sublevelinthisgroup[$som_groupmenu][$keyinthisgroup+1])) 
 					{
 						
@@ -1522,7 +1522,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 					
 					$content.=$sublevel_updownimg."</td>";
 					
-					if(($div==1) && ($keyinthisgroup<count($moduleinthisgroup[$som_groupmenu])-1 
+					if(($div==1) && ($keyinthisgroup<count($nuke_moduleinthisgroup[$som_groupmenu])-1 
 					&& $sublevelinthisgroup[$som_groupmenu][$keyinthisgroup]<$sublevelinthisgroup[$som_groupmenu][$keyinthisgroup+1])) 
 					{
 						
@@ -1534,7 +1534,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				}
 
 				# sublevels - ferme
-				if($keyinthisgroup == count($moduleinthisgroup[$som_groupmenu])-1) 
+				if($keyinthisgroup == count($nuke_moduleinthisgroup[$som_groupmenu])-1) 
 				{
 					for($sub=0;$sub<$current_sublevel;$sub++) 
 					{
@@ -1591,16 +1591,16 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 				$showadmin=1;
 				$content.="<tr><td>";
 				
-				for ($z=0;$z<count($module);$z++) 
+				for ($z=0;$z<count($nuke_module);$z++) 
 				{
-					$customtitle2 = str_replace ("_"," ", $module[$z]);
+					$customtitle2 = str_replace ("_"," ", $nuke_module[$z]);
 				
 					if($customtitle[$z] != "") 
 					{
 						$customtitle2 = $customtitle[$z];
 					}
 					
-					if($module[$z] != $main_module) 
+					if($nuke_module[$z] != $main_module) 
 					{
 						if(($is_admin===1 AND $view[$z] == 2) OR $view[$z] != 2) 
 						{
@@ -1608,7 +1608,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 						
 							for ($i=0;$i<count($totalcategorymodules);$i++) 
 							{
-								if($module[$z]==$totalcategorymodules[$i]) 
+								if($nuke_module[$z]==$totalcategorymodules[$i]) 
 								{
 									$incategories=1;
 								}
@@ -1623,9 +1623,9 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 									$content .="<hr><div align=\"center\">"._MENU_ADMINVIEWALLMODULES."</div><br />";   
 								}
 								
-								$urldumodule99 = ($gt_url[$z]!="") ? $gt_url[$z] : "modules.php?name=".$module[$z] ; 
+								$urldumodule99 = ($gt_url[$z]!="") ? $gt_url[$z] : "modules.php?name=".$nuke_module[$z] ; 
 								
-								if(($newpms[0]) AND ($module[$z]=="Private_Messages"))  
+								if(($newpms[0]) AND ($nuke_module[$z]=="Private_Messages"))  
 								{ 
 									$content .= "<strong><big>&middot;</big></strong><img src=\"images/blocks/email-y.gif\"  
 									height=\"10\" width=\"14\" alt=\""._MENU_NEWPM."\" title=\""._MENU_NEWPM."\"><a href=\"".$urldumodule99."\">$customtitle2</a><br>\n";
@@ -1687,7 +1687,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 /* If you copied a new module is the /modules/ directory, it will be added to the database */
 if( $showadmin==1 && $is_admin===1 && $horizontal!=1) 
 {
-	$key=count($module); 
+	$key=count($nuke_module); 
 	$content .= "<br><div align=\"center\"><strong>"._INVISIBLEMODULES."</strong></div>";
 	$content .= "<div align=\"center\"><font class=\"tiny\">"._ACTIVEBUTNOTSEE."</font></div>";
 	$content.="<div align=\"center\"><form action=\"modules.php\" method=\"get\" name=\"menuformlistboxinvisibles\">"
@@ -1698,7 +1698,7 @@ if( $showadmin==1 && $is_admin===1 && $horizontal!=1)
 	
 	while ($row = $nuke_db->sql_fetchrow($result)) 
 	{
-		$module[$key]=$row['title'];
+		$nuke_module[$key]=$row['title'];
 		$mn_title = $row['title'];
 		$custom_title = $row['custom_title'];
 		$mn_title2 = (!$custom_title) ? str_replace("_", " ", $mn_title) : $custom_title;
@@ -1720,7 +1720,7 @@ if( $showadmin==1 && $is_admin===1 && $horizontal!=1)
 
 	while ($row = $nuke_db->sql_fetchrow($result)) 
 	{
-		$module[$key]=$row['title'];
+		$nuke_module[$key]=$row['title'];
 		$key++;
 		$mn_title = $row['title'];
 		$custom_title = $row['custom_title'];
@@ -1746,9 +1746,9 @@ if( $showadmin==1 && $is_admin===1 && $horizontal!=1)
 		{
 			$trouve=0;  
 			
-			for ($i=0;$i<count($module);$i++) 
+			for ($i=0;$i<count($nuke_module);$i++) 
 			{
-				if($module[$i]==$file) 
+				if($nuke_module[$i]==$file) 
 				{
 				  $trouve=1;
 				}

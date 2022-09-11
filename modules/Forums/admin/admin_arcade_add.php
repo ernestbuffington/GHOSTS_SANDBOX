@@ -18,7 +18,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
     $file = basename(__FILE__);
-    $module['Arcade_Admin']['Add_a_game'] = $file;
+    $nuke_module['Arcade_Admin']['Add_a_game'] = $file;
     return;
 }
 
@@ -92,14 +92,14 @@ if( isset($HTTP_POST_VARS['submit']) )
         unset($HTTP_POST_VARS['submit']);
         
                 $game_name = str_replace("\'", "'", $game_name);
-        $message = $game_name . $lang['Arcade_game_added'] . "<br /><br />" . sprintf($lang['Click_return_add_game'], "<a href=\"" . append_sid("admin_arcade_add.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+        $message = $game_name . $lang['Arcade_game_added'] . "<br /><br />" . sprintf($lang['Click_return_add_game'], "<a href=\"" . append_nuke_sid("admin_arcade_add.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
 
     }
     else
     {
-        $message = "Not all forms have been filled out!  Unable to add the game!" . "<br /><br />" . sprintf($lang['Click_return_add_game'], "<a href=\"" . append_sid("admin_arcade_add.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+        $message = "Not all forms have been filled out!  Unable to add the game!" . "<br /><br />" . sprintf($lang['Click_return_add_game'], "<a href=\"" . append_nuke_sid("admin_arcade_add.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
         message_die(NUKE_GENERAL_MESSAGE, $message);
     }

@@ -37,8 +37,8 @@ if (!defined('MODULE_FILE')) {
 }
 
 if ($popup != "1") {
-        $module_name = basename(dirname(__FILE__));
-        require("modules/".$module_name."/nukebb.php");
+        $nuke_module_name = basename(dirname(__FILE__));
+        require("modules/".$nuke_module_name."/nukebb.php");
 } else {
         $phpbb2_root_path = NUKE_PHPBB2_DIR;
 }
@@ -111,7 +111,7 @@ function get_topic_id($topic)
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -334,7 +334,7 @@ if (($select_from || $select_to) && (!$cancel))
     if ($select_to) $s_hidden_fields .= '<input type="hidden" name="select_to" value="1" />';
     $s_hidden_fields .= '<input type="hidden" name="start" value="' . $start . '" />';
     $template_nuke->assign_vars(array(
-        'S_ACTION'            => append_sid("merge.$phpEx"),
+        'S_ACTION'            => append_nuke_sid("merge.$phpEx"),
         'S_HIDDEN_FIELDS'    => $s_hidden_fields,
         )
     );
@@ -575,9 +575,9 @@ if ($submit)
         
         // send end message
         $template_nuke->assign_vars(array(
-            'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$to_topic_id") . '">')
+            'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$to_topic_id") . '">')
         );
-        message_die(NUKE_GENERAL_MESSAGE, $lang['Merge_topic_done'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$to_topic_id") . '" class="gen">', '</a>')  . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '" class="gen">', '</a>'));
+        message_die(NUKE_GENERAL_MESSAGE, $lang['Merge_topic_done'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_TOPIC_URL . "=$to_topic_id") . '" class="gen">', '</a>')  . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '" class="gen">', '</a>'));
         exit;
     }
     else
@@ -604,7 +604,7 @@ if ($submit)
             'MESSAGE_TEXT'        => $message,
             'L_YES'                => $lang['Yes'],
             'L_NO'                => $lang['No'],
-            'S_CONFIRM_ACTION'    => append_sid("merge.$phpEx"),
+            'S_CONFIRM_ACTION'    => append_nuke_sid("merge.$phpEx"),
             'S_HIDDEN_FIELDS'    => $s_hidden_fields,
             )
         );
@@ -660,7 +660,7 @@ $template_nuke->assign_vars(array(
 // system
 $s_hidden_fields  = '<input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
 $template_nuke->assign_vars(array(
-    'S_ACTION'            => append_sid("merge.$phpEx"),
+    'S_ACTION'            => append_nuke_sid("merge.$phpEx"),
     'S_HIDDEN_FIELDS'    => $s_hidden_fields,
     )
 );

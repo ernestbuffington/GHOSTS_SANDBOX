@@ -39,7 +39,7 @@ if (!empty($board_config))
 if( !empty($setmodules) )
 {
     $filename = basename(__FILE__);
-    $module['Statistics']['Stats_langcp'] = $filename . '?mode=select';
+    $nuke_module['Statistics']['Stats_langcp'] = $filename . '?mode=select';
     return;
 }
 require('pagestart.' . $phpEx);
@@ -157,10 +157,10 @@ if (count($update_list) > 0)
 {
     @reset($update_list);
     list($language, $v_array) = each($update_list);
-    list($module_id, $v2_array) = each($v_array);
+    list($nuke_module_id, $v2_array) = each($v_array);
     list($key, $value) = each($v2_array);
 
-    set_lang_entry($language, $module_id, $key, $lang_entry[$language][$module_id][$key]);
+    set_lang_entry($language, $nuke_module_id, $key, $lang_entry[$language][$nuke_module_id][$key]);
 }
 else if ($update_all_lang)
 {
@@ -170,7 +170,7 @@ else if ($update_all_lang)
     while (list($language, $v_array) = each($lang_entry))
     {
         // Begin Modules
-        while (list($module_id, $v2_array) = each($v_array))
+        while (list($nuke_module_id, $v2_array) = each($v_array))
         {
             $lang_block = '';
             // Begin Language Entries
@@ -179,7 +179,7 @@ else if ($update_all_lang)
                 $lang_block .= '$lang[\'' . trim($key) . '\'] = \'' . trim($value) . '\';';
                 $lang_block .= "\n";
             }
-            set_lang_block($language, $module_id, $lang_block);
+            set_lang_block($language, $nuke_module_id, $lang_block);
         }
     }
 }
@@ -187,18 +187,18 @@ else if (($add_key != '') && (count($add_new_key) > 0))
 {
     @reset($add_new_key);
     list($language, $v_array) = each($add_new_key);
-    list($module_id, $value) = each($v_array);
+    list($nuke_module_id, $value) = each($v_array);
     
-    lang_add_new_key($language, $module_id, $add_key, $add_value);
+    lang_add_new_key($language, $nuke_module_id, $add_key, $add_value);
 }
 else if (count($delete_list) > 0)
 {
     @reset($delete_list);
     list($language, $v_array) = each($delete_list);
-    list($module_id, $v2_array) = each($v_array);
+    list($nuke_module_id, $v2_array) = each($v_array);
     list($key, $value) = each($v2_array);
 
-    delete_lang_key($language, $module_id, $key);
+    delete_lang_key($language, $nuke_module_id, $key);
 }
 
 if ($mode == 'select')
@@ -239,7 +239,7 @@ if ($mode == 'select')
         message_die(NUKE_GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
     }
 
-    $modules = $nuke_db->sql_fetchrowset($result);
+    $nuke_modules = $nuke_db->sql_fetchrowset($result);
 
     for ($i = 0; $i < count($provided_languages); $i++)
     {
@@ -264,20 +264,20 @@ if ($mode == 'select')
 
         if ($lang_decollapse == $provided_languages[$i])
         {
-            for ($j = 0; $j < count($modules); $j++)
+            for ($j = 0; $j < count($nuke_modules); $j++)
             {
-                $informations = ( intval($modules[$j]['active']) == 1) ? 'Active' : 'Not Active';
+                $informations = ( intval($nuke_modules[$j]['active']) == 1) ? 'Active' : 'Not Active';
 
-                if (!module_is_in_lang($modules[$j]['short_name'], $provided_languages[$i]))
+                if (!module_is_in_lang($nuke_modules[$j]['short_name'], $provided_languages[$i]))
                 {
                     $informations .= '<br />No Content';
                 }
             
                 $template_nuke->assign_block_vars('langrow.modulerow', array(
-                    'MODULE_NAME' => $modules[$j]['long_name'],
-                    'MODULE_DESC' => $modules[$j]['extra_info'],
-                    'U_LANG_EDIT' => $phpbb2_root_path . 'admin/admin_stats_lang.php?mode=select&amp;m_mode=edit&amp;lang=' . $provided_languages[$i] . '&amp;module=' . $modules[$j]['module_id'] . '&amp;d_lang=' . $lang_decollapse,
-                    'U_LANG_EXPORT' => $phpbb2_root_path . 'admin/download_lang.php?mode=export_module&amp;lang=' . $provided_languages[$i] . '&amp;module=' . $modules[$j]['module_id'],
+                    'MODULE_NAME' => $nuke_modules[$j]['long_name'],
+                    'MODULE_DESC' => $nuke_modules[$j]['extra_info'],
+                    'U_LANG_EDIT' => $phpbb2_root_path . 'admin/admin_stats_lang.php?mode=select&amp;m_mode=edit&amp;lang=' . $provided_languages[$i] . '&amp;module=' . $nuke_modules[$j]['module_id'] . '&amp;d_lang=' . $lang_decollapse,
+                    'U_LANG_EXPORT' => $phpbb2_root_path . 'admin/download_lang.php?mode=export_module&amp;lang=' . $provided_languages[$i] . '&amp;module=' . $nuke_modules[$j]['module_id'],
                     'INFORMATIONS' => $informations)
                 );
             }
@@ -285,7 +285,7 @@ if ($mode == 'select')
     }
     if ($m_mode == 'edit')
     {
-        $module_id = (isset($HTTP_GET_VARS['module'])) ? intval($HTTP_GET_VARS['module']) : -1;
+        $nuke_module_id = (isset($HTTP_GET_VARS['module'])) ? intval($HTTP_GET_VARS['module']) : -1;
         $language = (isset($HTTP_GET_VARS['lang'])) ? trim($HTTP_GET_VARS['lang']) : '';
         
         if ($language == '')
@@ -295,20 +295,20 @@ if ($mode == 'select')
         
         $current_modules = array();
 
-        if ($module_id != -1)
+        if ($nuke_module_id != -1)
         {
-            for ($i = 0; $i < count($modules); $i++)
+            for ($i = 0; $i < count($nuke_modules); $i++)
             {
-                if (intval($modules[$i]['module_id']) == $module_id)
+                if (intval($nuke_modules[$i]['module_id']) == $nuke_module_id)
                 {
-                    $current_modules[0] = $modules[$i];
+                    $current_modules[0] = $nuke_modules[$i];
                     break;
                 }
             }
         }
         else
         {
-            $current_modules = $modules;
+            $current_modules = $nuke_modules;
         }
 
         $template_nuke->assign_vars(array(

@@ -25,8 +25,8 @@ if (!defined('MODULE_FILE')) {
 }
 
 if ($popup != "1"){
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -43,7 +43,7 @@ $header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOF
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_TOPARCADES, $nukeuser);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_TOPARCADES, $nukeuser);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -69,7 +69,7 @@ $template_nuke->set_filenames(array(
 $template_nuke->assign_vars(array(
         'L_TOPARCADE_FIVE' => $lang['toparcade_five'],
         'L_ARCADE' => $lang['toparcade_players'],
-        'NAV_DESC' => '<a class="nav" href="' . append_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a>'
+        'NAV_DESC' => '<a class="nav" href="' . append_nuke_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a>'
 )
 );
 
@@ -117,7 +117,7 @@ while ((!$fini) ) {
 
                 if (!$fini) {
                          $template_nuke->assign_block_vars('blkligne.blkcolonne.blkgame', array(
-                                'GAMENAME' => '<nobr><a class="cattitle" href="' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a></nobr>')
+                                'GAMENAME' => '<nobr><a class="cattitle" href="' . append_nuke_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a></nobr>')
                         );
 
                         $pos = 0;
@@ -157,7 +157,7 @@ while ((!$fini) ) {
 }
 
 $template_nuke->assign_vars(array(
-        'PAGINATION' => generate_pagination(append_sid("toparcade.$phpEx?uid=$uid"), $total_games, $games_par_page, $start),
+        'PAGINATION' => generate_pagination(append_nuke_sid("toparcade.$phpEx?uid=$uid"), $total_games, $games_par_page, $start),
         'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $games_par_page) + 1), ceil($total_games / $games_par_page)))
 );
 

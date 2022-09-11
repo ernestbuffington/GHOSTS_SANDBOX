@@ -39,12 +39,12 @@ if (!defined('CNBYA')) {
     die('CNBYA protection');
 }
 
-if(is_mod_admin($module_name)) 
+if(is_mod_admin($nuke_module_name)) 
 {
     $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_cnbya_field WHERE fid='$fid'");
     $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_cnbya_value WHERE fid='$fid'");
     $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_cnbya_value_temp WHERE fid='$fid'");
-    header("Location:modules.php?name=$module_name&file=admin&op=addField");
+    header("Location:modules.php?name=$nuke_module_name&file=admin&op=addField");
 }
 
 ?>

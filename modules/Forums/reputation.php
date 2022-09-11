@@ -36,7 +36,7 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 include($phpbb2_root_path . 'reputation_common.'.$phpEx);
 include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_reputation.' . $phpEx);
 
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_REPUTATION);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_REPUTATION);
 init_userprefs($nuke_userdata);
 
 if ( empty($HTTP_GET_VARS["a"]) )
@@ -203,7 +203,7 @@ switch( $action  )
       r_send_pm($nuke_userdata['user_id'], $nuke_userid, $repsum_mul, $nuke_user_ip);
     }
 
-    $msg = $lang['Reputation_has_given'] . '<br /><br />' . sprintf($lang['Click_here_return_rep'], '<a href="' . append_sid("reputation.$phpEx?a=stats&amp;u=".$nuke_userid) . '">', '</a> ') . '<br /><br />' . sprintf('%s'.$lang['Close_window'].'%s', '<a href="javascript:self.close();void(0);">', '</a>');
+    $msg = $lang['Reputation_has_given'] . '<br /><br />' . sprintf($lang['Click_here_return_rep'], '<a href="' . append_nuke_sid("reputation.$phpEx?a=stats&amp;u=".$nuke_userid) . '">', '</a> ') . '<br /><br />' . sprintf('%s'.$lang['Close_window'].'%s', '<a href="javascript:self.close();void(0);">', '</a>');
     //$msg = $lang['Reputation_has_given'] . '<br /><br />' . sprintf($lang['Click_here_return_rep'], '<a href="modules.php?name=Forums&amp;file=reputation&amp;a=stats&amp;u=$nuke_userid)">', '</a> ') . '<br /><br />' . sprintf('%s'.$lang['Close_window'].'%s', '<a href="javascript:self.close();void(0);">', '</a>');
     message_die(NUKE_GENERAL_MESSAGE, $msg);
     break;
@@ -294,7 +294,7 @@ switch( $action  )
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-      "U_USERID" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $nuke_userid),
+      "U_USERID" => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $nuke_userid),
       "STATREP_COLOR" => ($rep_sum >= 0) ? "green" : "red",
       "REPSUM" => round($nuke_userdata['user_reputation'],1),
       "USER_ID_TO_GIVE" => $nuke_userid,
@@ -437,10 +437,10 @@ switch( $action  )
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
 
-      "U_MAX_USERREP_USERID" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $max_userrep_userid),
-      "U_MIN_USERREP_USERID" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $min_userrep_userid),
-      "U_MAX_REPSUM_USERID" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $max_repsum_userid),
-      "U_ACTIVE_USER_ID" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $active_user_id),
+      "U_MAX_USERREP_USERID" => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $max_userrep_userid),
+      "U_MIN_USERREP_USERID" => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $min_userrep_userid),
+      "U_MAX_REPSUM_USERID" => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $max_repsum_userid),
+      "U_ACTIVE_USER_ID" => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $active_user_id),
 
       "PAGINATION" => $pagination,
     ));
@@ -478,7 +478,7 @@ switch( $action  )
       {
         $row['rep_neg'] = '<img src="' . $phpbb2_root_path . 'images/reputation_pos.gif">';
       }
-      $u_post = append_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . '=' . $row['post_id'] . "#" . $row['post_id']);
+      $u_post = append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . '=' . $row['post_id'] . "#" . $row['post_id']);
       $post = $row['topic_title'];
       //
       // Start auth check
@@ -500,12 +500,12 @@ switch( $action  )
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
         "USERNAME" => UsernameColor($row['username']),
-        "U_USERID" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $row['user_id']),
+        "U_USERID" => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $row['user_id']),
         "USERNAME2" => UsernameColor($row2['username']),
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-        "U_USERID2" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $row['user_id_2']),
+        "U_USERID2" => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $row['user_id_2']),
         "REPNEG" => $row['rep_neg'],
         "REPSUM" => $row['rep_sum'],
         "REPCOMMENT" => $row['rep_comment'],
@@ -593,7 +593,7 @@ switch( $action  )
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-      "U_USERID" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $nuke_userid),
+      "U_USERID" => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $nuke_userid),
       "STATREP_COLOR" => ($rep_sum >= 0) ? "green" : "red",
       "STATREP_SUM" => $rep_sum,
       "STATREP_SUMPOS" => $rep_poss,
@@ -619,7 +619,7 @@ switch( $action  )
       "L_RECEIVEDREPUTATION" => $lang['Received_rep'],
       "L_GIVENREPUTATION" => $lang['Given_rep'],
       "L_GLOBALSTATS" => $lang['Global_stats'],
-      "U_GLOBALSTATS" => append_sid("reputation.$phpEx?a=globalstats"),
+      "U_GLOBALSTATS" => append_nuke_sid("reputation.$phpEx?a=globalstats"),
 
       "PAGINATION" => $pagination,
     ));
@@ -660,7 +660,7 @@ switch( $action  )
       {
         $row['rep_neg'] = '<img src="' . $phpbb2_root_path . 'images/reputation_pos.gif">';
       }
-      $u_post = append_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . '=' . $row['post_id'] . "#" . $row['post_id']);
+      $u_post = append_nuke_sid("viewtopic.$phpEx?" . NUKE_POST_POST_URL . '=' . $row['post_id'] . "#" . $row['post_id']);
       $post = $row['topic_title'];
       //
       // Start auth check
@@ -681,12 +681,12 @@ switch( $action  )
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
         "USERNAME" => UsernameColor($row['username']),
-        "U_USERID" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $row['user_id']),
+        "U_USERID" => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $row['user_id']),
         "USERNAME2" => UsernameColor($row2['username']),
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-        "U_USERID2" => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $row['user_id_2']),
+        "U_USERID2" => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '=' . $row['user_id_2']),
         "REPNEG" => $row['rep_neg'],
         "REPSUM" => $row['rep_sum'],
         "REPCOMMENT" => $row['rep_comment'],

@@ -20,10 +20,10 @@ $addJStoBody .= '</script>'."\n";
 addJSToBody($addJStoBody,'inline');
 addCSSToHead('./modules/ECalendar/css/astyle.css','file');
 global $prefix, $nuke_db, $admdata;
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
 
-if(is_mod_admin($module_name)) {
+if(is_mod_admin($nuke_module_name)) {
 
 /*===================================================
 | Main Admin Calendar section
@@ -394,7 +394,7 @@ switch ($op){
 }
 
 } else {
-    DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$module_name\"");
+    DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$nuke_module_name\"");
 }
 
 ?>

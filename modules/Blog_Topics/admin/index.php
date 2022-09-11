@@ -31,8 +31,8 @@ if (!defined('ADMIN_FILE'))
 
 
 global $prefix, $nuke_db, $admdata;
-$module_name = basename(dirname(dirname(__FILE__)));
-if(is_mod_admin($module_name)) {
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
+if(is_mod_admin($nuke_module_name)) {
 
 include_once(NUKE_INCLUDE_DIR.'nsnne_func.php');
 $ne_config = ne_get_configs();
@@ -421,7 +421,7 @@ else
 	   // CloseTable();
 
        // OpenTable();
-        echo "<center><strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$module_name\"</center>";
+        echo "<center><strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$nuke_module_name\"</center>";
         CloseTable();
         include(NUKE_BASE_DIR."footer.php");
 }

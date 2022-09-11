@@ -65,10 +65,10 @@ function evouserinfo_get_members_online()
 		$uname 			= $session['uname'];
         $uname_color 	= UsernameColor($session['uname']);
         $level 			= $session['user_level'];
-        $module 		= $session['module'];
+        $nuke_module 		= $session['module'];
         $url 			= $session['url'];
         $url 			= str_replace("&", "&amp;", $url);
-        $where 			= '&nbsp;&nbsp;<a href="'.$url.'" alt="'.$module.'" title="'.$module.'">'.$num.'</a>.&nbsp;';
+        $where 			= '&nbsp;&nbsp;<a href="'.$url.'" alt="'.$nuke_module.'" title="'.$nuke_module.'">'.$num.'</a>.&nbsp;';
         $where 			= (is_admin()) ? $where : $num.'.&nbsp;';
         $nuke_user_from 		= $session['user_from'];
         $nuke_user_flag 		= str_replace('.png','',$session['user_from_flag']);
@@ -207,13 +207,13 @@ function evouserinfo_get_guests_online($start)
 
         $num = ($i < 10) ? '0'.$i : $i;
         
-        $module = $session['module'];
+        $nuke_module = $session['module'];
         $url = $session['url'];
         $url = str_replace("&", "&amp;", $url);
-           //$where = '<a data-user-country="'.$session['host_addr'].'" href="'.$url.'" alt="'.$module.'" title="'.$module.'">'.$num.'</a>.&nbsp;';
+           //$where = '<a data-user-country="'.$session['host_addr'].'" href="'.$url.'" alt="'.$nuke_module.'" title="'.$nuke_module.'">'.$num.'</a>.&nbsp;';
            //$where = (is_admin()) ? $where : $num.'.&nbsp;';
         
-		$where 			= '&nbsp;&nbsp;<a class="tooltip-html-side-interact tooltipstered" href="'.$url.'" alt="'.$module.'" title="'.$url.'">'.$num.'.&nbsp;';
+		$where 			= '&nbsp;&nbsp;<a class="tooltip-html-side-interact tooltipstered" href="'.$url.'" alt="'.$nuke_module.'" title="'.$url.'">'.$num.'.&nbsp;';
         $where 			= (is_admin()) ? $where : '&nbsp;&nbsp;'.$num.'.&nbsp;';
         
 		if(!is_admin()):

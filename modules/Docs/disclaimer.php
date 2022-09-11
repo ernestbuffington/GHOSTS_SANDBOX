@@ -32,17 +32,17 @@ if (!defined('MODULE_FILE')) {
    die('You can\'t access this file directly...');
 }
 
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
-include(NUKE_MODULES_DIR.$module_name.'/doc_config.php');
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
+include(NUKE_MODULES_DIR.$nuke_module_name.'/doc_config.php');
 
 define('INDEX_FILE', true);
 
 function disclaimer() {
-    global $sitename, $adminmail, $module_name;
+    global $sitename, $adminmail, $nuke_module_name;
     include_once(NUKE_BASE_DIR.'header.php');
     title($sitename.': '._NSDISCLAIMER);
-    if (file_exists(NUKE_MODULES_DIR.$module_name.'/copyright.php')) {
+    if (file_exists(NUKE_MODULES_DIR.$nuke_module_name.'/copyright.php')) {
         OpenTable();
         echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"10\" align=\"center\">";
         echo "<tr><td valign=\"top\"><br />";

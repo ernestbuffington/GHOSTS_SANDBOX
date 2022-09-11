@@ -27,10 +27,10 @@ pjadmin_menu(_NETWORK_TASKS.": "._NETWORK_TASKLIST);
 OpenTable();
 echo "<table width='100%' border='1' cellspacing='0' cellpadding='2'>\n";
 echo "<tr><td colspan='3' bgcolor='$bgcolor2'><nobr><strong>"._NETWORK_TASKOPTIONS."</strong></nobr></td></tr>\n";
-$pjimage = pjimage("options.png", $module_name);
+$pjimage = pjimage("options.png", $nuke_module_name);
 echo "<tr><td><img src='$pjimage'></td><td colspan='2' width='100%'><nobr><a href='".$admin_file.".php?op=TaskAdd'>"._NETWORK_TASKADD."</a></nobr></td></tr>\n";
 $taskrows = $network_db->sql_numrows($network_db->sql_query("SELECT `task_id` FROM `".$network_prefix."_tasks`"));
-$pjimage = pjimage("stats.png", $module_name);
+$pjimage = pjimage("stats.png", $nuke_module_name);
 echo "<tr><td><img src='$pjimage'></td><td colspan='2' width='100%'><nobr>"._NETWORK_TOTALTASKS.": <strong>$taskrows</strong></nobr></td></tr>\n";
 echo "</table>\n";
 //CloseTable();
@@ -54,7 +54,7 @@ if($taskrows > 0){
     $project = pjproject_info($project_id);
     $taskpriority = pjtaskpriority_info($priority_id);
     $members = $network_db->sql_numrows($network_db->sql_query("SELECT `member_id` FROM `".$network_prefix."_tasks_members` WHERE `task_id`='$task_id'"));
-    $pjimage = pjimage("task.png", $module_name);
+    $pjimage = pjimage("task.png", $nuke_module_name);
     echo "<tr><td><img src='$pjimage'></td><td width='100%'>$task_name</td>\n";
     echo "<td align='center'><nobr><a href='".$admin_file.".php?op=ProjectList'>".$project['project_name']."</a></nobr></td>\n";
     if($taskstatus['status_name'] == ''){ $taskstatus['status_name'] = _NETWORK_NA; }

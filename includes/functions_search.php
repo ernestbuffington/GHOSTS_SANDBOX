@@ -492,7 +492,7 @@ function username_search($search_match)
                 'L_CLOSE_WINDOW' => $lang['Close_window'],
 
                 'S_USERNAME_OPTIONS' => $nuke_username_list,
-                'S_SEARCH_ACTION' => append_sid("search.$phpEx?mode=searchuser&popup=1"))
+                'S_SEARCH_ACTION' => append_nuke_sid("search.$phpEx?mode=searchuser&popup=1"))
         );
 
         if ( $nuke_username_list != '' )

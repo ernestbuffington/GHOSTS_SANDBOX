@@ -29,7 +29,7 @@
 	  NSN Center Blocks                        v2.2.1       05/26/2009
  ************************************************************************/
 
-if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) exit('Access Denied');
+//if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) exit('Access Denied');
 
 if(!defined('HEADER')) return;
 
@@ -283,9 +283,9 @@ if (defined('HOME_FILE'))
 # END NSN Center Blocks v2.2.1
 
 # look to see if a copyright file exist for the currently displayed module START
-$pageURL = "".HTTPS."modules/".$module_name."/copyright.php";
+$pageURL = "".HTTPS."modules/".$nuke_module_name."/copyright.php";
 
-if (defined('MODULE_FILE') && !defined("HOME_FILE") AND file_exists("modules/".$module_name."/copyright.php")) 
+if (defined('MODULE_FILE') && !defined("HOME_FILE") AND file_exists("modules/".$nuke_module_name."/copyright.php")) 
 {
     echo "<script type=\"text/javascript\">\n";
     echo "<!--\n";
@@ -328,7 +328,7 @@ echo "</script>\n\n";
 }
 
 # just a  normal module load without it being displayed by default when index.php loads, look to see if a copyright file exist for the currently displayed module START
-//     $cpname = preg_replace("/_/", " ", $module_name);
+//     $cpname = preg_replace("/_/", " ", $nuke_module_name);
 //     echo "<div align=\"right\"><a href=\"javascript:openwindow(420,200)\">$cpname &copy;</a></div>";
 # just a  normal module load without it being displayed by default when index.php loads, look to see if a copyright file exist for the currently displayed module END
 

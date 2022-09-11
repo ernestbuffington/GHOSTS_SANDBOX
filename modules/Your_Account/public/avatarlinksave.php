@@ -51,10 +51,10 @@ if(!defined('CNBYA')) die('CNBYA protection');
     
 	if (preg_match("/(https)/", $avatar)): 
       echo "<div align=\"center\">"._YA_NEWAVATAR.":<br /><img alt=\"\" src=\"$avatar\"><br />";
-      echo "[ <a href=\"modules.php?name=$module_name&amp;op=edituser\">"._YA_BACKPROFILE."</a> | <a href=\"modules.php?name=$module_name\">"._YA_DONE."</a> ]</div>";
+      echo "[ <a href=\"modules.php?name=$nuke_module_name&amp;op=edituser\">"._YA_BACKPROFILE."</a> | <a href=\"modules.php?name=$nuke_module_name\">"._YA_DONE."</a> ]</div>";
 	elseif($avatar): 
       echo "<div align=\"center\">"._YA_NEWAVATAR.":<br /><img alt=\"\" src=\"$direktori/$avatar\"><br />";
-      echo "[ <a href=\"modules.php?name=$module_name&amp;op=edituser\">"._YA_BACKPROFILE."</a> | <a href=\"modules.php?name=$module_name\">"._YA_DONE."</a> ]</div>";
+      echo "[ <a href=\"modules.php?name=$nuke_module_name&amp;op=edituser\">"._YA_BACKPROFILE."</a> | <a href=\"modules.php?name=$nuke_module_name\">"._YA_DONE."</a> ]</div>";
     endif;
     
 	CloseTable();

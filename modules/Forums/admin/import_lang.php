@@ -80,7 +80,7 @@ include($phpbb2_root_path . 'stats_mod/includes/lang_functions.'.$phpEx);
 
 if ($cancel)
 {
-    $url = 'admin/' . append_sid("admin_stats_lang.$phpEx?mode=select", true);
+    $url = 'admin/' . append_nuke_sid("admin_stats_lang.$phpEx?mode=select", true);
     
     /*$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
     $server_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['server_name']));
@@ -151,8 +151,8 @@ if ($mode == 'import_new_lang' && $submit)
         @reset($lang_array);
         while (list($key, $data) = @each($lang_array))
         {
-            $modules = get_modules_from_lang_block($data);
-            add_new_language_predefined($key, $modules);
+            $nuke_modules = get_modules_from_lang_block($data);
+            add_new_language_predefined($key, $nuke_modules);
         }
         
         message_die(NUKE_GENERAL_MESSAGE, $lang['Language_pak_installed']);
@@ -255,12 +255,12 @@ if ($mode == 'import_new_lang' && $submit)
             'LANGUAGE' => $language)
         );
 
-        $modules = get_modules_from_lang_block($data);
-        @reset($modules);
-        while (list($module_name, $module_data) = each($modules))
+        $nuke_modules = get_modules_from_lang_block($data);
+        @reset($nuke_modules);
+        while (list($nuke_module_name, $nuke_module_data) = each($nuke_modules))
         {
             $template_nuke->assign_block_vars('languages.modules', array(
-                'MODULE' => $module_name)
+                'MODULE' => $nuke_module_name)
             );
         }
     }
@@ -301,22 +301,22 @@ if (($mode == 'import_new_lang') && (!$submit))
         {
             $template_nuke->assign_block_vars('switch_select_lang', array());
 
-            $module_select_field = '<select name="selected_pak_file">';
+            $nuke_module_select_field = '<select name="selected_pak_file">';
 
-            for ($i = 0; $i < count($module_paks); $i++)
+            for ($i = 0; $i < count($nuke_module_paks); $i++)
             {
                 $selected = ($i == 0) ? ' selected="selected"' : '';
 
-                $module_select_field .= '<option value="' . $lang_paks[$i] . '"' . $selected . '>' . $lang_paks[$i] . '</option>';
+                $nuke_module_select_field .= '<option value="' . $lang_paks[$i] . '"' . $selected . '>' . $lang_paks[$i] . '</option>';
             }
     
-            $module_select_field .= '</select>';
+            $nuke_module_select_field .= '</select>';
             
             $s_hidden_fields = '<input type="hidden" name="fileselect" value="1">';
 
             $template_nuke->assign_vars(array(
                 'L_SELECT_LANGUAGE' => $lang['Select_language_pak'],
-                'S_SELECT_LANGUAGE' => $module_select_field,
+                'S_SELECT_LANGUAGE' => $nuke_module_select_field,
                 'S_SELECT_HIDDEN_FIELDS' => $s_hidden_fields)
             );
         
@@ -331,7 +331,7 @@ if (($mode == 'import_new_lang') && (!$submit))
             'L_IMPORT_LANGUAGE_EXPLAIN' => $lang['Import_new_language_explain'],
             'L_UPLOAD_LANGUAGE' => $lang['Upload_language_pak'],
             'L_SUBMIT' => $lang['Submit'],
-            'S_ACTION' => append_sid($phpbb2_root_path . 'admin/import_lang.'.$phpEx.'?mode='.$mode),
+            'S_ACTION' => append_nuke_sid($phpbb2_root_path . 'admin/import_lang.'.$phpEx.'?mode='.$mode),
             'S_UPLOAD_HIDDEN_FIELDS' => $s_hidden_fields)
         );
 

@@ -29,14 +29,14 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
     $file = basename(__FILE__);
-    $module['Logs']['Logs Actions'] = "$file";
+    $nuke_module['Logs']['Logs Actions'] = "$file";
     return;
 }
 
 //
 // Load default header
 //
-$module_name = basename(dirname(dirname(__FILE__)));
+$nuke_module_name = basename(dirname(dirname(__FILE__)));
 $phpbb2_root_path = './../';
 require($phpbb2_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
@@ -74,7 +74,7 @@ if(!$result = $nuke_db->sql_query($sql))
 }
 $row = $nuke_db->sql_fetchrow($result);
 $all_admin_authorized = $row['all_admin'];
-if ( $all_admin_authorized == '0' && $nuke_userdata['user_id'] <> '2' && !is_mod_admin($module_name) && $nuke_userdata['user_view_log'] <> '1' )
+if ( $all_admin_authorized == '0' && $nuke_userdata['user_id'] <> '2' && !is_mod_admin($nuke_module_name) && $nuke_userdata['user_view_log'] <> '1' )
 {
     message_die(NUKE_GENERAL_MESSAGE, $lang['Admin_not_authorized']);
 }
@@ -126,8 +126,8 @@ $template_nuke->assign_vars(array(
 
     'S_MODE_SELECT' => $select_sort_mode,
     'S_ORDER_SELECT' => $select_sort_order,
-    'S_MODE_ACTION' => append_sid("admin_logs.$phpEx"),
-    'S_CANCEL_ACTION' => append_sid("admin_logs.$phpEx"))
+    'S_MODE_ACTION' => append_nuke_sid("admin_logs.$phpEx"),
+    'S_CANCEL_ACTION' => append_nuke_sid("admin_logs.$phpEx"))
 );
 if ( isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']) )
 {
@@ -184,7 +184,7 @@ $sql = "SELECT *
            message_die(NUKE_CRITICAL_ERROR, "Could not query topic_title informations", "", __LINE__, __FILE__, $sql); 
         }
         $topic_title = $nuke_db->sql_fetchrow($result);
-        $temp_url = append_sid('admin_users.'.$phpEx.'?mode=edit&u=' . $nuke_user_id); 
+        $temp_url = append_nuke_sid('admin_users.'.$phpEx.'?mode=edit&u=' . $nuke_user_id); 
         $temp2_url = ('./../../../modules.php?name=Forums&file=viewtopic&t=' . $topic);
 
         if ($topic_title['topic_title']) {
@@ -236,7 +236,7 @@ if ( $log_list_sql != '' )
         }
         else
         {
-            $nuke_redirect_page = append_sid("admin_logs.$phpEx");
+            $nuke_redirect_page = append_nuke_sid("admin_logs.$phpEx");
             $l_nuke_redirect = sprintf($lang['Click_return_admin_log'], '<a href="' . $nuke_redirect_page . '">', '</a>');
 
             message_die(NUKE_GENERAL_MESSAGE, $lang['Log_delete'] . '<br /><br />' . $l_nuke_redirect);

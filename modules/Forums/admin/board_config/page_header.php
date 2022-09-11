@@ -45,7 +45,7 @@ $template->assign_vars(array(
 /*****[END]********************************************
  [ Mod:     DHTML Admin Menu                   v1.0.0 ]
  ******************************************************/
-    "S_CONFIG_ACTION" => append_sid('admin_board.php'),
+    "S_CONFIG_ACTION" => append_nuke_sid('admin_board.php'),
 
     "L_YES" => $lang['Yes'],
     "L_NO" => $lang['No'],

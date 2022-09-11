@@ -34,32 +34,32 @@
 
 if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 
 require_once("modules/Your_Account/includes/constants.php");
 
 if (!defined('CNBYA')) die('CNBYA protection');
 
-include_once(NUKE_MODULES_DIR.$module_name.'/includes/functions.php');
+include_once(NUKE_MODULES_DIR.$nuke_module_name.'/includes/functions.php');
 
 # menelaos: removed because it is already called in /modules/Your_Account/includes/mainfileend.php
 $ya_config = ya_get_configs();
 
-get_lang($module_name);
+get_lang($nuke_module_name);
 $nuke_userpage = 1;
 
 global $cookie;
 
 $nuke_username = Fix_Quotes($_REQUEST['username']);
 $nuke_redirect = $_REQUEST['nuke_redirect'];
-$module = $_REQUEST['module'];
+$nuke_module = $_REQUEST['module'];
 $nuke_user_password = $_REQUEST['user_password'];
 $mode = $_REQUEST['mode'];
 $t = $_REQUEST['t'];
 $p = $_REQUEST['p'];
 
-include(NUKE_MODULES_DIR.$module_name.'/navbar.php');
-include(NUKE_MODULES_DIR.$module_name.'/includes/cookiecheck.php');
+include(NUKE_MODULES_DIR.$nuke_module_name.'/navbar.php');
+include(NUKE_MODULES_DIR.$nuke_module_name.'/includes/cookiecheck.php');
 
 function ya_expire() 
 {
@@ -84,61 +84,61 @@ function ya_expire()
 
 switch($op): 
     case "username_check":
-        include(NUKE_MODULES_DIR.$module_name.'/public/check.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/check.php');
         break;
     case "activate":
-        include(NUKE_MODULES_DIR.$module_name.'/public/activate.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/activate.php');
     break;
     case "avatarlist":
         if (is_user())
-        include(NUKE_MODULES_DIR.$module_name.'/public/avatarlist.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/avatarlist.php');
         else 
         notuser();
     break;
     case "avatarsave":
         if (is_user())
-        include(NUKE_MODULES_DIR.$module_name.'/public/avatarsave.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/avatarsave.php');
         else 
         notuser();
     break;
     case "avatarlinksave":
         if (is_user())
-        include(NUKE_MODULES_DIR.$module_name.'/public/avatarlinksave.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/avatarlinksave.php');
         else
         notuser();
     break;
     case "delete":
         if ($ya_config['allowuserdelete'] == 1) 
-        include(NUKE_MODULES_DIR.$module_name.'/public/delete.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/delete.php');
         else 
         disabled();
     break;
     case "deleteconfirm":
         if ($ya_config['allowuserdelete'] == 1) 
-        include(NUKE_MODULES_DIR.$module_name.'/public/deleteconfirm.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/deleteconfirm.php');
         else 
         disabled();
     break;
     case "editcomm":
-        include(NUKE_MODULES_DIR.$module_name.'/public/editcomm.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/editcomm.php');
     break;
     case "edithome":
-        include(NUKE_MODULES_DIR.$module_name.'/public/edithome.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/edithome.php');
     break;
     case "edittheme":
     break;
     case "changemail":
-        include(NUKE_MODULES_DIR.$module_name.'/public/changemail.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/changemail.php');
         changemail();
     break;
     case "chgtheme":
         if ($ya_config['allowusertheme']==0) 
-        include(NUKE_MODULES_DIR.$module_name.'/public/chngtheme.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/chngtheme.php');
         else 
         disabled();
     break;
     case "edituser":
-        //include(NUKE_MODULES_DIR.$module_name.'/public/edituser.php'); (WHY WAS THIS TAKEN OUT?????) Assholes not commenting their changes!
+        //include(NUKE_MODULES_DIR.$nuke_module_name.'/public/edituser.php'); (WHY WAS THIS TAKEN OUT?????) Assholes not commenting their changes!
         
 		# Mod: YA Merge v1.0.0 START
         nuke_redirect("modules.php?name=Profile&mode=editprofile");
@@ -232,12 +232,12 @@ switch($op):
 				list($nuke_dbpass) = $nuke_db->sql_fetchrow($result);
                 
 				if ($nuke_dbpass != $new_pass): 
-                    nuke_redirect("modules.php?name=$module_name&stop=1");
+                    nuke_redirect("modules.php?name=$nuke_module_name&stop=1");
                     return;
                 endif;
 			
 			else: 
-        	    nuke_redirect("modules.php?name=$module_name&stop=1");
+        	    nuke_redirect("modules.php?name=$nuke_module_name&stop=1");
                 return;
         	endif;
          
@@ -247,7 +247,7 @@ switch($op):
          $gfxchk = array(2,4,5,7);
 
          if (!security_code_check($_POST['g-recaptcha-response'], $gfxchk)):
-            nuke_redirect("modules.php?name=$module_name&stop=1");
+            nuke_redirect("modules.php?name=$nuke_module_name&stop=1");
             exit;
          # Mod: Advanced Security Code Control v1.0.0 END
 
@@ -255,7 +255,7 @@ switch($op):
             # menelaos: show a member the current TOS if he has not agreed yet
             if (($ya_config['tos'] == intval(1)) AND ($ya_config['tosall'] == intval(1)) AND ($setinfo['agreedtos'] != intval(1))): 
                 if($_POST['tos_yes'] != intval(1)): 
-                include(NUKE_MODULES_DIR.$module_name.'/public/ya_tos.php');
+                include(NUKE_MODULES_DIR.$nuke_module_name.'/public/ya_tos.php');
                 exit;
                 endif;
             endif;
@@ -298,8 +298,8 @@ switch($op):
           else:
           nuke_redirect("modules.php?name=Forums");
           endif;
- 	  elseif(!empty($module)): 
-            nuke_redirect("modules.php?name=$module");
+ 	  elseif(!empty($nuke_module)): 
+            nuke_redirect("modules.php?name=$nuke_module");
 	  elseif(empty($mode)): 
 
           if(!empty($f)) 
@@ -330,7 +330,7 @@ switch($op):
 		
         include_once(NUKE_BASE_DIR.'footer.php');
    else:
-   nuke_redirect("modules.php?name=$module_name&stop=1");
+   nuke_redirect("modules.php?name=$nuke_module_name&stop=1");
    endif;
 		
    break;
@@ -379,7 +379,7 @@ switch($op):
 
     break;
     case "mailpasswd":
-        include(NUKE_MODULES_DIR.$module_name.'/public/mailpass.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/mailpass.php');
     break;
     case "new_user":
     if (is_user()): 
@@ -390,14 +390,14 @@ switch($op):
 	    # if coppa is required 
         if ($ya_config['coppa'] == intval(1)): 
            if($_POST['coppa_yes']!= intval(1)): 
-              include(NUKE_MODULES_DIR.$module_name.'/public/ya_coppa.php');
+              include(NUKE_MODULES_DIR.$nuke_module_name.'/public/ya_coppa.php');
                 exit;
            endif;
         endif;
 		# if terms of service is required 
 		if ($ya_config['tos'] == intval(1)): 
           if($_POST['tos_yes'] != intval(1)): 
-            include(NUKE_MODULES_DIR.$module_name.'/public/ya_tos.php');
+            include(NUKE_MODULES_DIR.$nuke_module_name.'/public/ya_tos.php');
             exit;
           endif;
         endif;
@@ -412,13 +412,13 @@ switch($op):
 		  AND $_POST['tos_yes'] = intval(1)):
 		     # if admin approval is required 
              if ($ya_config['requireadmin'] == 1) 
-             include(NUKE_MODULES_DIR.$module_name.'/public/new_user1.php');
+             include(NUKE_MODULES_DIR.$nuke_module_name.'/public/new_user1.php');
 			 # if admin approval is not required and user activate not enabled 
 			 elseif ($ya_config['requireadmin'] == 0 AND $ya_config['useactivate'] == 0) 
-             include(NUKE_MODULES_DIR.$module_name.'/public/new_user2.php');
+             include(NUKE_MODULES_DIR.$nuke_module_name.'/public/new_user2.php');
 			 # if admin approval is not required and user activate is required 
 			 elseif ($ya_config['requireadmin'] == 0 AND $ya_config['useactivate'] == 1) 
-             include(NUKE_MODULES_DIR.$module_name.'/public/new_user3.php');
+             include(NUKE_MODULES_DIR.$nuke_module_name.'/public/new_user3.php');
           endif;
         endif;
       else: 
@@ -432,11 +432,11 @@ switch($op):
         else:
             if ($ya_config['allowuserreg']==0):
                 if ($ya_config['requireadmin'] == 1):
-                    include(NUKE_MODULES_DIR.$module_name.'/public/new_confirm1.php');
+                    include(NUKE_MODULES_DIR.$nuke_module_name.'/public/new_confirm1.php');
                 elseif ($ya_config['requireadmin'] == 0 AND $ya_config['useactivate'] == 0):
-                    include(NUKE_MODULES_DIR.$module_name.'/public/new_confirm2.php');
+                    include(NUKE_MODULES_DIR.$nuke_module_name.'/public/new_confirm2.php');
                 elseif ($ya_config['requireadmin'] == 0 AND $ya_config['useactivate'] == 1):
-                    include(NUKE_MODULES_DIR.$module_name.'/public/new_confirm3.php');
+                    include(NUKE_MODULES_DIR.$nuke_module_name.'/public/new_confirm3.php');
                 endif;
             else:
                 disabled();
@@ -451,11 +451,11 @@ switch($op):
 		    if ($ya_config['allowuserreg']==0): 
                 
 				if($ya_config['requireadmin'] == 1): 
-                    include(NUKE_MODULES_DIR.$module_name.'/public/new_finish1.php');
+                    include(NUKE_MODULES_DIR.$nuke_module_name.'/public/new_finish1.php');
 				elseif ($ya_config['requireadmin'] == 0 AND $ya_config['useactivate'] == 0): 
-                    include(NUKE_MODULES_DIR.$module_name.'/public/new_finish2.php');
+                    include(NUKE_MODULES_DIR.$nuke_module_name.'/public/new_finish2.php');
 				elseif ($ya_config['requireadmin'] == 0 AND $ya_config['useactivate'] == 1): 
-                    include(NUKE_MODULES_DIR.$module_name.'/public/new_finish3.php');
+                    include(NUKE_MODULES_DIR.$nuke_module_name.'/public/new_finish3.php');
                 endif;
 			else: 
                 disabled();
@@ -463,27 +463,27 @@ switch($op):
 		endif;
     break;
     case "pass_lost":
-        include(NUKE_MODULES_DIR.$module_name.'/public/passlost.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/passlost.php');
     break;
    case "saveactivate":
-        include(NUKE_MODULES_DIR.$module_name.'/public/saveactivate.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/saveactivate.php');
     break;
     case "savecomm":
         if (is_user()) 
-        include(NUKE_MODULES_DIR.$module_name.'/public/savecomm.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/savecomm.php');
         else 
         notuser();
     break;
     case "savehome":
         if (is_user())
-        include(NUKE_MODULES_DIR.$module_name.'/public/savehome.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/savehome.php');
         else 
         notuser();
     break;
     case "savetheme":
         if (is_user()):
             if ($ya_config['allowusertheme']==0) 
-            include(NUKE_MODULES_DIR.$module_name.'/public/savetheme.php');
+            include(NUKE_MODULES_DIR.$nuke_module_name.'/public/savetheme.php');
             else 
             disabled();
         else:
@@ -492,7 +492,7 @@ switch($op):
     break;
     case "saveuser":
         if (is_user()) 
-        include(NUKE_MODULES_DIR.$module_name.'/public/saveuser.php');
+        include(NUKE_MODULES_DIR.$nuke_module_name.'/public/saveuser.php');
         else 
         notuser();
     break;

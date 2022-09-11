@@ -23,7 +23,7 @@ define('IN_PHPBB2', true);
 if( !empty($setmodules) )
 {
 	$file = basename(__FILE__);
-	$module['General']['Icons_settings'] = $file;
+	$nuke_module['General']['Icons_settings'] = $file;
 	return;
 }
 
@@ -353,7 +353,7 @@ if ($mode == 'del')
 			$s_hidden_fields .= '<input type="hidden" name="icon" value="' . $icon . '" />';
 			$template_nuke->assign_vars(array(
 				'NAV_SEPARATOR'		=> $nav_separator,
-				'S_ACTION'			=> append_sid("./admin_icons.$phpEx"),
+				'S_ACTION'			=> append_nuke_sid("./admin_icons.$phpEx"),
 				'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 				)
 			);
@@ -627,7 +627,7 @@ if ($mode == 'edit')
 		}
 		$template_nuke->assign_vars(array(
 			'NAV_SEPARATOR'		=> $nav_separator,
-			'S_ACTION'			=> append_sid("./admin_icons.$phpEx"),
+			'S_ACTION'			=> append_nuke_sid("./admin_icons.$phpEx"),
 			'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 			)
 		);
@@ -693,10 +693,10 @@ if ($mode == '')
 			'LANG_KEY'	=> isset($lang[ $icones[$i]['alt'] ]) ? '&nbsp;&nbsp;(' . $icones[$i]['alt'] . ')' : '',
 			'L_AUTH'	=> $nuke_auths[ $icones[$i]['auth'] ],
 			'USAGE'		=> (intval($icones[$i]['usage']) > 0) ? $icones[$i]['usage'] . '&nbsp;(' . ( round( ($icones[$i]['usage'] * 100 )/ $total_posts ) ) . '%)' : '',
-			'U_EDIT'	=> append_sid("./admin_icons.$phpEx?mode=edit&icon=" . $icones[$i]['ind']),
-			'U_DELETE'	=> append_sid("./admin_icons.$phpEx?mode=del&icon=" . $icones[$i]['ind']),
-			'U_MOVEUP'	=> append_sid("./admin_icons.$phpEx?mode=up&icon=" . $icones[$i]['ind']),
-			'U_MOVEDW'	=> append_sid("./admin_icons.$phpEx?mode=dw&icon=" . $icones[$i]['ind']),
+			'U_EDIT'	=> append_nuke_sid("./admin_icons.$phpEx?mode=edit&icon=" . $icones[$i]['ind']),
+			'U_DELETE'	=> append_nuke_sid("./admin_icons.$phpEx?mode=del&icon=" . $icones[$i]['ind']),
+			'U_MOVEUP'	=> append_nuke_sid("./admin_icons.$phpEx?mode=up&icon=" . $icones[$i]['ind']),
+			'U_MOVEDW'	=> append_nuke_sid("./admin_icons.$phpEx?mode=dw&icon=" . $icones[$i]['ind']),
 			)
 		);
 
@@ -718,7 +718,7 @@ if ($mode == '')
 	$s_hidden_fields = '';
 	$template_nuke->assign_vars(array(
 		'NAV_SEPARATOR'		=> $nav_separator,
-		'S_ACTION'			=> append_sid("./admin_icons.$phpEx"),
+		'S_ACTION'			=> append_nuke_sid("./admin_icons.$phpEx"),
 		'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 		)
 	);

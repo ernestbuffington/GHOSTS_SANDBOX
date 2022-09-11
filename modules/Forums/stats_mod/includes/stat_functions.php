@@ -98,14 +98,14 @@ function user_is_within_group($nuke_user_id, $group_id)
 }
 
 // Get module informations
-function get_modules($activated = true, $module_id = -1)
+function get_modules($activated = true, $nuke_module_id = -1)
 {
     global $nuke_db, $stats_config, $nuke_userdata;
 
     $where_statement = ($activated) ? 'WHERE active = 1 ' : '';
-    if ($module_id != -1)
+    if ($nuke_module_id != -1)
     {
-        $where_statement .= (($where_statement == '') ? 'WHERE module_id = ' . intval($module_id) . ' ' : 'AND module_id = ' . intval($module_id) . ' ');
+        $where_statement .= (($where_statement == '') ? 'WHERE module_id = ' . intval($nuke_module_id) . ' ' : 'AND module_id = ' . intval($nuke_module_id) . ' ');
     }
 
     // Now let us get them in correct order
@@ -137,7 +137,7 @@ function get_modules($activated = true, $module_id = -1)
         $nuke_authed_groups[$g_rows[$i]['module_id']][] = $g_rows[$i]['group_id'];
     }
 
-    $modules = array();
+    $nuke_modules = array();
 
     // Check Authentication
     for ($i = 0; $i < $num_rows; $i++)
@@ -186,11 +186,11 @@ function get_modules($activated = true, $module_id = -1)
 
         if ($nuke_authed)
         {
-            $modules[] = $rows[$i];
+            $nuke_modules[] = $rows[$i];
         }
     }
 
-    return ($modules);
+    return ($nuke_modules);
 }
 
 function get_num_modules($activated = true)
@@ -212,14 +212,14 @@ function get_num_modules($activated = true)
 }
 
 // Determine if we have to use the db cache
-function module_use_db_cache($module_id, &$nuke_cache)
+function module_use_db_cache($nuke_module_id, &$nuke_cache)
 {
     global $nuke_db, $core;
 
     $core->module_info['last_update_time'] = 0;
     $core->module_info['next_update_time'] = 0;
     
-    $sql = "SELECT c.*, m.update_time FROM " . CACHE_TABLE . " c, " . MODULES_TABLE . " m WHERE c.module_id = " . $module_id . " AND m.module_id = c.module_id";
+    $sql = "SELECT c.*, m.update_time FROM " . CACHE_TABLE . " c, " . MODULES_TABLE . " m WHERE c.module_id = " . $nuke_module_id . " AND m.module_id = c.module_id";
 
     if (!($result = $nuke_db->sql_query($sql)) )
     {
@@ -257,23 +257,23 @@ function module_use_db_cache($module_id, &$nuke_cache)
     // If another Module got re-loaded, we have to use the cache
     if ($core->module_reloaded)
     {
-        set_module_cache_priority($module_id, 1);
+        set_module_cache_priority($nuke_module_id, 1);
         return (true);
     }
 
-    $nuke_cache_priority = module_cache_priority($module_id, intval($row['priority']));
+    $nuke_cache_priority = module_cache_priority($nuke_module_id, intval($row['priority']));
     
     if ($nuke_cache_priority == HIGHEST_PRIORITY)
     {
         $core->module_reloaded = true;
-        set_module_cache_priority($module_id, (-1));
+        set_module_cache_priority($nuke_module_id, (-1));
         return (false);
     }
 
     return (true);
 }
 
-function set_module_cache_priority($module_id, $add_value)
+function set_module_cache_priority($nuke_module_id, $add_value)
 {
     global $nuke_db;
 
@@ -290,7 +290,7 @@ function set_module_cache_priority($module_id, $add_value)
         return;
     }
 
-    $sql = "UPDATE " . CACHE_TABLE . " SET " . $set . " WHERE module_id = " . intval($module_id);
+    $sql = "UPDATE " . CACHE_TABLE . " SET " . $set . " WHERE module_id = " . intval($nuke_module_id);
 
     if (!$nuke_db->sql_query($sql))
     {
@@ -300,11 +300,11 @@ function set_module_cache_priority($module_id, $add_value)
     return;
 }
 
-function reset_module_cache_priority($module_id)
+function reset_module_cache_priority($nuke_module_id)
 {
     global $nuke_db;
     
-    $sql = "UPDATE " . CACHE_TABLE . " SET priority = 0 WHERE module_id = " . intval($module_id);
+    $sql = "UPDATE " . CACHE_TABLE . " SET priority = 0 WHERE module_id = " . intval($nuke_module_id);
 
     if (!$nuke_db->sql_query($sql))
     {
@@ -314,11 +314,11 @@ function reset_module_cache_priority($module_id)
     return;
 }
 
-function module_cache_priority($module_id, $current_priority)
+function module_cache_priority($nuke_module_id, $current_priority)
 {
     global $nuke_db, $core, $stat_functions;
 
-    $sql = "SELECT priority FROM " . CACHE_TABLE . " WHERE module_id <> " . $module_id . " AND priority > 0 ORDER BY priority ASC";
+    $sql = "SELECT priority FROM " . CACHE_TABLE . " WHERE module_id <> " . $nuke_module_id . " AND priority > 0 ORDER BY priority ASC";
 
     if (!($result = $nuke_db->sql_query($sql)))
     {
@@ -335,7 +335,7 @@ function module_cache_priority($module_id, $current_priority)
 
     if ($current_priority == 0)
     {
-        set_module_cache_priority($module_id, 1);
+        set_module_cache_priority($nuke_module_id, 1);
         return (LOWEST_PRIORITY);
     }
     
@@ -346,11 +346,11 @@ function module_cache_priority($module_id, $current_priority)
 
     if ($current_priority >= $rows[$num_rows-1]['priority'])
     {
-        set_module_cache_priority($module_id, (-1));
+        set_module_cache_priority($nuke_module_id, (-1));
         return (HIGHEST_PRIORITY);
     }
 
-    set_module_cache_priority($module_id, 1);
+    set_module_cache_priority($nuke_module_id, 1);
     return (EQUAL_PRIORITY);
 }
 

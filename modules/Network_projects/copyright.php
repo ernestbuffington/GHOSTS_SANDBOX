@@ -20,8 +20,8 @@ $nuke_author_email = "nukescripts [at] 86it [dot] us";
 $nuke_author_homepage = "https://www.86it.us";
 $license = "GNU/GPL 3.0";
 $download_location = "https://www.86it.us";
-$module_version = "11.11";
-$module_description = "Advanced Network Project Management";
+$nuke_module_version = "11.11";
+$nuke_module_description = "Advanced Network Project Management";
 
 // DO NOT TOUCH THE FOLLOWING COPYRIGHT CODE. YOU'RE JUST ALLOWED TO CHANGE YOUR "OWN"
 // MODULE'S DATA (SEE ABOVE) SO THE SYSTEM CAN BE ABLE TO SHOW THE COPYRIGHT NOTICE
@@ -30,5 +30,5 @@ $module_description = "Advanced Network Project Management";
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $nuke_module_version, $nuke_module_description);
 ?>

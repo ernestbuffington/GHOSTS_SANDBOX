@@ -11,7 +11,7 @@
 define('CP_INCLUDE_DIR', dirname(dirname(dirname(__FILE__))));
 require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 $mod_name = "CSS Color Chart";
 $nuke_author_email = "";
 $nuke_author_homepage = "";
@@ -19,9 +19,9 @@ $nuke_author_name = "";
 $license = "";
 $based_on = "Scratch";
 $download_location = "";
-$module_version = "v5.4";
+$nuke_module_version = "v5.4";
 $release_date = "02/09/2012";
-$module_description = "CSS Color Chart Module";
+$nuke_module_description = "CSS Color Chart Module";
 $mod_cost = "";
-show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $based_on, $license, $download_location, $module_version, $module_description, $release_date, $mod_cost);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $based_on, $license, $download_location, $nuke_module_version, $nuke_module_description, $release_date, $mod_cost);
 ?>

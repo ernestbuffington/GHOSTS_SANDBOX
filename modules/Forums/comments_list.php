@@ -25,8 +25,8 @@ if (!defined('MODULE_FILE')) {
 }
 
 if ($popup != "1"){
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -41,7 +41,7 @@ require_once('includes/bbcode.' . $phpEx);
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX, $nukeuser);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_INDEX, $nukeuser);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -86,7 +86,7 @@ $template_nuke->set_filenames(array(
                         'L_COMMENTS' => $lang['comments'],
                         'L_ARCADE_USER' => $lang['arcade_user'],
                         'L_SCORE' => $lang['boardscore'],
-                        'NAV_DESC' => '<a class="nav" href="' . append_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> ' ,
+                        'NAV_DESC' => '<a class="nav" href="' . append_nuke_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> ' ,
             ));
 
 
@@ -118,16 +118,16 @@ while ( $row = $nuke_db->sql_fetchrow($result))
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
             $template_nuke->assign_block_vars('commentrow', array(
-                        'GAME_NAME' => '<a href="' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>',
+                        'GAME_NAME' => '<a href="' . append_nuke_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>',
                         'COMMENTS_VALUE' =>  smilies_pass($row['comments_value']),
-                        'USERNAME' => '<a href="' . append_sid("statarcade.$phpEx?uid=" . $row['user_id'] ) . '" class="genmed">' . $row['username'] . '</a> ',
+                        'USERNAME' => '<a href="' . append_nuke_sid("statarcade.$phpEx?uid=" . $row['user_id'] ) . '" class="genmed">' . $row['username'] . '</a> ',
                         'HIGHSCORE' =>  number_format($row['game_highscore']),
                  ));
 
             }
 
 $template_nuke->assign_vars(array(
-                'MANAGE_COMMENTS' => '<nobr><a class="cattitle" href="' . append_sid("comments.$phpEx") . '">' . $lang['manage_comments'] . '</a></nobr> ',
+                'MANAGE_COMMENTS' => '<nobr><a class="cattitle" href="' . append_nuke_sid("comments.$phpEx") . '">' . $lang['manage_comments'] . '</a></nobr> ',
                 'PAGINATION' => generate_pagination("comments_list.$phpEx?", $comments_total, $comments_perpage, $start),
                 'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $comments_perpage) + 1 ), ceil( $comments_total / $comments_perpage )),
                 'L_GOTO_PAGE' => $lang['Goto_page'])

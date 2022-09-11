@@ -23,8 +23,8 @@ if (!defined('MODULE_FILE')) {
 }
 
 if ($popup != "1"){
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -39,7 +39,7 @@ include('includes/functions_post.'. $phpEx);
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_POSTING, $nukeuser);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_POSTING, $nukeuser);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -131,13 +131,13 @@ if($mode == "submit")
 
     $template_nuke->assign_vars(array(
             'L_ADD_EDIT_COMMENTS' => $lang['add_edit_comments'],
-            'NAV_DESC' => '<a class="nav" href="' . append_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> ' ,
+            'NAV_DESC' => '<a class="nav" href="' . append_nuke_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> ' ,
             'GAME_ID' => $row['game_id'],
             'L_GAME_NAME' => $lang['game_name'],
-            'GAME_NAME' => '<a href="' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>',
+            'GAME_NAME' => '<a href="' . append_nuke_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>',
             'L_ENTER_COMMENT' => $lang['enter_comment'],
             'COMMENTS' => $row['comments_value'],
-            'S_ACTION' => append_sid("comments?mode=update"),
+            'S_ACTION' => append_nuke_sid("comments?mode=update"),
             ));
 
     //Gets Avatar based on user settings and other user stats
@@ -172,7 +172,7 @@ if($mode == "submit")
         $template_nuke->assign_vars(array(
                 'L_QUICK_STATS' => $lang['quick_stats'],
             'USER_AVATAR' => '<a href="modules.php?name=Forums&amp;file=profile&amp;mode=viewprofile&amp;u=' . $nuke_userdata['user_id'] . '">' . $avatar_img . '</a>',
-            'USERNAME' => '<a href="' . append_sid("statarcade.$phpEx?uid=" . $nuke_userdata['user_id'] ) . '" class="genmed">' . $row['username'] . '</a> ',
+            'USERNAME' => '<a href="' . append_nuke_sid("statarcade.$phpEx?uid=" . $nuke_userdata['user_id'] ) . '" class="genmed">' . $row['username'] . '</a> ',
             ));
 
     //Gets some user stats to display on the comment submission page
@@ -185,7 +185,7 @@ if($mode == "submit")
     $row = $nuke_db->sql_fetchrow($result);
 
         $times_played = $row['score_set'];
-        $fav_game_name = '<a href="' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>';
+        $fav_game_name = '<a href="' . append_nuke_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>';
 
 
     $sql="SELECT * FROM " .NUKE_GAMES_TABLE ." WHERE game_highuser = " . $nuke_userdata['user_id'] . " ORDER BY game_highdate DESC";
@@ -197,7 +197,7 @@ if($mode == "submit")
     $row = $nuke_db->sql_fetchrow($result);
 
     $highscore_date = create_date( $board_config['default_dateformat'] , $row['game_highdate'] , $board_config['board_timezone'] );
-    $highscore_game_name = '<a href="' . append_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>';
+    $highscore_game_name = '<a href="' . append_nuke_sid("games.$phpEx?gid=" . $row['game_id']) . '">' . $row['game_name'] . '</a>';
 
         $template_nuke->assign_vars(array(
                     'L_QUICK_STATS_MESSAGE' => sprintf($lang['quick_stats_message'], $score_count, $fav_game_name, $times_played, $highscore_date, $highscore_game_name),
@@ -215,8 +215,8 @@ $template_nuke->set_filenames(array(
 
 $link    = "comments";
 $uid = $nuke_userdata['user_id'];
-$submit = append_sid($link."?mode=submit");
-$z = append_sid($link."?mode=z");
+$submit = append_nuke_sid($link."?mode=submit");
+$z = append_nuke_sid($link."?mode=z");
 
         $sql = "SELECT g.*, c.* FROM " . NUKE_GAMES_TABLE. " g LEFT JOIN " . NUKE_COMMENTS_TABLE . " c ON g.game_id = c.game_id WHERE game_highuser = $uid ORDER BY game_name ASC";
             if( !($result = $nuke_db->sql_query($sql)) )
@@ -245,12 +245,12 @@ $nuke_user_allow_arcadepm_yes = ( $row['user_allow_arcadepm'] ) ? "checked=\"che
 $nuke_user_allow_arcadepm_no = ( !$row['user_allow_arcadepm'] ) ? "checked=\"checked\"" : "";
 
 $template_nuke->assign_vars(array(
-            'NAV_DESC' => '<a class="nav" href="' . append_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> '
+            'NAV_DESC' => '<a class="nav" href="' . append_nuke_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> '
             ));
 if ($score_count != 0)
 {
 $template_nuke->assign_block_vars('comment_select',array(
-            'NAV_DESC' => '<a class="nav" href="' . append_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> ' ,
+            'NAV_DESC' => '<a class="nav" href="' . append_nuke_sid("arcade.$phpEx") . '">' . $lang['arcade'] . '</a> ' ,
             'HIGHSCORE_COUNT' => $score_count,
             'HIGHSCORE_SELECT' => $select_highscore,
             'S_ACTION' => $submit,

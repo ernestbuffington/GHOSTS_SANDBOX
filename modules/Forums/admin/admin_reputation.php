@@ -25,7 +25,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
   $file = basename(__FILE__);
-  $module['Reputation']['Configuration'] = $file;
+  $nuke_module['Reputation']['Configuration'] = $file;
   return;
 }
 
@@ -68,7 +68,7 @@ else
 
   if( isset($HTTP_POST_VARS['submit']) )
   {
-    $message = $lang['Rep_config_updated'] . "<br /><br />" . sprintf($lang['Click_return_rep_config'], "<a href=\"" . append_sid("admin_reputation.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+    $message = $lang['Rep_config_updated'] . "<br /><br />" . sprintf($lang['Click_return_rep_config'], "<a href=\"" . append_nuke_sid("admin_reputation.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
     message_die(NUKE_GENERAL_MESSAGE, $message);
   }
@@ -94,7 +94,7 @@ $pm_notify_yes = ( $new['pm_notify'] ) ? "checked=\"checked\"" : "";
 $pm_notify_no = ( !$new['pm_notify'] ) ? "checked=\"checked\"" : "";
 
 $template_nuke->assign_vars(array(
-  "S_CONFIG_ACTION" => append_sid("admin_reputation.$phpEx"),
+  "S_CONFIG_ACTION" => append_nuke_sid("admin_reputation.$phpEx"),
   "S_DISABLE_REP_SYSTEM_YES" => $disable_rep_yes,
   "S_DISABLE_REP_SYSTEM_NO" => $disable_rep_no,
   "S_GRAPHIC_VERSION_YES" => $graphic_version_yes,

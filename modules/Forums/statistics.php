@@ -35,8 +35,8 @@ if (!defined('MODULE_FILE')) {
 }
 global $directory_mode;
 
-$module_name = basename(dirname(__FILE__));
-require("modules/".$module_name."/nukebb.php");
+$nuke_module_name = basename(dirname(__FILE__));
+require("modules/".$nuke_module_name."/nukebb.php");
 
 define('IN_PHPBB2', true);
 //$phpbb2_root_path = "./";
@@ -44,7 +44,7 @@ define('IN_PHPBB2', true);
 include($phpbb2_root_path . 'extension.inc');
 include($phpbb2_root_path . 'common.'.$phpEx);
 
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
 init_userprefs($nuke_userdata);
 
 include($phpbb2_root_path . 'stats_mod/includes/constants.'.$phpEx);
@@ -91,12 +91,12 @@ else
 if ($preview_module == -1 || $preview_module == 0 || $nuke_userdata['user_level'] != NUKE_ADMIN)
 {
     // Get all module informations about activated modules
-    $modules = get_modules();
+    $nuke_modules = get_modules();
 }
 else
 {
     // Get all module informations about given module_id (activated or not)
-    $modules = get_modules(false, $preview_module);
+    $nuke_modules = get_modules(false, $preview_module);
     $core->do_not_use_cache = TRUE;
 }
 
@@ -183,16 +183,16 @@ if ($development)
 }
 
 $iterate_index = 0;
-$iterate_end = count($modules);
+$iterate_end = count($nuke_modules);
 
 while ($iterate_index < $iterate_end)
 {
     $first_iterate = ($iterate_index == 0 && !$development) ? TRUE : FALSE;
     $last_iterate = ($iterate_index == $iterate_end-1) ? TRUE : FALSE;
 
-    $core->current_module_path = $phpbb2_root_path . 'modules/' . trim($modules[$iterate_index]['short_name']) . '/';
-    $core->current_module_name = trim($modules[$iterate_index]['short_name']);
-    $core->current_module_id = intval($modules[$iterate_index]['module_id']);
+    $core->current_module_path = $phpbb2_root_path . 'modules/' . trim($nuke_modules[$iterate_index]['short_name']) . '/';
+    $core->current_module_name = trim($nuke_modules[$iterate_index]['short_name']);
+    $core->current_module_id = intval($nuke_modules[$iterate_index]['module_id']);
 
     // Set Language
     $keys = array();

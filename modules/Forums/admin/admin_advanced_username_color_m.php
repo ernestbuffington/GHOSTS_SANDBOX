@@ -24,7 +24,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
     $file = basename(__FILE__);
-    $module['AUC']['Management'] = "$file";
+    $nuke_module['AUC']['Management'] = "$file";
     return;
 }
 
@@ -40,7 +40,7 @@ include($phpbb2_root_path . 'language/lang_' . $board_config['default_lang'] . '
         $mode = '';
     global $prefix;
     define('COLORS', $prefix .'_bbadvanced_username_color');
-    $link = append_sid("admin_advanced_username_color_m.". $phpEx);
+    $link = append_nuke_sid("admin_advanced_username_color_m.". $phpEx);
 
 if ($mode == "main" || !$mode)
         {

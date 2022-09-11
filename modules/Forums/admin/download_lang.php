@@ -75,15 +75,15 @@ include($phpbb2_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
 
 if ($mode == 'export_module')
 {
-    $module_id = (isset($HTTP_GET_VARS['module'])) ? intval($HTTP_GET_VARS['module']) : -1;
+    $nuke_module_id = (isset($HTTP_GET_VARS['module'])) ? intval($HTTP_GET_VARS['module']) : -1;
     $language = (isset($HTTP_GET_VARS['lang'])) ? trim($HTTP_GET_VARS['lang']) : '';
         
-    if (($language == '') || ($module_id == -1))
+    if (($language == '') || ($nuke_module_id == -1))
     {
         message_die(NUKE_GENERAL_MESSAGE, 'Invalid Call, Hacking Attempt ?');
     }
         
-    $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
+    $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $nuke_module_id;
 
     if (!($result = $nuke_db->sql_query($sql)) )
     {
@@ -92,7 +92,7 @@ if ($mode == 'export_module')
     
     if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $module_id);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $nuke_module_id);
     }
         
     $row = $nuke_db->sql_fetchrow($result);

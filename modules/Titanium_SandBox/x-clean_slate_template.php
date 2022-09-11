@@ -15,7 +15,7 @@ print "</div><hr />";
 
 require_once './includes/classes/class.modules.php';
 use Control\Module;
-$module = new \Control\Module();
+$nuke_module = new \Control\Module();
 
 ###########################################################################################################################################################################			
 # TEST CODE GOES HERE - END

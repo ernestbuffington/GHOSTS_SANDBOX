@@ -38,8 +38,8 @@ if (!defined('MODULE_FILE')) {
 
 if ($popup != "1")
     {
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
     }
     else
     {
@@ -52,7 +52,7 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
 init_userprefs($nuke_userdata);
 
 // global pgm options
@@ -90,7 +90,7 @@ function get_rank_title($rank_title)
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_INDEX);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -99,7 +99,7 @@ init_userprefs($nuke_userdata);
 // only registered members have access if desired
 if ( $nuke_auth_rank_only_logged && !$nuke_userdata['session_logged_in'] )
 {
-    nuke_redirect(append_sid('login.' . $phpEx . '?nuke_redirect=ranks.' . $phpEx, true));
+    nuke_redirect(append_nuke_sid('login.' . $phpEx . '?nuke_redirect=ranks.' . $phpEx, true));
     exit;
 }
 

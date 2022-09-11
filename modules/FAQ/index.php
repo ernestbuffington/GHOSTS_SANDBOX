@@ -36,14 +36,14 @@ if (!defined('MODULE_FILE')) {
    die('You can\'t access this file directly...');
 }
 
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
 
-$pagetitle = '- '.$module_name;
+$pagetitle = '- '.$nuke_module_name;
 
 function ShowFaq($id_cat, $categories) 
 {
-    global $bgcolor2, $sitename, $prefix, $nuke_db, $module_name;
+    global $bgcolor2, $sitename, $prefix, $nuke_db, $nuke_module_name;
     $categories = htmlentities($categories);
     OpenTable();
 
@@ -53,7 +53,7 @@ function ShowFaq($id_cat, $categories)
 	
     echo"<center><span class=\"content\"><strong>$sitename "._FAQ2."</strong></span></center><br /><br />"
         ."<a name=\"top\"></a><br />" /* Bug fix : added missing closing hyperlink tag messes up display */
-        .""._CATEGORY.": <a href=\"modules.php?name=$module_name\">"._MAIN."</a> -> $categories"
+        .""._CATEGORY.": <a href=\"modules.php?name=$nuke_module_name\">"._MAIN."</a> -> $categories"
         ."<br /><br />"
         ."<table width=\"100%\" cellpadding=\"4\" cellspacing=\"0\" border=\"0\">"
         ."<tr bgcolor=\"$bgcolor2\"><td colspan=\"2\"><span class=\"option\"><strong>"._QUESTION."</strong></span></td></tr><tr><td colspan=\"2\">";
@@ -75,7 +75,7 @@ function ShowFaq($id_cat, $categories)
 
 function ShowFaqAll($id_cat) 
 {
-    global $bgcolor2, $prefix, $nuke_db, $module_name;
+    global $bgcolor2, $prefix, $nuke_db, $nuke_module_name;
     $id_cat = intval($id_cat);
 
     echo "<table width=\"100%\" cellpadding=\"4\" cellspacing=\"0\" border=\"0\">"
@@ -100,7 +100,7 @@ function ShowFaqAll($id_cat)
 	endwhile;
     
 	echo "</table><br /><br />"
-        ."<div align=\"center\"><strong>[ <a href=\"modules.php?name=$module_name\">"._BACKTOFAQINDEX."</a> ]</strong></div>";
+        ."<div align=\"center\"><strong>[ <a href=\"modules.php?name=$nuke_module_name\">"._BACKTOFAQINDEX."</a> ]</strong></div>";
 }
 
 if (!isset($myfaq)): 
@@ -129,7 +129,7 @@ if (!isset($myfaq)):
      $id_cat = intval($row2['id_cat']);
      $categories = stripslashes(check_html($row2['categories'], "nohtml"));
      $catname = urlencode($categories);
-     echo"<strong><big>&middot;</big></strong>&nbsp;<a href=\"modules.php?name=$module_name&amp;myfaq=yes&amp;id_cat=$id_cat&amp;categories=$catname\">$categories</a><br />";
+     echo"<strong><big>&middot;</big></strong>&nbsp;<a href=\"modules.php?name=$nuke_module_name&amp;myfaq=yes&amp;id_cat=$id_cat&amp;categories=$catname\">$categories</a><br />";
     endwhile;
 	
     echo "</td></tr></table>";

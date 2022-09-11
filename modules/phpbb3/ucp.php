@@ -1,25 +1,47 @@
 <?php
-/**
+/** PORT DATE 09/06/2022 to 09/09/2022
 *
-* This file is part of the phpBB Forum Software package.
+* This file is a part of PHP-AN602 v3.3.x
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* Ernest Allen Buffington of The 86it Developers Network
+* is the author of PHP-ANG602 and this port of phpBB v3.3.x
+* 
+* You may contact TheGhost AKA Ernest Allen Buffington
+* email: <webmaster@an602.86it.us>
+* cell: 813-846-2865 
+*
+* @copyright (c) Brandon Maintenance Management <https://www.facebook.com/brandon.maintenance>
 * @license GNU General Public License, version 2 (GPL-2.0)
+*
+* This file is part of a Fork of phpBB v3.3.8 Forum Software package.
+*
+* Original @copyright (c) phpBB Limited <https://www.phpbb.com>
+* Original @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
 * the docs/CREDITS.txt file.
 *
 */
 
-/**
-* @ignore
-*/
+if(defined('PHPBB3_MODULE') ):                                            #### ADD Ernest Allen Buffington 09/09/2022
+$nuke_module_name = basename(dirname(__FILE__));                               #### ADD Ernest Allen Buffington 09/09/2022
+require(NUKE_PHPBB3_DIR . 'nukebb.php');                                  #### ADD Ernest Allen Buffington 09/09/2022
+define('IN_PHPBB', true);                                                 #### ADD Ernest Allen Buffington 09/09/2022
+$phpbb_root_path = (defined('NUKE_PHPBB3_DIR')) ? NUKE_PHPBB3_DIR : './'; #### ADD Ernest Allen Buffington 09/09/2022 [ IT TAKES A SAVANT OR A VILLAGE ]
+$phpEx = substr(strrchr(__FILE__, '.'), 1);                               #### ADD Ernest Allen Buffington 09/09/2022
+include(NUKE_PHPBB3_DIR . 'extension.inc');                               #### ADD Ernest Allen Buffington 09/09/2022
+include(NUKE_PHPBB3_DIR . 'common.' . $phpEx);                            #### ADD Ernest Allen Buffington 09/09/2022
+require(NUKE_PHPBB3_DIR . 'includes/functions_user.' . $phpEx);           #### ADD Ernest Allen Buffington 09/09/2022
+require(NUKE_PHPBB3_DIR . 'includes/functions_module.' . $phpEx);         #### ADD Ernest Allen Buffington 09/09/2022
+else:                                                                     #### ADD Ernest Allen Buffington 09/09/2022
+
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 require($phpbb_root_path . 'common.' . $phpEx);
 require($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 require($phpbb_root_path . 'includes/functions_module.' . $phpEx);
+endif;                                                                    #### ADD Ernest Allen Buffington 09/09/2022
 
 // Basic parameter data
 $id 	= $request->variable('i', '');
@@ -47,6 +69,12 @@ $template->assign_var('S_IN_UCP', true);
 $module = new p_master();
 $default = false;
 
+                                  # Why would nobody ever help or support people with PHP-Nuke? Nobody at phpBB gives s phuck!
+$request->enable_super_globals(); #### ADD Ernest Allen Buffington 09/09/2022 - Turn Super Globals On - Some Themes for nuke require super globals!
+                                  #### ADD Ernest Allen Buffington 09/09/2022 - Needed for Themes - Hail to the tables - phuck the numb nuts!
+
+OpenTable();                      #### ADD Ernest Allen Buffington 09/09/2022 
+
 // Basic "global" modes
 switch ($mode)
 {
@@ -54,10 +82,11 @@ switch ($mode)
 		$module->load('ucp', 'activate');
 		$module->display($user->lang['UCP_ACTIVATE']);
 
-		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		redirect(append_sid("modules.php?name=$nuke_module_name"));
 	break;
 
 	case 'resend_act':
+
 		$module->load('ucp', 'resend');
 		$module->display($user->lang['UCP_RESEND']);
 	break;
@@ -72,21 +101,25 @@ switch ($mode)
 	case 'register':
 		if ($user->data['is_registered'] || isset($_REQUEST['not_agreed']))
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("modules.php?name=$nuke_module_name"));
 		}
-
 		$module->load('ucp', 'register');
 		$module->display($user->lang['REGISTER']);
 	break;
 
 	case 'confirm':
+		                                  # Why would nobody ever help or support people with PHP-Nuke? Nobody at phpBB gives s phuck!
+        $request->enable_super_globals(); #### ADD Ernest Allen Buffington 09/09/2022 - Turn Super Globals On - Some Themes for nuke require super globals!
+                                          #### ADD Ernest Allen Buffington 09/09/2022 - Needed for Themes - Hail to the tables - phuck the numb nuts!
+
+        OpenTable();                      #### ADD Ernest Allen Buffington 09/09/2022 
 		$module->load('ucp', 'confirm');
 	break;
 
 	case 'login':
 		if ($user->data['is_registered'])
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("modules.php?name=$nuke_module_name"));
 		}
 
 		login_box($request->variable('redirect', "index.$phpEx"));
@@ -95,7 +128,7 @@ switch ($mode)
 	case 'login_link':
 		if ($user->data['is_registered'])
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("modules.php?name=$nuke_module_name"));
 		}
 
 		$module->load('ucp', 'login_link');
@@ -109,13 +142,13 @@ switch ($mode)
 		}
 		else if ($user->data['user_id'] != ANONYMOUS)
 		{
-			meta_refresh(3, append_sid("{$phpbb_root_path}index.$phpEx"));
+			meta_refresh(3, append_sid("modules.php?name=$nuke_module_name"));
 
-			$message = $user->lang['LOGOUT_FAILED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a> ');
+			$message = $user->lang['LOGOUT_FAILED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("modules.php?name=$nuke_module_name") . '">', '</a> ');
 			trigger_error($message);
 		}
 
-		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		redirect(append_sid("modules.php?name=$nuke_module_name"));
 	break;
 
 	case 'terms':
@@ -128,7 +161,7 @@ switch ($mode)
 		{
 			if ($user->data['is_registered'])
 			{
-				redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+				redirect(append_sid("modules.php?name=$nuke_module_name"));
 			}
 
 			login_box();
@@ -145,7 +178,7 @@ switch ($mode)
 			'S_AGREEMENT'			=> true,
 			'AGREEMENT_TITLE'		=> $user->lang[$title],
 			'AGREEMENT_TEXT'		=> sprintf($user->lang[$message], $config['sitename'], generate_board_url()),
-			'U_BACK'				=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=login'),
+			'U_BACK'				=> append_sid("modules.php?name=$nuke_module_name&amp;file=ucp", 'mode=login'),
 			'L_BACK'				=> $user->lang['BACK_TO_PREV'],
 		));
 
@@ -204,9 +237,9 @@ switch ($mode)
 			$user->session_kill();
 			$user->session_begin();
 
-			meta_refresh(3, append_sid("{$phpbb_root_path}index.$phpEx"));
+			meta_refresh(3, append_sid("modules.php?name=$nuke_module_name"));
 
-			$message = $user->lang['COOKIES_DELETED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
+			$message = $user->lang['COOKIES_DELETED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("modules.php?name=$nuke_module_name") . '">', '</a>');
 			trigger_error($message);
 		}
 		else
@@ -214,7 +247,7 @@ switch ($mode)
 			confirm_box(false, 'DELETE_COOKIES', '');
 		}
 
-		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		redirect(append_sid("modules.php?name=$nuke_module_name"));
 
 	break;
 
@@ -231,7 +264,7 @@ switch ($mode)
 
 		if (!$auth->acl_get('a_switchperm') || !$user_row || $user_id == $user->data['user_id'] || !check_link_hash($request->variable('hash', ''), 'switchperm'))
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("modules.php?name=$nuke_module_name"));
 		}
 
 		include($phpbb_root_path . 'includes/acp/auth.' . $phpEx);
@@ -239,12 +272,12 @@ switch ($mode)
 		$auth_admin = new auth_admin();
 		if (!$auth_admin->ghost_permissions($user_id, $user->data['user_id']))
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("modules.php?name=$nuke_module_name"));
 		}
 
 		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_TRANSFER_PERMISSIONS', false, array($user_row['username']));
 
-		$message = sprintf($user->lang['PERMISSIONS_TRANSFERRED'], $user_row['username']) . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
+		$message = sprintf($user->lang['PERMISSIONS_TRANSFERRED'], $user_row['username']) . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("modules.php?name=$nuke_module_name") . '">', '</a>');
 
 		/**
 		* Event to run code after permissions are switched
@@ -266,7 +299,7 @@ switch ($mode)
 
 		if (!$user->data['user_perm_from'] || !$auth->acl_get('a_switchperm'))
 		{
-			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+			redirect(append_sid("modules.php?name=$nuke_module_name"));
 		}
 
 		$auth->acl_cache($user->data);
@@ -280,7 +313,7 @@ switch ($mode)
 
 		$phpbb_log->add('admin', $user->data['user_id'], $user->ip, 'LOG_ACL_RESTORE_PERMISSIONS', false, array($username));
 
-		$message = $user->lang['PERMISSIONS_RESTORED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
+		$message = $user->lang['PERMISSIONS_RESTORED'] . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("modules.php?name=$nuke_module_name") . '">', '</a>');
 
 		/**
 		* Event to run code after permissions are restored
@@ -313,12 +346,12 @@ if (!$user->data['is_registered'])
 {
 	if ($user->data['is_bot'])
 	{
-		redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+		redirect(append_sid("modules.php?name=$nuke_module_name"));
 	}
 
 	if ($id == 'pm' && $mode == 'view' && isset($_GET['p']))
 	{
-		$redirect_url = append_sid("{$phpbb_root_path}ucp.$phpEx?i=pm&p=" . $request->variable('p', 0));
+		$redirect_url = append_sid("modules.php?name=$nuke_module_name&amp;file=ucp?i=pm&p=" . $request->variable('p', 0));
 		login_box($redirect_url, $user->lang['LOGIN_EXPLAIN_UCP']);
 	}
 
@@ -430,7 +463,7 @@ extract($phpbb_dispatcher->trigger_event('core.ucp_display_module_before', compa
 
 $template->assign_block_vars('navlinks', array(
 	'BREADCRUMB_NAME'	=> $user->lang('UCP'),
-	'U_BREADCRUMB'		=> append_sid("{$phpbb_root_path}ucp.$phpEx"),
+	'U_BREADCRUMB'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=ucp"),
 ));
 
 // Select the active module
@@ -440,7 +473,8 @@ $module->set_active($id, $mode);
 $module->load_active();
 
 // Assign data to the template engine for the list of modules
-$module->assign_tpl_vars(append_sid("{$phpbb_root_path}ucp.$phpEx"));
+$module->assign_tpl_vars(append_sid("modules.php?name=$nuke_module_name&amp;file=ucp"));
 
 // Generate the page, do not display/query online list
 $module->display($module->get_page_title());
+?>

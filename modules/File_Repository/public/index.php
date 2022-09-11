@@ -14,7 +14,7 @@ if (!defined('MODULE_FILE'))
 
 function _file_repository_index()
 {
-	global $nuke_db, $admin_file, $lang_new, $module_name, $settings, $themes, $admin, $nuke_user;
+	global $nuke_db, $admin_file, $lang_new, $nuke_module_name, $settings, $themes, $admin, $nuke_user;
 	OpenTable();
 	echo '<br />';
 	_index_navigation_header();
@@ -36,7 +36,7 @@ function _file_repository_index()
 		echo '<br />';
 		echo '<table style="white-space:nowrap; width: 100%; table-layout:fixed;" border="0" cellpadding="4" cellspacing="1" class="forumline">'."\n";	
 		echo '  <tr'._bgColor(2).'>'."\n";
-		echo '    <td'._tdcss(false,'center',_sh(),3).'><a name="'.$_GET['cid'].'"></a>'._suh($lang_new[$module_name]['CATEGORY_LIST']).'</td>'."\n";
+		echo '    <td'._tdcss(false,'center',_sh(),3).'><a name="'.$_GET['cid'].'"></a>'._suh($lang_new[$nuke_module_name]['CATEGORY_LIST']).'</td>'."\n";
 		echo '  </tr>'."\n";
 		$count = 1;
 		while($c = $nuke_db->sql_fetchrow($result))
@@ -48,7 +48,7 @@ function _file_repository_index()
 			echo '    <td'._tdcss('33%',false,_sc(),false,true).' valign="top"></a>'."\n";
 			echo '      <table style="white-space:nowrap; width: 100%;" border="0" cellpadding="1" cellspacing="1">'."\n";
 			echo '        <tr>'."\n";
-			echo '          <td colspan="2"><a'._ls().' href="modules.php?name='.$module_name.'&amp;cid='.$c['cid'].'#'.$c['cid'].'">'._colorization($c['cname'],$c['color']).'</a></td>'."\n";
+			echo '          <td colspan="2"><a'._ls().' href="modules.php?name='.$nuke_module_name.'&amp;cid='.$c['cid'].'#'.$c['cid'].'">'._colorization($c['cname'],$c['color']).'</a></td>'."\n";
 			echo '          <td style="height: 30px; text-align: center; width: 10%;">'.$cat_downloads.'</td>'."\n";
 			echo '        </tr>'."\n";
 			$sresult = $nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_CATEGORIES."` WHERE `parentid`='".$c['cid']."' ORDER BY `cname`");
@@ -57,7 +57,7 @@ function _file_repository_index()
 				$scat_downloads = $nuke_db->sql_numrows($nuke_db->sql_query("SELECT * FROM `"._FILE_REPOSITORY_ITEMS."` WHERE `cid`='".$s['cid']."' && `isactive` > 0 && `isbroken` = 0"));
 				echo '  <tr>'."\n";
 				echo '    <td style="text-align: center; width: 10%;"><span'.(($scat_downloads > 0) ? ' style="color: green;"' : '').'>&#8618;</span></td>'."\n";
-				echo '    <td style="width: 80%;"><a'._ls().' href="modules.php?name='.$module_name.'&amp;cid='.$s['cid'].'#'.$s['cid'].'">'._colorization($s['cname'],$s['color']).'</a></td>'."\n";
+				echo '    <td style="width: 80%;"><a'._ls().' href="modules.php?name='.$nuke_module_name.'&amp;cid='.$s['cid'].'#'.$s['cid'].'">'._colorization($s['cname'],$s['color']).'</a></td>'."\n";
 				echo '    <td style="text-align: center; width: 10%;">'.$scat_downloads.'</td>'."\n";
 				echo '  </tr>'."\n";
 			}
@@ -103,28 +103,28 @@ function _file_repository_index()
 		if($settings['download_view'] == 0)
 		{
 			echo '  <tr'._bgColor(2).'>'."\n";
-			echo '    <td'._tdcss(false,false,_sh(),2).'>'._suh($lang_new[$module_name]['TITLE']).'</td>';
-			echo '    <td'._tdcss('10%','center',_sh()).'>'._suh($lang_new[$module_name]['VIEWS']).'</td>';
-			echo '    <td'._tdcss('10%','center',_sh()).'>'._suh($lang_new[$module_name]['DOWNLOADS']).'</td>';
-			echo '    <td'._tdcss('10%','center',_sh()).'>'._suh($lang_new[$module_name]['FILE_SIZE']).'</td>';
-			echo '    <td'._tdcss('20%','center',_sh()).'>'._suh($lang_new[$module_name]['DATE_ADDED']).'</td>';
+			echo '    <td'._tdcss(false,false,_sh(),2).'>'._suh($lang_new[$nuke_module_name]['TITLE']).'</td>';
+			echo '    <td'._tdcss('10%','center',_sh()).'>'._suh($lang_new[$nuke_module_name]['VIEWS']).'</td>';
+			echo '    <td'._tdcss('10%','center',_sh()).'>'._suh($lang_new[$nuke_module_name]['DOWNLOADS']).'</td>';
+			echo '    <td'._tdcss('10%','center',_sh()).'>'._suh($lang_new[$nuke_module_name]['FILE_SIZE']).'</td>';
+			echo '    <td'._tdcss('20%','center',_sh()).'>'._suh($lang_new[$nuke_module_name]['DATE_ADDED']).'</td>';
 			echo '  </tr>'."\n";
 			$items = 0;
 			while($d = $nuke_db->sql_fetchrow($dresult))
 			{
-				$v 			= (($d['version']) ? sprintf($lang_new[$module_name]['V'],$d['version']) : '');
+				$v 			= (($d['version']) ? sprintf($lang_new[$nuke_module_name]['V'],$d['version']) : '');
 				$iteminfo 	= _collect_iteminfo($d['did']);
 				$screen[$items] = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `filename`, `title` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$d['did']."' ORDER BY RAND()"));
 				echo '  <tr'._bgColor(1).'>'."\n";
 				if($screen[$items]['filename'])
 				{
-					echo '    <td'._tdcss('5%','center',_sc()).'><div class="thumbnail_border"><a'.get_image_viewer('item-'.$d['did'], $screen[$items]['title']).' href="'._FILE_REPOSITORY_SCREENS.$screen[$items]['filename'].'" title="'.$screen[$items]['title'].'"><img style="border: 1px solid white; height: 28px; width: 30px;" src="modules/'.$module_name.'/files/screenshots/'.$screen[$items]['filename'].'" border="0" /></a></div></td>';
+					echo '    <td'._tdcss('5%','center',_sc()).'><div class="thumbnail_border"><a'.get_image_viewer('item-'.$d['did'], $screen[$items]['title']).' href="'._FILE_REPOSITORY_SCREENS.$screen[$items]['filename'].'" title="'.$screen[$items]['title'].'"><img style="border: 1px solid white; height: 28px; width: 30px;" src="modules/'.$nuke_module_name.'/files/screenshots/'.$screen[$items]['filename'].'" border="0" /></a></div></td>';
 					echo '    <td'._tdcss('45%',false,_sc()).'>';
-					echo '      <a'._ls().' href="modules.php?name='.$module_name.'&amp;action=view&amp;did='.$d['did'].'#'.$d['did'].'">'._colorization($iteminfo['title'],$iteminfo['color']).$v.'</a>'._item_is_new($iteminfo['isnew'],$iteminfo['updated'])._mostpopular($iteminfo['hits']);
+					echo '      <a'._ls().' href="modules.php?name='.$nuke_module_name.'&amp;action=view&amp;did='.$d['did'].'#'.$d['did'].'">'._colorization($iteminfo['title'],$iteminfo['color']).$v.'</a>'._item_is_new($iteminfo['isnew'],$iteminfo['updated'])._mostpopular($iteminfo['hits']);
 					echo '    </td>';
 				} else {
 					echo '    <td'._tdcss(false,false,_sc(),2).'>';
-					echo '      <a'._ls().' href="modules.php?name='.$module_name.'&amp;action=view&amp;did='.$d['did'].'#'.$d['did'].'">'._colorization($iteminfo['title'],$iteminfo['color']).$v.'</a>'._item_is_new($iteminfo['isnew'],$iteminfo['updated'])._mostpopular($iteminfo['hits']);
+					echo '      <a'._ls().' href="modules.php?name='.$nuke_module_name.'&amp;action=view&amp;did='.$d['did'].'#'.$d['did'].'">'._colorization($iteminfo['title'],$iteminfo['color']).$v.'</a>'._item_is_new($iteminfo['isnew'],$iteminfo['updated'])._mostpopular($iteminfo['hits']);
 					echo '    </td>';
 				}
 				echo '    <td'._tdcss('10%','center',_sc()).'>'.$iteminfo['views'].'</td>';
@@ -141,10 +141,10 @@ function _file_repository_index()
 			$items = 0;
 			while($d = $nuke_db->sql_fetchrow($dresult))
 			{
-				$v 				= (($d['version']) ? sprintf($lang_new[$module_name]['V'],$d['version']) : '');
+				$v 				= (($d['version']) ? sprintf($lang_new[$nuke_module_name]['V'],$d['version']) : '');
 				$iteminfo 		= _collect_iteminfo($d['did']);
 				$screen[$items] = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT `filename`, `title` FROM `"._FILE_REPOSITORY_SCREENSHOTS."` WHERE `did`='".$d['did']."' ORDER BY RAND()"));
-				$ustring 		= ($iteminfo['updated'] == '0000-00-00 00:00:00') ? _sut($lang_new[$module_name]['DATE_ADDED']) : _sut($lang_new[$module_name]['UPDATED']);
+				$ustring 		= ($iteminfo['updated'] == '0000-00-00 00:00:00') ? _sut($lang_new[$nuke_module_name]['DATE_ADDED']) : _sut($lang_new[$nuke_module_name]['UPDATED']);
 				if($screen[$items]['filename'])
 					$colspan = false;
 				else 
@@ -169,20 +169,20 @@ function _file_repository_index()
 				echo '            <table width="100%" border="0" cellpadding="4" cellspacing="1">'."\n";
 				echo '              <tr>'."\n";
 				echo '                <td'._tdcss(false,false,false,false,true).'>';
-				echo '                  '._sut($lang_new[$module_name]['DOWNLOAD']).' : <a'._ls().' href="modules.php?name='.$module_name.'&amp;action=view&amp;did='.$d['did'].'#'.$d['did'].'">'._colorization($iteminfo['title'],$iteminfo['color']).'</a>'._item_is_new($iteminfo['isnew'],$iteminfo['updated'])._mostpopular($iteminfo['hits']);
+				echo '                  '._sut($lang_new[$nuke_module_name]['DOWNLOAD']).' : <a'._ls().' href="modules.php?name='.$nuke_module_name.'&amp;action=view&amp;did='.$d['did'].'#'.$d['did'].'">'._colorization($iteminfo['title'],$iteminfo['color']).'</a>'._item_is_new($iteminfo['isnew'],$iteminfo['updated'])._mostpopular($iteminfo['hits']);
 				echo '                </td>'."\n";
 				echo '              </tr>'."\n";
 				echo '              <tr>'."\n";
-				echo '                <td'._tdcss(false,false,false,false,true).'>'._sut($lang_new[$module_name]['PERMISSIONS']).' : '.$iteminfo['whocan'].'</td>';
+				echo '                <td'._tdcss(false,false,false,false,true).'>'._sut($lang_new[$nuke_module_name]['PERMISSIONS']).' : '.$iteminfo['whocan'].'</td>';
 				echo '              </tr>'."\n";
 				echo '              <tr>'."\n";
-				echo '                <td'._tdcss(false,false,false,false,true).'>'._sut($lang_new[$module_name]['FILE_VERSION']).' : '.(($iteminfo['version']) ? $iteminfo['version'] : $lang_new[$module_name]['NA']).'</td>';
+				echo '                <td'._tdcss(false,false,false,false,true).'>'._sut($lang_new[$nuke_module_name]['FILE_VERSION']).' : '.(($iteminfo['version']) ? $iteminfo['version'] : $lang_new[$nuke_module_name]['NA']).'</td>';
 				echo '              </tr>'."\n";
 				echo '              <tr>'."\n";
 				echo '                <td'._tdcss(false,false,false,false,true).'>'.$ustring.' : '.$iteminfo['isupdated'].'</td>';
 				echo '              </tr>'."\n";
 				echo '              <tr>'."\n";
-				echo '                <td'._tdcss(false,false,false,false,true).'>'._sut($lang_new[$module_name]['DOWNLOADS']).' : '.$iteminfo['hits'].'</td>';
+				echo '                <td'._tdcss(false,false,false,false,true).'>'._sut($lang_new[$nuke_module_name]['DOWNLOADS']).' : '.$iteminfo['hits'].'</td>';
 				echo '              </tr>'."\n";
 				echo '            </table>'."\n";
 				echo '          </td>';
@@ -212,24 +212,24 @@ function _file_repository_index()
 		if($count_downloads > $settings['most_popular'])
 		{
 			if ($pagination->getCurrent() == 1)
-				$first = ' | '.$lang_new[$module_name]['FIRST'].' | ';
+				$first = ' | '.$lang_new[$nuke_module_name]['FIRST'].' | ';
 			else
-				$first = ' | <a href="modules.php?name='.$module_name.'&amp;cid='.$cid.'&amp;page='.$pagination->getFirst().'">'.$lang_new[$module_name]['FIRST'].'</a> |';
+				$first = ' | <a href="modules.php?name='.$nuke_module_name.'&amp;cid='.$cid.'&amp;page='.$pagination->getFirst().'">'.$lang_new[$nuke_module_name]['FIRST'].'</a> |';
 				
 			if ($pagination->getPrevious())
-				$prev = '<a href="modules.php?name='.$module_name.'&amp;cid='.$cid.'&amp;page='.$pagination->getPrevious().'">'.$lang_new[$module_name]['PREV'].'</a> | ';
+				$prev = '<a href="modules.php?name='.$nuke_module_name.'&amp;cid='.$cid.'&amp;page='.$pagination->getPrevious().'">'.$lang_new[$nuke_module_name]['PREV'].'</a> | ';
 			else
-				$prev = $lang_new[$module_name]['PREV'].' | ';
+				$prev = $lang_new[$nuke_module_name]['PREV'].' | ';
 				
 			if ($pagination->getNext())
-				$next = '<a href="modules.php?name='.$module_name.'&amp;cid='.$cid.'&amp;page='.$pagination->getNext().'">'.$lang_new[$module_name]['NEXT'].'</a> | ';
+				$next = '<a href="modules.php?name='.$nuke_module_name.'&amp;cid='.$cid.'&amp;page='.$pagination->getNext().'">'.$lang_new[$nuke_module_name]['NEXT'].'</a> | ';
 			else
-				$next = $lang_new[$module_name]['NEXT'].' | ';
+				$next = $lang_new[$nuke_module_name]['NEXT'].' | ';
 				
 			if ($pagination->getLast())
-				$last = '<a href="modules.php?name='.$module_name.'&amp;cid='.$cid.'&amp;page='.$pagination->getLast().'">'.$lang_new[$module_name]['LAST'].'</a>';
+				$last = '<a href="modules.php?name='.$nuke_module_name.'&amp;cid='.$cid.'&amp;page='.$pagination->getLast().'">'.$lang_new[$nuke_module_name]['LAST'].'</a>';
 			else
-				$last = $lang_new[$module_name]['LAST'];
+				$last = $lang_new[$nuke_module_name]['LAST'];
 				
 			echo $pagination->getFirstOf().' to '.$pagination->getSecondOf().' of '.$pagination->getTotalItems().' '.$first." ".$prev." ".$next." ".$last;
 		} else {

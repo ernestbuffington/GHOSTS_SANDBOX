@@ -31,7 +31,7 @@ define('IN_PHPBB2', true);
 if( !empty($setmodules) )
 {
     $filename = basename(__FILE__);
-    $module['Statistics']['Package_Module'] = $filename . '?mode=mod_pak';
+    $nuke_module['Statistics']['Package_Module'] = $filename . '?mode=mod_pak';
     return;
 }
 
@@ -228,7 +228,7 @@ if (($mode == 'mod_pak') && (!$submit))
         'L_PACKAGE_NAME' => $lang['Package_name'],
         'L_CREATE' => $lang['Create'],
     
-        'S_ACTION' => append_sid($phpbb2_root_path . 'admin/admin_mod_package.' . $phpEx . '?mode=' . $mode),
+        'S_ACTION' => append_nuke_sid($phpbb2_root_path . 'admin/admin_mod_package.' . $phpEx . '?mode=' . $mode),
         'S_LANG_FILE' => $lang_select_field,
         'S_INFO_FILE' => $info_select_field,
         'S_PHP_FILE' => $php_select_field)

@@ -42,18 +42,18 @@ if (!defined('MODULE_FILE')) {
    die('You can\'t access this file directly...');
 }
 
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$nuke_module_name = basename(dirname(__FILE__));
+get_lang($nuke_module_name);
 
 function alpha() {
-    global $module_name;
+    global $nuke_module_name;
     $alphabet = array ("A","B","C","D","E","F","G","H","I","J","K","L","M",
                        "N","O","P","Q","R","S","T","U","V","W","X","Y","Z","1","2","3","4","5","6","7","8","9","0");
     $num = count($alphabet) - 1;
     echo "<center>[ ";
     $counter = 0;
     while (list(, $ltr) = each($alphabet)) {
-        echo "<a href=\"modules.php?name=$module_name&amp;rop=$ltr\">$ltr</a>";
+        echo "<a href=\"modules.php?name=$nuke_module_name&amp;rop=$ltr\">$ltr</a>";
         if ( $counter == round($num/2) ) {
             echo " ]\n<br />\n[ ";
         } elseif ( $counter != $num ) {
@@ -62,7 +62,7 @@ function alpha() {
         $counter++;
     }
     echo " ]</center><br /><br />\n\n\n";
-    echo "<center>[ <a href=\"modules.php?name=$module_name&amp;rop=write_review\">"._WRITEREVIEW."</a> ]</center><br /><br />\n\n";
+    echo "<center>[ <a href=\"modules.php?name=$nuke_module_name&amp;rop=write_review\">"._WRITEREVIEW."</a> ]</center><br /><br />\n\n";
 }
 
 function display_score($score) {
@@ -87,7 +87,7 @@ function display_score($score) {
 }
 
 function write_review() {
-    global $admin, $sitename, $nuke_user, $cookie, $prefix, $nuke_user_prefix, $currentlang, $multilingual, $nuke_db, $module_name, $anonpost;
+    global $admin, $sitename, $nuke_user, $cookie, $prefix, $nuke_user_prefix, $currentlang, $multilingual, $nuke_db, $nuke_module_name, $anonpost;
     
     //Prevent Anonymous
     if(!is_user($nuke_user) && !$anonpost){
@@ -102,7 +102,7 @@ function write_review() {
 /*****[BEGIN]******************************************
  [ Mod:     Reviews BBCodes                    v1.0.0 ]
  ******************************************************/
-    ."<form name=\"postreviews\" method=\"post\" action=\"modules.php?name=$module_name\">"
+    ."<form name=\"postreviews\" method=\"post\" action=\"modules.php?name=$nuke_module_name\">"
 /*****[END]********************************************
  [ Mod:     Reviews BBCodes                    v1.0.0 ]
  ******************************************************/
@@ -130,7 +130,7 @@ function write_review() {
 /*****[END]********************************************
  [ Mod:     Custom Text Area                   v1.0.0 ]
  ******************************************************/
-    if (is_mod_admin($module_name)) {
+    if (is_mod_admin($nuke_module_name)) {
         echo "<span class=\"content\">"._PAGEBREAK."</span><br />";
     }
     echo "
@@ -173,7 +173,7 @@ function write_review() {
         <input type=\"text\" name=\"url_title\" size=\"40\" maxlength=\"50\"><br />
         <i>"._LINKTITLEREQ."</i><br /><br />
     ";
-    if(is_mod_admin($module_name)) {
+    if(is_mod_admin($nuke_module_name)) {
         echo "<strong>"._RIMAGEFILE.":</strong><br />
             <input type=\"text\" name=\"cover\" size=\"40\" maxlength=\"100\"><br />
             <i>"._RIMAGEFILEREQ."</i><br /><br />
@@ -188,11 +188,11 @@ function write_review() {
 }
 
 function preview_review($date, $title, $text, $reviewer, $email, $score, $cover, $url, $url_title, $hits, $id, $rlanguage) {
-    global $admin, $multilingual, $module_name, $anonpost, $board_config;
+    global $admin, $multilingual, $nuke_module_name, $anonpost, $board_config;
 
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
-    echo "<form method=\"post\" action=\"modules.php?name=$module_name\">";
+    echo "<form method=\"post\" action=\"modules.php?name=$nuke_module_name\">";
 
     if (empty($title)) {
         $error = 1;
@@ -313,7 +313,7 @@ function preview_review($date, $title, $text, $reviewer, $email, $score, $cover,
             $word = _RMODIFIED;
         else
             $word = _RADDED;
-        if(is_mod_admin($module_name))
+        if(is_mod_admin($nuke_module_name))
             echo "<br /><br /><strong>"._NOTE."</strong> "._ADMINLOGGED." $word.";
     }
     CloseTable();
@@ -321,7 +321,7 @@ function preview_review($date, $title, $text, $reviewer, $email, $score, $cover,
 }
 
 function send_review($date, $title, $text, $reviewer, $email, $score, $cover, $url, $url_title, $hits, $id, $rlanguage) {
-    global $admin, $EditedMessage, $prefix, $nuke_db, $module_name, $nuke_cache;
+    global $admin, $EditedMessage, $prefix, $nuke_db, $nuke_module_name, $nuke_cache;
 
     session_start();
     if(isset($_SESSION['title'])) {
@@ -362,10 +362,10 @@ function send_review($date, $title, $text, $reviewer, $email, $score, $cover, $u
     if ($score < 0 OR $score > 10) {
         $score = 0;
     }
-    if ((is_mod_admin($module_name)) && ($id == 0)) {
+    if ((is_mod_admin($nuke_module_name)) && ($id == 0)) {
         $nuke_db->sql_query("INSERT INTO ".$prefix."_reviews VALUES (NULL, '$date', '$title', '$text', '$reviewer', '$email', '$score', '$cover', '$url', '$url_title', '1', '$rlanguage')");
         echo ""._ISAVAILABLE."";
-    } else if ((is_mod_admin($module_name)) && ($id != 0)) {
+    } else if ((is_mod_admin($nuke_module_name)) && ($id != 0)) {
         $nuke_db->sql_query("UPDATE ".$prefix."_reviews SET date='$date', title='$title', text='$text', reviewer='$reviewer', email='$email', score='$score', cover='$cover', url='$url', url_title='$url_title', hits='$hits', rlanguage='$rlanguage' WHERE id = '$id'");
         echo ""._ISAVAILABLE."";
     } else {
@@ -379,13 +379,13 @@ function send_review($date, $title, $text, $reviewer, $email, $score, $cover, $u
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
     }
-    echo "<br /><br />[ <a href=\"modules.php?name=$module_name\">"._RBACK."</a> ]<br /></center>";
+    echo "<br /><br />[ <a href=\"modules.php?name=$nuke_module_name\">"._RBACK."</a> ]<br /></center>";
     CloseTable();
     include_once(NUKE_BASE_DIR.'footer.php');
 }
 
 function reviews_index() {
-    global $bgcolor3, $bgcolor2, $prefix, $multilingual, $currentlang, $nuke_db, $module_name;
+    global $bgcolor3, $bgcolor2, $prefix, $multilingual, $currentlang, $nuke_db, $nuke_module_name;
 
     include_once(NUKE_BASE_DIR.'header.php');
     if ($multilingual == 1) {
@@ -415,12 +415,12 @@ function reviews_index() {
         $id = intval($myrow['id']);
         $title = stripslashes(check_html($myrow['title'], "nohtml"));
         $hits = intval($myrow['hits']);
-        echo "<tr><td width=\"50%\" bgcolor=\"$bgcolor3\">$y) <a href=\"modules.php?name=$module_name&amp;rop=showcontent&amp;id=$id\">$title</a></td>";
+        echo "<tr><td width=\"50%\" bgcolor=\"$bgcolor3\">$y) <a href=\"modules.php?name=$nuke_module_name&amp;rop=showcontent&amp;id=$id\">$title</a></td>";
         $myrow2 = $nuke_db->sql_fetchrow($result_rec);
         $id = intval($myrow2['id']);
         $title = stripslashes(check_html($myrow2['title'], "nohtml"));
         $hits = intval($myrow2['hits']);
-        echo "<td width=\"50%\" bgcolor=\"$bgcolor3\">$y) <a href=\"modules.php?name=$module_name&amp;rop=showcontent&amp;id=$id\">$title</a></td></tr>";
+        echo "<td width=\"50%\" bgcolor=\"$bgcolor3\">$y) <a href=\"modules.php?name=$nuke_module_name&amp;rop=showcontent&amp;id=$id\">$title</a></td></tr>";
         $y++;
     }
     echo "<tr><td colspan=\"2\"><br /></td></tr>";
@@ -432,7 +432,7 @@ function reviews_index() {
 }
 
 function reviews($letter, $field, $order) {
-    global $bgcolor4, $sitename, $prefix, $multilingual, $currentlang, $nuke_db, $module_name, $anonpost;
+    global $bgcolor4, $sitename, $prefix, $multilingual, $currentlang, $nuke_db, $nuke_module_name, $anonpost;
 
     include_once(NUKE_BASE_DIR.'header.php');
     $letter = substr($letter, 0,1);
@@ -470,16 +470,16 @@ function reviews($letter, $field, $order) {
         echo "<TABLE border=\"0\" width=\"100%\" cellpadding=\"2\" cellspacing=\"4\">
             <tr>
             <td width=\"50%\" bgcolor=\"$bgcolor4\">
-            <p align=\"left\"><a href=\"modules.php?name=$module_name&amp;rop=$letter&amp;field=title&amp;order=ASC\"><img src=\"images/up.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTASC."\"></a><strong> "._PRODUCTTITLE." </strong><a href=\"modules.php?name=$module_name&amp;rop=$letter&amp;field=title&amp;order=DESC\"><img src=\"images/down.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTDESC."\"></a>
+            <p align=\"left\"><a href=\"modules.php?name=$nuke_module_name&amp;rop=$letter&amp;field=title&amp;order=ASC\"><img src=\"images/up.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTASC."\"></a><strong> "._PRODUCTTITLE." </strong><a href=\"modules.php?name=$nuke_module_name&amp;rop=$letter&amp;field=title&amp;order=DESC\"><img src=\"images/down.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTDESC."\"></a>
             </td>
             <td width=\"18%\" bgcolor=\"$bgcolor4\">
-            <p align=\"center\"><a href=\"modules.php?name=$module_name&amp;rop=$letter&amp;field=reviewer&amp;order=ASC\"><img src=\"images/up.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTASC."\"></a><strong> "._REVIEWER." </strong><a href=\"modules.php?name=$module_name&amp;rop=$letter&amp;field=reviewer&amp;order=desc\"><img src=\"images/down.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTDESC."\"></a>
+            <p align=\"center\"><a href=\"modules.php?name=$nuke_module_name&amp;rop=$letter&amp;field=reviewer&amp;order=ASC\"><img src=\"images/up.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTASC."\"></a><strong> "._REVIEWER." </strong><a href=\"modules.php?name=$nuke_module_name&amp;rop=$letter&amp;field=reviewer&amp;order=desc\"><img src=\"images/down.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTDESC."\"></a>
             </td>
             <td width=\"18%\" bgcolor=\"$bgcolor4\">
-            <p align=\"center\"><a href=\"modules.php?name=$module_name&amp;rop=$letter&amp;field=score&amp;order=ASC\"><img src=\"images/up.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTASC."\"></a><strong> "._SCORE." </strong><a href=\"modules.php?name=$module_name&amp;rop=$letter&amp;field=score&amp;order=DESC\"><img src=\"images/down.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTDESC."\"></a>
+            <p align=\"center\"><a href=\"modules.php?name=$nuke_module_name&amp;rop=$letter&amp;field=score&amp;order=ASC\"><img src=\"images/up.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTASC."\"></a><strong> "._SCORE." </strong><a href=\"modules.php?name=$nuke_module_name&amp;rop=$letter&amp;field=score&amp;order=DESC\"><img src=\"images/down.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTDESC."\"></a>
             </td>
             <td width=\"14%\" bgcolor=\"$bgcolor4\">
-            <p align=\"center\"><a href=\"modules.php?name=$module_name&amp;rop=$letter&amp;field=hits&amp;order=ASC\"><img src=\"images/up.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTASC."\"></a><strong> "._HITS." </strong><a href=\"modules.php?name=$module_name&amp;rop=$letter&amp;field=hits&amp;order=DESC\"><img src=\"images/down.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTDESC."\"></a>
+            <p align=\"center\"><a href=\"modules.php?name=$nuke_module_name&amp;rop=$letter&amp;field=hits&amp;order=ASC\"><img src=\"images/up.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTASC."\"></a><strong> "._HITS." </strong><a href=\"modules.php?name=$nuke_module_name&amp;rop=$letter&amp;field=hits&amp;order=DESC\"><img src=\"images/down.gif\" border=\"0\" width=\"15\" height=\"9\" alt=\""._SORTDESC."\"></a>
             </td>
             </tr>";
         while($myrow = $nuke_db->sql_fetchrow($result)) {
@@ -493,7 +493,7 @@ function reviews($letter, $field, $order) {
 [ Other:    Review Background Color Fix       v1.0.0 ]
 ******************************************************/
             echo "<tr>
-                <td width=\"50%\" bgcolor=\"$bgcolor4\"><a href=\"modules.php?name=$module_name&amp;rop=showcontent&amp;id=$id\">$title</a></td>
+                <td width=\"50%\" bgcolor=\"$bgcolor4\"><a href=\"modules.php?name=$nuke_module_name&amp;rop=showcontent&amp;id=$id\">$title</a></td>
                 <td width=\"18%\" bgcolor=\"$bgcolor4\">";
             if (!empty($reviewer))
 /*****[BEGIN]******************************************
@@ -516,13 +516,13 @@ function reviews($letter, $field, $order) {
         echo "</TABLE>";
         echo "<br />$numresults "._TOTALREVIEWS."<br /><br />";
     }
-    echo "[ <a href=\"modules.php?name=$module_name\">"._RETURN2MAIN."</a> ]";
+    echo "[ <a href=\"modules.php?name=$nuke_module_name\">"._RETURN2MAIN."</a> ]";
     CloseTable();
     include_once(NUKE_BASE_DIR.'footer.php');
 }
 
 function postcomment($id, $title) {
-    global $nuke_user, $cookie, $AllowableHTML, $anonymous, $module_name, $anonpost;
+    global $nuke_user, $cookie, $AllowableHTML, $anonymous, $nuke_module_name, $anonpost;
 
     //Prevent Anonymous Comments
     if(!is_user($nuke_user) && !$anonpost){
@@ -535,7 +535,7 @@ function postcomment($id, $title) {
     OpenTable();
     //End Prevent Anonymous Comments
     echo "<center><span class=\"option\"><strong>"._REVIEWCOMMENT." $title</strong><br /><br /></span></center>"
-    ."<form action=modules.php?name=$module_name method=post>";
+    ."<form action=modules.php?name=$nuke_module_name method=post>";
     if (!is_user()) {
         echo "<strong>"._YOURNICK."</strong> $anonymous [ "._RCREATEACCOUNT." ]<br /><br />";
         $uname = $anonymous;
@@ -577,10 +577,10 @@ function postcomment($id, $title) {
 }
 
 function savecomment($xanonpost, $uname, $id, $score, $comments) {
-    global $anonymous, $nuke_user, $cookie, $prefix, $nuke_db, $module_name, $anonpost;
+    global $anonymous, $nuke_user, $cookie, $prefix, $nuke_db, $nuke_module_name, $anonpost;
 
     if(!isset($_POST) || empty($_POST)) {
-        header("location: modules.php?name=$module_name&rop=showcontent&id=$id");
+        header("location: modules.php?name=$nuke_module_name&rop=showcontent&id=$id");
         die();
     }
     if(!is_user($nuke_user) && $cookie[1] != $uname && !$anonpost){
@@ -601,7 +601,7 @@ function savecomment($xanonpost, $uname, $id, $score, $comments) {
         $uname = $anonymous;
     }
     if (!is_int(intval($id)) || !is_int(intval($score))){
-        header("location: modules.php?name=$module_name&rop=showcontent&;id=$id");
+        header("location: modules.php?name=$nuke_module_name&rop=showcontent&;id=$id");
         die();
     }
     $comments = Fix_Quotes(check_html($comments,'nohtml'));
@@ -609,12 +609,12 @@ function savecomment($xanonpost, $uname, $id, $score, $comments) {
     $score = intval($score);
     $name = Fix_Quotes(check_html($name));
     $nuke_db->sql_query("INSERT INTO ".$prefix."_reviews_comments VALUES (NULL, '$id', '$uname', now(), '$comments', '$score')");
-    header("location: modules.php?name=$module_name&rop=showcontent&id=$id");
+    header("location: modules.php?name=$nuke_module_name&rop=showcontent&id=$id");
     die();
 }
 
 function r_comments($id, $title) {
-    global $admin, $prefix, $nuke_db, $module_name, $anonymous, $anonpost;
+    global $admin, $prefix, $nuke_db, $nuke_module_name, $anonymous, $anonpost;
 
     $id = intval($id);
     $result = $nuke_db->sql_query("SELECT cid, userid, date, comments, score FROM ".$prefix."_reviews_comments WHERE rid='$id' ORDER BY date DESC");
@@ -642,8 +642,8 @@ function r_comments($id, $title) {
         }
         echo _MYSCORE." ";
         display_score($score);
-        if (is_mod_admin($module_name)) {
-            echo "<br /><strong>"._ADMIN."</strong> [ <a href=\"modules.php?name=$module_name&amp;rop=del_comment&amp;cid=$cid&amp;id=$id\">"._DELETE."</a> ]</span><hr noshade size=1><br /><br />";
+        if (is_mod_admin($nuke_module_name)) {
+            echo "<br /><strong>"._ADMIN."</strong> [ <a href=\"modules.php?name=$nuke_module_name&amp;rop=del_comment&amp;cid=$cid&amp;id=$id\">"._DELETE."</a> ]</span><hr noshade size=1><br /><br />";
         } else {
             echo "</span><hr noshade size=1><br /><br />";
         }
@@ -657,7 +657,7 @@ function r_comments($id, $title) {
 }
 
 function showcontent($id, $page) {
-    global $admin, $uimages, $prefix, $nuke_db, $module_name, $anonpost, $board_config;
+    global $admin, $uimages, $prefix, $nuke_db, $nuke_module_name, $anonpost, $board_config;
 
     $id = intval($id);
     $page = intval($page);
@@ -706,8 +706,8 @@ function showcontent($id, $page) {
         echo "<img src=\"images/reviews/$cover\" align=right border=1 vspace=2 alt=\"\">";
     echo "$contentpages[$arrayelement]
     </blockquote><p>";
-    if (is_mod_admin($module_name))
-        echo "<strong>"._ADMIN."</strong> [ <a href=\"modules.php?name=$module_name&amp;rop=mod_review&amp;id=$id\">"._EDIT."</a> | <a href=modules.php?name=$module_name&amp;rop=del_review&amp;id_del=$id>"._DELETE."</a> ]<br />";
+    if (is_mod_admin($nuke_module_name))
+        echo "<strong>"._ADMIN."</strong> [ <a href=\"modules.php?name=$nuke_module_name&amp;rop=mod_review&amp;id=$id\">"._EDIT."</a> | <a href=modules.php?name=$nuke_module_name&amp;rop=del_review&amp;id_del=$id>"._DELETE."</a> ]<br />";
     echo "<strong>"._ADDED."</strong> $fdate<br />";
     if (!empty($reviewer))
 /*****[BEGIN]******************************************
@@ -737,18 +737,18 @@ function showcontent($id, $page) {
     if ($page != 1) {
         $next_page .= "<img src=\"images/blackpixel.gif\" width=\"10\" height=\"2\" border=\"0\" alt=\"\"> &nbsp;&nbsp; ";
     }
-    $next_page .= "<a href=\"modules.php?name=$module_name&amp;rop=showcontent&amp;id=$id&amp;page=$next_pagenumber\">"._NEXT." ($next_pagenumber/$pageno)</a> <a href=\"modules.php?name=$module_name&amp;rop=showcontent&amp;id=$id&amp;page=$next_pagenumber\"><img src=\"images/right.gif\" border=\"0\" alt=\""._NEXT."\"></a>";
+    $next_page .= "<a href=\"modules.php?name=$nuke_module_name&amp;rop=showcontent&amp;id=$id&amp;page=$next_pagenumber\">"._NEXT." ($next_pagenumber/$pageno)</a> <a href=\"modules.php?name=$nuke_module_name&amp;rop=showcontent&amp;id=$id&amp;page=$next_pagenumber\"><img src=\"images/right.gif\" border=\"0\" alt=\""._NEXT."\"></a>";
     }
     if($page <= 1) {
         $previous_page = '';
     } else {
         $previous_pagenumber = $page - 1;
-        $previous_page = "<a href=\"modules.php?name=$module_name&amp;rop=showcontent&amp;id=$id&amp;page=$previous_pagenumber\"><img src=\"images/left.gif\" border=\"0\" alt=\""._PREVIOUS."\"></a> <a href=\"modules.php?name=$module_name&amp;rop=showcontent&amp;id=$id&amp;page=$previous_pagenumber\">"._PREVIOUS." ($previous_pagenumber/$pageno)</a>";
+        $previous_page = "<a href=\"modules.php?name=$nuke_module_name&amp;rop=showcontent&amp;id=$id&amp;page=$previous_pagenumber\"><img src=\"images/left.gif\" border=\"0\" alt=\""._PREVIOUS."\"></a> <a href=\"modules.php?name=$nuke_module_name&amp;rop=showcontent&amp;id=$id&amp;page=$previous_pagenumber\">"._PREVIOUS." ($previous_pagenumber/$pageno)</a>";
     }
     echo "<center>"
     ."$previous_page &nbsp;&nbsp; $next_page<br /><br />"
-    ."[ <a href=\"modules.php?name=$module_name\">"._RBACK."</a> | "
-    ."<a href=\"modules.php?name=$module_name&amp;rop=postcomment&amp;id=$id&amp;title=$title\">"._REPLYMAIN."</a> ]";
+    ."[ <a href=\"modules.php?name=$nuke_module_name\">"._RBACK."</a> | "
+    ."<a href=\"modules.php?name=$nuke_module_name&amp;rop=postcomment&amp;id=$id&amp;title=$title\">"._REPLYMAIN."</a> ]";
     CloseTable();
     if (($page == 1) OR (empty($page))) {
         echo "<br />";
@@ -758,14 +758,14 @@ function showcontent($id, $page) {
 }
 
 function mod_review($id) {
-    global $admin, $prefix, $nuke_db, $module_name, $rlanguage;
+    global $admin, $prefix, $nuke_db, $nuke_module_name, $rlanguage;
 
     $id = intval($id);
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
-    if (($id == 0) || (!is_mod_admin($module_name)))
+    if (($id == 0) || (!is_mod_admin($nuke_module_name)))
         echo "This function must be passed argument id, or you are not admin.";
-    else if (($id != 0) && (is_mod_admin($module_name)))
+    else if (($id != 0) && (is_mod_admin($nuke_module_name)))
     {
         $result = $nuke_db->sql_query("SELECT * FROM ".$prefix."_reviews WHERE id = '$id'");
         while ($myrow = $nuke_db->sql_fetchrow($result)) {
@@ -788,7 +788,7 @@ function mod_review($id) {
 /*****[BEGIN]******************************************
  [ Mod:     Reviews BBCodes                    v1.0.0 ]
  ******************************************************/
-        echo "<form name=\"postreviews\" method=\"post\" action=\"modules.php?name=$module_name&amp;rop=preview_review\"><input type=\"hidden\" name=\"id\" value=\"$id\">";
+        echo "<form name=\"postreviews\" method=\"post\" action=\"modules.php?name=$nuke_module_name&amp;rop=preview_review\"><input type=\"hidden\" name=\"id\" value=\"$id\">";
         echo "<strong>"._RTITLE."</strong><br />"
         ."<input type=\"text\" name=\"title\" size=\"50\" maxlength=\"150\" value=\"$title\"><br /><br />"
         ."<strong>"._RDATE."</strong><br />"
@@ -840,25 +840,25 @@ function mod_review($id) {
 }
 
 function del_review($id_del) {
-    global $admin, $prefix, $nuke_db, $module_name;
+    global $admin, $prefix, $nuke_db, $nuke_module_name;
 
     $id_del = intval($id_del);
-    if (is_mod_admin($module_name)) {
+    if (is_mod_admin($nuke_module_name)) {
         $nuke_db->sql_query("DELETE FROM ".$prefix."_reviews WHERE id = '$id_del'");
     $nuke_db->sql_query("DELETE FROM ".$prefix."_reviews_comments WHERE rid='$id_del'");
-    nuke_redirect("modules.php?name=$module_name");
+    nuke_redirect("modules.php?name=$nuke_module_name");
     } else {
         echo "ACCESS DENIED";
     }
 }
 
 function del_comment($cid, $id) {
-    global $admin, $prefix, $nuke_db, $module_name;
+    global $admin, $prefix, $nuke_db, $nuke_module_name;
 
     $cid = intval($cid);
-    if (is_mod_admin($module_name)) {
+    if (is_mod_admin($nuke_module_name)) {
         $nuke_db->sql_query("DELETE FROM ".$prefix."_reviews_comments WHERE cid='$cid'");
-        nuke_redirect("modules.php?name=$module_name&rop=showcontent&id=$id");
+        nuke_redirect("modules.php?name=$nuke_module_name&rop=showcontent&id=$id");
     } else {
         echo "ACCESS DENIED";
     }

@@ -34,27 +34,27 @@ function modadmin_get_modules ($mid = '')
     return $out;
 }
 
-function modadmin_usergroup_whoview($module)
+function modadmin_usergroup_whoview($nuke_module)
 {
    global $nuke_db, $prefix, $admlang;
 
    $who_view = '';
 
-   if($module['view'] == 0 || $module['view'] == 1) 
+   if($nuke_module['view'] == 0 || $nuke_module['view'] == 1) 
       $who_view = $admlang['global']['all_visitors'];
    else
-   if($module['view'] == 2) 
+   if($nuke_module['view'] == 2) 
             $who_view = $admlang['global']['guests_only'];
    else
-   if($module['view'] == 3) 
+   if($nuke_module['view'] == 3) 
             $who_view = $admlang['global']['users_only'];
    else
-   if($module['view'] == 4) 
+   if($nuke_module['view'] == 4) 
             $who_view = $admlang['global']['admins_only'];
    else
-   if($module['view'] == 6) 
+   if($nuke_module['view'] == 6) 
    {
-      $groups = explode('-', $module['groups']);
+      $groups = explode('-', $nuke_module['groups']);
    
       foreach ($groups as $group) 
       {
@@ -105,9 +105,9 @@ function modadmin_dispaly_modules($modadmin_modules)
    echo '<td class="catHead" style="width: 10%;">'.$admlang['global']['functions'].'</td>';
    echo '</tr>';
    
-   foreach ($modadmin_modules as $module) 
+   foreach ($modadmin_modules as $nuke_module) 
    {
-      if(substr($module['title'],0,3) == '~l~') 
+      if(substr($nuke_module['title'],0,3) == '~l~') 
       {
          continue;
       }
@@ -115,7 +115,7 @@ function modadmin_dispaly_modules($modadmin_modules)
       # Fixed by TheGhost 3/26/2021
 	  # this boggled my mind years ago, I added this to remove the .. module that did not really exists!
 	  # do not pase the index as a module in the moodules list
-      if(substr($module['title'],0,2) == '..') 
+      if(substr($nuke_module['title'],0,2) == '..') 
       {
          continue;
       }
@@ -123,7 +123,7 @@ function modadmin_dispaly_modules($modadmin_modules)
       # Fixed by TheGhost 3/26/2021
       # this boggled my miond years ago, I added this to remove the .. module that did not really exists!
 	  # allow an index.html in the root of the modules folder
-      if(substr($module['title'],0,10) == 'index.html') 
+      if(substr($nuke_module['title'],0,10) == 'index.html') 
       {
          continue;
       }
@@ -131,7 +131,7 @@ function modadmin_dispaly_modules($modadmin_modules)
       # Fixed by TheGhost 3/26/2021
 	  # this boggled my miond years ago, I added this to remove the .. module that did not really exists!
 	  # Remove Evo User Block from modules list!
-      if(substr($module['title'],0,13) == 'Evo_UserBlock') 
+      if(substr($nuke_module['title'],0,13) == 'Evo_UserBlock') 
       {
          continue;
       }
@@ -139,60 +139,60 @@ function modadmin_dispaly_modules($modadmin_modules)
       # Fixed by TheGhost 9/7/2022
 	  # Added for phpBB 3 we do not want this to show up in the module list
 	  # Remove phpBB 3 from modules list!
-      if(substr($module['title'],0,13) == 'phpbb') 
+      if(substr($nuke_module['title'],0,13) == 'phpbb') 
       {
          continue;
       }
 
       # lis the top header information
-      if($module['title'] == $main_module) 
+      if($nuke_module['title'] == $main_module) 
       {
          $home       = get_evo_icon('evo-sprite home', $admlang['modules']['inhome']);
          $active     = get_evo_icon('evo-sprite ok', $admlang['global']['active']);
-         $title      = "<strong>".$module['title']."</strong>";
+         $title      = "<strong>".$nuke_module['title']."</strong>";
          $who_view   = "<strong>".$who_view."</strong>";
       } 
 	  else 
 	  {
-         $home       = '<a href="'.$admin_file.'.php?op=modules&amp;h='.$module['mid'].'">'.get_evo_icon('evo-sprite cancel', $admlang['global']['inactive']).'</a>';
-         $active     = (intval($module['active'])) ? '<a href="'.$admin_file.'.php?op=modules&amp;a='.$module['mid'].'">'.get_evo_icon('evo-sprite ok', $admlang['global']['active']).'</a>' : '<a href="'.$admin_file.'.php?op=modules&amp;a='.$module['mid'].'">'.get_evo_icon('evo-sprite cancel', $admlang['global']['inactive']).'</a>';
-         $title      =  (!intval($module['inmenu'])) ? "[&nbsp;<big><strong>&middot;</strong></big>&nbsp;]&nbsp;".$module['title'] : $module['title'];
+         $home       = '<a href="'.$admin_file.'.php?op=modules&amp;h='.$nuke_module['mid'].'">'.get_evo_icon('evo-sprite cancel', $admlang['global']['inactive']).'</a>';
+         $active     = (intval($nuke_module['active'])) ? '<a href="'.$admin_file.'.php?op=modules&amp;a='.$nuke_module['mid'].'">'.get_evo_icon('evo-sprite ok', $admlang['global']['active']).'</a>' : '<a href="'.$admin_file.'.php?op=modules&amp;a='.$nuke_module['mid'].'">'.get_evo_icon('evo-sprite cancel', $admlang['global']['inactive']).'</a>';
+         $title      =  (!intval($nuke_module['inmenu'])) ? "[&nbsp;<big><strong>&middot;</strong></big>&nbsp;]&nbsp;".$nuke_module['title'] : $nuke_module['title'];
       }
 
-      if(isset($module['blocks'])) 
+      if(isset($nuke_module['blocks'])) 
       {
-         switch($module['blocks']) 
+         switch($nuke_module['blocks']) 
          {
             case 0:
-               $module['blocks'] = $admlang['global']['none'];
+               $nuke_module['blocks'] = $admlang['global']['none'];
                break;
             case 1:
-               $module['blocks'] = $admlang['global']['left'];
+               $nuke_module['blocks'] = $admlang['global']['left'];
                break;
             case 2:
-               $module['blocks'] = $admlang['global']['right'];
+               $nuke_module['blocks'] = $admlang['global']['right'];
                break;
             case 3:
-               $module['blocks'] = $admlang['global']['both'];
+               $nuke_module['blocks'] = $admlang['global']['both'];
                break;
             default:
-               $module['blocks'] = '';
+               $nuke_module['blocks'] = '';
                break;
             }
         } 
         else 
         {
-            $module['blocks'] = '';
+            $nuke_module['blocks'] = '';
         }
 
       echo '<tr>';
       echo '<td class="row1">'.$active.'</td>';
       echo '<td class="row1">'.$home.'</td>';
-      echo '<td class="row1" style="text-align: left;"><a href="modules.php?name='.$module['title'].'" title="'.$admlang['global']['show'].'">'.$title.'</a></td>';
-      echo '<td class="row1" style="text-align: left;">'.$module['custom_title'].'</td>';
-      echo '<td class="row1" style="text-align: left;">'.modadmin_usergroup_whoview($module).'</td>';
-      echo '<td class="row1">'.$module['blocks'].'</td>';
-      echo '<td class="row1"><a href="'.$admin_file.'.php?op=modules&amp;edit='.$module['mid'].'">'.get_evo_icon('evo-sprite edit').'</a></td>'; // '._EDIT.'
+      echo '<td class="row1" style="text-align: left;"><a href="modules.php?name='.$nuke_module['title'].'" title="'.$admlang['global']['show'].'">'.$title.'</a></td>';
+      echo '<td class="row1" style="text-align: left;">'.$nuke_module['custom_title'].'</td>';
+      echo '<td class="row1" style="text-align: left;">'.modadmin_usergroup_whoview($nuke_module).'</td>';
+      echo '<td class="row1">'.$nuke_module['blocks'].'</td>';
+      echo '<td class="row1"><a href="'.$admin_file.'.php?op=modules&amp;edit='.$nuke_module['mid'].'">'.get_evo_icon('evo-sprite edit').'</a></td>'; // '._EDIT.'
       echo '</tr>';
    }
    echo '</table>';
@@ -200,7 +200,7 @@ function modadmin_dispaly_modules($modadmin_modules)
    CloseTable();
 }
 
-function modadmin_edit_module($module) 
+function modadmin_edit_module($nuke_module) 
 {
    global $prefix, $nuke_db, $admin_file, $admlang;
    
@@ -210,7 +210,7 @@ function modadmin_edit_module($module)
    
    $o1 = $o2 = $o3 = $o4 = $o6 = '';
    
-   switch ($module['view']) 
+   switch ($nuke_module['view']) 
    {
       case 1: $o1 = 'SELECTED'; 
 	  break;
@@ -222,31 +222,31 @@ function modadmin_edit_module($module)
 	  break;
       case 6:
          $o6 = 'SELECTED';
-         $ingroups = explode('-', $module['groups']);
+         $ingroups = explode('-', $nuke_module['groups']);
          break;
    }
    OpenTable();
-   if(substr($module['title'],0,3) != '~l~') 
+   if(substr($nuke_module['title'],0,3) != '~l~') 
    {
-      $a = ($module['title'] == $main_module) ? ' - ('.$admlang['modules']['inhome'].')' : '';
+      $a = ($nuke_module['title'] == $main_module) ? ' - ('.$admlang['modules']['inhome'].')' : '';
 
       echo '<form method="post" action="'.$admin_file.'.php?op=modules">';
-      echo '<input type="hidden" name="save" value="'.$module['mid'].'" />';
+      echo '<input type="hidden" name="save" value="'.$nuke_module['mid'].'" />';
       echo '<table style="width: 100%;" cellpadding="4" cellspacing="1" border="1" class="forumline">';
       echo '<tr>';
-      echo '<td class="catHead" colspan="2" style="text-align: center;">'.$module['title'].$a.'</td>';
+      echo '<td class="catHead" colspan="2" style="text-align: center;">'.$nuke_module['title'].$a.'</td>';
       echo '</tr>';
       echo '<tr>';
       echo '<td class="row1" style="width: 50%;">'.$admlang['global']['title_custom'].'</td>';
       echo '<td class="row1" style="width: 50%;"><input style="height: 24px; padding-left: 3px; padding-right: 3px; width: 99%;" 
-	  type="text" name="custom_title" id="custom_title" value="'.$module['custom_title'].'" maxlength="255" /></td>';
+	  type="text" name="custom_title" id="custom_title" value="'.$nuke_module['custom_title'].'" maxlength="255" /></td>';
       
 	  echo '</tr>';
 
       echo '<tr>';
       echo '<td class="row1" style="width: 50%;">'.$admlang['global']['who_view'].'</td>';
       echo '<td class="row1" style="width: 50%;">';
-      if($module['title'] == $main_module || $module['title'] == 'Your_Account' || $module['title'] == 'Profile') 
+      if($nuke_module['title'] == $main_module || $nuke_module['title'] == 'Your_Account' || $nuke_module['title'] == 'Profile') 
       {
          echo '<input type="hidden" name="view" value="0" />';
       } 
@@ -267,7 +267,7 @@ function modadmin_edit_module($module)
             
 			while(list($gid, $gname) = $nuke_db->sql_fetchrow($groupsResult)) 
 			{
-                if(in_array($gid,$ingroups) AND $module['view'] == 5) 
+                if(in_array($gid,$ingroups) AND $nuke_module['view'] == 5) 
 				{ 
 				  $sel = "selected"; 
 				} 
@@ -289,10 +289,10 @@ function modadmin_edit_module($module)
       echo '<td class="row1" style="width: 50%;">'.$admlang['blocks']['visible'].'</td>';
       echo '<td class="row1" style="width: 50%;">';
       echo '<select name="blocks" style="cursor: pointer; font-size: 11px !important; font-family: Verdana,Geneva,Arial,Helvetica,sans-serif; letter-spacing: 1px; margin: 0px 1px 1px; padding: 5px;">';
-      echo '<option value="0"'.(($module['blocks'] == 0) ? ' selected="selected"' : '').'>'.$admlang['global']['none'].'</option>';
-      echo '<option value="1"'.(($module['blocks'] == 1) ? ' selected="selected"' : '').'>'.$admlang['global']['left'].'</option>';
-      echo '<option value="2"'.(($module['blocks'] == 2) ? ' selected="selected"' : '').'>'.$admlang['global']['right'].'</option>';
-      echo '<option value="3"'.(($module['blocks'] == 3) ? ' selected="selected"' : '').'>'.$admlang['global']['both'].'</option>';
+      echo '<option value="0"'.(($nuke_module['blocks'] == 0) ? ' selected="selected"' : '').'>'.$admlang['global']['none'].'</option>';
+      echo '<option value="1"'.(($nuke_module['blocks'] == 1) ? ' selected="selected"' : '').'>'.$admlang['global']['left'].'</option>';
+      echo '<option value="2"'.(($nuke_module['blocks'] == 2) ? ' selected="selected"' : '').'>'.$admlang['global']['right'].'</option>';
+      echo '<option value="3"'.(($nuke_module['blocks'] == 3) ? ' selected="selected"' : '').'>'.$admlang['global']['both'].'</option>';
       echo '</select><br />';
       echo '</td>';
       echo '</tr>';
@@ -301,8 +301,8 @@ function modadmin_edit_module($module)
       echo '<td class="row1" style="width: 50%;">'.$admlang['modules']['inmenu'].'</td>';
       echo '<td class="row1" style="width: 50%;">';
       echo '<select name="inmenu" style="cursor: pointer; font-size: 11px !important; font-family: Verdana,Geneva,Arial,Helvetica,sans-serif; letter-spacing: 1px; margin: 0px 1px 1px; padding: 5px;">';
-      echo '<option value="0"'.(($module['inmenu'] == 0) ? ' selected="selected"' : '').'>'.$admlang['global']['no'].'</option>';
-      echo '<option value="1"'.(($module['inmenu'] == 1) ? ' selected="selected"' : '').'>'.$admlang['global']['yes'].'</option>';
+      echo '<option value="0"'.(($nuke_module['inmenu'] == 0) ? ' selected="selected"' : '').'>'.$admlang['global']['no'].'</option>';
+      echo '<option value="1"'.(($nuke_module['inmenu'] == 1) ? ' selected="selected"' : '').'>'.$admlang['global']['yes'].'</option>';
       echo '</select><br />';
       echo '</td>';
       echo '</tr>';
@@ -320,11 +320,11 @@ function modadmin_edit_module($module)
    CloseTable();
 }
 
-function modadmin_activate($module) 
+function modadmin_activate($nuke_module) 
 {
    global $prefix, $nuke_db, $nuke_cache, $debugger;
    
-   $result = $nuke_db->sql_query('SELECT active FROM '.$prefix."_modules WHERE mid=$module");
+   $result = $nuke_db->sql_query('SELECT active FROM '.$prefix."_modules WHERE mid=$nuke_module");
    
    if($nuke_db->sql_numrows($result) > 0) 
    {
@@ -333,7 +333,7 @@ function modadmin_activate($module)
 	  if(is_numeric($active)) 
       {
          $active = intval(!$active);
-         $nuke_db->sql_query('UPDATE '.$prefix."_modules SET active='$active' WHERE mid=$module");
+         $nuke_db->sql_query('UPDATE '.$prefix."_modules SET active='$active' WHERE mid=$nuke_module");
       }
    }
    
@@ -440,7 +440,7 @@ function modadmin_ajax_header ()
 
 function modadmin_block () 
 {
-    global $lang_evo_userblock, $admin_file, $module_collapse, $Default_Theme, $module_name, $board_config, $nuke_userinfo, $modadmin_module_cats, $bgcolor2, $admlang;
+    global $lang_evo_userblock, $admin_file, $nuke_module_collapse, $Default_Theme, $nuke_module_name, $board_config, $nuke_userinfo, $modadmin_module_cats, $bgcolor2, $admlang;
 
     $inactive = modadmin_get_inactive();
 
@@ -473,7 +473,7 @@ function modadmin_block ()
     echo "<tr><td align=\"right\">\n";
     echo $admlang['misc']['collapse'];
     echo "</td><td align=\"left\">\n";
-    echo yesno_option('collapse',$module_collapse);
+    echo yesno_option('collapse',$nuke_module_collapse);
     echo "</td>\n";
     echo "</tr>\n";
     echo "</table>\n";
@@ -690,11 +690,11 @@ function modadmin_write_cats ($data)
 
     if(is_array($data)) 
 	{
-        foreach ($data as $key => $modules) 
+        foreach ($data as $key => $nuke_modules) 
 		{
             $i = 0;
         
-		    foreach ($modules as $id) 
+		    foreach ($nuke_modules as $id) 
 			{
                 $key = ($key == 'left_col') ? '0' : $key;
                 $sql = 'UPDATE `'.$prefix.'_modules` SET `cat_id`='.$key.', `pos`='.$i.' WHERE `mid`="'.$id.'"';
@@ -929,9 +929,9 @@ if(isset($_GET['upcat']) || isset($_GET['downcat']))
 
 if(isset($_POST['collapse']) && is_int(intval($_POST['collapse']))) 
 {
-   global $nuke_db, $prefix, $module_collapse, $nuke_cache;
+   global $nuke_db, $prefix, $nuke_module_collapse, $nuke_cache;
    $nuke_db->sql_query('UPDATE `'.$prefix.'_evolution` SET `evo_value`="'.intval($_POST['collapse']).'" WHERE `evo_field`= "module_collapse"');
-   $module_collapse = intval($_POST['collapse']);
+   $nuke_module_collapse = intval($_POST['collapse']);
    $nuke_cache->delete('evoconfig');
    $nuke_cache->resync();
 }

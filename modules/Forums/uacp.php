@@ -36,8 +36,8 @@ if (!defined('MODULE_FILE')) {
 
 if ($popup != "1")
     {
-        $module_name = basename(dirname(__FILE__));
-        require("modules/".$module_name."/nukebb.php");
+        $nuke_module_name = basename(dirname(__FILE__));
+        require("modules/".$nuke_module_name."/nukebb.php");
     }
     else
     {
@@ -51,7 +51,7 @@ include($phpbb2_root_path . 'common.'.$phpEx);
 $sid = get_var('sid', '');
 
 // Start session management
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_PROFILE);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_PROFILE);
 init_userprefs($nuke_userdata);
 // End session management
 
@@ -366,7 +366,7 @@ if (sizeof($attachments) > 0)
                     $post_title = substr($post_title, 0, 30) . '...';
                 }
 
-                $view_topic = append_sid('viewtopic.' . $phpEx . '?' . NUKE_POST_POST_URL . '=' . $ids[$j]['post_id'] . '#' . $ids[$j]['post_id']);
+                $view_topic = append_nuke_sid('viewtopic.' . $phpEx . '?' . NUKE_POST_POST_URL . '=' . $ids[$j]['post_id'] . '#' . $ids[$j]['post_id']);
 
                 $post_titles[] = '<a href="' . $view_topic . '" target="_blank">' . $post_title . '</a>';
             }
@@ -463,8 +463,8 @@ if (sizeof($attachments) > 0)
 
                 'S_DELETE_BOX'        => $delete_box,
                 'S_HIDDEN'            => $hidden_field,
-                'U_VIEW_ATTACHMENT'    => append_sid('download.' . $phpEx . '?id=' . $attachments[$i]['attach_id']))
-    //            'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_sid("../viewtopic." . $phpEx . "?" . NUKE_POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : '')
+                'U_VIEW_ATTACHMENT'    => append_nuke_sid('download.' . $phpEx . '?id=' . $attachments[$i]['attach_id']))
+    //            'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_nuke_sid("../viewtopic." . $phpEx . "?" . NUKE_POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : '')
             );
         }
     }

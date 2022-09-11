@@ -239,16 +239,16 @@ function get_lang_entries($short_name, $language)
 }
 
 // Set specific language key, $value is the new key value
-function set_lang_entry($language, $module_id, $key, $value)
+function set_lang_entry($language, $nuke_module_id, $key, $value)
 {
     global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path;
 
     $language = trim($language);
-    $module_id = intval($module_id);
+    $nuke_module_id = intval($nuke_module_id);
     $lang_key = trim($key);
     $lang_value = trim($value);
 
-    $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
+    $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $nuke_module_id;
 
     if (!($result = $nuke_db->sql_query($sql)) )
     {
@@ -257,7 +257,7 @@ function set_lang_entry($language, $module_id, $key, $value)
     
     if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $module_id);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $nuke_module_id);
     }
         
     $row = $nuke_db->sql_fetchrow($result);
@@ -357,15 +357,15 @@ function set_lang_entry($language, $module_id, $key, $value)
 }
 
 // Set specific language block, $lang_block is the new language definition block as string
-function set_lang_block($language, $module_id, $lang_block)
+function set_lang_block($language, $nuke_module_id, $lang_block)
 {
     global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path;
 
     $language = trim($language);
-    $module_id = intval($module_id);
+    $nuke_module_id = intval($nuke_module_id);
     $lang_block = trim($lang_block);
 
-    $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
+    $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $nuke_module_id;
 
     if (!($result = $nuke_db->sql_query($sql)) )
     {
@@ -374,7 +374,7 @@ function set_lang_block($language, $module_id, $lang_block)
     
     if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $module_id);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $nuke_module_id);
     }
         
     $row = $nuke_db->sql_fetchrow($result);
@@ -444,16 +444,16 @@ function set_lang_block($language, $module_id, $lang_block)
 }
 
 // Add new key to a modules language block
-function lang_add_new_key($language, $module_id, $add_key, $add_value)
+function lang_add_new_key($language, $nuke_module_id, $add_key, $add_value)
 {
     global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path;
 
     $language = trim($language);
-    $module_id = intval($module_id);
+    $nuke_module_id = intval($nuke_module_id);
     $add_key = trim($add_key);
     $add_value = trim($add_value);
 
-    $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
+    $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $nuke_module_id;
 
     if (!($result = $nuke_db->sql_query($sql)) )
     {
@@ -462,7 +462,7 @@ function lang_add_new_key($language, $module_id, $add_key, $add_value)
     
     if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $module_id);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $nuke_module_id);
     }
         
     $row = $nuke_db->sql_fetchrow($result);
@@ -563,15 +563,15 @@ function lang_add_new_key($language, $module_id, $add_key, $add_value)
 }
 
 // Delete key out of language block
-function delete_lang_key($language, $module_id, $key_name)
+function delete_lang_key($language, $nuke_module_id, $key_name)
 {
     global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path;
 
     $language = trim($language);
-    $module_id = intval($module_id);
+    $nuke_module_id = intval($nuke_module_id);
     $key_name = trim($key_name);
 
-    $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
+    $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE module_id = " . $nuke_module_id;
 
     if (!($result = $nuke_db->sql_query($sql)) )
     {
@@ -580,7 +580,7 @@ function delete_lang_key($language, $module_id, $key_name)
     
     if ($nuke_db->sql_numrows($result) == 0)
     {
-        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $module_id);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to get Module ' . $nuke_module_id);
     }
         
     $row = $nuke_db->sql_fetchrow($result);
@@ -817,7 +817,7 @@ function add_new_language($new_language, $lang_schema)
 }
 
 // Add Language, Language Content is provided
-function add_new_language_predefined($new_language, $modules)
+function add_new_language_predefined($new_language, $nuke_modules)
 {
     global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path, $lang;
 
@@ -846,8 +846,8 @@ function add_new_language_predefined($new_language, $modules)
 
     $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
 
-    @reset($modules);
-    while (list($short_name, $lang_content) = each($modules))
+    @reset($nuke_modules);
+    while (list($short_name, $lang_content) = each($nuke_modules))
     {
         $short_name = trim($short_name);
 

@@ -29,8 +29,8 @@ $nuke_author_email = "webmaster (at) ourscripts (dot) net";
 $nuke_author_homepage = "https://ourscripts.86it.us";
 $license = "GNU/GPL";
 $download_location = "https://ourscripts.86it.us";
-$module_version = "8.6.0";
-$module_description = "Let the visitors to your site speak up! The block is very easy to use, the shout history module lets everyone see and search all previous shouts. The admin area controls it all. Compatability for browsers including Firefox, Opera, NS, IE, Safari, Konquerer, and Mozilla make this a cross platform application. This ensures a great user experience! What a great way to let others build content on your site! Administration area to control what people can say and do. Add your own smilies too! Censor words people find offensive. Uses the PHP-Nuke SQL abstraction layer. Auto scrolls with mouseover scroller controls. Includes both .sql and .php SQL installers, SQL repair tool, Setup and Security monitor, full URL support, anonymous nicks censoring, no cloning registered nicknames, spam/flood protection, error reporting, ban users by IP or nickname, uses theme CSS, server time offset, history uses forum avatars, and more!";
+$nuke_module_version = "8.6.0";
+$nuke_module_description = "Let the visitors to your site speak up! The block is very easy to use, the shout history module lets everyone see and search all previous shouts. The admin area controls it all. Compatability for browsers including Firefox, Opera, NS, IE, Safari, Konquerer, and Mozilla make this a cross platform application. This ensures a great user experience! What a great way to let others build content on your site! Administration area to control what people can say and do. Add your own smilies too! Censor words people find offensive. Uses the PHP-Nuke SQL abstraction layer. Auto scrolls with mouseover scroller controls. Includes both .sql and .php SQL installers, SQL repair tool, Setup and Security monitor, full URL support, anonymous nicks censoring, no cloning registered nicknames, spam/flood protection, error reporting, ban users by IP or nickname, uses theme CSS, server time offset, history uses forum avatars, and more!";
 
 // DO NOT TOUCH THE FOLLOWING COPYRIGHT CODE. YOU'RE JUST ALLOWED TO CHANGE YOUR "OWN"
 // MODULE'S DATA (SEE ABOVE) SO THE SYSTEM CAN BE ABLE TO SHOW THE COPYRIGHT NOTICE
@@ -39,6 +39,6 @@ $module_description = "Let the visitors to your site speak up! The block is very
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($nuke_author_name, $nuke_author_email, $nuke_author_homepage, $license, $download_location, $nuke_module_version, $nuke_module_description);
 
 ?>

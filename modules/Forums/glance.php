@@ -294,11 +294,11 @@ include('includes/posting_icons.'. $phpEx);
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
                  $guest = (!empty($latest_topics[$i]['post_username'])) ? $latest_topics[$i]['post_username'] : $latest_topics[$i]['last_username'] . ' ';
-                $last_poster = ($latest_news[$i]['poster_id'] == NUKE_ANONYMOUS ) ? ( ($latest_news[$i]['last_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $latest_news[$i]['poster_id']) . '">' . UsernameColor($latest_news[$i]['last_username']) . '</a> ';
+                $last_poster = ($latest_news[$i]['poster_id'] == NUKE_ANONYMOUS ) ? ( ($latest_news[$i]['last_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $latest_news[$i]['poster_id']) . '">' . UsernameColor($latest_news[$i]['last_username']) . '</a> ';
 
-                $last_post_img = '<a href="' . append_sid("viewtopic.$phpEx?"  . NUKE_POST_POST_URL . '=' . $latest_news[$i]['topic_last_post_id']) . '#' . $latest_news[$i]['topic_last_post_id'] . '"><i class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$lang['View_latest_post'].'"></i></a>';
+                $last_post_img = '<a href="' . append_nuke_sid("viewtopic.$phpEx?"  . NUKE_POST_POST_URL . '=' . $latest_news[$i]['topic_last_post_id']) . '#' . $latest_news[$i]['topic_last_post_id'] . '"><i class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$lang['View_latest_post'].'"></i></a>';
 
-                $topic_poster = ($latest_news[$i]['topic_poster'] == NUKE_ANONYMOUS ) ? ( ($latest_news[$i]['author_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $latest_news[$i]['topic_poster']) . '">' . UsernameColor($latest_news[$i]['author_username']) . '</a> ';
+                $topic_poster = ($latest_news[$i]['topic_poster'] == NUKE_ANONYMOUS ) ? ( ($latest_news[$i]['author_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $latest_news[$i]['topic_poster']) . '">' . UsernameColor($latest_news[$i]['author_username']) . '</a> ';
 
                 $last_post_time = create_date($board_config['default_dateformat'], $latest_news[$i]['post_time'], $board_config['board_timezone']);
 /*****[END]********************************************
@@ -448,15 +448,15 @@ include('includes/posting_icons.'. $phpEx);
  ******************************************************/
                 $guest = (!empty($latest_topics[$i]['post_username'])) ? $latest_topics[$i]['post_username'] : $latest_topics[$i]['last_username'] . ' ';
 
-                $topic_poster = ($latest_topics[$i]['topic_poster'] == NUKE_ANONYMOUS ) ? ( ($latest_topics[$i]['author_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $latest_topics[$i]['topic_poster']) . '">' . UsernameColor($latest_topics[$i]['author_username']) . '</a> ';
+                $topic_poster = ($latest_topics[$i]['topic_poster'] == NUKE_ANONYMOUS ) ? ( ($latest_topics[$i]['author_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $latest_topics[$i]['topic_poster']) . '">' . UsernameColor($latest_topics[$i]['author_username']) . '</a> ';
 
                 $last_post_time = create_date($board_config['default_dateformat'], $latest_topics[$i]['post_time'], $board_config['board_timezone']);
-                $last_poster = ($latest_topics[$i]['poster_id'] == NUKE_ANONYMOUS ) ? ( ($latest_topics[$i]['last_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $latest_topics[$i]['poster_id']) . '">' . UsernameColor($latest_topics[$i]['last_username']) . '</a> ';
+                $last_poster = ($latest_topics[$i]['poster_id'] == NUKE_ANONYMOUS ) ? ( ($latest_topics[$i]['last_username'] != '' ) ? $guest : $lang['Guest'] . ' ' ) : '<a href="' . append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . '='  . $latest_topics[$i]['poster_id']) . '">' . UsernameColor($latest_topics[$i]['last_username']) . '</a> ';
 
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                $last_post_img = '<a href="' . append_sid("viewtopic.$phpEx?"  . NUKE_POST_POST_URL . '=' . $latest_topics[$i]['topic_last_post_id']) . '#' . $latest_topics[$i]['topic_last_post_id'] . '"><i class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$lang['View_latest_post'].'"></i></a>';
+                $last_post_img = '<a href="' . append_nuke_sid("viewtopic.$phpEx?"  . NUKE_POST_POST_URL . '=' . $latest_topics[$i]['topic_last_post_id']) . '#' . $latest_topics[$i]['topic_last_post_id'] . '"><i class="fa fa-arrow-right tooltip-html-side-interact" aria-hidden="true" title="'.$lang['View_latest_post'].'"></i></a>';
 
                 //
                 // NUKE_MOD TODAY AT BEGIN

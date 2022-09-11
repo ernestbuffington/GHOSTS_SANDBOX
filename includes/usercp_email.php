@@ -81,7 +81,7 @@ if (!$board_config['board_email_form'])
  [ Base:    Nuke Patched                       v3.1.0 ]
  ******************************************************/
         $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", $_SERVER["SERVER_SOFTWARE"]) ) ? "Refresh: 0; URL=" : "Location: ";
-        nuke_redirect(append_sid("index.$phpEx", true));
+        nuke_redirect(append_nuke_sid("index.$phpEx", true));
         exit;
 /*****[END]********************************************
  [ Base:    Nuke Patched                       v3.1.0 ]
@@ -99,7 +99,7 @@ else
 
 if ( !$nuke_userdata['session_logged_in'] )
 {
-        nuke_redirect( append_sid("login.$phpEx?nuke_redirect=profile.$phpEx&mode=email&" . NUKE_POST_USERS_URL . "=$nuke_user_id", true));
+        nuke_redirect( append_nuke_sid("login.$phpEx?nuke_redirect=profile.$phpEx&mode=email&" . NUKE_POST_USERS_URL . "=$nuke_user_id", true));
         exit;
 }
 
@@ -201,10 +201,10 @@ if ( $result = $nuke_db->sql_query($sql) )
                                         }
 
                                         $template_nuke->assign_vars(array(
-                                                'META' => '<meta http-equiv="refresh" content="5;url=' . append_sid("index.$phpEx") . '">')
+                                                'META' => '<meta http-equiv="refresh" content="5;url=' . append_nuke_sid("index.$phpEx") . '">')
                                         );
 
-                                        $message = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'],  '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                                        $message = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'],  '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
 
                                         message_die(NUKE_GENERAL_MESSAGE, $message);
                                 }
@@ -237,7 +237,7 @@ if ( $result = $nuke_db->sql_query($sql) )
                         'USERNAME' => $nuke_username,
 
                         'S_HIDDEN_FIELDS' => '',
-                        'S_POST_ACTION' => append_sid("profile.$phpEx?mode=email&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id"),
+                        'S_POST_ACTION' => append_nuke_sid("profile.$phpEx?mode=email&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id"),
 
                         'L_SEND_EMAIL_MSG' => $lang['Send_email_msg'],
                         'L_RECIPIENT' => $lang['Recipient'],

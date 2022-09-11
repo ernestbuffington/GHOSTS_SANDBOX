@@ -40,7 +40,7 @@ include(NUKE_BASE_DIR."header.php");
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_FAQ);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_FAQ);
 init_userprefs($nuke_userdata);
 //
 // End session management

@@ -28,23 +28,23 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
     $file = basename(__FILE__);
-   $module['Faq_manager']['board_faq'] = "$file?file=faq";
-   $module['Faq_manager']['bbcode_faq'] = "$file?file=bbcode";
+   $nuke_module['Faq_manager']['board_faq'] = "$file?file=faq";
+   $nuke_module['Faq_manager']['bbcode_faq'] = "$file?file=bbcode";
 /*****[BEGIN]******************************************
  [ Mod:     Board Rules                        v2.0.0 ]
  ******************************************************/
-   $module['Faq_manager']['site_rules'] = "$file?file=rules";
+   $nuke_module['Faq_manager']['site_rules'] = "$file?file=rules";
 /*****[END]********************************************
  [ Mod:     Board Rules                        v2.0.0 ]
  ******************************************************/
     if(file_exists($phpbb2_root_path . 'attach_mod/attachment_mod.'.$phpEx))
     {
-       $module['Faq_manager']['attachment_faq'] = "$file?file=faq_attach";
+       $nuke_module['Faq_manager']['attachment_faq'] = "$file?file=faq_attach";
     }
     if(file_exists($phpbb2_root_path . 'mods/prillian/im_main.'.$phpEx))
     {
-       $module['Faq_manager']['prillian_faq'] = "$file?file=prillian_faq";
-       $module['Faq_manager']['bid_faq'] = "$file?file=bid_faq";
+       $nuke_module['Faq_manager']['prillian_faq'] = "$file?file=prillian_faq";
+       $nuke_module['Faq_manager']['bid_faq'] = "$file?file=bid_faq";
     }
     return;
 }
@@ -168,7 +168,7 @@ if( !isset($HTTP_GET_VARS['language']) && !isset($HTTP_POST_VARS['language']) )
     $template_nuke->assign_vars(array(
         'L_LANGUAGE' => $lang['faq_select_language'],
         'LANGUAGE_SELECT' => language_select($board_config['default_lang'], 'language', $phpbb2_root_path.'language'),
-        'S_ACTION' => append_sid("admin_faq_editor.$phpEx?file=$file"),
+        'S_ACTION' => append_nuke_sid("admin_faq_editor.$phpEx?file=$file"),
         'L_SUBMIT' => $lang['faq_retrieve'],
         'L_TITLE' => $lang['faq_editor'],
         'L_EXPLAIN' => $lang['faq_editor_explain']
@@ -220,7 +220,7 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
                 "L_YES" => $lang['Yes'],
                 "L_NO" => $lang['No'],
 
-                "S_CONFIRM_ACTION" => append_sid("admin_faq_editor.$phpEx?file=$file&amp;language=$language"),
+                "S_CONFIRM_ACTION" => append_nuke_sid("admin_faq_editor.$phpEx?file=$file&amp;language=$language"),
                 "S_HIDDEN_FIELDS" => $s_hidden_fields
             ));
 
@@ -262,7 +262,7 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
                 'BLOCK_TITLE' => $blocks[$block_no],
 
                 'S_HIDDEN_FIELDS' => '<input type="hidden" name="mode" value="block_do_edit"><input type="hidden" name="block" value="'.$block_no.'">',
-                'S_ACTION' => append_sid("admin_faq_editor.$phpEx?file=$file&amp;language=$language")
+                'S_ACTION' => append_nuke_sid("admin_faq_editor.$phpEx?file=$file&amp;language=$language")
             ));
 
             $template_nuke->pparse("body");
@@ -340,7 +340,7 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
                 'ANSWER' => '',
 
                 'S_BLOCK_LIST' => $s_block_list,
-                'S_ACTION' => append_sid("admin_faq_editor.$phpEx?file=$file&amp;language=$language"),
+                'S_ACTION' => append_nuke_sid("admin_faq_editor.$phpEx?file=$file&amp;language=$language"),
                 'S_HIDDEN_FIELDS' => '<input name="mode" type="hidden" value="quest_create">'
             ));
 
@@ -388,7 +388,7 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
                 'ANSWER' => htmlspecialchars(str_replace("<br />", "\n", $quests[$block_no][$quest_no][A])),
 
                 'S_BLOCK_LIST' => $s_block_list,
-                'S_ACTION' => append_sid("admin_faq_editor.$phpEx?file=$file&amp;language=$language"),
+                'S_ACTION' => append_nuke_sid("admin_faq_editor.$phpEx?file=$file&amp;language=$language"),
                 'S_HIDDEN_FIELDS' => '<input name="quest" type="hidden" value="'.$quest_no.'"><input name="old_block" type="hidden" value="'.$block_no.'"><input name="mode" type="hidden" value="quest_do_edit">'
             ));
 
@@ -446,7 +446,7 @@ if(isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']))
                 "L_YES" => $lang['Yes'],
                 "L_NO" => $lang['No'],
 
-                "S_CONFIRM_ACTION" => append_sid("admin_faq_editor.$phpEx?file=$file&amp;language=$language"),
+                "S_CONFIRM_ACTION" => append_nuke_sid("admin_faq_editor.$phpEx?file=$file&amp;language=$language"),
                 "S_HIDDEN_FIELDS" => $s_hidden_fields
             ));
 
@@ -527,7 +527,7 @@ $template_nuke->assign_vars(array(
     'L_TITLE' => $lang['faq_editor'],
     'L_EXPLAIN' => $lang['faq_editor_explain'],
 
-    'S_ACTION' => append_sid("admin_faq_editor.$phpEx?file=$file&amp;language=$language"),
+    'S_ACTION' => append_nuke_sid("admin_faq_editor.$phpEx?file=$file&amp;language=$language"),
 
     'L_ADD_BLOCK' => $lang['faq_block_add'],
     'L_ADD_QUESTION' => $lang['faq_quest_add'],
@@ -552,10 +552,10 @@ if(count($blocks) > 0)
             'BLOCK_NUMBER' => "$i",
             'BLOCK_ANCHOR' => $anchor_code,
 
-            'U_BLOCK_EDIT' => append_sid("admin_faq_editor.$phpEx?mode=block_edit&amp;block=$i&amp;file=$file&amp;language=$language"),
-            'U_BLOCK_MOVE_UP' => append_sid("admin_faq_editor.$phpEx?mode=block_up&amp;block=$i&amp;file=$file&amp;language=$language"),
-            'U_BLOCK_MOVE_DOWN' => append_sid("admin_faq_editor.$phpEx?mode=block_dn&amp;block=$i&amp;file=$file&amp;language=$language"),
-            'U_BLOCK_DELETE' => append_sid("admin_faq_editor.$phpEx?mode=block_del&amp;block=$i&amp;file=$file&amp;language=$language")
+            'U_BLOCK_EDIT' => append_nuke_sid("admin_faq_editor.$phpEx?mode=block_edit&amp;block=$i&amp;file=$file&amp;language=$language"),
+            'U_BLOCK_MOVE_UP' => append_nuke_sid("admin_faq_editor.$phpEx?mode=block_up&amp;block=$i&amp;file=$file&amp;language=$language"),
+            'U_BLOCK_MOVE_DOWN' => append_nuke_sid("admin_faq_editor.$phpEx?mode=block_dn&amp;block=$i&amp;file=$file&amp;language=$language"),
+            'U_BLOCK_DELETE' => append_nuke_sid("admin_faq_editor.$phpEx?mode=block_del&amp;block=$i&amp;file=$file&amp;language=$language")
         ));
 
         if(count($quests[$i]) > 0)
@@ -566,10 +566,10 @@ if(count($blocks) > 0)
                     'QUEST_TITLE' => $quests[$i][$j][Q],
                     'U_QUEST' => ("../../../modules.php?name=Forums&amp;file=faq&amp;mode=$file")."#$k",
 
-                    'U_QUEST_EDIT' => append_sid("admin_faq_editor.$phpEx?mode=quest_edit&amp;block=$i&amp;quest=$j&amp;file=$file&amp;language=$language"),
-                    'U_QUEST_MOVE_UP' => append_sid("admin_faq_editor.$phpEx?mode=quest_up&amp;block=$i&amp;quest=$j&amp;file=$file&amp;language=$language"),
-                    'U_QUEST_MOVE_DOWN' => append_sid("admin_faq_editor.$phpEx?mode=quest_dn&amp;block=$i&amp;quest=$j&amp;file=$file&amp;language=$language"),
-                    'U_QUEST_DELETE' => append_sid("admin_faq_editor.$phpEx?mode=quest_del&amp;block=$i&amp;quest=$j&amp;file=$file&amp;language=$language")
+                    'U_QUEST_EDIT' => append_nuke_sid("admin_faq_editor.$phpEx?mode=quest_edit&amp;block=$i&amp;quest=$j&amp;file=$file&amp;language=$language"),
+                    'U_QUEST_MOVE_UP' => append_nuke_sid("admin_faq_editor.$phpEx?mode=quest_up&amp;block=$i&amp;quest=$j&amp;file=$file&amp;language=$language"),
+                    'U_QUEST_MOVE_DOWN' => append_nuke_sid("admin_faq_editor.$phpEx?mode=quest_dn&amp;block=$i&amp;quest=$j&amp;file=$file&amp;language=$language"),
+                    'U_QUEST_DELETE' => append_nuke_sid("admin_faq_editor.$phpEx?mode=quest_del&amp;block=$i&amp;quest=$j&amp;file=$file&amp;language=$language")
                 ));
 
                 $k++;

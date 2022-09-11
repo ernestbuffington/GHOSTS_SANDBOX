@@ -232,25 +232,25 @@ function detect_lang($browserlang) {
     return false;
 }
 
-function get_lang($module) {
+function get_lang($nuke_module) {
     global $currentlang, $language;
     static $included;
     if(!isset($included)) {
         $included = array();
-    } elseif(isset($included[$module])) {
-        return $included[$module];
+    } elseif(isset($included[$nuke_module])) {
+        return $included[$nuke_module];
     }
-    if (file_exists(NUKE_MODULES_DIR.$module.'/language/lang-'.$currentlang.'.php')) {
-        $path = NUKE_MODULES_DIR.$module.'/language/lang-'.$currentlang.'.php';
-    } elseif (file_exists(NUKE_MODULES_DIR.$module.'/language/lang-'.$language.'.php')) {
-        $path = NUKE_MODULES_DIR.$module.'/language/lang-'.$language.'.php';
-    } elseif (file_exists(NUKE_MODULES_DIR.$module.'/language/lang-english.php')) {
-        $path = NUKE_MODULES_DIR.$module.'/language/lang-english.php';
+    if (file_exists(NUKE_MODULES_DIR.$nuke_module.'/language/lang-'.$currentlang.'.php')) {
+        $path = NUKE_MODULES_DIR.$nuke_module.'/language/lang-'.$currentlang.'.php';
+    } elseif (file_exists(NUKE_MODULES_DIR.$nuke_module.'/language/lang-'.$language.'.php')) {
+        $path = NUKE_MODULES_DIR.$nuke_module.'/language/lang-'.$language.'.php';
+    } elseif (file_exists(NUKE_MODULES_DIR.$nuke_module.'/language/lang-english.php')) {
+        $path = NUKE_MODULES_DIR.$nuke_module.'/language/lang-english.php';
     } else {
-        return $included[$module] = false;
+        return $included[$nuke_module] = false;
     }
     require_once($path);
-    return $included[$module] = true;
+    return $included[$nuke_module] = true;
 }
 
 function lang_list() {

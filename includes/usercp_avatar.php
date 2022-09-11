@@ -397,7 +397,7 @@ function display_avatar_gallery($mode, $category, $nuke_user_id, $email, $curren
 
 				'S_CATEGORY_SELECT' => $s_categories,
 				'S_COLSPAN' => $s_colspan,
-				'S_PROFILE_ACTION' => append_sid("profile.$phpEx?mode=$mode"),
+				'S_PROFILE_ACTION' => append_nuke_sid("profile.$phpEx?mode=$mode"),
 				'S_HIDDEN_FIELDS' => $s_hidden_vars)
 		);
 

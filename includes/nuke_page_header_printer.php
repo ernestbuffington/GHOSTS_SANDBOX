@@ -47,7 +47,7 @@ $l_timezone = explode('.', $board_config['board_timezone']);
 $l_timezone = (count($l_timezone) > 1 && $l_timezone[count($l_timezone)-1] != 0) ? $lang[sprintf('%.1f', $board_config['board_timezone'])] : $lang[number_format($board_config['board_timezone'])];
 //
 // The following assigns all _common_ variables that may be used at any point
-// in a template. Note that all URL's should be wrapped in append_sid, as
+// in a template. Note that all URL's should be wrapped in append_nuke_sid, as
 // should all S_x_ACTIONS for forms.
 //
 
@@ -91,12 +91,12 @@ $template_nuke->assign_vars(array(
     'L_PRINT' => $lang['printertopic_Print'],
     'L_PRINT_DESC' => $lang['printertopic_Print_desc'],
 
-    'U_INDEX' => append_sid('index.'.$phpEx),
-    'U_FAQ' => append_sid('faq.'.$phpEx),
+    'U_INDEX' => append_nuke_sid('index.'.$phpEx),
+    'U_FAQ' => append_nuke_sid('faq.'.$phpEx),
 
     'S_TIMEZONE' => sprintf($lang['All_times'], $l_timezone),
-    'S_LOGIN_ACTION' => append_sid('../login.'.$phpEx),
-    'S_JUMPBOX_ACTION' => append_sid('../viewforum.'.$phpEx),
+    'S_LOGIN_ACTION' => append_nuke_sid('../login.'.$phpEx),
+    'S_JUMPBOX_ACTION' => append_nuke_sid('../viewforum.'.$phpEx),
     'S_CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
     'S_CONTENT_DIRECTION' => $lang['DIRECTION'],
     'S_CONTENT_ENCODING' => $lang['ENCODING'],

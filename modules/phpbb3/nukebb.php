@@ -11,7 +11,7 @@ if (!defined('MODULE_FILE')) {
 }
 
 global $nuke_db, $prefix, $phpbb_root_path, $nuke_root_path, $nuke_file_path, $phpbb_root_dir, $module_name, $name, $file;
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 $phpbb_root_path = NUKE_PHPBB3_DIR;
 get_lang($module_name);
 include_once(NUKE_BASE_DIR.'header.php');

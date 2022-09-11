@@ -719,13 +719,13 @@ if ($old_school_imagedropdown==0)
 	
 	$sql = "SELECT title FROM ".$prefix."_modules ORDER BY title ASC";
 	
-	$modulesaffiche= $nuke_db->sql_query($sql);
+	$nuke_modulesaffiche= $nuke_db->sql_query($sql);
 	
 	$menu_counter=0;
 	
-	while ($tempo = $nuke_db->sql_fetchrow($modulesaffiche)) 
+	while ($tempo = $nuke_db->sql_fetchrow($nuke_modulesaffiche)) 
 	{
-		$modules[$menu_counter]= $tempo['title'];
+		$nuke_modules[$menu_counter]= $tempo['title'];
 		$menu_counter++;
 	}
 
@@ -739,7 +739,7 @@ if ($old_school_imagedropdown==0)
 	
 	$categorie=$row2['groupmenu'];
 	
-	$moduleinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['module'])); //fixed by Ernest Allen Buffington PHP 5
+	$nuke_moduleinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['module'])); //fixed by Ernest Allen Buffington PHP 5
 	
 	$linkinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url'])); //fixed by Ernest Allen Buffington PHP 5
 	 
@@ -780,7 +780,7 @@ if ($old_school_imagedropdown==0)
 		$menu_counter=0;
 	  }
 
-	 $moduleinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['module'])); //fixed by Ernest Allen Buffington PHP 5
+	 $nuke_moduleinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['module'])); //fixed by Ernest Allen Buffington PHP 5
 	 $linkinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url'])); //fixed by Ernest Allen Buffington PHP 5
 	 $linktextinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url_text'])); //fixed by Ernest Allen Buffington PHP 5 
 	 
@@ -1025,7 +1025,7 @@ if ($old_school_imagedropdown==0)
 	echo "</td>"
 	."</tr><tr><td bgcolor=\"$bgcolor1\" id=\"showhide_content_$key\"".$display_cat.">";
 	
-	$nbmodules = $nombremodules = count($moduleinthisgroup[$groupmenu[$key]]);
+	$nbmodules = $nombremodules = count($nuke_moduleinthisgroup[$groupmenu[$key]]);
 	$nombremodules=$nombremodules+4; 
 
 	echo "<table align=\"center\" border=0 cellspacing=0 cellpadding=2 width=\"100%\"><tr><td></td><td align =\"center\">"._MENU_CATCONTENT."</td><td align=\"center\">"._MENU_LINKURL."</td><td align=\"center\">"._MENU_LINKTEXT."</td><td width=\"3\"></td>";
@@ -1124,24 +1124,24 @@ if ($old_school_imagedropdown==0)
 		echo "<select name=\"menuformingroup[$key][$z]\" onchange='disab(this,this.value,this.form.elements[\"menuformmodulelink[$key][$z]\"],this.form.elements[\"menuformmodulelinktext[$key][$z]\"],\"$linkvalue\",\"$linktextvalue\"); menuadminshowhide(\"$menuzenom\",$hideok)'>";
 
 		echo "<option value=\"Aucun\">ADD MODULE LINK TO MENU";
-		$selected = ($moduleinthisgroup[$groupmenu[$key]][$z]=="Horizonatal Rule") ? "selected" : "" ;
+		$selected = ($nuke_moduleinthisgroup[$groupmenu[$key]][$z]=="Horizonatal Rule") ? "selected" : "" ;
 		echo "<option value=\"Horizonatal Rule\" $selected>*Horizonatal Rule*";
-		$selected = ($moduleinthisgroup[$groupmenu[$key]][$z]=="External Link") ? "selected" : "" ;
+		$selected = ($nuke_moduleinthisgroup[$groupmenu[$key]][$z]=="External Link") ? "selected" : "" ;
 		echo "<option value=\"External Link\" $selected>*External Link*";
-		$selected = ($moduleinthisgroup[$groupmenu[$key]][$z]=="MENUTEXTONLY") ? "selected" : "" ;
+		$selected = ($nuke_moduleinthisgroup[$groupmenu[$key]][$z]=="MENUTEXTONLY") ? "selected" : "" ;
 		echo "<option value=\"MENUTEXTONLY\" $selected>*Text Without Url*";
 		echo "<option value=\"SEP\">=======================";
 		
-		for ($i=0;$i<count($modules);$i++) 
+		for ($i=0;$i<count($nuke_modules);$i++) 
 		{
 		    
-			$selected = ($modules[$i]==$moduleinthisgroup[$groupmenu[$key]][$z]) ? "selected" : "" ;
-			if ($modules[$i] == '..')
+			$selected = ($nuke_modules[$i]==$nuke_moduleinthisgroup[$groupmenu[$key]][$z]) ? "selected" : "" ;
+			if ($nuke_modules[$i] == '..')
 			{
 				
 			}
 			else
-			echo "<option value=\"$modules[$i]\" $selected>$modules[$i]";
+			echo "<option value=\"$nuke_modules[$i]\" $selected>$nuke_modules[$i]";
 		
 		}
 		
@@ -1215,13 +1215,13 @@ echo "</td></tr></table>";
 		
 		echo "<img style=\"display: ".$displaytargetnone."; width: 15px; margin-right: 5px;\" src=\"".$urlofimages."/admin/targetnone.gif\" name=\"targetnone$formpointeur\" alt=\""._MENU_TARGETNONE."\" title=\""._MENU_TARGETNONE."\">";
 
-		if ($moduleinthisgroup[$groupmenu[$key]][$z]=="External Link") 
+		if ($nuke_moduleinthisgroup[$groupmenu[$key]][$z]=="External Link") 
 		{ //'External Link' 
 			$visibility_link="";
 			$visibility_link_text="";
 		}
 		else
-		if ($moduleinthisgroup[$groupmenu[$key]][$z]=="MENUTEXTONLY") 
+		if ($nuke_moduleinthisgroup[$groupmenu[$key]][$z]=="MENUTEXTONLY") 
 		{ // Text Only
 			$visibility_link="style=\"visibility:hidden;\" disabled";
 			$visibility_link_text="";
@@ -1652,7 +1652,7 @@ function edit()
 {
 	      global $key, 
 	               $z, 
-	      $modulename, 
+	      $nuke_modulename, 
 	       $link_name, 
 	        $lienlien, 
 	           $image, 
@@ -1686,13 +1686,13 @@ function edit()
 			
 				if ($image<>"middot.gif") 
 				{
-					$moduleimagesize = getimagesize("".$urlofimages."/categories/$image");
+					$nuke_moduleimagesize = getimagesize("".$urlofimages."/categories/$image");
 				}
 				else 
 				{
-					$moduleimagesize[0]=5;
+					$nuke_moduleimagesize[0]=5;
 				}
-				$imagesize =$catimagesize[0]-$moduleimagesize[0];
+				$imagesize =$catimagesize[0]-$nuke_moduleimagesize[0];
 
 				if ($imagesize<0) {
 					$imagesize=0;
@@ -1736,16 +1736,16 @@ function edit()
 		if ($z!="imacategory") {
 			echo "<tr bgcolor=\"darkgrey\">";
 			$displayimage= ($image=="middot.gif") ? "<strong>&middot;</strong>" : "<img src=\"".$urlofimages."/categories/$image\">";
-			if ($modulename=="External Link" || $modulename=="MENUTEXTONLY") {
+			if ($nuke_modulename=="External Link" || $nuke_modulename=="MENUTEXTONLY") {
 				echo "<td bgcolor=\"darkgrey\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\">".$displayimage."&nbsp;$link_name</td>";
 			}
-			elseif ($modulename=="Horizonatal Rule") {
+			elseif ($nuke_modulename=="Horizonatal Rule") {
 				echo "<td bgcolor=\"darkgrey\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\"><hr></td>";
 			}
 			else {
-				echo "<td bgcolor=\"darkgrey\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\">".$displayimage."&nbsp;$modulename</td>";
+				echo "<td bgcolor=\"darkgrey\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\">".$displayimage."&nbsp;$nuke_modulename</td>";
 			}
-			$disabled=($modulename=="Horizonatal Rule") ? "disabled" : "" ;
+			$disabled=($nuke_modulename=="Horizonatal Rule") ? "disabled" : "" ;
 			echo "<td bgcolor=\"darkgrey\">"._MENU_CLASS." : <input type=\"text\" class=\"select\" name=\"somlienclass\" value=\"$link_class\" size=10></td>
 		<td>"._MENU_SINCE." <input type=\"text\" class=\"select\" name=\"somnew_days\" value=\"$new_days\" $disabled size=2> "._MENU_NBDAYS."
 		";
@@ -1786,7 +1786,7 @@ function edit()
 }
 
 function menu_schedule() {
-	global $key, $z, $modulename, $link_name, $lienlien, $image, $new_days, $categoryclass, $link_class, $catname, $catimage, $bgcolor1, $bgcolor3, $bgcolor2, $bgcolor4, $zetheme, $menu_edit_posted, $menu_category_class, $menu_link_class, $menu_new_days, $nuke_db, $prefix, $urlofimages;
+	global $key, $z, $nuke_modulename, $link_name, $lienlien, $image, $new_days, $categoryclass, $link_class, $catname, $catimage, $bgcolor1, $bgcolor3, $bgcolor2, $bgcolor4, $zetheme, $menu_edit_posted, $menu_category_class, $menu_link_class, $menu_new_days, $nuke_db, $prefix, $urlofimages;
 	global $admin_file;
 	if (!isset($admin_file)) {$admin_file="admin";}
 	

@@ -46,7 +46,7 @@ if (!defined('CNBYA')) {
         // echo "<br />";
         OpenTable();
         echo "<center>";
-        echo "<form action=\"modules.php?name=$module_name\" method=\"post\">";
+        echo "<form action=\"modules.php?name=$nuke_module_name\" method=\"post\">";
         echo "<strong>"._SELECTTHEME."</strong><br />";
 /*****[BEGIN]******************************************
  [ Base:    Theme Management                   v1.0.2 ]

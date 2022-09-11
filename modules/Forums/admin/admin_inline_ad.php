@@ -23,7 +23,7 @@ define('IN_PHPBB2', 1);
 if( !empty($setmodules) )
 {
    $filename = basename(__FILE__);
-   $module['ad_managment']['inline_ad_config'] = $filename;
+   $nuke_module['ad_managment']['inline_ad_config'] = $filename;
 
    return;
 }
@@ -100,7 +100,7 @@ if ( isset($HTTP_POST_VARS['submit']))
 
     if( isset($HTTP_POST_VARS['submit']) )
     {
-      $message = $lang['Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_firstpost'], "<a href=\"" . append_sid("admin_inline_ad.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+      $message = $lang['Config_updated'] . "<br /><br />" . sprintf($lang['Click_return_firstpost'], "<a href=\"" . append_nuke_sid("admin_inline_ad.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
       message_die(NUKE_GENERAL_MESSAGE, $message);
     }
@@ -188,7 +188,7 @@ else
   "L_AD_GUEST" => $lang['ad_guest'],
   "L_AD_EXCLUDE" => $lang['ad_exclude'],
   "L_AD_FORUMS" => $lang['ad_forums'],
-  "S_CONFIG_ACTION" => append_sid("admin_inline_ad.$phpEx"),
+  "S_CONFIG_ACTION" => append_nuke_sid("admin_inline_ad.$phpEx"),
   "L_SUBMIT" => $lang['Submit'],
   "L_AD_STYLE" => $lang['ad_style'],
   "L_AD_NEW_STYLE" => $lang['ad_new_style'],

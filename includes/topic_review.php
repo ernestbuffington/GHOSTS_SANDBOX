@@ -91,7 +91,7 @@ function topic_review($topic_id, $is_inline_review)
                 //
                 // Start session management
                 //
-                $nuke_userdata = session_pagestart($nuke_user_ip, $forum_id);
+                $nuke_userdata = session_nuke_pagestart($nuke_user_ip, $forum_id);
                 init_userprefs($nuke_userdata);
                 //
                 // End session management

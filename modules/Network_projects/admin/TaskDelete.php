@@ -16,6 +16,6 @@ $network_db->sql_query("DELETE FROM `".$network_prefix."_tasks` WHERE `task_id`=
 $network_db->sql_query("OPTIMIZE TABLE `".$network_prefix."_tasks`");
 $network_db->sql_query("DELETE FROM `".$network_prefix."_tasks_members` WHERE `task_id`='$task_id'");
 $network_db->sql_query("OPTIMIZE TABLE `".$network_prefix."_tasks_members`");
-header("Location: modules.php?name=$module_name&op=Project&project_id=".$task['project_id']);
+header("Location: modules.php?name=$nuke_module_name&op=Project&project_id=".$task['project_id']);
 
 ?>

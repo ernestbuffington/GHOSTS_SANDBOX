@@ -29,7 +29,7 @@ define('IN_PHPBB2', true);
 if ( !empty($setmodules) )
 {
         $filename = basename(__FILE__);
-        $module['Forums']['Prune'] = $filename;
+        $nuke_module['Forums']['Prune'] = $filename;
 
         return;
 }
@@ -155,7 +155,7 @@ else
                         'L_SELECT_FORUM' => $lang['Select_a_Forum'],
                         'L_LOOK_UP' => $lang['Look_up_Forum'],
 
-                        'S_FORUMPRUNE_ACTION' => append_sid("admin_forum_prune.$phpEx"),
+                        'S_FORUMPRUNE_ACTION' => append_nuke_sid("admin_forum_prune.$phpEx"),
                         'S_FORUMS_SELECT' => $select_list)
                 );
         }
@@ -188,7 +188,7 @@ else
                         'L_FORUM_PRUNE_EXPLAIN' => $lang['Forum_Prune_explain'],
                         'L_DO_PRUNE' => $lang['Do_Prune'],
 
-                        'S_FORUMPRUNE_ACTION' => append_sid("admin_forum_prune.$phpEx"),
+                        'S_FORUMPRUNE_ACTION' => append_nuke_sid("admin_forum_prune.$phpEx"),
                         'S_PRUNE_DATA' => $prune_data,
                         'S_HIDDEN_VARS' => $hidden_input)
                 );

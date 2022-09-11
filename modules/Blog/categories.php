@@ -32,11 +32,11 @@
  ************************************************************************/
 if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 
-global $storyhome, $topicname, $topicimage, $topictext, $datetime, $nuke_user, $cookie, $prefix, $multilingual, $currentlang, $nuke_db, $articlecomm, $module_name, $nuke_userinfo;
+global $storyhome, $topicname, $topicimage, $topictext, $datetime, $nuke_user, $cookie, $prefix, $multilingual, $currentlang, $nuke_db, $articlecomm, $nuke_module_name, $nuke_userinfo;
 
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 
-get_lang($module_name);
+get_lang($nuke_module_name);
 
 @include_once(NUKE_INCLUDE_DIR."nsnne_func.php");
 
@@ -49,7 +49,7 @@ $categories = 1;
 automated_news();
 
 if ($catid == 0 OR empty($catid)) 
-nuke_redirect("modules.php?name=$module_name"); 
+nuke_redirect("modules.php?name=$nuke_module_name"); 
 
 switch ($op) 
 {
@@ -164,18 +164,18 @@ switch ($op)
             
 	        if (is_user()) 
             {
-              $the_icons .= ' | <a href="modules.php?name='.$module_name.'&amp;file=print&amp;sid='.$artinfo["sid"].'"><i class="fa fa-print"></i></a>'.PHP_EOL;
-              $the_icons .= '&nbsp;<a href="modules.php?name='.$module_name.'&amp;file=friend&amp;op=FriendSend&amp;sid='.$artinfo["sid"].'"><i class="fa fa-envelope"></i></a>';
+              $the_icons .= ' | <a href="modules.php?name='.$nuke_module_name.'&amp;file=print&amp;sid='.$artinfo["sid"].'"><i class="fa fa-print"></i></a>'.PHP_EOL;
+              $the_icons .= '&nbsp;<a href="modules.php?name='.$nuke_module_name.'&amp;file=friend&amp;op=FriendSend&amp;sid='.$artinfo["sid"].'"><i class="fa fa-envelope"></i></a>';
             }
             
-		    if (is_mod_admin($module_name)) 
+		    if (is_mod_admin($nuke_module_name)) 
             {
               $the_icons .= ' | <a href="'.$admin_file.'.php?op=EditStory&amp;sid='.$artinfo["sid"].'"><i class="fa fa-pen"></i></a>'.PHP_EOL;
               $the_icons .= '&nbsp;<a href="'.$admin_file.'.php?op=RemoveStory&amp;sid='.$artinfo["sid"].'"><i class="fa fa-times-circle"></i></a>';
             }
 			
-			$read_link = "<a href='modules.php?name=$module_name&amp;file=read_article&amp;sid=".$artinfo["sid"]."$r_options' onclick=\"NewsReadWindow(this.href,'ReadArticle','600','400','yes');return false;\">";
-            $story_link = "<a href='modules.php?name=$module_name&amp;file=article&amp;sid=".$artinfo["sid"]."$r_options'>";
+			$read_link = "<a href='modules.php?name=$nuke_module_name&amp;file=read_article&amp;sid=".$artinfo["sid"]."$r_options' onclick=\"NewsReadWindow(this.href,'ReadArticle','600','400','yes');return false;\">";
+            $story_link = "<a href='modules.php?name=$nuke_module_name&amp;file=article&amp;sid=".$artinfo["sid"]."$r_options'>";
             $morelink = "( ";
 
             if($neconfig["texttype"] == 0) 
@@ -231,7 +231,7 @@ switch ($op)
 			{
                 $result3 = $nuke_db->sql_query("SELECT title FROM ".$prefix."_stories_cat WHERE catid='".$artinfo["catid"]."'");
                 $catinfo = $nuke_db->sql_fetchrow($result3);
-                $morelink .= " | <a href='modules.php?name=$module_name&amp;file=categories&amp;op=newindex&amp;catid=".$artinfo["catid"]."'>".$catinfo["title"]."</a>";
+                $morelink .= " | <a href='modules.php?name=$nuke_module_name&amp;file=categories&amp;op=newindex&amp;catid=".$artinfo["catid"]."'>".$catinfo["title"]."</a>";
             }
             
 			if ($artinfo["score"] != 0) 
@@ -305,7 +305,7 @@ switch ($op)
             
 			$currentpage = ($max / $storynum);
             
-			echo "<form action='modules.php?name=$module_name' method='post'>\n";
+			echo "<form action='modules.php?name=$nuke_module_name' method='post'>\n";
             echo "<table align='center' border='0' cellpadding='2' cellspacing='2'>\n";
             echo "<tr>\n<td><strong>"._NE_SELECT." </strong><select name='min' onChange='top.location.href=this.options[this.selectedIndex].value'>\n";
             
@@ -317,7 +317,7 @@ switch ($op)
 			    if ($counter == $currentpage) 
                 echo "<option selected>$counter</option>\n";
 				else 
-                echo "<option value='modules.php?name=$module_name&amp;min=$mintemp&amp;file=categories&amp;catid=$catid'>$counter</option>\n";
+                echo "<option value='modules.php?name=$nuke_module_name&amp;min=$mintemp&amp;file=categories&amp;catid=$catid'>$counter</option>\n";
                 
 				$counter++;
             }

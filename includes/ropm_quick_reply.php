@@ -62,7 +62,7 @@ $template_nuke->set_filenames(array(
 <input type="hidden" name="sid" value="' . $nuke_userdata['session_id'] . '" />';
 
    $template_nuke->assign_block_vars('ROPM_QUICK_REPLY', array(
-      'POST_ACTION' => append_sid("privmsg.$phpEx"),
+      'POST_ACTION' => append_nuke_sid("privmsg.$phpEx"),
       'S_HIDDEN_FIELDS' => $s_hidden_fields,
       'SUBJECT' => ( ( !preg_match('/^Re:/', $privmsg['privmsgs_subject']) ) ? 'Re: ' : '' ) . str_replace('"', "&quot;", $privmsg['privmsgs_subject']),
       'BB_BOX' => Make_TextArea_Ret('message', '', 'post', '100%', '200px', true),
@@ -87,7 +87,7 @@ if ( $board_config['allow_smilies'] )
    generate_smilies_row();
 }
    $template_nuke->assign_vars(array(
-      'U_MORE_SMILIES' => append_sid("posting.$phpEx?mode=smilies"),
+      'U_MORE_SMILIES' => append_nuke_sid("posting.$phpEx?mode=smilies"),
       'L_EMPTY_MESSAGE' => $lang['Empty_message'],
       'L_PREVIEW' => $lang['Preview'],
       'L_SUBMIT' => $lang['Submit'],

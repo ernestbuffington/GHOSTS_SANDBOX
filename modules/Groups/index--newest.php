@@ -40,7 +40,7 @@
 
 if (!defined('NUKE_EVO')) exit;
 
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 require(NUKE_PHPBB2_DIR.'nukebb.php');
 define('IN_PHPBB2', true);
 include(NUKE_PHPBB2_DIR.'extension.inc');
@@ -88,7 +88,7 @@ function generate_user_info(&$row, $date_format, $group_mod, &$from, &$flag, &$p
 
         if ( !empty($row['user_viewemail']) || $group_mod ) 
         {
-			$email_uri 	= ( $board_config['board_email_form'] ) ? append_sid("profile.$phpEx?mode=email&amp;" . NUKE_POST_USERS_URL .'=' . $row['user_id']) : 'mailto:' . $row['user_email'];
+			$email_uri 	= ( $board_config['board_email_form'] ) ? append_nuke_sid("profile.$phpEx?mode=email&amp;" . NUKE_POST_USERS_URL .'=' . $row['user_id']) : 'mailto:' . $row['user_email'];
 			$email_img 	= '<a href="' . $email_uri . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" border="0" /></a>';
 			$email 		= '<a href="' . $email_uri . '">' . $lang['Send_email'] . '</a>';
         } 
@@ -109,7 +109,7 @@ function generate_user_info(&$row, $date_format, $group_mod, &$from, &$flag, &$p
         $www_img 		= ( $row['user_website'] ) ? '<a href="' . $row['user_website'] . '" target="_userwww"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" border="0" /></a>' : '';
         $www 			= ( $row['user_website'] ) ? '<a href="' . $row['user_website'] . '" target="_userwww">' . $lang['Visit_website'] . '</a>' : '';  
 
-        $temp_url = append_sid("search.$phpEx?search_author=" . urlencode($row['username']) . "&amp;showresults=posts");
+        $temp_url = append_nuke_sid("search.$phpEx?search_author=" . urlencode($row['username']) . "&amp;showresults=posts");
         $search_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $row['username']) . '" title="' . sprintf($lang['Search_user_posts'], $row['username']) . '" border="0" /></a>';
         $search = '<a href="' . $temp_url . '">' . sprintf($lang['Search_user_posts'], $row['username']) . '</a>';
 
@@ -120,13 +120,13 @@ function generate_user_info(&$row, $date_format, $group_mod, &$from, &$flag, &$p
         {
             if ($row['user_allow_viewonline']) 
             {
-                $online_status_img = '<a href="' . append_sid("viewonline.$phpEx") . '"><img src="' . $images['icon_online'] . '" alt="' . sprintf($lang['is_online'], $row['username']) . '" title="' . sprintf($lang['is_online'], $row['username']) . '" /></a>';
-                $online_status = '<strong><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_online'], $row['username']) . '"' . $online_color . '>' . $lang['Online'] . '</a></strong>';
+                $online_status_img = '<a href="' . append_nuke_sid("viewonline.$phpEx") . '"><img src="' . $images['icon_online'] . '" alt="' . sprintf($lang['is_online'], $row['username']) . '" title="' . sprintf($lang['is_online'], $row['username']) . '" /></a>';
+                $online_status = '<strong><a href="' . append_nuke_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_online'], $row['username']) . '"' . $online_color . '>' . $lang['Online'] . '</a></strong>';
             } 
             elseif (!empty($row['user_allow_viewonline']) || $group_mod || $nuke_userdata['user_id'] == $row['user_id']) 
             {
-                $online_status_img = '<a href="' . append_sid("viewonline.$phpEx") . '"><img src="' . $images['icon_hidden'] . '" alt="' . sprintf($lang['is_hidden'], $row['username']) . '" title="' . sprintf($lang['is_hidden'], $row['username']) . '" /></a>';
-                $online_status = '<strong><em><a href="' . append_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_hidden'], $row['username']) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em></strong>';
+                $online_status_img = '<a href="' . append_nuke_sid("viewonline.$phpEx") . '"><img src="' . $images['icon_hidden'] . '" alt="' . sprintf($lang['is_hidden'], $row['username']) . '" title="' . sprintf($lang['is_hidden'], $row['username']) . '" /></a>';
+                $online_status = '<strong><em><a href="' . append_nuke_sid("viewonline.$phpEx") . '" title="' . sprintf($lang['is_hidden'], $row['username']) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em></strong>';
             } 
             else 
             {
@@ -152,13 +152,13 @@ global $nuke_cache;
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, PAGE_GROUPCP);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, PAGE_GROUPCP);
 init_userprefs($nuke_userdata);
 //
 // End session management
 //
 
-$script_name = 'modules.php?name=' . $module_name;
+$script_name = 'modules.php?name=' . $nuke_module_name;
 $server_name = trim($board_config['server_name']);
 $server_protocol = ( $board_config['cookie_secure'] ) ? 'https://' : 'http://';
 $server_port = ( $board_config['server_port'] <> 80 ) ? ':' . trim($board_config['server_port']) . '/' : '/';
@@ -191,7 +191,7 @@ $is_moderator = FALSE;
 
 if ( isset($_POST['groupstatus']) && $group_id ) {
         if ( !is_user() ) {
-                nuke_redirect(append_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
+                nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
         }
         $sql = "SELECT group_moderator FROM " . NUKE_GROUPS_TABLE . " WHERE group_id = '$group_id'";
         if ( !($result = $nuke_db->sql_query($sql)) ) {
@@ -200,9 +200,9 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
         $row = $nuke_db->sql_fetchrow($result);
         if ( $row['group_moderator'] != $nuke_userdata['user_id'] && $nuke_userdata['user_level'] != NUKE_ADMIN ) {
                 $template_nuke->assign_vars(array(
-                        'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
+                        'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("index.$phpEx") . '">')
                 );
-                $message = $lang['Not_group_moderator'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                $message = $lang['Not_group_moderator'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
                 message_die(NUKE_GENERAL_MESSAGE, $message);
         }
         $sql = "UPDATE " . NUKE_GROUPS_TABLE . " SET group_type = " . intval($_POST['group_type']) . " WHERE group_id = '$group_id'";
@@ -210,9 +210,9 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                 message_die(NUKE_GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
         }
         $template_nuke->assign_vars(array(
-                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
+                'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
         );
-        $message = $lang['Group_type_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+        $message = $lang['Group_type_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
         message_die(NUKE_GENERAL_MESSAGE, $message);
 } elseif ( isset($_POST['joingroup']) && $group_id ) {
         //
@@ -220,7 +220,7 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
         // If the user isn't logged in nuke_redirect them to login
         //
         if ( !is_user() || !$nuke_userdata['session_logged_in']) {
-                nuke_redirect(append_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
+                nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
         } else if ( $sid !== $nuke_userdata['session_id'] )
     	{
     		message_die(NUKE_GENERAL_ERROR, $lang['Session_invalid']);
@@ -246,17 +246,17 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                         do  {
                                 if ( $nuke_userdata['user_id'] == $row['user_id'] ) {
                                         $template_nuke->assign_vars(array(
-                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
+                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("index.$phpEx") . '">')
                                         );
-                                        $message = $lang['Already_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                                        $message = $lang['Already_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
                                         message_die(NUKE_GENERAL_MESSAGE, $message);
                                 }
                         } while ( $row = $nuke_db->sql_fetchrow($result) );
                 } else {
                         $template_nuke->assign_vars(array(
-                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
+                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("index.$phpEx") . '">')
                         );
-                        $message = $lang['This_closed_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                        $message = $lang['This_closed_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
                         message_die(NUKE_GENERAL_MESSAGE, $message);
                 }
         } else {
@@ -297,9 +297,9 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
         $emailer->reset();
         }
         $template_nuke->assign_vars(array(
-                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
+                'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("index.$phpEx") . '">')
         );
-        $message = ($is_autogroup_enable) ? $lang['Group_added'] : $lang['Group_joined'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+        $message = ($is_autogroup_enable) ? $lang['Group_added'] : $lang['Group_joined'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
         message_die(NUKE_GENERAL_MESSAGE, $message);
 } elseif ( isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id ) {
         //
@@ -307,7 +307,7 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
         // Check for confirmation of unsub.
         //
         if ( $cancel ) {
-                nuke_redirect(append_sid("groupcp.$phpEx", true));
+                nuke_redirect(append_nuke_sid("groupcp.$phpEx", true));
         } elseif ( !is_user() || !$nuke_userdata['session_logged_in'] )  {
                 nuke_redirect('modules.php?name=Your_Account&amp;nuke_redirect=groupcp.php&amp;' . NUKE_POST_GROUPS_URL . '='.$group_id);
         } else if ( $sid !== $nuke_userdata['session_id'] )
@@ -369,10 +369,10 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                 }
 
                 $template_nuke->assign_vars(array(
-                        'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
+                        'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("index.$phpEx") . '">')
                 );
 
-                $message = $lang['Unsub_success'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                $message = $lang['Unsub_success'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
 
                 message_die(NUKE_GENERAL_MESSAGE, $message);
         }
@@ -395,7 +395,7 @@ if ( isset($_POST['groupstatus']) && $group_id ) {
                         'MESSAGE_TEXT' => $unsub_msg,
                         'L_YES' => $lang['Yes'],
                         'L_NO' => $lang['No'],
-                        'S_CONFIRM_ACTION' => append_sid("groupcp.$phpEx"),
+                        'S_CONFIRM_ACTION' => append_nuke_sid("groupcp.$phpEx"),
                         'S_HIDDEN_FIELDS' => $s_hidden_fields)
                 );
 
@@ -415,7 +415,7 @@ else if ( $group_id )
         {
                 if ( !is_user() )
                 {
-                        nuke_redirect(append_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
+                        nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
                         exit;
                 }
         }
@@ -449,7 +449,7 @@ else if ( $group_id )
                 {
                         if ( !is_user() )
                         {
-                                nuke_redirect(append_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
+                                nuke_redirect(append_nuke_sid("login.$phpEx?nuke_redirect=groupcp.$phpEx&" . NUKE_POST_GROUPS_URL . "=$group_id", true));
                         } else if ( $sid !== $nuke_userdata['session_id'] )
             			{
             				message_die(NUKE_GENERAL_ERROR, $lang['Session_invalid']);
@@ -458,10 +458,10 @@ else if ( $group_id )
                         if ( !$is_moderator )
                         {
                                 $template_nuke->assign_vars(array(
-                                        'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">')
+                                        'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("index.$phpEx") . '">')
                                 );
 
-                                $message = $lang['Not_group_moderator'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                                $message = $lang['Not_group_moderator'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
 
                                 message_die(NUKE_GENERAL_MESSAGE, $message);
                         }
@@ -481,10 +481,10 @@ else if ( $group_id )
                                 if ( !($row = $nuke_db->sql_fetchrow($result)) )
                                 {
                                         $template_nuke->assign_vars(array(
-                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
+                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
                                         );
 
-                                        $message = $lang['Could_not_add_user'] . "<br /><br />" . sprintf($lang['Click_return_group'], "<a href=\"" . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_index'], "<a href=\"" . append_sid("index.$phpEx") . "\">", "</a>");
+                                        $message = $lang['Could_not_add_user'] . "<br /><br />" . sprintf($lang['Click_return_group'], "<a href=\"" . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_index'], "<a href=\"" . append_nuke_sid("index.$phpEx") . "\">", "</a>");
 
                                         message_die(NUKE_GENERAL_MESSAGE, $message);
                                 }
@@ -492,10 +492,10 @@ else if ( $group_id )
                                 if ( $row['user_id'] == NUKE_ANONYMOUS )
                                 {
                                         $template_nuke->assign_vars(array(
-                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
+                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
                                         );
 
-                                        $message = $lang['Could_not_anon_user'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                                        $message = $lang['Could_not_anon_user'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
 
                                         message_die(NUKE_GENERAL_MESSAGE, $message);
                                 }
@@ -577,10 +577,10 @@ else if ( $group_id )
                                 else
                                 {
                                         $template_nuke->assign_vars(array(
-                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
+                                                'META' => '<meta http-equiv="refresh" content="3;url=' . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">')
                                         );
 
-                                        $message = $lang['User_is_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
+                                        $message = $lang['User_is_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>');
 
                                         message_die(NUKE_GENERAL_MESSAGE, $message);
                                 }
@@ -1128,8 +1128,8 @@ else if ( $group_id )
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
 
-                'U_MOD_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id"),
-                'U_SEARCH_USER' => append_sid("search.$phpEx?mode=searchuser&popup=1"),
+                'U_MOD_VIEWPROFILE' => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id"),
+                'U_SEARCH_USER' => append_nuke_sid("search.$phpEx?mode=searchuser&popup=1"),
 
                 'S_GROUP_OPEN_TYPE' => NUKE_GROUP_OPEN,
                 'S_GROUP_CLOSED_TYPE' => NUKE_GROUP_CLOSED,
@@ -1140,7 +1140,7 @@ else if ( $group_id )
                 'S_HIDDEN_FIELDS' => $s_hidden_fields,
                 'S_MODE_SELECT' => $select_sort_mode,
                 'S_ORDER_SELECT' => $select_sort_order,
-                'S_GROUPCP_ACTION' => append_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id"))
+                'S_GROUPCP_ACTION' => append_nuke_sid("groupcp.$phpEx?" . NUKE_POST_GROUPS_URL . "=$group_id"))
         );
 
         //
@@ -1205,7 +1205,7 @@ else if ( $group_id )
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
 
-                                'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id"))
+                                'U_VIEWPROFILE' => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id"))
                         );
 
                         if ( $is_moderator )
@@ -1316,7 +1316,7 @@ else if ( $group_id )
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/
 
-                                        'U_VIEWPROFILE' => append_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id"))
+                                        'U_VIEWPROFILE' => append_nuke_sid("profile.$phpEx?mode=viewprofile&amp;" . NUKE_POST_USERS_URL . "=$nuke_user_id"))
                                 );
                         }
 
@@ -1464,7 +1464,7 @@ else
                         'L_UNSUBSCRIBE' => $lang['Unsubscribe'],
                         'L_VIEW_INFORMATION' => $lang['View_Information'],
 
-                        'S_USERGROUP_ACTION' => append_sid("groupcp.$phpEx"),
+                        'S_USERGROUP_ACTION' => append_nuke_sid("groupcp.$phpEx"),
                         'S_HIDDEN_FIELDS' => $s_hidden_fields,
 
                         'GROUP_LIST_SELECT' => $s_group_list,

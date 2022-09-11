@@ -27,7 +27,7 @@
 if( !empty($setmodules) )
 {
 	$file = basename(__FILE__);
-	$module['Users']['Ranks'] = $file;
+	$nuke_module['Users']['Ranks'] = $file;
 	return;
 }
 
@@ -43,7 +43,7 @@ $no_nuke_page_header = $cancel;
 require('./pagestart.' . $phpEx);
 if ($cancel)
 {
-	nuke_redirect(append_sid("admin_ranks.$phpEx", true));
+	nuke_redirect(append_nuke_sid("admin_ranks.$phpEx", true));
 }
 
 if( isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']) )
@@ -216,7 +216,7 @@ if( $mode != "" )
                         "L_YES" => $lang['Yes'],
                         "L_NO" => $lang['No'],
 
-                        "S_RANK_ACTION" => append_sid("admin_ranks.$phpEx"),
+                        "S_RANK_ACTION" => append_nuke_sid("admin_ranks.$phpEx"),
                         "S_HIDDEN_FIELDS" => $s_hidden_fields)
                 );
 
@@ -305,7 +305,7 @@ if( $mode != "" )
                         message_die(NUKE_GENERAL_ERROR, "Couldn't update/insert into ranks table", "", __LINE__, __FILE__, $sql);
                 }
 
-                $message .= "<br /><br />" . sprintf($lang['Click_return_rankadmin'], "<a href=\"" . append_sid("admin_ranks.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+                $message .= "<br /><br />" . sprintf($lang['Click_return_rankadmin'], "<a href=\"" . append_nuke_sid("admin_ranks.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
                 message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -344,7 +344,7 @@ if( $mode != "" )
                                 message_die(NUKE_GENERAL_ERROR, $lang['No_update_ranks'], "", __LINE__, __FILE__, $sql);
                         }
 
-                        $message = $lang['Rank_removed'] . "<br /><br />" . sprintf($lang['Click_return_rankadmin'], "<a href=\"" . append_sid("admin_ranks.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
+                        $message = $lang['Rank_removed'] . "<br /><br />" . sprintf($lang['Click_return_rankadmin'], "<a href=\"" . append_nuke_sid("admin_ranks.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_nuke_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
                         message_die(NUKE_GENERAL_MESSAGE, $message);
 
@@ -365,7 +365,7 @@ if( $mode != "" )
  				'L_YES' => $lang['Yes'],
  				'L_NO' => $lang['No'],
 
- 				'S_CONFIRM_ACTION' => append_sid("admin_ranks.$phpEx"),
+ 				'S_CONFIRM_ACTION' => append_nuke_sid("admin_ranks.$phpEx"),
  				'S_HIDDEN_FIELDS' => $hidden_fields)
  			);
  		}
@@ -408,7 +408,7 @@ if( $mode != "" )
  	"L_ADD_RANK" => $lang['Add_new_rank'],
  	"L_ACTION" => $lang['Action'],
 
- 	"S_RANKS_ACTION" => append_sid("admin_ranks.$phpEx"))
+ 	"S_RANKS_ACTION" => append_nuke_sid("admin_ranks.$phpEx"))
  );
 
  for($i = 0; $i < $rank_count; $i++)
@@ -450,8 +450,8 @@ if( $mode != "" )
  		"SPECIAL_RANK" => $rank_is_special,
  		"RANK_MIN" => $rank_min,
 
- 		"U_RANK_EDIT" => append_sid("admin_ranks.$phpEx?mode=edit&amp;id=$rank_id"),
- 		"U_RANK_DELETE" => append_sid("admin_ranks.$phpEx?mode=delete&amp;id=$rank_id"))
+ 		"U_RANK_EDIT" => append_nuke_sid("admin_ranks.$phpEx?mode=edit&amp;id=$rank_id"),
+ 		"U_RANK_DELETE" => append_nuke_sid("admin_ranks.$phpEx?mode=delete&amp;id=$rank_id"))
  	);
  }
 

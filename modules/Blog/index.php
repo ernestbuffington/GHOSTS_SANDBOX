@@ -34,13 +34,13 @@ if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 
 define('INDEX_FILE', true);
 
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 
 include_once(NUKE_INCLUDE_DIR.'nsnne_func.php');
 
 $neconfig = ne_get_configs();
 
-get_lang($module_name);
+get_lang($nuke_module_name);
 
     global $nuke_db, 
     $storyhome, 
@@ -62,7 +62,7 @@ get_lang($module_name);
 automated_news();
 
 if (isset($new_topic)) 
-nuke_redirect("modules.php?name=$module_name&file=topics&topic=$new_topic"); 
+nuke_redirect("modules.php?name=$nuke_module_name&file=topics&topic=$new_topic"); 
 
 $main_module = main_module();
 
@@ -202,19 +202,19 @@ switch ($op)
             # show the user buttons
 			if (is_user()) 
             {
-                $the_icons .= ' | <a href="modules.php?name='.$module_name.'&amp;file=print&amp;sid='.$artinfo["sid"].'"><i class="fa fa-print"></i></a>'.PHP_EOL;
-                $the_icons .= '&nbsp;<a href="modules.php?name='.$module_name.'&amp;file=friend&amp;op=FriendSend&amp;sid='.$artinfo["sid"].'"><i class="fa fa-envelope"></i></a>';
+                $the_icons .= ' | <a href="modules.php?name='.$nuke_module_name.'&amp;file=print&amp;sid='.$artinfo["sid"].'"><i class="fa fa-print"></i></a>'.PHP_EOL;
+                $the_icons .= '&nbsp;<a href="modules.php?name='.$nuke_module_name.'&amp;file=friend&amp;op=FriendSend&amp;sid='.$artinfo["sid"].'"><i class="fa fa-envelope"></i></a>';
             }
 			
             # show thw admin buttons
-			if (is_mod_admin($module_name)) 
+			if (is_mod_admin($nuke_module_name)) 
             {
                 $the_icons .= ' | <a href="'.$admin_file.'.php?op=EditStory&amp;sid='.$artinfo["sid"].'"><i class="fa fa-pen"></i></a>'.PHP_EOL;
                 $the_icons .= '&nbsp;<a href="'.$admin_file.'.php?op=RemoveStory&amp;sid='.$artinfo["sid"].'"><i class="fa fa-times-circle"></i></a>';
             }
 
-            $read_link = "<a href='modules.php?name=$module_name&amp;file=read_article&amp;sid=".$artinfo["sid"]."$r_options' onclick=\"NewsReadWindow(this.href,'ReadArticle','600','400','yes');return false;\">";
-            $story_link = "<a href='modules.php?name=$module_name&amp;file=article&amp;sid=".$artinfo["sid"]."$r_options'>";
+            $read_link = "<a href='modules.php?name=$nuke_module_name&amp;file=read_article&amp;sid=".$artinfo["sid"]."$r_options' onclick=\"NewsReadWindow(this.href,'ReadArticle','600','400','yes');return false;\">";
+            $story_link = "<a href='modules.php?name=$nuke_module_name&amp;file=article&amp;sid=".$artinfo["sid"]."$r_options'>";
             
 			
             $seperator = " )&nbsp;( ";
@@ -276,7 +276,7 @@ switch ($op)
                 $result3 = $nuke_db->sql_query("SELECT title FROM ".$prefix."_stories_cat WHERE catid='".$artinfo["catid"]."'");
                 $catinfo = $nuke_db->sql_fetchrow($result3);
                 $nuke_db->sql_freeresult($result3);
-                $morelink .= " | <a href='modules.php?name=$module_name&amp;file=categories&amp;op=newindex&amp;catid=".$artinfo["catid"]."'>".$catinfo["title"]."</a>";
+                $morelink .= " | <a href='modules.php?name=$nuke_module_name&amp;file=categories&amp;op=newindex&amp;catid=".$artinfo["catid"]."'>".$catinfo["title"]."</a>";
             }
             
 			if ($artinfo["score"] != 0) 
@@ -375,7 +375,7 @@ switch ($op)
 		    $counter = 1;
             $currentpage = ($max / $storynum);
         
-		    echo "<div align=\"center\"><form action='modules.php?name=$module_name' method='post'>\n";
+		    echo "<div align=\"center\"><form action='modules.php?name=$nuke_module_name' method='post'>\n";
             echo "<table align='center' border='0' cellpadding='2' cellspacing='2'>\n";
             echo "<tr>\n<td><strong>"._NE_SELECT." </strong><select name='min' onChange='top.location.href=this.options[this.selectedIndex].value'>\n";
         
@@ -388,10 +388,10 @@ switch ($op)
                     echo "<option selected>$counter</option>\n";
 				else 
 				{
-                    if($module_name == $main_module) 
+                    if($nuke_module_name == $main_module) 
                       echo "<option value='index.php?min=$mintemp'>$counter</option>\n";
 					else 
-                      echo "<option value='modules.php?name=$module_name&amp;min=$mintemp'>$counter</option>\n";
+                      echo "<option value='modules.php?name=$nuke_module_name&amp;min=$mintemp'>$counter</option>\n";
                 }
                 
 				$counter++;
@@ -440,7 +440,7 @@ switch ($op)
             
 			if ($a == 1) 
 			{
-                nuke_redirect("modules.php?name=$module_name&op=rate_complete&sid=$sid&rated=1");
+                nuke_redirect("modules.php?name=$nuke_module_name&op=rate_complete&sid=$sid&rated=1");
             } 
 			else 
 			{
@@ -484,13 +484,13 @@ switch ($op)
 		if ($rated == 0) 
 		{
             echo "<br /><br /><div align=\"center\"><strong>"._THANKSVOTEARTICLE."</strong><br /><br />";
-            echo "[ <a href='modules.php?name=$module_name&amp;file=article&amp;sid=$sid$r_options'>"._BACKTOARTICLEPAGE."</a> ]</div><br /><br />";
+            echo "[ <a href='modules.php?name=$nuke_module_name&amp;file=article&amp;sid=$sid$r_options'>"._BACKTOARTICLEPAGE."</a> ]</div><br /><br />";
         } 
 		else
 		if ($rated == 1) 
 		{
             echo "<br /><br /><div align=\"center\"><strong>"._ALREADYVOTEDARTICLE."</strong><br /><br />";
-            echo "[ <a href='modules.php?name=$module_name&amp;file=article&amp;sid=$sid$r_options'>"._BACKTOARTICLEPAGE."</a> ]</div><br /><br />";
+            echo "[ <a href='modules.php?name=$nuke_module_name&amp;file=article&amp;sid=$sid$r_options'>"._BACKTOARTICLEPAGE."</a> ]</div><br /><br />";
         }
         
 		CloseTable();

@@ -47,7 +47,7 @@
  ************************************************************************/
 if (!defined('MODULE_FILE'))die('You can\'t access this file directly...');
 
-$module_name = basename(dirname(__FILE__));
+$nuke_module_name = basename(dirname(__FILE__));
 require(NUKE_PHPBB2_DIR.'/nukebb.php');
 
 define('IN_PHPBB2', true);
@@ -55,7 +55,7 @@ include($phpbb2_root_path.'extension.inc');
 include($phpbb2_root_path.'common.'.$phpEx);
 
 # Start session management
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_VIEW_MEMBERS);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_VIEW_MEMBERS);
 init_userprefs($nuke_userdata);
 
 $pageroot = (!empty($HTTP_GET_VARS['page'])) ? $HTTP_GET_VARS['page'] : 1;
@@ -120,7 +120,7 @@ $template_nuke->assign_vars(array(
     # Mod: Birthdays v3.0.0 END
 
 	'S_ORDER_SELECT' 		=> select_box('order',$sort_order,array('ASC' => $lang['Sort_Ascending'], 'DESC' => $lang['Sort_Descending'])),
-	'S_MODE_ACTION' 		=> append_sid("memberlist.$phpEx"))
+	'S_MODE_ACTION' 		=> append_nuke_sid("memberlist.$phpEx"))
 );
 
 # SEARCH FOR USERS VIA THE ALPHABET LISTING - START
@@ -333,7 +333,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
 		$posts = ($row['user_posts']) ? '<a href="modules.php?name=Forums&file=search&search_author='.$nuke_username.'">'.$row['user_posts'].'</a>' : 0;
 		
 		# Private message link
-		$pm = '<a href="'.append_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$nuke_user_id").'"><img class="tooltip-html copyright" alt="Male" title="Send A Private Message To '.$nuke_username.'" width="30"alt="online" src="themes/'.$theme_name.'/forums/images/status/icons8-send-80.png" /></a>';
+		$pm = '<a href="'.append_nuke_sid("privmsg.$phpEx?mode=post&amp;".NUKE_POST_USERS_URL."=$nuke_user_id").'"><img class="tooltip-html copyright" alt="Male" title="Send A Private Message To '.$nuke_username.'" width="30"alt="online" src="themes/'.$theme_name.'/forums/images/status/icons8-send-80.png" /></a>';
 		
 		# does the person have a dick START
 		if($row['user_gender'] ==1)
@@ -363,7 +363,7 @@ if($row = $nuke_db->sql_fetchrow($result)):
    
 	   elseif($row['user_session_time'] >= (time()-$board_config['online_time'])):
 	   $theme_name = get_theme();
-	   $online_status = '<a class="tooltip-html copyright" href="'.append_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_online'],$row['username']).'"'.$online_color.'><img 
+	   $online_status = '<a class="tooltip-html copyright" href="'.append_nuke_sid("viewonline.$phpEx").'" title="'.sprintf($lang['is_online'],$row['username']).'"'.$online_color.'><img 
 	   alt="online" src="themes/'.$theme_name.'/forums/images/status/online_bgcolor_one.gif" /></a>';
 	   else:
        $online_status = '<span class="tooltip-html copyright" title="'.sprintf($lang['is_offline'],$row['username']).'"'.$offline_color.'><img 

@@ -1,23 +1,43 @@
 <?php
-/**
+/** PORT DATE 09/06/2022 to 09/09/2022
 *
-* This file is part of the phpBB Forum Software package.
+* This file is a part of PHP-AN602 v3.3.x
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* Ernest Allen Buffington of The 86it Developers Network
+* is the author of PHP-ANG602 and this port of phpBB v3.3.x
+* 
+* You may contact TheGhost AKA Ernest Allen Buffington
+* email: <webmaster@an602.86it.us>
+* cell: 813-846-2865 
+*
+* @copyright (c) Brandon Maintenance Management <https://www.facebook.com/brandon.maintenance>
 * @license GNU General Public License, version 2 (GPL-2.0)
+*
+* This file is part of a Fork of phpBB v3.3.8 Forum Software package.
+*
+* Original @copyright (c) phpBB Limited <https://www.phpbb.com>
+* Original @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
 * the docs/CREDITS.txt file.
 *
 */
 
-/**
-* @ignore
-*/
+if(defined('PHPBB3_MODULE') ):                                             #### ADD Ernest Allen Buffington 09/09/2022
+$nuke_module_name = basename(dirname(__FILE__));                                #### ADD Ernest Allen Buffington 09/09/2022
+require(NUKE_PHPBB3_DIR . 'nukebb.php');                                   #### ADD Ernest Allen Buffington 09/09/2022
+define('IN_PHPBB', true);                                                  #### ADD Ernest Allen Buffington 09/09/2022
+$phpbb_root_path = (defined('NUKE_PHPBB3_DIR')) ? NUKE_PHPBB3_DIR : './';  #### ADD Ernest Allen Buffington 09/09/2022 [ ONLY IDIOTS JUMP ON BAND WAGONS ]
+$phpEx = substr(strrchr(__FILE__, '.'), 1);                                #### ADD Ernest Allen Buffington 09/09/2022
+include(NUKE_PHPBB3_DIR . 'extension.inc');                                #### ADD Ernest Allen Buffington 09/09/2022
+include(NUKE_PHPBB3_DIR . 'common.' . $phpEx);                             #### ADD Ernest Allen Buffington 09/09/2022
+else:                                                                      #### ADD Ernest Allen Buffington 09/09/2022
+
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
+endif;                                                                     #### ADD Ernest Allen Buffington 09/09/2022
 
 // Start session management
 $user->session_begin();
@@ -87,7 +107,7 @@ if ($mode == 'whois' && $auth->acl_get('a_') && $session_id)
 	$template->set_filenames(array(
 		'body' => 'viewonline_whois.html')
 	);
-	make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
+	make_jumpbox(append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx"));
 
 	page_footer();
 }
@@ -250,12 +270,12 @@ while ($row = $db->sql_fetchrow($result))
 	{
 		case 'index':
 			$location = $user->lang['INDEX'];
-			$location_url = append_sid("{$phpbb_root_path}index.$phpEx");
+			$location_url = append_sid("modules.php?name=$nuke_module_name");
 		break;
 
 		case $phpbb_adm_relative_path . 'index':
 			$location = $user->lang['ACP'];
-			$location_url = append_sid("{$phpbb_root_path}index.$phpEx");
+			$location_url = append_sid("modules.php?name=$nuke_module_name");
 		break;
 
 		case 'posting':
@@ -266,7 +286,7 @@ while ($row = $db->sql_fetchrow($result))
 			if ($forum_id && $auth->acl_get('f_list', $forum_id))
 			{
 				$location = '';
-				$location_url = append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_id);
+				$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $forum_id);
 
 				if ($forum_data[$forum_id]['forum_type'] == FORUM_LINK)
 				{
@@ -305,22 +325,22 @@ while ($row = $db->sql_fetchrow($result))
 			else
 			{
 				$location = $user->lang['INDEX'];
-				$location_url = append_sid("{$phpbb_root_path}index.$phpEx");
+				$location_url = append_sid("modules.php?name=$nuke_module_name");
 			}
 		break;
 
 		case 'search':
 			$location = $user->lang['SEARCHING_FORUMS'];
-			$location_url = append_sid("{$phpbb_root_path}search.$phpEx");
+			$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=search.$phpEx");
 		break;
 
 		case 'viewonline':
 			$location = $user->lang['VIEWING_ONLINE'];
-			$location_url = append_sid("{$phpbb_root_path}viewonline.$phpEx");
+			$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx");
 		break;
 
 		case 'memberlist':
-			$location_url = append_sid("{$phpbb_root_path}memberlist.$phpEx");
+			$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=memberlist.$phpEx");
 
 			if (strpos($row['session_page'], 'mode=viewprofile') !== false)
 			{
@@ -329,7 +349,7 @@ while ($row = $db->sql_fetchrow($result))
 			else if (strpos($row['session_page'], 'mode=contactadmin') !== false)
 			{
 				$location = $user->lang['VIEWING_CONTACT_ADMIN'];
-				$location_url = append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=contactadmin');
+				$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=memberlist.$phpEx", 'mode=contactadmin');
 			}
 			else
 			{
@@ -339,7 +359,7 @@ while ($row = $db->sql_fetchrow($result))
 
 		case 'mcp':
 			$location = $user->lang['VIEWING_MCP'];
-			$location_url = append_sid("{$phpbb_root_path}index.$phpEx");
+			$location_url = append_sid("modules.php?name=$nuke_module_name");
 		break;
 
 		case 'ucp':
@@ -363,22 +383,22 @@ while ($row = $db->sql_fetchrow($result))
 				}
 			}
 
-			$location_url = append_sid("{$phpbb_root_path}index.$phpEx");
+			$location_url = append_sid("modules.php?name=$nuke_module_name");
 		break;
 
 		case 'download/file':
 			$location = $user->lang['DOWNLOADING_FILE'];
-			$location_url = append_sid("{$phpbb_root_path}index.$phpEx");
+			$location_url = append_sid("modules.php?name=$nuke_module_name");
 		break;
 
 		case 'report':
 			$location = $user->lang['REPORTING_POST'];
-			$location_url = append_sid("{$phpbb_root_path}index.$phpEx");
+			$location_url = append_sid("modules.php?name=$nuke_module_name");
 		break;
 
 		default:
 			$location = $user->lang['INDEX'];
-			$location_url = append_sid("{$phpbb_root_path}index.$phpEx");
+			$location_url = append_sid("modules.php?name=$nuke_module_name");
 
 			if ($row['session_page'] === 'app.' . $phpEx . '/help/faq' ||
 				$row['session_page'] === 'app.' . $phpEx . '/help/bbcode')
@@ -414,8 +434,8 @@ while ($row = $db->sql_fetchrow($result))
 		'USER_BROWSER'		=> ($auth->acl_get('a_user')) ? $row['session_browser'] : '',
 
 		'U_USER_PROFILE'	=> ($row['user_type'] != USER_IGNORE) ? get_username_string('profile', $row['user_id'], '') : '',
-		'U_USER_IP'			=> append_sid("{$phpbb_root_path}viewonline.$phpEx", 'mode=lookup' . (($mode != 'lookup' || $row['session_id'] != $session_id) ? '&amp;s=' . $row['session_id'] : '') . "&amp;sg=$show_guests&amp;start=$start&amp;sk=$sort_key&amp;sd=$sort_dir"),
-		'U_WHOIS'			=> append_sid("{$phpbb_root_path}viewonline.$phpEx", 'mode=whois&amp;s=' . $row['session_id']),
+		'U_USER_IP'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", 'mode=lookup' . (($mode != 'lookup' || $row['session_id'] != $session_id) ? '&amp;s=' . $row['session_id'] : '') . "&amp;sg=$show_guests&amp;start=$start&amp;sk=$sort_key&amp;sd=$sort_dir"),
+		'U_WHOIS'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", 'mode=whois&amp;s=' . $row['session_id']),
 		'U_FORUM_LOCATION'	=> $location_url,
 
 		'S_USER_HIDDEN'		=> $s_user_hidden,
@@ -475,21 +495,21 @@ while ($row = $db->sql_fetchrow($result))
 	}
 	else
 	{
-		$legend .= (($legend != '') ? ', ' : '') . '<a style="color:#' . $row['group_colour'] . '" href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']) . '">' . $group_helper->get_name($row['group_name']) . '</a>';
+		$legend .= (($legend != '') ? ', ' : '') . '<a style="color:#' . $row['group_colour'] . '" href="' . append_sid("modules.php?name=$nuke_module_name&amp;file=memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']) . '">' . $group_helper->get_name($row['group_name']) . '</a>';
 	}
 }
 $db->sql_freeresult($result);
 
 // Refreshing the page every 60 seconds...
-meta_refresh(60, append_sid("{$phpbb_root_path}viewonline.$phpEx", "sg=$show_guests&amp;sk=$sort_key&amp;sd=$sort_dir&amp;start=$start"));
+meta_refresh(60, append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", "sg=$show_guests&amp;sk=$sort_key&amp;sd=$sort_dir&amp;start=$start"));
 
 $start = $pagination->validate_start($start, $config['topics_per_page'], $counter);
-$base_url = append_sid("{$phpbb_root_path}viewonline.$phpEx", "sg=$show_guests&amp;sk=$sort_key&amp;sd=$sort_dir");
+$base_url = append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", "sg=$show_guests&amp;sk=$sort_key&amp;sd=$sort_dir");
 $pagination->generate_template_pagination($base_url, 'pagination', 'start', $counter, $config['topics_per_page'], $start);
 
 $template->assign_block_vars('navlinks', array(
 	'BREADCRUMB_NAME'	=> $user->lang('WHO_IS_ONLINE'),
-	'U_BREADCRUMB'		=> append_sid("{$phpbb_root_path}viewonline.$phpEx"),
+	'U_BREADCRUMB'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx"),
 ));
 
 // Send data to template
@@ -498,11 +518,11 @@ $template->assign_vars(array(
 	'TOTAL_GUEST_USERS_ONLINE'		=> $user->lang('GUEST_USERS_ONLINE', (int) $guest_counter),
 	'LEGEND'						=> $legend,
 
-	'U_SORT_USERNAME'		=> append_sid("{$phpbb_root_path}viewonline.$phpEx", 'sk=a&amp;sd=' . (($sort_key == 'a' && $sort_dir == 'a') ? 'd' : 'a') . '&amp;sg=' . ((int) $show_guests)),
-	'U_SORT_UPDATED'		=> append_sid("{$phpbb_root_path}viewonline.$phpEx", 'sk=b&amp;sd=' . (($sort_key == 'b' && $sort_dir == 'a') ? 'd' : 'a') . '&amp;sg=' . ((int) $show_guests)),
-	'U_SORT_LOCATION'		=> append_sid("{$phpbb_root_path}viewonline.$phpEx", 'sk=c&amp;sd=' . (($sort_key == 'c' && $sort_dir == 'a') ? 'd' : 'a') . '&amp;sg=' . ((int) $show_guests)),
+	'U_SORT_USERNAME'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", 'sk=a&amp;sd=' . (($sort_key == 'a' && $sort_dir == 'a') ? 'd' : 'a') . '&amp;sg=' . ((int) $show_guests)),
+	'U_SORT_UPDATED'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", 'sk=b&amp;sd=' . (($sort_key == 'b' && $sort_dir == 'a') ? 'd' : 'a') . '&amp;sg=' . ((int) $show_guests)),
+	'U_SORT_LOCATION'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", 'sk=c&amp;sd=' . (($sort_key == 'c' && $sort_dir == 'a') ? 'd' : 'a') . '&amp;sg=' . ((int) $show_guests)),
 
-	'U_SWITCH_GUEST_DISPLAY'	=> append_sid("{$phpbb_root_path}viewonline.$phpEx", 'sg=' . ((int) !$show_guests)),
+	'U_SWITCH_GUEST_DISPLAY'	=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", 'sg=' . ((int) !$show_guests)),
 	'L_SWITCH_GUEST_DISPLAY'	=> ($show_guests) ? $user->lang['HIDE_GUESTS'] : $user->lang['DISPLAY_GUESTS'],
 	'S_SWITCH_GUEST_DISPLAY'	=> ($config['load_online_guests']) ? true : false,
 	'S_VIEWONLINE'				=> true,
@@ -511,12 +531,20 @@ $template->assign_vars(array(
 // We do not need to load the who is online box here. ;)
 $config['load_online'] = false;
 
+                                  # Why would nobody ever help or support people with PHP-Nuke? Nobody at phpBB gives s phuck!
+$request->enable_super_globals(); #### ADD Ernest Allen Buffington 09/09/2022 - Turn Super Globals On
+OpenTable();                      #### ADD Ernest Allen Buffington 09/09/2022 - Needed for Themes - Hail to the tables - phuck the numb nuts!
+
+
 // Output the page
 page_header($user->lang['WHO_IS_ONLINE']);
 
 $template->set_filenames(array(
 	'body' => 'viewonline_body.html')
 );
-make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
+make_jumpbox(append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx"));
 
 page_footer();
+### Always leave a blank line at the end of your PHP file before you save!
+### Phuck the nerds that decided to stop closing tags, that is the kinda shit lazy people do!
+?>

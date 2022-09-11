@@ -114,7 +114,7 @@ for ($i = 0; $i < $num_attachments; $i++)
         $filename_2 = substr($filename, 0, 20) . '...';
     }
 
-    $view_attachment = append_sid('download.' . $phpEx . '?id=' . $attachments[$i]['attach_id']);
+    $view_attachment = append_nuke_sid('download.' . $phpEx . '?id=' . $attachments[$i]['attach_id']);
     $data[$i]['filename_link'] = ($filename_2 != '') ? '<a href="' . $view_attachment . '" class="gen" title="' . $filename . '" target="_blank">' . $filename_2 . '</a>' : '<a href="' . $view_attachment . '" class="gen" target="_blank">' . $filename . '</a>';
 
     // comment_field
@@ -163,7 +163,7 @@ for ($i = 0; $i < $num_attachments; $i++)
         $topic_title_2 = substr($topic_title, 0, 20) . '...';
     }
 
-    $view_topic = append_sid('viewtopic.' . $phpEx . '?' . NUKE_POST_POST_URL . '=' . intval($attachments[$i]['post_id']) . '#' . intval($attachments[$i]['post_id']));
+    $view_topic = append_nuke_sid('viewtopic.' . $phpEx . '?' . NUKE_POST_POST_URL . '=' . intval($attachments[$i]['post_id']) . '#' . intval($attachments[$i]['post_id']));
 
     $data[$i]['topic_title'] = ($topic_title_2 != '') ? '<a href="' . $view_topic . '" class="gen" title="' . $topic_title . '" target="_blank">' . $topic_title_2 . '</a>' : '<a href="' . $view_topic . '" class="gen" target="_blank">' . $topic_title . '</a>';
 

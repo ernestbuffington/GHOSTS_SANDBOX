@@ -19,8 +19,8 @@ if (!defined('MODULE_FILE')) {
 
 if ((!(isset($popup)) OR ($popup != "1")) && !isset($HTTP_GET_VARS['printertopic']))
 {
-    $module_name = basename(dirname(__FILE__));
-    require("modules/".$module_name."/nukebb.php");
+    $nuke_module_name = basename(dirname(__FILE__));
+    require("modules/".$nuke_module_name."/nukebb.php");
 }
 else
 {
@@ -38,7 +38,7 @@ include("includes/functions_userdel.php");
 //
 // Start session management
 //
-$nuke_userdata = session_pagestart($nuke_user_ip, NUKE_PAGE_PROFILE);
+$nuke_userdata = session_nuke_pagestart($nuke_user_ip, NUKE_PAGE_PROFILE);
 init_userprefs($nuke_userdata);
 //
 // End session management
@@ -119,7 +119,7 @@ if ( isset($HTTP_POST_VARS['cancel']) )
 	{
 		$nuke_redirect = "index.$phpEx";
 	}
-	nuke_redirect(append_sid($nuke_redirect, true));
+	nuke_redirect(append_nuke_sid($nuke_redirect, true));
 }
 
 
@@ -189,7 +189,7 @@ include("includes/nuke_page_header.php");
 		'MESSAGE_TEXT' => $l_confirm,
 		'L_YES' => $lang['Yes'],
 		'L_NO' => $lang['No'],
-		'S_CONFIRM_ACTION' => append_sid("userdel.$phpEx"),
+		'S_CONFIRM_ACTION' => append_nuke_sid("userdel.$phpEx"),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields)
 	);
   $template_nuke->pparse('confirm_body');
@@ -840,8 +840,8 @@ if ($mode != 4)
 $template_nuke->assign_vars(array(
 	'L_DELETION_TITLE' => sprintf($final_anno, $nuke_user_name),
 
-    'RETURN_TO_INDEX' => sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>'),
-    'RETURN_TO_MEMBERLIST' => sprintf($lang['Click_return_to_authors'], '<a href="' . append_sid("memberlist.$phpEx") . '">', '</a>')
+    'RETURN_TO_INDEX' => sprintf($lang['Click_return_index'], '<a href="' . append_nuke_sid("index.$phpEx") . '">', '</a>'),
+    'RETURN_TO_MEMBERLIST' => sprintf($lang['Click_return_to_authors'], '<a href="' . append_nuke_sid("memberlist.$phpEx") . '">', '</a>')
 	));
 
 if ($mode == 1)

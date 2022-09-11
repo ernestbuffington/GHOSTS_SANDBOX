@@ -57,19 +57,19 @@ if($name):
     include(NUKE_MODULES_DIR.'Your_Account/index.php');
     # Mod: Lock Modules v1.0.0 END
 
-    $module = $nuke_db->sql_ufetchrow('SELECT `title`, `active`, `view`, `blocks`, `custom_title`, `groups` FROM `'.$prefix.'_modules` WHERE `title`="'.Fix_Quotes($name).'"');
+    $nuke_module = $nuke_db->sql_ufetchrow('SELECT `title`, `active`, `view`, `blocks`, `custom_title`, `groups` FROM `'.$prefix.'_modules` WHERE `title`="'.Fix_Quotes($name).'"');
+
+	$nuke_module_name = $nuke_module['title'];
 	
-	$module_name = $module['title'];
-	
-	if ($module_name == 'Your_Account' 
-	|| $module_name == main_module()): 
-		$module['active'] = true;
+	if ($nuke_module_name == 'Your_Account' 
+	|| $nuke_module_name == main_module()): 
+		$nuke_module['active'] = true;
 		$view = 0;
 	else: 
-		$view = $module['view'];
+		$view = $nuke_module['view'];
 	endif;
 	
-	if($module['active'] || is_mod_admin($module_name)):
+	if($nuke_module['active'] || is_mod_admin($nuke_module_name)):
       if (!isset($file) OR $file != $_REQUEST['file']) 
 		$file='index';
 	     if (isset($open)) 
@@ -84,15 +84,15 @@ if($name):
 		&& stristr($open,".."))) 
 		die('You are so cool...');
 		
-		$showblocks = $module['blocks'];
-		$module_title = ($module['custom_title'] != '') ? $module['custom_title'] : str_replace('_', ' ', $module_name);
-        $modpath = isset($module['title']) ? NUKE_MODULES_DIR.$module['title']."/$file.php" : NUKE_MODULES_DIR.$name."/$file.php";
-        $groups = (!empty($module['groups'])) ? $groups = explode('-', $module['groups']) : '';
+		$showblocks = $nuke_module['blocks'];
+		$nuke_module_title = ($nuke_module['custom_title'] != '') ? $nuke_module['custom_title'] : str_replace('_', ' ', $nuke_module_name);
+        $modpath = isset($nuke_module['title']) ? NUKE_MODULES_DIR.$nuke_module['title']."/$file.php" : NUKE_MODULES_DIR.$name."/$file.php";
+        $groups = (!empty($nuke_module['groups'])) ? $groups = explode('-', $nuke_module['groups']) : '';
         
 		if(!empty($open)) 
-        $modpath = isset($module['title']) ? NUKE_MODULES_DIR.$module['title']."/$open.php" : NUKE_MODULES_DIR.$name."/$open.php";
-        		
-		unset($module, $error);
+        $modpath = isset($nuke_module['title']) ? NUKE_MODULES_DIR.$nuke_module['title']."/$open.php" : NUKE_MODULES_DIR.$name."/$open.php";
+
+		unset($nuke_module, $error);
 		
 		if($view >= 1 && !is_admin()): 
 		    # Must Not be a user
@@ -102,7 +102,7 @@ if($name):
 			elseif($view == 3 && !is_user()): 
 				$error = _MODULEUSERS;
 		    # Must Be a admin
-			elseif($view == 4 && !is_mod_admin($module['title'])): 
+			elseif($view == 4 && !is_mod_admin($nuke_module['title'])): 
 				$error = _MODULESADMINS;
 		    # Groups
 			elseif($view == 6 && !empty($groups) && is_array($groups)): 
@@ -139,7 +139,7 @@ if($name):
 						   $error  = '<div align="center" style="padding-top:6px;">';
                            $error .= '</div>';
 
-						   $error .= '<h1>'._CREDENTIALS.''.$module_title.' '._AREA.'</h1>';
+						   $error .= '<h1>'._CREDENTIALS.''.$nuke_module_title.' '._AREA.'</h1>';
 						   $error .= '<img class="icons" align="absmiddle" width="200" src="'.img('unknown-error.png','error').'"><br />'; 
                            $error .= '<strong><font size="4">'._MUSTJOIN.''.$row['group_name'].''._GAINACCESS;
 
@@ -153,7 +153,7 @@ if($name):
 						   $error  = '<div align="center" style="padding-top:6px;">';
                            $error .= '</div>';
 
-						   $error .= '<h1>'._CREDENTIALS.''.$module_title.' '._AREA.'</h1>';
+						   $error .= '<h1>'._CREDENTIALS.''.$nuke_module_title.' '._AREA.'</h1>';
 						   $error .= '<img class="icons" align="absmiddle" width="200" src="'.img('unknown-error.png','error').'"><br />'; 
                            $error .= '<strong><font size="4">'._MUSTJOIN.''.$row['group_name'].''._GAINACCESS;
 
@@ -166,7 +166,7 @@ if($name):
 						   $error  = '<div align="center" style="padding-top:6px;">';
                            $error .= '</div>';
 
-						   $error .= '<h1>'._CREDENTIALS.''.$module_title.' '._AREA.'</h1>';
+						   $error .= '<h1>'._CREDENTIALS.''.$nuke_module_title.' '._AREA.'</h1>';
 						   $error .= '<img class="icons" align="absmiddle" width="200" src="'.img('unknown-error.png','error').'"><br />'; 
                            $error .= '<strong><font size="4">'._MUSTJOIN.''.$row['group_name'].''._GAINACCESS;
 

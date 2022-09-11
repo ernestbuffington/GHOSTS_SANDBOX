@@ -49,7 +49,7 @@ $l_timezone = explode('.', $board_config['board_timezone']);
 $l_timezone = (count($l_timezone) > 1 && $l_timezone[count($l_timezone)-1] != 0) ? $lang[sprintf('%.1f', $board_config['board_timezone'])] : $lang[number_format($board_config['board_timezone'])];
 //
 // The following assigns all _common_ variables that may be used at any point
-// in a template. Note that all URL's should be wrapped in append_sid, as
+// in a template. Note that all URL's should be wrapped in append_nuke_sid, as
 // should all S_x_ACTIONS for forms.
 //
 $template->assign_vars(array(
@@ -60,11 +60,11 @@ $template->assign_vars(array(
         'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
         'L_FAQ' => $lang['FAQ'],
 
-        'U_INDEX' => append_sid('../index.'.$phpEx),
+        'U_INDEX' => append_nuke_sid('../index.'.$phpEx),
 
         'S_TIMEZONE' => sprintf($lang['All_times'], $l_timezone),
-        'S_LOGIN_ACTION' => append_sid('../login.'.$phpEx),
-        'S_JUMPBOX_ACTION' => append_sid('../viewforum.'.$phpEx),
+        'S_LOGIN_ACTION' => append_nuke_sid('../login.'.$phpEx),
+        'S_JUMPBOX_ACTION' => append_nuke_sid('../viewforum.'.$phpEx),
         'S_CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
         'S_CONTENT_DIRECTION' => $lang['DIRECTION'],
         'S_CONTENT_ENCODING' => $lang['ENCODING'],
