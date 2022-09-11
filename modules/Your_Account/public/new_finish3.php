@@ -130,7 +130,7 @@ include(NUKE_BASE_DIR. 'header.php');
         list($newest_uid) = $nuke_db->sql_fetchrow($nuke_db->sql_query("SELECT max(user_id) AS newest_uid FROM ".$nuke_user_prefix."_users"));
         if ($newest_uid == "-1") { $new_uid = 1; } else { $new_uid = $newest_uid+1; }
         $lv = time();
-        $result = $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_users (user_id, name, username, user_email, user_avatar, user_regdate, user_viewemail, user_password, user_lang, user_lastvisit) VALUES ($new_uid, '$ya_username', '$ya_username', '$ya_user_email', 'gallery/blank.gif', '$nuke_user_regdate', '0', '$new_password', '$language', '$lv')");
+        $result = $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_users (user_id, name, username, user_email, user_avatar, user_regdate, user_viewemail, user_password, user_lang, user_lastvisit) VALUES ($new_uid, '$ya_username', '$ya_username', '$ya_user_email', 'gallery/blank.gif', '$nuke_user_regdate', '0', '$new_password', '$language_nuke', '$lv')");
 
         if ((count($nfield) > 0) AND ($result)) {
           foreach ($nfield as $key => $var) {
@@ -139,7 +139,7 @@ include(NUKE_BASE_DIR. 'header.php');
         }
 
     $nuke_db->sql_query("LOCK TABLES ".$nuke_user_prefix."_users WRITE");
-    $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET user_avatar='gallery/blank.gif', user_avatar_type='3', user_lang='$language', user_lastvisit='$lv', umode='nested' WHERE user_id='$new_uid'");
+    $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET user_avatar='gallery/blank.gif', user_avatar_type='3', user_lang='$language_nuke', user_lastvisit='$lv', umode='nested' WHERE user_id='$new_uid'");
 
     $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET username='$ya_username', name='$realname', user_email='$ya_user_email', femail='$femail', user_website='$nuke_user_website', user_from='$nuke_user_from', user_occ='$nuke_user_occ', user_interests='$nuke_user_interests', newsletter='$newsletter', user_viewemail='$nuke_user_viewemail', user_allow_viewonline='$nuke_user_allow_viewonline', user_timezone='$nuke_user_timezone', user_dateformat='$nuke_user_dateformat', user_sig='$nuke_user_sig', bio='$bio', user_password='$new_password', user_regdate='$nuke_user_regdate' WHERE user_id='$new_uid'");
 

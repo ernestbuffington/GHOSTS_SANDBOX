@@ -370,7 +370,7 @@ function track_evo_version()
  ******************************************************/
 function GraphicAdmin($pos=1)
 {
-	global $aid, $admingraphic, $nuke_cache, $language, $admin, $prefix, $nuke_user_prefix, $nuke_db, $counter, $admin_file, $admin_pos, $radminsuper, $admlang;   
+	global $aid, $admingraphic, $nuke_cache, $language_nuke, $admin, $prefix, $nuke_user_prefix, $nuke_db, $counter, $admin_file, $admin_pos, $radminsuper, $admlang;   
 	
 	if ($pos != $admin_pos)
 	return;
@@ -386,7 +386,7 @@ function GraphicAdmin($pos=1)
 	/*
     | START | LIVE NEWS FEED DIRECTLY FROM https://dev-php-nuke-evolution-xtreme.86it.us
     */
-	global $domain;
+	global $nuke_domain;
 
     echo '<td style="vertical-align: top; width: 64%;">';
     echo '<table style="width: 100%;" border="0" cellpadding="3" cellspacing="1" class="forumline">';
@@ -403,7 +403,7 @@ function GraphicAdmin($pos=1)
     $curl = curl_init('https://php-nuke-titanium.86it.us/versions/feed.php');
     curl_setopt($curl, CURLOPT_USERAGENT, $agent);
     curl_setopt($curl, CURLOPT_USERAGENT, $agent);
-    curl_setopt($curl, CURLOPT_REFERER, 'https://'.$domain.'/');
+    curl_setopt($curl, CURLOPT_REFERER, 'https://'.$nuke_domain.'/');
     $dir = NUKE_BASE_DIR.'includes/log';
     $nuke_config['cookie_file'] = $dir.'/'.$_SERVER['REMOTE_ADDR'].'.txt';
     curl_setopt($curl, CURLOPT_COOKIEFILE, $nuke_config['cookie_file']);
@@ -729,7 +729,7 @@ function track_evo_version_bs()
 
 function administration_panel( $pos = 1 )
 {
-	global $aid, $admingraphic, $nuke_cache, $language, $admin, $prefix, $nuke_user_prefix, $nuke_db, $counter, $admin_file, $admin_pos, $radminsuper, $admlang;   
+	global $aid, $admingraphic, $nuke_cache, $language_nuke, $admin, $prefix, $nuke_user_prefix, $nuke_db, $counter, $admin_file, $admin_pos, $radminsuper, $admlang;   
 
 	$radminsuper = is_mod_admin();
 

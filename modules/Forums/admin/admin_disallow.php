@@ -51,7 +51,7 @@ if( isset($HTTP_POST_VARS['add_name']) )
         {
                 message_die(NUKE_GENERAL_MESSAGE, $lang['Fields_empty']);
         }
-        if( !validate_username($disallowed_user) )
+        if( !validate_username_nuke($disallowed_user) )
         {
                 $message = $lang['Disallowed_already'];
         }

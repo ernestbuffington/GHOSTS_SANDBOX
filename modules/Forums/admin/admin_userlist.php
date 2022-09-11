@@ -161,7 +161,7 @@ if ( isset($HTTP_GET_VARS['filter']) || isset($HTTP_POST_VARS['filter']) )
 	$filter = ( isset($HTTP_POST_VARS['filter']) ) ? htmlspecialchars($HTTP_POST_VARS['filter']) : htmlspecialchars($HTTP_GET_VARS['filter']);
 	if (!empty($filter))
 	{
-		$filter = preg_replace('/\*/', '%', phpbb_clean_username($filter));
+		$filter = preg_replace('/\*/', '%', phpbb2_clean_username($filter));
 
 		if (isset($HTTP_POST_VARS['find_by']))
 			$find_by = htmlspecialchars($HTTP_POST_VARS['find_by']);

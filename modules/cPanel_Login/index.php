@@ -31,9 +31,9 @@ if(!isset($nuke_module_name) || empty($nuke_module_name)){
 }
 get_lang($nuke_module_name);
 
-global $domain;
+global $nuke_domain;
 $titanium_title = 'cPanel Login';
-$pagetitle = 'http://'.$domain.' &raquo; '.$titanium_title;
+$pagetitle = 'http://'.$nuke_domain.' &raquo; '.$titanium_title;
 
 include(NUKE_BASE_DIR.'header.php');
 title($sitename.' '.$pagetitle);
@@ -59,10 +59,10 @@ function hov(loc,cls){
 
 <table width="100%" border="20" cellpadding="10" cellspacing="10" >
   <tr>
-    <td><font color='<?=$textcolor2?>' size='3'>&nbsp;<i class="bi bi-server"></i><strong>&nbsp;<font color="orange">WHM</font> & <font color="orange">cPanel</font> Login for <font color="orange"><?=$domain?></font></strong></font><br />
+    <td><font color='<?=$textcolor2?>' size='3'>&nbsp;<i class="bi bi-server"></i><strong>&nbsp;<font color="orange">WHM</font> & <font color="orange">cPanel</font> Login for <font color="orange"><?=$nuke_domain?></font></strong></font><br />
 
 
-<input name="domain" class="input2" type="hidden" value="<?=$domain?>" style="width:110;height:18;font-family:Verdana; font-size:8pt" size="100" />
+<input name="domain" class="input2" type="hidden" value="<?=$nuke_domain?>" style="width:110;height:18;font-family:Verdana; font-size:8pt" size="100" />
 <font face="Verdana" size="2"><br /><strong>&nbsp;Username <i class="bi bi-box-arrow-in-right"></i></strong></font>
 <input name="username" class="input2" type="text" value="" style="width:110;height:18;font-family:Verdana; font-size:8pt" size="20" />
 <font face="Verdana" size="2"><br /><br /><strong>&nbsp;Password <i class="bi bi-box-arrow-in-right"></i></strong> </font>

@@ -8,7 +8,7 @@ if (!defined('MODULE_FILE')) {
        require_once(NUKE_THEMES_DIR.$ThemeSel.'/includes/javascript_body_facebook.php');   #facebook Mod v4.6
     }                                                                                      #Oct 10th 2012
 ############################################################################################	
-global $domain, $facebook_plugin_width, $facebookappid, $nuke_module_name, $ThemeSel, $name; //globals 
+global $nuke_domain, $facebook_plugin_width, $facebookappid, $nuke_module_name, $ThemeSel, $name; //globals 
 include (TITANIUM_MODULES_DIR.$nuke_module_name.'/includes/facebook_connector.php'); //loaded for facebook purposes
 require_once("mainfile.php");
 $nuke_module_name = basename(dirname(__FILE__));

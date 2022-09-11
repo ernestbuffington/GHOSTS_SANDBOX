@@ -510,17 +510,17 @@ if ($mode == 'mod_edit')
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
 
-        $language = $board_config['default_lang'];
-        $language_file = $phpbb2_root_path . 'modules/language/lang_' . $language . '/lang_modules.' . $phpEx;
+        $language_nuke = $board_config['default_lang'];
+        $language_nuke_file = $phpbb2_root_path . 'modules/language/lang_' . $language_nuke . '/lang_modules.' . $phpEx;
 
-        if ( !@file_exists(@realpath($language_file)) )
+        if ( !@file_exists(@realpath($language_nuke_file)) )
         {
-            $language = $default_board_lang;
+            $language_nuke = $default_board_lang;
         }
 
-        $language_file = $phpbb2_root_path . 'modules/language/lang_' . $language . '/lang_modules.' . $phpEx;
+        $language_nuke_file = $phpbb2_root_path . 'modules/language/lang_' . $language_nuke . '/lang_modules.' . $phpEx;
 
-        include($language_file);
+        include($language_nuke_file);
 
         // Set Language
         $keys = array();

@@ -21,7 +21,7 @@ class Sitemap {
 	 * @var \XMLWriter
 	 */
 	private $writer;
-	private $domain;
+	private $nuke_domain;
 	private $path;
 	private $filename = 'sitemap';
 	private $current_item = 0;
@@ -36,19 +36,19 @@ class Sitemap {
 
 	/**
 	 *
-	 * @param string $domain
+	 * @param string $nuke_domain
 	 */
-	public function __construct($domain) {
-		$this->setDomain($domain);
+	public function __construct($nuke_domain) {
+		$this->setDomain($nuke_domain);
 	}
 
 	/**
 	 * Sets root path of the website, starting with http:// or https://
 	 *
-	 * @param string $domain
+	 * @param string $nuke_domain
 	 */
-	public function setDomain($domain) {
-		$this->domain = $domain;
+	public function setDomain($nuke_domain) {
+		$this->domain = $nuke_domain;
 		return $this;
 	}
 

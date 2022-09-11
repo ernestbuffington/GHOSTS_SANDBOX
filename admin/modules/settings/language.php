@@ -29,8 +29,8 @@ if(!defined('IN_SETTINGS')) {
   exit('Access Denied');
 }
 
-global $multilingual, $useflags, $language, $admlang;
-$languageslist = lang_list();
+global $multilingual, $useflags, $language_nuke, $admlang;
+$language_nukeslist = lang_list();
 echo '  <tr>'.PHP_EOL;
 echo '    <td class="catHead" colspan="3" style="font-weight: bold; text-align: center; text-transform: uppercase;">'.$admlang['preferences']['language_opts'].'</td>'.PHP_EOL;
 echo '  </tr>'.PHP_EOL;
@@ -41,11 +41,11 @@ echo '        <tr>'.PHP_EOL;
 echo '          <td class="row1" style="width: 50%;">'.$admlang['language']['select'].'</td>'.PHP_EOL;
 echo '          <td class="row1" style="width: 50%;">'.PHP_EOL;
 echo '            <select name="xlanguage">';
-for ($i=0, $maxi=count($languageslist); $i < $maxi; $i++) 
+for ($i=0, $maxi=count($language_nukeslist); $i < $maxi; $i++) 
 {
-    if(!empty($languageslist[$i])) 
+    if(!empty($language_nukeslist[$i])) 
     {
-        echo '              <option name="xlanguage" value="'.$languageslist[$i].'"'.(($languageslist[$i]==$language) ? ' selected="selected"' : '').'>'.ucwords($languageslist[$i]).'</option>';     
+        echo '              <option name="xlanguage" value="'.$language_nukeslist[$i].'"'.(($language_nukeslist[$i]==$language_nuke) ? ' selected="selected"' : '').'>'.ucwords($language_nukeslist[$i]).'</option>';     
     }
 }
 echo '            </select>';

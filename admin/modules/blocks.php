@@ -405,12 +405,12 @@ function NewBlock($bid='') {
 
     if($multilingual) {
         echo '<tr><td>'._LANGUAGE.':</td><td colspan="3">';
-        $languages = lang_list();
+        $language_nukes = lang_list();
         echo '<select name="blanguage">';
         echo '<option value=""'.(($currentlang == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-        for ($i=0, $j = count($languages); $i < $j; $i++) {
-            if($languages[$i] != '') {
-                echo '<option value="'.$languages[$i].'"'.(($currentlang == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+        for ($i=0, $j = count($language_nukes); $i < $j; $i++) {
+            if($language_nukes[$i] != '') {
+                echo '<option value="'.$language_nukes[$i].'"'.(($currentlang == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
             }
         }
         echo '</select></td></tr>';

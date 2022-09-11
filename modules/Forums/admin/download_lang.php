@@ -76,9 +76,9 @@ include($phpbb2_root_path . 'stats_mod/includes/admin_functions.'.$phpEx);
 if ($mode == 'export_module')
 {
     $nuke_module_id = (isset($HTTP_GET_VARS['module'])) ? intval($HTTP_GET_VARS['module']) : -1;
-    $language = (isset($HTTP_GET_VARS['lang'])) ? trim($HTTP_GET_VARS['lang']) : '';
+    $language_nuke = (isset($HTTP_GET_VARS['lang'])) ? trim($HTTP_GET_VARS['lang']) : '';
         
-    if (($language == '') || ($nuke_module_id == -1))
+    if (($language_nuke == '') || ($nuke_module_id == -1))
     {
         message_die(NUKE_GENERAL_MESSAGE, 'Invalid Call, Hacking Attempt ?');
     }
@@ -103,7 +103,7 @@ if ($mode == 'export_module')
         message_die(NUKE_GENERAL_ERROR, 'Unable to write Package File to cache.');
     }
 
-    $language_content = get_lang_entries($short_name, $language);
+    $language_nuke_content = get_lang_entries($short_name, $language_nuke);
 
     fwrite($fp, pack("C*", 0xFF, 0xFC, 0xCC), 3);
     fwrite($fp, 'LANGPACK', 8);
@@ -114,16 +114,16 @@ if ($mode == 'export_module')
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 ' . "\n\n";
-    $content .= '// [' . $language . ']' . "\n";
+    $content .= '// [' . $language_nuke . ']' . "\n";
     $content .= '// [module:' . $short_name . ']' . "\n";
 
-    for ($i = 0; $i < count($language_content); $i++)
+    for ($i = 0; $i < count($language_nuke_content); $i++)
     {
-        $content .= '$lang[\'' . $language_content[$i]['key'] . '\'] = \'' . $language_content[$i]['value'] . '\';' . "\n";
+        $content .= '$lang[\'' . $language_nuke_content[$i]['key'] . '\'] = \'' . $language_nuke_content[$i]['value'] . '\';' . "\n";
     }
 
     $content .= '// [/module:' . $short_name . ']' . "\n";
-    $content .= '// [/' . $language . ']' . "\n\n";
+    $content .= '// [/' . $language_nuke . ']' . "\n\n";
     $content .= '?>';
 
     $size = strlen($content);
@@ -139,7 +139,7 @@ if ($mode == 'export_module')
     @chmod($phpbb2_root_path . 'modules/cache/temp.pak', $file_mode);
     @unlink($phpbb2_root_path . 'modules/cache/temp.pak');
 
-    $filename = $short_name . '_' . str_replace('lang_', '', $language) . '.pak';
+    $filename = $short_name . '_' . str_replace('lang_', '', $language_nuke) . '.pak';
     
     header("Content-Type: text/x-delimtext; name=\"" . $filename . "\"");
     header("Content-disposition: attachment; filename=" . $filename);
@@ -148,9 +148,9 @@ if ($mode == 'export_module')
 }
 else if ($mode == 'export_lang')
 {
-    $language = (isset($HTTP_GET_VARS['lang'])) ? trim($HTTP_GET_VARS['lang']) : '';
+    $language_nuke = (isset($HTTP_GET_VARS['lang'])) ? trim($HTTP_GET_VARS['lang']) : '';
         
-    if ($language == '')
+    if ($language_nuke == '')
     {
         message_die(NUKE_GENERAL_MESSAGE, 'Invalid Call, Hacking Attempt ?');
     }
@@ -183,24 +183,24 @@ else if ($mode == 'export_lang')
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 ' . "\n\n";
-    $content .= '// [' . $language . ']' . "\n";
+    $content .= '// [' . $language_nuke . ']' . "\n";
 
     for ($i = 0; $i < $num_rows; $i++)
     {
         $short_name = trim($rows[$i]['short_name']);
-        $language_content = get_lang_entries($short_name, $language);
+        $language_nuke_content = get_lang_entries($short_name, $language_nuke);
     
         $content .= '// [module:' . $short_name . ']' . "\n";
 
-        for ($j = 0; $j < count($language_content); $j++)
+        for ($j = 0; $j < count($language_nuke_content); $j++)
         {
-            $content .= '$lang[\'' . $language_content[$j]['key'] . '\'] = \'' . $language_content[$j]['value'] . '\';' . "\n";
+            $content .= '$lang[\'' . $language_nuke_content[$j]['key'] . '\'] = \'' . $language_nuke_content[$j]['value'] . '\';' . "\n";
         }
 
         $content .= '// [/module:' . $short_name . ']' . "\n\n";
     }
 
-    $content .= '// [/' . $language . ']' . "\n\n";
+    $content .= '// [/' . $language_nuke . ']' . "\n\n";
     $content .= '?>';
 
     $size = strlen($content);
@@ -216,7 +216,7 @@ else if ($mode == 'export_lang')
     @chmod($phpbb2_root_path . 'modules/cache/temp.pak', $file_mode);
     @unlink($phpbb2_root_path . 'modules/cache/temp.pak');
 
-    $filename = $language . '.pak';
+    $filename = $language_nuke . '.pak';
     
     header("Content-Type: text/x-delimtext; name=\"" . $filename . "\"");
     header("Content-disposition: attachment; filename=" . $filename);
@@ -240,7 +240,7 @@ else if ($mode == 'export_everything')
     $rows = $nuke_db->sql_fetchrowset($result);
     $num_rows = $nuke_db->sql_numrows($result);
     
-    $languages = get_all_installed_languages();
+    $language_nukes = get_all_installed_languages();
         
     if (!($fp = fopen($phpbb2_root_path . 'modules/cache/temp.pak', 'wb')))
     {
@@ -256,26 +256,26 @@ else if ($mode == 'export_everything')
  =======================================================================*/
 ' . "\n\n";
     
-    foreach ($languages as $language)
+    foreach ($language_nukes as $language_nuke)
     {
-        $content .= '// [' . $language . ']' . "\n";
+        $content .= '// [' . $language_nuke . ']' . "\n";
 
         for ($i = 0; $i < $num_rows; $i++)
         {
             $short_name = trim($rows[$i]['short_name']);
-            $language_content = get_lang_entries($short_name, $language);
+            $language_nuke_content = get_lang_entries($short_name, $language_nuke);
     
             $content .= '// [module:' . $short_name . ']' . "\n";
 
-            for ($j = 0; $j < count($language_content); $j++)
+            for ($j = 0; $j < count($language_nuke_content); $j++)
             {
-                $content .= '$lang[\'' . $language_content[$j]['key'] . '\'] = \'' . $language_content[$j]['value'] . '\';' . "\n";
+                $content .= '$lang[\'' . $language_nuke_content[$j]['key'] . '\'] = \'' . $language_nuke_content[$j]['value'] . '\';' . "\n";
             }
 
             $content .= '// [/module:' . $short_name . ']' . "\n\n";
         }
 
-        $content .= '// [/' . $language . ']' . "\n\n";
+        $content .= '// [/' . $language_nuke . ']' . "\n\n";
     }
     
     $content .= '?>';

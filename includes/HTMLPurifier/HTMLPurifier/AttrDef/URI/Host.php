@@ -47,11 +47,11 @@ class HTMLPurifier_AttrDef_URI_Host extends HTMLPurifier_AttrDef
         $an  = '[a-z0-9]';  // alphanum
         $and = '[a-z0-9-]'; // alphanum | "-"
         // domainlabel = alphanum | alphanum *( alphanum | "-" ) alphanum
-        $domainlabel   = "$an($and*$an)?";
+        $nuke_domainlabel   = "$an($and*$an)?";
         // toplabel    = alpha | alpha *( alphanum | "-" ) alphanum
         $toplabel      = "$a($and*$an)?";
         // hostname    = *( domainlabel "." ) toplabel [ "." ]
-        $match = preg_match("/^($domainlabel\.)*$toplabel\.?$/i", $string);
+        $match = preg_match("/^($nuke_domainlabel\.)*$toplabel\.?$/i", $string);
         if (!$match) return false;
 
         return $string;

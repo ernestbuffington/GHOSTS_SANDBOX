@@ -448,7 +448,7 @@ elseif($group_id)
             
             if(isset($_POST['add'])): 
             
-                $nuke_username = (isset($_POST['username'])) ? phpbb_clean_username($_POST['username']) : '';
+                $nuke_username = (isset($_POST['username'])) ? phpbb2_clean_username($_POST['username']) : '';
                 $sql = "SELECT user_id, 
 				            user_email, 
 							user_lang, 

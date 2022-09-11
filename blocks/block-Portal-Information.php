@@ -1,10 +1,10 @@
 <?php 
 if(!defined('NUKE_EVO')) exit;
-global $domain, $bgcolor1;
+global $nuke_domain, $bgcolor1;
 
 $content = '<hr>';
 $content .= '<div align="center">';
-$content .= '<strong><font color="'.$bgcolor1.'">Domain</font></strong><br />'.$domain.'';
+$content .= '<strong><font color="'.$bgcolor1.'">Domain</font></strong><br />'.$nuke_domain.'';
 $content .= '<hr>';
 $content .= '<strong><font color="'.$bgcolor1.'">Dedicated Rack 68</font></strong><br />Intel(R) Xeon(R)<br /> CPU E3-1230 v5 @ 3.40GHz<br />Data Center: Tampa, Florida<br />Hosting: $500.00 Monthly';
 $content .= '<hr>';

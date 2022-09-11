@@ -242,14 +242,14 @@ function sort_smiley($a, $b)
 # bbencode_first_pass() prepare bbcode for db insert
 function encode_bbcode($text)
 {
-    return BBCode::encode($text);
+    return BBNukeCode::encode($text);
 }
 function decode_bb_all($text, $allowed=0, $allow_html=false, $url='') {
     return set_smilies(decode_bbcode($text, $allowed, $allow_html), $url);
 }
 function decode_bbcode($text, $allowed=0, $allow_html=false)
 {
-    return BBCode::decode($text, $allowed, $allow_html);
+    return BBNukeCode::decode($text, $allowed, $allow_html);
 }
 
 function shrink_url($url) {
@@ -325,12 +325,12 @@ function message_prepare($message, $html_on, $bbcode_on)
         $tmp_message = '';
         $message = ' ' . $message . ' ';
         while ($start_html = strpos($message, '<', $start_html)) {
-            $tmp_message .= BBCode::encode_html(substr($message, $end_html + 1, ($start_html - $end_html - 1)));
+            $tmp_message .= BBNukeCode::encode_html(substr($message, $end_html + 1, ($start_html - $end_html - 1)));
             if ($end_html = strpos($message, '>', $start_html)) {
                 $length = $end_html - $start_html + 1;
                 $hold_string = substr($message, $start_html, $length);
                 if (($unclosed_open = strrpos(' ' . $hold_string, '<')) != 1) {
-                    $tmp_message .= BBCode::encode_html(substr($hold_string, 0, $unclosed_open - 1));
+                    $tmp_message .= BBNukeCode::encode_html(substr($hold_string, 0, $unclosed_open - 1));
                     $hold_string = substr($hold_string, $unclosed_open - 1);
                 }
                 $tagallowed = false;
@@ -340,23 +340,23 @@ function message_prepare($message, $html_on, $bbcode_on)
                         $tagallowed = (preg_match('#^<\/?' . $match_tag . ' .*?(style[ ]*?=|on[\w]+[ ]*?=)#i', $hold_string)) ? false : true;
                     }
                 }
-                $tmp_message .= ($length && !$tagallowed) ? BBCode::encode_html($hold_string) : $hold_string;
+                $tmp_message .= ($length && !$tagallowed) ? BBNukeCode::encode_html($hold_string) : $hold_string;
                 $start_html += $length;
             } else {
-                $tmp_message .= BBCode::encode_html(substr($message, $start_html));
+                $tmp_message .= BBNukeCode::encode_html(substr($message, $start_html));
                 $start_html = strlen($message);
                 $end_html = $start_html;
             }
         }
         if ($end_html != strlen($message) && $tmp_message != '') {
-            $tmp_message .= BBCode::encode_html(substr($message, $end_html + 1));
+            $tmp_message .= BBNukeCode::encode_html(substr($message, $end_html + 1));
         }
         $message = ($tmp_message != '') ? trim($tmp_message) : trim($message);
     } else {
-        $message = BBCode::encode_html($message);
+        $message = BBNukeCode::encode_html($message);
     }
     if ($bbcode_on) {
-        $message = BBCode::encode($message);
+        $message = BBNukeCode::encode($message);
     }
     return $message;
 }

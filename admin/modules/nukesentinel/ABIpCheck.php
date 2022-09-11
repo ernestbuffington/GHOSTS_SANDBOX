@@ -295,29 +295,29 @@ $whoisservers = array(
 	"blog" => "whois.nic.blog", // wordpress registry
 	"accountants" => "whois.donuts.co", // donuts registry
 );
-function LookupDomain($domain){
+function LookupDomain($nuke_domain){
 	global $whoisservers;
-	$domain_parts = explode(".", $domain);
-	$tld = strtolower(array_pop($domain_parts));
+	$nuke_domain_parts = explode(".", $nuke_domain);
+	$tld = strtolower(array_pop($nuke_domain_parts));
 	$whoisserver = $whoisservers[$tld];
 	if(!$whoisserver) {
-		return "Error: No appropriate Whois server found for $domain domain!";
+		return "Error: No appropriate Whois server found for $nuke_domain domain!";
 	}
-	$result = QueryWhoisServer($whoisserver, $domain);
+	$result = QueryWhoisServer($whoisserver, $nuke_domain);
 	if(!$result) {
-		return "Error: No results retrieved from $whoisserver server for $domain domain!";
+		return "Error: No results retrieved from $whoisserver server for $nuke_domain domain!";
 	}
 	else {
 		while(strpos($result, "Whois Server:") !== FALSE){
 			preg_match("/Whois Server: (.*)/", $result, $matches);
 			$secondary = $matches[1];
 			if($secondary) {
-				$result = QueryWhoisServer($secondary, $domain);
+				$result = QueryWhoisServer($secondary, $nuke_domain);
 				$whoisserver = $secondary;
 			}
 		}
 	}
-	return "$domain domain lookup results from $whoisserver server:\n\n" . $result;
+	return "$nuke_domain domain lookup results from $whoisserver server:\n\n" . $result;
 }
 function LookupIP($ip) {
 	$whoisservers = array(
@@ -352,19 +352,19 @@ function ValidateIP($ip) {
 	}
 	return $ip;
 }
-function ValidateDomain($domain) {
-	//if(!preg_match("/^([-a-z0-9]{2,100})\.([a-z\.]{2,8})$/i", $domain)) {
-	if(!preg_match("/^([-a-z0-9]{1,63})\.([a-z\.]{2,24})$/i", $domain)) { // new change feb 2018
+function ValidateDomain($nuke_domain) {
+	//if(!preg_match("/^([-a-z0-9]{2,100})\.([a-z\.]{2,8})$/i", $nuke_domain)) {
+	if(!preg_match("/^([-a-z0-9]{1,63})\.([a-z\.]{2,24})$/i", $nuke_domain)) { // new change feb 2018
 		return false;
 	}
-	return $domain;
+	return $nuke_domain;
 }
-function QueryWhoisServer($whoisserver, $domain) {
+function QueryWhoisServer($whoisserver, $nuke_domain) {
 	$port = 43;
 	$timeout = 10;
 	$fp = @fsockopen($whoisserver, $port, $errno, $errstr, $timeout) or die("Socket Error " . $errno . " - " . $errstr);
-	//if($whoisserver == "whois.verisign-grs.com") $domain = "=".$domain; // whois.verisign-grs.com requires the equals sign ("=") or it returns any result containing the searched string.
-	fputs($fp, $domain . "\r\n");
+	//if($whoisserver == "whois.verisign-grs.com") $nuke_domain = "=".$nuke_domain; // whois.verisign-grs.com requires the equals sign ("=") or it returns any result containing the searched string.
+	fputs($fp, $nuke_domain . "\r\n");
 	$out = "";
 	while(!feof($fp)){
 		$out .= fgets($fp);
@@ -384,19 +384,19 @@ function QueryWhoisServer($whoisserver, $domain) {
 }
 
 echo '<form action="'.$admin_file.'.php?op=ABIpCheck" method="post">
-<p><b><label for="domain">Domain/IP Address:</label></b> <input type="text" name="domain" id="domain" value="'.$domain.'"> <input type="submit" value="Lookup"></p>
+<p><b><label for="domain">Domain/IP Address:</label></b> <input type="text" name="domain" id="domain" value="'.$nuke_domain.'"> <input type="submit" value="Lookup"></p>
 </form>';
 CloseTable();
 OpenTable();
-if($domain) {
-	$domain = trim($domain);
-	if(substr(strtolower($domain), 0, 7) == "http://") $domain = substr($domain, 7);
-	if(substr(strtolower($domain), 0, 4) == "www.") $domain = substr($domain, 4);
-	if(ValidateIP($domain)) {
-		$result = LookupIP($domain);
+if($nuke_domain) {
+	$nuke_domain = trim($nuke_domain);
+	if(substr(strtolower($nuke_domain), 0, 7) == "http://") $nuke_domain = substr($nuke_domain, 7);
+	if(substr(strtolower($nuke_domain), 0, 4) == "www.") $nuke_domain = substr($nuke_domain, 4);
+	if(ValidateIP($nuke_domain)) {
+		$result = LookupIP($nuke_domain);
 	}
-	elseif(ValidateDomain($domain)) {
-		$result = LookupDomain($domain);
+	elseif(ValidateDomain($nuke_domain)) {
+		$result = LookupDomain($nuke_domain);
 	}
 	else die("Invalid Input!");
 	echo "<pre>\n" . $result . "\n</pre>\n";

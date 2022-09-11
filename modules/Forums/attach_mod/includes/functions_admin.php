@@ -408,7 +408,7 @@ function search_attachments($order_by, &$total_rows)
     {
         // Bring in line with 2.0.x expected username
         $search_author = addslashes(html_entity_decode($search_author));
-        $search_author = stripslashes(phpbb_clean_username($search_author));
+        $search_author = stripslashes(phpbb2_clean_username($search_author));
 
         // Prepare for directly going into sql query
         $search_author = str_replace('*', '%', attach_mod_sql_escape($search_author));

@@ -130,9 +130,9 @@ class HTMLPurifier
         // set up global context variables
         if ($config->get('Core.CollectErrors')) {
             // may get moved out if other facilities use it
-            $language_factory = HTMLPurifier_LanguageFactory::instance();
-            $language = $language_factory->create($config, $context);
-            $context->register('Locale', $language);
+            $language_nuke_factory = HTMLPurifier_LanguageFactory::instance();
+            $language_nuke = $language_nuke_factory->create($config, $context);
+            $context->register('Locale', $language_nuke);
 
             $error_collector = new HTMLPurifier_ErrorCollector($context);
             $context->register('ErrorCollector', $error_collector);

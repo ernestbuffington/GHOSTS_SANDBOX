@@ -15,7 +15,7 @@ print "</div><hr />";
 	
 	if ( defined('facebook') ):
 	
-	global $board_config, $domain,$nuke_db, $network_db, $nuke_userdata, $nuke_userinfo; 
+	global $board_config, $nuke_domain,$nuke_db, $network_db, $nuke_userdata, $nuke_userinfo; 
     global $facebook_plugin_width, $facebookappid, $facebookappsecret; //used to set the deafult width of iframes and tables
 
 	echo "<center>Facebook Login Code Example Coming Soon\n";

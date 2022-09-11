@@ -47,7 +47,7 @@ if (!defined('ADMIN_FILE')) {
    die ("Illegal File Access");
 }
 
-global $prefix, $nuke_db, $bgcolor2, $sitename, $bgcolor1, $prefix, $language, $multilingual, $nuke_user, $admin, $bgcolor, $admin_file, $nuke_user_prefix, $admdata, $nsnst_const;
+global $prefix, $nuke_db, $bgcolor2, $sitename, $bgcolor1, $prefix, $language_nuke, $multilingual, $nuke_user, $admin, $bgcolor, $admin_file, $nuke_user_prefix, $admdata, $nsnst_const;
 
 if (is_mod_admin()) {
 

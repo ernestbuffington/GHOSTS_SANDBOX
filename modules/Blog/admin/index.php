@@ -663,14 +663,14 @@ function autoEdit($anid)
         echo "<br /><strong>"._LANGUAGE.": </strong>"
             ."<select name=\"alanguage\">";
         
-		$languages = lang_list();
+		$language_nukes = lang_list();
         
 		echo '<option value=""'.(($alanguage == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
     
-	    for ($i=0, $j = count($languages); $i < $j; $i++) 
+	    for ($i=0, $j = count($language_nukes); $i < $j; $i++) 
 		{
-            if ($languages[$i] != '') 
-            echo '<option value="'.$languages[$i].'"'.(($alanguage == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+            if ($language_nukes[$i] != '') 
+            echo '<option value="'.$language_nukes[$i].'"'.(($alanguage == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
         }
 
         echo '</select>';
@@ -1052,14 +1052,14 @@ function displayStory($qid)
 	{
         echo "<br /><strong>"._LANGUAGE.": </strong>"
             ."<select name=\"alanguage\">";
-        $languages = lang_list();
+        $language_nukes = lang_list();
 
         echo '<option value=""'.(($alanguage == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
     
-	    for ($i=0, $j = count($languages); $i < $j; $i++) 
+	    for ($i=0, $j = count($language_nukes); $i < $j; $i++) 
 		{
-            if ($languages[$i] != '') 
-            echo '<option value="'.$languages[$i].'"'.(($alanguage == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+            if ($language_nukes[$i] != '') 
+            echo '<option value="'.$language_nukes[$i].'"'.(($alanguage == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
         }
         
 		echo '</select>';
@@ -1363,18 +1363,18 @@ function previewStory($automated,
 	{
         echo "<br /><strong>"._LANGUAGE.": </strong>"
             ."<select name=\"alanguage\">";
-        $languages = lang_list();
+        $language_nukes = lang_list();
         echo '<option value=""'.(($alanguage == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
     
-	    for ($i=0, $j = count($languages); $i < $j; $i++) 
+	    for ($i=0, $j = count($language_nukes); $i < $j; $i++) 
 		{
-            if ($languages[$i] != '') 
-            echo '<option value="'.$languages[$i].'"'.(($alanguage == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+            if ($language_nukes[$i] != '') 
+            echo '<option value="'.$language_nukes[$i].'"'.(($alanguage == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
         }
         echo '</select>';
     } 
 	else 
-    echo "<input type=\"hidden\" name=\"alanguage\" value=\"$language\">";
+    echo "<input type=\"hidden\" name=\"alanguage\" value=\"$language_nuke\">";
 
 /*****[BEGIN]******************************************
  [ Mod:     Blogs BBCodes                       v1.0.0 ]
@@ -1935,14 +1935,14 @@ function editStory($sid)
             echo "<br /><strong>"._LANGUAGE.": </strong>"
                 ."<select name=\"alanguage\">";
    
-            $languages = lang_list();
+            $language_nukes = lang_list();
    
             echo '<option value=""'.(($alanguage == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
         
-		    for ($i=0, $j = count($languages); $i < $j; $i++) 
+		    for ($i=0, $j = count($language_nukes); $i < $j; $i++) 
 			{
-                if ($languages[$i] != '') 
-                echo '<option value="'.$languages[$i].'"'.(($alanguage == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+                if ($language_nukes[$i] != '') 
+                echo '<option value="'.$language_nukes[$i].'"'.(($alanguage == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
             }
             
 			echo '</select>';
@@ -2113,7 +2113,7 @@ function changeStory($sid, $subject, $hometext, $bodytext, $topic, $notes, $cati
 
 function lastTwenty()
 {
-    global $prefix, $nuke_db, $language, $multilingual, $Version_Num, $admin_file, $aid, $nuke_module_name, $bgcolor1;
+    global $prefix, $nuke_db, $language_nuke, $multilingual, $Version_Num, $admin_file, $aid, $nuke_module_name, $bgcolor1;
 
     include(NUKE_BASE_DIR.'header.php');
 /*****[BEGIN]******************************************
@@ -2205,7 +2205,7 @@ function lastTwenty()
 
 function programmedBlogs()
 {
-    global $prefix, $nuke_db, $language, $multilingual, $Version_Num, $admin_file, $aid, $nuke_module_name, $bgcolor1;
+    global $prefix, $nuke_db, $language_nuke, $multilingual, $Version_Num, $admin_file, $aid, $nuke_module_name, $bgcolor1;
     include(NUKE_BASE_DIR.'header.php');
 
     if (!empty($admlanguage)) 
@@ -2276,7 +2276,7 @@ function programmedBlogs()
 
 function adminStory() 
 {
-    global $prefix, $nuke_db, $language, $multilingual, $Version_Num, $admin_file, $aid, $nuke_module_name, $bgcolor1;
+    global $prefix, $nuke_db, $language_nuke, $multilingual, $Version_Num, $admin_file, $aid, $nuke_module_name, $bgcolor1;
 
     include(NUKE_BASE_DIR.'header.php');
 
@@ -2391,20 +2391,20 @@ function adminStory()
         echo "<br /><strong>"._LANGUAGE.": </strong>"
             ."<select name=\"alanguage\">";
 
-        $languages = lang_list();
+        $language_nukes = lang_list();
 
         echo '<option value=""'.(($alanguage == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
     
-	    for ($i=0, $j = count($languages); $i < $j; $i++) 
+	    for ($i=0, $j = count($language_nukes); $i < $j; $i++) 
 		{
-            if ($languages[$i] != '') 
-            echo '<option value="'.$languages[$i].'"'.(($alanguage == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+            if ($language_nukes[$i] != '') 
+            echo '<option value="'.$language_nukes[$i].'"'.(($alanguage == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
         }
 
         echo '</select>';
     } 
 	else 
-    echo "<input type=\"hidden\" name=\"alanguage\" value=\"$language\">";
+    echo "<input type=\"hidden\" name=\"alanguage\" value=\"$language_nuke\">";
 
     echo "<br /><br /><strong>"._STORYTEXT."</strong>";
 
@@ -2684,20 +2684,20 @@ function previewAdminStory($automated,
         echo "<br /><strong>"._LANGUAGE.": </strong>"
             ."<select name=\"alanguage\">";
     
-	    $languages = lang_list();
+	    $language_nukes = lang_list();
     
 	    echo '<option value=""'.(($alanguage == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
     
-	    for ($i=0, $j = count($languages); $i < $j; $i++) 
+	    for ($i=0, $j = count($language_nukes); $i < $j; $i++) 
 		{
-            if ($languages[$i] != '') 
-            echo '<option value="'.$languages[$i].'"'.(($alanguage == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+            if ($language_nukes[$i] != '') 
+            echo '<option value="'.$language_nukes[$i].'"'.(($alanguage == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
         }
         
 		echo '</select>';
     } 
 	else 
-    echo "<input type=\"hidden\" name=\"alanguage\" value=\"$language\">";
+    echo "<input type=\"hidden\" name=\"alanguage\" value=\"$language_nuke\">";
 
     echo "<br /><br /><strong>"._STORYTEXT."</strong>";
 

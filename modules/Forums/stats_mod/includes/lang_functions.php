@@ -89,23 +89,23 @@ function get_module_languages($short_name)
 {
     global $phpbb2_root_path;
 
-    $language_directory = $phpbb2_root_path . 'modules/language';
-    $languages = array();
+    $language_nuke_directory = $phpbb2_root_path . 'modules/language';
+    $language_nukes = array();
 
-    if (!file_exists($language_directory))
+    if (!file_exists($language_nuke_directory))
     {
         message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    if( $dir = @opendir($language_directory) )
+    if( $dir = @opendir($language_nuke_directory) )
     {
         while( $sub_dir = @readdir($dir) )
         {
-            if( !is_file($language_directory . '/' . $sub_dir) && !is_link($language_directory . '/' . $sub_dir) && $sub_dir != "." && $sub_dir != ".." && $sub_dir != "CVS" )
+            if( !is_file($language_nuke_directory . '/' . $sub_dir) && !is_link($language_nuke_directory . '/' . $sub_dir) && $sub_dir != "." && $sub_dir != ".." && $sub_dir != "CVS" )
             {
                 if (strstr($sub_dir, 'lang_'))
                 {
-                    $languages[] = trim($sub_dir);
+                    $language_nukes[] = trim($sub_dir);
                 }
             }
         }
@@ -116,16 +116,16 @@ function get_module_languages($short_name)
     $found_languages = array();
 
     // Ok, go through all Languages and generate the Language Array
-    for ($i = 0; $i < count($languages); $i++)
+    for ($i = 0; $i < count($language_nukes); $i++)
     {
-        $language_file = $phpbb2_root_path . 'modules/language/' . $languages[$i] . '/lang_modules.php';
-        $file_content = implode('', file($language_file));
+        $language_nuke_file = $phpbb2_root_path . 'modules/language/' . $language_nukes[$i] . '/lang_modules.php';
+        $file_content = implode('', file($language_nuke_file));
         if (trim($file_content) != '')
         {
             // Get Content and find out if this Module is there
             if ((preg_match("/.*?\/\/[ ]\[" . preg_quote($short_name) . "\]./si", $file_content)) && (preg_match("/.*?\/\/[ ]\[\/" . preg_quote($short_name) . "\]./si", $file_content)) )
             {
-                $found_languages[] = str_replace('lang_', '', $languages[$i]);
+                $found_languages[] = str_replace('lang_', '', $language_nukes[$i]);
             }
         }
     }
@@ -138,23 +138,23 @@ function get_all_installed_languages()
 {
     global $phpbb2_root_path;
 
-    $language_directory = $phpbb2_root_path . 'modules/language';
-    $languages = array();
+    $language_nuke_directory = $phpbb2_root_path . 'modules/language';
+    $language_nukes = array();
 
-    if (!file_exists($language_directory))
+    if (!file_exists($language_nuke_directory))
     {
         message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    if( $dir = @opendir($language_directory) )
+    if( $dir = @opendir($language_nuke_directory) )
     {
         while( $sub_dir = @readdir($dir) )
         {
-            if( !is_file($language_directory . '/' . $sub_dir) && !is_link($language_directory . '/' . $sub_dir) && $sub_dir != "." && $sub_dir != ".." && $sub_dir != "CVS" )
+            if( !is_file($language_nuke_directory . '/' . $sub_dir) && !is_link($language_nuke_directory . '/' . $sub_dir) && $sub_dir != "." && $sub_dir != ".." && $sub_dir != "CVS" )
             {
                 if (strstr($sub_dir, 'lang_'))
                 {
-                    $languages[] = trim($sub_dir);
+                    $language_nukes[] = trim($sub_dir);
                 }
             }
         }
@@ -165,12 +165,12 @@ function get_all_installed_languages()
     $found_languages = array();
 
     // Ok, go through all Languages and generate the Language Array
-    for ($i = 0; $i < count($languages); $i++)
+    for ($i = 0; $i < count($language_nukes); $i++)
     {
-        $language_file = $phpbb2_root_path . 'modules/language/' . $languages[$i] . '/lang_modules.php';
-        if (file_exists($language_file))
+        $language_nuke_file = $phpbb2_root_path . 'modules/language/' . $language_nukes[$i] . '/lang_modules.php';
+        if (file_exists($language_nuke_file))
         {
-            $found_languages[] = $languages[$i]; 
+            $found_languages[] = $language_nukes[$i]; 
         }
     }
 
@@ -178,21 +178,21 @@ function get_all_installed_languages()
 }
 
 // has module content within this language ?
-function module_is_in_lang($short_name, $language)
+function module_is_in_lang($short_name, $language_nuke)
 {
     global $phpbb2_root_path;
 
     $found = FALSE;
     
-    $language_directory = $phpbb2_root_path . 'modules/language';
+    $language_nuke_directory = $phpbb2_root_path . 'modules/language';
 
-    if (!file_exists($language_directory))
+    if (!file_exists($language_nuke_directory))
     {
         message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
-    $file_content = implode('', file($language_file));
+    $language_nuke_file = $phpbb2_root_path . 'modules/language/' . $language_nuke . '/lang_modules.php';
+    $file_content = implode('', file($language_nuke_file));
     if (trim($file_content) != '')
     {
         // Get Content and find out if this Module is there
@@ -206,21 +206,21 @@ function module_is_in_lang($short_name, $language)
 }
 
 // Get Language Entries from given Module and Language
-function get_lang_entries($short_name, $language)
+function get_lang_entries($short_name, $language_nuke)
 {
     global $phpbb2_root_path;
 
     $lang_entries = array();
     
-    $language_directory = $phpbb2_root_path . 'modules/language';
+    $language_nuke_directory = $phpbb2_root_path . 'modules/language';
 
-    if (!file_exists($language_directory))
+    if (!file_exists($language_nuke_directory))
     {
         message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
-    include($language_file);
+    $language_nuke_file = $phpbb2_root_path . 'modules/language/' . $language_nuke . '/lang_modules.php';
+    include($language_nuke_file);
     $keys = array();
     eval('$current_lang = $' . trim($short_name) . ';');
         
@@ -239,11 +239,11 @@ function get_lang_entries($short_name, $language)
 }
 
 // Set specific language key, $value is the new key value
-function set_lang_entry($language, $nuke_module_id, $key, $value)
+function set_lang_entry($language_nuke, $nuke_module_id, $key, $value)
 {
     global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path;
 
-    $language = trim($language);
+    $language_nuke = trim($language_nuke);
     $nuke_module_id = intval($nuke_module_id);
     $lang_key = trim($key);
     $lang_value = trim($value);
@@ -264,15 +264,15 @@ function set_lang_entry($language, $nuke_module_id, $key, $value)
     $short_name = trim($row['short_name']);
     $lang_entries = array();
 
-    $language_directory = $phpbb2_root_path . 'modules/language';
+    $language_nuke_directory = $phpbb2_root_path . 'modules/language';
 
-    if (!file_exists($language_directory))
+    if (!file_exists($language_nuke_directory))
     {
         message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
-    include($language_file);
+    $language_nuke_file = $phpbb2_root_path . 'modules/language/' . $language_nuke . '/lang_modules.php';
+    include($language_nuke_file);
     $keys = array();
     eval('$current_lang = $' . trim($short_name) . ';');
         
@@ -304,19 +304,19 @@ function set_lang_entry($language, $nuke_module_id, $key, $value)
         $data .= "\n";
     }
     
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
         
-    if (!file_exists($language_directory . '/' . $language))
+    if (!file_exists($language_nuke_directory . '/' . $language_nuke))
     {
         @umask(0);
-        mkdir($language_directory . '/' . $language, $directory_mode);
+        mkdir($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
     else
     {
-        chmod($language_directory . '/' . $language, $directory_mode);
+        chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
         
-    if (!file_exists($language_file))
+    if (!file_exists($language_nuke_file))
     {
         $contents = "<?php
 /*======================================================================= 
@@ -326,8 +326,8 @@ function set_lang_entry($language, $nuke_module_id, $key, $value)
     }
     else
     {
-        chmod($language_file, $file_mode);
-        $contents = implode('', @file($language_file));
+        chmod($language_nuke_file, $file_mode);
+        $contents = implode('', @file($language_nuke_file));
         $contents = delete_language_block($contents, $short_name);
     }
         
@@ -343,25 +343,25 @@ function set_lang_entry($language, $nuke_module_id, $key, $value)
     $contents .= "// [/" . $short_name . "]\n\n";
     $contents .= "?>";
 
-    if (!($fp = fopen($language_file, 'wt')))
+    if (!($fp = fopen($language_nuke_file, 'wt')))
     {
-        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_nuke_file);
     }
 
     fwrite($fp, $contents, strlen($contents));
     fclose($fp);
 
-    chmod($language_file, $file_mode);
-    chmod($language_directory . '/' . $language, $directory_mode);
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_file, $file_mode);
+    chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
 }
 
 // Set specific language block, $lang_block is the new language definition block as string
-function set_lang_block($language, $nuke_module_id, $lang_block)
+function set_lang_block($language_nuke, $nuke_module_id, $lang_block)
 {
     global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path;
 
-    $language = trim($language);
+    $language_nuke = trim($language_nuke);
     $nuke_module_id = intval($nuke_module_id);
     $lang_block = trim($lang_block);
 
@@ -381,29 +381,29 @@ function set_lang_block($language, $nuke_module_id, $lang_block)
     $short_name = trim($row['short_name']);
     $lang_entries = array();
 
-    $language_directory = $phpbb2_root_path . 'modules/language';
+    $language_nuke_directory = $phpbb2_root_path . 'modules/language';
 
-    if (!file_exists($language_directory))
+    if (!file_exists($language_nuke_directory))
     {
         message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    $language_nuke_file = $phpbb2_root_path . 'modules/language/' . $language_nuke . '/lang_modules.php';
 
     // Write Language File
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
         
-    if (!file_exists($language_directory . '/' . $language))
+    if (!file_exists($language_nuke_directory . '/' . $language_nuke))
     {
         @umask(0);
-        mkdir($language_directory . '/' . $language, $directory_mode);
+        mkdir($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
     else
     {
-        chmod($language_directory . '/' . $language, $directory_mode);
+        chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
         
-    if (!file_exists($language_file))
+    if (!file_exists($language_nuke_file))
     {
         $contents = "<?php
 /*======================================================================= 
@@ -413,8 +413,8 @@ function set_lang_block($language, $nuke_module_id, $lang_block)
     }
     else
     {
-        chmod($language_file, $file_mode);
-        $contents = implode('', @file($language_file));
+        chmod($language_nuke_file, $file_mode);
+        $contents = implode('', @file($language_nuke_file));
         $contents = delete_language_block($contents, $short_name);
     }
         
@@ -430,25 +430,25 @@ function set_lang_block($language, $nuke_module_id, $lang_block)
     $contents .= "// [/" . $short_name . "]\n\n";
     $contents .= "?>";
 
-    if (!($fp = fopen($language_file, 'wt')))
+    if (!($fp = fopen($language_nuke_file, 'wt')))
     {
-        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_nuke_file);
     }
 
     fwrite($fp, $contents, strlen($contents));
     fclose($fp);
 
-    chmod($language_file, $file_mode);
-    chmod($language_directory . '/' . $language, $directory_mode);
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_file, $file_mode);
+    chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
 }
 
 // Add new key to a modules language block
-function lang_add_new_key($language, $nuke_module_id, $add_key, $add_value)
+function lang_add_new_key($language_nuke, $nuke_module_id, $add_key, $add_value)
 {
     global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path;
 
-    $language = trim($language);
+    $language_nuke = trim($language_nuke);
     $nuke_module_id = intval($nuke_module_id);
     $add_key = trim($add_key);
     $add_value = trim($add_value);
@@ -469,15 +469,15 @@ function lang_add_new_key($language, $nuke_module_id, $add_key, $add_value)
     $short_name = trim($row['short_name']);
     $lang_entries = array();
 
-    $language_directory = $phpbb2_root_path . 'modules/language';
+    $language_nuke_directory = $phpbb2_root_path . 'modules/language';
 
-    if (!file_exists($language_directory))
+    if (!file_exists($language_nuke_directory))
     {
         message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
-    include($language_file);
+    $language_nuke_file = $phpbb2_root_path . 'modules/language/' . $language_nuke . '/lang_modules.php';
+    include($language_nuke_file);
     $keys = array();
     eval('$current_lang = $' . trim($short_name) . ';');
         
@@ -510,19 +510,19 @@ function lang_add_new_key($language, $nuke_module_id, $add_key, $add_value)
     $data .= '$lang[\'' . $add_key . '\'] = \'' . $add_value . '\';';
     $data .= "\n";
 
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
         
-    if (!file_exists($language_directory . '/' . $language))
+    if (!file_exists($language_nuke_directory . '/' . $language_nuke))
     {
         @umask(0);
-        mkdir($language_directory . '/' . $language, $directory_mode);
+        mkdir($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
     else
     {
-        chmod($language_directory . '/' . $language, $directory_mode);
+        chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
         
-    if (!file_exists($language_file))
+    if (!file_exists($language_nuke_file))
     {
         $contents = "<?php
 /*======================================================================= 
@@ -532,8 +532,8 @@ function lang_add_new_key($language, $nuke_module_id, $add_key, $add_value)
     }
     else
     {
-        chmod($language_file, $file_mode);
-        $contents = implode('', @file($language_file));
+        chmod($language_nuke_file, $file_mode);
+        $contents = implode('', @file($language_nuke_file));
         $contents = delete_language_block($contents, $short_name);
     }
         
@@ -549,25 +549,25 @@ function lang_add_new_key($language, $nuke_module_id, $add_key, $add_value)
     $contents .= "// [/" . $short_name . "]\n\n";
     $contents .= "?>";
 
-    if (!($fp = fopen($language_file, 'wt')))
+    if (!($fp = fopen($language_nuke_file, 'wt')))
     {
-        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_nuke_file);
     }
 
     fwrite($fp, $contents, strlen($contents));
     fclose($fp);
 
-    chmod($language_file, $file_mode);
-    chmod($language_directory . '/' . $language, $directory_mode);
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_file, $file_mode);
+    chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
 }
 
 // Delete key out of language block
-function delete_lang_key($language, $nuke_module_id, $key_name)
+function delete_lang_key($language_nuke, $nuke_module_id, $key_name)
 {
     global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path;
 
-    $language = trim($language);
+    $language_nuke = trim($language_nuke);
     $nuke_module_id = intval($nuke_module_id);
     $key_name = trim($key_name);
 
@@ -587,15 +587,15 @@ function delete_lang_key($language, $nuke_module_id, $key_name)
     $short_name = trim($row['short_name']);
     $lang_entries = array();
 
-    $language_directory = $phpbb2_root_path . 'modules/language';
+    $language_nuke_directory = $phpbb2_root_path . 'modules/language';
 
-    if (!file_exists($language_directory))
+    if (!file_exists($language_nuke_directory))
     {
         message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
-    include($language_file);
+    $language_nuke_file = $phpbb2_root_path . 'modules/language/' . $language_nuke . '/lang_modules.php';
+    include($language_nuke_file);
     $keys = array();
     eval('$current_lang = $' . trim($short_name) . ';');
         
@@ -621,19 +621,19 @@ function delete_lang_key($language, $nuke_module_id, $key_name)
         $data .= "\n";
     }
     
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
         
-    if (!file_exists($language_directory . '/' . $language))
+    if (!file_exists($language_nuke_directory . '/' . $language_nuke))
     {
         @umask(0);
-        mkdir($language_directory . '/' . $language, $directory_mode);
+        mkdir($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
     else
     {
-        chmod($language_directory . '/' . $language, $directory_mode);
+        chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
         
-    if (!file_exists($language_file))
+    if (!file_exists($language_nuke_file))
     {
         $contents = "<?php
 /*======================================================================= 
@@ -643,8 +643,8 @@ function delete_lang_key($language, $nuke_module_id, $key_name)
     }
     else
     {
-        chmod($language_file, $file_mode);
-        $contents = implode('', @file($language_file));
+        chmod($language_nuke_file, $file_mode);
+        $contents = implode('', @file($language_nuke_file));
         $contents = delete_language_block($contents, $short_name);
     }
         
@@ -660,17 +660,17 @@ function delete_lang_key($language, $nuke_module_id, $key_name)
     $contents .= "// [/" . $short_name . "]\n\n";
     $contents .= "?>";
 
-    if (!($fp = fopen($language_file, 'wt')))
+    if (!($fp = fopen($language_nuke_file, 'wt')))
     {
-        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_nuke_file);
     }
 
     fwrite($fp, $contents, strlen($contents));
     fclose($fp);
 
-    chmod($language_file, $file_mode);
-    chmod($language_directory . '/' . $language, $directory_mode);
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_file, $file_mode);
+    chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
 }
 
 // Add Empty Language
@@ -678,28 +678,28 @@ function add_empty_language($new_language)
 {
     global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path, $lang;
 
-    $language = trim($new_language);
+    $language_nuke = trim($new_language);
 
-    $language_directory = $phpbb2_root_path . 'modules/language';
+    $language_nuke_directory = $phpbb2_root_path . 'modules/language';
 
-    if (!file_exists($language_directory))
+    if (!file_exists($language_nuke_directory))
     {
         message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
 
-    if (!file_exists($language_directory . '/' . $language))
+    if (!file_exists($language_nuke_directory . '/' . $language_nuke))
     {
         @umask(0);
-        mkdir($language_directory . '/' . $language, $directory_mode);
+        mkdir($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
     else
     {
-        chmod($language_directory . '/' . $language, $directory_mode);
+        chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
 
-    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    $language_nuke_file = $phpbb2_root_path . 'modules/language/' . $language_nuke . '/lang_modules.php';
 
     $sql = "SELECT short_name FROM " . MODULES_TABLE;
 
@@ -720,7 +720,7 @@ function add_empty_language($new_language)
     {
         $short_name = trim($rows[$i]['short_name']);
 
-        if (!file_exists($language_file))
+        if (!file_exists($language_nuke_file))
         {
             $contents = "<?php
 /*======================================================================= 
@@ -730,8 +730,8 @@ function add_empty_language($new_language)
         }
         else
         {
-            chmod($language_file, $file_mode);
-            $contents = implode('', @file($language_file));
+            chmod($language_nuke_file, $file_mode);
+            $contents = implode('', @file($language_nuke_file));
             $contents = delete_language_block($contents, $short_name);
         }
         
@@ -745,18 +745,18 @@ function add_empty_language($new_language)
         $contents .= "// [/" . $short_name . "]\n\n";
         $contents .= "?>";
 
-        if (!($fp = fopen($language_file, 'wt')))
+        if (!($fp = fopen($language_nuke_file, 'wt')))
         {
-            message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_nuke_file);
         }
 
         fwrite($fp, $contents, strlen($contents));
         fclose($fp);
     }
 
-    chmod($language_file, $file_mode);
-    chmod($language_directory . '/' . $language, $directory_mode);
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_file, $file_mode);
+    chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
 
 }
 
@@ -765,12 +765,12 @@ function add_new_language($new_language, $lang_schema)
 {
     global $directory_mode, $file_mode, $nuke_db, $phpbb2_root_path, $lang;
 
-    $language = trim($new_language);
+    $language_nuke = trim($new_language);
     $lang_schema = trim($lang_schema);
 
-    $language_directory = $phpbb2_root_path . 'modules/language';
+    $language_nuke_directory = $phpbb2_root_path . 'modules/language';
 
-    if (!file_exists($language_directory))
+    if (!file_exists($language_nuke_directory))
     {
         message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
@@ -783,37 +783,37 @@ function add_new_language($new_language, $lang_schema)
         return;
     }
     
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
 
-    if (!file_exists($language_directory . '/' . $language))
+    if (!file_exists($language_nuke_directory . '/' . $language_nuke))
     {
         @umask(0);
-        mkdir($language_directory . '/' . $language, $directory_mode);
+        mkdir($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
     else
     {
-        chmod($language_directory . '/' . $language, $directory_mode);
+        chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
 
-    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    $language_nuke_file = $phpbb2_root_path . 'modules/language/' . $language_nuke . '/lang_modules.php';
     $contents = implode('', @file($schema_language_file));
 
-    if (file_exists($language_file))
+    if (file_exists($language_nuke_file))
     {
-        chmod($language_file, $file_mode);
+        chmod($language_nuke_file, $file_mode);
     }
 
-    if (!($fp = fopen($language_file, 'wt')))
+    if (!($fp = fopen($language_nuke_file, 'wt')))
     {
-        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+        message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_nuke_file);
     }
 
     fwrite($fp, $contents, strlen($contents));
     fclose($fp);
 
-    chmod($language_file, $file_mode);
-    chmod($language_directory . '/' . $language, $directory_mode);
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_file, $file_mode);
+    chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
 }
 
 // Add Language, Language Content is provided
@@ -823,35 +823,35 @@ function add_new_language_predefined($new_language, $nuke_modules)
 
     // Module content is defined as array(short_name, content)
 
-    $language = trim($new_language);
+    $language_nuke = trim($new_language);
 
-    $language_directory = $phpbb2_root_path . 'modules/language';
+    $language_nuke_directory = $phpbb2_root_path . 'modules/language';
 
-    if (!file_exists($language_directory))
+    if (!file_exists($language_nuke_directory))
     {
         message_die(NUKE_GENERAL_ERROR, 'Unable to find Language Directory');
     }
 
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
 
-    if (!file_exists($language_directory . '/' . $language))
+    if (!file_exists($language_nuke_directory . '/' . $language_nuke))
     {
         @umask(0);
-        mkdir($language_directory . '/' . $language, $directory_mode);
+        mkdir($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
     else
     {
-        chmod($language_directory . '/' . $language, $directory_mode);
+        chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
     }
 
-    $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
+    $language_nuke_file = $phpbb2_root_path . 'modules/language/' . $language_nuke . '/lang_modules.php';
 
     @reset($nuke_modules);
     while (list($short_name, $lang_content) = each($nuke_modules))
     {
         $short_name = trim($short_name);
 
-        if (!file_exists($language_file))
+        if (!file_exists($language_nuke_file))
         {
             $contents = "<?php
 /*======================================================================= 
@@ -861,8 +861,8 @@ function add_new_language_predefined($new_language, $nuke_modules)
         }
         else
         {
-            chmod($language_file, $file_mode);
-            $contents = implode('', @file($language_file));
+            chmod($language_nuke_file, $file_mode);
+            $contents = implode('', @file($language_nuke_file));
             $contents = delete_language_block($contents, $short_name);
         }
         
@@ -877,27 +877,27 @@ function add_new_language_predefined($new_language, $nuke_modules)
         $contents .= "\n\n// [/" . $short_name . "]\n\n";
         $contents .= "?>";
 
-        if (!($fp = fopen($language_file, 'wt')))
+        if (!($fp = fopen($language_nuke_file, 'wt')))
         {
-            message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_nuke_file);
         }
 
         fwrite($fp, $contents, strlen($contents));
         fclose($fp);
     }
 
-    chmod($language_file, $file_mode);
-    chmod($language_directory . '/' . $language, $directory_mode);
-    chmod($language_directory, $directory_mode);
+    chmod($language_nuke_file, $file_mode);
+    chmod($language_nuke_directory . '/' . $language_nuke, $directory_mode);
+    chmod($language_nuke_directory, $directory_mode);
 }
 
-function delete_complete_language($language)
+function delete_complete_language($language_nuke)
 {
     global $nuke_db, $phpbb2_root_path;
 
-    $language = trim($language);
+    $language_nuke = trim($language_nuke);
 
-    clear_directory('modules/language/' . $language);
+    clear_directory('modules/language/' . $language_nuke);
 }
 
 ?>

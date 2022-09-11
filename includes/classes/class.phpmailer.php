@@ -644,7 +644,7 @@ class PHPMailer
      *
      * @var array
      */
-    protected $language = [];
+    protected $language_nuke = [];
 
     /**
      * The number of errors encountered.
@@ -1318,13 +1318,13 @@ class PHPMailer
             !empty($this->CharSet) and
             false !== $pos
         ) {
-            $domain = substr($address, ++$pos);
+            $nuke_domain = substr($address, ++$pos);
             // Verify CharSet string is a valid one, and domain properly encoded in this CharSet.
-            if ($this->has8bitChars($domain) and @mb_check_encoding($domain, $this->CharSet)) {
-                $domain = mb_convert_encoding($domain, 'UTF-8', $this->CharSet);
+            if ($this->has8bitChars($nuke_domain) and @mb_check_encoding($nuke_domain, $this->CharSet)) {
+                $nuke_domain = mb_convert_encoding($nuke_domain, 'UTF-8', $this->CharSet);
                 //Ignore IDE complaints about this line - method signature changed in PHP 5.4
                 $errorcode = 0;
-                $punycode = idn_to_ascii($domain, $errorcode, INTL_IDNA_VARIANT_UTS46);
+                $punycode = idn_to_ascii($nuke_domain, $errorcode, INTL_IDNA_VARIANT_UTS46);
                 if (false !== $punycode) {
                     return substr($address, 0, $pos) . $punycode;
                 }

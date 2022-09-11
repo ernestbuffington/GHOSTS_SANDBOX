@@ -592,7 +592,7 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 		  $portaladmin, 
 	           $prefix, 
 	  $portaladminname,    
-			   $domain, 
+			   $nuke_domain, 
 			      $uid, 
 			 $ThemeSel;
 	

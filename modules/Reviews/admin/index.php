@@ -87,16 +87,16 @@ function reviews() {
             if ($multilingual == 1) {
                 echo "<tr><td>"._LANGUAGE.":</td><td>"
                     ."<select name=\"rlanguage\">";
-                $languages = lang_list();
+                $language_nukes = lang_list();
                 echo '<option value=""'.(($rlanguage == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-                for ($i=0, $j = count($languages); $i < $j; $i++) {
-                    if ($languages[$i] != '') {
-                        echo '<option value="'.$languages[$i].'"'.(($rlanguage == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+                for ($i=0, $j = count($language_nukes); $i < $j; $i++) {
+                    if ($language_nukes[$i] != '') {
+                        echo '<option value="'.$language_nukes[$i].'"'.(($rlanguage == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
                     }
                 }
                 echo '</select></td></tr>';
             } else {
-                echo "<input type=\"hidden\" name=\"rlanguage\" value=\"$language\">";
+                echo "<input type=\"hidden\" name=\"rlanguage\" value=\"$language_nuke\">";
             }
             echo "<tr><td>"._TEXT.":</td><td><textarea name=\"text\" rows=\"6\" wrap=\"virtual\" cols=\"40\">$text</textarea></td></tr>"
             ."<tr><td>"._REVIEWER."</td><td><input type=\"text\" name=\"reviewer\" value=\"$reviewer\" size=\"41\" maxlength=\"40\"></td></tr>"

@@ -9,7 +9,7 @@
  ***************************************************************************/
 
 if (!defined('MODULE_FILE')) { die('You can\'t access this file directly...'); }
-global $domain, $ThemeSel, $name; 
+global $nuke_domain, $ThemeSel, $name; 
 require_once("mainfile.php");
 $this_title = 'The 30/360 US Rule';
 //panacure c kills cancer
@@ -127,7 +127,7 @@ background-color:#DDDDDD;
    echo "</td></tr></table></fieldset></div>";
    // CLOSE OPEN TABLE CASE 1
 
-   global $domain, $name, $facebook_plugin_width;
+   global $nuke_domain, $name, $facebook_plugin_width;
    echo '<br />';
    echo '<div align="center">Written by: Truman "ScottyBcoder" Buffington</div>';
 

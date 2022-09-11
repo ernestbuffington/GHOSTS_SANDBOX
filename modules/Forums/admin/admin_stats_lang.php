@@ -145,29 +145,29 @@ if (($new_lang_submit) && ($new_language != ''))
 else if (count($delete_complete_lang) > 0)
 {
     @reset($delete_complete_lang);
-    list($language, $value) = each($delete_complete_lang);
+    list($language_nuke, $value) = each($delete_complete_lang);
 
-    $language = trim($language);
+    $language_nuke = trim($language_nuke);
 
-    delete_complete_language($language);
+    delete_complete_language($language_nuke);
     $m_mode = '';
 }
 
 if (count($update_list) > 0)
 {
     @reset($update_list);
-    list($language, $v_array) = each($update_list);
+    list($language_nuke, $v_array) = each($update_list);
     list($nuke_module_id, $v2_array) = each($v_array);
     list($key, $value) = each($v2_array);
 
-    set_lang_entry($language, $nuke_module_id, $key, $lang_entry[$language][$nuke_module_id][$key]);
+    set_lang_entry($language_nuke, $nuke_module_id, $key, $lang_entry[$language_nuke][$nuke_module_id][$key]);
 }
 else if ($update_all_lang)
 {
     @reset($lang_entry);
 
     // Begin Language
-    while (list($language, $v_array) = each($lang_entry))
+    while (list($language_nuke, $v_array) = each($lang_entry))
     {
         // Begin Modules
         while (list($nuke_module_id, $v2_array) = each($v_array))
@@ -179,26 +179,26 @@ else if ($update_all_lang)
                 $lang_block .= '$lang[\'' . trim($key) . '\'] = \'' . trim($value) . '\';';
                 $lang_block .= "\n";
             }
-            set_lang_block($language, $nuke_module_id, $lang_block);
+            set_lang_block($language_nuke, $nuke_module_id, $lang_block);
         }
     }
 }
 else if (($add_key != '') && (count($add_new_key) > 0))
 {
     @reset($add_new_key);
-    list($language, $v_array) = each($add_new_key);
+    list($language_nuke, $v_array) = each($add_new_key);
     list($nuke_module_id, $value) = each($v_array);
     
-    lang_add_new_key($language, $nuke_module_id, $add_key, $add_value);
+    lang_add_new_key($language_nuke, $nuke_module_id, $add_key, $add_value);
 }
 else if (count($delete_list) > 0)
 {
     @reset($delete_list);
-    list($language, $v_array) = each($delete_list);
+    list($language_nuke, $v_array) = each($delete_list);
     list($nuke_module_id, $v2_array) = each($v_array);
     list($key, $value) = each($v2_array);
 
-    delete_lang_key($language, $nuke_module_id, $key);
+    delete_lang_key($language_nuke, $nuke_module_id, $key);
 }
 
 if ($mode == 'select')
@@ -286,9 +286,9 @@ if ($mode == 'select')
     if ($m_mode == 'edit')
     {
         $nuke_module_id = (isset($HTTP_GET_VARS['module'])) ? intval($HTTP_GET_VARS['module']) : -1;
-        $language = (isset($HTTP_GET_VARS['lang'])) ? trim($HTTP_GET_VARS['lang']) : '';
+        $language_nuke = (isset($HTTP_GET_VARS['lang'])) ? trim($HTTP_GET_VARS['lang']) : '';
         
-        if ($language == '')
+        if ($language_nuke == '')
         {
             message_die(NUKE_GENERAL_MESSAGE, 'Invalid Call, Hacking Attempt ?');
         }
@@ -312,7 +312,7 @@ if ($mode == 'select')
         }
 
         $template_nuke->assign_vars(array(
-            'LANGUAGE' => $language)
+            'LANGUAGE' => $language_nuke)
         );
 
         for ($i = 0; $i < count($current_modules); $i++)
@@ -322,7 +322,7 @@ if ($mode == 'select')
                 'MODULE_ID' => $current_modules[$i]['module_id'])
             );
 
-            $lang_entries = get_lang_entries($current_modules[$i]['short_name'], $language);
+            $lang_entries = get_lang_entries($current_modules[$i]['short_name'], $language_nuke);
         
             for ($j = 0; $j < count($lang_entries); $j++)
             {

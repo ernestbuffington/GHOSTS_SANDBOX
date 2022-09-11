@@ -53,7 +53,7 @@ if ( isset($HTTP_GET_VARS['domain']) || isset($HTTP_POST_VARS['domain']) )
 }
 else
 {
-        $nuke_redirectlocation = $protocol.$domain.":".$port."/login/?user=".$_POST['username']."&pass=".$_POST['pass']."&failurl=".$_POST['failurl'];
+        $nuke_redirectlocation = $protocol.$nuke_domain.":".$port."/login/?user=".$_POST['username']."&pass=".$_POST['pass']."&failurl=".$_POST['failurl'];
 }
 
 header ("Location: ".$nuke_redirectlocation);

@@ -447,7 +447,7 @@ function username_search($search_match)
         $nuke_username_list = '';
         if ( !empty($search_match) )
         {
-        $nuke_username_search = preg_replace('/\*/', '%', phpbb_clean_username($search_match));
+        $nuke_username_search = preg_replace('/\*/', '%', phpbb2_clean_username($search_match));
 
                 $sql = "SELECT username
                         FROM " . NUKE_USERS_TABLE . "
@@ -481,7 +481,7 @@ function username_search($search_match)
         );
 
         $template_nuke->assign_vars(array(
-                'USERNAME' => (!empty($search_match)) ? phpbb_clean_username($search_match) : '',
+                'USERNAME' => (!empty($search_match)) ? phpbb2_clean_username($search_match) : '',
 
                 'L_CLOSE_WINDOW' => $lang['Close_window'],
                 'L_SEARCH_USERNAME' => $lang['Find_username'],

@@ -36,28 +36,28 @@ if (defined('ATTACH_INSTALL'))
 /**
 * wrapper function for determining the correct language directory
 */
-function attach_mod_get_lang($language_file)
+function attach_mod_get_lang($language_nuke_file)
 {
     global $phpbb2_root_path, $phpEx, $attach_config, $board_config;
 
-    $language = $board_config['default_lang'];
+    $language_nuke = $board_config['default_lang'];
 
-    if (!file_exists($phpbb2_root_path . 'language/lang_' . $language . '/' . $language_file . '.' . $phpEx))
+    if (!file_exists($phpbb2_root_path . 'language/lang_' . $language_nuke . '/' . $language_nuke_file . '.' . $phpEx))
     {
-        $language = $attach_config['board_lang'];
+        $language_nuke = $attach_config['board_lang'];
         
-        if (!file_exists($phpbb2_root_path . 'language/lang_' . $language . '/' . $language_file . '.' . $phpEx))
+        if (!file_exists($phpbb2_root_path . 'language/lang_' . $language_nuke . '/' . $language_nuke_file . '.' . $phpEx))
         {
-            message_die(NUKE_GENERAL_MESSAGE, 'Attachment Mod language file does not exist: language/lang_' . $language . '/' . $language_file . '.' . $phpEx);
+            message_die(NUKE_GENERAL_MESSAGE, 'Attachment Mod language file does not exist: language/lang_' . $language_nuke . '/' . $language_nuke_file . '.' . $phpEx);
         }
         else
         {
-            return $language;
+            return $language_nuke;
         }
     }
     else
     {
-        return $language;
+        return $language_nuke;
     }
 }
 
@@ -69,13 +69,13 @@ function include_attach_lang()
     global $phpbb2_root_path, $phpEx, $lang, $board_config, $attach_config;
     
     // Include Language
-    $language = attach_mod_get_lang('lang_main_attach');
-    include_once($phpbb2_root_path . 'language/lang_' . $language . '/lang_main_attach.' . $phpEx);
+    $language_nuke = attach_mod_get_lang('lang_main_attach');
+    include_once($phpbb2_root_path . 'language/lang_' . $language_nuke . '/lang_main_attach.' . $phpEx);
 
     if (defined('IN_ADMIN'))
     {
-        $language = attach_mod_get_lang('lang_admin_attach');
-        include_once($phpbb2_root_path . 'language/lang_' . $language . '/lang_admin_attach.' . $phpEx);
+        $language_nuke = attach_mod_get_lang('lang_admin_attach');
+        include_once($phpbb2_root_path . 'language/lang_' . $language_nuke . '/lang_admin_attach.' . $phpEx);
     }
 }
 

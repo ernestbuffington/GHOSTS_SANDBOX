@@ -109,31 +109,31 @@ function build_module($info_array, $lang_array, $php_file, $nuke_module_id = -1)
     @reset($lang_array);
     while (list($key, $data) = @each($lang_array))
     {
-        $language = trim($key);
-        $language_dir = $phpbb2_root_path . 'modules/language';
-        $language_file = $phpbb2_root_path . 'modules/language/' . $language . '/lang_modules.php';
+        $language_nuke = trim($key);
+        $language_nuke_dir = $phpbb2_root_path . 'modules/language';
+        $language_nuke_file = $phpbb2_root_path . 'modules/language/' . $language_nuke . '/lang_modules.php';
 
-        if (!file_exists($language_dir))
+        if (!file_exists($language_nuke_dir))
         {
             @umask(0);
-            mkdir($language_dir, $directory_mode);
+            mkdir($language_nuke_dir, $directory_mode);
         }
         else
         {
-            chmod($language_dir, $directory_mode);
+            chmod($language_nuke_dir, $directory_mode);
         }
         
-        if (!file_exists($language_dir . '/' . $language))
+        if (!file_exists($language_nuke_dir . '/' . $language_nuke))
         {
             @umask(0);
-            mkdir($language_dir . '/' . $language, $directory_mode);
+            mkdir($language_nuke_dir . '/' . $language_nuke, $directory_mode);
         }
         else
         {
-            chmod($language_dir . '/' . $language, $directory_mode);
+            chmod($language_nuke_dir . '/' . $language_nuke, $directory_mode);
         }
         
-        if (!file_exists($language_file))
+        if (!file_exists($language_nuke_file))
         {
             $contents = "<?php
 /*======================================================================= 
@@ -143,8 +143,8 @@ function build_module($info_array, $lang_array, $php_file, $nuke_module_id = -1)
         }
         else
         {
-            chmod($language_file, $file_mode);
-            $contents = implode('', @file($language_file));
+            chmod($language_nuke_file, $file_mode);
+            $contents = implode('', @file($language_nuke_file));
             
             if ($nuke_module_id != -1)
             {
@@ -164,17 +164,17 @@ function build_module($info_array, $lang_array, $php_file, $nuke_module_id = -1)
         $contents .= "// [/" . $short_name . "]\n\n";
         $contents .= "?>";
 
-        if (!($fp = fopen($language_file, 'wt')))
+        if (!($fp = fopen($language_nuke_file, 'wt')))
         {
-            message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_file);
+            message_die(NUKE_GENERAL_ERROR, 'Unable to write to: ' . $language_nuke_file);
         }
 
         fwrite($fp, $contents, strlen($contents));
         fclose($fp);
 
-        chmod($language_file, $file_mode);
-        chmod($language_dir . '/' . $language, $directory_mode);
-        chmod($language_dir, $directory_mode);
+        chmod($language_nuke_file, $file_mode);
+        chmod($language_nuke_dir . '/' . $language_nuke, $directory_mode);
+        chmod($language_nuke_dir, $directory_mode);
     }
 
     // If we have not quit yet, let us add the info to the database too. ;)

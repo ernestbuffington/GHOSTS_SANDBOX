@@ -337,7 +337,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                         message_die(NUKE_GENERAL_MESSAGE, $message);
                 }
 
-                $nuke_username = ( !empty($HTTP_POST_VARS['username']) ) ? phpbb_clean_username($HTTP_POST_VARS['username']) : '';
+                $nuke_username = ( !empty($HTTP_POST_VARS['username']) ) ? phpbb2_clean_username($HTTP_POST_VARS['username']) : '';
                 $email = ( !empty($HTTP_POST_VARS['email']) ) ? trim(strip_tags(htmlspecialchars( $HTTP_POST_VARS['email'] ) )) : '';
 
                 $password = ( !empty($HTTP_POST_VARS['password']) ) ? trim(strip_tags(htmlspecialchars( $HTTP_POST_VARS['password'] ) )) : '';
@@ -421,7 +421,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
 
-                validate_optional_fields($website, $location, $occupation, $interests, $signature, $facebook);
+                validate_optional_nuke_fields($website, $location, $occupation, $interests, $signature, $facebook);
 
                 $viewemail = ( isset( $HTTP_POST_VARS['viewemail']) ) ? ( ( $HTTP_POST_VARS['viewemail'] ) ? TRUE : 0 ) : 0;
                 $allowviewonline = ( isset( $HTTP_POST_VARS['hideonline']) ) ? ( ( $HTTP_POST_VARS['hideonline'] ) ? 0 : TRUE ) : TRUE;
@@ -586,7 +586,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 
                         if ( stripslashes(strtolower($nuke_username)) != strtolower($this_userdata['username']) )
                         {
-                                $result = validate_username($nuke_username);
+                                $result = validate_username_nuke($nuke_username);
                                 if ( $result['error'] )
                                 {
                                         $error = TRUE;

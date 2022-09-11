@@ -10,15 +10,15 @@ die ("You can't access this file directly...");
 
 $nuke_module_name = basename(dirname(__FILE__));
 
-global $domain, $prefix, $nuke_db, $sitename, $currentlang, $admin, $multilingual, $nuke_module_name, $admin_file, $nuke_user_prefix;
+global $nuke_domain, $prefix, $nuke_db, $sitename, $currentlang, $admin, $multilingual, $nuke_module_name, $admin_file, $nuke_user_prefix;
 
 @require_once(NUKE_CLASSES_DIR.'class.sitemap.php');
 use SitemapPHP\Sitemap;
-$sitemap = new Sitemap('https://'.$domain);
+$sitemap = new Sitemap('https://'.$nuke_domain);
 $sitemap->setPath(NUKE_BASE_DIR.'xmls/sitemap/');
 $sitemap->setFilename('sitemap');
 $sitemap->addItem('/', '1.0', 'daily',  'Today');
-$sitemap->createSitemapIndex('https://'.$domain.'/xmls/sitemap/', 'Today');
+$sitemap->createSitemapIndex('https://'.$nuke_domain.'/xmls/sitemap/', 'Today');
 
 # Examples
 # $sitemap->addItem('/contact', '0.6', 'yearly', '14-12-2009');

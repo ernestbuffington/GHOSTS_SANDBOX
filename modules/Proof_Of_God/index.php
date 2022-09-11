@@ -10,7 +10,7 @@ get_lang($nuke_module_name);
 include("header.php");
 $index = 0;
 
-global $domain, $facebook_plugin_width, $facebookappid, $nuke_module_name, $ThemeSel, $name; //globals 
+global $nuke_domain, $facebook_plugin_width, $facebookappid, $nuke_module_name, $ThemeSel, $name; //globals 
 
 include (TITANIUM_MODULES_DIR.$nuke_module_name.'/includes/isNumber.php');
 

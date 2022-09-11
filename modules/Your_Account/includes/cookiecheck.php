@@ -46,16 +46,16 @@ if (!defined('CNBYA'))
 
 $nuke_module_name = basename (dirname(dirname (__FILE__)) );
 
-global $currentlang, $language;
+global $currentlang, $language_nuke;
 
 if (file_exists(NUKE_MODULES_DIR.$nuke_module_name.'/language/lang-'.$currentlang.'.php')) {
 	include_once(NUKE_MODULES_DIR.$nuke_module_name.'/language/lang-'.$currentlang.'.php');
 	//echo NUKE_MODULES_DIR.$nuke_module_name.'/language/lang-'.$currentlang.'.php';
 } 
 else
-if (file_exists(NUKE_MODULES_DIR.$nuke_module_name.'/language/lang-'.$language.'.php')) {
-	include_once(NUKE_MODULES_DIR.$nuke_module_name.'/language/lang-'.$language.'.php');
-	//echo NUKE_MODULES_DIR.$nuke_module_name.'/language/lang-'.$language.'.php';
+if (file_exists(NUKE_MODULES_DIR.$nuke_module_name.'/language/lang-'.$language_nuke.'.php')) {
+	include_once(NUKE_MODULES_DIR.$nuke_module_name.'/language/lang-'.$language_nuke.'.php');
+	//echo NUKE_MODULES_DIR.$nuke_module_name.'/language/lang-'.$language_nuke.'.php';
 } 
 else
 if (file_exists(NUKE_MODULES_DIR.$nuke_module_name.'/language/lang-english.php')) {

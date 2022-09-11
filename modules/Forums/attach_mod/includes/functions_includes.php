@@ -31,8 +31,8 @@ function attach_faq_include($lang_file)
 
     if ($lang_file == 'lang_faq')
     {
-        $language = attach_mod_get_lang('lang_faq_attach');
-        include($phpbb2_root_path . 'language/lang_' . $language . '/lang_faq_attach.'.$phpEx);
+        $language_nuke = attach_mod_get_lang('lang_faq_attach');
+        include($phpbb2_root_path . 'language/lang_' . $language_nuke . '/lang_faq_attach.'.$phpEx);
     }
 }
 

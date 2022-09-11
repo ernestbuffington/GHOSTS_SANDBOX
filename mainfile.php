@@ -508,7 +508,7 @@ $moderate = intval($moderate);
 $admingraphic = intval($admingraphic);
 $httpref = intval($httpref);
 $httprefmax = intval($httprefmax);
-$domain = str_replace('http://', '', $nukeurl);
+$nuke_domain = str_replace('http://', '', $nukeurl);
 
 if(isset($default_Theme)) 
 $Default_Theme = $default_Theme;
@@ -605,6 +605,10 @@ if(!defined('FORUM_ADMIN') && !isset($ThemeSel) && !defined('RSS_FEED')):
     $ThemeSel = get_theme();
     include_once(NUKE_THEMES_DIR . $ThemeSel . '/theme.php');
 endif;
+
+define('NUKE_THEMS_CORRECTED_PATH', $href_path . '/themes/'.$ThemeSel.'/');
+define('NUKE_THEMS_CORRECTED_STYLE_PATH', $href_path . '/themes/'.$ThemeSel.'/phpBB3_adm/');
+
 
 /*****[BEGIN]******************************************
  [ Base:    Admin File Check                   v3.0.0 ]

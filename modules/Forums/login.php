@@ -70,7 +70,7 @@ if( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) || isset($
 {
     if( ( isset($HTTP_POST_VARS['login']) || isset($HTTP_GET_VARS['login']) ) && (!$nuke_userdata['session_logged_in'] || isset($HTTP_POST_VARS['admin'])) )
     {
-        $nuke_username = isset($HTTP_POST_VARS['username']) ? phpbb_clean_username($HTTP_POST_VARS['username']) : '';
+        $nuke_username = isset($HTTP_POST_VARS['username']) ? phpbb2_clean_username($HTTP_POST_VARS['username']) : '';
         $password = isset($HTTP_POST_VARS['password']) ? $HTTP_POST_VARS['password'] : '';
 
         $sql = "SELECT user_id, username, user_password, user_active, user_level, user_login_tries, user_last_login_try

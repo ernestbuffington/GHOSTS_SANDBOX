@@ -235,7 +235,7 @@ $mode == 'register' ):
 	  $$var = trim(htmlspecialchars($HTTP_POST_VARS[$param]));
 	endwhile;
 
-	$nuke_username = (!empty($HTTP_POST_VARS['username'])) ? phpbb_clean_username($HTTP_POST_VARS['username']) : '';
+	$nuke_username = (!empty($HTTP_POST_VARS['username'])) ? phpbb2_clean_username($HTTP_POST_VARS['username']) : '';
 	$trim_var_list = array('cur_password' => 'cur_password', 
 	                       'new_password' => 'new_password', 
 					   'password_confirm' => 'password_confirm', 
@@ -259,7 +259,7 @@ $mode == 'register' ):
 
 	# Run some validation on the optional fields. These are pass-by-ref, so they'll be changed to
 	# empty strings if they fail.
-	validate_optional_fields($website, $location, $occupation, $interests, $signature, $facebook);
+	validate_optional_nuke_fields($website, $location, $occupation, $interests, $signature, $facebook);
 
     # Mod: XData v1.0.3 START
 	$xdata = array();
@@ -555,7 +555,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 
 	# Do a ban check on this email address
 	if($email != $nuke_userdata['user_email'] || $mode == 'register'):
-		$result = validate_email($email);
+		$result = validate_nuke_email($email);
 		
 		if($result['error']):
 			$email = $nuke_userdata['user_email'];
@@ -591,7 +591,7 @@ if(isset($HTTP_POST_VARS['submit'])):
 			$error = TRUE;
 		elseif($nuke_username != $nuke_userdata['username'] || $mode == 'register'):
 			if(strtolower($nuke_username) != strtolower($nuke_userdata['username']) || $mode == 'register'):
-				$result = validate_username($nuke_username);
+				$result = validate_username_nuke($nuke_username);
 				if($result['error']):
 				
 					$error = TRUE;

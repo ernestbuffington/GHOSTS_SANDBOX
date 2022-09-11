@@ -112,11 +112,11 @@ function write_review() {
     if ($multilingual == 1) {
         echo "<br /><strong>"._LANGUAGE.": </strong>"
             ."<select name=\"rlanguage\">";
-        $languages = lang_list();
+        $language_nukes = lang_list();
         echo '<option value=""'.((strtolower($currentlang) == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-        for ($i=0, $j = count($languages); $i < $j; $i++) {
-            if ($languages[$i] != '') {
-                echo '<option value="'.$languages[$i].'"'.((strtolower($currentlang) == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+        for ($i=0, $j = count($language_nukes); $i < $j; $i++) {
+            if ($language_nukes[$i] != '') {
+                echo '<option value="'.$language_nukes[$i].'"'.((strtolower($currentlang) == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
             }
         }
         echo '</select><br /><br />';
@@ -796,11 +796,11 @@ function mod_review($id) {
     if ($multilingual == 1) {
         echo "<br /><strong>"._LANGUAGE.": </strong>"
             ."<select name=\"rlanguage\">";
-        $languages = lang_list();
+        $language_nukes = lang_list();
         echo '<option value=""'.(($rlanguage == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-        for ($i=0, $j = count($languages); $i < $j; $i++) {
-            if ($languages[$i] != '') {
-                echo '<option value="'.$languages[$i].'"'.(($rlanguage == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+        for ($i=0, $j = count($language_nukes); $i < $j; $i++) {
+            if ($language_nukes[$i] != '') {
+                echo '<option value="'.$language_nukes[$i].'"'.(($rlanguage == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
             }
         }
         echo '</select><br /><br />';

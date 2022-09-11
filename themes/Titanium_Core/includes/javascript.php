@@ -61,7 +61,7 @@ exit('Access Denied');
 #//global $ThemeSel;
 # This is a script load example
 /* echo "<script type=\"text/javascript\" language=\"javascript\" src=\"".HTTPS."themes/".$ThemeSel."/js/liveclock.js\"></script>\n"; */
-global $domain;
+global $nuke_domain;
 ?>
 <!-- 80sPXL W00 Thin V1 Font Info CSS -->
 <link href="//db.onlinewebfonts.com/c/783dd6c2d08bdc67012a0eec73fc1702?family=80sPXLW00-Thin" rel="stylesheet" type="text/css"//>

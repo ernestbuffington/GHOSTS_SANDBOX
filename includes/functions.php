@@ -348,7 +348,7 @@ function get_db_stat($mode)
 }
 
 // added at phpBB 2.0.11 to properly format the username
-function phpbb_clean_username($nuke_username)
+function phpbb2_clean_username($nuke_username)
 {
     $nuke_username = substr(htmlspecialchars(str_replace("\'", "'", trim($nuke_username))), 0, 25);
     $nuke_username = phpbb_rtrim($nuke_username, "\\");
@@ -447,7 +447,7 @@ function dss_rand()
 function get_userdata($nuke_user, $force_str = false) 
 {
     global $nuke_db;
-    $nuke_user = (!is_numeric($nuke_user) || $force_str) ? phpbb_clean_username($nuke_user) : intval($nuke_user);
+    $nuke_user = (!is_numeric($nuke_user) || $force_str) ? phpbb2_clean_username($nuke_user) : intval($nuke_user);
     $sql = "SELECT * FROM ".NUKE_USERS_TABLE." WHERE ";
     $sql .= (( is_integer($nuke_user)) ? "user_id = $nuke_user" : "username = '".str_replace("\'", "''", $nuke_user)."'" )." AND user_id <> ".NUKE_ANONYMOUS;
     if(!($result = $nuke_db->sql_query($sql))) 
@@ -485,7 +485,7 @@ function set_user_xdata($nuke_user, $which_xdata, $value)
 
     if($nuke_user_is_name)
     {
-        $nuke_user = phpbb_clean_username($nuke_user);
+        $nuke_user = phpbb2_clean_username($nuke_user);
     }
 
     $nuke_user_where = ($nuke_user_is_name) ? ('u.username = \''.$nuke_user.'\'') : ('u.user_id = '.$nuke_user);

@@ -1623,7 +1623,7 @@ else if ( $submit || $refresh || !empty($mode) )
  ******************************************************/
                         $to_username_array = explode (";", $_POST['username']);
                         sort ($to_username_array);
-                        foreach ($to_username_array as $name) $to_usernames .= "'".phpbb_clean_username($name)."',";
+                        foreach ($to_username_array as $name) $to_usernames .= "'".phpbb2_clean_username($name)."',";
                         $to_usernames[strlen($to_usernames)-1]=" ";
 
                         $sql = "SELECT user_id, username, user_notify_pm, user_email, user_lang, user_active

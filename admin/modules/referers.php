@@ -37,8 +37,8 @@ if (is_mod_admin()):
         OpenTable();
         echo '<div align="center" style="padding-top:6px;">';
         echo '</div>';
-		global $domain;
-		echo '<div style="text-align:center"><h1>'.$admlang['referers']['linking'].'',$domain.'?</h1></div>' , PHP_EOL;
+		global $nuke_domain;
+		echo '<div style="text-align:center"><h1>'.$admlang['referers']['linking'].'',$nuke_domain.'?</h1></div>' , PHP_EOL;
         $result = $nuke_db->sql_query("SELECT `url`, `link`, `lasttime` FROM ".$prefix."_referer ORDER by `lasttime` DESC");
 		echo '<table style="width:100%;" border="0" cellpadding="0" cellspacing="1" class="forumline" align="center">' , PHP_EOL;
 		echo '<tr><td class="catHead" style="width: 80%; text-align: center; font-weight: bold;">'.$admlang['referers']['link'].'</td>' , PHP_EOL;

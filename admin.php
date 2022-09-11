@@ -56,7 +56,7 @@ if(isset($aid) && ($aid) && (!isset($admin) || empty($admin)) && $op != 'login')
 require_once(dirname(__FILE__) . '/mainfile.php');
 require_once(NUKE_ADMIN_DIR.'functions.php');
 
-global $domain, $admin_file, $identify;
+global $nuke_domain, $admin_file, $identify;
 
 /*****[BEGIN]******************************************
  [ Mod:    Admin IP Lock                       v2.1.0 ]

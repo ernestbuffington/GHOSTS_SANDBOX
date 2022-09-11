@@ -1,4 +1,4 @@
-<?php
+<?php 
 /*======================================================================= 
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
@@ -79,13 +79,13 @@ if (!defined('IN_PHPBB2'))
 // Also checks if it includes the " character, which we don't allow in usernames.
 // Used for registering, changing names, and posting anonymously with a username
 //
-function validate_username($nuke_username)
+function validate_username_nuke($nuke_username)
 {
         global $nuke_db, $lang, $nuke_userdata;
 
         // Remove doubled up spaces
         $nuke_username = preg_replace('#\s+#', ' ', trim($nuke_username));
-        $nuke_username = phpbb_clean_username($nuke_username);
+        $nuke_username = phpbb2_clean_username($nuke_username);
 
     $sql = "SELECT username
         FROM " . NUKE_USERS_TABLE . "
@@ -188,7 +188,7 @@ function validate_username($nuke_username)
 // Check to see if email address is banned
 // or already present in the DB
 //
-function validate_email($email)
+function validate_nuke_email($email)
 {
         global $nuke_db, $lang;
 
@@ -241,7 +241,7 @@ function validate_email($email)
 // Does supplementary validation of optional profile fields. This expects common stuff like trim() and strip_tags()
 // to have already been run. Params are passed by-ref, so we can set them to the empty string if they fail.
 //
-function validate_optional_fields(&$website, &$location, &$occupation, &$interests, &$sig, &$facebook)
+function validate_optional_nuke_fields(&$website, &$location, &$occupation, &$interests, &$sig, &$facebook)
 {
         $check_var_length = array('location', 'occupation', 'interests', 'sig', 'facebook');
 

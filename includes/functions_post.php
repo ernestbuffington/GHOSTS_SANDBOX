@@ -155,13 +155,13 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
         // Check username
         if (!empty($nuke_username))
         {
-        $nuke_username = phpbb_clean_username($nuke_username);
+        $nuke_username = phpbb2_clean_username($nuke_username);
 
                 if (!$nuke_userdata['session_logged_in'] || ($nuke_userdata['session_logged_in'] && $nuke_username != $nuke_userdata['username']))
                 {
                         include("includes/functions_validate.php");
 
-                        $result = validate_username($nuke_username);
+                        $result = validate_username_nuke($nuke_username);
                         if ($result['error'])
                         {
                                 $error_msg .= (!empty($error_msg)) ? '<br />' . $result['error_msg'] : $result['error_msg'];

@@ -95,7 +95,7 @@ if (isset($HTTP_POST_VARS['search_keywords']) || isset($HTTP_GET_VARS['search_ke
 }
 if (isset($HTTP_POST_VARS['search_author']) || isset($HTTP_GET_VARS['search_author'])) {
     $search_author = (isset($HTTP_POST_VARS['search_author'])) ? $HTTP_POST_VARS['search_author'] : $HTTP_GET_VARS['search_author'];
-    $search_author = phpbb_clean_username($search_author);
+    $search_author = phpbb2_clean_username($search_author);
 } else {
     $search_author = '';
 }

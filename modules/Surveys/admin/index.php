@@ -223,7 +223,7 @@ if(is_mod_admin($nuke_module_name)) {
     }
 
     function poll_createPoll() {
-        global $language, $admin, $multilingual, $prefix, $nuke_db, $admin_file;
+        global $language_nuke, $admin, $multilingual, $prefix, $nuke_db, $admin_file;
         include_once(NUKE_BASE_DIR.'header.php');
         LoadJS();
         OpenTable();
@@ -247,16 +247,16 @@ if(is_mod_admin($nuke_module_name)) {
         if ($multilingual == 1) {
             echo "<br />" . _LANGUAGE . ": "
                 ."<select name=\"planguage\">";
-            $languages = lang_list();
-            echo '<option value=""'.(($language == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-            for ($i=0, $j = count($languages); $i < $j; $i++) {
-                if ($languages[$i] != '') {
-                    echo '<option value="'.$languages[$i].'"'.(($language == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+            $language_nukes = lang_list();
+            echo '<option value=""'.(($language_nuke == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
+            for ($i=0, $j = count($language_nukes); $i < $j; $i++) {
+                if ($language_nukes[$i] != '') {
+                    echo '<option value="'.$language_nukes[$i].'"'.(($language_nuke == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
                 }
             }
             echo '</select><br /><br />';
         } else {
-            echo "<input type=\"hidden\" name=\"planguage\" value=\"$language\"><br /><br />";
+            echo "<input type=\"hidden\" name=\"planguage\" value=\"$language_nuke\"><br /><br />";
         }
         echo "<span class=\"content\"><i>" . _POLLEACHFIELD . "</i></span><br />"
         ."<table border=\"0\">";
@@ -497,11 +497,11 @@ if(is_mod_admin($nuke_module_name)) {
         if ($multilingual == 1) {
             echo "<tr><td><strong>" . _LANGUAGE . ":</strong></td><td>"
                 ."<select name=\"planguage\">";
-            $languages = lang_list();
+            $language_nukes = lang_list();
             echo '<option value=""'.(($planguage == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-            for ($i=0, $j = count($languages); $i < $j; $i++) {
-                if ($languages[$i] != '') {
-                    echo '<option value="'.$languages[$i].'"'.(($planguage == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+            for ($i=0, $j = count($language_nukes); $i < $j; $i++) {
+                if ($language_nukes[$i] != '') {
+                    echo '<option value="'.$language_nukes[$i].'"'.(($planguage == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
                 }
             }
             echo '</select><br /><br />';

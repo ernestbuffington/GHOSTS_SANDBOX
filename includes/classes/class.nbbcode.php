@@ -23,7 +23,7 @@
 	on other sites.
 */
 
-class BBCode 
+class BBNukeCode 
 {
 	public static function encode_html($text) 
 	{
@@ -33,7 +33,7 @@ class BBCode
 	public static function encode($text)
 	{
 		# Split all bbcodes.
-		$text_parts = BBCode::split_bbcodes($text);
+		$text_parts = BBNukeCode::split_bbcodes($text);
 		# Merge all bbcodes and do special actions depending on the type of code.
 		$text = '';
 		while ($part = array_shift($text_parts)) {
@@ -69,7 +69,7 @@ class BBCode
 		$bb_codes['quote_close']	= '</blockquote></figure></div>';
 
 		# pad it with a space so we can distinguish between FALSE and matching the 1st char (index 0).
-		$text = BBCode::split_on_bbcodes($text, $allowed, $allow_html);
+		$text = BBNukeCode::split_on_bbcodes($text, $allowed, $allow_html);
 
 		# Patterns and replacements for URL, email tags etc.
 		$patterns = $replacements = array();
@@ -125,13 +125,13 @@ class BBCode
 		$text = preg_replace_callback("(\[img\](.*?)\[/img\])is", function($m) { return '<img class="reimg" onload="reimg(this);" onerror="reimg(this);" src="'.$m[1].'" border="0" alt="" />'; }, $text);
 
 		# Parse YouTube videos
-		$text = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#is", 'BBCode::evo_parse_video_callback', $text);
+		$text = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#is", 'BBNukeCode::evo_parse_video_callback', $text);
 
 		# tag/mention a member
-    	$text = preg_replace_callback("(\[tag\](.*?)\[/tag\])is", 'BBCode::evo_mention_callback', $text);
+    	$text = preg_replace_callback("(\[tag\](.*?)\[/tag\])is", 'BBNukeCode::evo_mention_callback', $text);
 
     	# Spoiler tag
-    	$text = preg_replace_callback("(\[spoil\](.*?)\[/spoil\])is", 'BBCode::evo_spoil_callback', $text);
+    	$text = preg_replace_callback("(\[spoil\](.*?)\[/spoil\])is", 'BBNukeCode::evo_spoil_callback', $text);
 
 		/**
 		 *  The BBCODES below are for SCEditor support
@@ -164,7 +164,7 @@ class BBCode
 
 	public static function evo_spoil_callback( $matches )
 	{
-		return BBCode::evo_spoil( $matches[1] );
+		return BBNukeCode::evo_spoil( $matches[1] );
 	}
 
 	public static function evo_spoil( $hidden_content )
@@ -244,7 +244,7 @@ class BBCode
 	# Parse the YouTube video
 	public static function evo_parse_video_callback( $matches ) 
 	{
-		return BBCode::evo_parse_video( $matches[1], $matches[2] );
+		return BBNukeCode::evo_parse_video( $matches[1], $matches[2] );
 	}
 
 	public static function evo_parse_video( $video, $url )
@@ -356,7 +356,7 @@ class BBCode
 
 	public static function evo_mention_callback( $matches )
 	{
-		return BBCode::evo_mention( $matches[1] );
+		return BBNukeCode::evo_mention( $matches[1] );
 	}
 
 	public static function evo_mention( $nuke_user )
@@ -428,38 +428,38 @@ class BBCode
 	{
 		global $bb_codes;
 		# Split all bbcodes.
-		$text_parts = BBCode::split_bbcodes($text);
+		$text_parts = BBNukeCode::split_bbcodes($text);
 		# Merge all bbcodes and do special actions depending on the type of code.
 		$text = '';
 		while ($part = array_shift($text_parts)) {
 			if ($part['code'] == 'php') {
 				# [PHP]
-				$text .= ($allowed) ? BBCode::decode_php($part['text']) : nl2br(htmlspecialchars($part['text']));
+				$text .= ($allowed) ? BBNukeCode::decode_php($part['text']) : nl2br(htmlspecialchars($part['text']));
 			} elseif ($part['code'] == 'code') {
 				# [CODE]
 				if (!$allowed && preg_match('/</', $part['text'])) {
 					$part['text'] = nl2br(htmlspecialchars($part['text']));
 				}
-				$text .= $allowed ? BBCode::decode_code($part['text']) : $part['text'];
+				$text .= $allowed ? BBNukeCode::decode_code($part['text']) : $part['text'];
 			} elseif ($part['code'] == 'quote') {
 				# [QUOTE] and [QUOTE=""]
 				if ($part['text'][6] == ']') {
-					$text .= $bb_codes['quote'].BBCode::split_on_bbcodes(substr($part['text'], 7, -8), $allowed, $allow_html).$bb_codes['quote_close'];
+					$text .= $bb_codes['quote'].BBNukeCode::split_on_bbcodes(substr($part['text'], 7, -8), $allowed, $allow_html).$bb_codes['quote_close'];
 				} else {
-					$part['text'] = preg_replace('/\[quote="(.*?)"\]/si', $bb_codes['quote_name'], BBCode::split_on_bbcodes(substr($part['text'], 0, -8), $allowed, $allow_html), 1);
+					$part['text'] = preg_replace('/\[quote="(.*?)"\]/si', $bb_codes['quote_name'], BBNukeCode::split_on_bbcodes(substr($part['text'], 0, -8), $allowed, $allow_html), 1);
 					$text .= $part['text'].$bb_codes['quote_close'];
 				}
 			} elseif ($part['subc']) {
-				$tmptext = '['.BBCode::split_on_bbcodes(substr($part['text'], 1, -1)).']';
-				$text .= ($part['code'] == 'list') ? BBCode::decode_list($tmptext) : $tmptext;
+				$tmptext = '['.BBNukeCode::split_on_bbcodes(substr($part['text'], 1, -1)).']';
+				$text .= ($part['code'] == 'list') ? BBNukeCode::decode_list($tmptext) : $tmptext;
 				unset($tmptext);
 			} else {
 				if ($allow_html) {
 					$tmptext = (!preg_match('/</', $part['text']) ? nl2br($part['text']) : $part['text']);
 				} else {
-					$tmptext = nl2br(BBCode::encode_html($part['text']));
+					$tmptext = nl2br(BBNukeCode::encode_html($part['text']));
 				}
-				$text .= ($part['code'] == 'list') ? BBCode::decode_list($tmptext) : $tmptext;
+				$text .= ($part['code'] == 'list') ? BBNukeCode::decode_list($tmptext) : $tmptext;
 				unset($tmptext);
 			}
 		}

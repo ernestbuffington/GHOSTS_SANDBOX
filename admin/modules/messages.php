@@ -49,7 +49,7 @@ function MsgDeactive($mid) {
 }
 
 function messages() {
-    global $admin, $admlanguage, $language, $prefix, $nuke_db, $multilingual, $admin_file, $admlang;
+    global $admin, $admlanguage, $language_nuke, $prefix, $nuke_db, $multilingual, $admin_file, $admlang;
     include(NUKE_BASE_DIR.'header.php');
     OpenTable();
     echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=messages\">" . $admlang['messages']['header'] . "</a></div>\n";
@@ -58,7 +58,7 @@ function messages() {
     CloseTable();
     echo "<br />";
     if (empty($admlanguage)) {
-        $admlanguage = $language; /* This to make sure some language is pre-selected */
+        $admlanguage = $language_nuke; /* This to make sure some language is pre-selected */
     }
     OpenTable();
     echo "<center><span class=\"title\"><strong>" . $admlang['messages']['all'] . "</strong></span><br /><br /><table border=\"1\" width=\"100%\">"
@@ -142,17 +142,17 @@ function messages() {
     while ($file = readdir($handle)) {
         if (preg_match("/^lang\-(.+)\.php/", $file, $matches)) {
             $langFound = $matches[1];
-            $languageslist .= $langFound.' ';
+            $language_nukeslist .= $langFound.' ';
         }
     }
     closedir($handle);
-    $languageslist = explode(" ", $languageslist);
-    sort($languageslist);
-    for ($i=0; $i < count($languageslist); $i++) {
-        if($languageslist[$i]!="") {
-        echo "<option value=\"$languageslist[$i]\" ";
-        if($languageslist[$i]==$language) echo "selected";
-        echo ">".ucfirst($languageslist[$i])."</option>\n";
+    $language_nukeslist = explode(" ", $language_nukeslist);
+    sort($language_nukeslist);
+    for ($i=0; $i < count($language_nukeslist); $i++) {
+        if($language_nukeslist[$i]!="") {
+        echo "<option value=\"$language_nukeslist[$i]\" ";
+        if($language_nukeslist[$i]==$language_nuke) echo "selected";
+        echo ">".ucfirst($language_nukeslist[$i])."</option>\n";
         }
     }
     echo "<option value=\"\">" . _ALL . "</option></select><br /><br />";
@@ -281,17 +281,17 @@ function editmsg($mid) {
     while ($file = readdir($handle)) {
         if (preg_match("/^lang\-(.+)\.php/", $file, $matches)) {
             $langFound = $matches[1];
-            $languageslist .= "$langFound ";
+            $language_nukeslist .= "$langFound ";
         }
     }
     closedir($handle);
-    $languageslist = explode(" ", $languageslist);
-    sort($languageslist);
-    for ($i=0; $i < count($languageslist); $i++) {
-        if(!empty($languageslist[$i])) {
-        echo "<option value=\"$languageslist[$i]\" ";
-        if($languageslist[$i]==$mlanguage) echo "selected";
-        echo ">".ucfirst($languageslist[$i])."</option>\n";
+    $language_nukeslist = explode(" ", $language_nukeslist);
+    sort($language_nukeslist);
+    for ($i=0; $i < count($language_nukeslist); $i++) {
+        if(!empty($language_nukeslist[$i])) {
+        echo "<option value=\"$language_nukeslist[$i]\" ";
+        if($language_nukeslist[$i]==$mlanguage) echo "selected";
+        echo ">".ucfirst($language_nukeslist[$i])."</option>\n";
         }
     }
     if (empty($mlanguage)) {

@@ -72,14 +72,14 @@ if ( (!strstr($attachment_version, '2.4.')) )
     message_die(NUKE_GENERAL_MESSAGE, 'Wrong Attachment Mod Version detected.<br />Please update your Attachment Mod (V' . $attachment_version . ') to at least Version 2.3.0.');
 }
 
-$language = $board_config['default_lang'];
+$language_nuke = $board_config['default_lang'];
 
-if( !file_exists($phpbb2_root_path . 'language/lang_' . $language . '/lang_admin_attach.'.$phpEx) )
+if( !file_exists($phpbb2_root_path . 'language/lang_' . $language_nuke . '/lang_admin_attach.'.$phpEx) )
 {
-    $language = $attach_config['board_lang'];
+    $language_nuke = $attach_config['board_lang'];
 }
 
-include($phpbb2_root_path . 'language/lang_' . $language . '/lang_admin_attach.' . $phpEx);
+include($phpbb2_root_path . 'language/lang_' . $language_nuke . '/lang_admin_attach.' . $phpEx);
 
 $order_by = 'download_count DESC LIMIT ' . $core->return_limit;
 

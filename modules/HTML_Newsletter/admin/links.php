@@ -35,12 +35,12 @@
 
 if ( !defined('ADMIN_FILE') ) { die("Illegal File Access"); }
 
-global $currentlang, $language, $admin_file;
+global $currentlang, $language_nuke, $admin_file;
 
 if ( @file_exists( "modules/$nuke_module_name/admin/language/lang-".$currentlang.".php" ) ) {
    @include_once( "modules/$nuke_module_name/admin/language/lang-".$currentlang.".php" );
 } else {
-   @include_once( "modules/$nuke_module_name/admin/language/lang-".$language.".php" );
+   @include_once( "modules/$nuke_module_name/admin/language/lang-".$language_nuke.".php" );
 }
 
 adminmenu( $admin_file.".php?op=msnl_admin", 'HTML Newsletter', "HTMLnl.png" );

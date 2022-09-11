@@ -130,14 +130,14 @@ if ($mode == 'import_new_lang' && $submit)
         // Prepare the Data
         $lang_array = parse_lang_file($lang_file);
 
-        $languages = get_all_installed_languages();
+        $language_nukes = get_all_installed_languages();
         $inst_langs = array();
         @reset($lang_array);
-        while (list($language, $content) = each($lang_array))
+        while (list($language_nuke, $content) = each($lang_array))
         {
-            if (!in_array($language, $languages))
+            if (!in_array($language_nuke, $language_nukes))
             {
-                $inst_langs[$language] = $content;
+                $inst_langs[$language_nuke] = $content;
             }
         }
 
@@ -216,14 +216,14 @@ if ($mode == 'import_new_lang' && $submit)
     // Prepare the Data
     $lang_array = parse_lang_file($lang_file);
 
-    $languages = get_all_installed_languages();
+    $language_nukes = get_all_installed_languages();
     $inst_langs = array();
     @reset($lang_array);
-    while (list($language, $content) = each($lang_array))
+    while (list($language_nuke, $content) = each($lang_array))
     {
-        if (!in_array($language, $languages))
+        if (!in_array($language_nuke, $language_nukes))
         {
-            $inst_langs[$language] = $content;
+            $inst_langs[$language_nuke] = $content;
         }
     }
 
@@ -249,10 +249,10 @@ if ($mode == 'import_new_lang' && $submit)
     @reset($lang_array);
     while (list($key, $data) = @each($lang_array))
     {
-        $language = str_replace('lang_', '', $key);
+        $language_nuke = str_replace('lang_', '', $key);
 
         $template_nuke->assign_block_vars('languages', array(
-            'LANGUAGE' => $language)
+            'LANGUAGE' => $language_nuke)
         );
 
         $nuke_modules = get_modules_from_lang_block($data);

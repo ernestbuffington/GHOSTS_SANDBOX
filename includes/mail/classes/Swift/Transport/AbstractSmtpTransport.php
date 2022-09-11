@@ -62,11 +62,11 @@ abstract class Swift_Transport_AbstractSmtpTransport
    * you're using.  If your server doesn't have a domain name, use the IP in square
    * brackets (i.e. [127.0.0.1]).
    * 
-   * @param string $domain
+   * @param string $nuke_domain
    */
-  public function setLocalDomain($domain)
+  public function setLocalDomain($nuke_domain)
   {
-    $this->_domain = $domain;
+    $this->_domain = $nuke_domain;
     return $this;
   }
   

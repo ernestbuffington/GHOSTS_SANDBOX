@@ -110,25 +110,25 @@ $default_board_lang = trim($board_config['default_lang']);
 
 // Include Language
 $lang_failover = array($board_config['default_lang'], $default_board_lang, 'english');
-$languages_to_include = array(
+$language_nukes_to_include = array(
     'language/lang_xxx/lang_admin.' . $phpEx,
     'language/lang_xxx/lang_statistics.' . $phpEx,
     'modules/language/lang_xxx/lang_modules.' . $phpEx
 );
 
-for ($i = 0; $i < count($languages_to_include); $i++)
+for ($i = 0; $i < count($language_nukes_to_include); $i++)
 {
     $found = FALSE;
 
     for ($j = 0; $j < count($lang_failover) && !$found; $j++)
     {
-        $language_file = $phpbb2_root_path . str_replace('xxx', $lang_failover[$j], $languages_to_include[$i]);
+        $language_nuke_file = $phpbb2_root_path . str_replace('xxx', $lang_failover[$j], $language_nukes_to_include[$i]);
 
-        if (file_exists($language_file))
+        if (file_exists($language_nuke_file))
         {
-            @include_once($language_file);
+            @include_once($language_nuke_file);
             $found = TRUE;
-            if (strstr($languages_to_include[$i], 'lang_modules'))
+            if (strstr($language_nukes_to_include[$i], 'lang_modules'))
             {
                 $core->used_language = $lang_failover[$j];
             }
@@ -167,17 +167,17 @@ if ($development)
     $core->do_not_use_cache = TRUE;
 
     // Include Language File
-    $language = $board_config['default_lang'];
-    $language_file = $phpbb2_root_path . $dev_module['lang_path'] . '/lang_' . $language . '/lang_modules.' . $phpEx;
+    $language_nuke = $board_config['default_lang'];
+    $language_nuke_file = $phpbb2_root_path . $dev_module['lang_path'] . '/lang_' . $language_nuke . '/lang_modules.' . $phpEx;
 
-    if (!file_exists($language_file))
+    if (!file_exists($language_nuke_file))
     {
-        $language = $default_board_lang;
+        $language_nuke = $default_board_lang;
     }
 
-    $language_file = $phpbb2_root_path . $dev_module['lang_path'] . '/lang_' . $language . '/lang_modules.' . $phpEx;
+    $language_nuke_file = $phpbb2_root_path . $dev_module['lang_path'] . '/lang_' . $language_nuke . '/lang_modules.' . $phpEx;
 
-    include($language_file);
+    include($language_nuke_file);
 
     include($core->current_module_path . "module.$phpEx");
 }

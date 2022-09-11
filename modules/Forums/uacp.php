@@ -79,14 +79,14 @@ if ($profiledata['user_id'] != $nuke_userdata['user_id'] && $nuke_userdata['user
 $page_title = $lang['User_acp_title'];
 include('includes/nuke_page_header.'.$phpEx);
 
-$language = $board_config['default_lang'];
+$language_nuke = $board_config['default_lang'];
 
-if (!file_exists($phpbb2_root_path . 'language/lang_' . $language . '/lang_admin_attach.'.$phpEx))
+if (!file_exists($phpbb2_root_path . 'language/lang_' . $language_nuke . '/lang_admin_attach.'.$phpEx))
 {
-    $language = $attach_config['board_lang'];
+    $language_nuke = $attach_config['board_lang'];
 }
 
-include($phpbb2_root_path . 'language/lang_' . $language . '/lang_admin_attach.' . $phpEx);
+include($phpbb2_root_path . 'language/lang_' . $language_nuke . '/lang_admin_attach.' . $phpEx);
 
 $start = get_var('start', 0);
 $sort_order = get_var('order', 'ASC');

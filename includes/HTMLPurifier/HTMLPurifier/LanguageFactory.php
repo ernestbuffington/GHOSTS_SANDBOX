@@ -12,7 +12,7 @@ class HTMLPurifier_LanguageFactory
 
     /**
      * Cache of language code information used to load HTMLPurifier_Language objects
-     * Structure is: $factory->cache[$language_code][$key] = $value
+     * Structure is: $factory->cache[$language_nuke_code][$key] = $value
      * @value array map
      */
     public $nuke_cache;
@@ -136,7 +136,7 @@ class HTMLPurifier_LanguageFactory
      * @param $code string language code
      */
     public function loadLanguage($code) {
-        static $languages_seen = array(); // recursion guard
+        static $language_nukes_seen = array(); // recursion guard
 
         // abort if we've already loaded it
         if (isset($this->cache[$code])) return;
@@ -161,12 +161,12 @@ class HTMLPurifier_LanguageFactory
         if (!empty($fallback)) {
 
             // infinite recursion guard
-            if (isset($languages_seen[$code])) {
+            if (isset($language_nukes_seen[$code])) {
                 trigger_error('Circular fallback reference in language ' .
                     $code, E_USER_ERROR);
                 $fallback = 'en';
             }
-            $language_seen[$code] = true;
+            $language_nuke_seen[$code] = true;
 
             // load the fallback recursively
             $this->loadLanguage($fallback);

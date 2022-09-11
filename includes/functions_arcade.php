@@ -24,13 +24,13 @@ $message = "Only the Administrator will see this message. <br /><br /> You MUST 
 message_die(NUKE_GENERAL_ERROR, $message);
 }
 
-$language = $board_config['default_lang'];
-if ( !file_exists($phpbb2_root_path . 'language/lang_' . $language . '/lang_main_arcade.'.$phpEx) )
+$language_nuke = $board_config['default_lang'];
+if ( !file_exists($phpbb2_root_path . 'language/lang_' . $language_nuke . '/lang_main_arcade.'.$phpEx) )
 {
-    $language = 'english';
+    $language_nuke = 'english';
 }
 
-include($phpbb2_root_path . 'language/lang_' . $language . '/lang_main_arcade.' . $phpEx);
+include($phpbb2_root_path . 'language/lang_' . $language_nuke . '/lang_main_arcade.' . $phpEx);
 
 function read_arcade_config() {
         global $nuke_db;

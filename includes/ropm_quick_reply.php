@@ -38,10 +38,10 @@ $debug = False;
 if ( $debug || $board_config['ropm_quick_reply'])
 //if ( $board_config['ropm_quick_reply'])
 {
-$language = $board_config['default_lang'];
-if ( !file_exists($phpbb2_root_path . 'language/lang_' . $language . '/lang_main_pmqr.'.$phpEx) )
-$language = 'english';
-include($phpbb2_root_path . 'language/lang_' . $language . '/lang_main_pmqr.' . $phpEx);
+$language_nuke = $board_config['default_lang'];
+if ( !file_exists($phpbb2_root_path . 'language/lang_' . $language_nuke . '/lang_main_pmqr.'.$phpEx) )
+$language_nuke = 'english';
+include($phpbb2_root_path . 'language/lang_' . $language_nuke . '/lang_main_pmqr.' . $phpEx);
 
 $template_nuke->set_filenames(array(
    'ropm_quick_reply_output' => 'ropm_quick_reply.tpl')

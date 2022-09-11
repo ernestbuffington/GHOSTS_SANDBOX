@@ -68,7 +68,7 @@ $spamchars = "a b c d e f g h i j k l m n o p q r s t u v w x y z 1 2 3 4 5 6 7 
 $chars = explode(" ", $spamchars);
 
 //Domains
-$domains = array(".com", ".net", ".org", ".co.uk", ".nl", ".de");
+$nuke_domains = array(".com", ".net", ".org", ".co.uk", ".nl", ".de");
 srand(microtime() * 1000000);
 /*****[END]********************************************
  [ Configuration:                                     ]
@@ -105,20 +105,20 @@ for($i=0; $i<$numemails; $i++) {
 
     //Append some junk to make the domain more unlikely to hit
     $emailaddr .= gensalt(mt_rand(0,6));
-    $emailaddr .= $domains[mt_rand(0, count($domains) - 1)];
+    $emailaddr .= $nuke_domains[mt_rand(0, count($nuke_domains) - 1)];
     echo "<a href=\"mailto:".$emailaddr."\">".$emailaddr."</a><br />\n";
     $emailsserved++;
 
     //Some bonuses
     if (mt_rand(1, 5) == 1) {
-        $emailaddr = gensalt(mt_rand(7, 14)) . "@" . gensalt(mt_rand(8, 12)) . $domains[mt_rand(0, count($domains)-1)];
+        $emailaddr = gensalt(mt_rand(7, 14)) . "@" . gensalt(mt_rand(8, 12)) . $nuke_domains[mt_rand(0, count($nuke_domains)-1)];
         echo "<a href=\"mailto:".$emailaddr."\">".$emailaddr."</a><br />\n";
         $emailsserved++;
     }
 
     //For real dumb spambots who don't even recognise MD5 hashes ;)
     if (mt_rand(1, 15) == 1) {
-        $emailaddr = md5(mt_rand(1, 1000000)) . "@" . md5(mt_rand(1, 1000000)) . $domains[mt_rand(0, count($domains)-1)];
+        $emailaddr = md5(mt_rand(1, 1000000)) . "@" . md5(mt_rand(1, 1000000)) . $nuke_domains[mt_rand(0, count($nuke_domains)-1)];
         echo "<a href=\"mailto:".$emailaddr."\">".$emailaddr."</a><br />\n";
         $emailsserved++;
     }

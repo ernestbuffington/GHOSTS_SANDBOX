@@ -70,7 +70,7 @@ if (!defined('CNBYA')) {
         if ($latest_uid == "-1") { $new_uid = 1; } else { $new_uid = $latest_uid+1; }
         $lv = time();
         $nuke_db->sql_query("LOCK TABLES ".$nuke_user_prefix."_users WRITE");
-        $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_users (user_id, user_avatar, user_avatar_type, user_lang, user_lastvisit, umode) VALUES ($new_uid, 'gallery/blank.gif', '3', '$language', '$lv', 'nested')");
+        $nuke_db->sql_query("INSERT INTO ".$nuke_user_prefix."_users (user_id, user_avatar, user_avatar_type, user_lang, user_lastvisit, umode) VALUES ($new_uid, 'gallery/blank.gif', '3', '$language_nuke', '$lv', 'nested')");
         $nuke_db->sql_query("UPDATE ".$nuke_user_prefix."_users SET username='$nuke_username', name='$realname', user_email='$nuke_user_email', femail='$femail', user_website='$nuke_user_website', user_from='$nuke_user_from', user_occ='$nuke_user_occ', user_interests='$nuke_user_interests', newsletter='$newsletter', user_viewemail='$nuke_user_viewemail', user_allow_viewonline='$nuke_user_allow_viewonline', user_timezone='$nuke_user_timezone', user_dateformat='$nuke_user_dateformat', user_sig='$nuke_user_sig', bio='$bio', user_password='$nuke_user_password', user_regdate='$nuke_user_regdate' WHERE user_id='$new_uid'");
         $nuke_db->sql_query("UNLOCK TABLES");
         $nuke_db->sql_query("DELETE FROM ".$nuke_user_prefix."_users_temp WHERE username='$nuke_username'");

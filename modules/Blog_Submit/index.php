@@ -81,11 +81,11 @@ function defaultDisplay()
     if ($multilingual) {
         echo '<br /><br /><strong>'._LANGUAGE.": </strong>\n";
         echo "<select name=\"alanguage\">\n";
-        $languages = lang_list();
+        $language_nukes = lang_list();
         echo '<option value=""'.(($currentlang == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-        for ($i=0, $j = count($languages); $i < $j; $i++) {
-            if ($languages[$i] != '') {
-                echo '<option value="'.$languages[$i].'"'.(($currentlang == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+        for ($i=0, $j = count($language_nukes); $i < $j; $i++) {
+            if ($language_nukes[$i] != '') {
+                echo '<option value="'.$language_nukes[$i].'"'.(($currentlang == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
             }
         }
         echo '</select>';
@@ -200,11 +200,11 @@ function PreviewStory($name, $address, $subject, $story, $storyext, $topic, $ala
     if ($multilingual) {
         echo '<br /><br /><strong>'._LANGUAGE.": </strong>\n";
         echo "<select name=\"alanguage\">\n";
-        $languages = lang_list();
+        $language_nukes = lang_list();
         echo '<option value=""'.(($alanguage == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-        for ($i=0, $j = count($languages); $i < $j; $i++) {
-            if ($languages[$i] != '') {
-                echo '<option value="'.$languages[$i].'"'.(($alanguage == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+        for ($i=0, $j = count($language_nukes); $i < $j; $i++) {
+            if ($language_nukes[$i] != '') {
+                echo '<option value="'.$language_nukes[$i].'"'.(($alanguage == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
             }
         }
         echo '</select>';

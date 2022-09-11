@@ -91,11 +91,11 @@ if(is_mod_admin($nuke_module_name)) {
         if ($multilingual == 1) {
             echo "<tr><td>" . _LANGUAGE . ":</td><td>"
                 ."<select name=\"flanguage\">";
-            $languages = lang_list();
+            $language_nukes = lang_list();
             echo '<option value=""'.(($currentlang == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-            for ($i=0, $j = count($languages); $i < $j; $i++) {
-                if ($languages[$i] != '') {
-                    echo '<option value="'.$languages[$i].'"'.(($currentlang == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+            for ($i=0, $j = count($language_nukes); $i < $j; $i++) {
+                if ($language_nukes[$i] != '') {
+                    echo '<option value="'.$language_nukes[$i].'"'.(($currentlang == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
                 }
             }
             echo '</select></td></tr>';
@@ -194,11 +194,11 @@ if(is_mod_admin($nuke_module_name)) {
         if ($multilingual == 1) {
             echo "<tr><td>" . _LANGUAGE . ":</td><td>"
                 ."<select name=\"flanguage\">";
-            $languages = lang_list();
+            $language_nukes = lang_list();
             echo '<option value=""'.(($flanguage == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-            for ($i=0, $j = count($languages); $i < $j; $i++) {
-                if ($languages[$i] != '') {
-                    echo '<option value="'.$languages[$i].'"'.(($flanguage == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+            for ($i=0, $j = count($language_nukes); $i < $j; $i++) {
+                if ($language_nukes[$i] != '') {
+                    echo '<option value="'.$language_nukes[$i].'"'.(($flanguage == $language_nukes[$i]) ? ' selected="selected"' : '').'>'.ucfirst($language_nukes[$i])."</option>\n";
                 }
             }
             echo '</select></td>';

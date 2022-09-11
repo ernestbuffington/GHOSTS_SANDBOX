@@ -254,7 +254,7 @@ function moduleblock_display_inactive() {
     $content .= "</div>\n";
 }
 
-global $prefix, $nuke_db, $language, $currentlang, $nukeurl, $content, $nuke_moduleblock_active, $nuke_moduleblock_cats;
+global $prefix, $nuke_db, $language_nuke, $currentlang, $nukeurl, $content, $nuke_moduleblock_active, $nuke_moduleblock_cats;
 
 $content = '';
 $main_module = main_module();

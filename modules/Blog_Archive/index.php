@@ -127,7 +127,7 @@ function select_month()
 
 function show_month($year, $month, $month_l) 
 {
-    global $nuke_userinfo, $prefix, $nuke_user_prefix, $nuke_db, $bgcolor1, $bgcolor2, $nuke_user, $cookie, $sitename, $multilingual, $language, $nuke_module_name, $articlecomm;
+    global $nuke_userinfo, $prefix, $nuke_user_prefix, $nuke_db, $bgcolor1, $bgcolor2, $nuke_user, $cookie, $sitename, $multilingual, $language_nuke, $nuke_module_name, $articlecomm;
     
 	$year = intval($year);
     $month = htmlentities($month);
@@ -229,7 +229,7 @@ function show_month($year, $month, $month_l)
 		 {
             if (empty($alanguage)) 
 			{
-			  $alanguage = $language;
+			  $alanguage = $language_nuke;
             }
 
             $alt_language = ucfirst($alanguage);
@@ -344,7 +344,7 @@ function show_month($year, $month, $month_l)
 
 function show_all($min) 
 {
-    global $prefix, $nuke_user_prefix, $nuke_db, $bgcolor1, $bgcolor2, $nuke_user, $cookie, $sitename, $multilingual, $language, $nuke_module_name, $nuke_userinfo;
+    global $prefix, $nuke_user_prefix, $nuke_db, $bgcolor1, $bgcolor2, $nuke_user, $cookie, $sitename, $multilingual, $language_nuke, $nuke_module_name, $nuke_userinfo;
 
     if (!isset($min) || (!is_numeric($min) || ((int)$min) != $min)) 
 	{
@@ -441,7 +441,7 @@ function show_all($min)
 		{
             if (empty($alanguage)) 
 			{
-                $alanguage = $language;
+                $alanguage = $language_nuke;
             }
             
             $alt_language = ucfirst($alanguage);

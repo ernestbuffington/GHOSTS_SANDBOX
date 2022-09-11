@@ -37,7 +37,7 @@ if (is_mod_admin())
 /*********************************************************/
 function displayadmins() 
 {
-    global $admin, $prefix, $nuke_db, $language, $multilingual, $admin_file, $admlang;
+    global $admin, $prefix, $nuke_db, $language_nuke, $multilingual, $admin_file, $admlang;
     if (is_admin()) {
         include_once(NUKE_BASE_DIR.'header.php');
         OpenTable();
@@ -125,16 +125,16 @@ function displayadmins()
         # Author Language selection
         if ($multilingual == 1) 
         {
-            $languageslist = lang_list();
+            $language_nukeslist = lang_list();
             echo '  <tr>'."\n";
             echo '    <td class="row1" style="width: 50%;">'.$admlang['global']['language'].'</td>'."\n";
             echo '    <td class="row1" style="width: 50%;">';
             echo '      <select name="add_admlanguage">';
-            for ($i = 0, $maxi = count($languageslist); $i < $maxi; $i++) 
+            for ($i = 0, $maxi = count($language_nukeslist); $i < $maxi; $i++) 
             {
-                if(!empty($languageslist[$i])) 
+                if(!empty($language_nukeslist[$i])) 
                 {
-                    echo '        <option name="xlanguage" value="'.$languageslist[$i].'"'.(($languageslist[$i]==$language) ? ' selected="selected"' : '').'>'.ucwords($languageslist[$i]).'</option>';     
+                    echo '        <option name="xlanguage" value="'.$language_nukeslist[$i].'"'.(($language_nukeslist[$i]==$language_nuke) ? ' selected="selected"' : '').'>'.ucwords($language_nukeslist[$i]).'</option>';     
                 }
             }            
             echo '      </select>';
@@ -252,12 +252,12 @@ function modifyadmin($chng_aid)
             echo '    <td class="row1" style="width:50%">'.$admlang['global']['language'].'</td>';
             echo '    <td class="row1" style="width:50%">';
             echo "<select name=\"chng_admlanguage\">";
-            $languageslist = lang_list();
-            for ($i=0, $maxi = count($languageslist); $i < $maxi; $i++) {
-                if(!empty($languageslist[$i])) {
-                    echo "<option name='xlanguage' value='".$languageslist[$i]."' ";
-                    if($languageslist[$i]==$language) echo "selected";
-                    echo ">".ucwords($languageslist[$i])."\n";
+            $language_nukeslist = lang_list();
+            for ($i=0, $maxi = count($language_nukeslist); $i < $maxi; $i++) {
+                if(!empty($language_nukeslist[$i])) {
+                    echo "<option name='xlanguage' value='".$language_nukeslist[$i]."' ";
+                    if($language_nukeslist[$i]==$language_nuke) echo "selected";
+                    echo ">".ucwords($language_nukeslist[$i])."\n";
                 }
             }
             if (empty($chng_admlanguage)) {

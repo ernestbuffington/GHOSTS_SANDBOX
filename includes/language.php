@@ -31,7 +31,7 @@ if (!defined('NUKE_EVO')) {
     die("You can't access this file directly...");
 }
 
-global $language, $multilingual;
+global $language_nuke, $multilingual;
 
 // This data was taken from Dragonfly CMS 
 // http://www.dragonflycms.org
@@ -170,9 +170,9 @@ $browserlang = array(
 );
 
 //To resolve getting the random capital letters ie (English)
-$language = strtolower($language);
+$language_nuke = strtolower($language_nuke);
 $multilingual = intval($multilingual);
-$currentlang = $language;
+$currentlang = $language_nuke;
 
 if ($multilingual) {
     if (isset($_GET['newlang']) && is_lang($_GET['newlang'])) {
@@ -185,7 +185,7 @@ if ($multilingual) {
         $currentlang = detect_lang($browserlang);
     }
     if (!is_lang($currentlang)) {
-        $currentlang = $language;
+        $currentlang = $language_nuke;
     }
     setcookie('lang', $currentlang, time()+31536000);
 }
@@ -200,22 +200,22 @@ unset($browserlang);
 
 include_lang($currentlang);
 
-function is_lang($language) {
-    $maincheck = file_exists(NUKE_LANGUAGE_DIR.'lang-'.$language.'.php');
-    $admncheck = file_exists(NUKE_ADMIN_DIR.'language/lang-'.$language.'.php');
+function is_lang($language_nuke) {
+    $maincheck = file_exists(NUKE_LANGUAGE_DIR.'lang-'.$language_nuke.'.php');
+    $admncheck = file_exists(NUKE_ADMIN_DIR.'language/lang-'.$language_nuke.'.php');
     if($maincheck && $admncheck) {
         return true;
     }
     return false;
 }
 
-function include_lang($language) {
-    include_once(NUKE_LANGUAGE_DIR.'lang-'.$language.'.php');
-    include_once(NUKE_LANGUAGE_DIR.'custom/lang-'.$language.'.php');
-	include_once(NUKE_LANGUAGE_DIR.'blocks/lang-'.$language.'.php');
+function include_lang($language_nuke) {
+    include_once(NUKE_LANGUAGE_DIR.'lang-'.$language_nuke.'.php');
+    include_once(NUKE_LANGUAGE_DIR.'custom/lang-'.$language_nuke.'.php');
+	include_once(NUKE_LANGUAGE_DIR.'blocks/lang-'.$language_nuke.'.php');
     if(defined('ADMIN_FILE')) {
-        include_once(NUKE_ADMIN_DIR.'language/lang-'.$language.'.php');
-        include_once(NUKE_ADMIN_DIR.'language/custom/lang-'.$language.'.php');
+        include_once(NUKE_ADMIN_DIR.'language/lang-'.$language_nuke.'.php');
+        include_once(NUKE_ADMIN_DIR.'language/custom/lang-'.$language_nuke.'.php');
     }
 }
 
@@ -233,7 +233,7 @@ function detect_lang($browserlang) {
 }
 
 function get_lang($nuke_module) {
-    global $currentlang, $language;
+    global $currentlang, $language_nuke;
     static $included;
     if(!isset($included)) {
         $included = array();
@@ -242,8 +242,8 @@ function get_lang($nuke_module) {
     }
     if (file_exists(NUKE_MODULES_DIR.$nuke_module.'/language/lang-'.$currentlang.'.php')) {
         $path = NUKE_MODULES_DIR.$nuke_module.'/language/lang-'.$currentlang.'.php';
-    } elseif (file_exists(NUKE_MODULES_DIR.$nuke_module.'/language/lang-'.$language.'.php')) {
-        $path = NUKE_MODULES_DIR.$nuke_module.'/language/lang-'.$language.'.php';
+    } elseif (file_exists(NUKE_MODULES_DIR.$nuke_module.'/language/lang-'.$language_nuke.'.php')) {
+        $path = NUKE_MODULES_DIR.$nuke_module.'/language/lang-'.$language_nuke.'.php';
     } elseif (file_exists(NUKE_MODULES_DIR.$nuke_module.'/language/lang-english.php')) {
         $path = NUKE_MODULES_DIR.$nuke_module.'/language/lang-english.php';
     } else {
@@ -254,18 +254,18 @@ function get_lang($nuke_module) {
 }
 
 function lang_list() {
-    static $languages;
-    if (!isset($languages)) {
+    static $language_nukes;
+    if (!isset($language_nukes)) {
         $handle = opendir(NUKE_LANGUAGE_DIR);
         while (false !== ($file = readdir($handle))) {
             if (preg_match('/lang-(.*?)\.php/i', $file, $lang)) {
-                $languages[] = $lang[1];
+                $language_nukes[] = $lang[1];
             }
         }
         closedir($handle);
-        sort($languages);
+        sort($language_nukes);
     }
-    return $languages;
+    return $language_nukes;
 }
 
 ?>

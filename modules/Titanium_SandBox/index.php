@@ -39,7 +39,7 @@ $mode = ( isset($HTTP_POST_VARS['mode']) ) ? htmlspecialchars($HTTP_POST_VARS['m
 else
 $mode = '0';
 
-global $domain, $facebookappid, $nuke_module_name, $ThemeSel, $name; //these globals are almost always needed 
+global $nuke_domain, $facebookappid, $nuke_module_name, $ThemeSel, $name; //these globals are almost always needed 
 
 include (MODULES.'Titanium_SandBox/includes/functions.php'); //this must be loaded for facebook purposes
 #########################################################################
@@ -187,62 +187,62 @@ if (defined('DEV_ENVIRONMENT'))
 ######################################################################################################################################################################################
 ## 0 (x-clean_slate_template.php)
 echo '<fieldset style="border-color: white; border-width: '.$fieldset_border_width.'; border-style: solid;">'; 
-echo  "This files can be found in the folder: <strong>$domain/modules/$nuke_module_name/x-clean_slate_template.php<strong></br>";
+echo  "This files can be found in the folder: <strong>$nuke_domain/modules/$nuke_module_name/x-clean_slate_template.php<strong></br>";
 echo  $fpr_img.' <a href="modules.php?name=Titanium_SandBox&mode=0"> [ CLEAN SLATE TEMPLATE ]</a> <font color="orange">Written by Ernest Allen Buffington</font> 9/15/2017</br>';
 echo "</fieldset><br />";
 ######################################################################################################################################################################################
 ## 1 (does not exist)
 echo '<fieldset style="border-color: white; border-width: '.$fieldset_border_width.'; border-style: solid;">'; 
-echo  "This files can be found in the folder: <strong>$domain/modules/Titanium_SandBox/x-fullscreen_shockwave_example_description</br>";
+echo  "This files can be found in the folder: <strong>$nuke_domain/modules/Titanium_SandBox/x-fullscreen_shockwave_example_description</br>";
 echo  $fpr_img.' <a href="modules.php?name=Titanium_SandBox&mode=1">[ FULLS SCREEN SWF DISPLAY ]</a> <font 
 color="orange">Written by Ernest Allen Buffington</font> 7/30/2013</br>';
 echo "</fieldset><br />";
 ######################################################################################################################################################################################
 ## 2 (x-facebook_testing_template.php)
 echo '<fieldset style="border-color: white; border-width: '.$fieldset_border_width.'; border-style: solid;">'; 
-echo  "This files can be found in the folder: <strong>$domain/modules/Titanium_SandBox/x-facebook_testing_template.php<strong></br>";
+echo  "This files can be found in the folder: <strong>$nuke_domain/modules/Titanium_SandBox/x-facebook_testing_template.php<strong></br>";
 echo  $fpr_img.' <a href="modules.php?name=Titanium_SandBox&mode=2">[ FACEBOOK LOGIN CODE EXAMPLE ]</a> <font 
 color="orange">Written by Ernest Allen Buffington</font> 6/20/2012</br>';
 echo "</fieldset><br />";
 ######################################################################################################################################################################################
 ## 3 (x-host_information.php)
 echo '<fieldset style="border-color: white; border-width: '.$fieldset_border_width.'; border-style: solid;">'; 
-echo  "This files can be found in the folder: <strong>$domain/modules/Titanium_SandBox/x-host_information.php<strong></br>";
+echo  "This files can be found in the folder: <strong>$nuke_domain/modules/Titanium_SandBox/x-host_information.php<strong></br>";
 echo  $fpr_img.' <a href="modules.php?name=Titanium_SandBox&mode=3">[ GUIDE TO ABSOLUTE PATHS ]</a> <font 
 color="orange">Written by Ernest Allen Buffington</font> 1/1/2010</br>';
 echo "</fieldset><br />";
 ######################################################################################################################################################################################
 ## 4 (x-browser_check.php)
 echo '<fieldset style="border-color: white; border-width: '.$fieldset_border_width.'; border-style: solid;">'; 
-echo  "This files can be found in the folder: <strong>$domain/modules/Titanium_SandBox/x-browser_check.php<strong></br>";
+echo  "This files can be found in the folder: <strong>$nuke_domain/modules/Titanium_SandBox/x-browser_check.php<strong></br>";
 echo  $fpr_img.' <a href="modules.php?name=Titanium_SandBox&mode=4">[ BROWSER AND OS CHECK EXAMPLE CODE ]</a> <font 
 color="orange">Written by Ernest Allen Buffington</font> 3/1/2012</br>';
 echo "</fieldset><br />";
 ######################################################################################################################################################################################
 ## 5 (x-project_template.php)
 echo '<fieldset style="border-color: white; border-width: '.$fieldset_border_width.'; border-style: solid;">'; 
-echo  "This files can be found in the folder: <strong>$domain/modules/Titanium_SandBox/x-project_template.php<strong></br>";
+echo  "This files can be found in the folder: <strong>$nuke_domain/modules/Titanium_SandBox/x-project_template.php<strong></br>";
 echo  $fpr_img.' <a href="modules.php?name=Titanium_SandBox&mode=5">[ FLASH LAYOUT CODE EXAMPLES ]</a> <font 
 color="orange">Written by Ernest Allen Buffington</font> 9/5/2017</br>';
 echo "</fieldset><br />";
 ######################################################################################################################################################################################
 ## 6 (x-php5_audiotag_example.php)
 echo '<fieldset style="border-color: white; border-width: '.$fieldset_border_width.'; border-style: solid;">'; 
-echo  "This files can be found in the folder: <strong>$domain/modules/Titanium_SandBox/x-php5_audiotag_example.php<strong></br>";
+echo  "This files can be found in the folder: <strong>$nuke_domain/modules/Titanium_SandBox/x-php5_audiotag_example.php<strong></br>";
 echo  $fpr_img.' <a href="modules.php?name=Titanium_SandBox&mode=6">[ HTML 5 AUDIO TAG EXAMPLE ]</a> <font 
 color="orange">Written by Ernest Allen Buffington</font> 7/30/2013</br>';
 echo "</fieldset><br />";
 ######################################################################################################################################################################################
 ## 7 (x-file_get_contents_example.php)
 echo '<fieldset style="border-color: white; border-width: '.$fieldset_border_width.'; border-style: solid;">'; 
-echo  "This files can be found in the folder: <strong>$domain/modules/Titanium_SandBox/x-file_get_contents_example.php<strong></br>";
+echo  "This files can be found in the folder: <strong>$nuke_domain/modules/Titanium_SandBox/x-file_get_contents_example.php<strong></br>";
 echo  $fpr_img.' <a href="modules.php?name=Titanium_SandBox&mode=7">[ cURL CODE FETCH EXAMPLE ]</a> <font 
 color="orange">Written by Ernest Allen Buffington</font> 7/30/2013</br>';
 echo "</fieldset><br />"; 
 ######################################################################################################################################################################################
 ## 7 (x-file_get_contents_example.php)
 echo '<fieldset style="border-color: white; border-width: '.$fieldset_border_width.'; border-style: solid;">'; 
-echo  "This files can be found in the folder: <strong>$domain/modules/Titanium_SandBox/x-bootstrap_4_modal.php<strong></br>";
+echo  "This files can be found in the folder: <strong>$nuke_domain/modules/Titanium_SandBox/x-bootstrap_4_modal.php<strong></br>";
 echo  $fpr_img.' <a href="modules.php?name=Titanium_SandBox&mode=8">[ Loading JQuery and Bootstrap with a few Modal Examples ]</a> <font 
 color="orange">Written by Ernest Allen Buffington</font> 08/05/2022</br>';
 echo "</fieldset><br />"; 
