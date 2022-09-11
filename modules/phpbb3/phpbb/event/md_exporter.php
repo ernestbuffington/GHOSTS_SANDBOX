@@ -525,13 +525,13 @@ class md_exporter
 					throw new \LogicException("Invalid file '{$file}' not found for event '{$this->current_event}'", 2);
 				}
 
-				if (($this->filter !== 'adm') && strpos($file, 'styles/prosilver/template/') === 0)
+				if (($this->filter !== 'adm') && strpos($file, NUKE_THEMS_CORRECTED_PATH . 'phpBB3_styles/prosilver/template/') === 0)
 				{
-					$files_list['prosilver'][] = substr($file, strlen('styles/prosilver/template/'));
+					$files_list['prosilver'][] = substr($file, strlen(NUKE_THEMS_CORRECTED_PATH .'phpBB3_styles/prosilver/template/'));
 				}
-				else if (($this->filter === 'adm') && strpos($file, 'adm/style/') === 0)
+				else if (($this->filter === 'adm') && strpos($file, NUKE_THEMS_CORRECTED_STYLE_PATH .'phpBB3_adm/style/') === 0)
 				{
-					$files_list['adm'][] = substr($file, strlen('adm/style/'));
+					$files_list['adm'][] = substr($file, strlen(NUKE_THEMS_CORRECTED_PATH .'phpBB3_adm/style/'));
 				}
 				else
 				{

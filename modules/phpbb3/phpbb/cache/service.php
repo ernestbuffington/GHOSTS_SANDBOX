@@ -375,7 +375,7 @@ class service
 			$parsed_array = array();
 		}
 
-		$filename = $this->phpbb_root_path . 'styles/' . $style['style_path'] . '/style.cfg';
+		$filename = $this->NUKE_THEMS_CORRECTED_PATH . 'phpBB3_styles/' . $style['style_path'] . '/style.cfg';
 
 		if (!file_exists($filename))
 		{

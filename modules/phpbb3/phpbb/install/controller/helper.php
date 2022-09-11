@@ -267,9 +267,9 @@ class helper
 			'L_SKIP'				=> $this->language->lang('SKIP'),
 			'PAGE_TITLE'			=> $this->language->lang($page_title),
 			'T_IMAGE_PATH'			=> $this->path_helper->NUKE_THEMS_CORRECTED_PATH . $path . 'images',
-			'T_JQUERY_LINK'			=> $this->path_helper->NUKE_THEMS_CORRECTED_PATH . $path . '../assets/javascript/jquery-3.6.0.min.js',
-			'T_TEMPLATE_PATH'		=> $this->path_helper->NUKE_THEMS_CORRECTED_PATH . $path . 'style',
-			'T_ASSETS_PATH'			=> $this->path_helper->NUKE_THEMS_CORRECTED_PATH . $path . '../assets',
+			'T_JQUERY_LINK'			=> $this->path_helper->NUKE_THEMS_CORRECTED_PATH . $path . '../phpBB3_assets/javascript/jquery-3.6.0.min.js',
+			'T_TEMPLATE_PATH'		=> $this->path_helper->NUKE_THEMS_CORRECTED_STYLE_PATH . $path . 'style',
+			'T_ASSETS_PATH'			=> $this->path_helper->NUKE_THEMS_CORRECTED_PATH . $path . '../phpBB3_assets',
 
 			'S_CONTENT_DIRECTION' 	=> $this->language->lang('DIRECTION'),
 			'S_CONTENT_FLOW_BEGIN'	=> ($this->language->lang('DIRECTION') === 'ltr') ? 'left' : 'right',

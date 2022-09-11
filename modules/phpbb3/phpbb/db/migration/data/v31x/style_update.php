@@ -50,7 +50,7 @@ class style_update extends \phpbb\db\migration\migration
 		if (empty($style_paths) && in_array('prosilver', $styles))
 		{
 			// Try to parse config file
-			$cfg = parse_cfg_file($this->phpbb_root_path . 'styles/prosilver/style.cfg');
+			$cfg = parse_cfg_file($this->NUKE_THEMS_CORRECTED_PATH . 'phpBB3_styles/prosilver/style.cfg');
 
 			// Stop running this if prosilver cfg file can't be read
 			if (empty($cfg))
@@ -110,7 +110,7 @@ class style_update extends \phpbb\db\migration\migration
 	protected function find_style_dirs()
 	{
 		$styles = array();
-		$styles_path = $this->phpbb_root_path . 'styles/';
+		$styles_path = $this->NUKE_THEMS_CORRECTED_PATH . 'phpBB3_styles/';
 
 		$dp = @opendir($styles_path);
 		if ($dp)

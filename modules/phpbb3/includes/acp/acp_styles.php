@@ -27,7 +27,7 @@ class acp_styles
 	protected $s_hidden_fields;
 	protected $mode;
 	protected $styles_path;
-	protected $styles_path_absolute = 'styles';
+	protected $styles_path_absolute = 'phpBB3_styles';
 	protected $default_style = 0;
 	protected $styles_list_cols = 0;
 	protected $reserved_style_names = array('adm', 'admin', 'all');
@@ -77,12 +77,12 @@ class acp_styles
 		$this->auth = $auth;
 		$this->text_formatter_cache = $phpbb_container->get('text_formatter.cache');
 		$this->config = $config;
-		$this->phpbb_root_path = $phpbb_root_path;
+		$this->phpbb_root_path = NUKE_THEMS_CORRECTED_PATH;
 		$this->php_ext = $phpEx;
 		$this->dispatcher = $phpbb_dispatcher;
 
 		$this->default_style = $config['default_style'];
-		$this->styles_path = $this->phpbb_root_path . $this->styles_path_absolute . '/';
+		$this->styles_path = $this->NUKE_THEMS_CORRECTED_PATH . $this->styles_path_absolute . '/';
 
 		$this->u_base_action = append_sid("{$phpbb_admin_path}index.{$this->php_ext}", "i={$id}");
 		$this->s_hidden_fields = array(
@@ -1025,7 +1025,7 @@ class acp_styles
 
 			// Preview
 			$actions[] = array(
-				'U_ACTION'	=> append_sid($this->phpbb_root_path . 'index.' . $this->php_ext, 'style=' . $style['style_id']),
+				'U_ACTION'	=> append_sid($this->NUKE_THEMS_CORRECTED_PATH . 'index.' . $this->php_ext, 'style=' . $style['style_id']),
 				'L_ACTION'	=> $this->user->lang['PREVIEW']
 			);
 		}

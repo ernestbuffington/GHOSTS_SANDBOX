@@ -430,7 +430,7 @@ class ajax_iohandler extends iohandler_base
 	public function render_update_file_status($status_array)
 	{
 		$this->template->assign_vars(array(
-			'T_IMAGE_PATH'	=> $this->path_helper->NUKE_THEMS_CORRECTED_PATH . 'adm/images/',
+			'T_IMAGE_PATH'	=> $this->path_helper->NUKE_THEMS_CORRECTED_STYLE_PATH . 'adm/images/',
 		));
 
 		foreach ($status_array as $block => $list)
