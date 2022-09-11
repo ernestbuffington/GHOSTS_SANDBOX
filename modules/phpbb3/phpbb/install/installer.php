@@ -85,7 +85,7 @@ class installer
 		$this->install_config		= $config;
 		$this->container_factory	= $container;
 		$this->installer_modules	= null;
-		$this->web_root				= $path_helper->get_web_root_path();
+		$this->web_root				= $path_helper->NUKE_THEMS_CORRECTED_PATH;
 		$this->purge_cache_before	= false;
 	}
 

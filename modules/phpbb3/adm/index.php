@@ -61,8 +61,8 @@ $template->set_custom_style(array(
 	),
 ), $phpbb_admin_path . 'style');
 
-$template->assign_var('T_ASSETS_PATH', $phpbb_root_path . 'assets');
-$template->assign_var('T_TEMPLATE_PATH', $phpbb_admin_path . 'style');
+$template->assign_var('T_ASSETS_PATH', NUKE_THEMS_CORRECTED_PATH . 'assets');
+$template->assign_var('T_TEMPLATE_PATH', NUKE_THEMS_CORRECTED_PATH . 'style');
 
 // Instantiate new module
 $module = new p_master();

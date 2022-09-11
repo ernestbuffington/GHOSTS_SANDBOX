@@ -167,7 +167,7 @@ class helper
 			$content .= implode('<br />', $post_attachments);
 
 			// Convert attachments' relative path to absolute path
-			$content = str_replace($this->path_helper->get_web_root_path() . 'download/file.' . $this->path_helper->get_php_ext(), $this->get_board_url() . '/download/file.' . $this->path_helper->get_php_ext(), $content);
+			$content = str_replace($this->path_helper->NUKE_THEMS_CORRECTED_PATH . 'download/file.' . $this->path_helper->get_php_ext(), $this->get_board_url() . '/download/file.' . $this->path_helper->get_php_ext(), $content);
 		}
 
 		// Remove Comments from inline attachments [ia]

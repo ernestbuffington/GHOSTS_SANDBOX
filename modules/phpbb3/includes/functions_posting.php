@@ -189,7 +189,7 @@ function generate_smilies($mode, $forum_id)
 
 	if (count($smilies))
 	{
-		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $phpbb_path_helper->get_web_root_path();
+		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $phpbb_path_helper->NUKE_THEMS_CORRECTED_PATH;
 
 		foreach ($smilies as $row)
 		{

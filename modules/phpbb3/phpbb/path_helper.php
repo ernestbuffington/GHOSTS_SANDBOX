@@ -100,7 +100,7 @@ class path_helper
 	*/
 	public function update_web_root_path($path)
 	{
-		$web_root_path = $this->get_web_root_path();
+		$web_root_path = $this->NUKE_THEMS_CORRECTED_PATH;
 
 		// Removes the web root path if it is already present
 		if (strpos($path, $web_root_path) === 0)
@@ -134,9 +134,9 @@ class path_helper
 	*/
 	public function remove_web_root_path($path)
 	{
-		if (strpos($path, $this->get_web_root_path()) === 0)
+		if (strpos($path, $this->NUKE_THEMS_CORRECTED_PATH) === 0)
 		{
-			$path = substr($path, strlen($this->get_web_root_path()));
+			$path = substr($path, strlen($this->NUKE_THEMS_CORRECTED_PATH));
 
 			return $this->phpbb_root_path . $path;
 		}
