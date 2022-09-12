@@ -44,6 +44,11 @@ include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 endif;                                                                    
 
+
+                                  # Why would nobody ever help or support people with PHP-Nuke? Nobody at phpBB gives s phuck!
+$request->enable_super_globals(); #### ADD Ernest Allen Buffington 09/09/2022 - Turn Super Globals On
+OpenTable();                      #### ADD Ernest Allen Buffington 09/09/2022 - Needed for Themes - Hail to the tables - phuck the numb nuts!
+
 // Start session management
 $user->session_begin();
 $auth->acl($user->data);
@@ -2439,9 +2444,6 @@ $page_title = $topic_data['topic_title'] . ($start ? ' - ' . sprintf($user->lang
 $vars = array('page_title', 'topic_data', 'forum_id', 'start', 'post_list');
 extract($phpbb_dispatcher->trigger_event('core.viewtopic_modify_page_title', compact($vars)));
 
-                                  # Why would nobody ever help or support people with PHP-Nuke? Nobody at phpBB gives s phuck!
-$request->enable_super_globals(); #### ADD Ernest Allen Buffington 09/09/2022 - Turn Super Globals On
-OpenTable();                      #### ADD Ernest Allen Buffington 09/09/2022 - Needed for Themes - Hail to the tables - phuck the numb nuts!
 
 // Output the page
 page_header($page_title, true, $forum_id);

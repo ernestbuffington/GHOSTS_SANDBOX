@@ -179,7 +179,7 @@ extract($phpbb_dispatcher->trigger_event('core.modify_posting_parameters', compa
 // Was cancel pressed? If so then redirect to the appropriate page
 if ($cancel)
 {
-	$redirect = ($post_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", 'p=' . $post_id) . '#p' . $post_id : (($topic_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", 't=' . $topic_id) : (($forum_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $forum_id) : append_sid("modules.php?name=$nuke_module_name&amp;file=index.$phpEx")));
+	$redirect = ($post_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", 'p=' . $post_id) . '#p' . $post_id : (($topic_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", 't=' . $topic_id) : (($forum_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum", 'f=' . $forum_id) : append_sid("modules.php?name=$nuke_module_name")));
 	redirect($redirect);
 }
 
@@ -819,7 +819,7 @@ if ($save && $user->data['is_registered'] && $auth->acl_get('u_savedrafts') && (
 			$attachment_manager = $phpbb_container->get('attachment.manager');
 			$attachment_manager->delete('attach', array_column($message_parser->attachment_data, 'attach_id'));
 
-			$meta_info = ($mode == 'post') ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $forum_id) : append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", "t=$topic_id");
+			$meta_info = ($mode == 'post') ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum", 'f=' . $forum_id) : append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", "t=$topic_id");
 
 			meta_refresh(3, $meta_info);
 
@@ -1848,7 +1848,7 @@ $notify_set			= ($mode != 'edit' && $config['allow_topic_notify'] && $user->data
 $notify_checked		= (isset($notify)) ? $notify : (($mode == 'post') ? $user->data['user_notify'] : $notify_set);
 
 // Page title & action URL
-$s_action = append_sid("modules.php?name=$nuke_module_name&amp;file=posting.$phpEx", "mode=$mode");
+$s_action = append_sid("modules.php?name=$nuke_module_name&amp;file=posting", "mode=$mode");
 
 switch ($mode)
 {
@@ -1939,10 +1939,10 @@ $page_data = array(
 	'TOPIC_TIME_LIMIT'		=> (int) $post_data['topic_time_limit'],
 	'EDIT_REASON'			=> $request->variable('edit_reason', '', true),
 	'SHOW_PANEL'			=> $request->variable('show_panel', ''),
-	'U_VIEW_FORUM'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", "f=$forum_id"),
+	'U_VIEW_FORUM'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum", "f=$forum_id"),
 	'U_VIEW_TOPIC'			=> ($mode != 'post') ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", "t=$topic_id") : '',
-	'U_PROGRESS_BAR'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=posting.$phpEx", "f=$forum_id&amp;mode=popup"),
-	'UA_PROGRESS_BAR'		=> addslashes(append_sid("modules.php?name=$nuke_module_name&amp;file=posting.$phpEx", "f=$forum_id&amp;mode=popup")),
+	'U_PROGRESS_BAR'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=posting", "f=$forum_id&amp;mode=popup"),
+	'UA_PROGRESS_BAR'		=> addslashes(append_sid("modules.php?name=$nuke_module_name&amp;file=posting", "f=$forum_id&amp;mode=popup")),
 
 	'S_PRIVMSGS'				=> false,
 	'S_CLOSE_PROGRESS_WINDOW'	=> (isset($_POST['add_file'])) ? true : false,
@@ -2091,6 +2091,10 @@ if ($allowed)
 // Attachment entry
 posting_gen_attachment_entry($attachment_data, $filename_data, $allowed, $forum_id);
 
+                                  # Why would nobody ever help or support people with PHP-Nuke? Nobody at phpBB gives s phuck!
+$request->enable_super_globals(); #### ADD Ernest Allen Buffington 09/09/2022 - Turn Super Globals On
+OpenTable();                      #### ADD Ernest Allen Buffington 09/09/2022 - Needed for Themes - Hail to the tables - phuck the numb nuts!
+
 // Output page ...
 page_header($page_title);
 
@@ -2098,7 +2102,7 @@ $template->set_filenames(array(
 	'body' => 'posting_body.html')
 );
 
-make_jumpbox(append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx"));
+make_jumpbox(append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum"));
 
 // Topic review
 if ($mode == 'reply' || $mode == 'quote')
@@ -2110,6 +2114,6 @@ if ($mode == 'reply' || $mode == 'quote')
 }
 
 page_footer();
-//include("includes/page_tail.$phpEx");
+//include("includes/page_tail");
 ?>
 
