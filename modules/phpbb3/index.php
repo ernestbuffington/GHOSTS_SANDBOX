@@ -27,12 +27,13 @@
 */
 $nuke_module_name = basename(dirname(__FILE__));                          #### ADD Ernest Allen Buffington 09/09/2022
 $phpEx = substr(strrchr(__FILE__, '.'), 1);                               #### ADD Ernest Allen Buffington 09/09/2022
-require(NUKE_PHPBB3_DIR . 'nukebb.' . $phpEx);                            #### ADD Ernest Allen Buffington 09/09/2022
 define('IN_PHPBB', true);                                                 #### ADD Ernest Allen Buffington 09/09/2022
-$phpbb_root_path = (defined('NUKE_PHPBB3_DIR')) ? NUKE_PHPBB3_DIR : './'; #### ADD Ernest Allen Buffington 09/09/2022
-include(NUKE_PHPBB3_DIR . 'extension.inc');                               #### ADD Ernest Allen Buffington 09/09/2022
-include(NUKE_PHPBB3_DIR . 'common.' . $phpEx);                            #### ADD Ernest Allen Buffington 09/09/2022
-include(NUKE_PHPBB3_DIR . 'includes/functions_display.' . $phpEx);        #### ADD Ernest Allen Buffington 09/09/2022
+//$phpbb_root_path = (defined('NUKE_PHPBB3_DIR')) ? NUKE_PHPBB3_DIR : './'; #### ADD Ernest Allen Buffington 09/09/2022
+$phpbb_root_path = (defined('PHPBB_USE_BOARD_HREF_PATH')) ? NUKE_PHPBB3_DIR : './';
+require($phpbb_root_path . 'nukebb.' . $phpEx);                            #### ADD Ernest Allen Buffington 09/09/2022
+include($phpbb_root_path . 'extension.inc');                               #### ADD Ernest Allen Buffington 09/09/2022
+include($phpbb_root_path . 'common.' . $phpEx);                            #### ADD Ernest Allen Buffington 09/09/2022
+include($phpbb_root_path . 'includes/functions_display.' . $phpEx);        #### ADD Ernest Allen Buffington 09/09/2022
 
 // Start session management
 $user->session_begin();

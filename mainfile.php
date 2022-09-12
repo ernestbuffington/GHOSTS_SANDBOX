@@ -267,7 +267,10 @@ define('NUKE_PHBB3_IMAGES_DIR', $href_path . '/modules/phpBB3/images/');
 define('NUKE_PHPBB3_DIR', TITANIUM_MODULES_DIR . 'phpbb3/');
 define('NUKE_FORUMS_ADMIN_DIR', NUKE_PHPBB3_DIR . 'adm/');
 define('NUKE_FORUMS_ADMIN_HREF_DIR', $href_path . '/modules/phpbb3/admn/');
+
 define('PHPBB_USE_BOARD_URL_PATH', TITANIUM_MODULES_DIR . 'phpbb3/');
+define('PHPBB_USE_BOARD_HREF_PATH', $href_path . 'phpbb3/');
+
 define('NUKE_FONT_AWESOME_DIR', $href_path . '/modules/phpbb3/assets/css/');
 
 # OTHER Directories

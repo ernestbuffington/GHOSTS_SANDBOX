@@ -14,21 +14,13 @@
 /**
 */
 
-if(defined('PHPBB3_MODULE') ):
 $nuke_module_name = basename(dirname(__FILE__));
 define('IN_PHPBB', true);
-$phpbb_root_path = (defined('NUKE_PHPBB3_DIR')) ? NUKE_PHPBB3_DIR : './';
+$phpbb_root_path = (defined('PHPBB_USE_BOARD_HREF_PATH')) ? NUKE_PHPBB3_DIR : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 require(NUKE_PHPBB3_DIR . 'nukebb.' . $phpEx);
 include(NUKE_PHPBB3_DIR . 'extension.inc');
 include(NUKE_PHPBB3_DIR . 'common.' . $phpEx);
-else:
-
-define('IN_PHPBB', true);
-$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include($phpbb_root_path . 'common.' . $phpEx);
-endif;
 
 // Start session management
 $user->session_begin();
