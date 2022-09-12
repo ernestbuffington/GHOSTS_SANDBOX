@@ -107,7 +107,7 @@ if ($mode == 'whois' && $auth->acl_get('a_') && $session_id)
 	$template->set_filenames(array(
 		'body' => 'viewonline_whois.html')
 	);
-	make_jumpbox(append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx"));
+	make_jumpbox(append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum"));
 
 	page_footer();
 }
@@ -286,7 +286,7 @@ while ($row = $db->sql_fetchrow($result))
 			if ($forum_id && $auth->acl_get('f_list', $forum_id))
 			{
 				$location = '';
-				$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $forum_id);
+				$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum", 'f=' . $forum_id);
 
 				if ($forum_data[$forum_id]['forum_type'] == FORUM_LINK)
 				{
@@ -331,16 +331,16 @@ while ($row = $db->sql_fetchrow($result))
 
 		case 'search':
 			$location = $user->lang['SEARCHING_FORUMS'];
-			$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=search.$phpEx");
+			$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=search");
 		break;
 
 		case 'viewonline':
 			$location = $user->lang['VIEWING_ONLINE'];
-			$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx");
+			$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline");
 		break;
 
 		case 'memberlist':
-			$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=memberlist.$phpEx");
+			$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=memberlist");
 
 			if (strpos($row['session_page'], 'mode=viewprofile') !== false)
 			{
@@ -349,7 +349,7 @@ while ($row = $db->sql_fetchrow($result))
 			else if (strpos($row['session_page'], 'mode=contactadmin') !== false)
 			{
 				$location = $user->lang['VIEWING_CONTACT_ADMIN'];
-				$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=memberlist.$phpEx", 'mode=contactadmin');
+				$location_url = append_sid("modules.php?name=$nuke_module_name&amp;file=memberlist", 'mode=contactadmin');
 			}
 			else
 			{
@@ -434,8 +434,8 @@ while ($row = $db->sql_fetchrow($result))
 		'USER_BROWSER'		=> ($auth->acl_get('a_user')) ? $row['session_browser'] : '',
 
 		'U_USER_PROFILE'	=> ($row['user_type'] != USER_IGNORE) ? get_username_string('profile', $row['user_id'], '') : '',
-		'U_USER_IP'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", 'mode=lookup' . (($mode != 'lookup' || $row['session_id'] != $session_id) ? '&amp;s=' . $row['session_id'] : '') . "&amp;sg=$show_guests&amp;start=$start&amp;sk=$sort_key&amp;sd=$sort_dir"),
-		'U_WHOIS'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", 'mode=whois&amp;s=' . $row['session_id']),
+		'U_USER_IP'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline", 'mode=lookup' . (($mode != 'lookup' || $row['session_id'] != $session_id) ? '&amp;s=' . $row['session_id'] : '') . "&amp;sg=$show_guests&amp;start=$start&amp;sk=$sort_key&amp;sd=$sort_dir"),
+		'U_WHOIS'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline", 'mode=whois&amp;s=' . $row['session_id']),
 		'U_FORUM_LOCATION'	=> $location_url,
 
 		'S_USER_HIDDEN'		=> $s_user_hidden,
@@ -501,15 +501,15 @@ while ($row = $db->sql_fetchrow($result))
 $db->sql_freeresult($result);
 
 // Refreshing the page every 60 seconds...
-meta_refresh(60, append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", "sg=$show_guests&amp;sk=$sort_key&amp;sd=$sort_dir&amp;start=$start"));
+meta_refresh(60, append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline", "sg=$show_guests&amp;sk=$sort_key&amp;sd=$sort_dir&amp;start=$start"));
 
 $start = $pagination->validate_start($start, $config['topics_per_page'], $counter);
-$base_url = append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", "sg=$show_guests&amp;sk=$sort_key&amp;sd=$sort_dir");
+$base_url = append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline", "sg=$show_guests&amp;sk=$sort_key&amp;sd=$sort_dir");
 $pagination->generate_template_pagination($base_url, 'pagination', 'start', $counter, $config['topics_per_page'], $start);
 
 $template->assign_block_vars('navlinks', array(
 	'BREADCRUMB_NAME'	=> $user->lang('WHO_IS_ONLINE'),
-	'U_BREADCRUMB'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx"),
+	'U_BREADCRUMB'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline"),
 ));
 
 // Send data to template
@@ -518,11 +518,11 @@ $template->assign_vars(array(
 	'TOTAL_GUEST_USERS_ONLINE'		=> $user->lang('GUEST_USERS_ONLINE', (int) $guest_counter),
 	'LEGEND'						=> $legend,
 
-	'U_SORT_USERNAME'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", 'sk=a&amp;sd=' . (($sort_key == 'a' && $sort_dir == 'a') ? 'd' : 'a') . '&amp;sg=' . ((int) $show_guests)),
-	'U_SORT_UPDATED'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", 'sk=b&amp;sd=' . (($sort_key == 'b' && $sort_dir == 'a') ? 'd' : 'a') . '&amp;sg=' . ((int) $show_guests)),
-	'U_SORT_LOCATION'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", 'sk=c&amp;sd=' . (($sort_key == 'c' && $sort_dir == 'a') ? 'd' : 'a') . '&amp;sg=' . ((int) $show_guests)),
+	'U_SORT_USERNAME'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline", 'sk=a&amp;sd=' . (($sort_key == 'a' && $sort_dir == 'a') ? 'd' : 'a') . '&amp;sg=' . ((int) $show_guests)),
+	'U_SORT_UPDATED'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline", 'sk=b&amp;sd=' . (($sort_key == 'b' && $sort_dir == 'a') ? 'd' : 'a') . '&amp;sg=' . ((int) $show_guests)),
+	'U_SORT_LOCATION'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline", 'sk=c&amp;sd=' . (($sort_key == 'c' && $sort_dir == 'a') ? 'd' : 'a') . '&amp;sg=' . ((int) $show_guests)),
 
-	'U_SWITCH_GUEST_DISPLAY'	=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline.$phpEx", 'sg=' . ((int) !$show_guests)),
+	'U_SWITCH_GUEST_DISPLAY'	=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewonline", 'sg=' . ((int) !$show_guests)),
 	'L_SWITCH_GUEST_DISPLAY'	=> ($show_guests) ? $user->lang['HIDE_GUESTS'] : $user->lang['DISPLAY_GUESTS'],
 	'S_SWITCH_GUEST_DISPLAY'	=> ($config['load_online_guests']) ? true : false,
 	'S_VIEWONLINE'				=> true,
@@ -542,7 +542,7 @@ page_header($user->lang['WHO_IS_ONLINE']);
 $template->set_filenames(array(
 	'body' => 'viewonline_body.html')
 );
-make_jumpbox(append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx"));
+make_jumpbox(append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum"));
 
 page_footer();
 ### Always leave a blank line at the end of your PHP file before you save!

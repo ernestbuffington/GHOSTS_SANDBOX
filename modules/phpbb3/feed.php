@@ -27,7 +27,6 @@ $phpbb_root_path = (defined('NUKE_PHPBB3_DIR')) ? NUKE_PHPBB3_DIR : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include(NUKE_PHPBB3_DIR . 'extension.inc');
 include(NUKE_PHPBB3_DIR . 'common.php');
-//include(NUKE_PHPBB3_DIR . 'includes/functions_display.' . $phpEx);
 else:
 
 define('IN_PHPBB', true);
@@ -65,6 +64,5 @@ else
 
 $response = new RedirectResponse($url, 301);
 $response->send();
-//include("includes/page_tail.$phpEx");
 ?>
 

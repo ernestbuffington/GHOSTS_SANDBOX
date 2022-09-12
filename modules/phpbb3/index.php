@@ -242,13 +242,13 @@ $template->assign_vars(array(
 	'LEGEND'		=> $legend,
 	'BIRTHDAY_LIST'	=> (empty($birthday_list)) ? '' : implode($user->lang['COMMA_SEPARATOR'], $birthday_list),
 
-	'S_LOGIN_ACTION'			=> append_sid("modules.php?name=&amp;file=ucp.$phpEx", 'mode=login'),
+	'S_LOGIN_ACTION'			=> append_sid("modules.php?name=&amp;file=ucp", 'mode=login'),
 	'U_SEND_PASSWORD'           => ($config['email_enable'] && $config['allow_password_reset']) ? $controller_helper->route('phpbb_ucp_forgot_password_controller') : '',
 	'S_DISPLAY_BIRTHDAY_LIST'	=> $show_birthdays,
 	'S_INDEX'					=> true,
 
 	'U_MARK_FORUMS'		=> ($user->data['is_registered'] || $config['load_anon_lastread']) ? append_sid("modules.php?name=$nuke_module_name", 'hash=' . generate_link_hash('global') . '&amp;mark=forums&amp;mark_time=' . time()) : '',
-	'U_MCP'				=> ($auth->acl_get('m_') || $auth->acl_getf_global('m_')) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", 'i=main&amp;mode=front', true, $user->session_id) : '')
+	'U_MCP'				=> ($auth->acl_get('m_') || $auth->acl_getf_global('m_')) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp", 'i=main&amp;mode=front', true, $user->session_id) : '')
 );
 
 $page_title = ($config['board_index_text'] !== '') ? $config['board_index_text'] : $user->lang['INDEX'];

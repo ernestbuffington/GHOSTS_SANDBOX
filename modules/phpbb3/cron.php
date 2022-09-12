@@ -44,5 +44,4 @@ $response = new RedirectResponse(
 	301
 );
 $response->send();
-//include("includes/page_tail.$phpEx");
 ?>

@@ -341,25 +341,27 @@ extract($phpbb_dispatcher->trigger_event('core.modify_mcp_modules_display_option
 
 $template->assign_block_vars('navlinks', array(
 	'BREADCRUMB_NAME'	=> $user->lang('MCP'),
-	'U_BREADCRUMB'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx"),
+	'U_BREADCRUMB'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=mcp"),
 ));
 
 // Generate urls for letting the moderation control panel being accessed in different modes
 $template->assign_vars(array(
-	'U_MCP'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", 'i=main'),
-	'U_MCP_FORUM'	=> ($forum_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", "i=main&amp;mode=forum_view&amp;f=$forum_id") : '',
-	'U_MCP_TOPIC'	=> ($forum_id && $topic_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", "i=main&amp;mode=topic_view&amp;t=$topic_id") : '',
-	'U_MCP_POST'	=> ($forum_id && $topic_id && $post_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", "i=main&amp;mode=post_details&amp;t=$topic_id&amp;p=$post_id") : '',
+	'U_MCP'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=mcp", 'i=main'),
+	'U_MCP_FORUM'	=> ($forum_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp", "i=main&amp;mode=forum_view&amp;f=$forum_id") : '',
+	'U_MCP_TOPIC'	=> ($forum_id && $topic_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp", "i=main&amp;mode=topic_view&amp;t=$topic_id") : '',
+	'U_MCP_POST'	=> ($forum_id && $topic_id && $post_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp", "i=main&amp;mode=post_details&amp;t=$topic_id&amp;p=$post_id") : '',
 ));
+
+                                  # Why would nobody ever help or support people with PHP-Nuke? Nobody at phpBB gives s phuck!
+$request->enable_super_globals(); #### ADD Ernest Allen Buffington 09/09/2022 - Turn Super Globals On
+OpenTable();                      #### ADD Ernest Allen Buffington 09/09/2022 - Needed for Themes - Hail to the tables - phuck the numb nuts!
 
 // Load and execute the relevant module
 $module->load_active();
 
 // Assign data to the template engine for the list of modules
-$module->assign_tpl_vars(append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx"));
+$module->assign_tpl_vars(append_sid("modules.php?name=$nuke_module_name&amp;file=mcp"));
 
 // Generate the page, do not display/query online list
 $module->display($module->get_page_title());
-//include("includes/page_tail.$phpEx");
 ?>
-

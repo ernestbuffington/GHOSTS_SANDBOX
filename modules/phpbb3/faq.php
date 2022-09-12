@@ -42,6 +42,5 @@ $response = new \Symfony\Component\HttpFoundation\RedirectResponse(
 	301
 );
 $response->send();
-//include("includes/page_tail.$phpEx");
 ?>
 
