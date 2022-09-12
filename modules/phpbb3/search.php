@@ -1097,7 +1097,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 			$replies = $phpbb_content_visibility->get_count('topic_posts', $row, $forum_id) - 1;
 
 			$view_topic_url_params = "t=$result_topic_id" . (($u_hilit) ? "&amp;hilit=$u_hilit" : '');
-			$view_topic_url = append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", $view_topic_url_params);
+			$view_topic_url = append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", $view_topic_url_params);
 
 			$folder_img = $folder_alt = $u_mcp_queue = '';
 			$topic_type = $posts_unapproved = 0;
@@ -1159,10 +1159,10 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 					'S_TOPIC_DELETED'		=> $topic_deleted,
 					'S_HAS_POLL'			=> ($row['poll_start']) ? true : false,
 
-					'U_LAST_POST'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", 'p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
+					'U_LAST_POST'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", 'p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
 					'U_LAST_POST_AUTHOR'	=> get_username_string('profile', $row['topic_last_poster_id'], $row['topic_last_poster_name'], $row['topic_last_poster_colour']),
 					'U_TOPIC_AUTHOR'		=> get_username_string('profile', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']),
-					'U_NEWEST_POST'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", $view_topic_url_params . '&amp;view=unread') . '#unread',
+					'U_NEWEST_POST'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", $view_topic_url_params . '&amp;view=unread') . '#unread',
 					'U_MCP_REPORT'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", 'i=reports&amp;mode=reports&amp;t=' . $result_topic_id, true, $user->session_id),
 					'U_MCP_QUEUE'			=> $u_mcp_queue,
 				);
@@ -1234,7 +1234,7 @@ if ($keywords || $author || $author_id || $search_id || $submit)
 
 				'U_VIEW_TOPIC'		=> $view_topic_url,
 				'U_VIEW_FORUM'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $forum_id),
-				'U_VIEW_POST'		=> (!empty($row['post_id'])) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", 'p=' . $row['post_id'] . (($u_hilit) ? '&amp;hilit=' . $u_hilit : '')) . '#p' . $row['post_id'] : '',
+				'U_VIEW_POST'		=> (!empty($row['post_id'])) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", 'p=' . $row['post_id'] . (($u_hilit) ? '&amp;hilit=' . $u_hilit : '')) . '#p' . $row['post_id'] : '',
 			));
 
 			/**

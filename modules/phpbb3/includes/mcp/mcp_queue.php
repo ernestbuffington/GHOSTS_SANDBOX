@@ -984,7 +984,7 @@ class mcp_queue
 				$phpbb_content_visibility->set_topic_visibility(ITEM_APPROVED, $topic_id, $topic_data['forum_id'], $user->data['user_id'], time(), '');
 				$first_post_ids[$topic_id] = (int) $topic_data['topic_first_post_id'];
 
-				$topic_url = append_sid("modules.php?name=phpBB3&amp;file=viewtopic.$phpEx", "t={$topic_id}");
+				$topic_url = append_sid("modules.php?name=phpBB3&amp;file=viewtopic", "t={$topic_id}");
 
 				$approve_log[] = array(
 					'forum_id'		=> $topic_data['forum_id'],

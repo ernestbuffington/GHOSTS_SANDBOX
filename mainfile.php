@@ -1968,5 +1968,6 @@ else
 		);
 	}
 	require(NUKE_BASE_DIR . 'vendor/autoload.php');
+	
 }
 $starttime = microtime(true);

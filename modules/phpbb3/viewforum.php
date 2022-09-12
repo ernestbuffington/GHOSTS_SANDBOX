@@ -957,7 +957,7 @@ if (count($topic_list))
 
 		// Generate all the URIs ...
 		$view_topic_url_params = 't=' . $topic_id;
-		$view_topic_url = $auth->acl_get('f_read', $forum_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", $view_topic_url_params) : false;
+		$view_topic_url = $auth->acl_get('f_read', $forum_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", $view_topic_url_params) : false;
 
 		$topic_unapproved = (($row['topic_visibility'] == ITEM_UNAPPROVED || $row['topic_visibility'] == ITEM_REAPPROVE) && $auth->acl_get('m_approve', $row['forum_id']));
 		$posts_unapproved = ($row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $auth->acl_get('m_approve', $row['forum_id']));
@@ -1014,8 +1014,8 @@ if (count($topic_list))
 			'S_TOPIC_LOCKED'		=> ($row['topic_status'] == ITEM_LOCKED) ? true : false,
 			'S_TOPIC_MOVED'			=> ($row['topic_status'] == ITEM_MOVED) ? true : false,
 
-			'U_NEWEST_POST'			=> $auth->acl_get('f_read', $forum_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", $view_topic_url_params . '&amp;view=unread') . '#unread' : false,
-			'U_LAST_POST'			=> $auth->acl_get('f_read', $forum_id)  ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", 'p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'] : false,
+			'U_NEWEST_POST'			=> $auth->acl_get('f_read', $forum_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", $view_topic_url_params . '&amp;view=unread') . '#unread' : false,
+			'U_LAST_POST'			=> $auth->acl_get('f_read', $forum_id)  ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", 'p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'] : false,
 			'U_LAST_POST_AUTHOR'	=> get_username_string('profile', $row['topic_last_poster_id'], $row['topic_last_poster_name'], $row['topic_last_poster_colour']),
 			'U_TOPIC_AUTHOR'		=> get_username_string('profile', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']),
 			'U_VIEW_TOPIC'			=> $view_topic_url,

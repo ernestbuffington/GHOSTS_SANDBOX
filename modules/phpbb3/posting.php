@@ -179,7 +179,7 @@ extract($phpbb_dispatcher->trigger_event('core.modify_posting_parameters', compa
 // Was cancel pressed? If so then redirect to the appropriate page
 if ($cancel)
 {
-	$redirect = ($post_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", 'p=' . $post_id) . '#p' . $post_id : (($topic_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", 't=' . $topic_id) : (($forum_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $forum_id) : append_sid("modules.php?name=$nuke_module_name&amp;file=index.$phpEx")));
+	$redirect = ($post_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", 'p=' . $post_id) . '#p' . $post_id : (($topic_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", 't=' . $topic_id) : (($forum_id) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $forum_id) : append_sid("modules.php?name=$nuke_module_name&amp;file=index.$phpEx")));
 	redirect($redirect);
 }
 
@@ -819,7 +819,7 @@ if ($save && $user->data['is_registered'] && $auth->acl_get('u_savedrafts') && (
 			$attachment_manager = $phpbb_container->get('attachment.manager');
 			$attachment_manager->delete('attach', array_column($message_parser->attachment_data, 'attach_id'));
 
-			$meta_info = ($mode == 'post') ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $forum_id) : append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", "t=$topic_id");
+			$meta_info = ($mode == 'post') ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $forum_id) : append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", "t=$topic_id");
 
 			meta_refresh(3, $meta_info);
 
@@ -1940,7 +1940,7 @@ $page_data = array(
 	'EDIT_REASON'			=> $request->variable('edit_reason', '', true),
 	'SHOW_PANEL'			=> $request->variable('show_panel', ''),
 	'U_VIEW_FORUM'			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", "f=$forum_id"),
-	'U_VIEW_TOPIC'			=> ($mode != 'post') ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", "t=$topic_id") : '',
+	'U_VIEW_TOPIC'			=> ($mode != 'post') ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", "t=$topic_id") : '',
 	'U_PROGRESS_BAR'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=posting.$phpEx", "f=$forum_id&amp;mode=popup"),
 	'UA_PROGRESS_BAR'		=> addslashes(append_sid("modules.php?name=$nuke_module_name&amp;file=posting.$phpEx", "f=$forum_id&amp;mode=popup")),
 

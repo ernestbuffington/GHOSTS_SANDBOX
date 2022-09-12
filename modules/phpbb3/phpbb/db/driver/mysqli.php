@@ -179,10 +179,10 @@ class mysqli extends \phpbb\db\driver\mysql_base
 	*/
 	function sql_query($query = '', $cache_ttl = 0)
 	{
-		if ($query != '')
+  	    if ($query != '')
 		{
 			global $cache;
-
+			
 			if ($this->debug_sql_explain)
 			{
 				$this->sql_report('start', $query);
@@ -199,16 +199,22 @@ class mysqli extends \phpbb\db\driver\mysql_base
 			{
 				if (($this->query_result = @mysqli_query($this->db_connect_id, $query)) === false)
 				{
+					
 					$this->sql_error($query);
+					log_write('error', $query, 'SQL Error');
+					
 				}
 
 				if ($this->debug_sql_explain)
 				{
-					$this->sql_report('stop', $query);
+					log_write('stop', $query, 'SQL Error');
+					log_write('error', $query, 'SQL Error');
 				}
 				else if ($this->debug_load_time)
 				{
+
 					$this->sql_time += microtime(true) - $this->curtime;
+					log_write('error', $this->sql_time += microtime(true) - $this->curtime, 'SQL Error');
 				}
 
 				if (!$this->query_result)

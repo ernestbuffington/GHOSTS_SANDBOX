@@ -961,7 +961,7 @@ switch ($mode)
 			generate_forum_nav($topic_data);
 			$template->assign_block_vars('navlinks', array(
 				'BREADCRUMB_NAME'	=> $topic_data['topic_title'],
-				'U_BREADCRUMB'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", "t=$topic_id"),
+				'U_BREADCRUMB'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", "t=$topic_id"),
 			));
 
 			$navlink_name = $user->lang('EMAIL_TOPIC');

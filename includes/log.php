@@ -48,12 +48,13 @@ function log_write($file, $output, $title = 'General Error') {
             $nuke_username = _ANONYMOUS;
         }
     }
+	
     $ip = GetHostByName($identify->get_ip());
     $date = date("d M Y - H:i:s");
     if($file == 'admin') {
         $string = '';
     } elseif ($file == 'error') {
-        $string = 'URL: <a href="http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . '">' . $_SERVER['REQUEST_URI'] . "</a>\n";
+		$string = 'URL: <a href="http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . '">' . $_SERVER['REQUEST_URI'] . "</a>\n";
     }
     $header  = "---------[" . $title . "]------------------------------------------------------------------------------------------------------------\n";
     $wdata = $header;
