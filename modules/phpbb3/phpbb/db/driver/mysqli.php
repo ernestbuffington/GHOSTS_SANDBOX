@@ -208,7 +208,7 @@ class mysqli extends \phpbb\db\driver\mysql_base
 				if ($this->debug_sql_explain)
 				{
 					log_write('stop', $query, 'SQL Error');
-					log_write('error', $query, 'SQL Error');
+					$this->sql_report('stop', $query);
 				}
 				else if ($this->debug_load_time)
 				{
