@@ -204,7 +204,7 @@ function get_folder($user_id, $folder_id = false)
 			'NUM_MESSAGES'		=> $folder_ary['num_messages'],
 			'UNREAD_MESSAGES'	=> $folder_ary['unread_messages'],
 
-			'U_FOLDER'			=> ($f_id > 0) ? append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $f_id) : append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $folder_id_name),
+			'U_FOLDER'			=> ($f_id > 0) ? append_sid("modules.php?name=phpBB3&amp;file=ucp", 'i=pm&amp;folder=' . $f_id) : append_sid("modules.php?name=phpBB3&amp;file=ucp", 'i=pm&amp;folder=' . $folder_id_name),
 
 			'S_CUR_FOLDER'		=> ($f_id === $folder_id) ? true : false,
 			'S_UNREAD_MESSAGES'	=> ($folder_ary['unread_messages']) ? true : false,
@@ -808,7 +808,7 @@ function move_pm($user_id, $message_limit, $move_msg_ids, $dest_folder, $cur_fol
 			if ($message_limit && $row['pm_count'] + count($move_msg_ids) > $message_limit)
 			{
 				$message = sprintf($user->lang['NOT_ENOUGH_SPACE_FOLDER'], $row['folder_name']) . '<br /><br />';
-				$message .= sprintf($user->lang['CLICK_RETURN_FOLDER'], '<a href="' . append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $row['folder_id']) . '">', '</a>', $row['folder_name']);
+				$message .= sprintf($user->lang['CLICK_RETURN_FOLDER'], '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=ucp", 'i=pm&amp;folder=' . $row['folder_id']) . '">', '</a>', $row['folder_name']);
 				trigger_error($message);
 			}
 		}
@@ -825,7 +825,7 @@ function move_pm($user_id, $message_limit, $move_msg_ids, $dest_folder, $cur_fol
 			if ($message_limit && $num_messages + count($move_msg_ids) > $message_limit)
 			{
 				$message = sprintf($user->lang['NOT_ENOUGH_SPACE_FOLDER'], $user->lang['PM_INBOX']) . '<br /><br />';
-				$message .= sprintf($user->lang['CLICK_RETURN_FOLDER'], '<a href="' . append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=inbox') . '">', '</a>', $user->lang['PM_INBOX']);
+				$message .= sprintf($user->lang['CLICK_RETURN_FOLDER'], '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=ucp", 'i=pm&amp;folder=inbox') . '">', '</a>', $user->lang['PM_INBOX']);
 				trigger_error($message);
 			}
 		}
@@ -987,7 +987,7 @@ function handle_mark_actions($user_id, $mark_action)
 				delete_pm($user_id, $msg_ids, $cur_folder_id);
 
 				$success_msg = (count($msg_ids) == 1) ? 'MESSAGE_DELETED' : 'MESSAGES_DELETED';
-				$redirect = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;folder=' . $cur_folder_id);
+				$redirect = append_sid("modules.php?name=phpBB3&amp;file=ucp", 'i=pm&amp;folder=' . $cur_folder_id);
 
 				meta_refresh(3, $redirect);
 				trigger_error($user->lang[$success_msg] . '<br /><br />' . sprintf($user->lang['RETURN_FOLDER'], '<a href="' . $redirect . '">', '</a>'));
@@ -1545,7 +1545,7 @@ function write_pm_addresses($check_ary, $author_id, $plaintext = false)
 					else
 					{
 						$tpl_ary = array_merge($tpl_ary, array(
-							'U_VIEW'		=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $id),
+							'U_VIEW'		=> append_sid("modules.php?name=phpBB3&amp;file=memberlist", 'mode=group&amp;g=' . $id),
 						));
 					}
 
@@ -2026,7 +2026,7 @@ function message_history($msg_id, $user_id, $message_row, $folder, $in_post_mode
 	$title = $row['message_subject'];
 
 	$rowset = array();
-	$folder_url = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm') . '&amp;folder=';
+	$folder_url = append_sid("modules.php?name=phpBB3&amp;file=ucp", 'i=pm') . '&amp;folder=';
 
 	do
 	{
@@ -2046,7 +2046,7 @@ function message_history($msg_id, $user_id, $message_row, $folder, $in_post_mode
 	while ($row = $db->sql_fetchrow($result));
 	$db->sql_freeresult($result);
 
-	$url = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm');
+	$url = append_sid("modules.php?name=phpBB3&amp;file=ucp", 'i=pm');
 
 	/**
 	* Modify message rows before displaying the history in private messages
@@ -2306,7 +2306,7 @@ function get_recipient_strings($pm_by_id)
 				else
 				{
 					$user_colour = ($recipient_list[$type][$ug_id]['colour']) ? ' style="font-weight: bold; color:#' . $recipient_list[$type][$ug_id]['colour'] . '"' : '';
-					$link = '<a href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $ug_id) . '"' . $user_colour . '>';
+					$link = '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=memberlist", 'mode=group&amp;g=' . $ug_id) . '"' . $user_colour . '>';
 					$address_list[$message_id][] = $link . $recipient_list[$type][$ug_id]['name'] . (($link) ? '</a>' : '');
 				}
 			}

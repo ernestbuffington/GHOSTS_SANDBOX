@@ -173,7 +173,7 @@ class ucp_register
 
 					'S_SHOW_COPPA'		=> true,
 					'S_HIDDEN_FIELDS'	=> build_hidden_fields($s_hidden_fields),
-					'S_UCP_ACTION'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register'),
+					'S_UCP_ACTION'		=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=register'),
 
 					'COOKIE_NAME'		=> $config['cookie_name'],
 					'COOKIE_PATH'		=> $config['cookie_path'],
@@ -188,7 +188,7 @@ class ucp_register
 					'S_SHOW_COPPA'		=> false,
 					'S_REGISTRATION'	=> true,
 					'S_HIDDEN_FIELDS'	=> build_hidden_fields($s_hidden_fields),
-					'S_UCP_ACTION'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register' . $add_coppa),
+					'S_UCP_ACTION'		=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=register' . $add_coppa),
 
 					'COOKIE_NAME'		=> $config['cookie_name'],
 					'COOKIE_PATH'		=> $config['cookie_path'],
@@ -471,7 +471,7 @@ class ucp_register
 						'WELCOME_MSG'	=> html_entity_decode(sprintf($user->lang['WELCOME_SUBJECT'], $config['sitename']), ENT_COMPAT),
 						'USERNAME'		=> html_entity_decode($data['username'], ENT_COMPAT),
 						'PASSWORD'		=> html_entity_decode($data['new_password'], ENT_COMPAT),
-						'U_ACTIVATE'	=> "$server_url/ucp.$phpEx?mode=activate&u=$user_id&k=$user_actkey")
+						'U_ACTIVATE'	=> "$server_url/modules.php?name=phpBB3&amp;file=ucp?mode=activate&u=$user_id&k=$user_actkey")
 					);
 
 					if ($coppa)
@@ -560,7 +560,7 @@ class ucp_register
 				);
 				extract($phpbb_dispatcher->trigger_event('core.ucp_register_register_after', compact($vars)));
 
-				$message = $message . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
+				$message = $message . '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("modules.php?name=phpBB3") . '">', '</a>');
 				trigger_error($message);
 			}
 		}
@@ -652,7 +652,7 @@ class ucp_register
 			'S_CONFIRM_REFRESH'	=> ($config['enable_confirm'] && $config['confirm_refresh']) ? true : false,
 			'S_REGISTRATION'	=> true,
 			'S_COPPA'			=> $coppa,
-			'S_UCP_ACTION'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register'),
+			'S_UCP_ACTION'		=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=register'),
 
 			'COOKIE_NAME'		=> $config['cookie_name'],
 			'COOKIE_PATH'		=> $config['cookie_path'],

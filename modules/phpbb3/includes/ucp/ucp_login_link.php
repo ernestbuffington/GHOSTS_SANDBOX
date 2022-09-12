@@ -228,7 +228,7 @@ class ucp_login_link
 				case LOGIN_ERROR_PASSWORD_CONVERT:
 					$login_error = sprintf(
 						$user->lang[$result['error_msg']],
-						($config['email_enable']) ? '<a href="' . append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=sendpassword') . '">' : '',
+						($config['email_enable']) ? '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=sendpassword') . '">' : '',
 						($config['email_enable']) ? '</a>' : '',
 						($config['board_contact']) ? '<a href="mailto:' . htmlspecialchars($config['board_contact'], ENT_COMPAT) . '">' : '',
 						($config['board_contact']) ? '</a>' : ''

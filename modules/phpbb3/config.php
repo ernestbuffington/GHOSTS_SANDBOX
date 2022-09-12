@@ -13,5 +13,4 @@ $acm_type = 'phpbb\\cache\\driver\\file';
 
 @define('PHPBB_INSTALLED', true);
 @define('PHPBB_ENVIRONMENT', 'production');
-//@define('PHPBB_ENVIRONMENT', 'anf602_production');
 // @define('DEBUG_CONTAINER', true);

@@ -295,7 +295,7 @@ class acp_email
 				}
 				else
 				{
-					$message = sprintf($user->lang['EMAIL_SEND_ERROR'], '<a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=logs&amp;mode=critical') . '">', '</a>');
+					$message = sprintf($user->lang['EMAIL_SEND_ERROR'], '<a href="' . append_sid("modules.php?name=phpBB3", 'i=logs&amp;mode=critical') . '">', '</a>');
 					trigger_error($message . adm_back_link($this->u_action), E_USER_WARNING);
 				}
 			}
@@ -327,7 +327,7 @@ class acp_email
 			'U_ACTION'				=> $this->u_action,
 			'S_GROUP_OPTIONS'		=> $select_list,
 			'USERNAMES'				=> implode("\n", $usernames),
-			'U_FIND_USERNAME'		=> append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=searchuser&amp;form=acp_email&amp;field=usernames'),
+			'U_FIND_USERNAME'		=> append_sid("modules.php?name=phpBB3&amp;file=memberlist", 'mode=searchuser&amp;form=acp_email&amp;field=usernames'),
 			'SUBJECT'				=> $subject,
 			'MESSAGE'				=> $message,
 			'S_PRIORITY_OPTIONS'	=> $s_priority_options,

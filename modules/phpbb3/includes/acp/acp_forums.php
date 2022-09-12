@@ -229,7 +229,7 @@ class acp_forums
 						// redirect directly to permission settings screen if authed
 						if ($action == 'add' && !$copied_permissions && $auth->acl_get('a_fauth'))
 						{
-							$message .= '<br /><br />' . sprintf($user->lang['REDIRECT_ACL'], '<a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
+							$message .= '<br /><br />' . sprintf($user->lang['REDIRECT_ACL'], '<a href="' . append_sid("modules.php?name=phpBB3", 'i=permissions' . $acl_url) . '">', '</a>');
 
 							meta_refresh(4, append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions' . $acl_url));
 						}
@@ -800,7 +800,7 @@ class acp_forums
 					// Redirect to permissions
 					if ($auth->acl_get('a_fauth'))
 					{
-						$message .= '<br /><br />' . sprintf($user->lang['REDIRECT_ACL'], '<a href="' . append_sid("{$phpbb_admin_path}index.$phpEx", 'i=permissions' . $acl_url) . '">', '</a>');
+						$message .= '<br /><br />' . sprintf($user->lang['REDIRECT_ACL'], '<a href="' . append_sid("modules.php?name=phpBB3", 'i=permissions' . $acl_url) . '">', '</a>');
 					}
 
 					trigger_error($message . adm_back_link($this->u_action . '&amp;parent_id=' . $this->parent_id));

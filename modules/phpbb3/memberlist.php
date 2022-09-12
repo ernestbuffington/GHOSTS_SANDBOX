@@ -818,7 +818,7 @@ switch ($mode)
 			'U_REMOVE_FRIEND'			=> ($friend && $friends_enabled) ? append_sid("modules.php?name=$nuke_module_name&amp;file=ucp.$phpEx", 'i=zebra&amp;remove=1&amp;usernames[]=' . $user_id) : '',
 			'U_REMOVE_FOE'				=> ($foe && $foes_enabled) ? append_sid("modules.php?name=$nuke_module_name&amp;file=ucp.$phpEx", 'i=zebra&amp;remove=1&amp;mode=foes&amp;usernames[]=' . $user_id) : '',
 
-			'U_CANONICAL'				=> generate_board_url() . '/' . append_sid("modules.php?name=$nuke_module_name&amp;file=memberlist.$phpEx", 'mode=viewprofile&amp;u=' . $user_id, true, ''),
+			'U_CANONICAL'				=> generate_board_url() . '/' . append_sid("modules.php?name=$nuke_module_name&amp;file=memberlist", 'mode=viewprofile&amp;u=' . $user_id, true, ''),
 		);
 
 		/**

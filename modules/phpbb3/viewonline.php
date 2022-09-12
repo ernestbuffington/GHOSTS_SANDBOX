@@ -495,7 +495,7 @@ while ($row = $db->sql_fetchrow($result))
 	}
 	else
 	{
-		$legend .= (($legend != '') ? ', ' : '') . '<a style="color:#' . $row['group_colour'] . '" href="' . append_sid("modules.php?name=$nuke_module_name&amp;file=memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']) . '">' . $group_helper->get_name($row['group_name']) . '</a>';
+		$legend .= (($legend != '') ? ', ' : '') . '<a style="color:#' . $row['group_colour'] . '" href="' . append_sid("modules.php?name=$nuke_module_name&amp;file=memberlist", 'mode=group&amp;g=' . $row['group_id']) . '">' . $group_helper->get_name($row['group_name']) . '</a>';
 	}
 }
 $db->sql_freeresult($result);

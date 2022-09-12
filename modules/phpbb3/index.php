@@ -146,7 +146,7 @@ while ($row = $db->sql_fetchrow($result))
 	}
 	else
 	{
-		$legend[] = '<a' . $colour_text . ' href="' . append_sid("modules.php?name=$nuke_module_name&amp;file=memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']) . '">' . $group_name . '</a>';
+		$legend[] = '<a' . $colour_text . ' href="' . append_sid("modules.php?name=$nuke_module_name&amp;file=memberlist", 'mode=group&amp;g=' . $row['group_id']) . '">' . $group_name . '</a>';
 	}
 }
 $db->sql_freeresult($result);

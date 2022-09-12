@@ -854,7 +854,7 @@ $template->assign_vars(array(
 	'U_TOPIC'				=> "{$server_path}viewtopic.$phpEx?t=$topic_id",
 	'U_FORUM'				=> $server_path,
 	'U_VIEW_TOPIC' 			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", "t=$topic_id" . (($start == 0) ? '' : "&amp;start=$start") . (strlen($u_sort_param) ? "&amp;$u_sort_param" : '')),
-	'U_CANONICAL'			=> generate_board_url() . '/' . append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", "t=$topic_id" . (($start) ? "&amp;start=$start" : ''), true, ''),
+	'U_CANONICAL'			=> generate_board_url() . '/' . append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic", "t=$topic_id" . (($start) ? "&amp;start=$start" : ''), true, ''),
 	'U_VIEW_FORUM' 			=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $forum_id),
 	'U_VIEW_OLDER_TOPIC'	=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", "t=$topic_id&amp;view=previous"),
 	'U_VIEW_NEWER_TOPIC'	=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewtopic.$phpEx", "t=$topic_id&amp;view=next"),

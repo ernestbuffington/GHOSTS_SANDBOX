@@ -278,12 +278,12 @@ class mcp_queue
 					$l_deleted_by = '';
 				}
 
-				$post_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'p=' . $post_info['post_id'] . '#p' . $post_info['post_id']);
-				$topic_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $post_info['topic_id']);
+				$post_url = append_sid("modules.php?name=phpBB3&amp;file=viewtopic", 'p=' . $post_info['post_id'] . '#p' . $post_info['post_id']);
+				$topic_url = append_sid("modules.php?name=phpBB3&amp;file=viewtopic", 't=' . $post_info['topic_id']);
 
 				$post_data = array(
 					'S_MCP_QUEUE'			=> true,
-					'U_APPROVE_ACTION'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", "i=queue&amp;p=$post_id"),
+					'U_APPROVE_ACTION'		=> append_sid("modules.php?name=phpBB3&amp;file=mcp", "i=queue&amp;p=$post_id"),
 					'S_CAN_DELETE_POST'		=> $auth->acl_get('m_delete', $post_info['forum_id']),
 					'S_CAN_VIEWIP'			=> $auth->acl_get('m_info', $post_info['forum_id']),
 					'S_POST_REPORTED'		=> $post_info['post_reported'],
@@ -294,17 +294,17 @@ class mcp_queue
 					'DELETED_MESSAGE'		=> $l_deleted_by,
 					'DELETE_REASON'			=> $post_info['post_delete_reason'],
 
-					'U_EDIT'				=> ($auth->acl_get('m_edit', $post_info['forum_id'])) ? append_sid("{$phpbb_root_path}posting.$phpEx", "mode=edit&amp;p={$post_info['post_id']}") : '',
-					'U_MCP_APPROVE'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue&amp;mode=approve_details&amp;p=' . $post_id),
-					'U_MCP_REPORT'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=reports&amp;mode=report_details&amp;p=' . $post_id),
-					'U_MCP_USER_NOTES'		=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=notes&amp;mode=user_notes&amp;u=' . $post_info['user_id']),
-					'U_MCP_WARN_USER'		=> ($auth->acl_get('m_warn')) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=warn&amp;mode=warn_user&amp;u=' . $post_info['user_id']) : '',
+					'U_EDIT'				=> ($auth->acl_get('m_edit', $post_info['forum_id'])) ? append_sid("modules.php?name=phpBB3&amp;file=posting", "mode=edit&amp;p={$post_info['post_id']}") : '',
+					'U_MCP_APPROVE'			=> append_sid("modules.php?name=phpBB3&amp;file=mcp", 'i=queue&amp;mode=approve_details&amp;p=' . $post_id),
+					'U_MCP_REPORT'			=> append_sid("modules.php?name=phpBB3&amp;file=mcp", 'i=reports&amp;mode=report_details&amp;p=' . $post_id),
+					'U_MCP_USER_NOTES'		=> append_sid("modules.php?name=phpBB3&amp;file=mcp", 'i=notes&amp;mode=user_notes&amp;u=' . $post_info['user_id']),
+					'U_MCP_WARN_USER'		=> ($auth->acl_get('m_warn')) ? append_sid("modules.php?name=phpBB3&amp;file=mcp", 'i=warn&amp;mode=warn_user&amp;u=' . $post_info['user_id']) : '',
 					'U_VIEW_POST'			=> $post_url,
 					'U_VIEW_TOPIC'			=> $topic_url,
 
 					'MINI_POST_IMG'			=> ($post_unread) ? $user->img('icon_post_target_unread', 'UNREAD_POST') : $user->img('icon_post_target', 'POST'),
 
-					'RETURN_QUEUE'			=> sprintf($user->lang['RETURN_QUEUE'], '<a href="' . append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue' . (($topic_id) ? '&amp;mode=unapproved_topics' : '&amp;mode=unapproved_posts')) . '&amp;start=' . $start . '">', '</a>'),
+					'RETURN_QUEUE'			=> sprintf($user->lang['RETURN_QUEUE'], '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=mcp", 'i=queue' . (($topic_id) ? '&amp;mode=unapproved_topics' : '&amp;mode=unapproved_posts')) . '&amp;start=' . $start . '">', '</a>'),
 					'RETURN_POST'			=> sprintf($user->lang['RETURN_POST'], '<a href="' . $post_url . '">', '</a>'),
 					'RETURN_TOPIC_SIMPLE'	=> sprintf($user->lang['RETURN_TOPIC_SIMPLE'], '<a href="' . $topic_url . '">', '</a>'),
 					'REPORTED_IMG'			=> $user->img('icon_topic_reported', $user->lang['POST_REPORTED']),
@@ -324,7 +324,7 @@ class mcp_queue
 					'POST_ID'				=> $post_info['post_id'],
 					'S_FIRST_POST'			=> ($post_info['topic_first_post_id'] == $post_id),
 
-					'U_LOOKUP_IP'			=> ($auth->acl_get('m_info', $post_info['forum_id'])) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue&amp;mode=approve_details&amp;p=' . $post_id . '&amp;lookup=' . $post_info['poster_ip']) . '#ip' : '',
+					'U_LOOKUP_IP'			=> ($auth->acl_get('m_info', $post_info['forum_id'])) ? append_sid("modules.php?name=phpBB3&amp;file=mcp", 'i=queue&amp;mode=approve_details&amp;p=' . $post_id . '&amp;lookup=' . $post_info['poster_ip']) . '#ip' : '',
 				);
 
 				/**
@@ -614,10 +614,10 @@ class mcp_queue
 					}
 
 					$post_row = array(
-						'U_TOPIC'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $row['topic_id']),
-						'U_VIEWFORUM'		=> append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $row['forum_id']),
-						'U_VIEWPOST'		=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'p=' . $row['post_id']) . (($mode == 'unapproved_posts') ? '#p' . $row['post_id'] : ''),
-						'U_VIEW_DETAILS'	=> append_sid("{$phpbb_root_path}mcp.$phpEx", "i=queue&amp;start=$start&amp;mode=approve_details&amp;p={$row['post_id']}" . (($mode == 'unapproved_topics') ? "&amp;t={$row['topic_id']}" : '')),
+						'U_TOPIC'			=> append_sid("modules.php?name=phpBB3&amp;file=viewtopic", 't=' . $row['topic_id']),
+						'U_VIEWFORUM'		=> append_sid("modules.php?name=phpBB3&amp;file=viewforum", 'f=' . $row['forum_id']),
+						'U_VIEWPOST'		=> append_sid("modules.php?name=phpBB3&amp;file=viewtopic", 'p=' . $row['post_id']) . (($mode == 'unapproved_posts') ? '#p' . $row['post_id'] : ''),
+						'U_VIEW_DETAILS'	=> append_sid("modules.php?name=phpBB3&amp;file=mcp", "i=queue&amp;start=$start&amp;mode=approve_details&amp;p={$row['post_id']}" . (($mode == 'unapproved_topics') ? "&amp;t={$row['topic_id']}" : '')),
 
 						'POST_AUTHOR_FULL'		=> get_username_string('full', $row['poster_id'], $row['username'], $row['user_colour'], $row['post_username']),
 						'POST_AUTHOR_COLOUR'	=> get_username_string('colour', $row['poster_id'], $row['username'], $row['user_colour'], $row['post_username']),
@@ -746,7 +746,7 @@ class mcp_queue
 					$topic_info[$topic_id]['last_post'] = true;
 				}
 
-				$post_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", "p={$post_data['post_id']}") . '#p' . $post_data['post_id'];
+				$post_url = append_sid("modules.php?name=phpBB3&amp;file=viewtopic", "p={$post_data['post_id']}") . '#p' . $post_data['post_id'];
 
 				$approve_log[] = array(
 					'forum_id'		=> $post_data['forum_id'],
@@ -984,7 +984,7 @@ class mcp_queue
 				$phpbb_content_visibility->set_topic_visibility(ITEM_APPROVED, $topic_id, $topic_data['forum_id'], $user->data['user_id'], time(), '');
 				$first_post_ids[$topic_id] = (int) $topic_data['topic_first_post_id'];
 
-				$topic_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", "t={$topic_id}");
+				$topic_url = append_sid("modules.php?name=phpBB3&amp;file=viewtopic.$phpEx", "t={$topic_id}");
 
 				$approve_log[] = array(
 					'forum_id'		=> $topic_data['forum_id'],

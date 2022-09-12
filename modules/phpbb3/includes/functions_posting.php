@@ -29,7 +29,7 @@ function generate_smilies($mode, $forum_id)
 
 	/* @var $pagination \phpbb\pagination */
 	$pagination = $phpbb_container->get('pagination');
-	$base_url = append_sid("{$phpbb_root_path}posting.$phpEx", 'mode=smilies&amp;f=' . $forum_id);
+	$base_url = append_sid("modules.php?name=phpBB3&amp;file=posting", 'mode=smilies&amp;f=' . $forum_id);
 	$start = $request->variable('start', 0);
 
 	if ($mode == 'window')
@@ -997,24 +997,24 @@ function load_drafts($topic_id = 0, $forum_id = 0, $id = 0, $pm_action = '', $ms
 			$topic_forum_id = ($topic_rows[$draft['topic_id']]['forum_id']) ? $topic_rows[$draft['topic_id']]['forum_id'] : $forum_id;
 
 			$link_topic = true;
-			$view_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $draft['topic_id']);
+			$view_url = append_sid("modules.php?name=phpBB3&amp;file=viewtopic", 't=' . $draft['topic_id']);
 			$title = $topic_rows[$draft['topic_id']]['topic_title'];
 
-			$insert_url = append_sid("{$phpbb_root_path}posting.$phpEx", 't=' . $draft['topic_id'] . '&amp;mode=reply&amp;d=' . $draft['draft_id']);
+			$insert_url = append_sid("modules.php?name=phpBB3&amp;file=posting", 't=' . $draft['topic_id'] . '&amp;mode=reply&amp;d=' . $draft['draft_id']);
 		}
 		else if ($draft['forum_id'] && $auth->acl_get('f_read', $draft['forum_id']))
 		{
 			$link_forum = true;
-			$view_url = append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $draft['forum_id']);
+			$view_url = append_sid("modules.php?name=phpBB3&amp;file=viewforum", 'f=' . $draft['forum_id']);
 			$title = $draft['forum_name'];
 
-			$insert_url = append_sid("{$phpbb_root_path}posting.$phpEx", 'f=' . $draft['forum_id'] . '&amp;mode=post&amp;d=' . $draft['draft_id']);
+			$insert_url = append_sid("modules.php?name=phpBB3&amp;file=posting", 'f=' . $draft['forum_id'] . '&amp;mode=post&amp;d=' . $draft['draft_id']);
 		}
 		else
 		{
 			// Either display as PM draft if forum_id and topic_id are empty or if access to the forums has been denied afterwards...
 			$link_pm = true;
-			$insert_url = append_sid("{$phpbb_root_path}ucp.$phpEx", "i=$id&amp;mode=compose&amp;d={$draft['draft_id']}" . (($pm_action) ? "&amp;action=$pm_action" : '') . (($msg_id) ? "&amp;p=$msg_id" : ''));
+			$insert_url = append_sid("modules.php?name=phpBB3&amp;file=ucp", "i=$id&amp;mode=compose&amp;d={$draft['draft_id']}" . (($pm_action) ? "&amp;action=$pm_action" : '') . (($msg_id) ? "&amp;p=$msg_id" : ''));
 		}
 
 		$template->assign_block_vars('draftrow', array(
@@ -1268,8 +1268,8 @@ function topic_review($topic_id, $forum_id, $mode = 'topic_review', $cur_post_id
 			'POST_ID'			=> $row['post_id'],
 			'POST_TIME'			=> $row['post_time'],
 			'USER_ID'			=> $row['user_id'],
-			'U_MINI_POST'		=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'p=' . $row['post_id']) . '#p' . $row['post_id'],
-			'U_MCP_DETAILS'		=> ($auth->acl_get('m_info', $forum_id)) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=main&amp;mode=post_details&amp;p=' . $row['post_id'], true, $user->session_id) : '',
+			'U_MINI_POST'		=> append_sid("modules.php?name=phpBB3&amp;file=viewtopic", 'p=' . $row['post_id']) . '#p' . $row['post_id'],
+			'U_MCP_DETAILS'		=> ($auth->acl_get('m_info', $forum_id)) ? append_sid("modules.php?name=phpBB3&amp;file=mcp", 'i=main&amp;mode=post_details&amp;p=' . $row['post_id'], true, $user->session_id) : '',
 			'POSTER_QUOTE'		=> ($show_quote_button && $auth->acl_get('f_reply', $forum_id)) ? addslashes(get_username_string('username', $poster_id, $row['username'], $row['user_colour'], $row['post_username'])) : '',
 		);
 
@@ -2565,7 +2565,7 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 
 	$params = [];
 	$add_anchor = '';
-	$url = "{$phpbb_root_path}viewtopic.$phpEx";
+	$url = "modules.php?name=phpBB3&amp;file=viewtopic";
 
 	if ($post_visibility == ITEM_APPROVED ||
 		($auth->acl_get('m_softdelete', $data_ary['forum_id']) && $post_visibility == ITEM_DELETED) ||
@@ -2587,7 +2587,7 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll_ary, &$data
 	}
 	else
 	{
-		$url = "{$phpbb_root_path}viewforum.$phpEx";
+		$url = "modules.php?name=phpBB3&amp;file=viewforum";
 		$params['f'] = $data_ary['forum_id'];
 	}
 
@@ -2741,7 +2741,7 @@ function phpbb_bump_topic($forum_id, $topic_id, $post_data, $bump_time = false)
 		$post_data['topic_title']
 	));
 
-	$url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", "p={$post_data['topic_last_post_id']}") . "#p{$post_data['topic_last_post_id']}";
+	$url = append_sid("modules.php?name=phpBB3&amp;file=viewtopic", "p={$post_data['topic_last_post_id']}") . "#p{$post_data['topic_last_post_id']}";
 
 	return $url;
 }
@@ -2858,7 +2858,7 @@ function phpbb_handle_post_delete($forum_id, $topic_id, $post_id, &$post_data, $
 					$delete_reason
 				));
 
-				$meta_info = append_sid("{$phpbb_root_path}viewforum.$phpEx", "f=$forum_id");
+				$meta_info = append_sid("modules.php?name=phpBB3&amp;file=viewforum", "f=$forum_id");
 				$message = $user->lang['POST_DELETED'];
 			}
 			else
@@ -2872,7 +2872,7 @@ function phpbb_handle_post_delete($forum_id, $topic_id, $post_id, &$post_data, $
 					$delete_reason
 				));
 
-				$meta_info = append_sid("{$phpbb_root_path}viewtopic.$phpEx", "p=$next_post_id") . "#p$next_post_id";
+				$meta_info = append_sid("modules.php?name=phpBB3&amp;file=viewtopic", "p=$next_post_id") . "#p$next_post_id";
 				$message = $user->lang['POST_DELETED'];
 
 				if (!$request->is_ajax())
@@ -2884,7 +2884,7 @@ function phpbb_handle_post_delete($forum_id, $topic_id, $post_id, &$post_data, $
 			meta_refresh(3, $meta_info);
 			if (!$request->is_ajax())
 			{
-				$message .= '<br /><br />' . $user->lang('RETURN_FORUM', '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_id) . '">', '</a>');
+				$message .= '<br /><br />' . $user->lang('RETURN_FORUM', '<a href="' . append_sid("{$phpbb_root_path}viewforum", 'f=' . $forum_id) . '">', '</a>');
 			}
 			trigger_error($message);
 		}

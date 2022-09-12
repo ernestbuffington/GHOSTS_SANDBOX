@@ -456,7 +456,7 @@ $template->assign_vars(array(
 	'U_MCP'				=> ($auth->acl_get('m_', $forum_id)) ? append_sid("modules.php?name=$nuke_module_name&amp;file=mcp.$phpEx", "f=$forum_id&amp;i=main&amp;mode=forum_view", true, $user->session_id) : '',
 	'U_POST_NEW_TOPIC'	=> ($auth->acl_get('f_post', $forum_id) || $user->data['user_id'] == ANONYMOUS) ? append_sid("modules.php?name=$nuke_module_name&amp;file=posting.$phpEx", 'mode=post&amp;f=' . $forum_id) : '',
 	'U_VIEW_FORUM'		=> append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", "f=$forum_id" . ((strlen($u_sort_param)) ? "&amp;$u_sort_param" : '') . (($start == 0) ? '' : "&amp;start=$start")),
-	'U_CANONICAL'		=> generate_board_url() . '/' . append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", "f=$forum_id" . (($start) ? "&amp;start=$start" : ''), true, ''),
+	'U_CANONICAL'		=> generate_board_url() . '/' . append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum", "f=$forum_id" . (($start) ? "&amp;start=$start" : ''), true, ''),
 	'U_MARK_TOPICS'		=> ($user->data['is_registered'] || $config['load_anon_lastread']) ? append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'hash=' . generate_link_hash('global') . "&amp;f=$forum_id&amp;mark=topics&amp;mark_time=" . time()) : '',
 	'U_SEARCH_FORUM'	=> append_sid("modules.php?name=$nuke_module_name&amp;file=search.$phpEx", 'fid%5B%5D=' . $forum_id),
 ));

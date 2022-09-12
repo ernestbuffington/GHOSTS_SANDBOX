@@ -46,9 +46,9 @@ class acp_main
 
 			$template->assign_vars(array(
 				'S_RESTORE_PERMISSIONS'		=> true,
-				'U_RESTORE_PERMISSIONS'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=restore_perm'),
+				'U_RESTORE_PERMISSIONS'		=> append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=restore_perm'),
 				'PERM_FROM'					=> $perm_from,
-				'L_PERMISSIONS_TRANSFERRED_EXPLAIN'	=> sprintf($user->lang['PERMISSIONS_TRANSFERRED_EXPLAIN'], $perm_from, append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=restore_perm')),
+				'L_PERMISSIONS_TRANSFERRED_EXPLAIN'	=> sprintf($user->lang['PERMISSIONS_TRANSFERRED_EXPLAIN'], $perm_from, append_sid("modules.php?name=phpBB3&amp;file=ucp", 'mode=restore_perm')),
 			));
 
 			return;
@@ -61,7 +61,7 @@ class acp_main
 			if ($action === 'admlogout')
 			{
 				$user->unset_admin();
-				redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+				redirect(append_sid("modules.php?name=phpBB3"));
 			}
 
 			if (!confirm_box(true))
@@ -633,7 +633,7 @@ class acp_main
 					'USER_COLOR'		=> get_username_string('colour', $row['user_id'], $row['username'], $row['user_colour']),
 
 					'U_USER_ADMIN'	=> append_sid("{$phpbb_admin_path}index.$phpEx", "i=users&amp;mode=overview&amp;u={$row['user_id']}"),
-					'U_SEARCH_USER'	=> ($auth->acl_get('u_search')) ? append_sid("{$phpbb_root_path}search.$phpEx", "author_id={$row['user_id']}&amp;sr=posts") : '',
+					'U_SEARCH_USER'	=> ($auth->acl_get('u_search')) ? append_sid("modules.php?name=phpBB3&amp;file=search", "author_id={$row['user_id']}&amp;sr=posts") : '',
 				));
 			}
 

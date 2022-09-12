@@ -304,8 +304,8 @@ class ucp_main
 					{
 						$msg = $user->lang['FORM_INVALID'];
 					}
-					$message = $msg . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . append_sid("{$phpbb_root_path}ucp.$phpEx", "i=$id&amp;mode=subscribed") . '">', '</a>');
-					meta_refresh(3, append_sid("{$phpbb_root_path}ucp.$phpEx", "i=$id&amp;mode=subscribed"));
+					$message = $msg . '<br /><br />' . sprintf($user->lang['RETURN_UCP'], '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=ucp", "i=$id&amp;mode=subscribed") . '">', '</a>');
+					meta_refresh(3, append_sid("modules.php?name=phpBB3&amp;file=ucp", "i=$id&amp;mode=subscribed"));
 					trigger_error($message);
 				}
 

@@ -546,7 +546,7 @@ if ($mode == 'bump')
 		if (!$request->is_ajax())
 		{
 			$message .= '<br /><br />' . $user->lang('VIEW_MESSAGE', '<a href="' . $meta_url . '">', '</a>');
-			$message .= '<br /><br />' . $user->lang('RETURN_FORUM', '<a href="' . append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $forum_id) . '">', '</a>');
+			$message .= '<br /><br />' . $user->lang('RETURN_FORUM', '<a href="' . append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum", 'f=' . $forum_id) . '">', '</a>');
 		}
 
 		trigger_error($message);
@@ -825,7 +825,7 @@ if ($save && $user->data['is_registered'] && $auth->acl_get('u_savedrafts') && (
 
 			$message = $user->lang['DRAFT_SAVED'] . '<br /><br />';
 			$message .= ($mode != 'post') ? sprintf($user->lang['RETURN_TOPIC'], '<a href="' . $meta_info . '">', '</a>') . '<br /><br />' : '';
-			$message .= sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $forum_id) . '">', '</a>');
+			$message .= sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("modules.php?name=$nuke_module_name&amp;file=viewforum", 'f=' . $forum_id) . '">', '</a>');
 
 			trigger_error($message);
 		}
@@ -1615,7 +1615,7 @@ if ($submit || $preview || $refresh)
 				meta_refresh(10, $redirect_url);
 				$message = ($mode == 'edit') ? $user->lang['POST_EDITED_MOD'] : $user->lang['POST_STORED_MOD'];
 				$message .= (($user->data['user_id'] == ANONYMOUS) ? '' : ' '. $user->lang['POST_APPROVAL_NOTIFY']);
-				$message .= '<br /><br />' . sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{modules.php?name=$nuke_module_name&amp;file=viewforum.$phpEx", 'f=' . $data['forum_id']) . '">', '</a>');
+				$message .= '<br /><br />' . sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{modules.php?name=$nuke_module_name&amp;file=viewforum", 'f=' . $data['forum_id']) . '">', '</a>');
 				trigger_error($message);
 			}
 

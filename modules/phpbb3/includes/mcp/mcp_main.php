@@ -777,7 +777,7 @@ function mcp_move_topic($topic_ids)
 		confirm_box(false, 'MOVE_TOPIC' . ((count($topic_ids) == 1) ? '' : 'S'), $s_hidden_fields, 'mcp_move.html');
 	}
 
-	$redirect = $request->variable('redirect', "index.$phpEx");
+	$redirect = $request->variable('redirect', "modules.php?name=phpBB3");
 	$redirect = reapply_sid($redirect);
 
 	if (!$success_msg)
@@ -790,8 +790,8 @@ function mcp_move_topic($topic_ids)
 
 		$message = $user->lang[$success_msg];
 		$message .= '<br /><br />' . sprintf($user->lang['RETURN_PAGE'], '<a href="' . $redirect . '">', '</a>');
-		$message .= '<br /><br />' . sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", "f=$forum_id") . '">', '</a>');
-		$message .= '<br /><br />' . sprintf($user->lang['RETURN_NEW_FORUM'], '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", "f=$to_forum_id") . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=viewforum", "f=$forum_id") . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($user->lang['RETURN_NEW_FORUM'], '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=viewforum", "f=$to_forum_id") . '">', '</a>');
 
 		trigger_error($message);
 	}
@@ -850,18 +850,18 @@ function mcp_restore_topic($topic_ids)
 	$topic_id = $request->variable('t', 0);
 	if (!$request->is_set('quickmod', \phpbb\request\request_interface::REQUEST))
 	{
-		$redirect = $request->variable('redirect', "index.$phpEx");
+		$redirect = $request->variable('redirect', "modules.php?name=phpBB3");
 		$redirect = reapply_sid($redirect);
 		$redirect_message = 'PAGE';
 	}
 	else if ($topic_id)
 	{
-		$redirect = append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $topic_id);
+		$redirect = append_sid("modules.php?name=phpBB3&amp;file=viewtopic", 't=' . $topic_id);
 		$redirect_message = 'TOPIC';
 	}
 	else
 	{
-		$redirect = append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_id);
+		$redirect = append_sid("modules.php?name=phpBB3&amp;file=viewforum", 'f=' . $forum_id);
 		$redirect_message = 'FORUM';
 	}
 
@@ -1052,18 +1052,18 @@ function mcp_delete_topic($topic_ids, $is_soft = false, $soft_delete_reason = ''
 	$topic_id = $request->variable('t', 0);
 	if (!$request->is_set('quickmod', \phpbb\request\request_interface::REQUEST))
 	{
-		$redirect = $request->variable('redirect', "index.$phpEx");
+		$redirect = $request->variable('redirect', "modules.php?name=phpBB3");
 		$redirect = reapply_sid($redirect);
 		$redirect_message = 'PAGE';
 	}
 	else if ($is_soft && $topic_id)
 	{
-		$redirect = append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $topic_id);
+		$redirect = append_sid("modules.php?name=phpBB3&amp;file=viewtopic", 't=' . $topic_id);
 		$redirect_message = 'TOPIC';
 	}
 	else
 	{
-		$redirect = append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_id);
+		$redirect = append_sid("modules.php?name=phpBB3&amp;file=viewforum", 'f=' . $forum_id);
 		$redirect_message = 'FORUM';
 	}
 
@@ -1171,9 +1171,9 @@ function mcp_delete_post($post_ids, $is_soft = false, $soft_delete_reason = '', 
 		$return_link = array();
 		if ($affected_topics == 1 && $topic_id)
 		{
-			$return_link[] = sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", "t=$topic_id") . '">', '</a>');
+			$return_link[] = sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=viewtopic", "t=$topic_id") . '">', '</a>');
 		}
-		$return_link[] = sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_id) . '">', '</a>');
+		$return_link[] = sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=viewforum", 'f=' . $forum_id) . '">', '</a>');
 
 	}
 	else if (confirm_box(true))
@@ -1230,9 +1230,9 @@ function mcp_delete_post($post_ids, $is_soft = false, $soft_delete_reason = '', 
 		$return_link = array();
 		if ($affected_topics == 1 && !$deleted_topics && $topic_id)
 		{
-			$return_link[] = sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", "t=$topic_id") . '">', '</a>');
+			$return_link[] = sprintf($user->lang['RETURN_TOPIC'], '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=viewtopic", "t=$topic_id") . '">', '</a>');
 		}
-		$return_link[] = sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_id) . '">', '</a>');
+		$return_link[] = sprintf($user->lang['RETURN_FORUM'], '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=viewforum", 'f=' . $forum_id) . '">', '</a>');
 
 		if (count($post_ids) == 1)
 		{
@@ -1317,7 +1317,7 @@ function mcp_delete_post($post_ids, $is_soft = false, $soft_delete_reason = '', 
 	{
 		if ($affected_topics != 1 || $deleted_topics || !$topic_id)
 		{
-			$redirect = append_sid("{$phpbb_root_path}mcp.$phpEx", "f=$forum_id&i=main&mode=forum_view", false);
+			$redirect = append_sid("modules.php?name=phpBB3&amp;file=mcp", "f=$forum_id&i=main&mode=forum_view", false);
 		}
 
 		meta_refresh(3, $redirect);
@@ -1761,7 +1761,7 @@ function mcp_fork_topic($topic_ids)
 		confirm_box(false, 'FORK_TOPIC' . ((count($topic_ids) == 1) ? '' : 'S'), $s_hidden_fields, 'mcp_move.html');
 	}
 
-	$redirect = $request->variable('redirect', "index.$phpEx");
+	$redirect = $request->variable('redirect', "modules.php?name=phpBB3");
 	$redirect = reapply_sid($redirect);
 
 	if (!$success_msg)
@@ -1770,13 +1770,13 @@ function mcp_fork_topic($topic_ids)
 	}
 	else
 	{
-		$redirect_url = append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $forum_id);
+		$redirect_url = append_sid("modules.php?name=phpBB3&amp;file=viewforum", 'f=' . $forum_id);
 		meta_refresh(3, $redirect_url);
 		$return_link = sprintf($user->lang['RETURN_FORUM'], '<a href="' . $redirect_url . '">', '</a>');
 
 		if ($forum_id != $to_forum_id)
 		{
-			$return_link .= '<br /><br />' . sprintf($user->lang['RETURN_NEW_FORUM'], '<a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $to_forum_id) . '">', '</a>');
+			$return_link .= '<br /><br />' . sprintf($user->lang['RETURN_NEW_FORUM'], '<a href="' . append_sid("modules.php?name=phpBB3&amp;file=viewforum", 'f=' . $to_forum_id) . '">', '</a>');
 		}
 
 		trigger_error($user->lang[$success_msg] . '<br /><br />' . $return_link);
