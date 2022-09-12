@@ -1,10 +1,22 @@
 <?php
-/**
+/** PORT DATE 09/06/2022 to 09/09/2022
 *
-* This file is part of the phpBB Forum Software package.
+* This file is a part of PHP-AN602 v3.3.x
 *
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
+* Ernest Allen Buffington of The 86it Developers Network
+* is the author of PHP-ANG602 and this port of phpBB v3.3.x
+* 
+* You may contact TheGhost AKA Ernest Allen Buffington
+* email: <webmaster@an602.86it.us>
+* cell: 813-846-2865 
+*
+* @copyright (c) Brandon Maintenance Management <https://www.facebook.com/brandon.maintenance>
 * @license GNU General Public License, version 2 (GPL-2.0)
+*
+* This file is part of a Fork of phpBB v3.3.8 Forum Software package.
+*
+* Original @copyright (c) phpBB Limited <https://www.phpbb.com>
+* Original @license GNU General Public License, version 2 (GPL-2.0)
 *
 * For full copyright and license information, please see
 * the docs/CREDITS.txt file.

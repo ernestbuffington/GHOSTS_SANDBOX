@@ -25,7 +25,6 @@
 
 /**
 */
-if(defined('PHPBB3_MODULE') ):                                            #### ADD Ernest Allen Buffington 09/09/2022
 $nuke_module_name = basename(dirname(__FILE__));                          #### ADD Ernest Allen Buffington 09/09/2022
 $phpEx = substr(strrchr(__FILE__, '.'), 1);                               #### ADD Ernest Allen Buffington 09/09/2022
 require(NUKE_PHPBB3_DIR . 'nukebb.' . $phpEx);                            #### ADD Ernest Allen Buffington 09/09/2022
@@ -34,14 +33,6 @@ $phpbb_root_path = (defined('NUKE_PHPBB3_DIR')) ? NUKE_PHPBB3_DIR : './'; #### A
 include(NUKE_PHPBB3_DIR . 'extension.inc');                               #### ADD Ernest Allen Buffington 09/09/2022
 include(NUKE_PHPBB3_DIR . 'common.' . $phpEx);                            #### ADD Ernest Allen Buffington 09/09/2022
 include(NUKE_PHPBB3_DIR . 'includes/functions_display.' . $phpEx);        #### ADD Ernest Allen Buffington 09/09/2022
-else:                                                                     #### ADD Ernest Allen Buffington 09/09/2022
-
-define('IN_PHPBB', true);
-$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-endif;                                                                    #### ADD Ernest Allen Buffington 09/09/2022
 
 // Start session management
 $user->session_begin();
